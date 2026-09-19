@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SirEdwards Quiz: Test de Lucidez Mental v1.2</title>
+<title>SirEdwards Quiz: Test de Lucidez Mental</title>
 
 <!-- SEO / vista previa al compartir el enlace -->
 <meta name="description" content="Pon a prueba tu cultura general y tu lucidez mental con SirEdwards Quiz: preguntas, modos de juego, logros y estadísticas. Tu progreso se guarda automáticamente en este dispositivo.">
@@ -21,13 +21,18 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="SirEdwards Quiz">
 
-<!-- Icono (SVG embebido, sin necesitar un archivo aparte) -->
+<!-- Icono: se mantiene el SVG embebido para el favicon de pestaña (sin cambios).
+     El apple-touch-icon pasa a un PNG real en icons/, porque Safari/iOS no
+     soporta de forma fiable SVG como icono de pantalla de inicio. -->
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Crect%20width%3D%27100%27%20height%3D%27100%27%20rx%3D%2722%27%20fill%3D%27%232563eb%27/%3E%3Ctext%20x%3D%2750%27%20y%3D%2768%27%20font-family%3D%27Arial%2C%20sans-serif%27%20font-size%3D%2744%27%20font-weight%3D%27bold%27%20fill%3D%27white%27%20text-anchor%3D%27middle%27%3ESE%3C/text%3E%3C/svg%3E">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Crect%20width%3D%27100%27%20height%3D%27100%27%20rx%3D%2722%27%20fill%3D%27%232563eb%27/%3E%3Ctext%20x%3D%2750%27%20y%3D%2768%27%20font-family%3D%27Arial%2C%20sans-serif%27%20font-size%3D%2744%27%20font-weight%3D%27bold%27%20fill%3D%27white%27%20text-anchor%3D%27middle%27%3ESE%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
 
-<!-- Manifest embebido (permite "Añadir a pantalla de inicio" / instalar la app
-     sin necesitar un archivo manifest.json aparte, ya que todo va en un único HTML) -->
-<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjogIlNpckVkd2FyZHMgUXVpejogVGVzdCBkZSBMdWNpZGV6IE1lbnRhbCIsICJzaG9ydF9uYW1lIjogIlNpckVkd2FyZHMgUXVpeiIsICJkZXNjcmlwdGlvbiI6ICJQb24gYSBwcnVlYmEgdHUgY3VsdHVyYSBnZW5lcmFsIHkgdHUgbHVjaWRleiBtZW50YWwgY29uIFNpckVkd2FyZHMgUXVpei4iLCAic3RhcnRfdXJsIjogIi4iLCAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwgImJhY2tncm91bmRfY29sb3IiOiAiI2YzZjRmNiIsICJ0aGVtZV9jb2xvciI6ICIjMjU2M2ViIiwgImljb25zIjogW3sic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCwlM0NzdmclMjB4bWxucyUzRCUyN2h0dHAlM0EvL3d3dy53My5vcmcvMjAwMC9zdmclMjclMjB2aWV3Qm94JTNEJTI3MCUyMDAlMjAxMDAlMjAxMDAlMjclM0UlM0NyZWN0JTIwd2lkdGglM0QlMjcxMDAlMjclMjBoZWlnaHQlM0QlMjcxMDAlMjclMjByeCUzRCUyNzIyJTI3JTIwZmlsbCUzRCUyNyUyMzI1NjNlYiUyNy8lM0UlM0N0ZXh0JTIweCUzRCUyNzUwJTI3JTIweSUzRCUyNzY4JTI3JTIwZm9udC1mYW1pbHklM0QlMjdBcmlhbCUyQyUyMHNhbnMtc2VyaWYlMjclMjBmb250LXNpemUlM0QlMjc0NCUyNyUyMGZvbnQtd2VpZ2h0JTNEJTI3Ym9sZCUyNyUyMGZpbGwlM0QlMjd3aGl0ZSUyNyUyMHRleHQtYW5jaG9yJTNEJTI3bWlkZGxlJTI3JTNFU0UlM0MvdGV4dCUzRSUzQy9zdmclM0UiLCAic2l6ZXMiOiAiMTAweDEwMCIsICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiLCAicHVycG9zZSI6ICJhbnkifV19">
+<!-- Manifest PWA como archivo independiente (antes iba embebido como data:
+     URI en este mismo link; ahora es manifest.json, con iconos PNG reales
+     de 192/512 —incluida variante "maskable"— en vez del único SVG de
+     100x100 anterior, que no cumplía el tamaño mínimo que exigen los
+     criterios de instalación de Chrome/Android). -->
+<link rel="manifest" href="manifest.json">
 
 <!-- Tipografía: Playfair Display para el "display" institucional (nombre de la
      app / títulos), Inter para toda la interfaz funcional. Con fallback a las
@@ -46,15 +51,39 @@
     <div style="text-align:center; padding: 4px 2px 2px;">
       <div style="font-family: Georgia, 'Times New Roman', serif; font-size: 14px; letter-spacing: 3px; text-transform: uppercase; opacity: .72; margin-bottom: 14px;">Sir Edwards Quiz</div>
       <div style="width: 56px; height: 1px; margin: 0 auto 18px; background: linear-gradient(90deg, transparent, var(--gold, #d4af37), transparent);"></div>
-      <h2 style="font-family: Georgia, 'Times New Roman', serif; font-size: clamp(30px, 7vw, 40px); line-height: 1.12; margin: 0 0 22px; letter-spacing: .2px;">Bienvenido a la v1.2</h2>
+      <h2 style="font-family: Georgia, 'Times New Roman', serif; font-size: clamp(30px, 7vw, 40px); line-height: 1.12; margin: 0 0 22px; letter-spacing: .2px;">Bienvenido a la <span id="welcome-version">v1.3</span></h2>
       <p style="font-size: clamp(17px, 4.2vw, 20px); line-height: 1.72; margin: 0 auto 22px; max-width: 560px; text-align: justify;">Sir Edwards Quiz ya está disponible directamente en la web, sin instalación ni descargas.</p>
       <p style="font-size: clamp(17px, 4.2vw, 20px); line-height: 1.72; margin: 0 auto; max-width: 560px; text-align: justify;">Tu progreso se guarda en este dispositivo. Explora los modos de juego, reta a tus amigos en Duelo y ponte a prueba.</p>
       <div style="width: 56px; height: 1px; margin: 28px auto 0; background: linear-gradient(90deg, transparent, var(--gold, #d4af37), transparent);"></div>
     </div>
-    <button class="btn btn-primary" style="width: 100%; margin-top: 30px; font-size: 18px; min-height: 54px;" onclick="closeWelcomeModal()">Descubrir la v1.2</button>
+    <button class="btn btn-primary" style="width: 100%; margin-top: 30px; font-size: 18px; min-height: 54px;" onclick="closeWelcomeModal()">Descubrir la <span id="welcome-btn-version">v1.3</span></button>
+  </div>
+</div>
+
+<!-- Modal de "novedades de la versión" (v1.3): distinto del modal de
+     bienvenida de arriba. Se controla con su propia clave de localStorage
+     (ver UPDATE_SEEN_KEY más abajo), separada de siredwards_quiz_v1_0_data
+     y de las claves de bienvenida/ayuda de duelo. Oculto por defecto;
+     maybeShowUpdateModal() decide si debe mostrarse. -->
+<div id="update-modal" class="modal-overlay" style="display:none;">
+  <div class="modal-card">
+    <h2><span aria-hidden="true">🆕</span> Novedades de <span id="update-modal-version"></span></h2>
+    <ul id="update-modal-list" class="settings-changelog-list"></ul>
+    <div class="modal-warning-actions">
+      <button class="btn btn-primary" onclick="closeUpdateModal()">Entendido</button>
+    </div>
   </div>
 </div>
 <script>
+// ============================================================
+// Fuente única de verdad de la versión de la app (v1.3). Todo lo demás
+// que necesita mostrar la versión (título, cabecera, bienvenida, modal
+// de novedades, changelog, metadato de exportación) la lee de aquí.
+// Para publicar una versión nueva: cambiar solo esta línea + añadir la
+// entrada correspondiente en "Historial de versiones" más abajo.
+const APP_VERSION = "1.3";
+// ============================================================
+
 // Solo se muestra la primera vez que se abre la app en este navegador
 // (o después de reiniciar el progreso desde Ajustes). Protegido con
 // try/catch: en navegadores con localStorage bloqueado (incógnito estricto,
@@ -108,6 +137,16 @@ try {
 
     <!-- TAB: HOME (nuevo menú principal) -->
     <div id="view-home" class="view active">
+      <!-- Aviso discreto de instalación PWA (Android: botón "Instalar";
+           iOS: instrucciones de "Añadir a pantalla de inicio"). Oculto por
+           defecto; solo lo muestra pwa-install-hint.js si procede, y nunca
+           como popup — es una franja fija dentro de Home, descartable, que
+           además deja de mostrarse en cuanto se descarta o se instala. -->
+      <div id="pwa-install-hint" class="pwa-install-hint" style="display:none;" role="status">
+        <span id="pwa-install-hint-text" class="pwa-install-hint-text"></span>
+        <button type="button" id="pwa-install-hint-action" class="pwa-install-hint-action" style="display:none;">Instalar</button>
+        <button type="button" id="pwa-install-hint-dismiss" class="pwa-install-hint-dismiss" aria-label="Cerrar aviso">✕</button>
+      </div>
       <div class="home-header">
         <span class="home-emblem-spark" aria-hidden="true">✦</span>
         <div class="home-emblem">
@@ -142,7 +181,7 @@ try {
       <div class="home-subtitle">
         <span class="home-sub-line"></span>
         <span class="home-sub-diamond">◆</span>
-        <span>TEST DE LUCIDEZ MENTAL · v1.2</span>
+        <span id="home-sub-version-text">TEST DE LUCIDEZ MENTAL · v1.3</span>
         <span class="home-sub-diamond">◆</span>
         <span class="home-sub-line"></span>
       </div>
@@ -233,7 +272,7 @@ try {
     <div id="home-info-modal" class="modal-overlay" style="display:none;">
       <div class="modal-card">
         <h2><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--primary)"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16.5"/><circle cx="12" cy="7.6" r="1" fill="currentColor" stroke="none"/></svg> Sir Edwards Quiz</h2>
-        <p>Test de Lucidez Mental · v1.2</p>
+        <p id="info-modal-version-text">Test de Lucidez Mental · v1.3</p>
         <p>Un quiz de cultura general con varios modos de juego, logros por desbloquear y un modo Duelo para retar a tus amigos con el mismo set de preguntas. Todo tu progreso se guarda únicamente en este dispositivo.</p>
         <div class="modal-warning-actions">
           <button class="btn btn-primary" onclick="closeInfoModal()">Entendido</button>
@@ -259,9 +298,9 @@ try {
     </div>
 
     <div class="top-bar">
-      <div class="brand quiz-brand" aria-label="SirEdwards Quiz: Test de Lucidez Mental v1.2">
+      <div class="brand quiz-brand" id="quiz-brand" aria-label="SirEdwards Quiz: Test de Lucidez Mental v1.3">
         <div class="brand-main"><span class="brand-mark">✦</span><span>SIR EDWARDS QUIZ</span></div>
-        <div class="brand-sub">TEST DE LUCIDEZ MENTAL <span class="brand-dot">·</span> v1.2</div>
+        <div class="brand-sub">TEST DE LUCIDEZ MENTAL <span class="brand-dot">·</span> <span id="brand-sub-version">v1.3</span></div>
       </div>
       <div class="stats-badges">
         <div class="badge streak-live-badge">🔥 Racha <span id="lbl-current-streak">0</span></div>
@@ -836,11 +875,21 @@ try {
             <div class="settings-changelog-entry-header">
               <span class="settings-changelog-entry-version">v1.2</span>
               <span class="settings-changelog-entry-date">17/09/2026</span>
-              <span class="settings-changelog-entry-current">ACTUAL</span>
             </div>
             <ul class="settings-changelog-list">
               <li>Ya disponible directamente en la web, sin instalación.</li>
               <li>Mejoras internas de mantenimiento y estabilidad.</li>
+            </ul>
+          </div>
+          <div class="settings-changelog-entry">
+            <div class="settings-changelog-entry-header">
+              <span class="settings-changelog-entry-version">v1.3</span>
+              <span class="settings-changelog-entry-date">19/09/2026</span>
+            </div>
+            <ul class="settings-changelog-list">
+              <li>Ahora se puede instalar como aplicación en el móvil o el escritorio, con icono propio.</li>
+              <li>Funciona sin conexión una vez que se ha cargado alguna vez.</li>
+              <li>Aviso de novedades cada vez que haya una actualización de la app.</li>
             </ul>
           </div>
         </div>
@@ -2445,7 +2494,7 @@ function exportProgress() {
     saveStore();
     const payload = {
       app: 'siredwards_quiz',
-      version: 'v1.2', // versión de la app en el momento de exportar (informativo)
+      version: 'v' + APP_VERSION, // versión de la app en el momento de exportar (informativo)
       saveVersion: SAVE_VERSION, // versión del FORMATO de progreso: la usa migrateStore() al restaurar
       exportedAt: new Date().toISOString(),
       data: store
@@ -7176,6 +7225,194 @@ function showInfoToast(message, icon){
   });
   observer.observe(document.body,{attributes:true,attributeFilter:['class']});
 })();
+</script>
+<script>
+// ============================================================
+// Versión visible + modal de "novedades" (v1.3).
+// Mecanismo A (aviso para instalar la PWA) vive en el bloque de script siguiente,
+// con su propia clave siredwards_quiz_v1_3_install_hint_dismissed.
+// Este es el mecanismo B (novedades de versión), con su propia clave
+// UPDATE_SEEN_KEY. No comparten variables, claves ni funciones entre sí.
+// Ninguno de los dos toca siredwards_quiz_v1_0_data (progreso).
+// ============================================================
+const UPDATE_SEEN_KEY = 'siredwards_quiz_v1_3_update_seen';
+
+function applyAppVersionText() {
+  document.title = 'SirEdwards Quiz: Test de Lucidez Mental v' + APP_VERSION;
+  const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+  setText('welcome-version', 'v' + APP_VERSION);
+  setText('welcome-btn-version', 'v' + APP_VERSION);
+  setText('home-sub-version-text', 'TEST DE LUCIDEZ MENTAL · v' + APP_VERSION);
+  setText('info-modal-version-text', 'Test de Lucidez Mental · v' + APP_VERSION);
+  setText('brand-sub-version', 'v' + APP_VERSION);
+  const brandEl = document.getElementById('quiz-brand');
+  if (brandEl) brandEl.setAttribute('aria-label', 'SirEdwards Quiz: Test de Lucidez Mental v' + APP_VERSION);
+
+  // La etiqueta "ACTUAL" del historial de versiones se calcula, no se
+  // hardcodea: se coloca en la entrada cuyo número coincide con
+  // APP_VERSION y se retira de cualquier otra. Así, al añadir una entrada
+  // nueva y subir APP_VERSION, no hay que acordarse de mover la etiqueta
+  // a mano.
+  document.querySelectorAll('.settings-changelog-entry').forEach((entry) => {
+    const versionLabel = entry.querySelector('.settings-changelog-entry-version');
+    const existingTag = entry.querySelector('.settings-changelog-entry-current');
+    if (existingTag) existingTag.remove();
+    if (versionLabel && versionLabel.textContent.trim() === 'v' + APP_VERSION) {
+      const header = entry.querySelector('.settings-changelog-entry-header');
+      if (header) {
+        const tag = document.createElement('span');
+        tag.className = 'settings-changelog-entry-current';
+        tag.textContent = 'ACTUAL';
+        header.appendChild(tag);
+      }
+    }
+  });
+}
+
+function findChangelogEntryForVersion(version) {
+  const entries = document.querySelectorAll('.settings-changelog-entry');
+  for (const entry of entries) {
+    const label = entry.querySelector('.settings-changelog-entry-version');
+    if (label && label.textContent.trim() === 'v' + version) return entry;
+  }
+  return null;
+}
+
+function closeUpdateModal() {
+  const modal = document.getElementById('update-modal');
+  if (modal) modal.style.display = 'none';
+  try { localStorage.setItem(UPDATE_SEEN_KEY, APP_VERSION); } catch (e) {}
+}
+
+function maybeShowUpdateModal() {
+  let hasProgress = false;
+  let seen = null;
+  try {
+    // Una instalación totalmente nueva (sin progreso guardado todavía) no
+    // tiene ninguna versión anterior de la que "actualizarse": no le
+    // mostramos el modal de novedades, solo el de bienvenida. Se marca
+    // como vista la versión actual sin mostrar nada, precisamente para
+    // que este chequeo de "sin progreso" sea la única vía que evite el
+    // modal — un usuario que sí tenga progreso de antes de que existiera
+    // este mecanismo (p. ej. ya jugó en v1.2) sí lo verá una vez.
+    hasProgress = localStorage.getItem('siredwards_quiz_v1_0_data') !== null;
+    seen = localStorage.getItem(UPDATE_SEEN_KEY);
+  } catch (e) { return; }
+
+  if (!hasProgress) {
+    try { localStorage.setItem(UPDATE_SEEN_KEY, APP_VERSION); } catch (e) {}
+    return;
+  }
+  if (seen === APP_VERSION) return; // ya visto para esta versión exacta
+
+  // El contenido del modal se lee directamente del historial de versiones
+  // (una sola fuente de contenido) en vez de duplicarlo aquí a mano.
+  const entry = findChangelogEntryForVersion(APP_VERSION);
+  const list = entry ? entry.querySelector('.settings-changelog-list') : null;
+  if (!list) return; // sin entrada de changelog para esta versión: no forzamos el modal
+
+  const modal = document.getElementById('update-modal');
+  const versionLabel = document.getElementById('update-modal-version');
+  const listTarget = document.getElementById('update-modal-list');
+  if (!modal || !versionLabel || !listTarget) return;
+
+  versionLabel.textContent = 'v' + APP_VERSION;
+  listTarget.innerHTML = list.innerHTML;
+  modal.style.display = 'flex';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  applyAppVersionText();
+  maybeShowUpdateModal();
+});
+</script>
+<script>
+// --- PWA: registro del service worker -------------------------------
+// Ruta relativa ('sw.js', sin barra inicial): así el scope del service
+// worker queda automáticamente en el directorio donde vive este archivo,
+// tanto en local (scope "/") como bajo GitHub Pages (scope
+// "/sir-edwards-quiz/"), sin necesitar tocar nada según el despliegue.
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {
+      // Silencioso a propósito: si falla (p. ej. servido por file:// en
+      // vez de http/https, donde los service workers no funcionan), el
+      // juego debe seguir funcionando exactamente igual, solo que sin
+      // caché offline ni instalación.
+    });
+  });
+}
+
+// --- PWA: aviso discreto de instalación -------------------------------
+// Una sola clave nueva de localStorage, exclusiva de este aviso: no
+// interfiere en nada con siredwards_quiz_v1_0_data (progreso) ni con las
+// otras dos claves existentes (bienvenida, ayuda de duelo).
+const PWA_HINT_DISMISSED_KEY = 'siredwards_quiz_v1_3_install_hint_dismissed';
+
+function isStandaloneDisplay() {
+  return window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true; // iOS Safari
+}
+
+function pwaHintDismissed() {
+  try { return localStorage.getItem(PWA_HINT_DISMISSED_KEY) === '1'; } catch (e) { return false; }
+}
+function dismissPwaHint() {
+  try { localStorage.setItem(PWA_HINT_DISMISSED_KEY, '1'); } catch (e) {}
+  const el = document.getElementById('pwa-install-hint');
+  if (el) el.style.display = 'none';
+}
+
+let deferredInstallPrompt = null;
+
+function showPwaHint(text, showActionBtn) {
+  if (isStandaloneDisplay() || pwaHintDismissed()) return;
+  const el = document.getElementById('pwa-install-hint');
+  const textEl = document.getElementById('pwa-install-hint-text');
+  const actionBtn = document.getElementById('pwa-install-hint-action');
+  if (!el || !textEl || !actionBtn) return;
+  textEl.textContent = text;
+  actionBtn.style.display = showActionBtn ? 'inline-block' : 'none';
+  el.style.display = 'flex';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const dismissBtn = document.getElementById('pwa-install-hint-dismiss');
+  if (dismissBtn) dismissBtn.addEventListener('click', dismissPwaHint);
+
+  const actionBtn = document.getElementById('pwa-install-hint-action');
+  if (actionBtn) {
+    actionBtn.addEventListener('click', async () => {
+      if (!deferredInstallPrompt) return;
+      deferredInstallPrompt.prompt();
+      try { await deferredInstallPrompt.userChoice; } catch (e) {}
+      deferredInstallPrompt = null;
+      dismissPwaHint();
+    });
+  }
+
+  // iOS/iPadOS Safari no dispara 'beforeinstallprompt': el único camino de
+  // instalación es Compartir → Añadir a pantalla de inicio, así que ahí nos
+  // limitamos a explicarlo (una vez, hasta que se descarte).
+  const ua = window.navigator.userAgent || '';
+  const isIOS = /iPad|iPhone|iPod/.test(ua) || (ua.includes('Macintosh') && 'ontouchend' in document);
+  const isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua);
+  if (isIOS && isSafari && !isStandaloneDisplay()) {
+    showPwaHint('Toca el icono de compartir de Safari y elige "Añadir a pantalla de inicio" para instalar Sir Edwards.', false);
+  }
+});
+
+// Android/Chrome y otros navegadores compatibles: sí exponen este evento.
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  showPwaHint('Instala Sir Edwards en tu pantalla de inicio para abrirlo como una app.', true);
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  dismissPwaHint();
+});
 </script>
 </body>
 </html>

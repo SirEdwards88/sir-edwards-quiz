@@ -4926,3 +4926,58 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   .segmented-btn { font-size: 13px; padding: 10px 8px; }
   .settings-backup-actions .btn { flex-basis: 100%; }
 }
+
+/* ============================================================
+   PWA — aviso discreto de instalación (v1.3)
+   Franja no intrusiva dentro de Home. Reutiliza los tokens de color,
+   radio y sombra ya existentes para que combine con el resto de la UI;
+   no modifica ninguna regla previa.
+   ============================================================ */
+.pwa-install-hint {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+  font-family: var(--font-ui);
+}
+.pwa-install-hint-text {
+  flex: 1;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text);
+}
+.pwa-install-hint-action {
+  flex: 0 0 auto;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--primary);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 14px;
+  min-height: 36px;
+  cursor: pointer;
+}
+.pwa-install-hint-action:hover { background: var(--primary-hover); }
+.pwa-install-hint-dismiss {
+  flex: 0 0 auto;
+  border: none;
+  background: transparent;
+  color: var(--sub);
+  font-size: 15px;
+  line-height: 1;
+  padding: 6px 4px;
+  cursor: pointer;
+  min-height: 36px;
+  min-width: 28px;
+}
+[data-theme="dark"] .pwa-install-hint {
+  background: var(--color-surface-elevated, var(--card));
+  border-color: var(--color-border, var(--border));
+}
+[data-theme="dark"] .pwa-install-hint-text { color: var(--color-text, var(--text)); }
