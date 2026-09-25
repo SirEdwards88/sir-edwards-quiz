@@ -202,6 +202,7 @@ const QUESTIONS = [
   {"n": 356, "q": "¿Qué sistema internacional de identificación numérica se utiliza para identificar de forma única las ediciones de libros?", "a": "ISBN", "cat": "cultura_general", "dif": "medio"},
   {"n": 357, "q": "¿Qué sistema de escritura táctil, basado en puntos en relieve grabados en papel, permite leer y escribir a las personas ciegas o con deficiencia visual grave?", "a": "Sistema Braille", "cat": "cultura_general", "dif": "medio"},
   {"n": 358, "q": "¿Qué importante galardón internacional en el ámbito del periodismo, la literatura y la composición musical se concede anualmente en los Estados Unidos bajo la administración de la Universidad de Columbia?", "a": "Los Premios Pulitzer", "cat": "cultura_general", "dif": "medio"},
+  {"n": 359, "q": "¿Qué instrumento de teclado, muy utilizado durante el Barroco, fue un precursor del piano moderno?", "options": ["Clavicordio", "Clavecín", "Órgano de tubos", "Celesta"], "a": "Clavecín", "cat": "arte_literatura", "dif": "facil"},
   {"n": 360, "q": "¿Qué famosa escritora británica es la creadora del célebre universo literario y de la exitosa saga de novelas fantásticas protagonizadas por el joven mago Harry Potter?", "a": "J. K. Rowling", "cat": "arte_literatura", "dif": "medio"}
 ];;
 
