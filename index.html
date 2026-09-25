@@ -713,7 +713,7 @@ try {
             </div>
             <div class="stat-extra stat-master">
               <span class="stat-extra-icon">🧠</span>
-              <div><span class="stat-extra-label">Preguntas dominadas</span><span class="stat-extra-value" id="mastered-count">0/300</span></div>
+              <div><span class="stat-extra-label">Preguntas dominadas</span><span class="stat-extra-value" id="mastered-count">0/360</span></div>
             </div>
           </div>
         </div>
@@ -6615,9 +6615,8 @@ function showDuelCodeCopyToast(success) {
 function getMasteredCount(source = getStore()) {
   const streaks = source && source.questionStreaks ? source.questionStreaks : {};
   // Se cuentan solo las claves de TEST_QUESTIONS (sin el prefijo "L" de
-  // Lucidez), para que el cupo de estos logros se mantenga en 300 —igual
-  // que en la pantalla de Estadísticas— y jugar mucho a Lucidez no infle
-  // el umbral de "Erudito"/"Biblioteca Humana" por encima de ese cupo.
+  // Lucidez), para que el dominio se limite al banco principal de preguntas
+  // y jugar mucho a Lucidez no infle el umbral de "Erudito"/"Biblioteca Humana".
   return Object.keys(streaks).filter(k => !k.startsWith('L') && Number(streaks[k]) >= 3).length;
 }
 
@@ -6671,7 +6670,7 @@ function renderLearningStats() {
   const seen = new Set(Array.isArray(store.seenQuestionIds) ? store.seenQuestionIds : []);
   const mastered = getMasteredCount();
   const pending = Array.isArray(store.failedQuestions) ? store.failedQuestions.length : 0;
-  const totalQuestions = TEST_QUESTIONS.length || 320;
+  const totalQuestions = TEST_QUESTIONS.length || 360;
   const seenEl = document.getElementById('st-seen');
   const masteredEl = document.getElementById('st-mastered');
   const pendingEl = document.getElementById('st-pending');
