@@ -1383,6 +1383,14 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
 .btn-share:hover { background: rgba(109,40,217,.13); border-color: rgba(109,40,217,.55); }
 [data-theme="dark"] .btn-share { background: rgba(167,139,250,.12); border-color: rgba(167,139,250,.40); }
 [data-theme="dark"] .btn-share:hover { background: rgba(167,139,250,.18); border-color: rgba(167,139,250,.6); }
+/* 2.0: «Compartir resultado» discreto (acción secundaria); sin btn-share-quiet recupera el aspecto destacado. */
+.results-actions .btn-share { width: 100%; margin-top: 10px; }
+.results-actions .btn-share.btn-share-quiet {
+  width: fit-content; min-height: 0; margin: 12px auto 0; display: block; padding: 8px 18px;
+  font-size: 14px; font-weight: 600; background: transparent; box-shadow: none;
+  color: var(--color-text-muted); border-color: var(--border);
+}
+.results-actions .btn-share.btn-share-quiet:hover { background: var(--badge-bg); }
 
 .feedback { margin-top: 16px; padding: 14px; border-radius: var(--radius-sm); display: none; line-height: 1.45; font-size: 15px; }
 .feedback.ok { background: var(--ok-bg); color: var(--ok-txt); }
@@ -5147,4 +5155,13 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 }
 @media (prefers-reduced-motion: reduce) {
   .home-hat-img { animation: none; }
+}
+
+/* 2.0: en móvil, la regla «07 — CTA» de la tarjeta de resultados fuerza todos los botones a ancho completo y 50px.
+   «Compartir resultado» es secundario y discreto: se recupera su tamaño propio (con !important y mayor especificidad). */
+@media (max-width:600px){
+  #results-card > div:last-child .btn.btn-share.btn-share-quiet{
+    width:fit-content!important; min-height:0!important; padding:8px 18px!important;
+    font-size:14px!important; border-radius:12px!important; margin:12px auto 0!important; display:block!important;
+  }
 }

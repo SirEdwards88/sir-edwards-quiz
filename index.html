@@ -680,8 +680,11 @@ try {
         </div>
 
         <div class="results-actions">
-          <button class="btn btn-share" id="res-share-btn" onclick="shareResult()" style="width: 100%; margin-bottom: 10px;">📤 Compartir mi resultado</button>
+          <!-- 2.0: jerarquía clara. «Volver» es la acción principal; «Compartir resultado» es secundaria y discreta,
+               y solo gana presencia cuando hay algo que contar (récord, Lucidez superada, logro o modo nuevo).
+               En un duelo creado no aparece: ahí la acción es «Compartir reto» dentro de la tarjeta. -->
           <button class="btn btn-primary" id="res-back-btn" onclick="handleResultsBackButton()" style="width: 100%;">Volver al Menú Principal</button>
+          <button class="btn btn-share btn-share-quiet" id="res-share-btn" onclick="shareResult()">↗ Compartir resultado</button>
         </div>
       </div>
 
@@ -4528,7 +4531,7 @@ function finishLucidezMode(failed, timedOut = false, phaseInsufficient = null) {
   const duelBox = document.getElementById('results-duel-box');
   if (duelBox) { duelBox.style.display = 'none'; duelBox.innerHTML = ''; }
   const resShareBtn = document.getElementById('res-share-btn');
-  if (resShareBtn) { resShareBtn.textContent = '📤 Compartir mi resultado'; resShareBtn.style.display = ''; }
+  if (resShareBtn) { resShareBtn.textContent = '↗ Compartir resultado'; resShareBtn.style.display = ''; }
   const resBackBtn = document.getElementById('res-back-btn');
   if (resBackBtn) { resBackBtn.textContent = 'Volver al Menú Principal'; }
 
@@ -6584,7 +6587,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   const duelBox = document.getElementById('results-duel-box');
   if (duelBox) { duelBox.style.display = 'none'; duelBox.innerHTML = ''; }
   const resShareBtn = document.getElementById('res-share-btn');
-  if (resShareBtn) { resShareBtn.textContent = '📤 Compartir mi resultado'; resShareBtn.style.display = ''; }
+  if (resShareBtn) { resShareBtn.textContent = '↗ Compartir resultado'; resShareBtn.style.display = ''; }
   const resBackBtn = document.getElementById('res-back-btn');
   if (resBackBtn) { resBackBtn.textContent = 'Volver al Menú Principal'; }
 
@@ -6996,7 +6999,7 @@ function handleDuelFinish(game, totalQ) {
 
   document.getElementById('res-main-title').textContent = '⚔️ Duelo Completado';
   const shareBtn = document.getElementById('res-share-btn');
-  if (shareBtn) shareBtn.textContent = '📤 Compartir resultado';
+  if (shareBtn) shareBtn.textContent = '↗ Compartir resultado';
 
   const opp = Number.isFinite(game.duelOpponentScore) ? game.duelOpponentScore : 0;
   const margin = Math.abs(game.score - opp);
@@ -7974,6 +7977,27 @@ function openDuelInviteIfReady() {
   return true;
 }
 captureDuelInvite();
+
+// 2.0: «Compartir resultado» es discreto por defecto y gana presencia solo cuando el jugador tiene algo que
+// contar: récord, Lucidez superada, logro nuevo o modo desbloqueado. Regla simple, sin matriz de casos.
+function updateShareEmphasis() {
+  const btn = document.getElementById('res-share-btn');
+  if (!btn) return;
+  const shown = (id) => { const el = document.getElementById(id); return !!el && (el.classList.contains('show') || el.style.display === 'block'); };
+  const stamp = document.querySelector('#results-lucidez-stamp .stamp-badge');
+  const lucidezWon = !!stamp && /tone-(ok|perfect)/.test(stamp.className);
+  const notable = shown('results-record-badge') || lucidezWon || shown('session-medals-box') || shown('session-mode-unlock-box');
+  btn.classList.toggle('btn-share-quiet', !notable);
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const host = document.getElementById('results-card');
+  if (!host || typeof MutationObserver === 'undefined') return;
+  let queued = false;
+  new MutationObserver(() => {
+    if (queued) return; queued = true;
+    requestAnimationFrame(() => { queued = false; try { updateShareEmphasis(); } catch (e) {} });
+  }).observe(host, { subtree: true, childList: true, attributes: true, attributeFilter: ['class', 'style'] });
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   applyAppVersionText();
