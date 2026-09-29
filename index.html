@@ -19,13 +19,18 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="SirEdwards Quiz">
+<meta name="apple-mobile-web-app-title" content="Sir Edwards Quiz">
 
-<!-- Icono: se mantiene el SVG embebido para el favicon de pestaña (sin cambios).
-     El apple-touch-icon pasa a un PNG real en icons/, porque Safari/iOS no
-     soporta de forma fiable SVG como icono de pantalla de inicio. -->
-<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Crect%20width%3D%27100%27%20height%3D%27100%27%20rx%3D%2722%27%20fill%3D%27%232563eb%27/%3E%3Ctext%20x%3D%2750%27%20y%3D%2768%27%20font-family%3D%27Arial%2C%20sans-serif%27%20font-size%3D%2744%27%20font-weight%3D%27bold%27%20fill%3D%27white%27%20text-anchor%3D%27middle%27%3ESE%3C/text%3E%3C/svg%3E">
-<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png">
+<!-- Icono (Sir Edwards 2.0 · Prompt 1.5): el favicon "SE" embebido en SVG se
+     sustituye por el sombrero oficial, generado en varios tamaños PNG a
+     partir del mismo asset que usan el resto de iconos de instalación.
+     El apple-touch-icon usa un PNG dedicado de 180x180 sin transparencia
+     (fondo a sangre completa), porque iOS aplica su propio redondeo de
+     esquinas y no soporta SVG de forma fiable como icono de inicio. -->
+<link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
 
 <!-- Manifest PWA como archivo independiente (antes iba embebido como data:
      URI en este mismo link; ahora es manifest.json, con iconos PNG reales
@@ -41,22 +46,53 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles/main.css">
+<!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
+<link rel="stylesheet" href="styles/online.css">
 
 </head>
 <body class="on-home">
+<!-- Sir Edwards 2.0 — iconografía estructural compartida (un solo dibujo por símbolo; ver .se-sym en main.css).
+     Diana = Jugar/Modo Estándar · Espadas = Duelo. Mismos trazos que las insignias de Home. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="se-target" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="#f4efe4" stroke="#c9992e" stroke-width="2"/>
+              <circle cx="32" cy="32" r="20" fill="#b6202f"/>
+              <circle cx="32" cy="32" r="14" fill="#f4efe4"/>
+              <circle cx="32" cy="32" r="8" fill="#1849b3"/>
+              <circle cx="32" cy="32" r="3" fill="#c9992e"/>
+              <!-- Flecha: astil, plumas en la cola y punta bien visible clavada cerca del centro -->
+              <line x1="11" y1="55" x2="26.8" y2="37.8" stroke="#1849b3" stroke-width="3.4" stroke-linecap="round"/>
+              <path d="M11 55 L4 53.2 L8.8 59.6 Z" fill="#c9992e" stroke="#1c2340" stroke-width="0.8" stroke-linejoin="round"/>
+              <path d="M11 55 L4.6 58.8 L10.6 62.4 Z" fill="#c9992e" stroke="#1c2340" stroke-width="0.8" stroke-linejoin="round"/>
+              <path d="M32 32 L29.6 40.6 L23.6 35 Z" fill="#c9992e" stroke="#1c2340" stroke-width="1" stroke-linejoin="round"/></symbol>
+  <symbol id="se-swords" viewBox="0 0 64 64"><g transform="rotate(-45 32 32)">
+                <path d="M32 7 L35 13 L35 43 L32 50 L29 43 L29 13 Z" fill="#d7dbe3" stroke="#1c2340" stroke-width="1.2"/>
+                <path d="M32 7 L33.2 13 L32 43 L30.8 13 Z" fill="#ffffff" opacity=".75"/>
+                <rect x="23" y="42" width="18" height="3.5" rx="1.5" fill="#c9992e" stroke="#1c2340" stroke-width="1"/>
+                <rect x="29.5" y="45" width="5" height="10" rx="1.5" fill="#1c2340"/>
+                <circle cx="32" cy="57" r="2.8" fill="#c9992e" stroke="#1c2340" stroke-width="1"/>
+              </g>
+              <g transform="rotate(45 32 32)">
+                <path d="M32 7 L35 13 L35 43 L32 50 L29 43 L29 13 Z" fill="#f0d99a" stroke="#1c2340" stroke-width="1.2"/>
+                <path d="M32 7 L33.2 13 L32 43 L30.8 13 Z" fill="#fff7d6" opacity=".8"/>
+                <rect x="23" y="42" width="18" height="3.5" rx="1.5" fill="#1c2340" stroke="#c9992e" stroke-width="1"/>
+                <rect x="29.5" y="45" width="5" height="10" rx="1.5" fill="#c9992e"/>
+                <circle cx="32" cy="57" r="2.8" fill="#1c2340" stroke="#c9992e" stroke-width="1"/>
+              </g>
+              <circle cx="32" cy="32" r="3" fill="#c9992e" stroke="#1c2340" stroke-width="1"/></symbol>
+</svg>
 
 <!-- Finestra de Benvinguda (Modal) -->
 <div id="welcome-modal" class="modal-overlay">
   <div class="modal-card">
     <div style="text-align:center; padding: 4px 2px 2px;">
-      <div style="font-family: Georgia, 'Times New Roman', serif; font-size: 14px; letter-spacing: 3px; text-transform: uppercase; opacity: .72; margin-bottom: 14px;">Sir Edwards Quiz</div>
+      <div style="font-family: var(--font-display); font-size: 14px; letter-spacing: 3px; text-transform: uppercase; opacity: .72; margin-bottom: 14px;">Sir Edwards Quiz</div>
       <div style="width: 56px; height: 1px; margin: 0 auto 18px; background: linear-gradient(90deg, transparent, var(--gold, #d4af37), transparent);"></div>
-      <h2 style="font-family: Georgia, 'Times New Roman', serif; font-size: clamp(30px, 7vw, 40px); line-height: 1.12; margin: 0 0 22px; letter-spacing: .2px;">Bienvenido a la <span id="welcome-version">v1.3</span></h2>
-      <p style="font-size: clamp(17px, 4.2vw, 20px); line-height: 1.72; margin: 0 auto 22px; max-width: 560px; text-align: justify;">Sir Edwards Quiz ya está disponible directamente en la web, sin instalación ni descargas.</p>
-      <p style="font-size: clamp(17px, 4.2vw, 20px); line-height: 1.72; margin: 0 auto; max-width: 560px; text-align: justify;">Tu progreso se guarda en este dispositivo. Explora los modos de juego, reta a tus amigos en Duelo y ponte a prueba.</p>
+      <h2 style="font-family: var(--font-display); font-size: clamp(30px, 7vw, 40px); line-height: 1.12; margin: 0 0 22px; letter-spacing: .2px;">Bienvenido a la <span id="welcome-version">v1.5</span></h2>
+      <p style="font-size: clamp(17px, 4.2vw, 20px); line-height: 1.72; margin: 0 auto 22px; max-width: 560px; text-align: left;">Sir Edwards Quiz ya está disponible directamente en la web, sin instalación ni descargas.</p>
+      <p style="font-size: clamp(17px, 4.2vw, 20px); line-height: 1.72; margin: 0 auto; max-width: 560px; text-align: left;">Tu progreso se guarda en este dispositivo. Explora los modos de juego, reta a tus amigos en Duelo y ponte a prueba.</p>
       <div style="width: 56px; height: 1px; margin: 28px auto 0; background: linear-gradient(90deg, transparent, var(--gold, #d4af37), transparent);"></div>
     </div>
-    <button class="btn btn-primary" style="width: 100%; margin-top: 30px; font-size: 18px; min-height: 54px;" onclick="closeWelcomeModal()">Descubrir la <span id="welcome-btn-version">v1.3</span></button>
+    <button class="btn btn-primary" style="width: 100%; margin-top: 30px; font-size: 18px; min-height: 54px;" onclick="closeWelcomeModal()">Descubrir la <span id="welcome-btn-version">v1.5</span></button>
   </div>
 </div>
 
@@ -74,14 +110,70 @@
     </div>
   </div>
 </div>
+
+<!-- v1.4: migración / combinación del progreso local con la cuenta online.
+     Contenido y botones los pinta src/online/online.js (SEQOnline). -->
+<div id="seq-migrate-modal" class="modal-overlay" style="display:none;">
+  <div class="modal-card seq-modal-card" role="dialog" aria-modal="true" aria-labelledby="seq-migrate-title">
+    <h2 id="seq-migrate-title"><span aria-hidden="true">☁️</span> Tu progreso y tu cuenta</h2>
+    <div id="seq-migrate-body"></div>
+  </div>
+</div>
+
+<!-- v1.4: ranking global por XP online (datos del servidor). -->
+<div id="seq-ranking-modal" class="modal-overlay" style="display:none;">
+  <div class="modal-card seq-modal-card" role="dialog" aria-modal="true" aria-labelledby="seq-ranking-title">
+    <h2 id="seq-ranking-title"><span aria-hidden="true">🏆</span> Ranking global</h2>
+    <div id="seq-ranking-body"></div>
+    <div class="modal-warning-actions">
+      <button class="btn btn-primary" onclick="SEQOnline.closeRanking()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- v1.5 — Fase B (Prompt 3): gate de acceso obligatorio con cuenta.
+     Se muestra ÚNICAMENTE cuando la capa online está activa y configurada
+     (SEQOnline.enabled === true, ver src/online/config.js) y no hay una
+     sesión válida — decidido por authGateActive()/updateAuthGate() más
+     abajo. En este build, config.js no trae backend ni Client ID de Google
+     (ambos vacíos), así que SEQOnline.enabled es false y este overlay
+     permanece SIEMPRE oculto: la app sigue exactamente igual que hoy, sin
+     cuenta obligatoria, hasta que se despliegue un backend real con esas
+     dos claves. No es una pantalla nueva de login: reutiliza el mismo
+     botón de Google que ya pinta src/online/online.js en Ajustes (mismo
+     init/credential/callback) — "Crear cuenta" e "Iniciar sesión" son, con
+     este único método de autenticación (Google), la misma acción. -->
+<div id="auth-gate" class="modal-overlay auth-gate" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="auth-gate-title" aria-describedby="auth-gate-desc">
+  <div class="modal-card seq-modal-card auth-gate-card">
+    <div style="text-align:center; padding: 4px 2px 2px;">
+      <div style="font-family: var(--font-display); font-size: 14px; letter-spacing: 3px; text-transform: uppercase; opacity: .72; margin-bottom: 14px;">Sir Edwards Quiz</div>
+      <div style="width: 56px; height: 1px; margin: 0 auto 18px; background: linear-gradient(90deg, transparent, var(--gold, #d4af37), transparent);"></div>
+      <!-- Fase B.1: tabindex="-1" a propósito — no forma parte del orden natural de
+           TAB, es solo el punto de foco inicial programático al abrir el gate
+           (patrón habitual de diálogo modal accesible). -->
+      <h2 id="auth-gate-title" tabindex="-1" style="font-family: var(--font-display); font-size: clamp(26px, 6.4vw, 34px); line-height: 1.14; margin: 0 0 18px; letter-spacing: .2px; outline: none;">Tu cuenta, tu progreso</h2>
+      <!-- Fase B.1: copy corregido — ya no promete sincronizar "todo tu progreso"
+           (el store completo no sincroniza con la cuenta; ver Backup/Restore). -->
+      <p id="auth-gate-desc" style="font-size: clamp(16px, 4vw, 18px); line-height: 1.7; margin: 0 auto 14px; max-width: 480px; text-align: left;">Entra con tu cuenta de Google para jugar. Así conservas tu identidad de jugador y sincronizas tu progreso principal y tus logros entre dispositivos.</p>
+      <ul style="font-size: clamp(14.5px, 3.6vw, 16px); line-height: 1.65; margin: 0 auto 18px; max-width: 480px; text-align: left; padding-left: 20px;">
+        <li>Conserva tu identidad de jugador</li>
+        <li>Sincroniza tu XP, tus partidas y tus logros entre dispositivos</li>
+        <li>Accede a Duelo, Retos y el resto de funciones online</li>
+      </ul>
+      <div id="seq-gate-gsi-slot" class="seq-gsi-slot"></div>
+      <p class="settings-note seq-msg" id="seq-gate-msg" style="text-align:left; max-width:480px; margin:6px auto 0;"></p>
+      <div style="width: 56px; height: 1px; margin: 22px auto 0; background: linear-gradient(90deg, transparent, var(--gold, #d4af37), transparent);"></div>
+    </div>
+  </div>
+</div>
 <script>
 // ============================================================
-// Fuente única de verdad de la versión de la app (v1.3). Todo lo demás
+// Fuente única de verdad de la versión de la app (v1.4). Todo lo demás
 // que necesita mostrar la versión (título, cabecera, bienvenida, modal
 // de novedades, changelog, metadato de exportación) la lee de aquí.
 // Para publicar una versión nueva: cambiar solo esta línea + añadir la
 // entrada correspondiente en "Historial de versiones" más abajo.
-const APP_VERSION = "1.3";
+const APP_VERSION = "1.5";
 // ============================================================
 
 // Solo se muestra la primera vez que se abre la app en este navegador
@@ -151,27 +243,15 @@ try {
         <span class="home-emblem-spark" aria-hidden="true">✦</span>
         <div class="home-emblem">
           <div class="home-emblem-ring">
-            <svg class="home-hat-svg" viewBox="0 0 100 100" aria-hidden="true">
-              <defs>
-                <linearGradient id="homeHatGrad" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0" stop-color="#26325a"/>
-                  <stop offset="0.55" stop-color="#111a35"/>
-                  <stop offset="1" stop-color="#080c18"/>
-                </linearGradient>
-                <linearGradient id="homeHatBand" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0" stop-color="#3d2168"/>
-                  <stop offset="0.5" stop-color="#6d3fa0"/>
-                  <stop offset="1" stop-color="#3d2168"/>
-                </linearGradient>
-              </defs>
-              <ellipse cx="50" cy="78" rx="39" ry="8.5" fill="#080c18"/>
-              <ellipse cx="50" cy="76.5" rx="38" ry="7" fill="url(#homeHatGrad)"/>
-              <path d="M31 29 Q31 25 35 23 L65 23 Q69 25 69 29 L67 68 Q66.5 72 63 73 L37 73 Q33.5 72 33 68 Z" fill="url(#homeHatGrad)"/>
-              <ellipse cx="50" cy="25" rx="19" ry="5.5" fill="#26325a"/>
-              <path d="M32.5 50.5 Q50 53 67.5 50.5 L67 61 Q50 63.5 33 61 Z" fill="url(#homeHatBand)"/>
-              <path d="M34 60.5 Q50 63 66 60.5" fill="none" stroke="#c9992e" stroke-width="1.4" opacity=".9"/>
-              <path d="M38 29 Q39 26 42 25" fill="none" stroke="#56658d" stroke-width="2" stroke-linecap="round" opacity=".65"/>
-            </svg>
+            <!-- Sombrero oficial de Sir Edwards (2.0 · Prompt 1.5): asset oficial
+                 provisto por el equipo de arte (silueta, banda morada y acabado
+                 originales, sin redibujar). Sustituye al sombrero dibujado a mano
+                 de la primera pasada visual. Puramente decorativo (el título
+                 "SIR EDWARDS QUIZ" ya identifica la marca), de ahí alt="". -->
+            <picture>
+              <source srcset="assets/character/hat.webp" type="image/webp">
+              <img class="home-hat-img" src="assets/character/hat.png" alt="" width="900" height="900" decoding="async">
+            </picture>
           </div>
         </div>
         <span class="home-emblem-spark" aria-hidden="true">✦</span>
@@ -181,7 +261,7 @@ try {
       <div class="home-subtitle">
         <span class="home-sub-line"></span>
         <span class="home-sub-diamond">◆</span>
-        <span id="home-sub-version-text">TEST DE LUCIDEZ MENTAL · v1.3</span>
+        <span id="home-sub-version-text">TEST DE LUCIDEZ MENTAL · v1.5</span>
         <span class="home-sub-diamond">◆</span>
         <span class="home-sub-line"></span>
       </div>
@@ -189,18 +269,7 @@ try {
       <div class="home-big-cards">
         <div class="home-big-card home-card-jugar" onclick="switchTab('modes')">
           <div class="home-big-icon">
-            <svg viewBox="0 0 64 64" aria-hidden="true">
-              <circle cx="32" cy="32" r="26" fill="#f4efe4" stroke="#c9992e" stroke-width="2"/>
-              <circle cx="32" cy="32" r="20" fill="#b6202f"/>
-              <circle cx="32" cy="32" r="14" fill="#f4efe4"/>
-              <circle cx="32" cy="32" r="8" fill="#1849b3"/>
-              <circle cx="32" cy="32" r="3" fill="#c9992e"/>
-              <!-- Flecha: astil, plumas en la cola y punta bien visible clavada cerca del centro -->
-              <line x1="11" y1="55" x2="26.8" y2="37.8" stroke="#1849b3" stroke-width="3.4" stroke-linecap="round"/>
-              <path d="M11 55 L4 53.2 L8.8 59.6 Z" fill="#c9992e" stroke="#1c2340" stroke-width="0.8" stroke-linejoin="round"/>
-              <path d="M11 55 L4.6 58.8 L10.6 62.4 Z" fill="#c9992e" stroke="#1c2340" stroke-width="0.8" stroke-linejoin="round"/>
-              <path d="M32 32 L29.6 40.6 L23.6 35 Z" fill="#c9992e" stroke="#1c2340" stroke-width="1" stroke-linejoin="round"/>
-            </svg>
+            <svg viewBox="0 0 64 64" aria-hidden="true"><use href="#se-target"/></svg>
           </div>
           <div class="home-big-text">
             <div class="home-big-title">JUGAR</div>
@@ -210,23 +279,7 @@ try {
         </div>
         <div class="home-big-card home-card-duelo" onclick="switchTab('duelo')">
           <div class="home-big-icon">
-            <svg viewBox="0 0 64 64" aria-hidden="true">
-              <g transform="rotate(-45 32 32)">
-                <path d="M32 7 L35 13 L35 43 L32 50 L29 43 L29 13 Z" fill="#d7dbe3" stroke="#1c2340" stroke-width="1.2"/>
-                <path d="M32 7 L33.2 13 L32 43 L30.8 13 Z" fill="#ffffff" opacity=".75"/>
-                <rect x="23" y="42" width="18" height="3.5" rx="1.5" fill="#c9992e" stroke="#1c2340" stroke-width="1"/>
-                <rect x="29.5" y="45" width="5" height="10" rx="1.5" fill="#1c2340"/>
-                <circle cx="32" cy="57" r="2.8" fill="#c9992e" stroke="#1c2340" stroke-width="1"/>
-              </g>
-              <g transform="rotate(45 32 32)">
-                <path d="M32 7 L35 13 L35 43 L32 50 L29 43 L29 13 Z" fill="#f0d99a" stroke="#1c2340" stroke-width="1.2"/>
-                <path d="M32 7 L33.2 13 L32 43 L30.8 13 Z" fill="#fff7d6" opacity=".8"/>
-                <rect x="23" y="42" width="18" height="3.5" rx="1.5" fill="#1c2340" stroke="#c9992e" stroke-width="1"/>
-                <rect x="29.5" y="45" width="5" height="10" rx="1.5" fill="#c9992e"/>
-                <circle cx="32" cy="57" r="2.8" fill="#1c2340" stroke="#c9992e" stroke-width="1"/>
-              </g>
-              <circle cx="32" cy="32" r="3" fill="#c9992e" stroke="#1c2340" stroke-width="1"/>
-            </svg>
+            <svg viewBox="0 0 64 64" aria-hidden="true"><use href="#se-swords"/></svg>
           </div>
           <div class="home-big-text">
             <div class="home-big-title">DUELO</div>
@@ -272,7 +325,7 @@ try {
     <div id="home-info-modal" class="modal-overlay" style="display:none;">
       <div class="modal-card">
         <h2><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--primary)"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16.5"/><circle cx="12" cy="7.6" r="1" fill="currentColor" stroke="none"/></svg> Sir Edwards Quiz</h2>
-        <p id="info-modal-version-text">Test de Lucidez Mental · v1.3</p>
+        <p id="info-modal-version-text">Test de Lucidez Mental · v1.5</p>
         <p>Un quiz de cultura general con varios modos de juego, logros por desbloquear y un modo Duelo para retar a tus amigos con el mismo set de preguntas. Todo tu progreso se guarda únicamente en este dispositivo.</p>
         <div class="modal-warning-actions">
           <button class="btn btn-primary" onclick="closeInfoModal()">Entendido</button>
@@ -298,9 +351,9 @@ try {
     </div>
 
     <div class="top-bar">
-      <div class="brand quiz-brand" id="quiz-brand" aria-label="SirEdwards Quiz: Test de Lucidez Mental v1.3">
+      <div class="brand quiz-brand" id="quiz-brand" aria-label="SirEdwards Quiz: Test de Lucidez Mental v1.5">
         <div class="brand-main"><span class="brand-mark">✦</span><span>SIR EDWARDS QUIZ</span></div>
-        <div class="brand-sub">TEST DE LUCIDEZ MENTAL <span class="brand-dot">·</span> <span id="brand-sub-version">v1.3</span></div>
+        <div class="brand-sub">TEST DE LUCIDEZ MENTAL <span class="brand-dot">·</span> <span id="brand-sub-version">v1.5</span></div>
       </div>
       <div class="stats-badges">
         <div class="badge streak-live-badge">🔥 Racha <span id="lbl-current-streak">0</span></div>
@@ -343,7 +396,7 @@ try {
         <h2>Selecciona un modo de juego</h2>
         <div class="modes-grid">
           <div class="mode-card mode-standard" onclick="startMode('play')">
-            <div class="mode-card-icon" aria-hidden="true">🎯</div>
+            <div class="mode-card-icon" aria-hidden="true"><svg class="se-sym" viewBox="0 0 64 64"><use href="#se-target"/></svg></div>
             <h3>Modo Estándar</h3>
             <p>20 preguntas aleatorias. Responde y demuestra cuánto sabes.</p>
           </div>
@@ -416,15 +469,22 @@ try {
 
     <!-- TAB: DUELO -->
     <div id="view-duelo" class="view">
+      <!-- Cabecera ÚNICA de toda la sección Duelo (hub y submenús): el mismo
+           .section-topbar que Jugar/Estadísticas/Logros. Título, subtítulo y
+           destino de «←» los pone setDuelTopbar() según la pantalla. -->
       <div class="section-topbar" id="duel-section-topbar">
-        <button type="button" class="section-back-btn" onclick="switchTab('home')" aria-label="Volver al menú principal">←</button>
+        <button type="button" class="section-back-btn" id="duel-topbar-back" onclick="duelTopbarBack()" aria-label="Volver">←</button>
         <div class="section-topbar-text">
-          <h2>Duelo</h2>
-          <p class="section-topbar-sub">Reta a otra mente</p>
+          <h2 id="duel-topbar-title">Duelos</h2>
+          <p class="section-topbar-sub" id="duel-topbar-sub">Compite contra tus amigos</p>
         </div>
-        <button type="button" class="section-help-btn" onclick="showDuelHelpModal()" aria-label="¿Cómo funciona un Duelo?" title="¿Cómo funciona un Duelo?">?</button>
+        <button type="button" class="section-help-btn" id="duel-help-btn" onclick="showDuelHelpModal()" aria-label="¿Cómo funciona un Duelo?" title="¿Cómo funciona un Duelo?">?</button>
       </div>
       <div id="duel-home" class="modes-grid">
+        <!-- v1.5: hub de Duelos (Duelo online / Retos / Amigos / Ranking + «Duelo por código» como opción
+             secundaria). Lo pinta src/online/duels.js; sin sesión o con los flags apagados solo invita a
+             iniciar sesión y deja visibles las tres tarjetas del Duelo por código de abajo (setSrwVisible). -->
+        <div id="seq-duel-cards" class="seq-duel-cards"></div>
         <div id="duel-resume-card" class="mode-card duel-resume-card" style="display:none;" onclick="switchTab('game')">
           <div class="mode-card-icon" id="duel-resume-icon">⚔️</div>
           <h3 id="duel-resume-title">Continuar reto</h3>
@@ -463,10 +523,6 @@ try {
              segunda lógica de desbloqueos. Mismos ids duel-mode-card-* que
              antes para no tocar esa lógica. -->
         <div id="duel-crear-step-modo">
-          <div class="submenu-header">
-            <button class="btn btn-secondary" onclick="closeDuelPanels()">← Volver</button>
-            <h2 style="margin:0;">Elige el modo de juego</h2>
-          </div>
           <div class="duel-mode-list">
             <div class="duel-mode-option dmo-standard" id="duel-mode-card-play" onclick="selectDuelMode('play')">
               <div class="duel-mode-icon" aria-hidden="true">🎯</div>
@@ -504,20 +560,12 @@ try {
              Estándar, tramo de Supervivencia). Muerte Súbita y Contrarreloj no
              tienen configuración y saltan este paso (ver selectDuelMode). -->
         <div id="duel-crear-step-config" style="display:none;">
-          <div class="submenu-header">
-            <button class="btn btn-secondary" onclick="backToDuelModeStep()">← Volver</button>
-            <h2 style="margin:0;" id="duel-crear-config-title">Configuración</h2>
-          </div>
           <div class="modes-grid" id="duel-crear-config-grid"></div>
         </div>
       </div>
 
       <!-- Submenú: Unirme a un reto -->
       <div id="duel-panel-unirse" style="display:none;">
-        <div class="submenu-header">
-          <button class="btn btn-secondary" onclick="closeDuelPanels()">← Volver</button>
-          <h2 style="margin:0;">Unirme a un reto</h2>
-        </div>
         <p class="stats-section-sub">Pega aquí el código que te ha compartido tu amigo.</p>
         <input type="text" id="duel-join-code-input" autocomplete="off" placeholder="Ej: SRW-XXXX-XXXXX" style="text-transform:uppercase;" />
         <div id="duel-join-error" class="feedback bad" style="display:none;"></div>
@@ -532,12 +580,11 @@ try {
 
       <!-- Submenú: Mis retos -->
       <div id="duel-panel-retos" style="display:none;">
-        <div class="submenu-header">
-          <button class="btn btn-secondary" onclick="closeDuelPanels()">← Volver</button>
-          <h2 style="margin:0;">Mis retos</h2>
-        </div>
         <div class="history-list" id="duel-history-list"></div>
       </div>
+
+      <!-- v1.5: pantallas de Amigos, Duelo online y Retos (src/online/duels.js) -->
+      <div id="seq-duel-root" class="seq-duel-root" style="display:none;"></div>
     </div>
 
     <!-- TAB: GAME -->
@@ -566,11 +613,36 @@ try {
           <div class="lucidez-story-icon" id="lucidez-story-icon">👁️</div>
           <div class="lucidez-story-title" id="lucidez-story-title"></div>
           <div class="lucidez-story-sub" id="lucidez-story-sub"></div>
+          <!-- Sir Edwards 2.0 (Prompt 1.5, corrección): retrato como remate
+               visual DEBAJO del título/frase (título → frase → personaje),
+               nunca antes. Solo en las 4 transiciones de entrada de fase
+               (showLucidezStoryOverlay recibe characterKey); en el resto de
+               transiciones (desenlaces) permanece oculto y el icono 👁️/⏱️ de
+               siempre sigue igual. Decorativo: el título narrativo ya
+               identifica la fase. -->
+          <div class="lucidez-story-character" id="lucidez-story-character" aria-hidden="true">
+            <picture>
+              <source id="lucidez-story-character-webp" srcset="" type="image/webp">
+              <img id="lucidez-story-character-img" src="" alt="" width="507" height="760" decoding="async">
+            </picture>
+          </div>
         </div>
       </div>
 
       <!-- Tarjeta de Resultados -->
       <div id="results-card" class="results-card">
+        <!-- Sir Edwards 2.0 (Prompt 1.5): retrato estático de Victory/Defeat,
+             assets oficiales. Solo aparece en desenlaces claramente positivos
+             o negativos (ver RESULT_CHARACTER_TONES); en el resto de modos
+             (Contrarreloj, Cálculo Mental, Repaso, Duelo) permanece oculto,
+             tal y como pide el Prompt 1.5 para esta fase. Decorativo: el
+             título, la frase y el sello ya comunican el desenlace en texto. -->
+        <div class="results-character" id="res-character" aria-hidden="true">
+          <picture>
+            <source id="res-character-webp" srcset="" type="image/webp">
+            <img id="res-character-img" src="" alt="" width="760" height="760" loading="lazy" decoding="async">
+          </picture>
+        </div>
         <h3 id="res-main-title">¡Desafío Completado!</h3>
         
         <div class="results-metrics-grid" id="results-metrics-grid">
@@ -607,7 +679,7 @@ try {
           <div class="session-medals-list" id="session-medals-list"></div>
         </div>
 
-        <div>
+        <div class="results-actions">
           <button class="btn btn-share" id="res-share-btn" onclick="shareResult()" style="width: 100%; margin-bottom: 10px;">📤 Compartir mi resultado</button>
           <button class="btn btn-primary" id="res-back-btn" onclick="handleResultsBackButton()" style="width: 100%;">Volver al Menú Principal</button>
         </div>
@@ -616,6 +688,12 @@ try {
       <!-- Contenedor del Juego Activo -->
       <div id="game-play-area">
         <div class="lucidez-enigma-header" id="lucidez-enigma-header">
+          <!-- Sir Edwards 2.0 (Prompt 1.5, corrección): el retrato de Sir
+               Edwards NO aparece aquí. El personaje solo se muestra en la
+               pantalla narrativa de transición previa (showLucidezStoryOverlay,
+               characterKey: 'enigma'); durante el propio Enigma Final (y
+               durante cualquier fase mientras el jugador responde) esta
+               cabecera se queda solo con el icono, el título y el temporizador. -->
           <div class="lucidez-enigma-eye">👁️</div>
           <div class="lucidez-enigma-title">EL ÚLTIMO ENIGMA</div>
           <div><span class="lucidez-enigma-timer" id="lucidez-enigma-timer">30s</span></div>
@@ -658,6 +736,9 @@ try {
           <div class="stats-level-widget-xp"><span id="stats-lbl-xp">0</span> XP</div>
         </div>
       </div>
+
+      <!-- v1.4: acceso al ranking global (lo rellena src/online/online.js) -->
+      <div id="seq-stats-slot" class="seq-stats-slot"></div>
 
       <div id="stats-empty-state" class="stats-empty">
         <div class="stats-empty-icon">🧠</div>
@@ -713,7 +794,7 @@ try {
             </div>
             <div class="stat-extra stat-master">
               <span class="stat-extra-icon">🧠</span>
-              <div><span class="stat-extra-label">Preguntas dominadas</span><span class="stat-extra-value" id="mastered-count">0/360</span></div>
+              <div><span class="stat-extra-label">Preguntas dominadas</span><span class="stat-extra-value" id="mastered-count">0/300</span></div>
             </div>
           </div>
         </div>
@@ -741,10 +822,10 @@ try {
         <!-- NIVEL 2 — ¿Qué sé? -->
         <div class="stats-section">
           <h3>🧠 Dominio</h3>
-          <p class="stats-section-sub">Dominada = la has acertado 3 veces seguidas. Tu avance sobre las 360 preguntas disponibles.</p>
+          <p class="stats-section-sub">Dominada = la has acertado 3 veces seguidas. Tu avance sobre las 320 preguntas disponibles.</p>
           <div class="stats-mini-grid">
-            <div class="stats-mini"><div class="stats-mini-value" id="st-seen">0/360</div><div class="stats-mini-label">Preguntas vistas</div></div>
-            <div class="stats-mini"><div class="stats-mini-value" id="st-mastered">0/360</div><div class="stats-mini-label">Preguntas dominadas</div></div>
+            <div class="stats-mini"><div class="stats-mini-value" id="st-seen">0/320</div><div class="stats-mini-label">Preguntas vistas</div></div>
+            <div class="stats-mini"><div class="stats-mini-value" id="st-mastered">0/320</div><div class="stats-mini-label">Preguntas dominadas</div></div>
             <div class="stats-mini"><div class="stats-mini-value" id="st-pending">0</div><div class="stats-mini-label">Pendientes de repaso</div></div>
             <div class="stats-mini"><div class="stats-mini-value" id="st-coverage">0%</div><div class="stats-mini-label">Cobertura del banco</div></div>
           </div>
@@ -791,9 +872,13 @@ try {
 
       <div class="fragments-progress-box" id="fragments-progress-box">
         <div class="fragments-progress-title">🧩 Fragmentos de Mente</div>
-        <div class="fragments-progress-count" id="fragments-count-lbl">0 / 10</div>
-        <div class="progress-bar fragments-bar"><div id="fragments-bar-fill" class="bar-fill fragments-bar-fill"></div></div>
-        <p class="fragments-progress-subtitle" id="fragments-progress-subtitle">Consigue 10 Fragmentos de Mente completando logros especiales para desbloquear el modo secreto.</p>
+        <div class="fragments-progress-count" id="fragments-count-lbl">0 / 15</div>
+        <div class="fragments-bar-wrap">
+          <div class="progress-bar fragments-bar"><div id="fragments-bar-fill" class="bar-fill fragments-bar-fill"></div></div>
+          <div class="fragments-bar-marks" id="fragments-bar-marks" aria-hidden="true"></div>
+        </div>
+        <div class="fragments-milestones" id="fragments-milestones"></div>
+        <p class="fragments-progress-subtitle" id="fragments-progress-subtitle">Consigue Fragmentos de Mente completando logros especiales.</p>
       </div>
 
       <div class="medals-grid" id="medals-container"></div>
@@ -833,15 +918,29 @@ try {
         </div>
       </div>
 
+      <!-- v1.4: cuenta online (la pinta src/online/online.js; oculta si la capa online no está configurada) -->
+      <div class="settings-section" id="online-account-section" style="display:none;"></div>
+
+      <!-- Prompt 3 — Fase B: auditoría confirmada. La cuenta online (si la hay)
+           sincroniza solo XP/partidas/aciertos-fallos/racha/logros; el resto del
+           progreso (historial completo, estadísticas detalladas, ajustes) vive
+           únicamente en este dispositivo, con o sin cuenta. La copia de
+           seguridad NO es redundante con la cuenta y se mantiene: mismo
+           mecanismo, mismo formato, mismas funciones (exportProgress/
+           importProgress), solo se ha aclarado el texto y agrupado bajo un
+           kicker para que se entienda qué cubre y por qué sigue haciendo falta. -->
       <div class="settings-section">
         <h3 style="margin-top:0;">Progreso</h3>
         <p class="settings-status"><span class="settings-status-dot"></span>Tu progreso está guardado</p>
-        <p class="settings-note">Tu progreso se guarda automáticamente en este dispositivo.</p>
-        <p class="settings-note">Si quieres conservarlo o trasladarlo a otro dispositivo, puedes descargar una copia de seguridad.</p>
-        <div class="settings-backup-actions">
-          <button class="btn btn-secondary" onclick="exportProgress()">Descargar copia de seguridad</button>
-          <button class="btn btn-secondary" onclick="triggerImportProgress()">Restaurar copia de seguridad</button>
-          <input type="file" id="import-progress-input" accept="application/json,.json" style="display:none;" onchange="importProgress(event)">
+        <p class="settings-note">Tu progreso se guarda automáticamente en este dispositivo, tengas o no cuenta.</p>
+        <div class="settings-group">
+          <p class="settings-kicker">Copia de seguridad</p>
+          <p class="settings-note">Si tienes cuenta, ya sincronizas tu XP, tus partidas y tus logros en la nube. Esta copia conserva además tu historial completo y tus estadísticas detalladas: útil para no perder nada al cambiar de dispositivo o borrar datos del navegador, tengas o no cuenta.</p>
+          <div class="settings-backup-actions">
+            <button class="btn btn-secondary" onclick="exportProgress()">Descargar copia de seguridad</button>
+            <button class="btn btn-secondary" onclick="triggerImportProgress()">Restaurar copia de seguridad</button>
+            <input type="file" id="import-progress-input" accept="application/json,.json" style="display:none;" onchange="importProgress(event)">
+          </div>
         </div>
       </div>
 
@@ -892,6 +991,30 @@ try {
               <li>Aviso de novedades cada vez que haya una actualización de la app.</li>
             </ul>
           </div>
+          <div class="settings-changelog-entry">
+            <div class="settings-changelog-entry-header">
+              <span class="settings-changelog-entry-version">v1.5</span>
+              <span class="settings-changelog-entry-date">26/09/2026</span>
+            </div>
+            <ul class="settings-changelog-list">
+              <li>Amigos: añade amigos por su nombre o su ID y acepta sus solicitudes.</li>
+              <li>Duelo online: 20 preguntas a la vez contra un amigo, en directo.</li>
+              <li>Retos: reta a un amigo y jugad cada uno cuando podáis (3 días de plazo).</li>
+              <li>Requieren cuenta y se irán activando poco a poco. El Duelo por código sigue disponible sin cuenta.</li>
+            </ul>
+          </div>
+          <div class="settings-changelog-entry">
+            <div class="settings-changelog-entry-header">
+              <span class="settings-changelog-entry-version">v1.4</span>
+              <span class="settings-changelog-entry-date">20/09/2026</span>
+            </div>
+            <ul class="settings-changelog-list">
+              <li>Cuenta opcional con Google: guarda tu progreso online y recupéralo en otro dispositivo.</li>
+              <li>Ranking global por XP.</li>
+              <li>Puedes migrar tu progreso actual a la cuenta sin perder nada.</li>
+              <li>Sigues pudiendo jugar sin cuenta y sin conexión.</li>
+            </ul>
+          </div>
         </div>
       </div>
 
@@ -913,6 +1036,11 @@ try {
 <script src="src/data/phrases.js"></script>
 <script src="src/data/lucidez.js"></script>
 <script src="src/data/medals.js"></script>
+<!-- Prompt 3 — Fase C: sistema de avatares compartido (window.SEQAvatars). Debe
+     cargarse antes de src/online/online.js y src/online/duels.js: ambos lo
+     consumen en vez de mantener cada uno su propia copia de la lista. -->
+<script src="src/data/avatars.js"></script>
+<script src="src/share/share-card.js"></script>
 
 <!-- Fase 3 (Lote 3A): motor de coincidencia de respuestas extraido a
      src/utils/matching.js, mismo criterio que la Fase 2 (script clasico,
@@ -947,6 +1075,15 @@ try {
      eliminar 2 duplicaciones reales concretas -- no un sistema de
      mutaciones. Ver src/state/write-helpers.js y CHANGELOG_FASE4C.md. -->
 <script src="src/state/write-helpers.js"></script>
+
+<!-- v1.4: capa online (cuenta Google, sincronización, migración, ranking).
+     config.js es PÚBLICO (URL del Worker + Client ID de Google); si está
+     vacío, la capa online queda desactivada y la app es idéntica a la v1.3.
+     online.js solo usa el store/funciones del juego en tiempo de ejecución. -->
+<script src="src/online/config.js"></script>
+<script src="src/online/online.js"></script>
+<!-- v1.5: Amigos, Duelo online y Retos. El servidor decide preguntas, tiempo, aciertos y ganador. -->
+<script src="src/online/duels.js"></script>
 
 <script>
 function closeWelcomeModal() {
@@ -1440,41 +1577,61 @@ function generateResultImage() {
   return canvas;
 }
 
-function shareResultImage() {
+// Datos de la tarjeta: solo lo que la app ya ha calculado (ver
+// src/share/share-card.js, buildModel). No se decide ni recalcula nada aquí.
+function buildShareCardInput() {
+  if (!lastResultShareData) return null;
+  const sess = (typeof SEQOnline !== 'undefined' && SEQOnline.session) ? SEQOnline.session() : null;
+  const d = lastDuelShareInfo;
+  return {
+    modeName: lastResultShareData.modeName,
+    scoreStr: lastResultShareData.scoreStr,
+    accuracy: lastResultShareData.accuracy,
+    streak: lastResultShareData.streak,
+    characterState: RESULT_CHARACTER_TONES[lastResultShareTone],
+    lucidez: lastResultShareData.lucidez || null,
+    duel: d ? { ...d, modeLabel: duelModeFullLabel(d.modeId, d.cfgIdx) } : null,
+    player: sess ? { name: sess.display_name, avatar: sess.avatar } : null
+  };
+}
+
+// Genera el canvas: tarjeta nueva (Prompt 5) y, si algo falla, la tarjeta
+// anterior (generateResultImage) como red de seguridad.
+function renderShareCanvas(input) {
+  const legacy = () => Promise.resolve(generateResultImage());
+  if (!input || typeof SEQShareCard === 'undefined') return legacy();
+  return SEQShareCard.render(SEQShareCard.buildModel(input)).catch(() => legacy());
+}
+
+// custom (opcional, resultados de Duelo online/Retos): { input, text }.
+function shareResultImage(custom) {
+  const input = custom ? custom.input : buildShareCardInput();
+  const shareText = custom ? custom.text : (lastResultShareData ? `🧠 Acabo de jugar a Sir Edwards Quiz (${lastResultShareData.modeName}): ${lastResultShareData.scoreStr} aciertos (${lastResultShareData.accuracy}% de efectividad).` : undefined);
   return new Promise((resolve) => {
-    // Antes de dibujar el canvas nos aseguramos de que Playfair Display/
-    // Inter ya estén cargadas (documento.fonts.ready): si el share ocurre
-    // muy pronto tras cargar la app, evita que la imagen caiga al
-    // tipo de letra de sistema por defecto en vez de la identidad real.
-    const ready = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
-    ready.then(() => {
     try {
-      const canvas = generateResultImage();
-      if (!canvas) { resolve(false); return; }
-      canvas.toBlob(async (blob) => {
-        if (!blob) { resolve(false); return; }
-        const file = new File([blob], 'siredwards-quiz-resultado.png', { type: 'image/png' });
-        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-          try {
-            await navigator.share({
-              files: [file],
-              text: lastResultShareData ? `🧠 Acabo de jugar a Sir Edwards Quiz (${lastResultShareData.modeName}): ${lastResultShareData.scoreStr} aciertos (${lastResultShareData.accuracy}% de efectividad).` : undefined
-            });
+      renderShareCanvas(input).then((canvas) => {
+        if (!canvas) { resolve(false); return; }
+        canvas.toBlob(async (blob) => {
+          if (!blob) { resolve(false); return; }
+          const file = new File([blob], 'siredwards-quiz-resultado.jpg', { type: 'image/jpeg' });
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({ files: [file], text: shareText });
+            } catch (e) {
+              // El usuario canceló el diálogo de compartir, o falló: no
+              // insistimos con el fallback de texto para no duplicar el
+              // gesto de compartir tras una cancelación intencionada.
+            }
             resolve(true);
-          } catch (e) {
-            // El usuario canceló el diálogo de compartir, o falló: no
-            // insistimos con el fallback de texto para no duplicar el
-            // gesto de compartir tras una cancelación intencionada.
-            resolve(true);
+          } else {
+            resolve(false);
           }
-        } else {
-          resolve(false);
-        }
-      }, 'image/png');
+        // JPEG 0.92: la tarjeta tiene degradados que en PNG pesan ~4 MB; en JPEG ~0,3 MB con la misma nitidez visible.
+        }, 'image/jpeg', 0.92);
+      }).catch(() => resolve(false));
     } catch (e) {
       resolve(false);
     }
-    });
   });
 }
 
@@ -1683,13 +1840,53 @@ function getResultData(score, total) {
 // Aplica el color e icono correspondientes al desenlace de la partida.
 // La frase sarcástica es aleatoria en cada final, así que este toque visual
 // le da variedad real y coherencia con la identidad de color de cada modo.
+let lastResultShareTone = null; // Prompt 5: tono que se está mostrando (lo lee la tarjeta de compartir)
 function setResultTone(toneKey, icon) {
+  lastResultShareTone = toneKey;
   const container = document.querySelector('.results-phrase-container');
   const iconEl = document.getElementById('res-mood-icon');
   if (container) {
     container.className = 'results-phrase-container' + (toneKey ? ' tone-' + toneKey : '');
   }
   if (iconEl) iconEl.textContent = icon || '🎯';
+  setResultCharacter(toneKey);
+}
+
+// Sir Edwards 2.0 (Prompt 1.5) — integración estática de los assets oficiales
+// Victory/Defeat en la tarjeta de resultados. Solo cubre los desenlaces que
+// ya son inequívocamente positivos o negativos dentro del vocabulario de
+// tonos existente (getResultData/RESULT_MOOD_ICONS); los modos sin un
+// desenlace de victoria/derrota propiamente dicho (Contrarreloj, Cálculo
+// Mental, Repaso, Duelo) se quedan sin retrato, tal como pide esta fase.
+// Puramente visual: no toca resultData, score, XP ni ninguna otra lógica.
+const RESULT_CHARACTER_TONES = {
+  perfecto: 'victory', casi_perfecto: 'victory', bien: 'victory', win: 'victory',
+  desastre: 'defeat', mediocre: 'defeat', fail: 'defeat'
+};
+const RESULT_CHARACTER_ASSETS = {
+  victory: { png: 'assets/character/victory.png', webp: 'assets/character/victory.webp' },
+  defeat: { png: 'assets/character/defeat.png', webp: 'assets/character/defeat.webp' }
+};
+function setResultCharacter(toneKey) {
+  const box = document.getElementById('res-character');
+  const img = document.getElementById('res-character-img');
+  const source = document.getElementById('res-character-webp');
+  if (!box || !img || !source) return;
+  const state = RESULT_CHARACTER_TONES[toneKey];
+  const asset = state ? RESULT_CHARACTER_ASSETS[state] : null;
+  // Prompt 2 — Fase F: hook puramente visual (mismo patrón que
+  // setLucidezStoryCharacter en Fase D) para que Victory/Defeat puedan
+  // recibir un pequeño gesto de personalidad propio en CSS. No cambia
+  // ningún dato ni el criterio de qué retrato mostrar, ya decidido arriba.
+  box.classList.remove('char-victory', 'char-defeat');
+  if (!asset) {
+    box.classList.remove('show');
+    return;
+  }
+  box.classList.add('char-' + state);
+  source.srcset = asset.webp;
+  img.src = asset.png;
+  box.classList.add('show');
 }
 
 // Pinta las "chips" de métricas propias de cada modo en la tarjeta final
@@ -1816,6 +2013,97 @@ const FRAGMENT_TARGET = 10; // Fragmentos necesarios para desbloquear el modo
 function getFragmentCount(s = store) {
   const unlocked = (s && s.unlockedMedals) || [];
   return FRAGMENT_MEDAL_IDS.filter(id => unlocked.includes(id)).length;
+}
+
+// ====== Prompt 4: recompensas de Fragmentos en Lucidez ======
+// El bonus es una función pura del nº de Fragmentos (que a su vez se deriva de
+// store.unlockedMedals): no se guarda, no se consume y no se puede sumar dos
+// veces. 0-11 -> +0, 12-14 -> +1, 15 -> +2 (el estado TOTAL, no acumulativo).
+const LUCIDEZ_BASE_LIVES = 2;
+const FRAGMENT_REWARD_TIERS = [
+  { fragments: 12, bonus: 1, text: '+1 error extra en Lucidez' },
+  { fragments: 15, bonus: 2, text: '+2 errores extra en Lucidez' }
+];
+function getLucidezBonusLives(s = store) {
+  const count = getFragmentCount(s);
+  let bonus = 0;
+  FRAGMENT_REWARD_TIERS.forEach(t => { if (count >= t.fragments) bonus = t.bonus; });
+  return bonus;
+}
+// Gasta un error perdonado de la partida de Lucidez (si queda alguno). Un
+// error perdonado no cuenta: ni vida, ni penalización de tiempo, ni estadísticas.
+function tryForgiveLucidezError(g = currentGame) {
+  if (!g || g.isDuel || !(g.lucidezForgiveLeft > 0)) return false;
+  g.lucidezForgiveLeft--;
+  return true;
+}
+function lucidezForgiveNote(g = currentGame) {
+  return g.lucidezForgiveLeft > 0 ? ` · 🛡️ Errores extra restantes: ${g.lucidezForgiveLeft}` : ' · 🛡️ Sin errores extra';
+}
+// Devuelve el hito recién desbloqueado (solo el más alto si se alcanzaron
+// varios a la vez) y marca todos los alcanzados como ya avisados.
+function checkFragmentRewardsAndGetNew() {
+  if (!Array.isArray(store.notifiedFragmentRewards)) store.notifiedFragmentRewards = [];
+  const count = getFragmentCount(store);
+  let newest = null;
+  FRAGMENT_REWARD_TIERS.forEach(t => {
+    if (count >= t.fragments && !store.notifiedFragmentRewards.includes(t.fragments)) {
+      store.notifiedFragmentRewards.push(t.fragments);
+      newest = t;
+    }
+  });
+  return newest;
+}
+function fragmentRewardItemHtml(t) {
+  return `<div class="session-medal-item"><div class="session-medal-icon">🧠</div><div><div class="session-medal-info">${t.fragments} Fragmentos de Mente</div><div class="session-medal-fragment">${t.text}</div></div></div>`;
+}
+// Añade el aviso (si hay hito nuevo) a la caja de logros de la tarjeta final.
+function appendFragmentRewardToResults() {
+  const t = checkFragmentRewardsAndGetNew();
+  if (!t) return;
+  const box = document.getElementById('session-medals-box');
+  const list = document.getElementById('session-medals-list');
+  if (!box || !list) return;
+  box.style.display = 'block';
+  list.innerHTML += fragmentRewardItemHtml(t);
+  saveStore(false);
+}
+
+// Prompt 4: resultado de un Duelo online (ID estable del rival). Lo llama
+// src/online/duels.js al ver el duelo completado. Cada duelo cuenta una sola
+// vez (se reutiliza duelPlayedCodes con prefijo 'online:'); los ganados/
+// perdidos por abandono o por no jugar no cuentan para evitar farmeo.
+function registerOnlineDuelResult(info) {
+  if (!info || !info.duelId || !info.rivalId || info.forfeit) return null;
+  if (info.result !== 'win' && info.result !== 'loss') return null;
+  if (!Array.isArray(store.duelPlayedCodes)) store.duelPlayedCodes = [];
+  const key = 'online:' + info.duelId;
+  if (store.duelPlayedCodes.includes(key)) return null;
+  store.duelPlayedCodes.push(key);
+  if (store.duelPlayedCodes.length > 200) store.duelPlayedCodes.shift();
+
+  if (!store.duelStats || typeof store.duelStats !== 'object') store.duelStats = getDefaultDuelStats();
+  const ds = store.duelStats;
+  if (!ds.rivals || typeof ds.rivals !== 'object') ds.rivals = {};
+  const rec = ds.rivals[info.rivalId] || { wins: 0, losses: 0 };
+  if (info.result === 'win') {
+    if (rec.losses > 0) ds.revengeWon = true;
+    rec.wins++;
+    ds.bestWinsVsRival = Math.max(ds.bestWinsVsRival || 0, rec.wins);
+  } else {
+    rec.losses++;
+  }
+  delete ds.rivals[info.rivalId]; // reinserta al final: los más recientes sobreviven al recorte
+  ds.rivals[info.rivalId] = rec;
+  Object.keys(ds.rivals).slice(0, -100).forEach(id => { delete ds.rivals[id]; });
+
+  const medals = checkMedalsAndGetNew();
+  const reward = checkFragmentRewardsAndGetNew();
+  saveStore(false);
+  const parts = medals.map(m => `${m.icon} ${m.title}`);
+  if (reward) parts.push(`🧠 ${reward.fragments} Fragmentos: ${reward.text}`);
+  if (parts.length && typeof showInfoToast === 'function') showInfoToast('Desbloqueado: ' + parts.join(' · '), '🏆');
+  return { medals, reward };
 }
 
 // Migraciones específicas por versión de formato de guardado. Se usan solo
@@ -2190,6 +2478,8 @@ function restoreSavedGame() {
       phase3Queue: Array.isArray(saved.phase3Queue) ? saved.phase3Queue : [],
       finalRiddle: saved.finalRiddle,
       lucidezLives: Number(saved.lucidezLives) || 0,
+      // Prompt 4: errores perdonados que le quedan (bonus por Fragmentos).
+      lucidezForgiveLeft: Math.max(0, Math.min(2, Number(saved.lucidezForgiveLeft) || 0)),
       revealTimeout: null,
       phase1Correct: Number(saved.phase1Correct) || 0,
       phase3Correct: Number(saved.phase3Correct) || 0,
@@ -2464,6 +2754,8 @@ function saveStore(persistCurrentGame = true) {
   updateBadges();
   updateStreakDisplay();
   updateResumeButton();
+  // v1.4: aviso a la capa online (no hace nada sin cuenta ni configuración).
+  if (typeof SEQOnline !== 'undefined') SEQOnline.onLocalSave();
 }
 function resetAppData() {
   showAppConfirm({
@@ -2639,16 +2931,36 @@ const LOCKABLE_MODE_UI = [
     cardId: 'mode-card-lucidez_mental', badgeId: 'lock-badge-lucidez_mental', descId: 'mode-desc-lucidez-mental', reqId: 'mode-req-lucidez_mental',
     titleId: 'mode-title-lucidez-mental', lockedTitle: '👁️ MODO SECRETO', unlockedTitle: '👁️ LUCIDEZ MENTAL',
     baseDesc: 'El desafío definitivo te espera.',
-    unlockedDesc: `<div class="lucidez-phase-line"><strong>FASE I</strong> · 10 preguntas · mínimo 6 aciertos</div><div class="lucidez-phase-line"><strong>FASE II</strong> · 5 preguntas + 5 cálculos · 2 vidas · las preguntas desaparecen a los 3 s</div><div class="lucidez-phase-line"><strong>FASE III</strong> · 9 preguntas · 45 s · −2 s por fallo · mínimo 5 aciertos</div><div class="lucidez-phase-line lucidez-phase-final"><strong>ENIGMA FINAL</strong> · 30 s para resolver el enigma final. ¿Lo conseguirás?</div>`,
+    unlockedDesc: (s) => `<div class="lucidez-phase-line"><strong>FASE I</strong> · 10 preguntas · mínimo 6 aciertos</div><div class="lucidez-phase-line"><strong>FASE II</strong> · 5 preguntas + 5 cálculos · ${LUCIDEZ_BASE_LIVES} vidas · las preguntas desaparecen a los 3 s</div><div class="lucidez-phase-line"><strong>FASE III</strong> · 9 preguntas · 45 s · −2 s por fallo · mínimo 5 aciertos</div><div class="lucidez-phase-line lucidez-phase-final"><strong>ENIGMA FINAL</strong> · 30 s para resolver el enigma final. ¿Lo conseguirás?</div>${getLucidezBonusLives(s) > 0 ? `<div class="lucidez-phase-line">🛡️ <strong>${getLucidezBonusLives(s)} ${getLucidezBonusLives(s) === 1 ? 'error extra' : 'errores extra'}</strong> en toda la partida (fases y enigma)</div>` : ''}`,
     reqText: s => `🔒 Consigue ${FRAGMENT_TARGET} fragmentos de Mente para desbloquear este modo (${getFragmentCount(s)}/${FRAGMENT_TARGET})`,
     isUnlocked: s => getFragmentCount(s) >= FRAGMENT_TARGET
   }
 ];
 
+// Prompt 2 — Fase B (motion, secciones 10-12): pequeño "pulso" cuando el
+// número mostrado SUBE respecto al que ya había en pantalla, reutilizando
+// las clases .xp-bump/.streak-bump/.fragments-bump (ver styles/main.css,
+// mismo patrón visual que .feedback.ok/.bad). No decide ni cambia ningún
+// valor: solo compara lo que ya se iba a pintar contra lo que había antes
+// de pintarlo. Con prefers-reduced-motion activo la propia animación CSS
+// queda colapsada a ~0 (regla global ya existente), así que no hace falta
+// ninguna comprobación adicional aquí.
+function setTextWithBump(el, value, bumpClass) {
+  if (!el) return;
+  const prevNum = parseInt(el.textContent, 10);
+  el.textContent = value;
+  const nextNum = parseInt(String(value), 10);
+  if (!Number.isNaN(prevNum) && !Number.isNaN(nextNum) && nextNum > prevNum) {
+    el.classList.remove(bumpClass);
+    void el.offsetWidth; // reinicia la animación si ya estaba en marcha
+    el.classList.add(bumpClass);
+  }
+}
+
 function updateBadges() {
   const currentLevel = getLevelData(store.xp);
   document.getElementById('lbl-level').textContent = currentLevel;
-  document.getElementById('lbl-xp').textContent = store.xp;
+  setTextWithBump(document.getElementById('lbl-xp'), store.xp, 'xp-bump');
   document.getElementById('repaso-count').textContent = store.failedQuestions.length;
 
   // 🏠 Nuevo menú principal: nivel, XP y barra de progreso de la cabecera.
@@ -2656,7 +2968,7 @@ function updateBadges() {
   const homeLevelEl = document.getElementById('home-lbl-level');
   if (homeLevelEl) homeLevelEl.textContent = progress.level;
   const homeXpEl = document.getElementById('home-lbl-xp');
-  if (homeXpEl) homeXpEl.textContent = store.xp;
+  if (homeXpEl) setTextWithBump(homeXpEl, store.xp, 'xp-bump');
   const homeBarFill = document.getElementById('home-level-bar-fill');
   if (homeBarFill) homeBarFill.style.width = progress.progressPct + '%';
 
@@ -2664,7 +2976,7 @@ function updateBadges() {
   const statsLevelEl = document.getElementById('stats-lbl-level');
   if (statsLevelEl) statsLevelEl.textContent = progress.level;
   const statsXpEl = document.getElementById('stats-lbl-xp');
-  if (statsXpEl) statsXpEl.textContent = store.xp;
+  if (statsXpEl) setTextWithBump(statsXpEl, store.xp, 'xp-bump');
   const statsBarFill = document.getElementById('stats-level-bar-fill');
   if (statsBarFill) statsBarFill.style.width = progress.progressPct + '%';
 
@@ -2673,7 +2985,7 @@ function updateBadges() {
   const gameLevelEl = document.getElementById('game-lbl-level');
   if (gameLevelEl) gameLevelEl.textContent = progress.level;
   const gameXpEl = document.getElementById('game-lbl-xp');
-  if (gameXpEl) gameXpEl.textContent = store.xp;
+  if (gameXpEl) setTextWithBump(gameXpEl, store.xp, 'xp-bump');
   const gameBarFill = document.getElementById('game-level-bar-fill');
   if (gameBarFill) gameBarFill.style.width = progress.progressPct + '%';
 
@@ -2692,7 +3004,7 @@ function updateBadges() {
       badge.title = unlocked ? 'Modo desbloqueado' : 'Modo bloqueado';
     }
     if (desc) {
-      desc.innerHTML = unlocked && cfg.unlockedDesc ? cfg.unlockedDesc : cfg.baseDesc;
+      desc.innerHTML = unlocked && cfg.unlockedDesc ? (typeof cfg.unlockedDesc === 'function' ? cfg.unlockedDesc(store) : cfg.unlockedDesc) : cfg.baseDesc;
     }
     if (cfg.reqId) {
       const reqEl = document.getElementById(cfg.reqId);
@@ -2824,6 +3136,112 @@ function handleResultsBackButton() {
   switchTab('modes');
 }
 
+// v1.5 — Fase B (Prompt 3): gate de acceso obligatorio con cuenta. Solo se activa
+// cuando la capa online está realmente configurada (SEQOnline.enabled === true) —
+// si no lo está (como en este build, con src/online/config.js vacío), la función
+// siempre devuelve false y el juego sigue funcionando exactamente igual que hoy,
+// sin cuenta obligatoria. Cuando sí esté activa, se muestra mientras no haya una
+// sesión válida (SEQOnline.session() === null cubre "sin cuenta" y "sesión
+// caducada" con la misma lógica que ya usa el resto de la app).
+function authGateActive() {
+  try { return !!(window.SEQOnline && SEQOnline.enabled && !SEQOnline.session()); } catch (e) { return false; }
+}
+
+// Fase B.1: foco/teclado del gate. Solución pequeña y local (sin librería):
+// guarda qué tenía el foco antes de abrir, mueve el foco dentro al abrir,
+// atrapa TAB/SHIFT+TAB mientras está abierto y restaura el foco al cerrar.
+let authGateWasOpen = false;
+let authGatePrevFocus = null;
+
+function authGateFocusables() {
+  const gate = document.getElementById('auth-gate');
+  if (!gate) return [];
+  return Array.prototype.filter.call(
+    gate.querySelectorAll('button, [href], input, select, textarea, iframe, [tabindex]:not([tabindex="-1"])'),
+    el => !el.disabled && el.offsetParent !== null
+  );
+}
+
+// Atrapa TAB/SHIFT+TAB dentro del gate mientras está abierto, para que no se
+// pueda navegar por teclado hacia controles ocultos detrás del overlay (Home,
+// pestañas, etc.). Deliberadamente no gestiona ESC: el gate no debe poder
+// cerrarse saltándose el requisito de cuenta.
+function authGateKeydown(e) {
+  if (e.key !== 'Tab') return;
+  const gate = document.getElementById('auth-gate');
+  if (!gate) return;
+  const focusables = authGateFocusables();
+  if (!focusables.length) { e.preventDefault(); return; } // nada que enfocar: el foco se queda donde está
+  const first = focusables[0];
+  const last = focusables[focusables.length - 1];
+  const inside = gate.contains(document.activeElement);
+  if (e.shiftKey) {
+    if (!inside || document.activeElement === first) { e.preventDefault(); last.focus(); }
+  } else {
+    if (!inside || document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+}
+
+// Llamada al arrancar y, desde src/online/online.js render(), en cada cambio de
+// estado de cuenta (login, logout, expiración, borrado), para que el gate
+// aparezca/desaparezca sin esperar a un cambio de pestaña ni a recargar la página.
+function updateAuthGate() {
+  const gate = document.getElementById('auth-gate');
+  if (!gate) return;
+  const shouldShow = authGateActive();
+  if (shouldShow === authGateWasOpen) {
+    // Sin transición de estado: solo se asegura que el display coincida (p. ej.
+    // primera llamada en el arranque), sin tocar foco.
+    gate.style.display = shouldShow ? 'flex' : 'none';
+    document.body.classList.toggle('auth-gate-open', shouldShow);
+    return;
+  }
+  if (shouldShow) {
+    // Abriendo: se guarda el foco actual para poder devolverlo luego, se muestra
+    // el gate, se activa la trampa de TAB y el foco inicial va al título (patrón
+    // habitual de diálogo modal accesible: anuncia el diálogo antes que sus
+    // controles).
+    authGatePrevFocus = document.activeElement;
+    gate.style.display = 'flex';
+    document.body.classList.add('auth-gate-open');
+    document.addEventListener('keydown', authGateKeydown, true);
+    setTimeout(() => {
+      const title = document.getElementById('auth-gate-title');
+      if (title) title.focus();
+    }, 0);
+  } else {
+    // Cerrando (login correcto, o el sistema de cuentas se desactiva): se quita
+    // la trampa de TAB y se devuelve el foco a donde estaba antes de abrir, o si
+    // ya no existe/no es visible, al contenido principal (Home).
+    gate.style.display = 'none';
+    document.body.classList.remove('auth-gate-open');
+    document.removeEventListener('keydown', authGateKeydown, true);
+    const restore = authGatePrevFocus;
+    authGatePrevFocus = null;
+    setTimeout(() => {
+      if (restore && document.body.contains(restore) && restore.offsetParent !== null) {
+        restore.focus();
+        return;
+      }
+      // Sin un elemento previo válido al que volver (p. ej. primer arranque de la
+      // app, con el gate abierto desde el principio): el foco va al contenido
+      // principal. #view-home no es normalmente enfocable por teclado, así que se
+      // le da tabindex="-1" solo el instante necesario para recibir el foco, y se
+      // retira en cuanto lo pierde para no alterar el orden de TAB del resto de la app.
+      const home = document.getElementById('view-home');
+      if (home) {
+        const hadTabindex = home.hasAttribute('tabindex');
+        if (!hadTabindex) {
+          home.setAttribute('tabindex', '-1');
+          home.addEventListener('blur', function onBlur() { home.removeAttribute('tabindex'); home.removeEventListener('blur', onBlur); });
+        }
+        home.focus();
+      }
+    }, 0);
+  }
+  authGateWasOpen = shouldShow;
+}
+
 function switchTab(tabId) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -2841,6 +3259,10 @@ function switchTab(tabId) {
     closeDifficultyMenu();
     clearCardThemeClasses();
   }
+  // 2.0 (solo visual): el color de modo pertenece a la partida. Al ir a cualquier otra
+  // pantalla se quita, para que Estadísticas/Logros/Ajustes/Inicio/Duelo no hereden el
+  // borde del último modo jugado. Al volver a la partida, applyCurrentGameTheme() lo repone.
+  if (tabId !== 'game') clearCardThemeClasses();
   if (tabId === 'duelo') {
     closeDuelPanels();
     showDuelHelpIfNeeded();
@@ -2862,6 +3284,8 @@ function switchTab(tabId) {
   }
   if (tabId === 'stats') { renderStats(); renderHistory(); }
   if (tabId === 'medals') { renderAchievementsProgress(); renderMedals(); }
+  // v1.4: la capa online repinta su bloque cuando se entra en Ajustes/Estadísticas.
+  if (typeof SEQOnline !== 'undefined') SEQOnline.onTabShown(tabId);
 }
 
 // --- ALGORITMO DE RESPUESTAS v3 ---
@@ -3007,7 +3431,7 @@ function updateStreakDisplay() {
     // la pisamos con la racha global mientras ese modo esté activo.
     if (id === 'game-current-streak' && currentGame && currentGame.mode === 'mental_calc') return;
     const el = document.getElementById(id);
-    if (el) el.textContent = value;
+    if (el) setTextWithBump(el, value, 'streak-bump');
   });
 }
 
@@ -3102,6 +3526,9 @@ function openLucidezMentalModeImpl() {
 
   registerRecentQuestions(phase1Queue.concat(phase2Questions).concat(phase3Queue));
 
+  // Prompt 4: el bonus por Fragmentos son errores "perdonados" (0/1/2) que se
+  // gastan con los primeros fallos de CUALQUIER fase o del enigma, sin que
+  // cuenten. Solo en solitario (el Duelo, con semilla compartida, no los tiene).
   currentGame = {
     mode: 'lucidez_mental',
     lucidezGameId: ++lucidezGameId,
@@ -3113,7 +3540,8 @@ function openLucidezMentalModeImpl() {
     phase2Queue,
     phase3Queue,
     finalRiddle: pickRotatingPhrase('lucidez_riddles', LUCIDEZ_RIDDLES),
-    lucidezLives: 2,
+    lucidezLives: LUCIDEZ_BASE_LIVES,
+    lucidezForgiveLeft: getLucidezBonusLives(store),
     revealTimeout: null,
     phase1Correct: 0, // aciertos en la Fase I: exige LUCIDEZ_PHASE1_MIN de LUCIDEZ_PHASE1_TOTAL
     phase3Correct: 0  // aciertos en la Fase III: exige LUCIDEZ_PHASE3_MIN de LUCIDEZ_PHASE3_TOTAL
@@ -3350,10 +3778,54 @@ function lucidezApplyPhaseVisuals(phaseKey) {
   if (sub) sub.textContent = '';
 }
 
+// Prompt 2 — Fase D (sección 19/20, motion): pequeño "enfoque" al aparecer
+// un nuevo enunciado dentro de Lucidez Mental (siguiente pregunta de Fase
+// I/III, aparición inicial de cada ítem de Fase II, y el enigma final).
+// Se llama justo antes de escribir el texto nuevo, exactamente en los
+// mismos puntos donde ya se escribía sin más (ver .lucidez-text-reveal en
+// styles/main.css); no cambia qué texto se muestra ni cuándo se llama.
+function lucidezRevealQText() {
+  const el = document.getElementById('q-text');
+  if (!el) return;
+  el.classList.remove('lucidez-text-reveal');
+  void el.offsetWidth;
+  el.classList.add('lucidez-text-reveal');
+}
+
+// Sir Edwards 2.0 (Prompt 1.5): assets oficiales de las 4 fases narrativas
+// de Lucidez Mental (transición de entrada). Puramente visual.
+const LUCIDEZ_CHARACTER_ASSETS = {
+  phase1: { png: 'assets/character/lucidez-fase1.png', webp: 'assets/character/lucidez-fase1.webp' },
+  phase2: { png: 'assets/character/lucidez-fase2.png', webp: 'assets/character/lucidez-fase2.webp' },
+  phase3: { png: 'assets/character/lucidez-fase3.png', webp: 'assets/character/lucidez-fase3.webp' },
+  enigma: { png: 'assets/character/lucidez-enigma.png', webp: 'assets/character/lucidez-enigma.webp' }
+};
+function setLucidezStoryCharacter(characterKey) {
+  const box = document.getElementById('lucidez-story-character');
+  const img = document.getElementById('lucidez-story-character-img');
+  const source = document.getElementById('lucidez-story-character-webp');
+  if (!box || !img || !source) return;
+  const asset = characterKey ? LUCIDEZ_CHARACTER_ASSETS[characterKey] : null;
+  // Prompt 2 — Fase D (sección 20): data-character permite distinguir el
+  // Enigma Final en CSS (glow propio, ver styles/main.css) del resto de
+  // transiciones de fase, que comparten el mismo retrato genérico. Solo un
+  // atributo de datos para CSS, no cambia qué asset se carga ni cuándo.
+  box.dataset.character = characterKey || '';
+  if (!asset) {
+    box.classList.remove('show');
+    return;
+  }
+  source.srcset = asset.webp;
+  img.src = asset.png;
+  box.classList.add('show');
+}
+
 // Muestra un breve mensaje narrativo a pantalla completa (transición de
 // fase o desenlace) y ejecuta `callback` al terminar. `durationMs` ronda
-// 1-2 segundos, tal y como pide la propuesta de UX.
-function showLucidezStoryOverlay(icon, title, sub, toneClass, durationMs, callback) {
+// 1-2 segundos, tal y como pide la propuesta de UX. `characterKey` (opcional)
+// solo lo pasan las 4 transiciones de entrada de fase (ver renderLucidezQuestion);
+// el resto de llamadas (desenlaces) no lo pasan y el retrato permanece oculto.
+function showLucidezStoryOverlay(icon, title, sub, toneClass, durationMs, callback, characterKey) {
   const overlay = document.getElementById('lucidez-story-overlay');
   if (!overlay) { if (callback) callback(); return; }
   // Solo puede haber una transición narrativa pendiente a la vez: si quedaba
@@ -3364,7 +3836,8 @@ function showLucidezStoryOverlay(icon, title, sub, toneClass, durationMs, callba
   document.getElementById('lucidez-story-icon').textContent = icon;
   document.getElementById('lucidez-story-title').textContent = title;
   document.getElementById('lucidez-story-sub').textContent = sub || '';
-  overlay.className = 'lucidez-story-overlay show' + (toneClass ? ' ' + toneClass : '');
+  setLucidezStoryCharacter(characterKey);
+  overlay.className = 'lucidez-story-overlay show' + (toneClass ? ' ' + toneClass : '') + (characterKey ? ' has-character' : '');
   lucidezStoryOverlayTimer = setTimeout(() => {
     lucidezStoryOverlayTimer = null;
     // Si mientras esperábamos ya ha empezado otra partida de Lucidez Mental
@@ -3424,7 +3897,7 @@ function renderLucidezQuestion(preserveAnswered = false, isResume = false) {
     // Capítulo nuevo: al entrar en la Fase II (y solo entonces, nunca al
     // reanudar una partida guardada) mostramos la transición narrativa.
     if (idx === 10 && !isResume) {
-      showLucidezStoryOverlay(LUCIDEZ_PHASE_COPY[2].icon, LUCIDEZ_PHASE_COPY[2].label, LUCIDEZ_PHASE_COPY[2].sub, '', 2300, enterPhase2);
+      showLucidezStoryOverlay(LUCIDEZ_PHASE_COPY[2].icon, LUCIDEZ_PHASE_COPY[2].label, LUCIDEZ_PHASE_COPY[2].sub, '', 2300, enterPhase2, 'phase2');
     } else {
       enterPhase2();
     }
@@ -3436,6 +3909,7 @@ function renderLucidezQuestion(preserveAnswered = false, isResume = false) {
       lucidezApplyPhaseVisuals(1);
       const q = currentGame.phase1Queue[idx];
       markQuestionSeen(q);
+      lucidezRevealQText();
       document.getElementById('q-text').textContent = q.q;
       resetLucidezAnswerUI(preserveAnswered);
       document.getElementById('game-progress-lbl').textContent = `FASE I · ${idx + 1}/10`;
@@ -3446,7 +3920,7 @@ function renderLucidezQuestion(preserveAnswered = false, isResume = false) {
     // La transición inicial se muestra solo al comenzar una partida nueva,
     // nunca al reanudarla.
     if (idx === 0 && !isResume) {
-      showLucidezStoryOverlay(LUCIDEZ_PHASE_COPY[1].icon, LUCIDEZ_PHASE_COPY[1].label, LUCIDEZ_PHASE_COPY[1].sub, '', 2300, enterPhase1);
+      showLucidezStoryOverlay(LUCIDEZ_PHASE_COPY[1].icon, LUCIDEZ_PHASE_COPY[1].label, LUCIDEZ_PHASE_COPY[1].sub, '', 2300, enterPhase1, 'phase1');
     } else {
       enterPhase1();
     }
@@ -3459,6 +3933,7 @@ function renderLucidezQuestion(preserveAnswered = false, isResume = false) {
       if (idx === 20 && !isResume) startLucidezPhase3Timer();
       const q = currentGame.phase3Queue[idx - 20];
       markQuestionSeen(q);
+      lucidezRevealQText();
       document.getElementById('q-text').textContent = q.q;
       resetLucidezAnswerUI(preserveAnswered);
       updateLucidezPhase3Header();
@@ -3469,7 +3944,7 @@ function renderLucidezQuestion(preserveAnswered = false, isResume = false) {
     // reanudar) mostramos la transición narrativa antes de arrancar el
     // temporizador de 45s.
     if (idx === 20 && !isResume) {
-      showLucidezStoryOverlay(LUCIDEZ_PHASE_COPY[3].icon, LUCIDEZ_PHASE_COPY[3].label, LUCIDEZ_PHASE_COPY[3].sub, '', 2300, enterPhase3);
+      showLucidezStoryOverlay(LUCIDEZ_PHASE_COPY[3].icon, LUCIDEZ_PHASE_COPY[3].label, LUCIDEZ_PHASE_COPY[3].sub, '', 2300, enterPhase3, 'phase3');
     } else {
       enterPhase3();
     }
@@ -3478,6 +3953,7 @@ function renderLucidezQuestion(preserveAnswered = false, isResume = false) {
     const renderFinalScreen = () => {
       lucidezApplyPhaseVisuals('final');
       if (!isResume) startLucidezFinalTimer();
+      lucidezRevealQText();
       document.getElementById('q-text').textContent = currentGame.finalRiddle.q;
       resetLucidezAnswerUI(preserveAnswered);
       updateLucidezFinalHeader();
@@ -3487,7 +3963,7 @@ function renderLucidezQuestion(preserveAnswered = false, isResume = false) {
     if (isResume) {
       renderFinalScreen();
     } else {
-      showLucidezStoryOverlay('👁️', 'ENIGMA FINAL', 'Has llegado hasta aquí. Ahora demuestra que puedes llegar hasta el final.', '', 2300, renderFinalScreen);
+      showLucidezStoryOverlay('👁️', 'ENIGMA FINAL', 'Has llegado hasta aquí. Ahora demuestra que puedes llegar hasta el final.', '', 2300, renderFinalScreen, 'enigma');
     }
   }
 }
@@ -3518,6 +3994,7 @@ function renderLucidezPhase2Calc(preserveAnswered = false, item, isResume = fals
     return;
   }
 
+  lucidezRevealQText();
   document.getElementById('q-text').textContent = `🧮 ${op.text}`;
   input.value = '';
   input.style.display = 'none';
@@ -3544,6 +4021,7 @@ function renderLucidezPhase2Calc(preserveAnswered = false, item, isResume = fals
   const gameIdAtSchedule = currentGame.lucidezGameId;
   currentGame.revealTimeout = setTimeout(() => {
     if (currentGame.mode !== 'lucidez_mental' || currentGame.lucidezGameId !== gameIdAtSchedule || getLucidezPhase(currentGame.currentIdx) !== 2) return;
+    lucidezRevealQText();
     document.getElementById('q-text').textContent = '¿Cuál es el resultado?';
     input.style.display = '';
     input.setAttribute('inputmode', 'numeric');
@@ -3583,6 +4061,7 @@ function renderLucidezPhase2Question(preserveAnswered = false, item, isResume = 
     return;
   }
 
+  lucidezRevealQText();
   document.getElementById('q-text').textContent = q.q;
   input.value = '';
   input.style.display = 'none';
@@ -3605,6 +4084,7 @@ function renderLucidezPhase2Question(preserveAnswered = false, item, isResume = 
   const gameIdAtSchedule = currentGame.lucidezGameId;
   currentGame.revealTimeout = setTimeout(() => {
     if (currentGame.mode !== 'lucidez_mental' || currentGame.lucidezGameId !== gameIdAtSchedule || getLucidezPhase(currentGame.currentIdx) !== 2) return;
+    lucidezRevealQText();
     document.getElementById('q-text').textContent = 'Responde:';
     input.style.display = '';
     input.removeAttribute('inputmode');
@@ -3696,7 +4176,7 @@ function updateLucidezFinalHeader() {
   const timerEl = document.getElementById('lucidez-enigma-timer');
   const low = lucidezFinalSecondsLeft <= 8;
   if (timerEl) {
-    timerEl.textContent = `Una sola respuesta. ${lucidezFinalSecondsLeft}s`;
+    timerEl.textContent = `Una sola respuesta${currentGame.lucidezForgiveLeft > 0 ? ' · 🛡️×' + currentGame.lucidezForgiveLeft : ''}. ${lucidezFinalSecondsLeft}s`;
     timerEl.className = 'lucidez-enigma-timer' + (low ? ' lucidez-timer-low' : '');
   }
 }
@@ -3750,13 +4230,14 @@ function checkLucidezAnswer() {
   const statKey = lucidezStatKey(q.n);
   const user = document.getElementById('ans-input').value;
   const correct = isMatchFlexible(user, q.a, q.q);
+  const forgiven = !correct && tryForgiveLucidezError();
 
   // ⚔️ Duelo: las preguntas de un duelo vienen de una cola con semilla
   // ajena a la bolsa personal, así que no deben tocar las estadísticas
   // (questionStats/questionStreaks/failedQuestions) ni el XP que alimentan
   // la progresión y los logros generales de JUGAR.
   const isDuelGame = !!currentGame.isDuel;
-  if (!isDuelGame) {
+  if (!isDuelGame && !forgiven) {
     recordQuestionStat(statKey, correct);
   }
 
@@ -3785,6 +4266,13 @@ function checkLucidezAnswer() {
     }
     fb.className = 'feedback ok';
     fb.innerHTML = `✅ ¡Correcto! (Era: <b>${escapeHtml(String(q.a))}</b>)`;
+  } else if (forgiven) {
+    // Prompt 4: fallo perdonado. Cuenta para el mínimo de la fase, pero no
+    // suma aciertos (score), ni penaliza tiempo, ni toca estadísticas.
+    if (phase === 1) currentGame.phase1Correct = (currentGame.phase1Correct || 0) + 1;
+    if (phase === 3) currentGame.phase3Correct = (currentGame.phase3Correct || 0) + 1;
+    fb.className = 'feedback bad';
+    fb.innerHTML = `🛡️ Error extra: no cuenta. Era: <b>${escapeHtml(String(q.a))}</b>${lucidezForgiveNote()}`;
   } else {
     updateAnswerStreak(false, q);
     playSound('bad');
@@ -3827,6 +4315,7 @@ function checkLucidezPhase2Answer(item) {
   // Validación estricta: parseFloat() aceptaría "25abc" como 25, así que
   // exigimos que la cadena completa sea un número válido (sin restos de texto).
   const correct = raw !== '' && /^-?\d+(\.\d+)?$/.test(raw) && Number.isFinite(userVal) && userVal === op.answer;
+  const forgiven = !correct && tryForgiveLucidezError();
   currentGame.answered = true;
 
   const fb = document.getElementById('feedback');
@@ -3843,6 +4332,9 @@ function checkLucidezPhase2Answer(item) {
     currentGame.score++;
     fb.className = 'feedback ok';
     fb.innerHTML = `✅ ¡Correcto! Era ${op.answer}.`;
+  } else if (forgiven) {
+    fb.className = 'feedback bad';
+    fb.innerHTML = `🛡️ Error extra: no cuenta. Era: <b>${escapeHtml(String(op.answer))}</b> · ${renderLivesHearts(currentGame.lucidezLives, 2)}${lucidezForgiveNote()}`;
   } else {
     updateAnswerStreak(false);
     playSound('bad');
@@ -3876,9 +4368,10 @@ function checkLucidezPhase2QuestionAnswer(q) {
   const statKey = lucidezStatKey(q.n);
   const user = document.getElementById('ans-input').value;
   const correct = isMatchFlexible(user, q.a, q.q);
+  const forgiven = !correct && tryForgiveLucidezError();
 
   const isDuelGame = !!currentGame.isDuel;
-  if (!isDuelGame) {
+  if (!isDuelGame && !forgiven) {
     recordQuestionStat(statKey, correct);
   }
 
@@ -3904,6 +4397,9 @@ function checkLucidezPhase2QuestionAnswer(q) {
     }
     fb.className = 'feedback ok';
     fb.innerHTML = `✅ ¡Correcto! (Era: <b>${escapeHtml(String(q.a))}</b>)`;
+  } else if (forgiven) {
+    fb.className = 'feedback bad';
+    fb.innerHTML = `🛡️ Error extra: no cuenta. Era: <b>${escapeHtml(String(q.a))}</b> · ${renderLivesHearts(currentGame.lucidezLives, 2)}${lucidezForgiveNote()}`;
   } else {
     updateAnswerStreak(false, q);
     playSound('bad');
@@ -3956,6 +4452,21 @@ function checkLucidezFinalAnswer() {
   const user = document.getElementById('ans-input').value;
   const riddle = currentGame.finalRiddle;
   const correct = isMatchFlexible(user, riddle.a, riddle.q);
+  // Prompt 4: un fallo perdonado en el enigma no lo termina: se puede
+  // volver a intentar mientras quede tiempo (el reloj sigue donde estaba).
+  if (!correct && tryForgiveLucidezError()) {
+    currentGame.answered = false;
+    currentGame.finalAnswerCorrect = false;
+    const fbRetry = document.getElementById('feedback');
+    fbRetry.style.display = 'block';
+    fbRetry.className = 'feedback bad';
+    fbRetry.innerHTML = `🛡️ Error extra: no cuenta. Inténtalo de nuevo${lucidezForgiveNote()}`;
+    const inp = document.getElementById('ans-input');
+    if (inp) { inp.value = ''; inp.focus(); }
+    saveStore();
+    startLucidezFinalTimer(false);
+    return;
+  }
   currentGame.finalAnswerCorrect = correct;
 
   const fb = document.getElementById('feedback');
@@ -4026,6 +4537,11 @@ function finishLucidezMode(failed, timedOut = false, phaseInsufficient = null) {
   };
 
   const isPerfect = !failed && score >= totalQ;
+  // Prompt 5: datos que ya existen aquí, para que la tarjeta de compartir
+  // sepa hasta qué fase llegó el jugador (no se recalcula nada).
+  if (!isDuelGame) {
+    lastResultShareData.lucidez = { failed: !!failed, perfect: isPerfect, phase: phaseInsufficient ? phaseInsufficient.phase : getLucidezPhase(Math.min(currentGame.currentIdx || 0, 29)) };
+  }
   if (!isDuelGame) {
     if (score > (store.bestLucidezScore || 0)) {
       store.bestLucidezScore = score;
@@ -4151,6 +4667,7 @@ function revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newMod
   } else {
     medalsBox.style.display = 'none';
   }
+  if (!currentGame.isDuel) appendFragmentRewardToResults();
 
   if (isPerfect) {
     launchConfetti();
@@ -4183,6 +4700,7 @@ function revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newMod
       `).join('');
       saveStore(false);
     }
+    appendFragmentRewardToResults();
   }
 }
 
@@ -4434,7 +4952,7 @@ const DUEL_MAX_SCORE = Math.pow(36, DUEL_SCORE_DIGITS) - 1;
 
 
 function getDefaultDuelStats() {
-  return { played: 0, wins: 0, losses: 0, draws: 0, currentWinStreak: 0, bestWinStreak: 0, wonByOnePoint: false, wonByTenPlus: false };
+  return { played: 0, wins: 0, losses: 0, draws: 0, currentWinStreak: 0, bestWinStreak: 0, wonByOnePoint: false, wonByTenPlus: false, revengeWon: false, bestWinsVsRival: 0, rivals: {} };
 }
 
 function saveDuelHistoryEntry(entry) {
@@ -4450,15 +4968,46 @@ function saveDuelHistoryEntry(entry) {
 // Muestra un panel del menú Duelo (crear/unirse/retos) y oculta la pantalla
 // principal de las 3 tarjetas, igual que ya hace openDifficultyMenu() para
 // Supervivencia.
+// ====== Cabecera única de Duelo (v1.5, hub de Duelos) ======
+// Toda la sección Duelo usa la MISMA .section-topbar que el resto del juego;
+// cada submenú solo cambia su título, subtítulo y a dónde lleva «←» (antes
+// cada submenú pintaba su propio .submenu-header con «← Volver»).
+// Sin backFn, «←» vuelve al menú principal y se muestra la ayuda «?».
+let duelTopbarBackFn = null;
+function setDuelTopbar(title, sub, backFn, showHelp) {
+  const bar = document.getElementById('duel-section-topbar');
+  const t = document.getElementById('duel-topbar-title');
+  const s = document.getElementById('duel-topbar-sub');
+  const help = document.getElementById('duel-help-btn');
+  const back = document.getElementById('duel-topbar-back');
+  if (!bar || !t || !s) return;
+  bar.style.display = '';
+  t.textContent = title || 'Duelos';
+  s.textContent = sub == null ? (title ? '' : 'Compite contra tus amigos') : sub;
+  s.style.display = s.textContent ? '' : 'none';
+  duelTopbarBackFn = typeof backFn === 'function' ? backFn : null;
+  if (help) help.style.display = (!duelTopbarBackFn || showHelp) ? '' : 'none';
+  if (back) back.setAttribute('aria-label', duelTopbarBackFn ? 'Volver' : 'Volver al menú principal');
+}
+function duelTopbarBack() {
+  if (duelTopbarBackFn) duelTopbarBackFn();
+  else switchTab('home');
+}
+// Cabecera del hub: la decide duels.js si está cargado (hub online o «Duelo
+// por código»); si no, la cabecera por defecto de Duelos.
+function setDuelHubTopbar() {
+  try {
+    if (window.SEQDuels && typeof SEQDuels.syncHubTopbar === 'function') { SEQDuels.syncHubTopbar(); return; }
+  } catch (e) {}
+  setDuelTopbar();
+}
+
 function openDuelPanel(id) {
   document.getElementById('duel-home').style.display = 'none';
-  // El logo/icono + "Duelo" + "Reta a otra mente" solo vive en la pantalla
-  // principal de Duelo: se oculta al entrar en cualquier submenú (Crear
-  // reto/Unirme/Mis retos) para que queden más limpios, sin sustituirlo
-  // por ningún otro icono. No se toca su HTML ni su estilo, solo su
-  // visibilidad aquí y en closeDuelPanels().
-  const topbar = document.getElementById('duel-section-topbar');
-  if (topbar) topbar.style.display = 'none';
+  // Cada submenú del Duelo por código muestra su título en la cabecera común.
+  // «Crear reto» lo pone openDuelCrearModeStep() (tiene dos pasos).
+  if (id === 'unirse') setDuelTopbar('Unirme a un reto', 'Juega con el código de un amigo', closeDuelPanels);
+  if (id === 'retos') setDuelTopbar('Mis retos', 'Tus duelos por código', closeDuelPanels);
   ['crear', 'unirse', 'retos'].forEach(k => {
     const el = document.getElementById('duel-panel-' + k);
     if (el) el.style.display = (k === id) ? 'block' : 'none';
@@ -4479,13 +5028,12 @@ function closeDuelPanels() {
   // columna, no un grid) sin que este script lo pise cada vez que se
   // vuelve al menú principal de Duelo.
   document.getElementById('duel-home').style.display = '';
-  // Al volver al menú principal de Duelo reaparece su logo/encabezado.
-  const topbar = document.getElementById('duel-section-topbar');
-  if (topbar) topbar.style.display = '';
   ['crear', 'unirse', 'retos'].forEach(k => {
     const el = document.getElementById('duel-panel-' + k);
     if (el) el.style.display = 'none';
   });
+  // Al volver al menú principal de Duelo, su cabecera vuelve a ser la del hub.
+  setDuelHubTopbar();
 }
 
 // ====== Crear reto: paso 1 (elige el modo) ======
@@ -4507,6 +5055,7 @@ function openDuelCrearModeStep() {
   });
   document.getElementById('duel-crear-step-modo').style.display = 'block';
   document.getElementById('duel-crear-step-config').style.display = 'none';
+  setDuelTopbar('Crear reto', 'Elige el modo de juego', closeDuelPanels);
 }
 
 // Al pulsar una tarjeta de modo en Crear Reto: reutiliza EXACTAMENTE el
@@ -4535,12 +5084,11 @@ function selectDuelMode(modeId) {
 function openDuelCrearConfigStep(modeId) {
   pendingDuelCreateMode = modeId;
   const container = document.getElementById('duel-crear-step-config');
-  const title = document.getElementById('duel-crear-config-title');
   const grid = document.getElementById('duel-crear-config-grid');
   if (!container || !grid) return;
 
   if (modeId === 'survival') {
-    title.textContent = '❤️ Supervivencia: elige tramo';
+    setDuelTopbar('Supervivencia', 'Elige tramo', backToDuelModeStep);
     grid.innerHTML = DUEL_SURVIVAL_TIERS.map((tier, idx) =>
       `<div class="mode-card" onclick="startDuelChallenge('survival', ${idx})"><h3>${DUEL_SURVIVAL_TIER_LABELS[tier]}</h3></div>`
     ).join('');
@@ -5199,7 +5747,7 @@ function updateMentalCalcHeader() {
   // La racha se muestra en la misma píldora "🔥 Racha" que el resto de
   // modos, en vez de ir embebida en el texto de la cabecera.
   const streakEl = document.getElementById('game-current-streak');
-  if (streakEl) streakEl.textContent = currentGame.streak;
+  if (streakEl) setTextWithBump(streakEl, currentGame.streak, 'streak-bump');
   if (bar) {
     const remainingMs = Math.max(0, mentalCalcEndTime - Date.now());
     const percentage = Math.min(100, (remainingMs / MENTALCALC_MAX_MS) * 100);
@@ -6327,6 +6875,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   } else {
     medalsBox.style.display = 'none';
   }
+  if (!isDuelGame) appendFragmentRewardToResults();
 
   // El confeti de celebración se reserva exclusivamente para un modo nuevo.
   // Los logros y una victoria normal no generan celebración emergente.
@@ -6357,6 +6906,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
       `).join('');
       saveStore(false);
     }
+    appendFragmentRewardToResults();
   }
 }
 
@@ -6368,6 +6918,12 @@ function handleDuelFinish(game, totalQ) {
   const box = document.getElementById('results-duel-box');
   if (!box) return;
   box.style.display = 'block';
+  // Duelo tiene su propio lenguaje visual de resultado (results-duel-box,
+  // tonos win/loss/draw); el retrato Victory/Defeat de esta fase no cubre
+  // Duelo (fuera de alcance del Prompt 1.5), así que se oculta aquí para
+  // que no arrastre el estado del resultado individual que ya pintó
+  // setResultTone() antes de llegar a esta función.
+  document.getElementById('res-character')?.classList.remove('show');
 
   const modeId = game.duelModeId || 'play';
   const cfgIdx = game.duelCfgIdx || 0;
@@ -6521,6 +7077,12 @@ function shareResultAsText(shareText) {
       if (!btn) return;
       const original = btn.textContent;
       btn.textContent = '✅ ¡Copiado!';
+      // Prompt 2 — Fase C: mismo cambio de texto de siempre, solo se anima
+      // (ver .btn-confirm-pulse en styles/main.css). No toca el resultado
+      // real de copyar/compartir ni cuándo se revierte el texto.
+      btn.classList.remove('btn-confirm-pulse');
+      void btn.offsetWidth;
+      btn.classList.add('btn-confirm-pulse');
       setTimeout(() => { btn.textContent = original; }, 1800);
     }).catch(() => {
       alert(shareText);
@@ -6615,8 +7177,9 @@ function showDuelCodeCopyToast(success) {
 function getMasteredCount(source = getStore()) {
   const streaks = source && source.questionStreaks ? source.questionStreaks : {};
   // Se cuentan solo las claves de TEST_QUESTIONS (sin el prefijo "L" de
-  // Lucidez), para que el dominio se limite al banco principal de preguntas
-  // y jugar mucho a Lucidez no infle el umbral de "Erudito"/"Biblioteca Humana".
+  // Lucidez), para que el cupo de estos logros se mantenga en 300 —igual
+  // que en la pantalla de Estadísticas— y jugar mucho a Lucidez no infle
+  // el umbral de "Erudito"/"Biblioteca Humana" por encima de ese cupo.
   return Object.keys(streaks).filter(k => !k.startsWith('L') && Number(streaks[k]) >= 3).length;
 }
 
@@ -6670,7 +7233,7 @@ function renderLearningStats() {
   const seen = new Set(Array.isArray(store.seenQuestionIds) ? store.seenQuestionIds : []);
   const mastered = getMasteredCount();
   const pending = Array.isArray(store.failedQuestions) ? store.failedQuestions.length : 0;
-  const totalQuestions = TEST_QUESTIONS.length || 360;
+  const totalQuestions = TEST_QUESTIONS.length || 320;
   const seenEl = document.getElementById('st-seen');
   const masteredEl = document.getElementById('st-mastered');
   const pendingEl = document.getElementById('st-pending');
@@ -6896,31 +7459,53 @@ function renderAchievementsProgress() {
   box.classList.toggle('fragments-complete', remaining === 0);
 }
 
+// Hitos visibles de los Fragmentos (Prompt 4): la barra mide 0..FRAGMENT_TOTAL
+// y cada hito es una recompensa ya definida (10 = modo, 12 y 15 = errores
+// extra en Lucidez; el de 15 es el TOTAL, no se suma al de 12).
+const FRAGMENT_MILESTONES = [
+  { fragments: FRAGMENT_TARGET, icon: '👁️', title: 'Lucidez Mental', text: 'Desbloquea Lucidez Mental', goal: 'desbloquear Lucidez Mental' },
+  { fragments: 12, icon: '🛡️', title: 'Error extra', text: '+1 error extra en Lucidez', goal: 'conseguir +1 error extra' },
+  { fragments: 15, icon: '🛡️', title: 'Errores extra', text: '+2 errores extra en total', goal: 'conseguir +2 errores extra' }
+];
+// Estado de cada hito y mensaje del siguiente objetivo, según los Fragmentos.
+function getFragmentMilestoneState(count) {
+  const items = FRAGMENT_MILESTONES.map(m => ({ ...m, unlocked: count >= m.fragments }));
+  const next = items.find(m => !m.unlocked);
+  const message = next
+    ? `Te falta${next.fragments - count === 1 ? '' : 'n'} ${next.fragments - count} Fragmento${next.fragments - count === 1 ? '' : 's'} para ${next.goal}.`
+    : 'Todas las ventajas desbloqueadas.';
+  return { items, message, complete: !next };
+}
+
 function renderFragmentsProgress() {
   const box = document.getElementById('fragments-progress-box');
   if (!box) return;
-  const count = getFragmentCount(store);
-  // Esta caja mide el progreso hacia el objetivo de desbloqueo (10), no la
-  // colección completa (hay 15 Fragmentos posibles). Por eso el número
-  // nunca pasa de "10 / 10": la colección completa ya se puede consultar
-  // en la pestaña de Estadísticas. Así evitamos fracciones raras tipo
-  // "13 / 10" una vez superado el objetivo.
-  const displayCount = Math.min(count, FRAGMENT_TARGET);
-  const pct = Math.min(100, Math.round((count / FRAGMENT_TARGET) * 100));
-  const remaining = Math.max(0, FRAGMENT_TARGET - count);
+  const count = Math.min(getFragmentCount(store), FRAGMENT_TOTAL);
+  const state = getFragmentMilestoneState(count);
 
   const countEl = document.getElementById('fragments-count-lbl');
-  if (countEl) countEl.textContent = `${displayCount} / ${FRAGMENT_TARGET}`;
+  if (countEl) setTextWithBump(countEl, `${count} / ${FRAGMENT_TOTAL}`, 'fragments-bump');
   const fillEl = document.getElementById('fragments-bar-fill');
-  if (fillEl) fillEl.style.width = pct + '%';
-  box.classList.toggle('fragments-complete', remaining === 0);
+  if (fillEl) fillEl.style.width = Math.round((count / FRAGMENT_TOTAL) * 100) + '%';
+  box.classList.toggle('fragments-complete', state.complete);
+
+  const marksEl = document.getElementById('fragments-bar-marks');
+  if (marksEl) marksEl.innerHTML = state.items.map(m =>
+    `<span class="fragments-bar-mark${m.unlocked ? ' is-reached' : ''}" style="left:${(m.fragments / FRAGMENT_TOTAL) * 100}%"></span>`).join('');
+
+  const listEl = document.getElementById('fragments-milestones');
+  if (listEl) listEl.innerHTML = state.items.map(m => `
+    <div class="fragment-milestone${m.unlocked ? ' is-unlocked' : ' is-locked'}">
+      <div class="fragment-milestone-icon">${m.icon}</div>
+      <div class="fragment-milestone-body">
+        <div class="fragment-milestone-title">${m.fragments} Fragmentos</div>
+        <div class="fragment-milestone-text">${m.text}</div>
+      </div>
+      <div class="fragment-milestone-state">${m.unlocked ? '✓' : '🔒'}</div>
+    </div>`).join('');
 
   const subtitleEl = document.getElementById('fragments-progress-subtitle');
-  if (subtitleEl) {
-    subtitleEl.textContent = remaining > 0
-      ? `Faltan ${remaining} fragmento${remaining === 1 ? '' : 's'} para desbloquear el modo secreto`
-      : '🔓 ¡Modo secreto desbloqueado!';
-  }
+  if (subtitleEl) subtitleEl.textContent = state.message;
 }
 
 // Candado en SVG (elemento puramente decorativo/estructural) en vez del
@@ -7323,6 +7908,10 @@ function maybeShowUpdateModal() {
 document.addEventListener('DOMContentLoaded', () => {
   applyAppVersionText();
   maybeShowUpdateModal();
+  // v1.5 — Fase B (Prompt 3): se comprueba aquí (no antes) porque online.js
+  // registra su propio listener 'DOMContentLoaded' más arriba en el documento
+  // (se ejecuta primero) y es quien deja lista SEQOnline.enabled/session().
+  updateAuthGate();
 });
 </script>
 <script>

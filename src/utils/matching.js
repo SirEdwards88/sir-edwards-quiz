@@ -169,7 +169,9 @@ function isNumericAnswerMatch(userText, targetText, questionText = '', targetRaw
   // gente responde solo con la parte entera redondeada ("42 km"), que es
   // la forma habitual de referirse a la cifra, así que la aceptamos.
   const decimalMatch = /(\d+),(\d+)/.exec(targetRaw);
-  if (decimalMatch && userNumbers.length === 1 && userNumbers[0] === decimalMatch[1]) {
+  // Excepción: con parte entera 0 (p. ej. "0,5 kg") redondear a "0" no tiene sentido
+  // y daría por buena la respuesta "0", así que ahí se exige el decimal completo.
+  if (decimalMatch && decimalMatch[1] !== '0' && userNumbers.length === 1 && userNumbers[0] === decimalMatch[1]) {
     return true;
   }
 

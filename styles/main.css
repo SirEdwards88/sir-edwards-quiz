@@ -33,7 +33,7 @@
 
   --radius-sm: 10px;
   --radius-md: 16px;
-  --radius-lg: 24px;
+  --radius-lg: 22px;
   --radius-pill: 999px;
 
   --shadow-soft: 0 2px 10px rgba(17,24,39,.06);
@@ -77,6 +77,47 @@
   --accent-red-strong: #991b1b;    --accent-red: #dc2626;    --accent-red-soft: rgba(220,38,38,.16);    --accent-red-surface: rgba(220,38,38,.08);    --accent-red-text: #991b1b;
 
   --focus-ring: 0 0 0 3px rgba(37,99,235,.35);
+
+  /* ===== Sir Edwards 2.0 — sistema visual (primera pasada gráfica) =====
+     Identidad de marca, antes encerrada en #view-home y por tanto invisible
+     para el resto de pantallas. Ahora es global:
+       navy  = tinta de marca (títulos, estructura; en oscuro se invierte a crema)
+       cream = superficie cálida de marca · gold = prestigio y detalles de marca
+       purple = banda del sombrero / Duelo · burgundy = acento del personaje
+     Roles (los que faltaban en la capa v1.3):
+       superficie destacada --color-surface-highlight · borde de marca --color-border-accent
+       estados: --state-lift (hover) / --state-press (active)
+     Geometría: --radius-sm (controles, filas) / -md (cards) / -lg (principales, modales).
+     Profundidad: --shadow-soft (ligera) / -card (media) / -elevated (importante). */
+  --brand-navy: #16244a;
+  --brand-navy-deep: #16244a;
+  --brand-cream: #faf3e6;
+  --brand-cream-deep: #f1e6d2;
+  --brand-gold: #c9992e;
+  --brand-gold-light: #e8c874;
+  --brand-purple: #5b2e8f;
+  --brand-burgundy: #7b1f2e;
+  --color-surface-highlight: #fdf7ea;
+  --color-border-accent: rgba(201,153,46,.38);
+  --state-lift: translateY(-2px);
+  --state-press: scale(.98);
+
+  /* ===== Prompt 2 — Motion System (Fase A: fundamento) =====
+     Vocabulario común de duración/easing para que cada componente nuevo
+     deje de inventar su propia curva. No sustituye los keyframes/estados
+     ya existentes (streak, Lucidez, logros, etc.), solo evita duplicarlos
+     hacia delante. Jerarquía de uso:
+       micro   → botones, hover, focus, selección
+       short   → feedback de respuesta, cambios de estado pequeños
+       medium  → transición entre pantallas, entrada de cards/resultados
+       special → Lucidez, Enigma, apariciones importantes de Sir Edwards */
+  --motion-micro: 120ms;
+  --motion-short: 180ms;
+  --motion-medium: 260ms;
+  --motion-special: 420ms;
+  --ease-standard: cubic-bezier(.4,0,.2,1);
+  --ease-decelerate: cubic-bezier(0,0,.2,1);
+  --ease-emphasized: cubic-bezier(.34,1.56,.64,1);
 }
 [data-theme="dark"] {
   /* Base con un ligero componente azul/gris (no gris neutro plano), y
@@ -112,6 +153,13 @@
   --accent-red-surface: rgba(248,113,113,.10);    --accent-red-soft: rgba(248,113,113,.22);    --accent-red-text: #fca5a5;    --accent-red: #f87171;       --accent-red-strong: #fecaca;
 
   --focus-ring: 0 0 0 3px rgba(91,157,255,.45);
+
+  --brand-navy: #f4ede0;
+  --brand-cream: #1b2338;
+  --brand-cream-deep: #12182a;
+  --brand-burgundy: #d0616f;
+  --color-surface-highlight: #222b40;
+  --color-border-accent: rgba(232,200,116,.30);
 }
 
 /* ===== Estados de foco e interacción (v1.3) =====
@@ -129,30 +177,35 @@ button:disabled, .btn:disabled, [aria-disabled="true"] {
   opacity: .5; filter: saturate(.7); cursor: not-allowed;
 }
 
+/* Red de seguridad global (Prompt 2, sección 29): colapsa cualquier
+   animación/transición a prácticamente instantánea cuando el sistema pide
+   menos movimiento. No las elimina (el feedback de estado debe seguir
+   siendo visible: correcto/incorrecto, streak, XP...), solo quita el
+   desplazamiento. Los bloques @media(prefers-reduced-motion) específicos
+   que ya existían más abajo en este archivo (medallas, Lucidez, resume
+   card...) se mantienen y siguen aplicando además de esta regla. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
-    animation-duration: 0.001ms !important;
+    animation-duration: .001ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
+    transition-duration: .001ms !important;
     scroll-behavior: auto !important;
   }
 }
 * { box-sizing: border-box; font-family: var(--font-ui); }
-body { margin: 0; background-color: var(--bg); background-image: var(--ambient-gold-glow); background-repeat: no-repeat; color: var(--text); min-height: 100vh; display: flex; justify-content: center; padding: 15px; position: relative; transition: background-color 0.3s, color 0.3s; }
+body { margin: 0; background-color: var(--bg); background-image: var(--ambient-gold-glow); background-repeat: no-repeat; color: var(--text); min-height: 100vh; display: flex; justify-content: center; position: relative; transition: background-color 0.3s, color 0.3s; }
 .app { width: min(820px, 100%); }
-.card { background-color: var(--card); background-image: var(--card-ambient-glow); background-repeat: no-repeat; border-radius: 20px; padding: 24px; box-shadow: 0 10px 30px #00000012; position: relative; overflow: hidden; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
+.card { background-color: var(--card); background-image: var(--card-ambient-glow); background-repeat: no-repeat; border-radius: var(--radius-lg); padding: 24px; box-shadow: 0 10px 30px #00000012; position: relative; overflow: hidden; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
 
 /* Modal de Benvinguda */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; padding: 15px; overflow-y: auto; }
-.modal-card { background: var(--card); border-radius: 20px; padding: 28px; width: min(500px, 100%); max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 2px solid var(--primary); animation: fadeInScale 0.3s ease-out; }
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; overflow-y: auto; }
+.modal-card { background: var(--card); border-radius: var(--radius-lg); padding: 28px; max-height: 85vh; overflow-y: auto; box-shadow: var(--shadow-elevated); border: 1px solid var(--color-border-accent); animation: fadeInScale 0.3s ease-out; }
 @media(max-width:600px){
   .home-subtitle > span:not(.home-sub-line):not(.home-sub-diamond){white-space:nowrap;font-size:10px;letter-spacing:1.05px;}
 
   .modal-card { padding: 20px; max-height: 80vh; }
-  .modal-card h2 { font-size: 17px; }
-  .modal-card p, .modal-card ul { font-size: 13px; }
-}
-.modal-card h2 { margin-top: 0; font-size: 20px; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+    }
+.modal-card h2 { margin-top: 0; font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--brand-navy); display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
 .modal-card p { line-height: 1.5; font-size: 14px; color: var(--text); margin: 0 0 12px 0; }
 .modal-card ul { padding-left: 20px; margin: 12px 0; color: var(--text); font-size: 14px; line-height: 1.5; }
 .modal-card li { margin-bottom: 6px; }
@@ -246,7 +299,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   position: relative;
   margin: 4px 0 18px;
   padding: 12px 14px 12px 52px;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   font-weight: 800;
   font-size: 14px;
 }
@@ -378,7 +431,6 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   padding: 20px 18px 20px 17px;
   background: rgba(245,158,11,.035);
   border-radius: 0 16px 16px 0;
-  box-shadow: inset 0 0 0 1px rgba(245,158,11,.06);
 }
 
 .card.theme-sudden .q-box {
@@ -386,7 +438,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   border-left: 7px solid #dc2626;
   padding: 19px 18px;
   background: rgba(220,38,38,.055);
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
   box-shadow: 0 5px 18px rgba(220,38,38,.08);
 }
 
@@ -395,7 +447,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   border-left: 7px solid #7c3aed;
   padding: 20px 18px;
   background: linear-gradient(90deg,rgba(124,58,237,.065),rgba(6,182,212,.035));
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
   font-size: 21px;
 }
 
@@ -423,15 +475,13 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 
 .card.theme-review input[type="text"]:focus { border-color:#0d9488; box-shadow:0 0 0 3px rgba(13,148,136,.12); }
 .card.theme-standard input[type="text"]:focus { border-color:#2563eb; box-shadow:0 0 0 3px rgba(37,99,235,.12); }
-.card.theme-survival input[type="text"]:focus { border-color:#f59e0b; box-shadow:0 0 0 4px rgba(245,158,11,.13); }
-.card.theme-sudden input[type="text"]:focus { border-color:#ef4444; box-shadow:0 0 0 4px rgba(239,68,68,.14); }
+.card.theme-survival input[type="text"]:focus { box-shadow:0 0 0 4px rgba(245,158,11,.13); }
+.card.theme-sudden input[type="text"]:focus { box-shadow:0 0 0 4px rgba(239,68,68,.14); }
 .card.theme-timetrial input[type="text"]:focus { border-color:#06b6d4; box-shadow:0 0 0 4px rgba(6,182,212,.13); }
 
 /* BOTONES */
 .card.theme-standard .btn-primary { background:#2563eb; }
 .card.theme-review .btn-primary { background:#0d9488; }
-.card.theme-survival .btn-primary { background:#d97706; }
-.card.theme-sudden .btn-primary { background:#dc2626; }
 .card.theme-timetrial .btn-primary { background:linear-gradient(90deg,#7c3aed,#0891b2); }
 
 /* ===== ESTÁNDAR — pulido visual/UX (paso 1 de la revisión modo a modo) =====
@@ -566,7 +616,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   left: 50%;
   transform: translate(-50%, -50%) scale(.7);
   padding: 14px 28px;
-  border-radius: 18px;
+  border-radius: var(--radius-md);
   font-size: 34px;
   font-weight: 900;
   letter-spacing: .5px;
@@ -678,7 +728,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   position: relative;
   margin: 4px 0 18px;
   padding: 12px 14px 12px 52px;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   font-weight: 800;
   font-size: 15px;
   color: #18181b;
@@ -716,7 +766,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   border-left: 7px solid #18181b;
   padding: 20px 18px;
   background: linear-gradient(90deg,rgba(24,24,27,.065),rgba(82,82,91,.035));
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
   font-size: 26px;
   text-align: center;
   font-weight: 900;
@@ -768,6 +818,14 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
     radial-gradient(circle at 100% 100%, rgba(6,182,212,.10), transparent 38%),
     var(--card);
   box-shadow: 0 14px 44px rgba(109,40,217,.20);
+  /* Prompt 2 — Fase D (sección 19): la intensidad de color sube por fase
+     (lucidez-fase-1/2/3, más abajo) cambiando border-color/box-shadow al
+     vuelo vía lucidezApplyPhaseVisuals(). Antes era un corte instantáneo;
+     con esto se funde de una fase a la siguiente. El fondo (gradientes
+     radiales) no se transiciona: los navegadores no interpolan entre dos
+     conjuntos de gradiente distintos, así que intentarlo no tendría efecto
+     visual, solo coste. No toca color/estructura, solo cómo se llega a él. */
+  transition: border-color var(--motion-special) var(--ease-standard), box-shadow var(--motion-special) var(--ease-standard);
 }
 .card.theme-lucidez::before {
   content: '';
@@ -781,7 +839,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   position: relative;
   margin: 4px 0 18px;
   padding: 12px 14px 12px 52px;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   font-weight: 800;
   font-size: 15px;
   color: #4c1d95;
@@ -819,7 +877,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   border-left: 7px solid #6d28d9;
   padding: 20px 18px;
   background: linear-gradient(90deg,rgba(109,40,217,.06),rgba(6,182,212,.03));
-  border-radius: 12px;
+  border-radius: var(--radius-sm);
 }
 .card.theme-lucidez input[type="text"] {
   border-color: rgba(109,40,217,.35);
@@ -862,6 +920,20 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 .card.theme-lucidez #game-progress-lbl {
   letter-spacing: .3px;
   font-variant-numeric: tabular-nums;
+}
+/* Prompt 2 — Fase D (secciones 18-20): el enunciado "se enfoca" al
+   aparecer — encaja con el resto de la identidad de Lucidez (misteriosa,
+   intelectual) y, en la Fase II, además vende bien la mecánica real de
+   memoria: el texto que aparece a los 3s (revealDelay, sin cambios) entra
+   con el mismo pequeño desenfoque que el resto. Clase añadida por JS
+   (lucidezRevealQText()) justo antes de escribir el texto nuevo, en los
+   mismos puntos donde ya se escribía. */
+#q-text.lucidez-text-reveal {
+  animation: lucidezTextReveal var(--motion-medium) var(--ease-standard) both;
+}
+@keyframes lucidezTextReveal {
+  0% { opacity: .3; filter: blur(2px); }
+  100% { opacity: 1; filter: blur(0); }
 }
 
 /* ---- Subtítulo narrativo de fase (Lucidez Mental): eliminado a
@@ -930,7 +1002,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   display: inline-block;
   margin-left: 6px;
   padding: 1px 8px;
-  border-radius: 99px;
+  border-radius: var(--radius-pill);
   background: rgba(6,182,212,.14);
   border: 1px solid rgba(6,182,212,.4);
 }
@@ -980,7 +1052,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   display: inline-block;
   margin-top: 8px;
   padding: 4px 16px;
-  border-radius: 99px;
+  border-radius: var(--radius-pill);
   font-weight: 900;
   font-size: 15px;
   background: rgba(6,182,212,.14);
@@ -999,7 +1071,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   border: 2px solid rgba(109,40,217,.35);
   border-left: none;
   background: linear-gradient(180deg,rgba(109,40,217,.09),rgba(6,182,212,.04));
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   text-align: center;
   justify-content: center;
   font-size: 21px;
@@ -1020,6 +1092,32 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   animation: lucidezOverlayFade .35s ease-out;
 }
 .lucidez-story-overlay.show { display: flex; }
+/* Sir Edwards 2.0 (Prompt 1.5, corrección): retrato de fase, remate visual
+   DEBAJO del título/frase (título → frase → personaje). Oculto por defecto;
+   cuando se muestra (transición de entrada a Fase I/II/III/Enigma), sustituye
+   al emoji 👁️/⏱️ de siempre para no duplicar el mismo papel visual, que sigue
+   intacto para el resto de transiciones (desenlaces). Tres de los cuatro
+   assets llegan con un fondo casi blanco muy ceñido al personaje (apenas
+   margen); mask-image difumina solo ese borde estrecho hacia el fondo
+   oscuro del overlay en vez de alterar los colores de la ilustración
+   (prohibido) — no recorta sombrero, cara, manos ni botas, que quedan
+   dentro del área totalmente opaca de la máscara. */
+.lucidez-story-character { display: none; margin: 16px auto 0; }
+.lucidez-story-character.show { display: block; }
+.lucidez-story-overlay.has-character .lucidez-story-icon { display: none; }
+.lucidez-story-character img {
+  display: block;
+  margin: 0 auto;
+  max-width: min(56vw, 210px);
+  max-height: 32vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 26px rgba(0,0,0,.45));
+  -webkit-mask-image: radial-gradient(ellipse 74% 84% at 50% 48%, #000 84%, transparent 100%);
+  mask-image: radial-gradient(ellipse 74% 84% at 50% 48%, #000 84%, transparent 100%);
+  animation: lucidezOverlayPop .6s ease-out;
+}
 .lucidez-story-overlay .lucidez-story-icon { font-size: 46px; margin-bottom: 10px; animation: lucidezOverlayPop .6s ease-out; }
 .lucidez-story-overlay .lucidez-story-title {
   font-size: 24px;
@@ -1038,11 +1136,20 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 .lucidez-story-overlay.tone-fail { background: radial-gradient(circle at 50% 40%, rgba(76,29,149,.9), rgba(15,10,25,.97)); }
 .lucidez-story-overlay.tone-fail .lucidez-story-title { color: #f1f5f9; text-shadow: 0 0 16px rgba(148,163,184,.5); }
 .lucidez-story-overlay.tone-success .lucidez-story-icon { animation: lucidezOverlayGlow 1.1s ease-in-out infinite; }
+/* Prompt 2 — Fase D (sección 20): el Enigma es la culminación de Lucidez,
+   así que su retrato recibe el mismo glow ya usado para el logro más
+   especial (lucidezOverlayGlow, sin tocar), además de la entrada normal
+   (lucidezOverlayPop). Bounded por la propia duración del overlay
+   (2.3s, sin cambios), no es un bucle permanente en pantalla. */
+.lucidez-story-character[data-character="enigma"] img {
+  animation: lucidezOverlayPop .6s ease-out, lucidezOverlayGlow 1.4s ease-in-out .5s infinite;
+}
 @keyframes lucidezOverlayFade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes lucidezOverlayPop { 0% { transform: scale(.6); opacity: 0; } 60% { transform: scale(1.12); opacity: 1; } 100% { transform: scale(1); } }
 @keyframes lucidezOverlayGlow { 0%,100% { filter: drop-shadow(0 0 6px rgba(167,139,250,.6)); } 50% { filter: drop-shadow(0 0 22px rgba(103,232,249,.9)); } }
 @media (prefers-reduced-motion: reduce) {
   .lucidez-story-overlay, .lucidez-story-overlay .lucidez-story-icon,
+  .lucidez-story-character img,
   #game-progress-lbl .lucidez-timer-chip.lucidez-timer-low,
   .lucidez-enigma-timer.lucidez-timer-low { animation: none; }
 }
@@ -1058,34 +1165,6 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 }
 .mode-grid .mode-card:hover{
   transform:translateY(-4px);
-}
-.mode-card.mode-standard{
-  border-color:rgba(37,99,235,.28);
-  background:linear-gradient(145deg,rgba(37,99,235,.10),var(--card) 62%);
-}
-.mode-card.mode-review{
-  border-color:rgba(13,148,136,.28);
-  background:linear-gradient(145deg,rgba(13,148,136,.10),var(--card) 62%);
-}
-.mode-card.mode-survival{
-  border-color:rgba(245,158,11,.32);
-  background:linear-gradient(145deg,rgba(245,158,11,.12),var(--card) 62%);
-}
-.mode-card.mode-sudden{
-  border-color:rgba(220,38,38,.30);
-  background:linear-gradient(145deg,rgba(220,38,38,.10),var(--card) 62%);
-}
-.mode-card.mode-timetrial{
-  border-color:rgba(124,58,237,.30);
-  background:linear-gradient(145deg,rgba(124,58,237,.11),rgba(6,182,212,.055) 42%,var(--card) 72%);
-}
-.mode-card.mode-mentalcalc{
-  border-color:rgba(24,24,27,.30);
-  background:linear-gradient(145deg,rgba(24,24,27,.11),rgba(82,82,91,.055) 42%,var(--card) 72%);
-}
-.mode-card.mode-lucidez{
-  border-color:rgba(109,40,217,.36);
-  background:linear-gradient(145deg,rgba(109,40,217,.13),rgba(6,182,212,.06) 42%,var(--card) 72%);
 }
 .mode-card::after{
   content:'';
@@ -1107,7 +1186,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 .mode-card .mode-icon{
   width:58px;height:58px;
   display:flex;align-items:center;justify-content:center;
-  border-radius:16px;
+  border-radius:var(--radius-md);
   font-size:30px;
   margin-bottom:12px;
   box-shadow:0 5px 16px rgba(0,0,0,.08);
@@ -1121,11 +1200,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 
 .mode-card .mode-subtitle{
   display:block;
-  margin-top:9px;
-  font-size:11px;
   line-height:1.35;
-  font-weight:800;
-  letter-spacing:.25px;
   opacity:.78;
 }
 .mode-standard .mode-subtitle{color:#2563eb}
@@ -1151,43 +1226,14 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   margin-top:14px;
 }
 
-.performance-box{
-  margin:4px 0 24px;
-  padding:18px;
-  border:1px solid var(--border);
-  border-radius:16px;
-  background:linear-gradient(145deg,rgba(37,99,235,.045),var(--card));
-}
 .performance-title{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:14px;font-weight:900;
-}
-.performance-bars{
-  display:flex;align-items:flex-end;gap:8px;height:105px;
-  padding:0 4px 4px;
-  border-bottom:1px solid var(--border);
+align-items:center;
 }
 .performance-bar{
-  flex:1;min-width:10px;
-  border-radius:7px 7px 2px 2px;
-  background:linear-gradient(180deg,#2563eb,#60a5fa);
-  position:relative;
-  min-height:8px;
-}
-.performance-bar span{
-  position:absolute;bottom:calc(100% + 4px);left:50%;
-  transform:translateX(-50%);
-  font-size:10px;font-weight:900;white-space:nowrap;
-}
-.performance-labels{
-  display:flex;gap:8px;margin-top:7px;
-}
-.performance-labels span{
-  flex:1;text-align:center;font-size:9px;opacity:.55;
+min-width:10px;
 }
 @media(max-width:700px){
-  .stats-extra-grid{grid-template-columns:repeat(2,1fr)}
-}
+  }
 
 /* Logros como colección */
 .achievement-card{
@@ -1234,36 +1280,8 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   margin-top:5px;
 }
 
-/* Toast de logro desbloqueado */
-.achievement-toast{
-  position:fixed;
-  top:78px;left:50%;
-  transform:translate(-50%,-20px) scale(.92);
-  z-index:9999;
-  display:flex;align-items:center;gap:12px;
-  padding:13px 18px;
-  min-width:290px;
-  max-width:calc(100vw - 28px);
-  border-radius:16px;
-  border:2px solid rgba(245,158,11,.55);
-  background:linear-gradient(135deg,#fffdf0,#fff7d6);
-  color:#78350f;
-  box-shadow:0 15px 45px rgba(0,0,0,.20),0 0 30px rgba(212,175,55,.20);
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .25s ease,transform .25s ease;
-}
-.achievement-toast.show{
-  opacity:1;
-  transform:translate(-50%,0) scale(1);
-}
-.achievement-toast .toast-icon{font-size:35px}
 .achievement-toast .toast-small{
-  display:block;font-size:10px;font-weight:900;
-  text-transform:uppercase;letter-spacing:1px;opacity:.7;
-}
-.achievement-toast .toast-name{
-  display:block;font-size:15px;font-weight:900;margin-top:2px;
+  text-transform:uppercase;opacity:.7;
 }
 [data-theme="dark"] .achievement-toast{
   background:linear-gradient(135deg,#33280d,#3a2c0d);
@@ -1275,13 +1293,13 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 #confetti-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 99; }
 
 /* Header & Badges */
-.top-bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+.top-bar { justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
 /* Dentro de una partida, la racha/nivel/XP ya se muestran en el propio
    marcador de la partida: se ocultan aquí para no duplicar información. */
 body.in-game .stats-badges { display: none; }
 .brand { font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 6px; }
 .stats-badges { display: flex; gap: 8px; font-weight: 700; font-size: 13px; flex-wrap: wrap; }
-.badge { background: var(--badge-bg); padding: 5px 10px; border-radius: 99px; border: 1px solid var(--badge-border); }
+.badge { background: var(--badge-bg); padding: 5px 10px; border-radius: var(--radius-pill); border: 1px solid var(--badge-border); }
 
 /* Nav */
 .nav-wrap { position: relative; }
@@ -1292,7 +1310,15 @@ body.in-game .stats-badges { display: none; }
 
 /* Views */
 .view { display: none; }
-.view.active { display: block; }
+/* Transición de navegación (Prompt 2, sección 6): puramente visual, no
+   retrasa nada — switchTab() ya intercambia display:none/block al
+   instante; esto solo añade una entrada corta encima. Se aplica igual en
+   home/juego/estadísticas/logros/ajustes/duelo porque cuelga de .view. */
+.view.active { display: block; animation: viewEnter var(--motion-medium) var(--ease-decelerate) both; }
+@keyframes viewEnter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 /* Game View */
 .mode-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px; color: var(--sub); font-weight: 600; }
@@ -1304,10 +1330,10 @@ body.in-game .stats-badges { display: none; }
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: var(--badge-bg);
+  background: var(--color-surface-interactive);
   color: var(--text);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
   padding: 8px 12px;
   font-size: 13px;
   font-weight: 700;
@@ -1315,33 +1341,39 @@ body.in-game .stats-badges { display: none; }
   margin-bottom: 10px;
   touch-action: manipulation;
 }
-.game-exit-btn:hover { background: var(--border); }
+.game-exit-btn:hover { background: var(--badge-bg); border-color: var(--color-border-accent); }
 
-.progress-bar { height: 8px; background: var(--border); border-radius: 99px; overflow: hidden; margin-bottom: 16px; }
+.progress-bar { height: 8px; background: var(--border); border-radius: var(--radius-pill); overflow: hidden; margin-bottom: 16px; }
 .bar-fill { height: 100%; width: 0%; background: var(--primary); transition: width 0.3s; }
 
 .q-box { font-size: 20px; font-weight: 700; line-height: 1.35; margin: 16px 0; display: flex; justify-content: space-between; gap: 10px; }
 
-input[type="text"], select { width: 100%; padding: 13px; border: 2px solid var(--border); background: var(--card); color: var(--text); border-radius: 12px; font-size: 15px; outline: none; margin-bottom: 12px; }
+input[type="text"], select { width: 100%; padding: 13px; border: 2px solid var(--border); background: var(--card); color: var(--text); border-radius: var(--radius-sm); font-size: 15px; outline: none; margin-bottom: 12px; }
 input[type="text"]:focus, select:focus { border-color: var(--primary); }
 #duel-join-code-input:focus { border-color: var(--accent-blue); }
 .card.theme-survival input[type="text"]:focus { border-color: #f59e0b; }
 .card.theme-sudden input[type="text"]:focus { border-color: #ef4444; }
 
 .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.05); touch-action: manipulation; }
+button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-soft); min-height: 48px; }
 .btn-primary { background: var(--primary); color: white; }
-.btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+.btn-primary:hover { background: var(--primary-hover); transform: var(--state-lift); }
 .card.theme-survival .btn-primary { background: #d97706; }
 .card.theme-survival .btn-primary:hover { background: #b45309; }
 .card.theme-sudden .btn-primary { background: #dc2626; }
 .card.theme-sudden .btn-primary:hover { background: #b91c1c; }
 .card.theme-timetrial .btn-primary:hover { background: #6d28d9; }
 
-.btn-secondary { background: var(--badge-bg); color: var(--text); border: 1px solid var(--border); }
-.btn-secondary:hover { background: var(--border); }
+.btn-secondary { background: var(--color-surface-interactive); color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { background: var(--badge-bg); border-color: var(--color-border-accent); }
 .btn-danger { background: var(--danger-bg); color: var(--danger-txt); border: 1px solid var(--border); }
 .btn-danger:hover { background: var(--danger-hover); }
+/* Prompt 2 — Fase A: mismo micro-lift que btn-primary ya tenía, para que
+   toda la familia de botones se sienta coherente. Solo en dispositivos con
+   hover real (ratón), para no dejar un botón "levantado" tras un tap. */
+@media (hover: hover) and (pointer: fine) {
+  .btn-secondary:hover, .btn-danger:hover, .btn-share:hover { transform: var(--state-lift); }
+}
 
 /* Botón "Compartir resultado": algo más de jerarquía que un botón
    secundario plano (borde sutil + fondo ligeramente tintado en morado,
@@ -1352,15 +1384,25 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 [data-theme="dark"] .btn-share { background: rgba(167,139,250,.12); border-color: rgba(167,139,250,.40); }
 [data-theme="dark"] .btn-share:hover { background: rgba(167,139,250,.18); border-color: rgba(167,139,250,.6); }
 
-.feedback { margin-top: 16px; padding: 14px; border-radius: 12px; display: none; line-height: 1.45; font-size: 15px; }
+.feedback { margin-top: 16px; padding: 14px; border-radius: var(--radius-sm); display: none; line-height: 1.45; font-size: 15px; }
 .feedback.ok { background: var(--ok-bg); color: var(--ok-txt); }
 .feedback.bad { background: var(--bad-bg); color: var(--bad-txt); }
+/* Prompt 2 — Fase B (sección 9): confirmación visual del resultado real.
+   fb.className ya se reescribe a 'feedback ok'/'feedback bad' en cada
+   checkAnswer()/checkLucidezAnswer()/checkMentalCalcAnswer() existente, así
+   que esta entrada se dispara sola con la clase que ya se asigna, sin
+   ningún cambio de lógica. */
+.feedback.ok, .feedback.bad { animation: feedbackIn var(--motion-short) var(--ease-decelerate) both; }
+@keyframes feedbackIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
 /* Botones de respuesta tipo test (4 opciones) */
 #choice-options { display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
 @media(max-width:600px){ #choice-options { grid-template-columns: 1fr; } }
 .choice-btn {
-  border: 2px solid var(--border); border-radius: 12px; background: var(--card); color: var(--text);
+  border: 2px solid var(--border); border-radius: var(--radius-sm); background: var(--card); color: var(--text);
   padding: 13px 14px; font-size: 14.5px; font-weight: 600; text-align: left; cursor: pointer;
   transition: all 0.15s; touch-action: manipulation; line-height: 1.3;
 }
@@ -1369,6 +1411,37 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 .choice-btn.correct { border-color: #16a34a; background: var(--ok-bg); color: var(--ok-txt); }
 .choice-btn.incorrect { border-color: #dc2626; background: var(--bad-bg); color: var(--bad-txt); }
 .choice-btn:disabled { cursor: default; opacity: 0.92; }
+/* Prompt 2 — Fase B (sección 9): mismas clases .correct/.incorrect que ya
+   pinta markChoiceButtons(), solo se añade la microtransición encima.
+   Correcto: pequeño pop controlado. Incorrecto: shake corto y elegante
+   (2 oscilaciones, no una bandera roja parpadeante). */
+.choice-btn.correct { animation: choiceCorrectPop var(--motion-short) var(--ease-emphasized) both; }
+.choice-btn.incorrect { animation: choiceIncorrectShake var(--motion-short) var(--ease-standard) both; }
+@keyframes choiceCorrectPop {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.025); }
+  100% { transform: scale(1); }
+}
+@keyframes choiceIncorrectShake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+/* Prompt 2 — Fase B (secciones 10-12): "pulso" reutilizado por streak, XP
+   y Fragmentos (setTextWithBump() en index.html añade la clase cuando el
+   número sube; el valor y el momento en que sube siguen decididos por el
+   estado real del juego, esto solo lo hace visible). display:inline-block
+   para que el transform se aplique de forma fiable sobre un <span>. */
+.streak-bump, .xp-bump, .fragments-bump {
+  display: inline-block;
+  animation: valueBump var(--motion-short) var(--ease-emphasized) both;
+}
+@keyframes valueBump {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.22); }
+  100% { transform: scale(1); }
+}
 /* Estados de hover/selección de los 4 botones adaptados al color de acento
    de cada modo (mismo tono que ya usa su barra de progreso/cabecera), para
    que la interacción tipo test se sienta parte del tema de cada modo en
@@ -1407,13 +1480,40 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
+/* Prompt 2 — Fase C (sección 14): último escalón de la jerarquía de
+   resultados ("...→ acciones"). Compartir/Volver (y, en Duelo, el botón
+   que ya cambia a "← Volver a Duelo") entran los últimos, cuando ya se ha
+   leído el resto. No afecta a los botones propios de la tarjeta de Duelo
+   (#results-duel-box), que quedan fuera de esta fase. */
+.results-actions { animation: resultsActionsIn var(--motion-short) var(--ease-decelerate) .4s both; }
+@keyframes resultsActionsIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+/* Prompt 2 — Fase C (sección 17): "botón → estado de procesamiento →
+   confirmación" ya existe en JS (shareResultAsText()/copyDuelCode() ya
+   cambian el texto del botón a "✅ ¡Copiado!" y lo revierten solos); aquí
+   solo se anima ese cambio de texto que ya se produce, igual que streak/XP
+   en la Fase B. No se toca el pipeline de compartir/generar imagen. */
+.btn-confirm-pulse { animation: valueBump var(--motion-short) var(--ease-emphasized) both; }
 
 /* Identidad del modo: etiqueta pequeña y fija ("⚡ CONTRARRELOJ"). El
    desenlace concreto (victoria, derrota, tiempo agotado...) ya lo cuentan
    la frase y el sello de abajo, así que el título no compite por atención. */
 .results-card h3 { margin: 0 0 10px 0; font-size: 13px; font-weight: 800; letter-spacing: 1.3px; text-transform: uppercase; color: var(--sub); }
-.results-metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px; }
+.results-metrics-grid { display: grid; gap: 14px; margin-bottom: 22px; }
 .metric-box { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+/* Prompt 2 — Fase C (sección 14): el score es el segundo escalón de la
+   jerarquía ("resultado → score → detalles → recompensas → acciones") y
+   antes no tenía ninguna entrada propia — aparecía de golpe con el resto
+   de la tarjeta. Un empuje corto y controlado, justo después del
+   retrato (que ya usa moodPop sin delay). No toca el marcado ni los
+   textos, que siguen viniendo de finishGame()/revealLucidezResults(). */
+.metric-box { animation: metricIn var(--motion-short) var(--ease-decelerate) .08s both; }
+@keyframes metricIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 .metric-value { font-size: 26px; font-weight: 900; color: var(--text); }
 .metric-label { font-size: 12px; color: var(--sub); font-weight: 700; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
 /* La puntuación es el protagonista visual del resultado (pedido explícito):
@@ -1425,6 +1525,32 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 }
 #res-score-text { font-size: 34px; font-weight: 900; color: var(--accent-gold-text); }
 #res-percentage-text { font-size: 21px; color: var(--sub); font-weight: 800; }
+
+/* Sir Edwards 2.0 (Prompt 1.5): retrato estático Victory/Defeat. Marco propio
+   (fondo claro fijo, no invertido por tema) porque los assets oficiales
+   llevan su propia iluminación pintada para un fondo claro; en vez de
+   alterar sus colores (prohibido) se adapta el contenedor que lo rodea,
+   igual que el resto de superficies del sistema. Sin recorte: object-fit
+   contain conserva sombrero, cara, manos y capa completos. */
+.results-character {
+  display: none;
+  width: clamp(96px, 26vw, 136px);
+  aspect-ratio: 1 / 1;
+  margin: 0 auto 16px;
+  border-radius: var(--radius-md);
+  background: #f6efe0;
+  border: 1px solid var(--tone-border, var(--color-border-accent));
+  box-shadow: var(--shadow-soft);
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  animation: moodPop .4s cubic-bezier(.34,1.56,.64,1);
+}
+.results-character.show { display: block; }
+.results-character img { width: 100%; height: 100%; object-fit: contain; display: block; }
+@media (prefers-reduced-motion: reduce) {
+  .results-character { animation: none; }
+}
 
 .results-phrase-container {
   position: relative;
@@ -1595,11 +1721,15 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
   border: 1px solid var(--badge-border);
   border-radius: 999px;
   padding: 7px 14px;
-  animation: chipFadeIn .35s ease-out both;
+  /* Prompt 2 — Fase C: mismo fade de siempre (chipFadeIn, sin tocar), solo
+     se retrasa el conjunto para que las chips (racha/vidas/XP de sesión)
+     caigan en el escalón de "recompensas", después de que se haya leído
+     el score y la frase — antes empezaban a la vez que el retrato. */
+  animation: chipFadeIn .35s ease-out .2s both;
 }
-.result-chip:nth-child(2) { animation-delay: .05s; }
-.result-chip:nth-child(3) { animation-delay: .1s; }
-.result-chip:nth-child(4) { animation-delay: .15s; }
+.result-chip:nth-child(2) { animation-delay: .25s; }
+.result-chip:nth-child(3) { animation-delay: .3s; }
+.result-chip:nth-child(4) { animation-delay: .35s; }
 @keyframes chipFadeIn {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
@@ -1625,7 +1755,10 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
   letter-spacing: 1.8px;
   text-transform: uppercase;
   border: 2px solid currentColor;
-  animation: stampIn .55s cubic-bezier(.34,1.56,.64,1);
+  /* Prompt 2 — Fase C: mismo stampIn de siempre, con un pequeño respiro
+     tras la frase (a la que corona) en vez de reventar a la vez que el
+     retrato. */
+  animation: stampIn .55s cubic-bezier(.34,1.56,.64,1) .2s both;
 }
 .results-lucidez-stamp .stamp-badge.tone-ok {
   color: #0d9488; background: rgba(13,148,136,.09); box-shadow: 0 0 24px rgba(13,148,136,.22);
@@ -1671,7 +1804,7 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
   width:fit-content;
   margin:0 0 10px;
   padding:6px 12px;
-  border-radius:99px;
+  border-radius: var(--radius-pill);
   border:1px solid rgba(245,158,11,.35);
   background:linear-gradient(135deg,rgba(245,158,11,.14),rgba(245,158,11,.05));
   font-weight:800;
@@ -1718,6 +1851,43 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 .session-medal-fragment { font-size: 11px; font-weight: 800; color: #7c3aed; margin-top: 4px; }
 [data-theme="dark"] .session-medal-fragment { color: #c4b5fd; }
 
+/* Prompt 2 — Fase B (sección 13): "aparición → identificación → pequeño
+   emphasis → estabilización" en una sola tarjeta se logra encadenando las
+   4 fases dentro de un único keyframe corto, sin bloquear la pantalla de
+   resultados ni depender de JS. Cada logro entra un poco después del
+   anterior (nth-child) para que una lista de varios no aparezca de golpe;
+   se limita a los primeros 6 para no alargar la espera si hay muchos.
+   No se toca .medal-lucidez-absoluta (su propio halo ya es su "especial"
+   y tiene mayor especificidad, así que sustituye a esta entrada). */
+.session-medal-item {
+  animation: medalCardIn var(--motion-special) var(--ease-decelerate) both;
+  /* Prompt 2 — Fase C: mismo escalonado entre logros de la Fase B
+     (var(--medal-i)), con un offset base de .28s añadido ahora para que
+     el bloque de logros caiga en el escalón de "recompensas" de la
+     tarjeta de resultados, después del score y la frase. */
+  animation-delay: calc(.28s + var(--motion-micro) * var(--medal-i, 0));
+}
+.session-medal-item:nth-child(1) { --medal-i: 0; }
+.session-medal-item:nth-child(2) { --medal-i: 1; }
+.session-medal-item:nth-child(3) { --medal-i: 2; }
+.session-medal-item:nth-child(4) { --medal-i: 3; }
+.session-medal-item:nth-child(5) { --medal-i: 4; }
+.session-medal-item:nth-child(n+6) { --medal-i: 5; }
+@keyframes medalCardIn {
+  0% { opacity: 0; transform: translateY(8px) scale(.97); }
+  55% { opacity: 1; transform: translateY(0) scale(1.015); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+/* El "+1 Fragmento de Mente" es la parte que más se parece a XP (sección
+   12: recompensa + conocimiento + progreso), así que recibe un pequeño
+   glow propio además de la entrada de la tarjeta que ya hereda. */
+.session-medal-fragment { animation: fragmentGlow 1.4s var(--ease-standard) calc(.28s + var(--motion-special) + var(--motion-micro) * var(--medal-i, 0)) both; }
+@keyframes fragmentGlow {
+  0% { filter: drop-shadow(0 0 0 rgba(124,58,237,0)); }
+  35% { filter: drop-shadow(0 0 5px rgba(124,58,237,.55)); }
+  100% { filter: drop-shadow(0 0 0 rgba(124,58,237,0)); }
+}
+
 /* 👁️ Tratamiento especial para el logro maestro de Lucidez Mental: mismo
    layout que el resto de logros de sesión, pero con un halo violeta propio
    para que se note que no es un logro cualquiera. */
@@ -1762,7 +1932,10 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
   text-align: left;
   display: none;
   overflow: hidden;
-  animation: modeUnlockGlow 2.2s ease-in-out infinite, modeUnlockPop .4s ease-out;
+  /* Prompt 2 — Fase C: el glow en bucle es un aviso ya existente y se deja
+     tal cual; solo se retrasa un poco la entrada (modeUnlockPop) para que
+     caiga en el escalón de "recompensas", junto a las chips. */
+  animation: modeUnlockGlow 2.2s ease-in-out infinite, modeUnlockPop .4s ease-out .28s both;
 }
 .session-mode-unlock-title {
   font-size: 14px;
@@ -1814,7 +1987,7 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
   padding:16px 22px;
   min-width:300px;
   max-width:calc(100vw - 28px);
-  border-radius:18px;
+  border-radius:var(--radius-md);
   border:3px solid #7c3aed;
   background:linear-gradient(135deg,#f5f3ff,#e0e7ff);
   color:#4c1d95;
@@ -1869,11 +2042,11 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
   padding:14px 18px;
   min-width:260px;
   max-width:calc(100vw - 28px);
-  border-radius:16px;
+  border-radius:var(--radius-md);
   border:2px solid var(--primary, #0d9488);
   background:var(--card, #fff);
   color:var(--text, #1f2937);
-  box-shadow:0 14px 40px rgba(0,0,0,.20);
+  box-shadow:var(--shadow-elevated);
   opacity:0;
   pointer-events:none;
   transition:opacity .22s ease,transform .22s ease;
@@ -1889,12 +2062,11 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 .modes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 10px; }
 /* 👁️ Lucidez Mental ocupa toda la anchura del menú: 3 columnas en escritorio, 2 en móvil */
 .modes-grid .mode-lucidez { grid-column: 1 / -1; }
-.mode-card { border: 2px solid var(--border); border-radius: 14px; padding: 16px; cursor: pointer; transition: all 0.2s; position: relative; touch-action: manipulation; }
+.mode-card { border: 2px solid var(--border); border-radius: var(--radius-md); padding: 16px; cursor: pointer; transition: all 0.2s; position: relative; }
 .mode-card:hover:not(.locked) { border-color: var(--primary); background: var(--badge-bg); }
 .mode-card.locked { opacity: 0.65; cursor: not-allowed; background: var(--badge-bg); border-style: dashed; }
-.mode-card h3 { margin: 0 0 6px 0; font-size: 16px; }
-.mode-card p { margin: 0; font-size: 13px; color: var(--sub); }
-.mode-lock-badge{position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1;font-family:system-ui,sans-serif;background:#fee2e2;color:#b91c1c;border:2px solid #ef4444;box-shadow:0 3px 8px rgba(0,0,0,.10);z-index:3}.mode-lock-badge.is-unlocked{background:#dcfce7;color:#15803d;border-color:#22c55e}
+.mode-card p { color: var(--sub); }
+.mode-lock-badge{position:absolute;font-family:system-ui,sans-serif;}.mode-lock-badge.is-unlocked{color:#15803d;}
 .mode-req{margin-top:6px!important;font-size:12px!important;font-weight:700;color:#374151!important;display:none}
 .mode-card.locked .mode-req{display:block}
 [data-theme="dark"] .mode-req{color:#d1d5db!important}
@@ -1937,12 +2109,12 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 
 /* Submenu Header */
 .submenu-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.submenu-header .btn-secondary { min-height: 0; padding: 8px 12px; font-size: 13px; box-shadow: none; }
 
 /* Logros Grid */
-.medals-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 14px; }
-.medal-card { border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; background: var(--badge-bg); opacity: 0.4; }
-.medal-card.unlocked { opacity: 1; border-color: #f59e0b; }
-.medal-card.secret-locked { border: 1px dashed var(--border); background: var(--badge-bg); opacity: 0.6; }
+.medals-grid { margin-top: 14px; }
+.medal-card { opacity: 0.4; }
+.medal-card.secret-locked { border: 1px dashed var(--border); }
 
 /* 🧩 Sistema de Fragmentos de Mente */
 .medal-fragment-tag {
@@ -1962,7 +2134,7 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 
 .fragments-progress-box {
   background: linear-gradient(135deg, rgba(124,58,237,.08), rgba(6,182,212,.06));
-  border: 2px dashed #8b5cf6; border-radius: 16px; padding: 18px; margin-bottom: 20px; text-align: center;
+  border: 2px dashed #8b5cf6; border-radius: var(--radius-md); padding: 18px; margin-bottom: 20px; text-align: center;
 }
 .fragments-progress-box.fragments-complete { border-style: solid; border-color: #7c3aed; }
 .fragments-progress-title { font-size: 13px; font-weight: 900; letter-spacing: .5px; color: #4c1d95; text-transform: uppercase; margin-bottom: 6px; }
@@ -1970,6 +2142,24 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 .fragments-progress-count { font-size: 26px; font-weight: 900; color: #6d28d9; margin-bottom: 10px; }
 .fragments-bar { margin-bottom: 0; }
 .fragments-bar-fill { background: linear-gradient(90deg, #7c3aed, #06b6d4); }
+/* Prompt 4: barra 0..15 con marcas de hito + escalera de recompensas. */
+.fragments-bar-wrap { position: relative; }
+.fragments-bar-marks { position: absolute; inset: 0; pointer-events: none; }
+.fragments-bar-mark { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; background: rgba(76,29,149,.45); border-radius: 1px; }
+.fragments-bar-mark.is-reached { background: rgba(255,255,255,.85); }
+.fragments-milestones { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; text-align: left; }
+.fragment-milestone { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: var(--radius-md); border: 1px solid rgba(139,92,246,.35); background: rgba(255,255,255,.5); }
+.fragment-milestone.is-locked { opacity: .6; }
+.fragment-milestone.is-unlocked { border-color: #7c3aed; background: rgba(124,58,237,.12); }
+.fragment-milestone-icon { font-size: 22px; line-height: 1; }
+.fragment-milestone-body { flex: 1; min-width: 0; }
+.fragment-milestone-title { font-size: 12px; font-weight: 900; color: #4c1d95; }
+.fragment-milestone-text { font-size: 13px; color: var(--sub); }
+.fragment-milestone.is-unlocked .fragment-milestone-text { color: var(--text, inherit); font-weight: 700; }
+.fragment-milestone-state { font-size: 15px; font-weight: 900; color: #6d28d9; }
+[data-theme="dark"] .fragment-milestone { background: rgba(255,255,255,.04); border-color: rgba(167,139,250,.35); }
+[data-theme="dark"] .fragment-milestone.is-unlocked { background: rgba(139,92,246,.2); border-color: #a78bfa; }
+[data-theme="dark"] .fragment-milestone-title, [data-theme="dark"] .fragment-milestone-state { color: #c4b5fd; }
 [data-theme="dark"] .fragments-progress-box { background: linear-gradient(135deg, rgba(139,92,246,.14), rgba(6,182,212,.1)); border-color: #a78bfa; }
 [data-theme="dark"] .fragments-progress-title { color: #c4b5fd; }
 [data-theme="dark"] .fragments-progress-count { color: #ddd6fe; }
@@ -1977,47 +2167,40 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 /* 🏅 Progreso general de Logros: cabecera de la pantalla Logros, en dorado
    para reforzar el concepto de logro/recompensa. Compacta a propósito. */
 .achievements-progress-box {
-  background: linear-gradient(135deg, rgba(245,158,11,.08), rgba(217,119,6,.05));
-  border: 2px solid #f59e0b; border-radius: 16px; padding: 16px 18px; margin-bottom: 16px; text-align: center;
+  background: linear-gradient(135deg, var(--accent-gold-surface), var(--color-surface-highlight));
+  border: 1px solid var(--color-border-accent); border-radius: var(--radius-md); padding: 16px 18px; margin-bottom: 16px; text-align: center;
+  box-shadow: var(--shadow-soft);
 }
-.achievements-progress-title { font-size: 13px; font-weight: 900; letter-spacing: .5px; color: #92400e; text-transform: uppercase; margin-bottom: 4px; }
-.achievements-progress-count { font-size: 26px; font-weight: 900; color: #b45309; margin-bottom: 10px; }
+.achievements-progress-title { font-size: 13px; font-weight: 900; letter-spacing: .5px; color: var(--accent-gold-text); text-transform: uppercase; margin-bottom: 4px; }
+.achievements-progress-count { font-family: var(--font-display); font-size: 28px; font-weight: 700; color: var(--brand-navy); margin-bottom: 10px; }
 .achievements-bar { margin-bottom: 0; }
-.achievements-bar-fill { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.achievements-bar-fill { background: linear-gradient(90deg, var(--brand-gold), var(--brand-gold-light)); }
 .achievements-progress-subtitle { font-size: 12.5px; color: var(--sub); margin: 10px 0 0; }
-[data-theme="dark"] .achievements-progress-box { background: linear-gradient(135deg, rgba(245,158,11,.14), rgba(217,119,6,.08)); border-color: #fbbf24; }
-[data-theme="dark"] .achievements-progress-title { color: #fcd34d; }
-[data-theme="dark"] .achievements-progress-count { color: #fde68a; }
 
 .medal-icon { font-size: 28px; margin-bottom: 4px; }
-.medal-title { font-weight: 700; font-size: 14px; }
-.medal-desc { font-size: 11px; color: var(--sub); margin-top: 2px; }
+.medal-desc { margin-top: 2px; }
 
 /* Stats Grid & History */
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 16px 0; }
-.stat-box { border: 1px solid var(--border); border-radius: 14px; padding: 16px; text-align: center; background: var(--badge-bg); }
+.stat-box { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 16px; text-align: center; background: var(--badge-bg); }
 .stat-value { font-size: 26px; font-weight: 800; color: var(--primary); }
 .stat-label { font-size: 12px; color: var(--sub); font-weight: 700; margin-top: 4px; }
 
-.history-container { margin-top: 20px; padding: 16px; border: 1px solid var(--border); border-radius: 14px; background: var(--badge-bg); box-shadow: inset 3px 0 0 0 var(--primary); }
-.history-container h3 { margin: 0; }
-.history-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
-.history-item { display: flex; justify-content: space-between; align-items: center; background: var(--card); border: 1px solid var(--border); padding: 10px 14px; border-radius: 12px; font-size: 14px; }
+.history-list { display: flex; flex-direction: column; gap: 8px; }
+.history-item { display: flex; justify-content: space-between; align-items: center; background: var(--card); border: 1px solid var(--border); padding: 10px 14px; border-radius: var(--radius-sm); font-size: 14px; }
 .history-item-info { font-weight: 700; }
 .history-item-sub { font-size: 12px; color: var(--sub); }
 .history-item-score { font-weight: 800; color: var(--primary); }
 
 
-.stats-section { margin-top: 20px; padding: 16px; border: 1px solid var(--border); border-radius: 14px; background: var(--badge-bg); box-shadow: inset 3px 0 0 0 var(--primary); }
-.stats-section h3 { margin: 0 0 12px; }
-.stats-section-sub { color: var(--sub); font-size: 12px; margin: -5px 0 12px; }
+.stats-section-sub { color: var(--sub); font-size: 12px; }
 .progress-row { margin: 10px 0 14px; }
 .progress-row-head { display:flex; justify-content:space-between; gap:10px; font-size:13px; font-weight:700; margin-bottom:6px; }
 .progress-track { height:9px; border-radius:999px; background:var(--border); overflow:hidden; }
 .progress-fill { height:100%; border-radius:999px; background:var(--primary); transition:width .35s ease; }
 .progress-meta { font-size:11px; color:var(--sub); margin-top:4px; }
 .stats-mini-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; }
-.stats-mini { padding:12px; border:1px solid var(--border); border-radius:12px; text-align:center; background:var(--card); }
+.stats-mini { padding:12px; border:1px solid var(--border); text-align:center; }
 .stats-mini-value { font-size:21px; font-weight:800; color:var(--primary); }
 .stats-mini-label { font-size:11px; color:var(--sub); margin-top:3px; }
 
@@ -2025,8 +2208,8 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
    pantalla se sienta como un dashboard de progreso personal). */
 .stats-level-widget {
   display: flex; align-items: center; gap: 14px; background: var(--card);
-  border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px;
-  margin-bottom: 20px; box-shadow: 0 4px 14px #00000010;
+  border: 1px solid var(--border); padding: 14px 16px;
+  margin-bottom: 20px;
 }
 .stats-level-widget-icon {
   width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0;
@@ -2037,17 +2220,17 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 .stats-level-widget-top { font-weight: 800; font-size: 14px; margin-bottom: 5px; }
 .stats-level-widget-bar { height: 6px; margin-bottom: 4px; }
 .stats-level-widget-xp { font-size: 11.5px; color: var(--sub); font-weight: 700; }
-@media(max-width:600px){ .stats-section{padding:13px}.stats-mini-grid{grid-template-columns:repeat(2,1fr)} }
+@media(max-width:600px){ .stats-mini-grid{grid-template-columns:repeat(2,1fr)} }
 
 /* ===== Estadísticas v2: "Perfil de rendimiento" ===== */
-.stats-empty{ display:none; text-align:center; padding:40px 20px; border:1px dashed var(--border); border-radius:16px; margin:16px 0; }
+.stats-empty{ display:none; text-align:center; padding:40px 20px; border:1px dashed var(--border); border-radius:var(--radius-md); margin:16px 0; }
 .stats-empty-icon{ font-size:38px; margin-bottom:10px; }
 .stats-empty-title{ font-weight:900; font-size:16px; margin-bottom:6px; }
 .stats-empty-sub{ color:var(--sub); font-size:13px; margin:0; }
 
 .stats-hero{
   text-align:center; padding:26px 18px; margin:16px 0;
-  border-radius:18px; border:1px solid var(--border);
+ border:1px solid var(--border);
   background:linear-gradient(160deg, rgba(37,99,235,.10), var(--card) 70%);
 }
 .stats-hero-value{ font-size:44px; font-weight:900; color:var(--primary); line-height:1; }
@@ -2058,7 +2241,7 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 .stats-highlight-row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:0 0 8px; }
 .stats-highlight{
   display:flex; align-items:center; gap:12px; min-width:0;
-  padding:14px 15px; border:1px solid var(--border); border-radius:14px; background:var(--card);
+  padding:14px 15px; border:1px solid var(--border); background:var(--card);
 }
 .stats-highlight-icon{ flex:0 0 44px; width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow: 0 5px 12px rgba(0,0,0,.16); }
 .stats-icon-streak{ background: linear-gradient(135deg,#f59e0b,#dc2626); }
@@ -2075,7 +2258,6 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 .knowledge-tag.tag-progress{ color:#92400e; background:rgba(245,158,11,.14); border-color:transparent; }
 .knowledge-tag.tag-weak{ color:#991b1b; background:var(--bad-bg); border-color:transparent; }
 
-.settings-section { background: var(--badge-bg); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 16px; box-shadow: inset 3px 0 0 0 var(--primary); }
 .settings-section h3 { display: flex; align-items: center; gap: 6px; }
 .settings-note { font-size: 13px; color: var(--sub); line-height: 1.5; margin: 0 0 10px; }
 .settings-note.settings-warning { color: var(--danger-txt); }
@@ -2085,12 +2267,12 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 .settings-status-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; flex-shrink: 0; }
 .settings-field { margin-bottom: 16px; }
 .settings-field:last-child { margin-bottom: 0; }
-.settings-field-label { display: block; font-size: 13px; font-weight: 700; color: var(--sub); margin-bottom: 8px; }
+.settings-field-label { font-size: 13px; font-weight: 700; color: var(--sub); margin-bottom: 8px; }
 .segmented-control { display: flex; gap: 6px; flex-wrap: wrap; }
-.segmented-btn { flex: 1 1 auto; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+.segmented-btn { flex: 1 1 auto; padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
 .segmented-btn:hover { background: var(--border); }
 .segmented-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
-.settings-danger-zone { border-color: var(--danger-txt); box-shadow: inset 3px 0 0 0 var(--danger-txt); }
+.settings-danger-zone { box-shadow: inset 3px 0 0 0 var(--danger-txt); }
 .settings-version-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
 .settings-version-badge { display: inline-block; padding: 4px 11px; border-radius: 999px; background: var(--primary); color: #fff; font-size: 12px; font-weight: 800; letter-spacing: .3px; }
 .settings-changelog { margin-bottom: 14px; }
@@ -2109,8 +2291,8 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 
 /* ===== v1.4: selector de modos, estadísticas y logros ===== */
 .modes-grid .mode-card{
-  position:relative; overflow:hidden; min-height:190px;
-  padding:22px; border:2px solid transparent;
+  position:relative; overflow:hidden;
+ border:2px solid transparent;
   transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
 }
 .modes-grid .mode-card:hover{transform:translateY(-4px)}
@@ -2143,8 +2325,7 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
   .mode-card.mode-lucidez{ animation:none; }
 }
 .mode-card-icon{
-  width:54px;height:54px;border-radius:15px;display:flex;align-items:center;justify-content:center;
-  font-size:29px;margin-bottom:13px;
+display:flex;align-items:center;justify-content:center;
 }
 .mode-standard .mode-card-icon{background:rgba(37,99,235,.12)}
 .mode-review .mode-card-icon{background:rgba(13,148,136,.12)}
@@ -2152,8 +2333,8 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 .mode-sudden .mode-card-icon{background:rgba(220,38,38,.12)}
 .mode-timetrial .mode-card-icon{background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(6,182,212,.12))}
 .mode-mentalcalc .mode-card-icon{background:linear-gradient(135deg,rgba(24,24,27,.15),rgba(82,82,91,.12))}
-.mode-card h3{margin:0 0 8px;font-size:18px}
-.mode-card p{margin:0;line-height:1.5}
+.mode-card h3{margin:0 0 8px;}
+.mode-card p{margin:0;}
 .mode-card .mode-subtitle{
   margin-top:14px;padding-top:11px;border-top:1px solid var(--border);
   font-size:11px;font-weight:900;letter-spacing:.15px;
@@ -2209,8 +2390,8 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 }
 .stat-extra{
   min-width:0;display:flex;align-items:center;gap:12px;
-  padding:14px 15px;border:1px solid var(--border);border-radius:14px;
-  background:var(--card);box-sizing:border-box;
+  padding:14px 15px;border:1px solid var(--border);
+box-sizing:border-box;
 }
 .stat-extra-icon{
   flex:0 0 44px;width:44px;height:44px;border-radius:50%;
@@ -2231,7 +2412,7 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 
 .performance-box{
   margin:0 0 22px;padding:16px 17px;border:1px solid var(--border);
-  border-radius:14px;background:var(--card);
+  border-radius:var(--radius-md);background:var(--card);
 }
 .performance-title{display:flex;justify-content:space-between;gap:10px;margin-bottom:14px;font-weight:900}
 .performance-bars{display:flex;align-items:flex-end;gap:7px;height:96px;padding:0 3px 3px;border-bottom:1px solid var(--border)}
@@ -2244,30 +2425,19 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 /* Logros: usamos las clases reales .medal-card / .icon */
 .medals-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
 .medal-card{
-  position:relative;min-height:185px;padding:20px 16px;text-align:center;
-  border:1px solid var(--border);border-radius:17px;background:var(--card);
+  position:relative;text-align:center;
+  border:1px solid var(--border);border-radius:var(--radius-md);background:var(--card);
   transition:transform .2s ease,box-shadow .2s ease;
   box-sizing:border-box;
 }
-.medal-card.unlocked{
-  border-color:rgba(212,175,55,.52);
-  background:linear-gradient(145deg,rgba(212,175,55,.10),var(--card) 62%);
-  box-shadow:0 8px 24px rgba(212,175,55,.10);
-}
 .medal-card.unlocked:hover{transform:translateY(-4px)}
 .medal-card .icon,.medal-card .medal-icon{
-  width:68px;height:68px;margin:0 auto 12px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;font-size:38px;
+margin:0 auto 12px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
   background:var(--badge-bg);border:2px solid var(--border);
 }
-.medal-card.unlocked .icon{
-  background:linear-gradient(145deg,#fff9db,#fef3c7);
-  border-color:rgba(212,175,55,.60);
-  box-shadow:0 5px 17px rgba(212,175,55,.20);
-}
-.medal-title{font-weight:900;font-size:15px;margin-bottom:6px}
-.medal-desc{font-size:12px;line-height:1.4;color:var(--sub)}
-.medal-card.secret-locked{opacity:.76}
+.medal-title{font-weight:900;margin-bottom:6px}
+.medal-desc{line-height:1.4;color:var(--sub)}
 .medal-card.secret-locked .medal-icon{filter:grayscale(1);font-size:29px}
 .medal-card.secret-locked .medal-title{font-size:14px}
 @media(max-width:760px){.medals-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -2278,9 +2448,9 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
   position:fixed;top:76px;left:50%;z-index:9999;
   display:flex;align-items:center;gap:12px;padding:12px 17px;
   min-width:280px;max-width:calc(100vw - 28px);box-sizing:border-box;
-  border:2px solid rgba(245,158,11,.52);border-radius:15px;
+  border:2px solid rgba(245,158,11,.52);border-radius:var(--radius-md);
   background:linear-gradient(135deg,#fffdf0,#fff6d1);color:#78350f;
-  box-shadow:0 16px 45px rgba(0,0,0,.22);
+  box-shadow:var(--shadow-elevated);
   opacity:0;transform:translate(-50%,-18px);pointer-events:none;
   transition:opacity .22s ease,transform .22s ease;
 }
@@ -2299,7 +2469,7 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 }
 [data-theme="dark"] .streak-badge{color:#fbbf24;background:rgba(245,158,11,.14)}
 .streak-progress{
-  margin-top:8px;height:4px;border-radius:99px;overflow:hidden;
+  margin-top:8px;height:4px;border-radius: var(--radius-pill);overflow:hidden;
   background:rgba(245,158,11,.10);
 }
 .streak-progress-fill{
@@ -2321,27 +2491,13 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 
 /* Logros: visibles desde el principio, desbloqueados destacan */
 .medal-card.locked{
-  opacity:.72;
-  filter:saturate(.45);
   background:linear-gradient(145deg,rgba(127,127,127,.035),var(--card));
-}
-.medal-card.locked .icon{
-  opacity:.78;
 }
 .medal-card.locked .medal-title{
   color:var(--text);
 }
-.medal-status{
-  margin-top:10px;
-  font-size:9px;
-  font-weight:900;
-  letter-spacing:.6px;
-}
 .medal-status.locked-status{
   opacity:.55;
-}
-.medal-card.unlocked .medal-status{
-  color:#a17c00;
 }
 
 
@@ -2357,13 +2513,9 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
   font-size:31px;
   margin-bottom:9px;
 }
-.medal-card.unlocked .icon{
-  width:58px;height:58px;
-  font-size:32px;
-}
 .medal-title{font-size:14px}
 .medal-desc{font-size:11px}
-.medal-status{margin-top:7px;font-size:8px}
+.medal-status{ font-weight:900; letter-spacing:.6px; margin-top:7px;font-size:8px}
 
 /* Selector de modos más compacto */
 .modes-grid .mode-card{
@@ -2372,7 +2524,7 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 }
 .mode-card-icon{
   width:46px;height:46px;
-  border-radius:12px;
+  border-radius:var(--radius-sm);
   font-size:24px;
   margin-bottom:9px;
 }
@@ -2386,23 +2538,17 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 #mode-desc-sd-main,
 #mode-desc-timetrial{
   position:relative;
-  top:8px;
 }
 
 #mode-req-survival-main,
 #mode-req-sudden_death_main,
 #mode-req-timetrial{
   position:relative;
-  top:6px;
 }
 
 /* En pantallas pequeñas, aún más compacto */
 @media(max-width:600px){
-  .modes-grid .mode-card{
-    min-height:150px;
-    padding:14px;
-  }
-
+  
   /* Solo baja ligeramente las descripciones de estos cuatro modos.
      No modifica títulos, candados, requisitos ni el resto de modos. */
   #mode-desc-survival-main,
@@ -2410,7 +2556,6 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
   #mode-desc-timetrial,
   #mode-desc-mental-calc{
     position:relative;
-    top:8px;
   }
 
   /* Solo baja ligeramente los requisitos de estos cuatro modos.
@@ -2420,32 +2565,14 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
   #mode-req-timetrial,
   #mode-req-mental_calc{
     position:relative;
-    top:6px;
   }
-  .mode-card-icon{
-    width:40px;height:40px;
-    border-radius:10px;
-    font-size:21px;
-    margin-bottom:7px;
-  }
-  .mode-card h3{font-size:16px}
-
+    
   /* En móvil, mantener el contador de Repaso en la misma línea que el título. */
   .mode-review h3{
     white-space:nowrap;
   }
 
-  .medals-grid{gap:10px}
-  .medal-card{
-    min-height:145px;
-    padding:13px 10px;
-  }
-  .medal-card .icon,.medal-card .medal-icon,
-  .medal-card.unlocked .icon{
-    width:48px;height:48px;
-    font-size:27px;
-  }
-}
+      }
 
 
 
@@ -2465,58 +2592,20 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 
 
 @media(max-width:600px){
-  /* Ajuste móvil: que la cabecera, racha y progreso respiren y no se corten */
-  body{padding:8px;}
-  .app{width:100%;max-width:100%;}
-  .card{padding:14px;border-radius:16px;}
-  .top-bar{display:block;margin-bottom:12px;padding-bottom:10px;}
-  .brand{font-size:14px;line-height:1.2;margin-bottom:9px;max-width:100%;}
-  .stats-badges{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;width:100%;font-size:10px;}
-  .stats-badges .badge{padding:6px 4px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .nav{gap:3px;margin-bottom:14px;padding-bottom:3px;}
-  .tab-btn{padding:10px 8px;font-size:11px;touch-action:manipulation;}
-
-  /* Evita el zoom automático de Safari/iOS al enfocar un campo con
-     font-size menor de 16px, que además desplaza el layout. */
-  input[type="text"], select { font-size:16px; }
-
-  /* Mientras se juega, la marca/insignias/pestañas pesan más que aportan:
-     las compactamos para dejar sitio a la pregunta y la respuesta. */
-  body.in-game .top-bar{margin-bottom:6px;padding-bottom:6px;}
-  body.in-game .brand{font-size:11px;margin-bottom:6px;opacity:.7;}
-  body.in-game .nav{margin-bottom:8px;}
-  .card.theme-standard .mode-header,
+          .brand{max-width:100%;}
+  .stats-badges{width:100%;font-size:10px;}
+  .stats-badges .badge{text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    
+  
+        .card.theme-standard .mode-header,
   .card.theme-review .mode-header,
   .card.theme-survival .mode-header,
   .card.theme-sudden .mode-header,
   .card.theme-timetrial .mode-header{
-    margin:3px 0 10px;
-    padding:9px 10px 9px 39px;
-    border-radius:11px;
-    font-size:11px;
-    line-height:1.25;
-    min-height:36px;
     display:flex;
     align-items:center;
   }
-  .card.theme-review .mode-header::before,
-  .card.theme-standard .mode-header::before,
-  .card.theme-survival .mode-header::before,
-  .card.theme-sudden .mode-header::before,
-  .card.theme-timetrial .mode-header::before{
-    left:11px;font-size:18px;
-  }
-  /* En pantallas estrechas el texto de progreso ("MUERTE SÚBITA · ☠️ ...")
-     puede ser más largo que el hueco disponible y chocar con la etiqueta
-     "UN SOLO FALLO"/"SPRINT" de la derecha. Esa misma información ya se
-     repite junto a los botones (.actions::before), así que la ocultamos
-     aquí para evitar el solape y dejamos que el texto se recorte limpio. */
-  .card.theme-sudden .mode-header::after,
-  .card.theme-timetrial .mode-header::after,
-  .card.theme-lucidez .mode-header::after{
-    display:none;
-  }
-  .card.theme-standard .mode-header span,
+      .card.theme-standard .mode-header span,
   .card.theme-review .mode-header span,
   .card.theme-survival .mode-header span,
   .card.theme-sudden .mode-header span,
@@ -2525,8 +2614,7 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
     text-overflow:ellipsis;
     white-space:nowrap;
   }
-  .progress-bar{height:7px;margin-bottom:12px;}
-}
+  }
 @media(max-width:360px){
   .tab-btn{padding:6px 6px;font-size:10px;}
 }
@@ -2554,13 +2642,14 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 }
 #menu-difficulty-modes .submenu-header{
   padding:12px 14px;
-  border-radius:15px;
+  border-radius:var(--radius-md);
   border:1px solid var(--border);
   margin-bottom:14px;
 }
 #menu-difficulty-modes .submenu-header h2{
-  font-weight:900;
-  letter-spacing:-.2px;
+  font-family:var(--font-display);
+  font-weight:700;
+  letter-spacing:.2px;
 }
 
 /* Supervivencia */
@@ -2573,12 +2662,7 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
    solo un borde fino de color identificando el modo (nada de degradado de
    color de fondo ni texto en color, que resultaba demasiado cargado). */
 #menu-difficulty-modes.diff-survival .mode-card{
-  border-color:#f59e0b;
   background:var(--card);
-}
-#menu-difficulty-modes.diff-survival .mode-card:hover{
-  border-color:#f59e0b;
-  box-shadow:0 8px 20px rgba(245,158,11,.15);
 }
 #menu-difficulty-modes.diff-survival .mode-card h3{color:var(--text)}
 
@@ -2589,35 +2673,10 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
   border-color:rgba(220,38,38,.30);
 }
 #menu-difficulty-modes.diff-sudden .mode-card{
-  border-color:#dc2626;
   background:var(--card);
-}
-#menu-difficulty-modes.diff-sudden .mode-card:hover{
-  border-color:#dc2626;
-  box-shadow:0 8px 20px rgba(220,38,38,.15);
 }
 #menu-difficulty-modes.diff-sudden .mode-card h3{color:var(--text)}
 
-/* Cada dificultad conserva una tarjeta limpia, pero adopta el color del modo. */
-#menu-difficulty-modes .mode-card{
-  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease,background .2s ease;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  min-height:120px;
-}
-/* A diferencia de la rejilla de modos normal, aquí solo hay 2-3 opciones:
-   una sola columna a todo el ancho se lee mejor que dejar la última tarjeta
-   sola ocupando solo la mitad de la fila. */
-#menu-difficulty-modes .modes-grid{
-  grid-template-columns: 1fr;
-}
-#menu-difficulty-modes .mode-card h3{
-  font-weight:900;
-  font-size:22px;
-  margin:0;
-  text-align:center;
-}
 [data-theme="dark"] #menu-difficulty-modes.diff-survival .submenu-header{color:#fcd34d}
 [data-theme="dark"] #menu-difficulty-modes.diff-sudden .submenu-header{color:#fca5a5}
 
@@ -2625,7 +2684,7 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
 /* v2.0: candados nuevos — iconos gráficos claramente distintos */
 .mode-lock-badge{
   top:9px;right:9px;width:42px;height:42px;
-  border-radius:12px;display:flex;align-items:center;justify-content:center;
+  border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;
   font-size:0;line-height:0;background:rgba(255,255,255,.88);
   border:2px solid rgba(148,163,184,.42);
   box-shadow:0 4px 12px rgba(15,23,42,.12);
@@ -2650,9 +2709,6 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
   opacity:1;
   border:2px solid #d4af37;
   background:linear-gradient(145deg,rgba(255,248,200,.92),rgba(212,175,55,.18) 38%,var(--card) 78%);
-  box-shadow:0 10px 28px rgba(212,175,55,.22), inset 0 0 0 1px rgba(255,255,255,.55);
-  position:relative;
-  overflow:hidden;
 }
 .medal-card.unlocked .icon{
   width:70px;height:70px;margin-top:16px;
@@ -2706,13 +2762,9 @@ button.btn { border: 0; border-radius: 12px; padding: 13px 18px; font-size: 15px
   border-color: rgba(232,200,116,.4);
   box-shadow: none;
 }
-.medal-card.locked{opacity:.55;filter:saturate(.35);}
 .medal-card.locked .icon{opacity:.68;}
 @media(max-width:600px){
-  .mode-lock-badge{width:38px;height:38px;border-radius:11px;}
-  .mode-lock-badge::before{width:28px;height:28px;}
-  .medal-card.unlocked .icon{width:58px;height:58px;font-size:32px;}
-}
+      }
 
 /* =========================================================
    SIREdwards QUIZ — MOBILE FIRST POLISH
@@ -2765,7 +2817,7 @@ button.btn:active,.tab-btn:active,.mode-card:not(.locked):active{
 
 /* Durante una partida: máxima prioridad al contenido */
 body.in-game .card{
-  box-shadow:0 8px 28px rgba(0,0,0,.08);
+  box-shadow:var(--shadow-card);
 }
 body.in-game #game-play-area{
   min-width:0;
@@ -2855,7 +2907,7 @@ body.in-game .actions .btn-primary{
   .card{
     width:100%;
     padding:12px;
-    border-radius:17px;
+    border-radius:var(--radius-md);
   }
 
   /* Cabecera */
@@ -2879,7 +2931,7 @@ body.in-game .actions .btn-primary{
     min-width:0;
     padding:7px 3px!important;
     font-size:10px;
-    border-radius:10px;
+    border-radius:var(--radius-sm);
   }
 
   /* Navegación: cuatro botones siempre visibles, sin scroll */
@@ -2891,7 +2943,7 @@ body.in-game .actions .btn-primary{
     margin-bottom:11px!important;
     padding:3px!important;
     border:1px solid var(--border);
-    border-radius:13px;
+    border-radius:var(--radius-sm);
     background:var(--badge-bg);
     overflow:visible;
   }
@@ -2899,7 +2951,7 @@ body.in-game .actions .btn-primary{
     min-width:0;
     min-height:42px;
     padding:7px 3px!important;
-    border-radius:10px!important;
+    border-radius:var(--radius-sm)!important;
     border:0!important;
     font-size:10px!important;
     line-height:1.15;
@@ -2909,7 +2961,7 @@ body.in-game .actions .btn-primary{
   }
   .tab-btn.active{
     background:var(--card);
-    box-shadow:0 2px 8px rgba(0,0,0,.07);
+    box-shadow:var(--shadow-soft);
     border:0!important;
   }
 
@@ -2919,14 +2971,19 @@ body.in-game .actions .btn-primary{
     gap:9px!important;
   }
   .modes-grid .mode-card{
-    min-height:158px!important;
     padding:13px!important;
-    border-radius:16px;
+    border-radius:var(--radius-md);
+  }
+  /* Altura mínima solo para las cards VERTICALES de selección (Jugar y hub de Duelos).
+     Las cards en fila (Duelo por código, «Duelos con amigos») conservan su altura natural. */
+  #menu-main-modes .modes-grid .mode-card,
+  #duel-home.seq-d-hub-on .seq-d-card:not(.seq-d-code){
+    min-height:158px!important;
   }
   .mode-card-icon{
     width:42px!important;
     height:42px!important;
-    border-radius:12px!important;
+    border-radius:var(--radius-sm)!important;
     font-size:22px!important;
     margin-bottom:8px!important;
   }
@@ -2939,9 +2996,7 @@ body.in-game .actions .btn-primary{
   .mode-card p{
     font-size:11px!important;
     line-height:1.35!important;
-    text-align:justify;
-    text-justify:inter-word;
-    hyphens:auto;
+    text-align:left;
     overflow-wrap:break-word;
   }
 
@@ -3017,7 +3072,7 @@ body.in-game .actions .btn-primary{
     margin:3px 0 8px!important;
     min-height:38px;
     padding:8px 9px 8px 38px!important;
-    border-radius:11px;
+    border-radius:var(--radius-sm);
     font-size:11px!important;
     line-height:1.2;
   }
@@ -3055,7 +3110,7 @@ body.in-game .actions .btn-primary{
   .card.theme-timetrial .q-box{
     margin:10px 0!important;
     padding:15px 13px!important;
-    border-radius:13px!important;
+    border-radius:var(--radius-sm)!important;
     font-size:19px!important;
     line-height:1.35;
   }
@@ -3070,7 +3125,7 @@ body.in-game .actions .btn-primary{
     min-height:54px;
     margin-bottom:9px!important;
     padding:13px 14px!important;
-    border-radius:13px!important;
+    border-radius:var(--radius-sm)!important;
     font-size:16px!important;
   }
   body.in-game .actions{
@@ -3082,7 +3137,7 @@ body.in-game .actions .btn-primary{
     min-height:50px;
     padding:11px 10px!important;
     font-size:14px!important;
-    border-radius:13px!important;
+    border-radius:var(--radius-sm)!important;
   }
   body.in-game .actions::before{
     grid-column:1 / -1;
@@ -3095,7 +3150,7 @@ body.in-game .actions .btn-primary{
     margin-top:9px!important;
     padding:12px!important;
     font-size:14px!important;
-    border-radius:12px;
+    border-radius:var(--radius-sm);
   }
 
   /* Resultados */
@@ -3144,7 +3199,7 @@ body.in-game .actions .btn-primary{
   }
   .stat-box{
     padding:12px 8px!important;
-    border-radius:13px!important;
+    border-radius:var(--radius-sm)!important;
   }
   .stat-value{font-size:22px!important}
   .stat-label{font-size:10px!important}
@@ -3155,7 +3210,7 @@ body.in-game .actions .btn-primary{
   .stat-extra{
     padding:10px!important;
     gap:8px!important;
-    border-radius:13px!important;
+    border-radius:var(--radius-sm)!important;
   }
   .stat-extra-icon{
     flex-basis:34px!important;
@@ -3167,7 +3222,7 @@ body.in-game .actions .btn-primary{
   .stat-extra-label{font-size:8px!important}
   .performance-box,.stats-section{
     padding:12px!important;
-    border-radius:14px!important;
+    border-radius:var(--radius-md)!important;
   }
   .medals-grid{
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
@@ -3176,7 +3231,7 @@ body.in-game .actions .btn-primary{
   .medal-card{
     min-height:150px!important;
     padding:11px 7px!important;
-    border-radius:14px!important;
+    border-radius:var(--radius-md)!important;
   }
   .medal-card .icon,.medal-card .medal-icon,
   .medal-card.unlocked .icon{
@@ -3192,7 +3247,7 @@ body.in-game .actions .btn-primary{
   /* Ajustes */
   .settings-section{
     padding:12px!important;
-    border-radius:13px!important;
+    border-radius:var(--radius-sm)!important;
   }
   .segmented-btn{
     padding:9px 8px!important;
@@ -3206,7 +3261,7 @@ body.in-game .actions .btn-primary{
     width:calc(100vw - 24px)!important;
     max-width:calc(100vw - 24px)!important;
     padding:11px 13px!important;
-    border-radius:14px!important;
+    border-radius:var(--radius-md)!important;
   }
   .achievement-toast .toast-icon{font-size:28px!important}
   .achievement-toast .toast-name{font-size:14px!important}
@@ -3217,9 +3272,10 @@ body.in-game .actions .btn-primary{
 /* Móviles muy estrechos */
 @media(max-width:370px){
   body{padding:6px}
-  .card{padding:10px;border-radius:15px}
+  .card{padding:10px;border-radius:var(--radius-md)}
   .modes-grid{gap:7px!important}
-  .modes-grid .mode-card{min-height:150px!important;padding:11px!important}
+  .modes-grid .mode-card{padding:11px!important}
+  #menu-main-modes .modes-grid .mode-card, #duel-home.seq-d-hub-on .seq-d-card:not(.seq-d-code){min-height:150px!important}
   .mode-card p{font-size:10px!important}
   .mode-card h3{font-size:14px!important}
   .mode-card .mode-subtitle{font-size:8px!important}
@@ -3236,7 +3292,7 @@ body.in-game .actions .btn-primary{
 /* Pantallas bajas en horizontal */
 @media(max-height:520px) and (orientation:landscape){
   body{padding:5px 8px}
-  .top-bar{display:flex!important;align-items:center}
+  .top-bar{align-items:center}
   .brand{margin:0!important}
   .stats-badges{width:auto!important;display:flex!important}
   .nav{margin-bottom:6px!important}
@@ -3372,7 +3428,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   /* En móviles, ocultar cabecera/nav al abrir teclado evita el salto vertical
      y deja el juego en la parte superior de la ventana visual. */
   body.keyboard-open .app{width:100%;}
-  body.keyboard-open .card{border-radius:13px!important;}
+  body.keyboard-open .card{border-radius:var(--radius-sm)!important;}
 }
 
 
@@ -3756,41 +3812,18 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 
 /* ===== v2.1: selector de dificultad — tarjetas apiladas y más limpias ===== */
 #menu-difficulty-modes .modes-grid{
-  display:grid !important;
   grid-template-columns:1fr !important;
-  gap:14px !important;
-  margin-top:14px;
 }
 #menu-difficulty-modes .mode-card{
   width:100%;
-  min-height:96px !important;
-  height:96px;
   box-sizing:border-box;
-  padding:16px 22px !important;
-  border-width:2px;
-  border-radius:20px;
-  display:flex !important;
-  align-items:center;
-  justify-content:center;
-  text-align:center;
-  background:linear-gradient(180deg,var(--card),rgba(248,250,252,.96));
-  box-shadow:0 5px 14px rgba(15,23,42,.06);
   transform:none;
 }
 #menu-difficulty-modes .mode-card:hover{
   transform:translateY(-2px) !important;
-  box-shadow:0 9px 22px rgba(15,23,42,.10);
 }
 #menu-difficulty-modes .mode-card:active{
   transform:scale(.985) !important;
-}
-#menu-difficulty-modes .mode-card h3{
-  margin:0 !important;
-  font-size:21px !important;
-  line-height:1.2;
-  font-weight:900;
-  letter-spacing:-.25px;
-  text-align:center;
 }
 #menu-difficulty-modes.diff-survival .mode-card{
   border-color:rgba(245,158,11,.72);
@@ -3806,26 +3839,12 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   border-color:#dc2626;
   box-shadow:0 9px 22px rgba(220,38,38,.16);
 }
-[data-theme="dark"] #menu-difficulty-modes .mode-card{
-  background:linear-gradient(180deg,var(--card),rgba(30,41,59,.96));
-  box-shadow:0 5px 16px rgba(0,0,0,.20);
-}
 
 @media(max-width:600px){
   #menu-difficulty-modes .modes-grid{
     grid-template-columns:1fr !important;
-    gap:12px !important;
   }
-  #menu-difficulty-modes .mode-card{
-    min-height:88px !important;
-    height:88px;
-    padding:14px 18px !important;
-    border-radius:18px;
-  }
-  #menu-difficulty-modes .mode-card h3{
-    font-size:19px !important;
-  }
-}
+    }
 
 /* ===== TARJETAS DE DIFICULTAD · ESTILO JUEGO ===== */
 #menu-difficulty-modes .modes-grid{
@@ -3845,11 +3864,11 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   text-align:center !important;
   padding:18px 58px 18px 24px !important;
   border:2px solid rgba(245,158,11,.42) !important;
-  border-radius:22px !important;
+  border-radius:var(--radius-lg) !important;
   background:
     radial-gradient(circle at 10% 0%, rgba(255,255,255,.85), transparent 34%),
     linear-gradient(135deg, rgba(245,158,11,.10), var(--card) 58%) !important;
-  box-shadow:0 7px 0 rgba(180,83,9,.10), 0 12px 26px rgba(0,0,0,.06) !important;
+  box-shadow:var(--shadow-soft) !important;
   overflow:hidden !important;
   transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease !important;
 }
@@ -3885,9 +3904,9 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 }
 
 #menu-difficulty-modes .mode-card:hover{
-  transform:translateY(-3px);
+  transform:var(--state-lift);
   border-color:rgba(245,158,11,.75) !important;
-  box-shadow:0 9px 0 rgba(180,83,9,.13), 0 16px 30px rgba(0,0,0,.09) !important;
+  box-shadow:var(--shadow-card) !important;
 }
 
 #menu-difficulty-modes .mode-card:hover::after{
@@ -3896,8 +3915,8 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 }
 
 #menu-difficulty-modes .mode-card:active{
-  transform:translateY(3px);
-  box-shadow:0 3px 0 rgba(180,83,9,.10), 0 7px 15px rgba(0,0,0,.06) !important;
+  transform:var(--state-press);
+  box-shadow:var(--shadow-soft) !important;
 }
 
 #menu-difficulty-modes .mode-card h3{
@@ -3953,7 +3972,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   background:
     radial-gradient(circle at 10% 0%, rgba(255,255,255,.06), transparent 34%),
     linear-gradient(135deg,rgba(245,158,11,.13),var(--card) 60%) !important;
-  box-shadow:0 7px 0 rgba(0,0,0,.20),0 12px 26px rgba(0,0,0,.20) !important;
+  box-shadow:var(--shadow-soft) !important;
 }
 [data-theme="dark"] #menu-difficulty-modes .mode-card::after{
   color:#fbbf24;
@@ -4045,7 +4064,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
    secundaria de siempre (.btn-secondary), con algo menos de énfasis aún. */
 .btn-whatsapp {
   background: #25D366; color: #fff; border: none; font-weight: 800;
-  padding: 12px 16px; border-radius: 12px; font-size: 15px; cursor: pointer;
+  padding: 12px 16px; border-radius: var(--radius-sm); font-size: 15px; cursor: pointer;
 }
 .btn-whatsapp:active { background: #1ebd5a; }
 .btn-duel-secondary { opacity: .85; font-weight: 600; }
@@ -4056,7 +4075,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
    nuevo ni el rgba() fijo que había antes. */
 .duel-code-display {
   font-family: ui-monospace, monospace; font-size: 22px; font-weight: 800;
-  letter-spacing: 2px; padding: 10px 14px; margin: 8px 0; border-radius: 10px;
+  letter-spacing: 2px; padding: 10px 14px; margin: 8px 0; border-radius: var(--radius-sm);
   background: var(--accent-purple-surface); color: var(--accent-purple-text); display: inline-block;
   cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent;
 }
@@ -4087,8 +4106,6 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
    componente o añadir gradientes/glows nuevos. Sin icono en el h2, igual
    que el resto de secciones (Jugar/Estadísticas/Logros/Ajustes). */
 #view-duelo .section-topbar-sub { color: var(--accent-purple-text); }
-#view-duelo .btn-secondary { background: #eef0f3; }
-[data-theme="dark"] #view-duelo .btn-secondary { background: var(--badge-bg); }
 
 /* Tres acciones principales: jerarquía primaria (Crear reto) / secundaria
    (Unirme) / histórico (Mis retos). Pasada visual final: cada acción es
@@ -4126,7 +4143,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 .duel-action-icon-unirse { background: linear-gradient(135deg, var(--accent-blue), var(--primary-dark)); }
 .duel-action-icon-retos { background: linear-gradient(135deg, var(--accent-gold-mid), var(--accent-gold-strong)); }
 .duel-action-text { flex: 1; min-width: 0; }
-.duel-action-text h3 { margin: 0 0 4px; font-family: var(--font-display); }
+.duel-action-text h3 { margin: 0 0 4px; }
 .duel-action-text p { margin: 0; }
 
 /* Menú principal de Duelo (Crear reto/Unirme/Mis retos): ancho contenido
@@ -4318,6 +4335,8 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
    Los emoji del CONTENIDO del juego (categorías, resultados, logros
    individuales) no se tocan. */
 .icon-svg { width: 1em; height: 1em; display: block; flex-shrink: 0; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+/* Símbolos de marca a color (#se-target, #se-swords en index.html): mismos dibujos que las insignias de Home. */
+.se-sym { width: 72%; height: 72%; display: block; flex-shrink: 0; }
 .home-level-top .icon-svg { color: var(--accent-gold-mid); }
 
 /* ---------- HOME — recreación fiel del mockup de referencia ---------- */
@@ -4325,25 +4344,14 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   position: relative;
   margin: -24px -24px -24px -24px;
   padding: 34px 22px 26px;
-  --home-navy: #16244a;
-  --home-cream: #faf3e6;
-  --home-cream-deep: #f1e6d2;
-  --home-purple: #5b2e8f;
-  --home-gold: #c9992e;
-  --home-gold-light: #e8c874;
-  background: radial-gradient(120% 65% at 50% 0%, #fffaf0 0%, var(--home-cream) 45%, var(--home-cream-deep) 100%);
-}
-[data-theme="dark"] #view-home {
-  --home-cream: #1b2338;
-  --home-cream-deep: #12182a;
-  --home-navy: #f4ede0;
+  background: radial-gradient(120% 65% at 50% 0%, #fffaf0 0%, var(--brand-cream) 45%, var(--brand-cream-deep) 100%);
 }
 
 .home-header {
   display: flex; align-items: center; justify-content: center; gap: 14px;
   margin: 4px 0 22px;
 }
-.home-emblem-spark { color: var(--home-gold); font-size: 15px; opacity: .85; flex-shrink: 0; }
+.home-emblem-spark { color: var(--brand-gold); font-size: 15px; opacity: .85; flex-shrink: 0; }
 .home-emblem { position: relative; width: 128px; height: 128px; flex-shrink: 0; display:flex; align-items:center; justify-content:center; }
 .home-emblem::before { display:none; }
 .home-emblem-ring {
@@ -4351,27 +4359,27 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   background: transparent; border: 0; box-shadow: none;
   display: flex; align-items: center; justify-content: center;
 }
-.home-hat-svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 8px 10px rgba(19,31,61,.18)); }
+.home-hat-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 8px 10px rgba(19,31,61,.18)); }
 
 .home-title {
   text-align: center; font-family: var(--font-display);
-  font-size: clamp(30px, 9vw, 44px); font-weight: 700; color: var(--home-navy);
+  font-size: clamp(30px, 9vw, 44px); font-weight: 700; color: var(--brand-navy);
   letter-spacing: .5px; margin: 4px 0 10px; line-height: 1.08;
   font-variant: small-caps;
 }
 .home-subtitle {
   display: flex; align-items: center; justify-content: center; gap: 10px;
-  color: var(--home-purple); font-weight: 700; font-size: 11.5px;
+  color: var(--brand-purple); font-weight: 700; font-size: 11.5px;
   letter-spacing: 2px; margin-bottom: 28px; text-transform: uppercase;
 }
-.home-sub-line { flex: 0 1 60px; height: 1px; background: linear-gradient(90deg, transparent, var(--home-gold)); }
-.home-subtitle .home-sub-line:last-child { background: linear-gradient(90deg, var(--home-gold), transparent); }
-.home-subtitle .home-sub-diamond { color: var(--home-gold); opacity: .9; font-size: 10px; flex-shrink: 0; }
+.home-sub-line { flex: 0 1 60px; height: 1px; background: linear-gradient(90deg, transparent, var(--brand-gold)); }
+.home-subtitle .home-sub-line:last-child { background: linear-gradient(90deg, var(--brand-gold), transparent); }
+.home-subtitle .home-sub-diamond { color: var(--brand-gold); opacity: .9; font-size: 10px; flex-shrink: 0; }
 
 .home-big-cards { display: flex; flex-direction: column; gap: 18px; margin-bottom: 24px; }
 .home-big-card {
   display: flex; align-items: center; gap: 18px; padding: 22px 24px;
-  border-radius: 22px; cursor: pointer; touch-action: manipulation;
+  border-radius: var(--radius-lg); cursor: pointer; touch-action: manipulation;
   color: #fff; position: relative; overflow: hidden; isolation: isolate;
   border: 1px solid rgba(232,200,116,.35);
   box-shadow: 0 16px 34px rgba(15,23,42,.22);
@@ -4396,7 +4404,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   background-size: 22px 22px; opacity: .14;
 }
 .home-big-card.home-card-duelo {
-  background: linear-gradient(150deg, #6d3fc0, var(--home-purple) 55%, #2c1250);
+  background: linear-gradient(150deg, #6d3fc0, var(--brand-purple) 55%, #2c1250);
 }
 .home-big-card.home-card-duelo::after {
   content: "⚔"; position: absolute; right: 4px; bottom: -18px; z-index: 0;
@@ -4405,7 +4413,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 .home-big-icon {
   width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0; padding: 8px;
   background: radial-gradient(circle at 35% 30%, #fffaf0, #f1e6d2 80%);
-  border: 3px solid var(--home-gold);
+  border: 3px solid var(--brand-gold);
   box-shadow: 0 6px 14px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,.5);
   display: flex; align-items: center; justify-content: center;
 }
@@ -4415,7 +4423,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 .home-big-sub { font-size: 13px; opacity: .85; margin-top: 4px; font-weight: 500; }
 .home-big-arrow {
   font-size: 18px; font-weight: 700; flex-shrink: 0; width: 34px; height: 34px;
-  border-radius: 50%; border: 1.5px solid var(--home-gold-light);
+  border-radius: 50%; border: 1.5px solid var(--brand-gold-light);
   background: rgba(255,255,255,.08); display: flex;
   align-items: center; justify-content: center;
 }
@@ -4423,29 +4431,25 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 .home-small-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 22px; }
 .home-small-card {
   background: linear-gradient(180deg, #fffdf8, #faf3e6); text-align: center;
-  border: 1px solid rgba(201,153,46,.35); border-radius: 18px;
+  border: 1px solid var(--color-border-accent); border-radius: var(--radius-md);
   padding: 18px 8px 14px; cursor: pointer; touch-action: manipulation;
   display: flex; flex-direction: column; align-items: center; position: relative;
-  box-shadow: 0 8px 18px rgba(19,31,61,.08);
+  box-shadow: var(--shadow-card);
   transition: transform .15s ease, box-shadow .15s ease;
 }
 .home-small-card:active { transform: scale(.97); }
 @media (hover:hover) {
-  .home-small-card:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(19,31,61,.14); }
+  .home-small-card:hover { transform: var(--state-lift); box-shadow: var(--shadow-elevated); }
 }
 /* v1.4 — el fondo de estas tarjetas era un crema fijo que nunca cambiaba
-   con el tema, mientras que --home-navy (color del título) sí se invertía
+   con el tema, mientras que --brand-navy (color del título; antes --home-navy) sí se invertía
    a crema claro en modo oscuro: el resultado era texto claro sobre fondo
    claro, casi ilegible ("Estadísticas", "Logros", "Ajustes"). Se les da su
    propio fondo oscuro, reutilizando los mismos tokens que ya pinta
    #view-home en modo oscuro para que combinen con el resto de la pantalla. */
 [data-theme="dark"] .home-small-card {
-  background: linear-gradient(180deg, var(--home-cream), var(--home-cream-deep));
-  border-color: rgba(232,200,116,.3);
-  box-shadow: 0 8px 18px rgba(0,0,0,.35);
-}
-@media (hover:hover) {
-  [data-theme="dark"] .home-small-card:hover { box-shadow: 0 12px 24px rgba(0,0,0,.45); }
+  background: linear-gradient(180deg, var(--brand-cream), var(--brand-cream-deep));
+  border-color: var(--color-border-accent);
 }
 .home-small-icon {
   width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center;
@@ -4453,34 +4457,34 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   box-shadow: 0 5px 12px rgba(0,0,0,.16);
 }
 .home-small-icon svg { width: 22px; height: 22px; }
-.home-card-stats .home-small-icon { background: linear-gradient(135deg,#3b6fd6,var(--home-navy)); }
-.home-card-medals .home-small-icon { background: linear-gradient(135deg,var(--home-gold-light),var(--home-gold)); }
+.home-card-stats .home-small-icon { background: linear-gradient(135deg,#3b6fd6,var(--brand-navy)); }
+.home-card-medals .home-small-icon { background: linear-gradient(135deg,var(--brand-gold-light),var(--brand-gold)); }
 .home-card-settings .home-small-icon { background: linear-gradient(135deg,#8791a3,#525b6e); }
-.home-small-title { font-family: var(--font-display); font-size: 12.5px; font-weight: 700; letter-spacing: .5px; color: var(--home-navy); }
-.home-small-divider { width: 26px; height: 1px; background: var(--home-gold); opacity: .6; margin: 7px auto; position: relative; }
+.home-small-title { font-family: var(--font-display); font-size: 12.5px; font-weight: 700; letter-spacing: .5px; color: var(--brand-navy); }
+.home-small-divider { width: 26px; height: 1px; background: var(--brand-gold); opacity: .6; margin: 7px auto; position: relative; }
 .home-small-divider::before {
   content: "◆"; position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
-  font-size: 6px; color: var(--home-gold); background: var(--home-cream);
+  font-size: 6px; color: var(--brand-gold); background: var(--brand-cream);
 }
 .home-small-sub { font-size: 10.5px; color: var(--sub); margin: 0 0 10px; line-height: 1.3; }
-.home-small-arrow { font-size: 14px; color: var(--home-gold); margin-top: auto; font-weight: 700; }
+.home-small-arrow { font-size: 14px; color: var(--brand-gold); margin-top: auto; font-weight: 700; }
 
 .home-footer { text-align: center; margin-top: 6px; }
 .home-footer-line {
   display: flex; align-items: center; gap: 10px; margin: 0 auto 6px; width: 70%;
-  color: var(--home-gold); opacity: .55; font-size: 13px;
+  color: var(--brand-gold); opacity: .55; font-size: 13px;
 }
 .home-footer-line::before, .home-footer-line::after {
   content: ""; flex: 1; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--home-gold));
+  background: linear-gradient(90deg, transparent, var(--brand-gold));
 }
-.home-footer-line::after { background: linear-gradient(90deg, var(--home-gold), transparent); }
-.home-footer-quote-mark { font-family: var(--font-display); font-size: 20px; color: var(--home-gold); margin-bottom: 4px; }
+.home-footer-line::after { background: linear-gradient(90deg, var(--brand-gold), transparent); }
+.home-footer-quote-mark { font-family: var(--font-display); font-size: 20px; color: var(--brand-gold); margin-bottom: 4px; }
 .home-quote {
   font-family: var(--font-display); font-style: italic; font-size: 14.5px;
-  color: var(--home-navy); line-height: 1.5; margin: 0 8px;
+  color: var(--brand-navy); line-height: 1.5; margin: 0 8px;
 }
-.home-quote-author { font-family: var(--font-display); font-size: 12px; color: var(--home-navy); font-weight: 700; margin-top: 10px; letter-spacing: .4px; opacity: .85; }
+.home-quote-author { font-family: var(--font-display); font-size: 12px; color: var(--brand-navy); font-weight: 700; margin-top: 10px; letter-spacing: .4px; opacity: .85; }
 
 
 /* Cabecera "← Título" reutilizada en Jugar/Duelo/Estadísticas/Logros/Ajustes
@@ -4489,16 +4493,20 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
    nivel/XP, sin navegación horizontal — esa identidad ya vive solo en home.
    Debe sentirse parte del mismo sistema: mismo par de fuentes, mucho más
    espacio alrededor y jerarquía clara entre título y subtítulo. */
-.section-topbar { display: flex; align-items: center; gap: 14px; margin: 2px 0 28px; }
+.section-topbar {
+  display: flex; align-items: center; gap: 14px; margin: 2px 0 24px; padding-bottom: 16px;
+  /* Filete dorado que se desvanece: la misma línea de marca que acompaña al subtítulo de Home. */
+  background: linear-gradient(90deg, var(--color-border-accent), transparent 78%) left bottom / 100% 1px no-repeat;
+}
 .section-topbar h2 {
   margin: 0; font-family: var(--font-display); font-weight: 700;
-  font-size: 24px; letter-spacing: .2px; color: var(--text);
+  font-size: 24px; letter-spacing: .2px; color: var(--brand-navy);
 }
 .section-topbar-text { min-width: 0; }
 .section-topbar-sub { margin: 3px 0 0; font-size: 12.5px; color: var(--sub); font-weight: 600; letter-spacing: .2px; }
 .section-back-btn {
   width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border);
-  background: var(--card); color: var(--primary); font-size: 19px; font-weight: 700;
+  background: var(--card); color: var(--brand-navy); font-size: 19px; font-weight: 700;
   display: flex; align-items: center; justify-content: center; cursor: pointer;
   padding: 0; flex-shrink: 0; touch-action: manipulation; box-shadow: var(--shadow-soft);
   transition: transform .15s ease;
@@ -4545,15 +4553,10 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
    ========================================================= */
 
 .stats-section, .history-container {
-  background: transparent; border: none; box-shadow: none; border-radius: 0;
-  padding: 0; margin: 0; margin-top: var(--space-xl);
-  padding-top: var(--space-lg); border-top: 1px solid var(--border);
+ box-shadow: none;
+ margin: 0;
 }
-#view-stats > #stats-content > .stats-section:first-child,
-#view-stats > #stats-content > .stats-hero + .stats-highlight-row + .stats-section {
-  margin-top: var(--space-lg);
-}
-.stats-section h3, .history-container h3 {
+.stats-section h3, .history-container h3, #menu-main-modes > h2 {
   margin: 0 0 14px; font-weight: 800; font-size: 14.5px; letter-spacing: .2px;
 }
 .stats-section-sub { margin: -8px 0 14px; }
@@ -4574,20 +4577,18 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
    solo la Zona de Peligro conserva un tratamiento propio, deliberadamente
    secundario y aislado del resto. */
 .settings-section {
-  background: transparent; border: none; box-shadow: none; border-radius: 0;
-  padding: 0; margin: 0; margin-top: var(--space-xl);
-  padding-top: var(--space-lg); border-top: 1px solid var(--border);
+ box-shadow: none;
+ margin: 0;
 }
-#view-settings > .settings-section:first-of-type { margin-top: var(--space-lg); border-top: none; padding-top: 0; }
+#view-settings > .settings-section:first-of-type { border-top: none; padding-top: 0; }
 .settings-section h3 {
   margin: 0 0 14px; font-weight: 800; font-size: 14.5px; letter-spacing: .2px;
 }
 .settings-danger-zone {
   margin-top: var(--space-xl); padding-top: var(--space-lg);
-  border-top: 1px dashed var(--danger-txt); opacity: .88;
+  border-top: 1px dashed var(--danger-txt);
 }
 .settings-danger-zone h3 { font-size: 13px; }
-.settings-danger-zone:hover { opacity: 1; }
 
 /* Logros: refuerza que lo bloqueado es discreto y lo desbloqueado, valioso —
    sin cambiar el marcado, solo intensificando el contraste ya existente. */
@@ -4619,7 +4620,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   margin-top: var(--space-lg);
 }
 #view-settings > .settings-section:first-of-type { margin-top: 0; }
-.stats-section h3::before, .settings-section h3::before, .history-container h3::before {
+.stats-section h3::before, .settings-section h3::before, .history-container h3::before, #menu-main-modes > h2::before {
   content: '◆'; display: inline-block; font-size: 7px; color: var(--accent-gold-mid);
   opacity: .75; margin-right: 8px; position: relative; top: -2px;
 }
@@ -4981,3 +4982,169 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   border-color: var(--color-border, var(--border));
 }
 [data-theme="dark"] .pwa-install-hint-text { color: var(--color-text, var(--text)); }
+
+/* ============================================================
+   PROMPT 2 — Fase E: Duelo (motion / game feel)
+   Solo motion. Reutiliza los tokens de Fase A (--motion-*, --ease-*) y
+   el sistema de identidad morada de Duelo ya existente (--duel-purple,
+   --accent-purple-*). No se toca ninguna regla de color/layout previa.
+
+   IMPORTANTE — arquitectura de Duelo online (src/online/duels.js):
+   render() reemplaza root.innerHTML por completo en cada sondeo (cada
+   3-5 s mientras el duelo está "pendiente"/"aceptado"/"en_curso"). Un
+   <animation> de una sola pasada sobre un elemento que se repinta así
+   se repetiría en cada sondeo (parpadeo), así que aquí SOLO se anima:
+     a) contenido que se pinta una única vez y no vuelve a sondearse
+        (pantallas estáticas del Duelo por código, y el bloque de
+        resultado final .duel-result-win/-loss/-draw, que solo se pinta
+        cuando el duelo ya está "completado" y el sondeo se detiene), o
+     b) un pulso infinito (que al reiniciarse en fase 0 en cada repintado
+        no se nota) para las cuentas atrás de espera, o
+     c) una transición (no una animation) sobre el marco de la partida,
+        que no se retrigguea si la clase no cambia de valor entre
+        sondeos consecutivos.
+   .duel-result-neutral se deja SIN animación de entrada porque esa
+   clase la reutilizan tanto pantallas estáticas (#duel-join-preview,
+   tratada aparte por id) como las pantallas de espera del Duelo online
+   que sí se repintan por sondeo (pendiente/aceptado/"Empieza en…").
+   ============================================================ */
+
+/* ---- Duelo por código (pantallas estáticas, un único pintado) ------- */
+
+/* Crear reto → lista de modos: entrada breve y escalonada, mismo criterio
+   que .session-medal-item de Fase B pero con la cadencia propia de Duelo. */
+@keyframes duelOptionIn {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.duel-mode-list .duel-mode-option {
+  animation: duelOptionIn var(--motion-short) var(--ease-decelerate) both;
+  animation-delay: calc(var(--motion-micro) * var(--dmo-i, 0));
+}
+.duel-mode-list .duel-mode-option:nth-child(1) { --dmo-i: 0; }
+.duel-mode-list .duel-mode-option:nth-child(2) { --dmo-i: 1; }
+.duel-mode-list .duel-mode-option:nth-child(3) { --dmo-i: 2; }
+.duel-mode-list .duel-mode-option:nth-child(4) { --dmo-i: 3; }
+.duel-mode-list .duel-mode-option:nth-child(5) { --dmo-i: 4; }
+.duel-mode-list .duel-mode-option:nth-child(6) { --dmo-i: 5; }
+
+/* "Reto creado" (código listo para compartir): revelado único, elegante. */
+.duel-created-card {
+  animation: duelResultReveal var(--motion-special) var(--ease-decelerate) both;
+}
+
+/* Vista previa de "Unirme" (código válido reconocido): mismo revelado,
+   acotado por id para no tocar el resto de .duel-result-neutral (ver
+   nota de arquitectura arriba). */
+#duel-join-preview {
+  animation: duelResultReveal var(--motion-medium) var(--ease-decelerate) both;
+}
+
+/* ---- Resultado de Duelo (win/loss/draw): compartido por el Duelo por
+   código (pintado estático) y por resultBlock() del Duelo online, que
+   solo se pinta una vez, cuando el estado ya es "completado" y el
+   sondeo se ha detenido — ambos casos son seguros para una animación
+   de una sola pasada. Personalidad diferenciada sin exagerar: victoria
+   con un leve rebote (coherente con el dorado de "logro"), derrota y
+   empate con una entrada más calmada. */
+@keyframes duelResultReveal {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes duelResultRevealWin {
+  0% { opacity: 0; transform: translateY(8px) scale(.95); }
+  60% { opacity: 1; transform: translateY(0) scale(1.02); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.duel-result-box.duel-result-win {
+  animation: duelResultRevealWin var(--motion-special) var(--ease-emphasized) both;
+}
+.duel-result-box.duel-result-loss {
+  animation: duelResultReveal var(--motion-medium) var(--ease-decelerate) both;
+}
+.duel-result-box.duel-result-draw {
+  animation: duelResultReveal var(--motion-medium) var(--ease-standard) both;
+}
+
+/* ---- Duelo online (src/online/duels.js) ------------------------------ */
+
+/* Cuentas atrás de espera (invitación / sala de espera / "Empieza en…"):
+   pulso sutil e infinito. Es seguro bajo el sondeo porque un bucle
+   infinito reiniciado en fase 0 en cada repintado no se percibe como
+   un salto — a diferencia de una animación de una sola pasada. */
+#seq-duel-root #seq-d-count {
+  display: inline-block;
+  animation: seqDuelCountPulse 1.6s var(--ease-standard) infinite;
+}
+@keyframes seqDuelCountPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .55; }
+}
+
+/* Marco morado de "partida en curso" (#seq-duel-root.seq-d-playing, ya
+   existente en online.css): se añade una transición — no una animation
+   — para que aparezca/desaparezca con suavidad en vez de un corte
+   instantáneo. Una transition no se retrigguea si la clase no cambia de
+   valor entre sondeos, así que es segura bajo el repintado por sondeo.
+   Acotada a la pestaña Duelo activa para no tocar .card en ningún otro
+   sitio de la app. */
+#view-duelo.active .card {
+  transition: border-color var(--motion-special) var(--ease-standard),
+              box-shadow var(--motion-special) var(--ease-standard);
+}
+
+/* ============================================================
+   PROMPT 2 — Fase F: Sir Edwards (character moments)
+   Solo motion sobre el asset oficial ya integrado (Prompt 1.5). No se
+   redibuja, deforma ni altera el personaje ni el sombrero: únicamente
+   transform (scale/rotate) y opacity sobre los tres puntos donde ya
+   aparece — Home (sombrero), Resultados (Victory/Defeat) y Lucidez/
+   Enigma. Auditoría: Lucidez/Enigma ya tenían entrada (lucidezOverlayPop,
+   Prompt 1.5) y el glow del Enigma (Fase D) — no se toca, para no
+   duplicar. No se añade al personaje en sitios donde hoy no aparece
+   (streak, achievements): no hay asset ni hueco para ello, y esta fase
+   es solo motion, no nuevas apariciones. Reutiliza los tokens de las
+   Fases A-D; sin sonido nuevo.
+   ============================================================ */
+
+/* Sombrero de Home: "aparición" sutil (sección 25 del Prompt 2) al
+   entrar en Home, sin tocar silueta ni banda morada — solo scale+opacity
+   sobre el asset ya existente. Comparte el fade de .view.active (Fase A);
+   este añadido es la "aparición" propia del sombrero por encima de ese
+   fade general, con un pequeño retraso para que se sienta como su
+   momento, no como parte del mismo movimiento. */
+@keyframes sirHatAppear {
+  0% { opacity: 0; transform: scale(.88); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.home-hat-img { animation: sirHatAppear var(--motion-medium) var(--ease-decelerate) .1s both; }
+
+/* Victory/Defeat: personalidad diferenciada (sección 22/24: "reacción",
+   "nod", "tilt"). Se conserva moodPop (Prompt 1.5, ya funciona) y se
+   añade un segundo gesto corto, propio de cada desenlace, justo cuando
+   moodPop termina (delay .4s = duración de moodPop). Rotación pequeña,
+   sin squash&stretch ni deformación: un gesto de cabeza/capa, no un
+   redibujado. Victoria: asentimiento breve con un poco más de energía.
+   Derrota: inclinación única, más lenta y sobria — sin exagerar. */
+@keyframes sirEdwardsNodYes {
+  0% { transform: rotate(0deg); }
+  35% { transform: rotate(-4deg); }
+  70% { transform: rotate(1.5deg); }
+  100% { transform: rotate(0deg); }
+}
+@keyframes sirEdwardsNodNo {
+  0% { transform: rotate(0deg); }
+  45% { transform: rotate(3deg); }
+  100% { transform: rotate(0deg); }
+}
+.results-character.char-victory {
+  animation: moodPop .4s cubic-bezier(.34,1.56,.64,1),
+             sirEdwardsNodYes var(--motion-medium) var(--ease-standard) .4s both;
+}
+.results-character.char-defeat {
+  animation: moodPop .4s cubic-bezier(.34,1.56,.64,1),
+             sirEdwardsNodNo var(--motion-special) var(--ease-standard) .4s both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-hat-img { animation: none; }
+}

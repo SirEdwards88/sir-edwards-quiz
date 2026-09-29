@@ -67,6 +67,9 @@ function getDefaultStore() {
     theme: 'light',
     sound: 'on',
     notifiedModeUnlocks: [],
+    // Prompt 4: hitos de Fragmentos (12/15) cuyo aviso ya se mostró. El bonus
+    // de Lucidez se DERIVA de los Fragmentos; esto solo evita repetir el aviso.
+    notifiedFragmentRewards: [],
     bestMentalCalcScore: 0,
     mentalCalcBestStreak: 0,
     bestMentalCalcCorrect: 0,
@@ -85,7 +88,10 @@ function getDefaultStore() {
     // solo se actualizan al UNIRSE a un reto (momento en que se conocen
     // ambos marcadores); crear un reto solo archiva tu propia partida en
     // duelHistory a la espera de que alguien la supere.
-    duelStats: { played: 0, wins: 0, losses: 0, draws: 0, currentWinStreak: 0, bestWinStreak: 0, wonByOnePoint: false, wonByTenPlus: false },
+    // Prompt 4: revengeWon (logro «Revancha»), bestWinsVsRival (logro «¿Otra
+    // vez tú?») y rivals ({[idRival]: {wins, losses}}, solo Duelo online, con
+    // el ID estable del rival) viven dentro de duelStats, igual que el resto.
+    duelStats: { played: 0, wins: 0, losses: 0, draws: 0, currentWinStreak: 0, bestWinStreak: 0, wonByOnePoint: false, wonByTenPlus: false, revengeWon: false, bestWinsVsRival: 0, rivals: {} },
     duelHistory: [],
     // ⚔️ Duelo: códigos de reto ya jugados como retador (joiner), para que
     // repetir un mismo reto no vuelva a contar en duelStats/logros — solo
@@ -170,6 +176,7 @@ function sanitizeStore(s) {
   s.seenQuestionIds = asArray(s.seenQuestionIds);
   s.recentQuestionIds = asArray(s.recentQuestionIds);
   s.notifiedModeUnlocks = asArray(s.notifiedModeUnlocks);
+  s.notifiedFragmentRewards = asArray(s.notifiedFragmentRewards).filter(v => v === 12 || v === 15);
 
   s.questionStats = asPlainObject(s.questionStats);
   s.questionStreaks = asPlainObject(s.questionStreaks);
@@ -224,6 +231,15 @@ function sanitizeStore(s) {
   s.duelStats.bestWinStreak = asFiniteNonNegNumber(s.duelStats.bestWinStreak);
   s.duelStats.wonByOnePoint = asBoolean(s.duelStats.wonByOnePoint);
   s.duelStats.wonByTenPlus = asBoolean(s.duelStats.wonByTenPlus);
+  s.duelStats.revengeWon = asBoolean(s.duelStats.revengeWon);
+  s.duelStats.bestWinsVsRival = asFiniteNonNegNumber(s.duelStats.bestWinsVsRival);
+  const rawRivals = asPlainObject(s.duelStats.rivals);
+  s.duelStats.rivals = {};
+  Object.keys(rawRivals).slice(-100).forEach(id => {
+    if (!/^[0-9A-Z]{10}$/.test(id)) return;
+    const r = asPlainObject(rawRivals[id]);
+    s.duelStats.rivals[id] = { wins: asFiniteNonNegNumber(r.wins), losses: asFiniteNonNegNumber(r.losses) };
+  });
   s.duelHistory = asArray(s.duelHistory).filter(item => item && typeof item === 'object');
   s.duelPlayedCodes = asArray(s.duelPlayedCodes).filter(c => typeof c === 'string' && c);
 

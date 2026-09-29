@@ -78,6 +78,10 @@ const ALL_MEDALS = [
   { id: 'duel_rey_del_empate', icon: '🤝', title: 'El Rey del Empate', desc: 'Consigue 3 empates en duelos.', check: s => (s.duelStats && s.duelStats.draws || 0) >= 3 },
   // Icono 🥇 en vez de 🏆 (ya usado por Victoria Inaugural) para no repetir icono entre logros nuevos.
   { id: 'duel_cinco_victorias', icon: '🥇', title: 'Cinco Victorias', desc: 'Gana 5 duelos.', check: s => (s.duelStats && s.duelStats.wins || 0) >= 5 },
+  // Prompt 4 — dependen del ID estable del rival en Duelo online (ver
+  // registerOnlineDuelResult en index.html). Sin avatar asociado todavía.
+  { id: 'duel_revancha', icon: '🗡️', title: 'Revancha', desc: 'Gana un duelo contra un rival contra el que anteriormente perdiste.', check: s => !!(s.duelStats && s.duelStats.revengeWon) },
+  { id: 'duel_otra_vez_tu', icon: '👀', title: '¿Otra vez tú?', desc: 'Gana al mismo rival 3 veces.', check: s => (s.duelStats && s.duelStats.bestWinsVsRival || 0) >= 3 },
 
   // 👁️ LUCIDEZ MENTAL: LOGROS SECRETOS
   // No otorgan Fragmentos de Mente (el modo ya está desbloqueado para

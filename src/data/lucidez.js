@@ -21,7 +21,8 @@ const LUCIDEZ_RIDDLES = [
   {"q": "Un hombre pasó ocho días sin dormir y no tuvo ningún problema. ¿Cómo es posible?", "a": "Dormía por la noche", "explanation": "Pasó ocho días sin dormir durante el día."},
   {"q": "Hay cuatro cartas: A — K — 4 — 7. Cada una tiene una letra por una cara y un número por la otra. Regla: «Si hay una vocal, detrás hay un número par». ¿Qué cartas debes girar para comprobarla?", "a": "A y 7", "explanation": "Hay que comprobar A para verificar que detrás hay un número par, y 7 para comprobar que detrás no haya una vocal. K y 4 no pueden demostrar que la regla sea falsa."},
   {"q": "Un padre tiene cuatro hijos. Cada hijo tiene una hermana. ¿Cuántos hijos tiene el padre en total?", "a": "5", "explanation": "Los cuatro hijos tienen la misma hermana."},
-  {"q": "Dos hombres juegan cinco partidas de ajedrez. Cada uno gana el mismo número de partidas y no hubo ningún empate. ¿Cómo es posible?", "a": "No jugaban entre ellos", "explanation": "La clave está en asumir algo que la pregunta nunca dice: que los dos hombres se enfrentaron entre sí."}
+  {"q": "Dos hombres juegan cinco partidas de ajedrez. Cada uno gana el mismo número de partidas y no hubo ningún empate. ¿Cómo es posible?", "a": "No jugaban entre ellos", "explanation": "La clave está en asumir algo que la pregunta nunca dice: que los dos hombres se enfrentaron entre sí."},
+  {"q": "Un elefante pesa 1000 kg más que un ratón. Entre los dos pesan 1001 kg. ¿Cuánto pesa el ratón?", "a": "0,5 kg", "explanation": "Si el ratón pesa x, el elefante pesa x + 1000. Entre los dos: x + (x + 1000) = 1001, así que 2x = 1 y x = 0,5 kg."}
 ];;
 
 const LUCIDEZ_PHASE_COPY = {

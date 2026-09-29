@@ -10,7 +10,35 @@
 //
 // v1.3: subido de 1 a 2 porque index.html cambió (versión, modal de
 // novedades). La estrategia de caché en sí no se ha tocado.
-const CACHE_VERSION = 2;
+// v1.4: subido de 2 a 3 (index.html cambió y hay archivos nuevos en el shell:
+// styles/online.css, src/online/config.js y src/online/online.js). La
+// estrategia de caché NO se ha tocado. Las peticiones al Worker de Cloudflare
+// y a Google son de otro origen: este SW ya las dejaba pasar sin interceptar
+// (solo gestiona GET del mismo origen), así que jamás se cachean.
+// v1.5: subido de 3 a 4 (index.html cambió y hay un archivo nuevo en el shell:
+// src/online/duels.js). La estrategia de caché NO se ha tocado.
+// v1.5 (hub de Duelos): subido de 4 a 5 porque cambiaron index.html,
+// src/online/duels.js y styles/online.css (ya estaban en el shell; no hay
+// archivos nuevos). La estrategia de caché NO se ha tocado.
+// v1.5 (partida de Duelo/Reto): subido de 5 a 6; cambiaron src/online/duels.js y
+// styles/online.css (ya en el shell). La estrategia de caché NO se ha tocado.
+// 2.0 (primera pasada gráfica, solo visual): subido de 6 a 7; cambiaron index.html,
+// styles/main.css y src/online/duels.js (ya en el shell). Estrategia de caché intacta.
+// 2.0 (Prompt 1.5, assets + branding de instalación): subido de 7 a 8;
+// cambiaron index.html, styles/main.css, manifest.json y los 4 PNG de
+// icons/ (el sombrero oficial sustituye al icono "SE"). Nuevos en el shell:
+// los PNG de favicon/apple-touch-icon y los assets estáticos del personaje
+// (assets/character/, PNG + WebP). Estrategia de caché intacta.
+// 2.0 (Prompt 1.5, corrección de uso de los assets de Lucidez): subido de 8
+// a 9; cambiaron index.html y styles/main.css (el retrato pasa a ir debajo
+// del título/frase en las 4 transiciones, y se retira por completo de la
+// pantalla de juego del Enigma Final). Sin archivos nuevos. Estrategia de
+// caché NO se ha tocado.
+// 2.0 (Prompt 4, progresión): subido de 9 a 10; cambiaron index.html,
+// styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
+// 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
+// (añadido al shell) y cambiaron index.html y src/online/duels.js.
+const CACHE_VERSION = 11;
 const CACHE_NAME = `sedq-shell-v${CACHE_VERSION}`;
 
 // Rutas relativas al propio sw.js (que vive en la raíz de la app, tanto en
@@ -21,11 +49,16 @@ const APP_SHELL = [
   './index.html',
   './manifest.json',
   './styles/main.css',
+  './styles/online.css',
   './src/data/lucidez.js',
   './src/data/medals.js',
   './src/data/phrases.js',
   './src/data/questions.js',
   './src/data/ui-maps.js',
+  './src/online/config.js',
+  './src/online/online.js',
+  './src/share/share-card.js',
+  './src/online/duels.js',
   './src/utils/duel.js',
   './src/utils/matching.js',
   './src/utils/store.js',
@@ -35,6 +68,24 @@ const APP_SHELL = [
   './icons/icon-512.png',
   './icons/icon-192-maskable.png',
   './icons/icon-512-maskable.png',
+  './icons/apple-touch-icon.png',
+  './icons/favicon-16.png',
+  './icons/favicon-32.png',
+  './icons/favicon-48.png',
+  './assets/character/hat.png',
+  './assets/character/hat.webp',
+  './assets/character/victory.png',
+  './assets/character/victory.webp',
+  './assets/character/defeat.png',
+  './assets/character/defeat.webp',
+  './assets/character/lucidez-fase1.png',
+  './assets/character/lucidez-fase1.webp',
+  './assets/character/lucidez-fase2.png',
+  './assets/character/lucidez-fase2.webp',
+  './assets/character/lucidez-fase3.png',
+  './assets/character/lucidez-fase3.webp',
+  './assets/character/lucidez-enigma.png',
+  './assets/character/lucidez-enigma.webp',
 ];
 
 self.addEventListener('install', (event) => {

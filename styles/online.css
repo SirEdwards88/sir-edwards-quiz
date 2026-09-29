@@ -1,0 +1,196 @@
+/* v1.4 — Capa online (cuenta, migración, ranking).
+   Solo añade clases con prefijo .seq-; reutiliza los tokens de main.css
+   (--card, --text, --sub, --border, --primary, --ok-*, --bad-*, --badge-*)
+   para que modo claro/oscuro y tipografía sean los de siempre. */
+
+.seq-profile { display: flex; align-items: center; gap: 14px; margin: 4px 0 10px; }
+.seq-avatar { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; background: var(--badge-bg); border: 2px solid var(--accent-gold, #c9992e); flex: 0 0 auto; overflow: hidden; }
+
+/* Prompt 3 — Fase D: los avatares son ahora ilustraciones PNG (window.SEQAvatars.avatarHTML),
+   no caracteres emoji — .seq-av-img es el único punto de estilo base; cada contenedor
+   fija su propio tamaño para no tocar el layout existente pensado para texto/emoji. */
+.seq-av-img { display: inline-block; vertical-align: middle; object-fit: contain; -webkit-user-drag: none; }
+.seq-avatar .seq-av-img { width: 76%; height: 76%; }
+.seq-av-btn .seq-av-img { width: 34px; height: 34px; }
+.seq-rank-av .seq-av-img { width: 22px; height: 22px; vertical-align: -5px; }
+/* Menciones de avatar en línea dentro de texto (duels.js): historial, chip de
+   rival, resultado de duelo, resumen "Tú contra …" — mismo tamaño pequeño para
+   los seis puntos que antes pintaban el glifo suelto junto al nombre. */
+.history-item-info .seq-av-img,
+.history-item-sub .seq-av-img,
+.duel-result-hint .seq-av-img,
+.stats-section-sub .seq-av-img,
+.game-streak-inline-icon .seq-av-img {
+  width: 18px; height: 18px; vertical-align: -4px; margin-right: 1px;
+}
+.seq-profile-info { min-width: 0; }
+.seq-name { font-weight: 800; font-size: 18px; color: var(--text); overflow-wrap: anywhere; }
+.seq-id { background: none; border: 0; padding: 2px 0; font: inherit; font-size: 12px; color: var(--sub); cursor: pointer; letter-spacing: .5px; }
+.seq-id:hover { color: var(--primary); }
+
+.seq-status { font-size: 13px; margin: 6px 0 10px; padding: 8px 12px; border-radius: 12px; line-height: 1.4; border: 1px solid var(--border); background: var(--badge-bg); color: var(--text); }
+.seq-status.seq-ok { background: var(--ok-bg); color: var(--ok-txt); border-color: transparent; }
+.seq-status.seq-bad { background: var(--bad-bg); color: var(--bad-txt); border-color: transparent; }
+.seq-status.seq-warn { border-color: var(--accent-gold, #c9992e); }
+
+.seq-online-progress { margin-top: 0; }
+.seq-msg:empty { display: none; }
+.seq-gsi-slot { min-height: 44px; display: flex; justify-content: flex-start; margin: 10px 0 4px; }
+
+.seq-btnrow { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.seq-btnrow .btn { width: 100%; }
+
+.seq-edit { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+.seq-input { width: 100%; box-sizing: border-box; padding: 12px 14px; font: inherit; font-size: 16px; border-radius: 12px; border: 2px solid var(--border); background: var(--card); color: var(--text); }
+.seq-input:focus { outline: none; border-color: var(--primary); }
+.seq-avatars { display: grid; grid-template-columns: repeat(auto-fill, minmax(46px, 1fr)); gap: 8px; }
+.seq-av-btn { font-size: 24px; padding: 8px 0; border-radius: 12px; border: 2px solid var(--border); background: var(--card); cursor: pointer; }
+.seq-av-btn.sel { border-color: var(--primary); background: var(--badge-bg); }
+
+/* Fase C.1: acción secundaria de texto para volver al avatar por defecto —
+   deliberadamente NO tiene el aspecto de una casilla de .seq-av-btn, para no
+   parecer un avatar más dentro de la rejilla. */
+.seq-av-reset { display: block; background: none; border: 0; padding: 4px 0 0; margin: 2px 0 0; font: inherit; font-size: 12.5px; color: var(--sub); text-decoration: underline; cursor: pointer; }
+.seq-av-reset:hover { color: var(--primary); }
+
+/* Modales (reutilizan .modal-overlay/.modal-card de main.css) */
+.seq-modal-card { max-width: 520px; }
+
+/* v1.5 — Fase B (Prompt 3): gate de acceso obligatorio con cuenta (#auth-gate en
+   index.html). Reutiliza .modal-overlay/.modal-card/.seq-modal-card; solo ajusta
+   el ancho y centra el botón de Google (que por defecto se alinea a la izquierda
+   en el bloque de Ajustes). No cambia nada del mecanismo de login en sí. */
+.auth-gate-card { max-width: 560px; }
+.auth-gate .seq-gsi-slot { justify-content: center; }
+.seq-sums { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 8px 0 12px; }
+.seq-sum { background: var(--badge-bg); border: 1px solid var(--badge-border); border-radius: 14px; padding: 10px 12px; font-size: 13px; line-height: 1.5; color: var(--text); }
+.seq-sum-title { font-weight: 800; margin-bottom: 4px; font-size: 12px; letter-spacing: .3px; }
+.seq-warn { background: var(--bad-bg); color: var(--bad-txt); padding: 8px 12px; border-radius: 12px; font-size: 13px; }
+.seq-note { font-size: 12px !important; color: var(--sub) !important; }
+.seq-actions { flex-direction: column; align-items: stretch; gap: 8px; }
+.seq-actions .btn { width: 100%; }
+.seq-link { background: none; border: 0; color: var(--sub); text-decoration: underline; font: inherit; font-size: 13px; padding: 8px; cursor: pointer; }
+.seq-loading { text-align: center; color: var(--sub); }
+
+/* Ranking */
+.seq-rank-list { list-style: none; margin: 0 !important; padding: 0 !important; display: flex; flex-direction: column; gap: 6px; }
+.seq-rank-row { display: grid; grid-template-columns: 34px 32px 1fr auto; align-items: center; gap: 8px; padding: 9px 10px; border-radius: 14px; background: var(--badge-bg); border: 1px solid var(--badge-border); margin: 0 !important; }
+.seq-rank-row.me { border-color: var(--primary); box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 25%, transparent); }
+.seq-rank-pos { text-align: center; font-weight: 800; font-size: 15px; color: var(--text); }
+.seq-rank-av { font-size: 22px; text-align: center; }
+.seq-rank-name { font-weight: 700; font-size: 14px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.seq-rank-name em { font-style: normal; font-weight: 500; color: var(--sub); font-size: 12px; }
+.seq-rank-xp { display: flex; flex-direction: column; align-items: flex-end; font-size: 13px; color: var(--text); line-height: 1.2; }
+.seq-rank-xp small { color: var(--sub); font-size: 11px; }
+.seq-rank-me-out { margin-top: 10px; padding: 10px 12px; border-radius: 14px; border: 1px dashed var(--primary); font-size: 13px; color: var(--text); }
+.seq-stats-slot { margin: 12px 0; }
+.seq-stats-slot:empty { display: none; }
+.seq-stats-rank-btn { width: 100%; }
+
+@media (max-width: 380px) { .seq-sums { grid-template-columns: 1fr; } }
+
+/* Gestión de cuenta (cerrar sesión en todos los dispositivos / eliminar cuenta) */
+.seq-manage { margin-top: 12px; border-top: 1px solid var(--border); padding-top: 10px; }
+.seq-manage summary { cursor: pointer; font-weight: 700; font-size: 14px; color: var(--sub); padding: 6px 0; }
+
+/* ---------------------------------------------------------------------------
+   v1.5 — Amigos, Duelo online y Retos (src/online/duels.js). Solo clases
+   .seq-d-* / .seq-duel-*; reutiliza .choice-btn, .history-item y
+   .duel-result-box del juego para no desentonar.
+   ------------------------------------------------------------------------- */
+.seq-duel-cards { display: contents; }
+.seq-d-card { cursor: pointer; display: flex; align-items: center; gap: 14px; }
+.seq-d-card-icon { font-size: 30px; line-height: 1; flex: 0 0 auto; }
+.seq-duel-root { padding-bottom: 24px; }
+.seq-d-h3 { font-size: 15px; margin: 18px 0 8px; color: var(--sub); }
+.seq-d-row { cursor: pointer; gap: 10px; }
+.seq-d-sm { padding: 6px 12px; min-height: 0; font-size: 13px; }
+.seq-d-search { display: flex; gap: 8px; margin: 10px 0; }
+.seq-d-search input { flex: 1; min-width: 0; }
+.seq-d-vs { margin: 4px 0 10px; font-weight: 700; }
+.seq-d-rival { margin: 0 0 8px; }
+.seq-d-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.seq-d-review .history-item { align-items: flex-start; gap: 10px; }
+.seq-d-marks { white-space: nowrap; font-size: 16px; }
+@media (max-width: 600px) { .seq-d-choices { grid-template-columns: 1fr; } }
+.seq-d-ach { align-items: center; gap: 12px; opacity: .72; }
+.seq-d-ach.seq-d-ach-on { opacity: 1; }
+.seq-d-ach-icon { font-size: 26px; flex: 0 0 auto; }
+.seq-d-ach-body { flex: 1; min-width: 0; }
+.seq-d-ach-bar { margin-top: 6px; height: 6px; }
+
+/* ---- Hub de Duelos (v1.5, fase 1) ------------------------------------------
+   Mismo lenguaje que las tarjetas de Jugar: .mode-card + .mode-card-icon +
+   .mode-subtitle en rejilla de dos columnas. Todo va acotado a #duel-home y a
+   clases .seq-d-*: NO se toca ninguna clase base de los modos individuales.
+   Las variantes de color usan solo tokens existentes (--accent-*), que ya
+   tienen versión clara y oscura. #duel-home.seq-d-hub-on solo se activa con
+   sesión y flags; sin ellos el Duelo por código se ve exactamente como antes. */
+#duel-home.seq-d-hub-on { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; max-width: 560px; }
+#duel-home.seq-d-hub-on .seq-d-card { display: block; min-height: 170px; padding: 18px; text-align: left; }
+#duel-home.seq-d-hub-on .duel-resume-card { grid-column: 1 / -1; }
+#duel-home .seq-d-card p.mode-subtitle { font-size: 11px; font-weight: 900; letter-spacing: .15px; line-height: 1.35; text-align: left; }
+#duel-home .seq-d-card.seq-d-v-duel { border-color: var(--accent-purple-soft); background: linear-gradient(145deg, var(--accent-purple-soft), var(--card) 68%); }
+#duel-home .seq-d-v-duel .mode-card-icon { background: var(--accent-purple-soft); }
+#duel-home .seq-d-v-duel .mode-subtitle { color: var(--accent-purple-text); }
+#duel-home .seq-d-card.seq-d-v-retos { border-color: var(--accent-blue-soft); background: linear-gradient(145deg, var(--accent-blue-soft), var(--card) 68%); }
+#duel-home .seq-d-v-retos .mode-card-icon { background: var(--accent-blue-soft); }
+#duel-home .seq-d-v-retos .mode-subtitle { color: var(--accent-blue-text); }
+#duel-home .seq-d-card.seq-d-v-amigos { border-color: var(--accent-teal-soft); background: linear-gradient(145deg, var(--accent-teal-soft), var(--card) 68%); }
+#duel-home .seq-d-v-amigos .mode-card-icon { background: var(--accent-teal-soft); }
+#duel-home .seq-d-v-amigos .mode-subtitle { color: var(--accent-teal-text); }
+/* Ranking: tarjeta bloqueada (.mode-card.locked + .mode-lock-badge, como un modo
+   de Jugar aún no disponible). Sin navegación y sin efecto al pulsar. */
+#duel-home .seq-d-v-rank .mode-card-icon { background: var(--accent-gold-soft); }
+#duel-home .seq-d-v-rank .mode-subtitle { color: var(--accent-gold-text); }
+#duel-home .seq-d-card.locked { cursor: default; }
+#duel-home .seq-d-card.locked:hover, #duel-home .seq-d-card.locked:active { transform: none; }
+/* Opción secundaria «Duelo por código»: separada del flujo principal, en fila y
+   más discreta que las tarjetas del hub. */
+#duel-home .seq-d-sep { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; margin: 8px 2px 0; font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--sub); }
+#duel-home .seq-d-sep::before, #duel-home .seq-d-sep::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+#duel-home.seq-d-hub-on .seq-d-card.seq-d-code { grid-column: 1 / -1; display: flex; align-items: center; gap: 14px; min-height: 0 !important; padding: 12px 16px !important; background: var(--card); border: 1px solid var(--border); }
+#duel-home .seq-d-code .mode-card-icon { width: 42px !important; height: 42px !important; font-size: 21px !important; margin: 0 !important; flex: 0 0 auto; background: var(--badge-bg); }
+#duel-home .seq-d-code h3 { font-family: inherit; font-size: 15px; margin: 0 0 2px; padding-right: 0; }
+#duel-home .seq-d-chev { margin-left: auto; font-size: 22px; line-height: 1; color: var(--sub); }
+
+/* ---- Partida de Duelo online / Reto (v1.5, fase 2) ---------------------------
+   «La partida normal + una capa discreta de duelo». Copia, con el morado del
+   duelo (tokens --duel-purple / --accent-purple-*), los mismos valores que la
+   partida de Estándar: marco de la tarjeta con franja superior, HUD
+   .mode-header.game-hud con el icono del modo a la izquierda (⚔️ en vez de 🎯),
+   .q-box con borde lateral, .choice-btn con 50px de alto y .feedback. Todo va
+   acotado a #seq-duel-root / .seq-d-*; las reglas base no se tocan.
+   El marco solo se aplica mientras #seq-duel-root tiene .seq-d-playing (lo pone
+   duels.js al jugar y lo quita al salir) y la pestaña Duelo está activa. */
+.card:has(#view-duelo.active #seq-duel-root.seq-d-playing) { border: 3px solid var(--duel-purple); box-shadow: 0 14px 42px rgba(124,58,237,.17); }
+.card:has(#view-duelo.active #seq-duel-root.seq-d-playing)::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; z-index: 2; background: linear-gradient(90deg, var(--duel-purple-dark), var(--duel-purple), var(--duel-purple-dark)); }
+#seq-duel-root .seq-d-hud {
+  display: flex; align-items: center; position: relative;
+  margin: 4px 0 18px; padding: 12px 14px 12px 52px; border-radius: 14px;
+  font-weight: 800; font-size: 14px; letter-spacing: .3px; font-variant-numeric: tabular-nums;
+  color: var(--accent-purple-text); background: var(--accent-purple-surface); border: 1px solid var(--accent-purple-soft);
+}
+#seq-duel-root .seq-d-hud::before { content: "⚔️"; position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 22px; }
+#seq-duel-root .seq-d-hud-lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#seq-duel-root .seq-d-rival-chip { max-width: 48%; overflow: hidden; text-overflow: ellipsis; color: var(--accent-purple-text); background: var(--card); border-color: var(--accent-purple-soft); }
+#seq-duel-root .seq-d-vs-lbl { font-size: 11px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; opacity: .75; }
+#seq-duel-root .seq-d-rival-name { overflow: hidden; text-overflow: ellipsis; }
+#seq-duel-root .progress-bar .bar-fill { background: var(--duel-purple); }
+#seq-duel-root .q-box.seq-d-qbox { border-left: 5px solid var(--duel-purple); padding: 18px 18px 18px 16px; background: var(--accent-purple-surface); border-radius: 0 14px 14px 0; box-shadow: 0 2px 10px rgba(124,58,237,.05); }
+#seq-duel-root .seq-d-choices .choice-btn { min-height: 50px; display: flex; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
+#seq-duel-root .seq-d-choices .choice-btn:hover:not(:disabled) { border-color: var(--duel-purple); box-shadow: 0 4px 14px rgba(124,58,237,.14); }
+#seq-duel-root .seq-d-choices .choice-btn:active:not(:disabled) { transform: scale(.98); }
+#seq-duel-root .seq-d-feedback { margin-top: 4px; }
+#seq-duel-root .seq-d-next { text-align: center; margin-top: 10px; }
+/* Escritorio: misma columna centrada de 560px que #view-game (el botón de salida queda a la izquierda, como allí). */
+@media (min-width: 700px) {
+  #seq-duel-root.seq-d-playing > :not(.seq-d-exit) { max-width: 560px; margin-left: auto; margin-right: auto; }
+  #seq-duel-root .q-box.seq-d-qbox { font-size: 22px; }
+}
+@media (max-width: 600px) {
+  #seq-duel-root .seq-d-long, #seq-duel-root .seq-d-vs-lbl { display: none; }
+  #seq-duel-root .seq-d-hud { margin: 3px 0 8px !important; min-height: 38px; padding: 8px 9px 8px 38px !important; border-radius: 11px; font-size: 11px !important; line-height: 1.2; }
+  #seq-duel-root .seq-d-hud::before { left: 10px; font-size: 18px; }
+  #seq-duel-root .seq-d-rival-chip { margin: 0 !important; }
+}
