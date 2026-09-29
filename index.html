@@ -89,7 +89,7 @@
       <div style="width: 56px; height: 1px; margin: 0 auto 18px; background: linear-gradient(90deg, transparent, var(--gold, #d4af37), transparent);"></div>
       <h2 style="font-family: var(--font-display); font-size: clamp(30px, 7vw, 40px); line-height: 1.12; margin: 0 0 22px; letter-spacing: .2px;">Bienvenido a la <span id="welcome-version">v2.0</span></h2>
       <p style="font-size: clamp(17px, 4.2vw, 20px); line-height: 1.72; margin: 0 auto 22px; max-width: 560px; text-align: left;">Sir Edwards Quiz ya está disponible directamente en la web, sin instalación ni descargas.</p>
-      <p style="font-size: clamp(17px, 4.2vw, 20px); line-height: 1.72; margin: 0 auto; max-width: 560px; text-align: left;">Nuevos logros de Duelo, ventajas por Fragmentos de Mente en Lucidez y una tarjeta para compartir tus resultados. <span id="welcome-save-note">Tu progreso se guarda en este dispositivo: haz una copia de seguridad desde Ajustes de vez en cuando.</span></p>
+      <p style="font-size: clamp(17px, 4.2vw, 20px); line-height: 1.72; margin: 0 auto; max-width: 560px; text-align: left;">Nuevos logros de Duelo y una tarjeta para compartir tus resultados. Hay algo oculto esperando a los más perseverantes: ¿serás capaz de descubrirlo? <span id="welcome-save-note">Tu progreso se guarda en este dispositivo: haz una copia de seguridad desde Ajustes de vez en cuando.</span></p>
       <div style="width: 56px; height: 1px; margin: 28px auto 0; background: linear-gradient(90deg, transparent, var(--gold, #d4af37), transparent);"></div>
     </div>
     <button class="btn btn-primary" style="width: 100%; margin-top: 30px; font-size: 18px; min-height: 54px;" onclick="closeWelcomeModal()">Descubrir la <span id="welcome-btn-version">v2.0</span></button>
@@ -550,7 +550,7 @@ try {
             </div>
             <div class="duel-mode-option dmo-lucidez" id="duel-mode-card-lucidez_mental" onclick="selectDuelMode('lucidez_mental')">
               <div class="duel-mode-icon" aria-hidden="true">👁️</div>
-              <span class="duel-mode-name">Lucidez Mental</span>
+              <span class="duel-mode-name">Modo Secreto</span>
               <span class="duel-mode-status">🔒 BLOQUEADO</span>
             </div>
           </div>
@@ -881,7 +881,7 @@ try {
           <div class="fragments-bar-marks" id="fragments-bar-marks" aria-hidden="true"></div>
         </div>
         <div class="fragments-milestones" id="fragments-milestones"></div>
-        <p class="fragments-progress-subtitle" id="fragments-progress-subtitle">Consigue Fragmentos de Mente completando logros especiales.</p>
+        <p class="fragments-progress-subtitle" id="fragments-progress-subtitle">Consigue Fragmentos de Mente para desvelar un secreto.</p>
       </div>
 
       <div class="medals-grid" id="medals-container"></div>
@@ -965,9 +965,9 @@ try {
               <span class="settings-changelog-entry-date">08/09/2026</span>
             </div>
             <ul class="settings-changelog-list">
-              <li>Nuevo y mejorado diseño visual.</li>
+              <li>Nuevo diseño visual.</li>
               <li>Nuevo modo Duelo, con 6 logros y 40 frases únicas.</li>
-              <li>Corrección de varios bugs y mejoras generales.</li>
+              <li>Corrección de errores.</li>
             </ul>
           </div>
           <div class="settings-changelog-entry">
@@ -976,8 +976,7 @@ try {
               <span class="settings-changelog-entry-date">17/09/2026</span>
             </div>
             <ul class="settings-changelog-list">
-              <li>Ya disponible directamente en la web, sin instalación.</li>
-              <li>Mejoras internas de mantenimiento y estabilidad.</li>
+              <li>Disponible directamente en la web, sin instalación.</li>
             </ul>
           </div>
           <div class="settings-changelog-entry">
@@ -986,21 +985,8 @@ try {
               <span class="settings-changelog-entry-date">19/09/2026</span>
             </div>
             <ul class="settings-changelog-list">
-              <li>Ahora se puede instalar como aplicación en el móvil o el escritorio, con icono propio.</li>
-              <li>Funciona sin conexión una vez que se ha cargado alguna vez.</li>
-              <li>Aviso de novedades cada vez que haya una actualización de la app.</li>
-            </ul>
-          </div>
-          <div class="settings-changelog-entry">
-            <div class="settings-changelog-entry-header">
-              <span class="settings-changelog-entry-version">v1.5</span>
-              <span class="settings-changelog-entry-date">26/09/2026</span>
-            </div>
-            <ul class="settings-changelog-list">
-              <li>Amigos: añade amigos por su nombre o su ID y acepta sus solicitudes.</li>
-              <li>Duelo online: 20 preguntas a la vez contra un amigo, en directo.</li>
-              <li>Retos: reta a un amigo y jugad cada uno cuando podáis (3 días de plazo).</li>
-              <li>Requieren cuenta y se irán activando poco a poco. El Duelo por código sigue disponible sin cuenta.</li>
+              <li>Instalable como aplicación, con icono propio y funcionamiento sin conexión.</li>
+              <li>Aviso de novedades en cada actualización.</li>
             </ul>
           </div>
           <div class="settings-changelog-entry">
@@ -1009,10 +995,19 @@ try {
               <span class="settings-changelog-entry-date">20/09/2026</span>
             </div>
             <ul class="settings-changelog-list">
-              <li>Cuenta opcional con Google: guarda tu progreso online y recupéralo en otro dispositivo.</li>
+              <li>Cuenta opcional con Google: guarda tu progreso y recupéralo en otro dispositivo sin perder nada.</li>
               <li>Ranking global por XP.</li>
-              <li>Puedes migrar tu progreso actual a la cuenta sin perder nada.</li>
               <li>Sigues pudiendo jugar sin cuenta y sin conexión.</li>
+            </ul>
+          </div>
+          <div class="settings-changelog-entry">
+            <div class="settings-changelog-entry-header">
+              <span class="settings-changelog-entry-version">v1.5</span>
+              <span class="settings-changelog-entry-date">26/09/2026</span>
+            </div>
+            <ul class="settings-changelog-list">
+              <li>Amigos, Duelo online en directo (20 preguntas) y Retos con 3 días de plazo.</li>
+              <li>Requieren cuenta y se irán activando poco a poco. El Duelo por código sigue disponible sin cuenta.</li>
             </ul>
           </div>
           <div class="settings-changelog-entry">
@@ -1021,11 +1016,11 @@ try {
               <span class="settings-changelog-entry-date">29/09/2026</span>
             </div>
             <ul class="settings-changelog-list">
-              <li>Fragmentos de Mente con ventajas: 12 dan +1 error extra en Lucidez y 15 dan +2 (fases y enigma final).</li>
+              <li>Mejoras visuales en toda la app.</li>
+              <li>40 preguntas nuevas.</li>
               <li>Nuevos logros de Duelo: «Revancha» y «¿Otra vez tú?».</li>
-              <li>Nueva tarjeta para compartir tu resultado, con diseño propio para victoria, derrota, Lucidez y Duelo.</li>
-              <li>Nuevo enigma en Lucidez Mental y más preguntas.</li>
-              <li>Retar a un amigo es más fácil: al compartir tu duelo va un enlace que abre el reto directamente.</li>
+              <li>Nueva tarjeta para compartir tu resultado y retos con enlace directo para invitar a un amigo.</li>
+              <li>Nuevas ventajas con los Fragmentos de Mente y algo especial por descubrir.</li>
               <li id="changelog-v2-save-note">Recuerda: en Ajustes puedes descargar una copia de seguridad de tu progreso.</li>
             </ul>
           </div>
@@ -4878,6 +4873,8 @@ function duelModeConfigLabel(modeId, cfgIdx) {
 }
 
 function duelModeFullLabel(modeId, cfgIdx) {
+  // 2.0: mientras el modo secreto esté bloqueado, su nombre no se revela (vista previa de «Unirme», historial).
+  if (modeId === 'lucidez_mental' && !isDuelModeUnlocked(modeId)) return 'Modo Secreto';
   const base = (DUEL_MODE_META[modeId] || {}).name || modeId;
   const cfg = duelModeConfigLabel(modeId, cfgIdx);
   return cfg ? `${base} · ${cfg}` : base;
@@ -5066,6 +5063,10 @@ function openDuelCrearModeStep() {
     if (!card) return;
     const unlocked = isDuelModeUnlocked(modeId);
     card.classList.toggle('locked', !unlocked);
+    if (modeId === 'lucidez_mental') {
+      const nameEl = card.querySelector('.duel-mode-name');
+      if (nameEl) nameEl.textContent = unlocked ? 'Lucidez Mental' : 'Modo Secreto';
+    }
     const badge = document.getElementById('duel-mode-lock-' + modeId);
     if (badge) {
       badge.style.display = unlocked ? 'none' : '';
@@ -7495,13 +7496,26 @@ function renderAchievementsProgress() {
 // y cada hito es una recompensa ya definida (10 = modo, 12 y 15 = errores
 // extra en Lucidez; el de 15 es el TOTAL, no se suma al de 12).
 const FRAGMENT_MILESTONES = [
-  { fragments: FRAGMENT_TARGET, icon: '👁️', title: 'Lucidez Mental', text: 'Desbloquea Lucidez Mental', goal: 'desbloquear Lucidez Mental' },
-  { fragments: 12, icon: '🛡️', title: 'Error extra', text: '+1 error extra en Lucidez', goal: 'conseguir +1 error extra' },
-  { fragments: 15, icon: '🛡️', title: 'Errores extra', text: '+2 errores extra en total', goal: 'conseguir +2 errores extra' }
+  { fragments: FRAGMENT_TARGET, icon: '👁️', title: 'Lucidez Mental', text: 'Desbloquea Lucidez Mental', goal: 'desbloquear Lucidez Mental',
+    secretText: 'Un secreto se desvelará…', secretGoal: 'desvelar un secreto' },
+  { fragments: 12, icon: '🛡️', title: 'Error extra', text: '+1 error extra en Lucidez', goal: 'conseguir +1 error extra',
+    secretIcon: '✨', secretText: 'Algo especial empieza a tomar forma…', secretGoal: 'ver qué toma forma' },
+  { fragments: 15, icon: '🛡️', title: 'Errores extra', text: '+2 errores extra en total', goal: 'conseguir +2 errores extra',
+    secretIcon: '✨', secretText: 'Quien reúne todos los Fragmentos lo descubre todo.', secretGoal: 'descubrirlo todo' }
 ];
+// 2.0: hasta que el jugador desbloquea el modo secreto (10 Fragmentos), los hitos NO nombran «Lucidez Mental»
+// ni describen su ventaja: se muestran versiones misteriosas. Al desbloquearlo, los textos reales.
+function fragmentSecretMode(count) { return count < FRAGMENT_TARGET; }
 // Estado de cada hito y mensaje del siguiente objetivo, según los Fragmentos.
 function getFragmentMilestoneState(count) {
-  const items = FRAGMENT_MILESTONES.map(m => ({ ...m, unlocked: count >= m.fragments }));
+  const hide = fragmentSecretMode(count);
+  const items = FRAGMENT_MILESTONES.map(m => ({
+    ...m,
+    icon: hide && m.secretIcon ? m.secretIcon : m.icon,
+    text: hide ? m.secretText : m.text,
+    goal: hide ? m.secretGoal : m.goal,
+    unlocked: count >= m.fragments
+  }));
   const next = items.find(m => !m.unlocked);
   const message = next
     ? `Te falta${next.fragments - count === 1 ? '' : 'n'} ${next.fragments - count} Fragmento${next.fragments - count === 1 ? '' : 's'} para ${next.goal}.`
