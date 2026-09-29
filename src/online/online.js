@@ -78,6 +78,9 @@
   function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
   function lsDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
   function toast(msg, icon) { try { if (typeof showInfoToast === 'function') showInfoToast(msg, icon); } catch (e) {} }
+  // ¿Hay una partida REALMENTE a medias? hasSavedGame() ignora partidas ya terminadas/perdidas que aún dejan un `savedGame`
+  // residual (p. ej. al cambiar el tema justo después de acabar): esas no deben bloquear la sincronización.
+  function midGame() { try { return typeof hasSavedGame === 'function' ? hasSavedGame() : !!store.savedGame; } catch (e) { return false; } }
   function hasStore() { return typeof store !== 'undefined' && store && typeof store === 'object'; }
   function knownMedals() {
     var set = {};
@@ -253,7 +256,9 @@
   function hasUnsynced() {
     if (!account || !sync || sync.migration === 'pending') return false;
     if (sync.pending) return true;
-    try { return computeDelta().any; } catch (e) { return false; }
+    try { if (computeDelta().any) return true; } catch (e) { return false; }
+    // v2.0: también cuentan los datos que no viajan por /progress/sync (historial, estadísticas, ajustes, Duelo…).
+    try { return sync.migration === 'done' && !!window.SEQDataSync && window.SEQDataSync.hasPending(account.player.id); } catch (e) { return false; }
   }
 
   function scheduleSync(ms, reason) { clearTimeout(timer); timer = setTimeout(function () { syncNow(reason || 'auto'); }, ms); }
@@ -323,11 +328,43 @@
       });
     }
 
+    // v2.0: tras el progreso principal, se sincronizan el resto de datos del jugador (src/online/data-sync.js).
+    // Solo si el jugador ya decidió asociar su progreso a la cuenta (migration === 'done').
+    function dataRound() {
+      if (!window.SEQDataSync || !sync || sync.migration !== 'done' || !account) return Promise.resolve();
+      return window.SEQDataSync.run({
+        api: api,
+        playerId: account.player.id,
+        withApplying: function (fn) { applying = true; try { fn(); } finally { applying = false; } },
+        afterApply: function () { afterLocalChange(0); }
+      }, reason);
+    }
+
+    // Las dos sincronizaciones son INDEPENDIENTES: que el servidor limite o rechace una (p. ej. 429 en el progreso
+    // principal) no impide sincronizar la otra. Se relanza después el primer error, que es el que se muestra/reintenta.
+    var firstErr = null;
     return step().then(function () {
-      ui.error = ''; 
+      ui.error = '';
+    }, function (err) {
+      if (err && err.status === 401) throw err; // sesión caducada: no tiene sentido seguir
+      firstErr = err;
+    }).then(function () {
+      return dataRound().catch(function (err) { if (!firstErr || firstErr.status === 429) firstErr = err; }); // un 429 del progreso es silencioso: no oculta un fallo real de datos
+    }).then(function () {
+      if (firstErr) throw firstErr;
+      if (sync && sync.migration === 'done' && hasStore() && (computeDelta().any)) scheduleSync(2000, 'auto'); // logros derivados de datos recién traídos
     }).catch(function (err) {
+      if (err && err.dataSync) {
+        // Un fallo de la sincronización de datos NUNCA marca «needsMerge» ni descarta nada: los datos locales se
+        // conservan intactos y se reintenta.
+        if (authFailure(err)) return;
+        if (err.network) { ui.error = 'No se ha podido sincronizar. Se conservarán los datos locales y se volverá a intentar.'; scheduleRetry(0); return; }
+        if (err.invalid || err.status === 409 || err.status === 429 || err.status >= 500) { ui.error = 'No se ha podido sincronizar. Se conservarán los datos locales y se volverá a intentar.'; scheduleRetry(err.retryAfter || 0); return; }
+        ui.error = 'No se ha podido sincronizar. Tus datos locales están a salvo.';
+        return;
+      }
       if (authFailure(err)) return;
-      if (err && err.network) { ui.error = ''; scheduleRetry(0); return; }
+      if (err && err.network) { ui.error = 'No se ha podido sincronizar. Se conservarán los datos locales y se volverá a intentar.'; scheduleRetry(0); return; }
       if (err && err.invalid) { ui.error = 'El servidor devolvió una respuesta no válida. Se reintentará.'; scheduleRetry(0); return; }
       if (err && (err.status === 429 || (err.status >= 500))) { ui.error = err.status === 429 ? '' : 'El servidor no responde ahora mismo. Se reintentará.'; scheduleRetry(err.retryAfter || 0); return; }
       // 4xx (p. ej. 400 valor fuera de rango, 409 match_id ya usado con otro contenido): el servidor rechaza este
@@ -501,7 +538,7 @@
       confirmLabel: 'Eliminar cuenta',
       onConfirm: function () {
         api('DELETE', '/me', { confirm: id }).then(function () {
-          account = null; saveAccount(); sync = null; lsDel(SYNC_KEY);
+          account = null; saveAccount(); sync = null; lsDel(SYNC_KEY); try { if (window.SEQDataSync) window.SEQDataSync.reset(); } catch (e) {}
           clearTimeout(timer); clearTimeout(retryTimer);
           ui.editing = false; ui.expired = false; ui.error = '';
           toast('Cuenta eliminada. Tu progreso local sigue en este dispositivo.', '🗑️');
@@ -697,11 +734,11 @@
     if (!account) return ui.expired ? { cls: 'warn', text: 'Tu sesión ha caducado. Inicia sesión de nuevo: tu progreso local sigue aquí y se retomará tu cuenta.' } : null;
     if (sync && sync.migration === 'pending') return { cls: 'warn', text: 'Falta decidir qué hacer con tu progreso local.' };
     if (sync && sync.needsMerge) return { cls: 'bad', text: 'El servidor no aceptó tu última sincronización. Tu progreso local está intacto: pulsa «Restaurar / combinar progreso».' };
-    if (ui.syncing) return { cls: 'info', text: 'Sincronizando…' };
-    if (navigator.onLine === false) return { cls: 'warn', text: hasUnsynced() ? 'Sin conexión: tus partidas se sincronizarán al volver Internet.' : 'Sin conexión. El juego funciona con normalidad.' };
+    if (ui.syncing) return { cls: 'info', text: 'Sincronizando...' };
+    if (navigator.onLine === false) return { cls: 'warn', text: hasUnsynced() ? 'Sin conexión. Los cambios se sincronizarán cuando vuelva Internet.' : 'Sin conexión. El juego funciona con normalidad.' };
     if (ui.error) return { cls: 'bad', text: ui.error };
     if (hasUnsynced()) return { cls: 'info', text: 'Hay cambios pendientes de sincronizar.' };
-    if (sync && sync.lastSyncAt) return { cls: 'ok', text: 'Sincronizado ' + ago(sync.lastSyncAt) + '.' };
+    if (sync && sync.lastSyncAt) return { cls: 'ok', text: 'Datos sincronizados ' + ago(sync.lastSyncAt) + '.' };
     return { cls: 'ok', text: 'Cuenta conectada.' };
   }
 
@@ -718,7 +755,7 @@
       // gate (#auth-gate) ya está cubriendo la pantalla — así que el texto ya no
       // dice que se puede "seguir jugando sin cuenta" (dejó de ser cierto).
       host.innerHTML = '<h3 style="margin-top:0;">☁️ Cuenta online</h3>' +
-        '<p class="settings-note">Inicia sesión con tu cuenta de Google para jugar. Así conservas tu identidad de jugador y sincronizas tu progreso principal y tus logros entre dispositivos.</p>' +
+        '<p class="settings-note">Inicia sesión con tu cuenta de Google para jugar. Así conservas tu identidad de jugador y sincronizas todo tu progreso (logros, historial, estadísticas, ajustes y duelos) entre dispositivos.</p>' +
         statusHtml + '<div id="seq-gsi-slot" class="seq-gsi-slot"></div><p class="settings-note seq-msg" id="seq-online-msg">' + esc(ui.msg) + '</p>';
       return;
     }
@@ -762,7 +799,7 @@
         '<button class="btn btn-secondary" onclick="SEQOnline.openMigration()">' + (sync && sync.migration === 'pending' ? '➡️ Decidir sobre mi progreso local' : '🔀 Restaurar / combinar progreso') + '</button>' +
         '<button class="btn btn-secondary" onclick="SEQOnline.signOut()">Cerrar sesión</button></div>' +
         '<p class="settings-note">Cerrar sesión no elimina tu cuenta ni tu progreso: puedes volver a entrar cuando quieras.</p>' +
-        '<p class="settings-note">El progreso online lo informa tu dispositivo: sirve como copia de seguridad y para sincronizar, no como prueba de resultados.</p>' +
+        '<p class="settings-note">Tu progreso se guarda en tu cuenta automáticamente y se recupera al iniciar sesión en otro dispositivo. Lo informa tu dispositivo: no sirve como prueba de resultados.</p>' +
         '<details class="seq-manage"><summary>Gestionar cuenta</summary><div class="seq-btnrow">' +
         '<button class="btn btn-secondary" onclick="SEQOnline.logoutAll()">Cerrar sesión en todos los dispositivos</button>' +
         '<button class="btn btn-danger" onclick="SEQOnline.deleteAccount()">Eliminar mi cuenta online</button></div>' +
@@ -802,7 +839,7 @@
   function onLocalSave() {
     // Llamado al final de saveStore(). Barato: si no hay cuenta, no hace nada.
     if (!ENABLED || !account || applying) return;
-    try { if (hasStore() && store.savedGame) return; } catch (e) {} // a mitad de partida: se sincroniza al terminar
+    try { if (hasStore() && midGame()) return; } catch (e) {} // a mitad de partida: se sincroniza al terminar
     scheduleSync(5000);
   }
   function onTabShown(tabId) {

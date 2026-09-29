@@ -89,7 +89,7 @@
       <div style="width: 56px; height: 1px; margin: 0 auto 18px; background: linear-gradient(90deg, transparent, var(--gold, #d4af37), transparent);"></div>
       <h2 style="font-family: var(--font-display); font-size: clamp(30px, 7vw, 40px); line-height: 1.12; margin: 0 0 22px; letter-spacing: .2px;">Bienvenido a la <span id="welcome-version">v2.0</span></h2>
       <p style="font-size: clamp(17px, 4.2vw, 20px); line-height: 1.72; margin: 0 auto 22px; max-width: 560px; text-align: left;">Sir Edwards Quiz ya está disponible directamente en la web, sin instalación ni descargas.</p>
-      <p style="font-size: clamp(17px, 4.2vw, 20px); line-height: 1.72; margin: 0 auto; max-width: 560px; text-align: left;">Nuevos logros de Duelo, ventajas por Fragmentos de Mente en Lucidez y una tarjeta para compartir tus resultados. Tu progreso se guarda en este dispositivo: haz una copia de seguridad desde Ajustes de vez en cuando.</p>
+      <p style="font-size: clamp(17px, 4.2vw, 20px); line-height: 1.72; margin: 0 auto; max-width: 560px; text-align: left;">Nuevos logros de Duelo, ventajas por Fragmentos de Mente en Lucidez y una tarjeta para compartir tus resultados. <span id="welcome-save-note">Tu progreso se guarda en este dispositivo: haz una copia de seguridad desde Ajustes de vez en cuando.</span></p>
       <div style="width: 56px; height: 1px; margin: 28px auto 0; background: linear-gradient(90deg, transparent, var(--gold, #d4af37), transparent);"></div>
     </div>
     <button class="btn btn-primary" style="width: 100%; margin-top: 30px; font-size: 18px; min-height: 54px;" onclick="closeWelcomeModal()">Descubrir la <span id="welcome-btn-version">v2.0</span></button>
@@ -921,19 +921,16 @@ try {
       <!-- v1.4: cuenta online (la pinta src/online/online.js; oculta si la capa online no está configurada) -->
       <div class="settings-section" id="online-account-section" style="display:none;"></div>
 
-      <!-- Prompt 3 — Fase B: auditoría confirmada. La cuenta online (si la hay)
-           sincroniza solo XP/partidas/aciertos-fallos/racha/logros; el resto del
-           progreso (historial completo, estadísticas detalladas, ajustes) vive
-           únicamente en este dispositivo, con o sin cuenta. La copia de
-           seguridad NO es redundante con la cuenta y se mantiene: mismo
-           mecanismo, mismo formato, mismas funciones (exportProgress/
-           importProgress), solo se ha aclarado el texto y agrupado bajo un
-           kicker para que se entienda qué cubre y por qué sigue haciendo falta. -->
+      <!-- v2.0: con la cuenta online activa, TODOS los datos (progreso, historial, estadísticas, ajustes y
+           duelos) se sincronizan solos (src/online/data-sync.js) y el bloque de copia de seguridad manual
+           (#backup-group) se retira en applySyncCopy(). Sin capa online configurada (SEQOnline.enabled
+           = false) no hay sincronización posible, así que la copia manual se mantiene como única protección
+           para no dejar a nadie sin ninguna. -->
       <div class="settings-section">
         <h3 style="margin-top:0;">Progreso</h3>
         <p class="settings-status"><span class="settings-status-dot"></span>Tu progreso está guardado</p>
-        <p class="settings-note">Tu progreso se guarda automáticamente en este dispositivo, tengas o no cuenta.</p>
-        <div class="settings-group">
+        <p class="settings-note" id="progress-save-note">Tu progreso se guarda automáticamente en este dispositivo, tengas o no cuenta.</p>
+        <div class="settings-group" id="backup-group">
           <p class="settings-kicker">Copia de seguridad</p>
           <p class="settings-note">Si tienes cuenta, ya sincronizas tu XP, tus partidas y tus logros en la nube. Esta copia conserva además tu historial completo y tus estadísticas detalladas: útil para no perder nada al cambiar de dispositivo o borrar datos del navegador, tengas o no cuenta.</p>
           <div class="settings-backup-actions">
@@ -1025,7 +1022,7 @@ try {
               <li>Nuevos logros de Duelo: «Revancha» y «¿Otra vez tú?».</li>
               <li>Nueva tarjeta para compartir tu resultado, con diseño propio para victoria, derrota, Lucidez y Duelo.</li>
               <li>Nuevo enigma en Lucidez Mental y más preguntas.</li>
-              <li>Recuerda: en Ajustes puedes descargar una copia de seguridad de tu progreso.</li>
+              <li id="changelog-v2-save-note">Recuerda: en Ajustes puedes descargar una copia de seguridad de tu progreso.</li>
             </ul>
           </div>
         </div>
@@ -1094,6 +1091,9 @@ try {
      vacío, la capa online queda desactivada y la app es idéntica a la v1.3.
      online.js solo usa el store/funciones del juego en tiempo de ejecución. -->
 <script src="src/online/config.js"></script>
+<!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
+<script src="src/utils/sync-merge.js"></script>
+<script src="src/online/data-sync.js"></script>
 <script src="src/online/online.js"></script>
 <!-- v1.5: Amigos, Duelo online y Retos. El servidor decide preguntas, tiempo, aciertos y ganador. -->
 <script src="src/online/duels.js"></script>
@@ -4576,7 +4576,8 @@ function finishLucidezMode(failed, timedOut = false, phaseInsufficient = null) {
       date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       mode: 'Lucidez Mental',
       score: `${score}/${totalQ}`,
-      percentage: accuracy
+      percentage: accuracy,
+      ts: Date.now()
     };
     if (!store.gameHistory) store.gameHistory = [];
     pushCapped(store.gameHistory, historyEntry, 5);
@@ -4972,7 +4973,8 @@ function saveDuelHistoryEntry(entry) {
   if (!Array.isArray(store.duelHistory)) store.duelHistory = [];
   store.duelHistory.unshift({
     ...entry,
-    date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    ts: Date.now()
   });
   if (store.duelHistory.length > 30) store.duelHistory.length = 30;
   saveStore(false);
@@ -6648,7 +6650,8 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
       date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       mode: modeNames[currentGame.mode] || currentGame.mode,
       score: shareScoreStr,
-      percentage: accuracy
+      percentage: accuracy,
+      ts: Date.now()
     };
     if (!store.gameHistory) store.gameHistory = [];
     pushCapped(store.gameHistory, historyEntry, 5);
@@ -7834,8 +7837,21 @@ function showInfoToast(message, icon){
 // ============================================================
 const UPDATE_SEEN_KEY = 'siredwards_quiz_v1_3_update_seen';
 
+// v2.0: con la cuenta online activa, la sincronización completa sustituye a la copia de seguridad manual.
+function applySyncCopy() {
+  const online = typeof SEQOnline !== 'undefined' && SEQOnline.enabled === true;
+  if (!online) return; // sin capa online no hay sincronización: se mantiene la copia manual (textos por defecto)
+  const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+  const backup = document.getElementById('backup-group');
+  if (backup) backup.remove();
+  setText('progress-save-note', 'Tu progreso, tu historial, tus estadísticas, tus ajustes y tus duelos se guardan en tu cuenta automáticamente y se recuperan al iniciar sesión en cualquier dispositivo.');
+  setText('welcome-save-note', 'Tu progreso se guarda en tu cuenta y lo recuperas al iniciar sesión en cualquier dispositivo.');
+  setText('changelog-v2-save-note', 'Todo tu progreso (historial, estadísticas, ajustes y duelos) se sincroniza con tu cuenta y se recupera en otro dispositivo. Ya no hace falta la copia de seguridad manual.');
+}
+
 function applyAppVersionText() {
   document.title = 'SirEdwards Quiz: Test de Lucidez Mental v' + APP_VERSION;
+  applySyncCopy();
   const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
   setText('welcome-version', 'v' + APP_VERSION);
   setText('welcome-btn-version', 'v' + APP_VERSION);

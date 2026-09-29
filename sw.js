@@ -56,6 +56,8 @@ const APP_SHELL = [
   './src/data/questions.js',
   './src/data/ui-maps.js',
   './src/online/config.js',
+  './src/utils/sync-merge.js',
+  './src/online/data-sync.js',
   './src/online/online.js',
   './src/share/share-card.js',
   './src/online/duels.js',
