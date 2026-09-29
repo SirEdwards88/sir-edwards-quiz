@@ -2,7 +2,7 @@
 //
 // Solo presentación: NO cambia puntuación, XP, rachas, logros ni guardado. Observa el DOM que ya pinta
 // index.html (botones de respuesta, contador de racha, tarjeta de resultados) y añade encima:
-//   - Acierto: destello en la tarjeta y chispas doradas desde el botón acertado.
+//   - Acierto: destello verde en la tarjeta (las chispas se reservan para logros y modos nuevos).
 //   - Fallo: sacudida breve de la tarjeta.
 //   - Racha: la píldora 🔥 se "calienta" (3 / 5 / 10) y los hitos (3, 5, 10, 15, 20…) muestran un aviso.
 //   - Resultados: las cifras cuentan hacia arriba, confeti cuando hay algo que celebrar
@@ -102,8 +102,7 @@
         if (!t.classList || !t.classList.contains('choice-btn') || t.dataset.fxDone) continue;
         if (t.classList.contains('selected') && t.classList.contains('correct')) {
           t.dataset.fxDone = '1';
-          var r = t.getBoundingClientRect();
-          sparks(r.left + r.width * .5, r.top + r.height * .5, 22);
+          // Solo el destello: las chispas se reservan para logros y modos nuevos (no en cada acierto).
           flash(card(), 'fx-ok', 650);
         } else if (t.classList.contains('incorrect')) {
           t.dataset.fxDone = '1';

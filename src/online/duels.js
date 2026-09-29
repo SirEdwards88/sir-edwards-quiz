@@ -270,7 +270,7 @@
     var now = serverNow();
     if (S.screen === 'duel' && d.estado === 'en_curso') {
       var dur = num(d.duracion_pregunta_ms) || 15000, t0 = num(d.t0);
-      if (now < t0) { setText('seq-d-count', String(secs(t0 - now))); return; }
+      if (now < t0) { setCount(String(secs(t0 - now))); return; }
       var k = Math.floor((now - t0) / dur);
       if (k !== S.lastIdx) {
         // Cambió la ventana: los botones que se ven son de la pregunta
@@ -296,6 +296,13 @@
     }
   }
   function setText(id, t) { var el = $(id); if (el) el.textContent = t; }
+  // Cuenta atrás de salida («Empieza en 3, 2, 1…»): cada número nuevo entra con un pequeño golpe visual.
+  // Solo presentación: el número es el mismo que ya se pintaba.
+  function setCount(t) {
+    var el = $('seq-d-count'); if (!el || el.textContent === t) return;
+    el.textContent = t;
+    el.classList.remove('seq-d-pop'); void el.offsetWidth; el.classList.add('seq-d-pop');
+  }
   function setBar(id, frac) { var el = $(id); if (el) el.style.width = Math.max(0, Math.min(1, frac)) * 100 + '%'; }
   function lockChoices() {
     var box = $('seq-d-choices'); if (!box) return;
@@ -639,6 +646,19 @@
     if (q2) { q2.value = S.search.q; if (hadFocus) { q2.focus(); try { q2.setSelectionRange(q2.value.length, q2.value.length); } catch (e) {} } }
     paintMsg();
     tick();
+    celebrate(d);
+  }
+  // Victoria en un Duelo o un Reto: confeti una sola vez por partida y sesión (el resultado lo decide el
+  // servidor; aquí solo se celebra lo que ya se muestra).
+  function celebrate(d) {
+    try {
+      if (!d || d.estado !== 'completado' || !d.resultado || d.resultado.ganador !== 'yo') return;
+      var key = S.screen + ':' + S.id;
+      if (!S.celebrated) S.celebrated = {};
+      if (S.celebrated[key]) return;
+      S.celebrated[key] = true;
+      if (window.SEQFx && typeof window.SEQFx.confetti === 'function') setTimeout(window.SEQFx.confetti, 350);
+    } catch (e) {}
   }
 
   // ---- Integración -------------------------------------------------------------
