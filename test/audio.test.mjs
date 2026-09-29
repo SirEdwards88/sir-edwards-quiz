@@ -21,3 +21,11 @@ test('el sonido apagado silencia también las muestras', () => {
   assert.match(audio, /function playSound\(type\) \{\s*\n\s*if \(store\.sound === 'off'\) return;\s*\n\s*if \(type === 'bad' && playSample/);
   assert.match(audio, /function playCorrectSound\(streak\) \{\s*\n\s*if \(store\.sound === 'off'\) return;/);
 });
+test('música de menús: archivo ligero, no se precarga al instalar y tiene su interruptor', () => {
+  const size = fs.statSync(new URL('../assets/audio/menu-theme.mp3', import.meta.url)).size;
+  assert.ok(size < 3_000_000, 'menu-theme.mp3 pesa ' + size);
+  assert.ok(!sw.includes('menu-theme.mp3'), 'la música no debe ir en la lista de instalación');
+  assert.match(html, /id="music-control"/);
+  assert.match(audio, /function changeMusic\(/);
+  assert.match(sw, /res\.status !== 206/);
+});

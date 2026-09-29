@@ -190,3 +190,88 @@ function playWinFanfare() {
     });
   } catch (e) {}
 }
+
+// ====== 🎻 Música de menús («The Earl's Waiting Room») ======
+// Suena solo fuera de la partida (inicio, Jugar, Duelos, Estadísticas, Logros, Ajustes), a volumen bajo y
+// con fundidos; se pausa al entrar en una partida o un duelo en directo y al salir de la app.
+// Preferencia propia por dispositivo («Música» en Ajustes), independiente de los efectos de sonido.
+// No se descarga al instalar: el navegador la pide la primera vez que suena (tras el primer toque, que es
+// cuando los móviles dejan reproducir audio). El volumen ya viene bajo en el propio archivo porque en
+// iPhone el volumen de un <audio> no se puede cambiar desde la página.
+const MUSIC_SRC = 'assets/audio/menu-theme.mp3';
+const MUSIC_KEY = 'siredwards_quiz_v2_0_music';
+const MUSIC_VOLUME = 0.55;
+let music = null, musicUnlocked = false, musicFade = null;
+
+function musicEnabled() { try { return localStorage.getItem(MUSIC_KEY) !== 'off'; } catch (e) { return true; } }
+function musicInMenus() {
+  if (document.visibilityState === 'hidden') return false;
+  const game = document.getElementById('view-game');
+  const duel = document.getElementById('seq-duel-root');
+  if (game && game.classList.contains('active')) return false;
+  if (duel && duel.classList.contains('seq-d-playing')) return false;
+  return true;
+}
+function musicFadeTo(target, ms, done) {
+  if (!music) return;
+  clearInterval(musicFade);
+  const from = music.volume, steps = Math.max(1, Math.round(ms / 50));
+  let i = 0;
+  musicFade = setInterval(() => {
+    i++;
+    try { music.volume = Math.max(0, Math.min(1, from + (target - from) * (i / steps))); } catch (e) {}
+    if (i >= steps) { clearInterval(musicFade); musicFade = null; if (done) done(); }
+  }, 50);
+}
+function syncMusic() {
+  const want = musicUnlocked && musicEnabled() && musicInMenus();
+  if (!want) {
+    if (music && !music.paused) musicFadeTo(0, 450, () => { try { music.pause(); } catch (e) {} });
+    return;
+  }
+  if (!music) {
+    music = new Audio(MUSIC_SRC);
+    music.loop = true;
+    music.preload = 'auto';
+    try { music.volume = 0; } catch (e) {}
+  }
+  if (music.paused) {
+    const p = music.play();
+    if (p && p.then) p.then(() => musicFadeTo(MUSIC_VOLUME, 1400)).catch(() => {});
+    else musicFadeTo(MUSIC_VOLUME, 1400);
+  } else if (music.volume < MUSIC_VOLUME) {
+    musicFadeTo(MUSIC_VOLUME, 600);
+  }
+}
+function updateMusicButtons() {
+  const control = document.getElementById('music-control');
+  if (!control) return;
+  const v = musicEnabled() ? 'on' : 'off';
+  control.querySelectorAll('.segmented-btn').forEach((btn) => {
+    const on = btn.dataset.value === v;
+    btn.classList.toggle('active', on);
+    btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  });
+}
+function changeMusic(v) {
+  try { localStorage.setItem(MUSIC_KEY, v === 'off' ? 'off' : 'on'); } catch (e) {}
+  musicUnlocked = true; // el toque en el propio botón ya cuenta como interacción
+  updateMusicButtons();
+  syncMusic();
+}
+// Primer toque en cualquier sitio: a partir de aquí el navegador deja sonar la música.
+['pointerdown', 'keydown', 'touchstart'].forEach((ev) => document.addEventListener(ev, function unlockMusic() {
+  document.removeEventListener(ev, unlockMusic, true);
+  if (musicUnlocked) return;
+  musicUnlocked = true;
+  syncMusic();
+}, true));
+document.addEventListener('visibilitychange', syncMusic);
+document.addEventListener('DOMContentLoaded', () => {
+  updateMusicButtons();
+  if (typeof MutationObserver === 'undefined') return;
+  const obs = new MutationObserver(syncMusic);
+  document.querySelectorAll('.view').forEach((v) => obs.observe(v, { attributes: true, attributeFilter: ['class'] }));
+  const duel = document.getElementById('seq-duel-root');
+  if (duel) obs.observe(duel, { attributes: true, attributeFilter: ['class'] });
+});
