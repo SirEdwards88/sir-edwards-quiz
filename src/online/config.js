@@ -9,6 +9,6 @@
 //   API_BASE_URL     -> URL del Worker, sin barra final. Ej. https://sir-edwards-quiz-api.TU_SUBDOMINIO.workers.dev
 //   GOOGLE_CLIENT_ID -> "ID de cliente" de OAuth (tipo Aplicación web) de Google Cloud.
 window.SEQ_ONLINE_CONFIG = {
-  API_BASE_URL: '',
-  GOOGLE_CLIENT_ID: ''
+  API_BASE_URL: 'https://sir-edwards-quiz-api.sir-edwards-quiz.workers.dev',
+  GOOGLE_CLIENT_ID: '1803965811-j31ph0umm7juha2hqa1ld2201dhgp97d.apps.googleusercontent.com'
 };
