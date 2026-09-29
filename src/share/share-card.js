@@ -343,9 +343,8 @@
 
   function drawFooter(ctx, theme) {
     ctx.textAlign = 'center'; ctx.fillStyle = BRAND.gold;
-    ctx.font = 'italic 600 26px ' + SERIF;
-    ctx.fillText('Test de Lucidez Mental', CX, H - 76);
-    diamond(ctx, CX, H - 104, 9, theme.ring);
+    // 2.0: sin lema al pie (el nombre del juego ya va arriba); solo el rombo decorativo.
+    diamond(ctx, CX, H - 90, 9, theme.ring);
   }
 
   // Compone la tarjeta. Devuelve Promise<canvas>. Nunca lanza por un asset o
