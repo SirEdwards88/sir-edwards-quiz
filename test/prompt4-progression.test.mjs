@@ -174,8 +174,8 @@ test('Caja de Fragmentos: hitos y mensaje del siguiente objetivo', () => {
   assert.deepEqual(flags(14), [true, true, false]);
   assert.deepEqual(flags(15), [true, true, true]);
   // 2.0: antes de desbloquear el modo secreto, el objetivo no revela su nombre.
-  assert.equal(st(7).message, 'Te faltan 3 Fragmentos para desvelar un secreto.');
-  assert.equal(st(9).message, 'Te falta 1 Fragmento para desvelar un secreto.');
+  assert.equal(st(7).message, 'Te faltan 3 Fragmentos para desbloquear un modo secreto.');
+  assert.equal(st(9).message, 'Te falta 1 Fragmento para desbloquear un modo secreto.');
   assert.ok(!/lucidez/i.test(JSON.stringify(st(9).items.map(i => [i.text, i.goal]))), 'hitos sin nombre antes del desbloqueo');
   assert.match(st(10).items[0].text, /Lucidez Mental/, 'con el modo desbloqueado, el nombre aparece');
   assert.equal(st(10).message, 'Te faltan 2 Fragmentos para conseguir +1 error extra.');

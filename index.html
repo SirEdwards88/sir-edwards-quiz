@@ -881,7 +881,7 @@ try {
           <div class="fragments-bar-marks" id="fragments-bar-marks" aria-hidden="true"></div>
         </div>
         <div class="fragments-milestones" id="fragments-milestones"></div>
-        <p class="fragments-progress-subtitle" id="fragments-progress-subtitle">Consigue Fragmentos de Mente para desvelar un secreto.</p>
+        <p class="fragments-progress-subtitle" id="fragments-progress-subtitle">Consigue Fragmentos de Mente para desbloquear un modo secreto.</p>
       </div>
 
       <div class="medals-grid" id="medals-container"></div>
@@ -1020,7 +1020,7 @@ try {
               <li>40 preguntas nuevas.</li>
               <li>Nuevos logros de Duelo: «Revancha» y «¿Otra vez tú?».</li>
               <li>Nueva tarjeta para compartir tu resultado y retos con enlace directo para invitar a un amigo.</li>
-              <li>Nuevas ventajas con los Fragmentos de Mente y algo especial por descubrir.</li>
+              <li>Nuevas ventajas con los Fragmentos de Mente.</li>
               <li id="changelog-v2-save-note">Recuerda: en Ajustes puedes descargar una copia de seguridad de tu progreso.</li>
             </ul>
           </div>
@@ -7497,11 +7497,11 @@ function renderAchievementsProgress() {
 // extra en Lucidez; el de 15 es el TOTAL, no se suma al de 12).
 const FRAGMENT_MILESTONES = [
   { fragments: FRAGMENT_TARGET, icon: '👁️', title: 'Lucidez Mental', text: 'Desbloquea Lucidez Mental', goal: 'desbloquear Lucidez Mental',
-    secretText: 'Un secreto se desvelará…', secretGoal: 'desvelar un secreto' },
+    secretText: 'Desbloquea un modo secreto', secretGoal: 'desbloquear un modo secreto' },
   { fragments: 12, icon: '🛡️', title: 'Error extra', text: '+1 error extra en Lucidez', goal: 'conseguir +1 error extra',
-    secretIcon: '✨', secretText: 'Algo especial empieza a tomar forma…', secretGoal: 'ver qué toma forma' },
+    secretIcon: '✨', secretText: 'Una ventaja especial para el modo secreto', secretGoal: 'conseguir una ventaja especial' },
   { fragments: 15, icon: '🛡️', title: 'Errores extra', text: '+2 errores extra en total', goal: 'conseguir +2 errores extra',
-    secretIcon: '✨', secretText: 'Quien reúne todos los Fragmentos lo descubre todo.', secretGoal: 'descubrirlo todo' }
+    secretIcon: '✨', secretText: 'Una ventaja aún mayor para el modo secreto', secretGoal: 'conseguir una ventaja aún mayor' }
 ];
 // 2.0: hasta que el jugador desbloquea el modo secreto (10 Fragmentos), los hitos NO nombran «Lucidez Mental»
 // ni describen su ventaja: se muestran versiones misteriosas. Al desbloquearlo, los textos reales.
