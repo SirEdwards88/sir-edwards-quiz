@@ -5245,3 +5245,58 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 @media (prefers-reduced-motion: reduce) {
   .card.fx-ok, .card.fx-bad, .game-streak-inline.fx-heat-3, .fx-streak-banner { animation: none; }
 }
+
+/* ===== 2.0 — Logros agrupados (src/ui/achievements.js) ============================================= */
+#medals-container.ach-groups { display: flex; flex-direction: column; gap: 10px; grid-template-columns: none; }
+.ach-group { border: 1px solid var(--color-border-accent, rgba(201,153,46,.38)); border-radius: 16px; background: var(--card); box-shadow: var(--shadow-soft); overflow: hidden; }
+.ach-group > summary { list-style: none; display: grid; grid-template-columns: auto 1fr auto; grid-template-rows: auto auto; column-gap: 12px; row-gap: 6px;
+  align-items: center; padding: 14px 16px; cursor: pointer; }
+.ach-group > summary::-webkit-details-marker { display: none; }
+.ach-g-ico { grid-row: 1 / span 2; width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 21px; background: var(--badge-bg); }
+.ach-g-name { font-weight: 800; font-size: 15.5px; color: var(--text); }
+.ach-g-count { font-weight: 800; font-size: 13px; color: var(--accent-gold-strong, #92400e); }
+.ach-g-bar { grid-column: 2 / span 2; height: 6px; border-radius: 99px; background: var(--color-border-subtle, #e5e7eb); overflow: hidden; }
+.ach-g-bar > span { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #c9992e, #e8c874); }
+.ach-group > summary::after { content: '▾'; grid-column: 3; grid-row: 1; justify-self: end; margin-left: 0; display: none; }
+.ach-group[open] > summary { border-bottom: 1px solid var(--color-border-subtle, #e5e7eb); }
+.ach-group.is-complete { background: linear-gradient(135deg, var(--color-surface-highlight, #fdf7ea), var(--card)); }
+.ach-group.is-complete .ach-g-ico { background: linear-gradient(135deg, #e8c874, #c9992e); }
+.ach-list { display: flex; flex-direction: column; }
+.ach-row { display: flex; gap: 12px; align-items: flex-start; padding: 12px 16px; border-top: 1px solid var(--color-border-subtle, #eef0f3); }
+.ach-row:first-child { border-top: 0; }
+.ach-ico { position: relative; flex: 0 0 auto; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px;
+  background: var(--badge-bg); border: 1.5px solid var(--badge-border); }
+.ach-ico .medal-lock-svg { width: 18px; height: 18px; opacity: .6; }
+.ach-row.is-locked .ach-ico { filter: grayscale(1); opacity: .55; }
+.ach-row.is-done .ach-ico { background: radial-gradient(circle at 50% 35%, #fff7d6, #f0d99a); border-color: #c9992e; box-shadow: 0 4px 12px rgba(201,153,46,.35); }
+.ach-check { position: absolute; right: -3px; bottom: -3px; width: 17px; height: 17px; border-radius: 50%; background: #16a34a; color: #fff; font-size: 10px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center; border: 2px solid var(--card); }
+.ach-body { flex: 1 1 auto; min-width: 0; }
+.ach-title { font-weight: 800; font-size: 14.5px; color: var(--text); display: flex; align-items: center; gap: 6px; }
+.ach-row.is-locked .ach-title { color: var(--sub); }
+.ach-desc { font-size: 13px; line-height: 1.4; color: var(--sub); margin-top: 2px; }
+.ach-frag { font-size: 12px; padding: 1px 6px; border-radius: 99px; background: rgba(124,58,237,.12); border: 1px solid rgba(124,58,237,.3); }
+.ach-frag.got { background: rgba(124,58,237,.22); }
+.ach-prog { display: flex; align-items: center; gap: 8px; margin-top: 7px; }
+.ach-bar { flex: 1 1 auto; height: 6px; border-radius: 99px; background: var(--color-border-subtle, #e5e7eb); overflow: hidden; }
+.ach-bar > span { display: block; height: 100%; border-radius: 99px; background: var(--primary); min-width: 0; }
+.ach-num { font-size: 12px; font-weight: 800; color: var(--sub); font-variant-numeric: tabular-nums; }
+.ach-row.is-secret .ach-title { letter-spacing: 2px; }
+[data-theme="dark"] .ach-g-bar, [data-theme="dark"] .ach-bar { background: rgba(255,255,255,.1); }
+[data-theme="dark"] .ach-row, [data-theme="dark"] .ach-group[open] > summary { border-color: rgba(255,255,255,.07); }
+
+/* ===== 2.0 — Radar de categorías (src/ui/stats-extra.js) ========================================== */
+.stats-radar { margin: 4px 0 14px; text-align: center; }
+.radar-svg { width: 100%; max-width: 360px; height: auto; overflow: visible; }
+.radar-ring { fill: none; stroke: var(--color-border-subtle, #e5e7eb); stroke-width: 1; }
+.radar-ring.outer { stroke: var(--color-border-accent, rgba(201,153,46,.45)); stroke-width: 1.5; fill: rgba(201,153,46,.04); }
+.radar-axis { stroke: var(--color-border-subtle, #e5e7eb); stroke-width: 1; }
+.radar-shape { fill: rgba(37,99,235,.22); stroke: #2563eb; stroke-width: 2.4; stroke-linejoin: round; }
+.radar-dot { fill: #c9992e; stroke: #fff; stroke-width: 1.5; }
+.radar-dot.empty { fill: #9ca3af; }
+.radar-lbl { font-size: 11.5px; font-weight: 700; fill: var(--text); }
+.radar-pct { font-size: 11.5px; font-weight: 800; fill: var(--primary); }
+.radar-note { font-size: 13.5px; color: var(--sub); margin: 2px 0 0; }
+[data-theme="dark"] .radar-shape { fill: rgba(96,165,250,.25); stroke: #60a5fa; }
+[data-theme="dark"] .radar-ring, [data-theme="dark"] .radar-axis { stroke: rgba(255,255,255,.12); }
+[data-theme="dark"] .radar-dot { stroke: #1c2340; }

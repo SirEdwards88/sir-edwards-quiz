@@ -801,7 +801,7 @@ try {
         <!-- NIVEL 2 — ¿Qué sé? -->
         <div class="stats-section">
           <h3>🧠 Dominio</h3>
-          <p class="stats-section-sub">Dominada = la has acertado 3 veces seguidas. Tu avance sobre las 320 preguntas disponibles.</p>
+          <p class="stats-section-sub">Dominada = la has acertado 3 veces seguidas. Tu avance sobre las <span id="stats-bank-total">360</span> preguntas disponibles.</p>
           <div class="stats-mini-grid">
             <div class="stats-mini"><div class="stats-mini-value" id="st-seen">0/320</div><div class="stats-mini-label">Preguntas vistas</div></div>
             <div class="stats-mini"><div class="stats-mini-value" id="st-mastered">0/320</div><div class="stats-mini-label">Preguntas dominadas</div></div>
@@ -1076,6 +1076,8 @@ try {
      online.js solo usa el store/funciones del juego en tiempo de ejecución. -->
 <script src="src/ui/install-app.js"></script>
 <script src="src/ui/game-fx.js"></script>
+<script src="src/ui/achievements.js"></script>
+<script src="src/ui/stats-extra.js"></script>
 <script src="src/online/config.js"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
 <script src="src/utils/sync-merge.js"></script>
@@ -3111,7 +3113,7 @@ function switchTab(tabId) {
       exitBtn.textContent = '← Menú principal';
     }
   }
-  if (tabId === 'stats') { renderStats(); renderHistory(); }
+  if (tabId === 'stats') { renderStats(); renderHistory(); if (window.SEQStatsExtra) SEQStatsExtra.render(); }
   if (tabId === 'medals') { renderAchievementsProgress(); renderMedals(); }
   // v1.4: la capa online repinta su bloque cuando se entra en Ajustes/Estadísticas.
   if (typeof SEQOnline !== 'undefined') SEQOnline.onTabShown(tabId);
@@ -6611,6 +6613,8 @@ function renderFragmentsProgress() {
 function renderMedals() {
   const container = document.getElementById('medals-container');
   if (!container) return;
+  // 2.0: vista agrupada y con progreso (src/ui/achievements.js). Si el módulo no carga, sigue la de siempre.
+  if (window.SEQAchievements) { try { SEQAchievements.render(container); return; } catch (e) {} }
 
   // Orden: primero logros por jugar partidas, después los de racha,
   // y después el resto de logros.
