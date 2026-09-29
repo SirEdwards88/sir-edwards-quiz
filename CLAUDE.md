@@ -20,6 +20,12 @@ Backend aparte (Cloudflare Worker + D1), que NO vive en este repositorio.
 - Antes de subir: `node --test test/*.test.mjs` y comprobación en navegador (móvil y sin conexión cuando corresponda), sin errores de JavaScript.
 - No sobrescribir `src/data/questions.js` (lo edita el propietario a mano) ni subir un `src/online/config.js` con valores inventados.
 
+## Backend acoplado a esta PWA
+El Worker (fuera de este repo) tiene su propia copia del banco de preguntas (corrige Duelo/Retos), de la lista de logros y de la de avatares,
+**generadas a partir de `src/data/questions.js`, `medals.js` y `avatars.js`**. Si cambias cualquiera de ellos: regenerar (`scripts/gen-questions.mjs`,
+`scripts/gen-constants.mjs`) y **volver a desplegar el Worker**; si no, Duelo/Retos y el perfil pueden fallar en producción.
+Igual con `src/utils/sync-merge.js`: debe ser el mismo texto que `src/sync-merge.js` del backend.
+
 ## Producto (decisiones cerradas de la 2.0)
 - «Lucidez Mental» es un modo secreto: no se nombra antes de desbloquearlo (10 Fragmentos de Mente). Textos misteriosos hasta entonces.
 - «Compartir reto» es la acción social principal; «Compartir resultado» es secundario y discreto.
