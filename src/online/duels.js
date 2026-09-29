@@ -138,7 +138,7 @@
     if (!on || !active()) { if (home) home.classList.remove('seq-d-hub-on'); }
     if (!on) { slot.innerHTML = ''; return; }
     if (!session()) {
-      slot.innerHTML = '<div class="mode-card seq-d-card" onclick="SEQOnline.goToAccount()"><div class="seq-d-card-icon">👥</div><div class="duel-action-text"><h3>Duelos con amigos</h3><p>Inicia sesión para retar a tus amigos online.</p></div></div>';
+      slot.innerHTML = '<div class="mode-card seq-d-card" onclick="SEQOnline.goToAccount()"><div class="seq-d-card-icon"><svg class="se-sym" viewBox="0 0 64 64"><use href="#se-friends"/></svg></div><div class="duel-action-text"><h3>Duelos con amigos</h3><p>Inicia sesión para retar a tus amigos online.</p></div></div>';
       return;
     }
     if (!active()) { slot.innerHTML = '<p class="stats-section-sub">Los duelos y los retos estarán disponibles muy pronto.</p>'; return; }
@@ -149,13 +149,13 @@
     var re = L.retos ? L.retos.filter(function (r) { return (r.estado === 'pendiente' && r.soy === 'rival') || (r.estado === 'aceptado' && !r.yo.terminado); }).length : 0;
     var h = '';
     if (f.classic_duel) h += hubCard('duel', '<svg class="se-sym" viewBox="0 0 64 64"><use href="#se-swords"/></svg>', 'Duelo online', 'Juega un duelo en directo contra un amigo.', "SEQDuels.open('duels')", pending(du, 'PENDIENTE', 'PENDIENTES'));
-    if (f.async_challenges) h += hubCard('retos', '📨', 'Retos', 'Reta a un amigo y jugad cada uno cuando podáis.', "SEQDuels.open('retos')", pending(re, 'PENDIENTE', 'PENDIENTES'));
-    h += hubCard('amigos', '👥', 'Amigos', 'Añade amigos y rétalos desde tu lista.', "SEQDuels.open('friends')", pending(fr, 'SOLICITUD', 'SOLICITUDES'));
+    if (f.async_challenges) h += hubCard('retos', '<svg class="se-sym" viewBox="0 0 64 64"><use href="#se-letter"/></svg>', 'Retos', 'Reta a un amigo y jugad cada uno cuando podáis.', "SEQDuels.open('retos')", pending(re, 'PENDIENTE', 'PENDIENTES'));
+    h += hubCard('amigos', '<svg class="se-sym" viewBox="0 0 64 64"><use href="#se-friends"/></svg>', 'Amigos', 'Añade amigos y rétalos desde tu lista.', "SEQDuels.open('friends')", pending(fr, 'SOLICITUD', 'SOLICITUDES'));
     // Ranking: solo la entrada visual. Todavía no existe un ranking de duelos
     // (el ranking global por XP es otra cosa y está desactivado), así que la
     // tarjeta está bloqueada, sin navegación y sin datos.
     h += '<div class="mode-card locked seq-d-card seq-d-v-rank" aria-disabled="true"><span class="mode-lock-badge" aria-hidden="true"></span>' +
-      '<div class="mode-card-icon" aria-hidden="true">🏆</div><h3>Ranking</h3><p>La clasificación de duelos entre amigos.</p><p class="mode-subtitle seq-d-soon">PRÓXIMAMENTE</p></div>';
+      '<div class="mode-card-icon" aria-hidden="true"><svg class="se-sym" viewBox="0 0 64 64"><use href="#se-trophy"/></svg></div><h3>Ranking</h3><p>La clasificación de duelos entre amigos.</p><p class="mode-subtitle seq-d-soon">PRÓXIMAMENTE</p></div>';
     slot.innerHTML = h;
   }
   // Cabecera del hub (la usa también closeDuelPanels() en index.html). Solo se

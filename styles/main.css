@@ -5169,3 +5169,28 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 /* 2.0: «Instalar la app» en Ajustes (src/ui/install-app.js). */
 .settings-install-btn { width: 100%; margin-top: 8px; }
 .settings-install-note { margin: 8px 0 0; font-size: 13.5px; line-height: 1.45; color: var(--sub); }
+
+/* 2.0: los avisos pasan abajo, como una píldora oscura y compacta: no tapan cabeceras ni botones de arriba
+   y se leen de un vistazo. Misma función showInfoToast(), solo cambia la presentación. */
+.info-toast{
+  top:auto; bottom:calc(22px + env(safe-area-inset-bottom, 0px));
+  transform:translate(-50%,16px) scale(.96);
+  align-items:center; gap:10px;
+  min-width:0; width:max-content; max-width:min(440px, calc(100vw - 32px));
+  padding:11px 18px 11px 14px;
+  border:1px solid rgba(232,200,116,.45);
+  border-radius:var(--radius-pill);
+  background:rgba(22,36,74,.94); color:#fdf7ea;
+  -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+  box-shadow:0 14px 34px rgba(10,16,36,.32);
+  font-size:14px; font-weight:600;
+}
+.info-toast.show{ transform:translate(-50%,0) scale(1); }
+.info-toast .toast-icon{ font-size:17px; }
+[data-theme="dark"] .info-toast{ background:rgba(250,243,230,.96); color:#16244a; border-color:rgba(201,153,46,.5); }
+
+/* 2.0: la familia de iconos propia (#se-*) sustituye a los emojis: insignias algo más grandes para que se
+   lean los detalles (corazón, calavera, reloj, pizarra…), en Jugar y en Duelo. */
+#view-modes .mode-card-icon, #duel-home .seq-d-card .mode-card-icon{ width:54px!important; height:54px!important; border-radius:14px!important; margin-bottom:10px!important; }
+#view-modes .mode-card-icon .se-sym, #duel-home .seq-d-card .mode-card-icon .se-sym{ width:80%; height:80%; }
+.seq-d-card-icon .se-sym{ width:34px; height:34px; }

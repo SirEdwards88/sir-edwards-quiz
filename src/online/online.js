@@ -659,7 +659,7 @@
   function pickAvatar(a) {
     var cur = $('seq-name-input'); if (cur) ui.editName = cur.value; // no perder lo ya escrito al re-pintar
     ui.editAvatar = a === '' ? null : a; render();
-    var i = $('seq-name-input'); if (i) i.focus();
+    // 2.0: sin enfocar el campo de nombre: en móvil abriría el teclado en cada toque.
   }
   function saveProfile() {
     if (!account || ui.busy) return;
@@ -737,75 +737,77 @@
     if (ui.syncing) return { cls: 'info', text: 'Sincronizando...' };
     if (navigator.onLine === false) return { cls: 'warn', text: hasUnsynced() ? 'Sin conexión. Los cambios se sincronizarán cuando vuelva Internet.' : 'Sin conexión. El juego funciona con normalidad.' };
     if (ui.error) return { cls: 'bad', text: ui.error };
-    if (hasUnsynced()) return { cls: 'info', text: 'Hay cambios pendientes de sincronizar.' };
-    if (sync && sync.lastSyncAt) return { cls: 'ok', text: 'Datos sincronizados ' + ago(sync.lastSyncAt) + '.' };
-    return { cls: 'ok', text: 'Cuenta conectada.' };
+    if (hasUnsynced()) return { cls: 'info', text: 'Guardando en tu cuenta…' };
+    if (sync && sync.lastSyncAt) return { cls: 'ok', text: 'Guardado en tu cuenta · ' + ago(sync.lastSyncAt) };
+    return { cls: 'ok', text: 'Guardado en tu cuenta' };
   }
 
+  // 2.0: la cuenta se presenta como el perfil del jugador. Arriba, una tarjeta pulsable (avatar, nombre,
+  // nivel) que abre la edición; debajo, UNA línea de estado discreta. Los estados normales
+  // (guardado / guardando / sincronizando) no ocupan sitio; solo los problemas se destacan y traen
+  // su propia acción. Lo que casi nadie usa queda plegado en «Cuenta».
+  function localXp() { try { return Math.max(0, Number(store.xp) || 0); } catch (e) { return 0; } }
   function renderAccount() {
     var host = $('online-account-section');
     if (!host) return;
     if (!ENABLED) { host.style.display = 'none'; return; }
     host.style.display = '';
     var st = statusInfo();
-    var statusHtml = st ? '<p class="seq-status seq-' + st.cls + '" id="seq-status">' + esc(st.text) + '</p>' : '';
     if (!account) {
-      // Fase B.1 (Prompt 3): este bloque solo se pinta cuando ENABLED es true (ver
-      // la guarda de arriba), y con la cuenta obligatoria ese caso implica que el
-      // gate (#auth-gate) ya está cubriendo la pantalla — así que el texto ya no
-      // dice que se puede "seguir jugando sin cuenta" (dejó de ser cierto).
-      host.innerHTML = '<h3 style="margin-top:0;">☁️ Cuenta online</h3>' +
-        '<p class="settings-note">Inicia sesión con tu cuenta de Google para jugar. Así conservas tu identidad de jugador y sincronizas todo tu progreso (logros, historial, estadísticas, ajustes y duelos) entre dispositivos.</p>' +
-        statusHtml + '<div id="seq-gsi-slot" class="seq-gsi-slot"></div><p class="settings-note seq-msg" id="seq-online-msg">' + esc(ui.msg) + '</p>';
+      host.innerHTML = '<h3 style="margin-top:0;">Tu perfil</h3>' +
+        '<p class="settings-note">Entra con Google para guardar tu progreso en tu cuenta y jugar Duelos y Retos con tus amigos.</p>' +
+        (st ? '<p class="seq-status seq-' + st.cls + '" id="seq-status">' + esc(st.text) + '</p>' : '') +
+        '<div id="seq-gsi-slot" class="seq-gsi-slot"></div><p class="settings-note seq-msg" id="seq-online-msg">' + esc(ui.msg) + '</p>';
       return;
     }
     var p = account.player;
-    var seen = (sync && sync.seen) || emptySeen();
     var av = AVATARS.indexOf(p.avatar) !== -1 ? p.avatar : DEFAULT_AVATAR;
-    var html = '<h3 style="margin-top:0;">☁️ Cuenta online</h3>' +
-      '<div class="seq-profile"><div class="seq-avatar">' + (window.SEQAvatars ? window.SEQAvatars.avatarHTML(av) : av) + '</div><div class="seq-profile-info"><div class="seq-name">' + esc(p.display_name) + '</div>' +
-      '<button class="seq-id" onclick="SEQOnline.copyId()" title="Copiar ID">ID: ' + esc(p.id) + ' 📋</button></div></div>' + statusHtml;
-    if (sync && sync.migration !== 'pending') {
-      html += '<p class="settings-note seq-online-progress">Progreso online: Nivel <b>' + levelOf(seen.xp) + '</b> · <b>' + seen.xp + '</b> XP · <b>' + seen.medals.length + '</b> logros · <b>' + fragCount(seen.medals) + '/15</b> Fragmentos</p>';
-    }
+    var avHtml = window.SEQAvatars ? window.SEQAvatars.avatarHTML(av) : av;
+    var xp = localXp();
+    var quiet = st && (st.cls === 'ok' || st.cls === 'info');
+    var html = '<h3 style="margin-top:0;">Tu perfil</h3>';
     if (ui.editing) {
-      html += '<div class="seq-edit"><label class="settings-field-label" for="seq-name-input">Nombre visible (no es único)</label>' +
-        '<input id="seq-name-input" class="seq-input" type="text" maxlength="24" value="' + esc(ui.editName != null ? ui.editName : p.display_name) + '" autocomplete="off">' +
-        // Fase C.1 (corrección de QA): el avatar por defecto (🎩) es ahora una
-        // entrada normal del catálogo de 12, no un botón "fantasma" aparte —
-        // antes se pintaba dos veces (la opción "usar el por defecto" + su
-        // propio glifo en la lista), lo que se veía como un duplicado visual
-        // desde que 🎩 pasó a ser el valor por defecto. Un avatar seleccionado
-        // explícitamente y "sin elección todavía" (ui.editAvatar === null)
-        // muestran el mismo botón marcado como seleccionado cuando coincide con
-        // el por defecto — no hacía falta una segunda casilla para eso.
+      html += '<div class="seq-edit"><div class="seq-edit-head"><div class="seq-avatar seq-avatar-lg">' + (window.SEQAvatars ? window.SEQAvatars.avatarHTML(ui.editAvatar || av) : av) + '</div>' +
+        '<div class="seq-edit-head-txt"><label class="settings-field-label" for="seq-name-input">Tu nombre</label>' +
+        '<input id="seq-name-input" class="seq-input" type="text" maxlength="24" value="' + esc(ui.editName != null ? ui.editName : p.display_name) + '" autocomplete="off"></div></div>' +
+        '<p class="settings-kicker seq-av-kicker">Elige tu emblema</p>' +
         '<div class="seq-avatars" role="group" aria-label="Avatar">' +
         AVATARS.map(function (a) {
-          var sel = (ui.editAvatar === a) || (ui.editAvatar == null && a === DEFAULT_AVATAR);
+          var sel = (ui.editAvatar === a) || (ui.editAvatar == null && a === av);
           var img = window.SEQAvatars ? window.SEQAvatars.avatarHTML(a) : a;
           var name = window.SEQAvatars && window.SEQAvatars.shortName ? '<span class="seq-av-name">' + esc(window.SEQAvatars.shortName(a)) + '</span>' : '';
           return '<button type="button" class="seq-av-btn' + (sel ? ' sel' : '') + '" onclick="SEQOnline.pickAvatar(\'' + a + '\')" aria-pressed="' + sel + '">' + img + name + '</button>';
         }).join('') + '</div>' +
-        // "Restaurar avatar por defecto" queda como acción secundaria de texto,
-        // NO como una casilla de avatar más — solo tiene sentido ofrecerla
-        // cuando hay una elección explícita que deshacer (si no, ya se está
-        // usando el por defecto). Reutiliza pickAvatar('') tal cual existía.
-        (ui.editAvatar != null ? '<button type="button" class="seq-av-reset" onclick="SEQOnline.pickAvatar(\'\')">↺ Restaurar avatar por defecto</button>' : '') +
-        '<div class="seq-btnrow"><button class="btn btn-primary" onclick="SEQOnline.saveProfile()"' + (ui.busy ? ' disabled' : '') + '>Guardar</button><button class="btn btn-secondary" onclick="SEQOnline.toggleEdit()">Cancelar</button></div></div>';
-    } else {
-      html += '<div class="seq-btnrow">' +
-        '<button class="btn btn-primary" onclick="SEQOnline.syncNowUi()"' + (ui.syncing ? ' disabled' : '') + '>↻ Sincronizar ahora</button>' +
-        (rankingOn() ? '<button class="btn btn-secondary" onclick="SEQOnline.openRanking()">🏆 Ranking global</button>' : '') +
-        '<button class="btn btn-secondary" onclick="SEQOnline.toggleEdit()">✏️ Editar perfil</button>' +
-        '<button class="btn btn-secondary" onclick="SEQOnline.openMigration()">' + (sync && sync.migration === 'pending' ? '➡️ Decidir sobre mi progreso local' : '🔀 Restaurar / combinar progreso') + '</button>' +
-        '<button class="btn btn-secondary" onclick="SEQOnline.signOut()">Cerrar sesión</button></div>' +
-        '<p class="settings-note">Cerrar sesión no elimina tu cuenta ni tu progreso: puedes volver a entrar cuando quieras.</p>' +
-        '<p class="settings-note">Tu progreso se guarda en tu cuenta automáticamente y se recupera al iniciar sesión en otro dispositivo. Lo informa tu dispositivo: no sirve como prueba de resultados.</p>' +
-        '<details class="seq-manage"><summary>Gestionar cuenta</summary><div class="seq-btnrow">' +
-        '<button class="btn btn-secondary" onclick="SEQOnline.logoutAll()">Cerrar sesión en todos los dispositivos</button>' +
-        '<button class="btn btn-danger" onclick="SEQOnline.deleteAccount()">Eliminar mi cuenta online</button></div>' +
-        '<p class="settings-note">Eliminar la cuenta borra tu progreso online y tu perfil del servidor. El progreso guardado en este dispositivo NO se borra.</p></details>';
+        '<div class="seq-btnrow seq-btnrow-2"><button class="btn btn-secondary" onclick="SEQOnline.toggleEdit()">Cancelar</button><button class="btn btn-primary" onclick="SEQOnline.saveProfile()"' + (ui.busy ? ' disabled' : '') + '>Guardar</button></div></div>';
+      host.innerHTML = html;
+      return;
     }
+    html += '<button type="button" class="seq-profile-card" onclick="SEQOnline.toggleEdit()" aria-label="Editar perfil">' +
+      '<span class="seq-avatar seq-avatar-lg">' + avHtml + '</span>' +
+      '<span class="seq-profile-info"><span class="seq-name">' + esc(p.display_name) + '</span>' +
+      '<span class="seq-profile-level">Nivel ' + levelOf(xp) + ' · ' + xp + ' XP</span></span>' +
+      '<span class="seq-profile-edit" aria-hidden="true">✏️</span></button>';
+    if (st) {
+      if (quiet) html += '<p class="seq-sync-line seq-sync-' + st.cls + '" id="seq-status"><span class="seq-sync-dot" aria-hidden="true"></span>' + esc(st.text) + '</p>';
+      else html += '<p class="seq-status seq-' + st.cls + '" id="seq-status">' + esc(st.text) + '</p>';
+    }
+    // Acciones que solo aparecen cuando hacen falta.
+    if (sync && (sync.migration === 'pending' || sync.needsMerge)) {
+      html += '<div class="seq-btnrow"><button class="btn btn-primary" onclick="SEQOnline.openMigration()">' + (sync.migration === 'pending' ? '➡️ Decidir sobre mi progreso local' : '🔀 Restaurar / combinar progreso') + '</button></div>';
+    } else if (st && !quiet && navigator.onLine !== false) {
+      html += '<div class="seq-btnrow"><button class="btn btn-primary" onclick="SEQOnline.syncNowUi()"' + (ui.syncing ? ' disabled' : '') + '>↻ Reintentar</button></div>';
+    }
+    if (rankingOn()) html += '<div class="seq-btnrow"><button class="btn btn-secondary" onclick="SEQOnline.openRanking()">🏆 Ranking global</button></div>';
+    html += '<details class="seq-manage"><summary>Cuenta</summary>' +
+      '<button class="seq-id" onclick="SEQOnline.copyId()" title="Copiar ID">Tu ID de jugador: <b>' + esc(p.id) + '</b> 📋</button>' +
+      '<div class="seq-btnrow">' +
+      '<button class="btn btn-secondary" onclick="SEQOnline.syncNowUi()"' + (ui.syncing ? ' disabled' : '') + '>↻ Sincronizar ahora</button>' +
+      (sync && (sync.migration === 'pending' || sync.needsMerge) ? '' : '<button class="btn btn-secondary" onclick="SEQOnline.openMigration()">🔀 Restaurar / combinar progreso</button>') +
+      '<button class="btn btn-secondary" onclick="SEQOnline.signOut()">Cerrar sesión</button>' +
+      '<button class="btn btn-secondary" onclick="SEQOnline.logoutAll()">Cerrar sesión en todos los dispositivos</button>' +
+      '<button class="btn btn-danger" onclick="SEQOnline.deleteAccount()">Eliminar mi cuenta online</button></div>' +
+      '<p class="settings-note">Cerrar sesión no borra nada: puedes volver a entrar cuando quieras. Eliminar la cuenta borra tu progreso online y tu perfil del servidor; lo guardado en este dispositivo no se borra.</p>' +
+      '<p class="settings-note">Tu progreso lo informa tu dispositivo: no sirve como prueba de resultados.</p></details>';
     host.innerHTML = html;
   }
 
