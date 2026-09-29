@@ -326,7 +326,7 @@ try {
       <div class="modal-card">
         <h2><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--primary)"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16.5"/><circle cx="12" cy="7.6" r="1" fill="currentColor" stroke="none"/></svg> Sir Edwards Quiz</h2>
         <p id="info-modal-version-text">Test de Lucidez Mental · v2.0</p>
-        <p>Un quiz de cultura general con varios modos de juego, logros por desbloquear y un modo Duelo para retar a tus amigos con el mismo set de preguntas. Todo tu progreso se guarda únicamente en este dispositivo.</p>
+        <p>Un quiz de cultura general con varios modos de juego, logros por desbloquear y Duelos online y Retos para jugar con tus amigos. Todo tu progreso se guarda únicamente en este dispositivo.</p>
         <div class="modal-warning-actions">
           <button class="btn btn-primary" onclick="closeInfoModal()">Entendido</button>
         </div>
@@ -340,10 +340,10 @@ try {
     <div id="duel-help-modal" class="modal-overlay" style="display:none;">
       <div class="modal-card">
         <h2><span aria-hidden="true">⚔️</span> ¿Cómo funciona un Duelo?</h2>
-        <p><strong>1. Crea un reto</strong><br>Elige un modo y juega tu partida.</p>
-        <p><strong>2. Genera el código</strong><br>Al terminar la partida, se genera un código para ese reto.</p>
-        <p><strong>3. Comparte el código</strong><br>Envíalo a tu rival. Él lo introduce y juega la misma partida.</p>
-        <p><strong>4. Compara el resultado</strong><br>Gana quien consiga la mayor puntuación.</p>
+        <p><strong>1. Añade a un amigo</strong><br>Los duelos y los retos son siempre con amigos de tu lista.</p>
+        <p><strong>2. Duelo online</strong><br>Jugáis a la vez 20 preguntas en directo.</p>
+        <p><strong>3. Retos</strong><br>Le envías un reto y lo juega cuando quiera, dentro del plazo.</p>
+        <p><strong>4. Gana quien acierte más</strong><br>El resultado lo decide el servidor.</p>
         <div class="modal-warning-actions">
           <button class="btn btn-primary" onclick="closeDuelHelpModal()">Entendido</button>
         </div>
@@ -481,106 +481,9 @@ try {
         <button type="button" class="section-help-btn" id="duel-help-btn" onclick="showDuelHelpModal()" aria-label="¿Cómo funciona un Duelo?" title="¿Cómo funciona un Duelo?">?</button>
       </div>
       <div id="duel-home" class="modes-grid">
-        <!-- v1.5: hub de Duelos (Duelo online / Retos / Amigos / Ranking + «Duelo por código» como opción
-             secundaria). Lo pinta src/online/duels.js; sin sesión o con los flags apagados solo invita a
-             iniciar sesión y deja visibles las tres tarjetas del Duelo por código de abajo (setSrwVisible). -->
+        <!-- Hub de Duelos (Duelo online / Retos / Amigos / Ranking). Lo pinta src/online/duels.js;
+             sin sesión o con los flags apagados solo invita a iniciar sesión. -->
         <div id="seq-duel-cards" class="seq-duel-cards"></div>
-        <div id="duel-resume-card" class="mode-card duel-resume-card" style="display:none;" onclick="switchTab('game')">
-          <div class="mode-card-icon" id="duel-resume-icon">⚔️</div>
-          <h3 id="duel-resume-title">Continuar reto</h3>
-          <p id="duel-resume-desc">Retoma tu duelo justo donde lo dejaste.</p>
-          <div class="mode-subtitle" id="duel-resume-subtitle">⚔️ RETO EN CURSO</div>
-        </div>
-        <div class="mode-card duel-action-crear" onclick="openDuelPanel('crear')">
-          <div class="duel-action-icon duel-action-icon-crear" aria-hidden="true"><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
-          <div class="duel-action-text">
-            <h3>Crear reto</h3>
-            <p>Elige el modo de juego, juega y consigue un código para retar a un amigo.</p>
-          </div>
-        </div>
-        <div class="mode-card duel-action-unirse" onclick="openDuelPanel('unirse')">
-          <div class="duel-action-icon duel-action-icon-unirse" aria-hidden="true"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M9.5 14.5l5-5"/><path d="M8 12.4c-1.4-1.4-1.4-3.7 0-5.1l1.9-1.9c1.4-1.4 3.7-1.4 5.1 0 1.4 1.4 1.4 3.7 0 5.1l-.9.9"/><path d="M16 11.6c1.4 1.4 1.4 3.7 0 5.1l-1.9 1.9c-1.4 1.4-3.7 1.4-5.1 0-1.4-1.4-1.4-3.7 0-5.1l.9-.9"/></svg></div>
-          <div class="duel-action-text">
-            <h3>Unirme a un reto</h3>
-            <p>Pega el código de un amigo y juega exactamente las mismas preguntas.</p>
-          </div>
-        </div>
-        <div class="mode-card duel-action-retos" onclick="openDuelPanel('retos')">
-          <div class="duel-action-icon duel-action-icon-retos" aria-hidden="true"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M6 4h9l3 3v13H6z"/><path d="M15 4v3h3"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="15" y2="15"/></svg></div>
-          <div class="duel-action-text">
-            <h3>Mis retos</h3>
-            <p>Consulta tus duelos jugados y su resultado.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Submenú: Crear reto -->
-      <div id="duel-panel-crear" style="display:none;">
-        <!-- Paso 1: elige el modo de juego. Lista simple (no las tarjetas
-             grandes de Jugar, ver .duel-mode-list / .duel-mode-option más
-             abajo en el CSS), pero con el MISMO estado de bloqueo que Jugar
-             (ver openDuelCrearModeStep / isDuelModeUnlocked): nunca una
-             segunda lógica de desbloqueos. Mismos ids duel-mode-card-* que
-             antes para no tocar esa lógica. -->
-        <div id="duel-crear-step-modo">
-          <div class="duel-mode-list">
-            <div class="duel-mode-option dmo-standard" id="duel-mode-card-play" onclick="selectDuelMode('play')">
-              <div class="duel-mode-icon" aria-hidden="true">🎯</div>
-              <span class="duel-mode-name">Estándar</span>
-            </div>
-            <div class="duel-mode-option dmo-survival" id="duel-mode-card-survival" onclick="selectDuelMode('survival')">
-              <div class="duel-mode-icon" aria-hidden="true">❤️</div>
-              <span class="duel-mode-name">Supervivencia</span>
-              <span class="duel-mode-status">🔒 BLOQUEADO</span>
-            </div>
-            <div class="duel-mode-option dmo-sudden" id="duel-mode-card-sudden_death" onclick="selectDuelMode('sudden_death')">
-              <div class="duel-mode-icon" aria-hidden="true">💀</div>
-              <span class="duel-mode-name">Muerte Súbita</span>
-              <span class="duel-mode-status">🔒 BLOQUEADO</span>
-            </div>
-            <div class="duel-mode-option dmo-timetrial" id="duel-mode-card-timetrial" onclick="selectDuelMode('timetrial')">
-              <div class="duel-mode-icon" aria-hidden="true">⚡</div>
-              <span class="duel-mode-name">Contrarreloj</span>
-              <span class="duel-mode-status">🔒 BLOQUEADO</span>
-            </div>
-            <div class="duel-mode-option dmo-mentalcalc" id="duel-mode-card-mental_calc" onclick="selectDuelMode('mental_calc')">
-              <div class="duel-mode-icon" aria-hidden="true">🔢</div>
-              <span class="duel-mode-name">Cálculo Mental</span>
-              <span class="duel-mode-status">🔒 BLOQUEADO</span>
-            </div>
-            <div class="duel-mode-option dmo-lucidez" id="duel-mode-card-lucidez_mental" onclick="selectDuelMode('lucidez_mental')">
-              <div class="duel-mode-icon" aria-hidden="true">👁️</div>
-              <span class="duel-mode-name">Modo Secreto</span>
-              <span class="duel-mode-status">🔒 BLOQUEADO</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Paso 2: configuración propia del modo elegido (dificultad de
-             Estándar, tramo de Supervivencia). Muerte Súbita y Contrarreloj no
-             tienen configuración y saltan este paso (ver selectDuelMode). -->
-        <div id="duel-crear-step-config" style="display:none;">
-          <div class="modes-grid" id="duel-crear-config-grid"></div>
-        </div>
-      </div>
-
-      <!-- Submenú: Unirme a un reto -->
-      <div id="duel-panel-unirse" style="display:none;">
-        <p class="stats-section-sub">Pega aquí el código que te ha compartido tu amigo.</p>
-        <input type="text" id="duel-join-code-input" autocomplete="off" placeholder="Ej: SRW-XXXX-XXXXX" style="text-transform:uppercase;" />
-        <div id="duel-join-error" class="feedback bad" style="display:none;"></div>
-        <button class="btn btn-primary" style="width:100%;margin-top:10px;" onclick="tryJoinDuelCode()">Comprobar código</button>
-
-        <div id="duel-join-preview" class="duel-result-box duel-result-neutral" style="display:none;margin-top:16px;">
-          <div class="duel-result-title">⚔️ Vas a jugar un duelo <span id="duel-preview-diff"></span></div>
-          <p class="duel-result-hint">Marcador a batir: <b><span id="duel-preview-score"></span></b></p>
-          <button class="btn btn-primary" style="width:100%;margin-top:10px;" onclick="startJoinedDuelGame()">▶ Jugar</button>
-        </div>
-      </div>
-
-      <!-- Submenú: Mis retos -->
-      <div id="duel-panel-retos" style="display:none;">
-        <div class="history-list" id="duel-history-list"></div>
       </div>
 
       <!-- v1.5: pantallas de Amigos, Duelo online y Retos (src/online/duels.js) -->
@@ -667,7 +570,6 @@ try {
         <div class="results-lucidez-stamp" id="results-lucidez-stamp"></div>
         <div class="results-lucidez-stamp" id="results-record-badge"></div>
 
-        <div id="results-duel-box" style="display:none;"></div>
 
         <div id="session-mode-unlock-box" class="session-mode-unlock-box">
           <div class="session-mode-unlock-title">🎮✨ ¡Nuevo(s) Modo(s) Desbloqueado(s)!</div>
@@ -682,7 +584,7 @@ try {
         <div class="results-actions">
           <!-- 2.0: jerarquía clara. «Volver» es la acción principal; «Compartir resultado» es secundaria y discreta,
                y solo gana presencia cuando hay algo que contar (récord, Lucidez superada, logro o modo nuevo).
-               En un duelo creado no aparece: ahí la acción es «Compartir reto» dentro de la tarjeta. -->
+               -->
           <button class="btn btn-primary" id="res-back-btn" onclick="handleResultsBackButton()" style="width: 100%;">Volver al Menú Principal</button>
           <button class="btn btn-share btn-share-quiet" id="res-share-btn" onclick="shareResult()">↗ Compartir resultado</button>
         </div>
@@ -1007,7 +909,7 @@ try {
             </div>
             <ul class="settings-changelog-list">
               <li>Amigos, Duelo online en directo (20 preguntas) y Retos con 3 días de plazo.</li>
-              <li>Requieren cuenta y se irán activando poco a poco. El Duelo por código sigue disponible sin cuenta.</li>
+              <li>Requieren cuenta y se irán activando poco a poco.</li>
             </ul>
           </div>
           <div class="settings-changelog-entry">
@@ -1019,7 +921,8 @@ try {
               <li>Mejoras visuales en toda la app.</li>
               <li>40 preguntas nuevas.</li>
               <li>Nuevos logros de Duelo: «Revancha» y «¿Otra vez tú?».</li>
-              <li>Nueva tarjeta para compartir tu resultado y retos con enlace directo para invitar a un amigo.</li>
+              <li>Nueva tarjeta para compartir tu resultado.</li>
+              <li>Los duelos ahora son solo online, con amigos: se retira el Duelo por código.</li>
               <li>Nuevas ventajas con los Fragmentos de Mente.</li>
               <li id="changelog-v2-save-note">Recuerda: en Ajustes puedes descargar una copia de seguridad de tu progreso.</li>
             </ul>
@@ -1301,11 +1204,8 @@ function generateResultImage() {
   const P = SHARE_IMAGE_PALETTE;
   const tier = getResultTier(accuracy);
   const tierStyle = RESULT_TIER_STYLE[tier];
-  // ⚔️ Duelo: si la última partida fue un duelo, la imagen debe reflejarlo
-  // (auditoría v1.1, punto 5) igual que ya hace el texto compartido —
-  // misma fuente de datos (lastDuelShareInfo), sin segunda lógica.
-  const duel = lastDuelShareInfo;
-  const duelModeLabel = duel ? duelModeFullLabel(duel.modeId, duel.cfgIdx) : null;
+  const duel = null; // el Duelo por código ya no existe; la tarjeta de duelos online la genera share-card.js
+  const duelModeLabel = null;
 
   // La frase final es la que el jugador está viendo AHORA MISMO en la
   // tarjeta de resultados: se lee directamente del DOM en lugar de
@@ -1594,7 +1494,6 @@ function generateResultImage() {
 function buildShareCardInput() {
   if (!lastResultShareData) return null;
   const sess = (typeof SEQOnline !== 'undefined' && SEQOnline.session) ? SEQOnline.session() : null;
-  const d = lastDuelShareInfo;
   return {
     modeName: lastResultShareData.modeName,
     scoreStr: lastResultShareData.scoreStr,
@@ -1602,7 +1501,6 @@ function buildShareCardInput() {
     streak: lastResultShareData.streak,
     characterState: RESULT_CHARACTER_TONES[lastResultShareTone],
     lucidez: lastResultShareData.lucidez || null,
-    duel: d ? { ...d, modeLabel: duelModeFullLabel(d.modeId, d.cfgIdx) } : null,
     player: sess ? { name: sess.display_name, avatar: sess.avatar } : null
   };
 }
@@ -1703,112 +1601,6 @@ function pickRotatingPhrase(poolKey, list) {
   store.phraseBags[poolKey] = bag;
   store.lastPhraseIndex[poolKey] = idx;
   return list[idx];
-}
-
-// ⚔️ Frases de resultado de Duelo (v2 — copy final de producto). Sustituyen
-// por completo a cualquier lista anterior. Se integran en el mismo sistema
-// de "bolsa" que el resto de frases (pickRotatingPhrase): cada categoría
-// tiene su propia bolsa en store.phraseBags y no repite ninguna frase hasta
-// haber mostrado todas las de su categoría.
-const DUEL_RESULT_PHRASES = {
-  victoria_1: [
-    "Un punto. Exactamente la distancia entre celebrar la victoria y tener que inventar una explicación.",
-    "Victoria por un punto. El margen es microscópico. La diferencia, aparentemente, no.",
-    "Un solo punto ha decidido el duelo. Qué poco hace falta para arruinarle el día a alguien.",
-    "Has ganado por un punto. Técnicamente, victoria. Moralmente, dejémoslo en empate.",
-    "Un punto de diferencia. Lo suficiente para ganar y demasiado poco para presumir sin hacer el ridículo.",
-    "Victoria por un punto. La gloria es tuya. La dignidad del rival, sorprendentemente, sigue en paradero desconocido."
-  ],
-  victoria_2_3: [
-    "Victoria ajustada. Ha faltado poco para perder. Qué detalle tan incómodo.",
-    "Victoria por la mínima. No ha sido una obra maestra, pero el marcador no exige tanto.",
-    "Un duelo muy igualado. Durante unos minutos casi pareció que sabíais lo que estabais haciendo.",
-    "Hasta el último punto. Mucha tensión para descubrir, al final, quién se equivocó menos.",
-    "Victoria ajustada. El rival estuvo cerca. Tú también estuviste cerca de perderla.",
-    "Has ganado. Por poco. Pero tranquilo: la victoria sigue siendo legal."
-  ],
-  victoria_clara: [
-    "Victoria clara. La diferencia ya no permite esconderse detrás de la suerte. Qué lástima.",
-    "Buen duelo. Aunque el marcador parece tener una opinión bastante distinta.",
-    "Victoria con autoridad. La derrota, al menos, ha quedado perfectamente documentada.",
-    "Una diferencia considerable. Lo suficiente para convertir el “casi” en una excusa bastante pobre.",
-    "Victoria sin demasiadas complicaciones. Qué poco duró la resistencia.",
-    "El duelo parecía prometedor. El marcador decidió contar otra historia.",
-    "Un resultado bastante contundente. Las explicaciones pueden esperar sentadas.",
-    "Has ganado con claridad. El rival puede consolarse pensando que, al menos, participó.",
-    "La diferencia empieza a ser incómoda. Para el rival, concretamente.",
-    "Victoria convincente. Ya no ha sido cuestión de suerte. Qué mala noticia para quien ha perdido."
-  ],
-  victoria_aplastante: [
-    "Esto no ha sido un duelo. Ha sido una demostración de por qué conviene elegir mejor las batallas.",
-    "La batalla terminó mucho antes que la partida. El marcador solo tardó en hacerlo oficial.",
-    "Victoria aplastante. A estas alturas, analizar los errores sería casi ensañamiento.",
-    "No ha habido color. Tampoco demasiadas respuestas correctas al otro lado.",
-    "Una diferencia de este tamaño merece respeto. Y quizá un pequeño periodo de reflexión.",
-    "Esto ha sido menos duelo y más exhibición. La entrada era gratuita.",
-    "Victoria aplastante. Hay derrotas que enseñan algo. Esta, de momento, solo enseña el marcador.",
-    "La diferencia es tan grande que hasta presumir empieza a parecer innecesario.",
-    "Una paliza intelectual. Elegante, limpia y completamente innecesaria.",
-    "El duelo ha terminado. El orgullo del rival, según parece, necesita unos minutos más."
-  ],
-  derrota_1: [
-    "Un punto. Exactamente lo que ha separado la victoria de una derrota bastante irritante.",
-    "Derrota por un punto. El margen es mínimo. La molestia, considerable.",
-    "Un solo punto ha decidido el duelo. Qué forma tan eficiente de arruinar una victoria.",
-    "Has perdido por un punto. Enhorabuena: has encontrado la distancia exacta entre ganar y lamentarlo.",
-    "Un punto. Nada. Absolutamente nada. Y, sin embargo, suficiente para perder.",
-    "Derrota por un punto. La diferencia cabe en una línea. El orgullo, de momento, no.",
-    "Te ha faltado un punto. Qué generosa ha sido la victoria al dejarte tan cerca."
-  ],
-  derrota_2_3: [
-    "Derrota ajustada. Ha faltado muy poco para ganar y exactamente lo suficiente para perder.",
-    "Victoria rival por un margen ridículo. El orgullo tendrá que conformarse con eso.",
-    "Derrota por la mínima. Lo bastante cerca para lamentarlo y demasiado lejos para negarlo.",
-    "Un resultado muy ajustado. La victoria estuvo cerca, pero decidió no quedarse.",
-    "Has estado cerca. Una expresión magnífica para describir a alguien que acaba de perder.",
-    "Derrota ajustada. El rival no fue mucho mejor. Solo lo suficiente.",
-    "Casi ganas. Una de las formas más elegantes de decir “perdiste”."
-  ],
-  derrota_clara: [
-    "Derrota clara. El marcador no parece dispuesto a aceptar negociaciones.",
-    "No ha habido excusas que salvar. Simplemente se ha jugado peor.",
-    "La diferencia es demasiado grande para culpar a la suerte. Qué inconveniente.",
-    "Has perdido con claridad. El rival no necesita presumir; el marcador ya lo hace por él.",
-    "Derrota contundente. Siempre queda la revancha, si el orgullo sobrevive hasta entonces.",
-    "El duelo ha hablado con claridad. Y no precisamente a tu favor.",
-    "Una diferencia considerable. Al menos ahora sabes exactamente cuánto te faltaba.",
-    "No ha sido una tragedia. Solo has sido claramente peor. Mucho más fácil de diagnosticar."
-  ],
-  empate: [
-    "Empate. Ninguno ha conseguido imponerse. Qué decepción tan perfectamente equilibrada.",
-    "Empate. Dos rivales, cero vencedores y una cantidad preocupante de orgullo intacto.",
-    "Mismo resultado para ambos. La mediocridad también puede ser democrática.",
-    "Empate. Nadie gana, nadie pierde y nadie puede presumir demasiado. Qué final tan poco satisfactorio.",
-    "Empate. Habéis conseguido dedicar el mismo esfuerzo a no ganar.",
-    "Empate. Dos mentes enfrentadas y ninguna considerada suficientemente convincente.",
-    "Un empate. La solución perfecta cuando ninguno ha hecho méritos suficientes para celebrar.",
-    "Igualdad absoluta. Qué alivio: así nadie tendrá que admitir que perdió."
-  ]
-};
-
-// Clasifica resultado + margen de puntos en la categoría correcta y saca
-// una frase de su bolsa correspondiente (ver pickRotatingPhrase). No toca
-// el cálculo de la puntuación ni del resultado del duelo, solo elige texto.
-function getDuelResultPhrase(result, margin) {
-  let poolKey;
-  if (result === 'draw') {
-    poolKey = 'empate';
-  } else if (result === 'win') {
-    if (margin === 1) poolKey = 'victoria_1';
-    else if (margin <= 3) poolKey = 'victoria_2_3';
-    else if (margin <= 7) poolKey = 'victoria_clara';
-    else poolKey = 'victoria_aplastante';
-  } else {
-    if (margin === 1) poolKey = 'derrota_1';
-    else if (margin <= 3) poolKey = 'derrota_2_3';
-    else poolKey = 'derrota_clara';
-  }
-  return pickRotatingPhrase(`duel_${poolKey}`, DUEL_RESULT_PHRASES[poolKey]);
 }
 
 function getModeEndPhrase(phrases, score, poolPrefix) {
@@ -2081,13 +1873,14 @@ function appendFragmentRewardToResults() {
   saveStore(false);
 }
 
-// Prompt 4: resultado de un Duelo online (ID estable del rival). Lo llama
-// src/online/duels.js al ver el duelo completado. Cada duelo cuenta una sola
-// vez (se reutiliza duelPlayedCodes con prefijo 'online:'); los ganados/
-// perdidos por abandono o por no jugar no cuentan para evitar farmeo.
+// Resultado de un Duelo online (ID estable del rival). Lo llama src/online/duels.js al ver el
+// duelo completado. Cada duelo cuenta una sola vez (duelPlayedCodes con prefijo 'online:'); los
+// ganados/perdidos por abandono o por no jugar no cuentan, para evitar farmeo. De aquí salen todas
+// las estadísticas de Duelo y, con ellas, todos los logros de Duelo.
+// info: { duelId, rivalId, result: 'win'|'loss'|'draw', myScore, opponentScore, forfeit }
 function registerOnlineDuelResult(info) {
   if (!info || !info.duelId || !info.rivalId || info.forfeit) return null;
-  if (info.result !== 'win' && info.result !== 'loss') return null;
+  if (info.result !== 'win' && info.result !== 'loss' && info.result !== 'draw') return null;
   if (!Array.isArray(store.duelPlayedCodes)) store.duelPlayedCodes = [];
   const key = 'online:' + info.duelId;
   if (store.duelPlayedCodes.includes(key)) return null;
@@ -2097,17 +1890,31 @@ function registerOnlineDuelResult(info) {
   if (!store.duelStats || typeof store.duelStats !== 'object') store.duelStats = getDefaultDuelStats();
   const ds = store.duelStats;
   if (!ds.rivals || typeof ds.rivals !== 'object') ds.rivals = {};
-  const rec = ds.rivals[info.rivalId] || { wins: 0, losses: 0 };
-  if (info.result === 'win') {
-    if (rec.losses > 0) ds.revengeWon = true;
-    rec.wins++;
-    ds.bestWinsVsRival = Math.max(ds.bestWinsVsRival || 0, rec.wins);
+  ds.played = (ds.played || 0) + 1;
+  if (info.result === 'draw') {
+    ds.draws = (ds.draws || 0) + 1;
+    ds.currentWinStreak = 0;
   } else {
-    rec.losses++;
+    const rec = ds.rivals[info.rivalId] || { wins: 0, losses: 0 };
+    if (info.result === 'win') {
+      ds.wins = (ds.wins || 0) + 1;
+      ds.currentWinStreak = (ds.currentWinStreak || 0) + 1;
+      ds.bestWinStreak = Math.max(ds.bestWinStreak || 0, ds.currentWinStreak);
+      const margin = Number(info.myScore) - Number(info.opponentScore);
+      if (margin === 1) ds.wonByOnePoint = true;
+      if (margin >= 10) ds.wonByTenPlus = true;
+      if (rec.losses > 0) ds.revengeWon = true;
+      rec.wins++;
+      ds.bestWinsVsRival = Math.max(ds.bestWinsVsRival || 0, rec.wins);
+    } else {
+      ds.losses = (ds.losses || 0) + 1;
+      ds.currentWinStreak = 0;
+      rec.losses++;
+    }
+    delete ds.rivals[info.rivalId]; // reinserta al final: los más recientes sobreviven al recorte
+    ds.rivals[info.rivalId] = rec;
+    Object.keys(ds.rivals).slice(0, -100).forEach(id => { delete ds.rivals[id]; });
   }
-  delete ds.rivals[info.rivalId]; // reinserta al final: los más recientes sobreviven al recorte
-  ds.rivals[info.rivalId] = rec;
-  Object.keys(ds.rivals).slice(0, -100).forEach(id => { delete ds.rivals[id]; });
 
   const medals = checkMedalsAndGetNew();
   const reward = checkFragmentRewardsAndGetNew();
@@ -2287,6 +2094,7 @@ function discardSavedGameAsFinished() {
 function hasSavedGame() {
   const g = getStore() && getStore().savedGame;
   if (!g) return false;
+  if (g.isDuel) return false; // partida de un Duelo por código (modo retirado): no se puede reanudar
   if (g.mode === 'lucidez_mental') {
     if (!(Array.isArray(g.phase1Queue) && Array.isArray(g.phase2Queue) && Array.isArray(g.phase3Queue) && typeof g.currentIdx === 'number' && g.currentIdx < 30)) return false;
     // Mismo hueco que en Supervivencia/Muerte Súbita/Contrarreloj: si la
@@ -2392,26 +2200,17 @@ function showDuelHelpIfNeeded() {
   if (!seen) showDuelHelpModal();
 }
 
-// "Continuar partida" ya NO vive en Home: es contextual a la sección a la
-// que pertenece la partida guardada (misma store.savedGame de siempre, sin
-// segunda fuente de verdad). Una partida individual (isDuel falso/ausente)
-// solo puede aparecer en Jugar (#resume-game-card); un Duelo pendiente
-// (saved.isDuel true) solo puede aparecer en Duelo → pantalla principal
-// (#duel-resume-card). Nunca ambas tarjetas a la vez, y nunca en Home.
+// "Continuar partida" vive en Jugar (#resume-game-card), es contextual a la partida guardada
+// (misma store.savedGame de siempre, sin segunda fuente de verdad) y nunca aparece en Home.
 function updateResumeButton() {
   const card = document.getElementById('resume-game-card');
-  const duelCard = document.getElementById('duel-resume-card');
   const hasSaved = hasSavedGame();
   const saved = hasSaved ? store.savedGame : null;
-  const isDuelSaved = !!(saved && saved.isDuel);
 
-  if (!hasSaved || isDuelSaved) {
+  if (!hasSaved) {
     if (card) card.style.display = 'none';
+    return;
   }
-  if (!hasSaved || !isDuelSaved) {
-    if (duelCard) duelCard.style.display = 'none';
-  }
-  if (!hasSaved) return;
 
   const modeInfo = {
     play: { cls: 'mode-standard', icon: '🎯', name: 'Modo Estándar' },
@@ -2439,26 +2238,6 @@ function updateResumeButton() {
     if (saved.mode === 'survival') descParts.push(renderLivesHearts(Number(saved.lives) || 0));
   }
   const descText = descParts.join(' · ') + '.';
-
-  if (isDuelSaved) {
-    // El Duelo reutiliza siempre el motor de Modo Estándar (mode:'play'),
-    // así que no existe una identidad de modo distinta que mostrar aquí:
-    // la tarjeta combina el texto de progreso real (idéntico al de una
-    // partida de Modo Estándar) con la dificultad de Duelo elegida y el
-    // rol (creador esperando marcador propio / retador superando el ajeno).
-    if (duelCard) {
-      const duelModeId = saved.duelModeId || (saved.duelDiffMode ? 'play' : null);
-      const duelCfgIdx = Number.isInteger(saved.duelCfgIdx) ? saved.duelCfgIdx : (saved.duelDiffMode ? DUEL_DIFF_MODES.indexOf(saved.duelDiffMode) : 0);
-      const diffLabel = duelModeId && typeof duelModeFullLabel === 'function' ? duelModeFullLabel(duelModeId, duelCfgIdx) : '';
-      document.getElementById('duel-resume-title').textContent = diffLabel ? `Continuar reto · ${diffLabel}` : 'Continuar reto';
-      const roleText = saved.duelRole === 'joiner'
-        ? 'Estás intentando superar el marcador de tu rival.'
-        : 'Termina tu partida para conseguir el código y retar a un amigo.';
-      document.getElementById('duel-resume-desc').textContent = `${descText} ${roleText}`;
-      duelCard.style.display = 'block';
-    }
-    return;
-  }
 
   if (card) {
     card.classList.remove('mode-standard', 'mode-review', 'mode-survival', 'mode-sudden', 'mode-timetrial', 'mode-mentalcalc', 'mode-lucidez');
@@ -2499,14 +2278,6 @@ function restoreSavedGame() {
       // Mental reanudado tras cerrar la app terminaría contabilizándose
       // como una partida normal (sin código ni comparación de marcador),
       // igual que ya se cuida para el resto de modos más abajo.
-      isDuel: !!saved.isDuel,
-      source: saved.isDuel ? 'duel' : null,
-      duelRole: saved.duelRole || null,
-      duelModeId: saved.duelModeId || null,
-      duelCfgIdx: Number.isInteger(saved.duelCfgIdx) ? saved.duelCfgIdx : 0,
-      duelSeed: Number.isFinite(Number(saved.duelSeed)) ? Number(saved.duelSeed) : 0,
-      duelOpponentScore: Number.isFinite(Number(saved.duelOpponentScore)) ? Number(saved.duelOpponentScore) : null,
-      duelCode: saved.duelCode || null
     };
     lucidezPhase3EndTime = Number(saved.lucidezPhase3EndTime) || 0;
     lucidezFinalEndTime = Number(saved.lucidezFinalEndTime) || 0;
@@ -2587,21 +2358,7 @@ function restoreSavedGame() {
       total: Number(saved.total) || 0,
       streak: Number(saved.streak) || 0,
       bestStreak: Number(saved.bestStreak) || 0,
-      totalTimeMs: Number(saved.totalTimeMs) || 0,
-      // ⚔️ Duelo: sin duelOpsQueue, renderMentalCalcOp generaría operaciones
-      // nuevas al reanudar en vez de continuar la cola pregenerada con
-      // semilla, rompiendo la garantía de que ambos jugadores resuelven las
-      // mismas operaciones. El resto de campos de duelo se restauran igual
-      // que para el resto de modos (ver más abajo).
-      duelOpsQueue: Array.isArray(saved.duelOpsQueue) ? saved.duelOpsQueue : null,
-      isDuel: !!saved.isDuel,
-      source: saved.isDuel ? 'duel' : null,
-      duelRole: saved.duelRole || null,
-      duelModeId: saved.duelModeId || null,
-      duelCfgIdx: Number.isInteger(saved.duelCfgIdx) ? saved.duelCfgIdx : 0,
-      duelSeed: Number.isFinite(Number(saved.duelSeed)) ? Number(saved.duelSeed) : 0,
-      duelOpponentScore: Number.isFinite(Number(saved.duelOpponentScore)) ? Number(saved.duelOpponentScore) : null,
-      duelCode: saved.duelCode || null
+      totalTimeMs: Number(saved.totalTimeMs) || 0
     };
     mentalCalcEndTime = Number(saved.mentalCalcEndTime) || 0;
     mentalCalcSecondsLeft = Number(saved.mentalCalcSecondsLeft) || 0;
@@ -2678,14 +2435,6 @@ function restoreSavedGame() {
     // ⚔️ Duelo: si no se restauran estos campos, una partida de Duelo
     // reanudada tras cerrar la app terminaría contabilizándose como una
     // partida normal de Modo Estándar (sin código ni comparación de marcador).
-    isDuel: !!saved.isDuel,
-    source: saved.isDuel ? 'duel' : null,
-    duelRole: saved.duelRole || null,
-    duelModeId: saved.duelModeId || (saved.duelDiffMode ? 'play' : null),
-    duelCfgIdx: Number.isInteger(saved.duelCfgIdx) ? saved.duelCfgIdx : (saved.duelDiffMode ? DUEL_DIFF_MODES.indexOf(saved.duelDiffMode) : 0),
-    duelSeed: Number.isFinite(Number(saved.duelSeed)) ? Number(saved.duelSeed) : 0,
-    duelOpponentScore: Number.isFinite(Number(saved.duelOpponentScore)) ? Number(saved.duelOpponentScore) : null,
-    duelCode: saved.duelCode || null
   };
   timeTrialEndTime = Number(saved.timeTrialEndTime) || 0;
   timeTrialSecondsLeft = Number.isFinite(Number(saved.timeTrialSecondsLeft)) ? Number(saved.timeTrialSecondsLeft) : 60;
@@ -3123,28 +2872,11 @@ function exitGameToMenu() {
   const input = document.getElementById('ans-input');
   if (input) input.blur();
   document.body.classList.remove('keyboard-open');
-  // Una partida iniciada desde Duelo → Crear reto (currentGame.source ===
-  // 'duel', ver startDuelGameCommon) debe volver al menú de Duelo al salir,
-  // NUNCA a Jugar ni al menú principal general. Una partida normal iniciada
-  // desde Jugar sigue volviendo a Jugar como hasta ahora.
-  if (currentGame && currentGame.source === 'duel') {
-    switchTab('duelo');
-    return;
-  }
   switchTab('modes');
 }
 
-// Botón inferior de la pantalla de Resultados ("Volver al Menú Principal" /
-// "← Volver a Duelo"). Misma regla que exitGameToMenu: si la partida que
-// se acaba de terminar viene de Duelo → Crear reto (currentGame.source ===
-// 'duel' y currentGame.duelRole === 'creator', ver handleDuelFinish), debe
-// volver al menú de Duelo en vez de al menú de Jugar. El resto de pantallas
-// de resultados (partidas normales) siguen yendo a 'modes' como siempre.
+// Botón inferior de la pantalla de Resultados ("Volver al Menú Principal").
 function handleResultsBackButton() {
-  if (currentGame && currentGame.source === 'duel' && currentGame.duelRole === 'creator') {
-    switchTab('duelo');
-    return;
-  }
   switchTab('modes');
 }
 
@@ -3292,7 +3024,7 @@ function switchTab(tabId) {
     updateResumeButton();
     const exitBtn = document.getElementById('game-exit-btn');
     if (exitBtn) {
-      exitBtn.textContent = (currentGame && currentGame.source === 'duel') ? '← Duelo' : '← Menú principal';
+      exitBtn.textContent = '← Menú principal';
     }
   }
   if (tabId === 'stats') { renderStats(); renderHistory(); }
@@ -3373,7 +3105,6 @@ let lastCorrectCat = null;
 let lastResultShareData = null;
 // Datos del último Duelo terminado (null si la última partida no fue un
 // duelo): se usa para añadir el código/resultado al texto de compartir.
-let lastDuelShareInfo = null;
 
 function updateAnswerStreak(isCorrect, q = null) {
   if (isCorrect) {
@@ -4518,13 +4249,6 @@ function finishLucidezMode(failed, timedOut = false, phaseInsufficient = null) {
   if (lucidezFinalTimer) { clearInterval(lucidezFinalTimer); lucidezFinalTimer = null; }
   cancelLucidezRevealTimeout();
 
-  // ⚔️ Duelo: mismo reseteo que al principio de finishGame — se vuelve a
-  // rellenar más abajo (revealLucidezResults → handleDuelFinish) solo si
-  // currentGame.isDuel es true, para que una partida normal de Lucidez
-  // Mental posterior no arrastre el bloque/código de un duelo anterior.
-  lastDuelShareInfo = null;
-  const duelBox = document.getElementById('results-duel-box');
-  if (duelBox) { duelBox.style.display = 'none'; duelBox.innerHTML = ''; }
   const resShareBtn = document.getElementById('res-share-btn');
   if (resShareBtn) { resShareBtn.textContent = '↗ Compartir resultado'; resShareBtn.style.display = ''; }
   const resBackBtn = document.getElementById('res-back-btn');
@@ -4690,32 +4414,6 @@ function revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newMod
     playSound('win');
   }
 
-  // ⚔️ Duelo: se ejecuta tras toda la lógica normal de Lucidez Mental (que ya
-  // ha contabilizado logros y estadísticas de la partida como cualquier otra
-  // partida de este modo). Mismo punto de integración que finishGame para el
-  // resto de modos (ver handleDuelFinish).
-  if (currentGame.isDuel) {
-    handleDuelFinish(currentGame, totalQ);
-    // Los logros de Duelo dependen de store.duelStats, que handleDuelFinish
-    // acaba de actualizar: se comprueban en un segundo paso para que puedan
-    // aparecer ya en la tarjeta de resultados de este mismo duelo.
-    const newDuelMedals = checkMedalsAndGetNew();
-    if (newDuelMedals.length > 0) {
-      medalsBox.style.display = 'block';
-      medalsList.innerHTML += newDuelMedals.map(m => `
-        <div class="session-medal-item">
-          <div class="session-medal-icon">${m.icon}</div>
-          <div>
-            <div class="session-medal-info">${m.title}</div>
-            <div class="session-medal-desc">${m.desc}</div>
-            ${FRAGMENT_MEDAL_IDS.includes(m.id) ? '<div class="session-medal-fragment">✨ 🧩 +1 Fragmento de Mente</div>' : ''}
-          </div>
-        </div>
-      `).join('');
-      saveStore(false);
-    }
-    appendFragmentRewardToResults();
-  }
 }
 
 function closeDifficultyMenu() {
@@ -4778,7 +4476,6 @@ function applyCurrentGameTheme() {
   // que una partida normal), así que se añade un modificador aparte para
   // que la tarjeta de resultados pueda distinguir "competición" de
   // "estándar" sin tocar la lógica de juego ni crear un tema nuevo.
-  if (currentGame && currentGame.isDuel) container.classList.add('theme-duel');
 }
 
 function clearCardThemeClasses() {
@@ -4801,185 +4498,10 @@ function shuffleArray(array) {
   return result;
 }
 
-// ====== ⚔️ DUELO: reto asíncrono con semilla ======
-// PRNG determinista (mulberry32): con la misma semilla siempre produce
-// exactamente la misma secuencia, así que dos jugadores con el mismo código
-// de reto ven las mismas 20 preguntas en el mismo orden, sin necesitar
-// servidor. No sustituye a Math.random() en ningún otro sitio del juego.
-
-
-
-
-const DUEL_DIFF_MODES = ['mixta', 'facil', 'medio', 'dificil'];
-const DUEL_DIFF_LABELS = { mixta: 'Mixta', facil: 'Fácil', medio: 'Media', dificil: 'Difícil' };
-const DUEL_QUESTIONS_COUNT = 20;
-const DUEL_CODE_ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyz';
-
-// ====== ⚔️ DUELO — Crear reto con los 6 modos de Jugar (v1.2) ======
-// Antes, Crear Reto solo dejaba elegir una dificultad genérica (Mixta/Fácil/
-// Media/Difícil) y siempre jugaba con el motor de Modo Estándar. Ahora se
-// elige primero UN MODO DE JUEGO (los mismos 6 de Jugar) y, si ese modo
-// tiene una configuración propia (dificultad en Estándar, tramo en
-// Supervivencia), se elige después. DUEL_MODE_IDS fija el índice usado para
-// codificar el modo dentro del código de reto (ver encodeDuelCode).
-//
-// IMPORTANTE (única fuente de verdad): el estado bloqueado/desbloqueado de
-// cada modo NO se recalcula aquí. Se consulta directamente la condición
-// isUnlocked(store) ya definida en LOCKABLE_MODE_UI (la misma tabla que
-// pinta los candados en Jugar), así que nunca puede haber una segunda
-// lógica de desbloqueos para Duelo: si un modo se desbloquea en Jugar,
-// queda desbloqueado en Crear Reto en el mismo instante, y viceversa.
-const DUEL_MODE_IDS = ['play', 'survival', 'sudden_death', 'timetrial', 'mental_calc', 'lucidez_mental'];
-const DUEL_MODE_META = {
-  play:           { cls: 'mode-standard',   icon: '🎯', name: 'Estándar' },
-  survival:       { cls: 'mode-survival',   icon: '❤️', name: 'Supervivencia' },
-  sudden_death:   { cls: 'mode-sudden',     icon: '💀', name: 'Muerte Súbita' },
-  timetrial:      { cls: 'mode-timetrial',  icon: '⏱️', name: 'Contrarreloj' },
-  mental_calc:    { cls: 'mode-mentalcalc', icon: '🔢', name: 'Cálculo Mental' },
-  lucidez_mental: { cls: 'mode-lucidez',    icon: '👁️', name: 'Lucidez Mental' }
-};
-// Relaciona cada modo bloqueable con su tarjeta de LOCKABLE_MODE_UI (Jugar).
-const DUEL_MODE_LOCK_CARD_ID = {
-  survival: 'mode-card-survival_main',
-  sudden_death: 'mode-card-sudden_death_main',
-  timetrial: 'mode-card-timetrial',
-  mental_calc: 'mode-card-mental_calc',
-  lucidez_mental: 'mode-card-lucidez_mental'
-};
-// Modos con motor de Duelo ya implementado. Los 6 modos de Jugar generan ya
-// su cola/pools con semilla (mulberry32), así que se puede garantizar que
-// creador y retador ven exactamente el mismo reto.
-const DUEL_MODES_READY = ['play', 'survival', 'sudden_death', 'timetrial', 'mental_calc', 'lucidez_mental'];
-
-const DUEL_SURVIVAL_TIERS = ['ameba', 'humano', 'derrame'];
-const DUEL_SURVIVAL_TIER_LABELS = { ameba: '🦠 Nivel Ameba', humano: '🧍 Humano Promedio', derrame: '💥 Derrame Cerebral' };
-const DUEL_SURVIVAL_COUNT = 50;
-const DUEL_SUDDEN_DEATH_COUNT = 30;
-
-// Modo Estándar siempre está desbloqueado (igual que en Jugar); el resto
-// consulta exactamente la misma condición isUnlocked(store) que pinta el
-// candado en Jugar, así que nunca puede haber una segunda fuente de verdad.
-function isDuelModeUnlocked(modeId) {
-  if (modeId === 'play') return true;
-  const cfg = LOCKABLE_MODE_UI.find(c => c.cardId === DUEL_MODE_LOCK_CARD_ID[modeId]);
-  return cfg ? cfg.isUnlocked(store) : true;
-}
-
-function duelModeConfigLabel(modeId, cfgIdx) {
-  // Estándar (play) ya no tiene configuración propia en Duelo: sin
-  // dificultad que mostrar, igual que Modo Estándar normal en Jugar.
-  if (modeId === 'survival') return DUEL_SURVIVAL_TIER_LABELS[DUEL_SURVIVAL_TIERS[cfgIdx || 0]] || '';
-  return '';
-}
-
-function duelModeFullLabel(modeId, cfgIdx) {
-  // 2.0: mientras el modo secreto esté bloqueado, su nombre no se revela (vista previa de «Unirme», historial).
-  if (modeId === 'lucidez_mental' && !isDuelModeUnlocked(modeId)) return 'Modo Secreto';
-  const base = (DUEL_MODE_META[modeId] || {}).name || modeId;
-  const cfg = duelModeConfigLabel(modeId, cfgIdx);
-  return cfg ? `${base} · ${cfg}` : base;
-}
-
-// Total de referencia de cada modo, solo para mostrar "X/Y" en Unirse y en
-// el historial. Contrarreloj no tiene un total fijo (depende del tiempo),
-// así que devuelve null y esas pantallas muestran solo la puntuación.
-function duelModeExpectedTotal(modeId) {
-  return { play: DUEL_QUESTIONS_COUNT, survival: DUEL_SURVIVAL_COUNT, sudden_death: DUEL_SUDDEN_DEATH_COUNT, lucidez_mental: 30 }[modeId] || null;
-}
-
-// Cola de preguntas del duelo: se construye directamente sobre TEST_QUESTIONS
-// con el PRNG con semilla, SIN pasar por el sistema de bolsas
-// (pickQuestionsFromBag/pickDiverseFromBag). Esto es intencional: las bolsas
-// son personales (dependen del historial de cada jugador) y romperían la
-// garantía de que ambos jugadores vean exactamente las mismas preguntas.
-
-
-// Versión con semilla de buildSurvivalQueue: misma proporción exacta por
-// tramo (SURVIVAL_TIER_RATIOS), pero con mulberry32 en vez de la bolsa
-// personal (pickDiverseFromBag), por la misma razón que buildDuelQueue.
-
-
-// Versión con semilla de buildSuddenDeathQueue: mismos 3 bloques de
-// dificultad progresiva, con mulberry32 en vez de la bolsa personal.
-
-
-// Contrarreloj usa en solitario el banco completo barajado una vez
-// (pickDiverseFromBag('full', ...)); aquí se sustituye ese barajado por uno
-// con semilla, así ambos jugadores reciben el mismo banco en el mismo orden.
-
-
-// Cálculo Mental en solitario sube de tramo según la racha del jugador
-// (currentGame.streak), que depende de sus propios aciertos/fallos y por
-// tanto no puede pregenerarse igual para los dos jugadores de un duelo. En
-// Duelo, la dificultad se fija por POSICIÓN dentro de una cola pregenerada
-// con semilla (mismos umbrales que en solitario: 0-4 fácil, 5-14 media,
-// 15+ difícil), así ambos jugadores resuelven exactamente las mismas 200
-// operaciones en el mismo orden, sin depender de su propio rendimiento.
-// 200 operaciones cubren de sobra cualquier partida de 60-90s reales.
-const DUEL_MENTAL_CALC_QUEUE_SIZE = 200;
-
-
-// Versión con semilla de la partida de Lucidez Mental en solitario: mismas 3
-// fases (10 + 10 + 9 = 29 elementos) más el acertijo final (30 en total,
-// ver duelModeExpectedTotal). A diferencia del solitario (que usa la bolsa
-// personal store.questionBags['lucidez_mental'], vía pickLucidezFromBag),
-// aquí las preguntas se sacan directamente de QUESTIONS con mulberry32, sin
-// bolsa, para que ambos jugadores vean exactamente el mismo reto. Se evita
-// cualquier repetición entre las tres fases descartando explícitamente los
-// ids ya usados (`usedIds`).
-
-
-// Versión con semilla de buildStandardModeQueue: mismo reparto exacto por
-// bloques de 10 (4 fáciles + 4 medias + 2 difíciles, con la forma de cada
-// bloque barajada evitando que las dos difíciles queden juntas al principio
-// o al final del bloque — mismo criterio que arrangeStandardBlock), pero con
-// mulberry32 en vez de la bolsa personal (pickDiverseFromBag), por la misma
-// razón que el resto de colas de Duelo: la bolsa depende del historial de
-// cada jugador y no puede ser idéntica para creador y retador. Esto sustituye
-// a la antigua Estándar Duelo con selector Fácil/Media/Difícil/Mixta: ahora
-// Estándar en Duelo es exactamente Estándar normal (mismo reparto, sin
-// selector de dificultad) + capa de duelo.
-
-
-
-
-
-
-// Código de reto autocontenido: modo de juego + configuración del modo
-// (dificultad de Estándar, tramo de Supervivencia...) + semilla + TU
-// puntuación, más un dígito de comprobación para detectar errores al
-// copiar/pegar el código a mano. Al llevar todo esto dentro, quien se une
-// al reto no necesita nada más que el código para saber qué preguntas
-// jugar y qué marcador debe superar.
-// Núcleo (10 caracteres en base36) + 1 de comprobación:
-//   [0]    modo de juego (índice en DUEL_MODE_IDS)
-//   [1]    configuración del modo (dificultad/tramo; 0 si el modo no tiene)
-//   [2..3] puntuación (2 dígitos base36, hasta 1295)
-//   [4..9] semilla
-// Nota de compatibilidad: este formato (11 caracteres tras "SRW-") sustituye
-// al de v1.1, que solo codificaba dificultad + semilla + puntuación en 9
-// caracteres y siempre jugaba con Modo Estándar. Un código de reto creado
-// antes de esta actualización ya no se podrá canjear.
-const DUEL_SCORE_DIGITS = 2;
-const DUEL_MAX_SCORE = Math.pow(36, DUEL_SCORE_DIGITS) - 1;
-
-
-
-
-
+// Estadísticas de Duelo (partidas, victorias, rachas, rivales). Las alimenta el Duelo online
+// (registerOnlineDuelResult) y de ellas dependen los logros de Duelo.
 function getDefaultDuelStats() {
   return { played: 0, wins: 0, losses: 0, draws: 0, currentWinStreak: 0, bestWinStreak: 0, wonByOnePoint: false, wonByTenPlus: false, revengeWon: false, bestWinsVsRival: 0, rivals: {} };
-}
-
-function saveDuelHistoryEntry(entry) {
-  if (!Array.isArray(store.duelHistory)) store.duelHistory = [];
-  store.duelHistory.unshift({
-    ...entry,
-    date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    ts: Date.now()
-  });
-  if (store.duelHistory.length > 30) store.duelHistory.length = 30;
-  saveStore(false);
 }
 
 // Muestra un panel del menú Duelo (crear/unirse/retos) y oculta la pantalla
@@ -5010,8 +4532,7 @@ function duelTopbarBack() {
   if (duelTopbarBackFn) duelTopbarBackFn();
   else switchTab('home');
 }
-// Cabecera del hub: la decide duels.js si está cargado (hub online o «Duelo
-// por código»); si no, la cabecera por defecto de Duelos.
+// Cabecera del hub: la decide duels.js si está cargado; si no, la de Duelos por defecto.
 function setDuelHubTopbar() {
   try {
     if (window.SEQDuels && typeof SEQDuels.syncHubTopbar === 'function') { SEQDuels.syncHubTopbar(); return; }
@@ -5019,338 +4540,11 @@ function setDuelHubTopbar() {
   setDuelTopbar();
 }
 
-function openDuelPanel(id) {
-  document.getElementById('duel-home').style.display = 'none';
-  // Cada submenú del Duelo por código muestra su título en la cabecera común.
-  // «Crear reto» lo pone openDuelCrearModeStep() (tiene dos pasos).
-  if (id === 'unirse') setDuelTopbar('Unirme a un reto', 'Juega con el código de un amigo', closeDuelPanels);
-  if (id === 'retos') setDuelTopbar('Mis retos', 'Tus duelos por código', closeDuelPanels);
-  ['crear', 'unirse', 'retos'].forEach(k => {
-    const el = document.getElementById('duel-panel-' + k);
-    if (el) el.style.display = (k === id) ? 'block' : 'none';
-  });
-  if (id === 'crear') openDuelCrearModeStep();
-  if (id === 'retos') renderDuelHistory();
-  if (id === 'unirse') {
-    const err = document.getElementById('duel-join-error');
-    const prev = document.getElementById('duel-join-preview');
-    if (err) err.style.display = 'none';
-    if (prev) prev.style.display = 'none';
-  }
-}
-
 function closeDuelPanels() {
-  // display se deja vacío (en vez de forzar 'grid') para que sea el CSS
-  // quien decida el layout de #duel-home (ahora es un menú compacto en
-  // columna, no un grid) sin que este script lo pise cada vez que se
-  // vuelve al menú principal de Duelo.
+  // display se deja vacío para que sea el CSS quien decida el layout de #duel-home.
   document.getElementById('duel-home').style.display = '';
-  ['crear', 'unirse', 'retos'].forEach(k => {
-    const el = document.getElementById('duel-panel-' + k);
-    if (el) el.style.display = 'none';
-  });
   // Al volver al menú principal de Duelo, su cabecera vuelve a ser la del hub.
   setDuelHubTopbar();
-}
-
-// ====== Crear reto: paso 1 (elige el modo) ======
-// Repinta la rejilla de 6 modos con el MISMO estado de bloqueo que Jugar
-// (isDuelModeUnlocked → LOCKABLE_MODE_UI), cada vez que se entra en Crear
-// Reto (por si se ha desbloqueado algo desde la última visita).
-function openDuelCrearModeStep() {
-  DUEL_MODE_IDS.forEach(modeId => {
-    const card = document.getElementById('duel-mode-card-' + modeId);
-    if (!card) return;
-    const unlocked = isDuelModeUnlocked(modeId);
-    card.classList.toggle('locked', !unlocked);
-    if (modeId === 'lucidez_mental') {
-      const nameEl = card.querySelector('.duel-mode-name');
-      if (nameEl) nameEl.textContent = unlocked ? 'Lucidez Mental' : 'Modo Secreto';
-    }
-    const badge = document.getElementById('duel-mode-lock-' + modeId);
-    if (badge) {
-      badge.style.display = unlocked ? 'none' : '';
-      badge.setAttribute('aria-label', unlocked ? 'Desbloqueado' : 'Bloqueado');
-      badge.title = unlocked ? 'Modo desbloqueado' : 'Modo bloqueado';
-    }
-  });
-  document.getElementById('duel-crear-step-modo').style.display = 'block';
-  document.getElementById('duel-crear-step-config').style.display = 'none';
-  setDuelTopbar('Crear reto', 'Elige el modo de juego', closeDuelPanels);
-}
-
-// Al pulsar una tarjeta de modo en Crear Reto: reutiliza EXACTAMENTE el
-// mismo criterio de bloqueo que Jugar (isDuelModeUnlocked), nunca uno
-// propio. Un modo bloqueado nunca continúa el flujo.
-function selectDuelMode(modeId) {
-  if (!isDuelModeUnlocked(modeId)) {
-    showInfoToast('Desbloquea este modo en Jugar.', '🔒');
-    return;
-  }
-  if (!DUEL_MODES_READY.includes(modeId)) {
-    showInfoToast('Este modo llega a Duelo en una próxima actualización.', '🛠️');
-    return;
-  }
-  if (modeId === 'play' || modeId === 'sudden_death' || modeId === 'timetrial' || modeId === 'mental_calc' || modeId === 'lucidez_mental') {
-    // Sin configuración propia: se lanza el reto directamente. Estándar
-    // (play) ya no tiene selector de dificultad en Duelo: es exactamente
-    // Estándar normal + capa de duelo (ver buildDuelStandardQueue).
-    startDuelChallenge(modeId, 0);
-    return;
-  }
-  openDuelCrearConfigStep(modeId);
-}
-
-// ====== Crear reto: paso 2 (configuración del modo, si procede) ======
-function openDuelCrearConfigStep(modeId) {
-  pendingDuelCreateMode = modeId;
-  const container = document.getElementById('duel-crear-step-config');
-  const grid = document.getElementById('duel-crear-config-grid');
-  if (!container || !grid) return;
-
-  if (modeId === 'survival') {
-    setDuelTopbar('Supervivencia', 'Elige tramo', backToDuelModeStep);
-    grid.innerHTML = DUEL_SURVIVAL_TIERS.map((tier, idx) =>
-      `<div class="mode-card" onclick="startDuelChallenge('survival', ${idx})"><h3>${DUEL_SURVIVAL_TIER_LABELS[tier]}</h3></div>`
-    ).join('');
-  }
-
-  document.getElementById('duel-crear-step-modo').style.display = 'none';
-  container.style.display = 'block';
-}
-
-function backToDuelModeStep() {
-  openDuelCrearModeStep();
-}
-
-let pendingDuelCreateMode = null;
-
-function startDuelChallenge(modeId, cfgIdx) {
-  confirmDiscardSavedGame(() => startDuelChallengeImpl(modeId, cfgIdx));
-}
-
-function startDuelChallengeImpl(modeId, cfgIdx) {
-  // Semilla acotada a 6 dígitos en base36 (36^6 ≈ 2176 millones) para que
-  // el código de reto siempre tenga el mismo largo fijo.
-  const seed = Math.floor(Math.random() * 2176782336);
-  startDuelGameCommon({ modeId, cfgIdx: cfgIdx || 0, seed, role: 'creator', opponentScore: null, code: null });
-}
-
-let pendingJoinDuel = null;
-
-function tryJoinDuelCode() {
-  const input = document.getElementById('duel-join-code-input');
-  const errorEl = document.getElementById('duel-join-error');
-  const previewEl = document.getElementById('duel-join-preview');
-  if (errorEl) errorEl.style.display = 'none';
-  if (previewEl) previewEl.style.display = 'none';
-
-  const decoded = decodeDuelCode(input ? input.value : '');
-  if (!decoded || !DUEL_MODES_READY.includes(decoded.modeId)) {
-    pendingJoinDuel = null;
-    if (errorEl) {
-      errorEl.textContent = '⚠️ Ese código no es válido. Revisa que lo hayas copiado bien.';
-      errorEl.style.display = 'block';
-    }
-    return;
-  }
-  pendingJoinDuel = decoded;
-  const diffLbl = document.getElementById('duel-preview-diff');
-  const scoreLbl = document.getElementById('duel-preview-score');
-  if (diffLbl) diffLbl.textContent = duelModeFullLabel(decoded.modeId, decoded.cfgIdx);
-  if (scoreLbl) {
-    const total = duelModeExpectedTotal(decoded.modeId);
-    scoreLbl.textContent = total ? `${decoded.score}/${total}` : `${decoded.score}`;
-  }
-  if (previewEl) previewEl.style.display = 'block';
-}
-
-function startJoinedDuelGame() {
-  if (!pendingJoinDuel) return;
-  const { modeId, cfgIdx, seed, score, code } = pendingJoinDuel;
-  confirmDiscardSavedGame(() => startDuelGameCommon({ modeId, cfgIdx, seed, role: 'joiner', opponentScore: score, code }));
-}
-
-// Punto único de arranque de una partida de Duelo, para cualquiera de los
-// modos ya soportados (DUEL_MODES_READY). Reutiliza tal cual el motor de
-// cada modo (misma pantalla de juego, mismo checkAnswer/finishGame, mismos
-// temas visuales vía applyCurrentGameTheme): lo único que cambia respecto a
-// una partida normal de ese modo es que la cola de preguntas se genera con
-// semilla (buildDuel*Queue) en vez de con la bolsa personal, para que
-// creador y retador vean exactamente las mismas preguntas.
-function startDuelGameCommon({ modeId, cfgIdx, seed, role, opponentScore, code }) {
-  if (timeTrialTimer) { clearInterval(timeTrialTimer); timeTrialTimer = null; }
-  timeTrialEndTime = 0;
-  if (mentalCalcTimer) { clearInterval(mentalCalcTimer); mentalCalcTimer = null; }
-  if (lucidezPhase3Timer) { clearInterval(lucidezPhase3Timer); lucidezPhase3Timer = null; }
-  if (lucidezFinalTimer) { clearInterval(lucidezFinalTimer); lucidezFinalTimer = null; }
-
-  const duelFields = {
-    isDuel: true, source: 'duel', duelRole: role, duelModeId: modeId, duelCfgIdx: cfgIdx || 0, duelSeed: seed,
-    duelOpponentScore: (typeof opponentScore === 'number') ? opponentScore : null,
-    duelCode: code || null
-  };
-
-  resetStreak();
-
-  if (modeId === 'survival') {
-    const tier = DUEL_SURVIVAL_TIERS[cfgIdx || 0];
-    const queue = buildDuelSurvivalQueue(seed, tier, DUEL_SURVIVAL_COUNT);
-    currentGame = {
-      mode: 'survival', queue, currentIdx: 0, score: 0, answered: false,
-      totalQuestionsToPlay: queue.length,
-      lives: 3, sessionBestStreak: 0, sessionXpGained: 0,
-      survivalTier: tier,
-      ...duelFields
-    };
-  } else if (modeId === 'sudden_death') {
-    const queue = buildDuelSuddenDeathQueue(seed, DUEL_SUDDEN_DEATH_COUNT);
-    currentGame = {
-      mode: 'sudden_death', queue, currentIdx: 0, score: 0, answered: false,
-      totalQuestionsToPlay: queue.length,
-      lives: 3, sessionBestStreak: 0, sessionXpGained: 0,
-      survivalTier: null,
-      ...duelFields
-    };
-  } else if (modeId === 'timetrial') {
-    const queue = buildDuelTimetrialQueue(seed);
-    currentGame = {
-      mode: 'timetrial', queue, currentIdx: 0, score: 0, answered: false,
-      totalQuestionsToPlay: queue.length,
-      lives: 3, sessionBestStreak: 0, sessionXpGained: 0,
-      survivalTier: null,
-      ...duelFields
-    };
-  } else if (modeId === 'mental_calc') {
-    // Igual que en solitario (startMentalCalcModeImpl), salvo que las
-    // operaciones no se generan sobre la marcha según la racha del jugador,
-    // sino que vienen de una cola pregenerada con semilla (duelOpsQueue, ver
-    // buildDuelMentalCalcQueue), para que ambos jugadores resuelvan
-    // exactamente las mismas operaciones en el mismo orden.
-    const duelOpsQueue = buildDuelMentalCalcQueue(seed);
-    currentGame = {
-      mode: 'mental_calc', currentIdx: 0, answered: false, score: 0, correct: 0,
-      total: 0, streak: 0, bestStreak: 0, totalTimeMs: 0,
-      duelOpsQueue,
-      ...duelFields
-    };
-  } else if (modeId === 'lucidez_mental') {
-    // Igual que en solitario (openLucidezMentalModeImpl), salvo que las tres
-    // fases y el acertijo final vienen de buildDuelLucidezPools(seed) en vez
-    // de la bolsa personal, para que ambos jugadores vean el mismo reto.
-    const pools = buildDuelLucidezPools(seed);
-    currentGame = {
-      mode: 'lucidez_mental',
-      lucidezGameId: ++lucidezGameId,
-      currentIdx: 0, answered: false, score: 0, totalQuestionsToPlay: 30,
-      phase1Queue: pools.phase1Queue, phase2Queue: pools.phase2Queue, phase3Queue: pools.phase3Queue,
-      finalRiddle: pools.finalRiddle,
-      lucidezLives: 2, revealTimeout: null, phase1Correct: 0, phase3Correct: 0,
-      ...duelFields
-    };
-  } else {
-    // Estándar (play): ya no hay selección de dificultad en Duelo. La cola
-    // se genera con buildDuelStandardQueue, que reutiliza el mismo reparto
-    // por bloques que Modo Estándar en solitario (buildStandardModeQueue),
-    // solo con semilla en vez de bolsa personal. Estándar Duelo = Estándar
-    // normal + capa de duelo.
-    const queue = buildDuelStandardQueue(seed, DUEL_QUESTIONS_COUNT);
-    currentGame = {
-      mode: 'play', queue, currentIdx: 0, score: 0, answered: false,
-      totalQuestionsToPlay: queue.length,
-      lives: 3, sessionBestStreak: 0, sessionXpGained: 0,
-      survivalTier: null,
-      ...duelFields
-    };
-  }
-  applyCurrentGameTheme();
-
-  saveStore();
-  document.getElementById('results-card').style.display = 'none';
-  document.getElementById('game-play-area').style.display = 'block';
-
-  switchTab('game');
-  renderQuestion();
-
-  // Contrarreloj arranca su cronómetro nada más empezar, igual que en
-  // Jugar (ver startModeImpl): sin esto, el tiempo no correría.
-  if (modeId === 'timetrial') {
-    timeTrialSecondsLeft = TIMETRIAL_START_MS / 1000;
-    timeTrialEndTime = Date.now() + TIMETRIAL_START_MS;
-    timeTrialTotalAnswered = 0;
-    const updateTimer = () => {
-      const remainingMs = Math.max(0, timeTrialEndTime - Date.now());
-      timeTrialSecondsLeft = Math.ceil(remainingMs / 1000);
-      updateTimeTrialHeader();
-      updateUrgencySound(timeTrialSecondsLeft);
-      if (remainingMs <= 0) {
-        clearInterval(timeTrialTimer);
-        timeTrialTimer = null;
-        timeTrialEndTime = 0;
-        finishGame(false, false);
-      }
-    };
-    updateTimer();
-    timeTrialTimer = setInterval(updateTimer, 100);
-  }
-
-  // Cálculo Mental arranca su cronómetro nada más empezar, igual que en
-  // Jugar (ver startMentalCalcModeImpl): sin esto, el tiempo no correría.
-  if (modeId === 'mental_calc') {
-    mentalCalcSecondsLeft = 60;
-    mentalCalcEndTime = Date.now() + MENTALCALC_START_MS;
-    const updateMcTimer = () => {
-      const remainingMs = Math.max(0, mentalCalcEndTime - Date.now());
-      mentalCalcSecondsLeft = Math.ceil(remainingMs / 1000);
-      updateMentalCalcHeader();
-      updateUrgencySound(mentalCalcSecondsLeft);
-      if (remainingMs <= 0) {
-        clearInterval(mentalCalcTimer);
-        mentalCalcTimer = null;
-        mentalCalcEndTime = 0;
-        finishGame(false, false);
-      }
-    };
-    updateMcTimer();
-    mentalCalcTimer = setInterval(updateMcTimer, 100);
-  }
-}
-
-function renderDuelHistory() {
-  const container = document.getElementById('duel-history-list');
-  if (!container) return;
-  const hist = store.duelHistory || [];
-  if (!hist.length) {
-    container.innerHTML = `<p style="color: var(--sub); font-size: 14px;">Aún no has jugado ningún duelo.</p>`;
-    return;
-  }
-  container.innerHTML = hist.map(item => {
-    // item.modeId/cfgIdx: formato nuevo (cualquiera de los 6 modos). Un
-    // historial guardado antes de esta actualización solo trae item.diffMode
-    // (siempre Modo Estándar), así que se sigue leyendo como tal.
-    const modeLabel = item.modeId
-      ? duelModeFullLabel(item.modeId, item.cfgIdx)
-      : (DUEL_DIFF_LABELS[item.diffMode] || item.diffMode || 'Estándar');
-    if (item.role === 'creator') {
-      return `
-      <div class="history-item">
-        <div>
-          <div class="history-item-info">🎟️ Duelo creado (${escapeHtml(modeLabel)}) — ${escapeHtml(String(item.myScore))}/${escapeHtml(String(item.totalQ))}</div>
-          <div class="history-item-sub">${escapeHtml(item.date)} · Código: ${escapeHtml(item.code || '')}</div>
-        </div>
-        <div class="history-item-score">⚔️</div>
-      </div>`;
-    }
-    const resultIcon = item.result === 'win' ? '🏆' : item.result === 'loss' ? '😔' : '🤝';
-    return `
-      <div class="history-item">
-        <div>
-          <div class="history-item-info">⚔️ Duelo (${escapeHtml(modeLabel)}) — ${escapeHtml(String(item.myScore))} vs ${escapeHtml(String(item.opponentScore))}</div>
-          <div class="history-item-sub">${escapeHtml(item.date)}</div>
-        </div>
-        <div class="history-item-score">${resultIcon}</div>
-      </div>`;
-  }).join('');
 }
 
 // Selección de preguntas sin repetición hasta agotar el banco completo
@@ -5779,17 +4973,8 @@ function updateMentalCalcHeader() {
 function renderMentalCalcOp(preserveOp = false) {
   clearTimeout(mentalCalcAutoCheckTimer);
   if (!preserveOp || !currentMentalOp) {
-    // ⚔️ Duelo: la operación no depende de la racha propia (eso rompería el
-    // determinismo entre los dos jugadores), sino de la posición dentro de
-    // la cola pregenerada con semilla (ver buildDuelMentalCalcQueue). Si por
-    // lo que sea se agotara la cola (partida muy larga), se recurre al
-    // generador normal como red de seguridad, igual que en solitario.
-    if (currentGame.isDuel && Array.isArray(currentGame.duelOpsQueue) && currentGame.duelOpsQueue[currentGame.currentIdx]) {
-      currentMentalOp = { ...currentGame.duelOpsQueue[currentGame.currentIdx] };
-    } else {
-      const tier = currentGame.streak >= 15 ? 'hard' : currentGame.streak >= 5 ? 'medium' : 'easy';
-      currentMentalOp = generateMentalCalcOp(tier);
-    }
+    const tier = currentGame.streak >= 15 ? 'hard' : currentGame.streak >= 5 ? 'medium' : 'easy';
+    currentMentalOp = generateMentalCalcOp(tier);
     currentMentalOp.startedAt = Date.now();
   }
 
@@ -6584,9 +5769,6 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   // ⚔️ Duelo: se resetea en cada cierre de partida y solo se rellena más
   // abajo si currentGame.isDuel es true, para que una partida normal
   // posterior no arrastre el bloque/código del duelo anterior.
-  lastDuelShareInfo = null;
-  const duelBox = document.getElementById('results-duel-box');
-  if (duelBox) { duelBox.style.display = 'none'; duelBox.innerHTML = ''; }
   const resShareBtn = document.getElementById('res-share-btn');
   if (resShareBtn) { resShareBtn.textContent = '↗ Compartir resultado'; resShareBtn.style.display = ''; }
   const resBackBtn = document.getElementById('res-back-btn');
@@ -6905,154 +6087,6 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     playSound('win');
   }
 
-  if (currentGame.isDuel) {
-    handleDuelFinish(currentGame, totalQ);
-    // Los logros de Duelo (Primera Sangre, Victoria Inaugural, Por los
-    // Pelos, ¿Eso Era un Duelo?, El Rey del Empate, Cinco Victorias)
-    // dependen de store.duelStats, que handleDuelFinish acaba de
-    // actualizar — se comprueban en un segundo paso para que puedan
-    // aparecer en la tarjeta de resultados de este mismo duelo en vez de
-    // quedar "pendientes" hasta la siguiente partida.
-    const newDuelMedals = checkMedalsAndGetNew();
-    if (newDuelMedals.length > 0) {
-      medalsBox.style.display = 'block';
-      medalsList.innerHTML += newDuelMedals.map(m => `
-        <div class="session-medal-item">
-          <div class="session-medal-icon">${m.icon}</div>
-          <div>
-            <div class="session-medal-info">${m.title}</div>
-            <div class="session-medal-desc">${m.desc}</div>
-            ${FRAGMENT_MEDAL_IDS.includes(m.id) ? '<div class="session-medal-fragment">✨ 🧩 +1 Fragmento de Mente</div>' : ''}
-          </div>
-        </div>
-      `).join('');
-      saveStore(false);
-    }
-    appendFragmentRewardToResults();
-  }
-}
-
-// ⚔️ Duelo: se ejecuta tras toda la lógica normal de Modo Estándar (que ya
-// ha contabilizado XP, logros y estadísticas de la partida como cualquier
-// otra). Aquí solo se añade lo específico del duelo: el código para
-// compartir (creador) o la comparación de marcador (quien se une).
-function handleDuelFinish(game, totalQ) {
-  const box = document.getElementById('results-duel-box');
-  if (!box) return;
-  box.style.display = 'block';
-  // Duelo tiene su propio lenguaje visual de resultado (results-duel-box,
-  // tonos win/loss/draw); el retrato Victory/Defeat de esta fase no cubre
-  // Duelo (fuera de alcance del Prompt 1.5), así que se oculta aquí para
-  // que no arrastre el estado del resultado individual que ya pintó
-  // setResultTone() antes de llegar a esta función.
-  document.getElementById('res-character')?.classList.remove('show');
-
-  const modeId = game.duelModeId || 'play';
-  const cfgIdx = game.duelCfgIdx || 0;
-  // Total de referencia para mostrar "X/Y": el fijo del modo (20/50/30) si
-  // lo tiene; si no (Contrarreloj), se muestra solo la puntuación, nunca
-  // el nº de preguntas realmente respondidas (varía entre ambos jugadores
-  // y no sería un marcador comparable).
-  const displayTotal = duelModeExpectedTotal(modeId) || totalQ;
-  const modeLabel = duelModeFullLabel(modeId, cfgIdx);
-
-  if (game.duelRole === 'creator') {
-    // ⚔️ Pantalla del creador: "¡MARCA ESTABLECIDA!", claramente distinta
-    // del resultado normal de JUGAR y de la tarjeta competitiva de quien
-    // acepta un reto (sin victoria/derrota/empate, sin frases de Duelo,
-    // sin logros de Duelo — el creador no está compitiendo, solo está
-    // fijando la marca a superar).
-    document.getElementById('res-main-title').textContent = '⚔️ RETO CREADO';
-    const categoryEl = document.getElementById('res-category-text');
-    const phraseEl = document.getElementById('res-phrase-text');
-    if (categoryEl) categoryEl.textContent = '';
-    if (phraseEl) phraseEl.textContent = '';
-    renderRecordBadge(null);
-    renderLucidezStamp(null);
-    setResultTone('duel', '⚔️');
-
-    const code = encodeDuelCode({ modeId, cfgIdx, score: game.score, seed: game.duelSeed });
-    lastDuelShareInfo = { role: 'creator', code, score: game.score, totalQ: displayTotal, modeId, cfgIdx };
-    box.innerHTML = `
-      <div class="duel-result-box duel-result-neutral duel-created-card">
-        <div class="duel-created-icon">⚔️</div>
-        <p class="duel-result-hint duel-created-mode">${escapeHtml(modeLabel)}</p>
-        <div class="duel-created-divider"></div>
-        <div class="duel-result-subtle-label">Tu puntuación</div>
-        <div class="duel-result-score-solo">${game.score}${duelModeExpectedTotal(modeId) ? '/' + displayTotal : ''}</div>
-        <div class="duel-result-subtle-label">Código del reto</div>
-        <div class="duel-code-display">${escapeHtml(code)}</div>
-        <button class="btn btn-whatsapp" style="width:100%;margin-top:16px;" onclick="shareDuelCodeWhatsApp('${code}')">💬 Compartir por WhatsApp</button>
-      </div>`;
-    const shareBtn = document.getElementById('res-share-btn');
-    // La acción de compartir ya vive dentro de la propia tarjeta (WhatsApp
-    // como principal, copiar código como secundaria), así que el botón
-    // genérico de "Compartir mi resultado" no debe duplicarla aquí.
-    if (shareBtn) shareBtn.style.display = 'none';
-    // ⚔️ Duelo: desde la pantalla "RETO CREADO" el botón inferior debe volver
-    // siempre al menú de Duelo (nunca a Jugar) — ver handleResultsBackButton().
-    // Se cambia también el texto para que sea coherente con ese destino.
-    const backBtn = document.getElementById('res-back-btn');
-    if (backBtn) backBtn.textContent = '← Volver a Duelo';
-    saveDuelHistoryEntry({ code, role: 'creator', modeId, cfgIdx, myScore: game.score, totalQ: displayTotal, opponentScore: null, result: null });
-    return;
-  }
-
-  document.getElementById('res-main-title').textContent = '⚔️ Duelo Completado';
-  const shareBtn = document.getElementById('res-share-btn');
-  if (shareBtn) shareBtn.textContent = '↗ Compartir resultado';
-
-  const opp = Number.isFinite(game.duelOpponentScore) ? game.duelOpponentScore : 0;
-  const margin = Math.abs(game.score - opp);
-  let result, resultLabel, toneClass;
-  if (game.score > opp) { result = 'win'; resultLabel = '🏆 ¡Has ganado el duelo!'; toneClass = 'duel-result-win'; }
-  else if (game.score < opp) { result = 'loss'; resultLabel = '😔 Has perdido el duelo'; toneClass = 'duel-result-loss'; }
-  else { result = 'draw'; resultLabel = '🤝 ¡Empate!'; toneClass = 'duel-result-draw'; }
-
-  // ⚔️ Repetir el mismo reto (mismo código) para ver si se puede mejorar la
-  // marca no debe volver a sumar victoria/derrota/empate ni alimentar la
-  // racha de victorias ni los logros de Duelo: cada código solo cuenta la
-  // primera vez que se juega como retador. El resultado se sigue mostrando
-  // con normalidad, solo se deja de contabilizar.
-  if (!Array.isArray(store.duelPlayedCodes)) store.duelPlayedCodes = [];
-  const isRepeatChallenge = !!(game.duelCode && store.duelPlayedCodes.includes(game.duelCode));
-
-  if (!store.duelStats || typeof store.duelStats !== 'object') store.duelStats = getDefaultDuelStats();
-  if (!isRepeatChallenge) {
-    store.duelStats.played = (store.duelStats.played || 0) + 1;
-    if (result === 'win') {
-      store.duelStats.wins = (store.duelStats.wins || 0) + 1;
-      store.duelStats.currentWinStreak = (store.duelStats.currentWinStreak || 0) + 1;
-      store.duelStats.bestWinStreak = Math.max(store.duelStats.bestWinStreak || 0, store.duelStats.currentWinStreak);
-      // ⚔️ Logros "Por los Pelos" / "¿Eso Era un Duelo?": banderas persistentes,
-      // una vez conseguidas no se pierden aunque futuros duelos tengan otro margen.
-      if (margin === 1) store.duelStats.wonByOnePoint = true;
-      if (margin >= 10) store.duelStats.wonByTenPlus = true;
-    } else {
-      store.duelStats.currentWinStreak = 0;
-      if (result === 'loss') store.duelStats.losses = (store.duelStats.losses || 0) + 1;
-      else store.duelStats.draws = (store.duelStats.draws || 0) + 1;
-    }
-    if (game.duelCode) {
-      store.duelPlayedCodes.push(game.duelCode);
-      // Igual que duelHistory: se limita para no crecer sin fin en partidas
-      // muy longevas, conservando de sobra los códigos recientes que
-      // alguien podría volver a repetir.
-      if (store.duelPlayedCodes.length > 200) store.duelPlayedCodes.shift();
-    }
-  }
-
-  const resultPhrase = getDuelResultPhrase(result, margin);
-  lastDuelShareInfo = { role: 'joiner', result, myScore: game.score, opponentScore: opp, totalQ: displayTotal, modeId, cfgIdx };
-  box.innerHTML = `
-    <div class="duel-result-box ${toneClass}">
-      <div class="duel-result-title">${resultLabel}</div>
-      <div class="duel-result-score">${game.score} <span class="duel-vs">vs</span> ${opp}</div>
-      <p class="duel-result-hint">${escapeHtml(modeLabel)}</p>
-      <p class="duel-result-phrase">${escapeHtml(resultPhrase)}</p>
-      ${isRepeatChallenge ? '<p class="duel-result-hint duel-repeat-note">Ya jugaste este reto antes — no vuelve a contar para tus estadísticas de Duelo.</p>' : ''}
-    </div>`;
-  saveDuelHistoryEntry({ code: game.duelCode, role: 'joiner', modeId, cfgIdx, myScore: game.score, totalQ: displayTotal, opponentScore: opp, result, repeat: isRepeatChallenge });
 }
 
 // Comparte el resultado de la última partida. Usa la Web Share API nativa
@@ -7063,18 +6097,6 @@ function shareResult() {
   if (!lastResultShareData) return;
   const { modeName, scoreStr, accuracy } = lastResultShareData;
   let shareText = `🧠 Acabo de jugar a Sir Edwards Quiz (${modeName}): ${scoreStr} aciertos (${accuracy}% de efectividad).`;
-
-  // ⚔️ Duelo: si la última partida fue un duelo, el texto compartido lleva
-  // el código (creador) o el resultado del enfrentamiento (quien se unió),
-  // en vez del texto genérico de arriba.
-  if (lastDuelShareInfo) {
-    if (lastDuelShareInfo.role === 'creator') {
-      shareText = duelInviteText(lastDuelShareInfo.score, lastDuelShareInfo.totalQ, lastDuelShareInfo.code);
-    } else {
-      const verb = lastDuelShareInfo.result === 'win' ? 'He ganado' : lastDuelShareInfo.result === 'loss' ? 'He perdido' : 'He empatado en';
-      shareText = `⚔️ ${verb} un Duelo en Sir Edwards Quiz: ${lastDuelShareInfo.myScore} vs ${lastDuelShareInfo.opponentScore}. ¡Pruébalo tú también!`;
-    }
-  }
 
   // Capa 1: intentar compartir la tarjeta-imagen si el navegador admite
   // compartir archivos. Si no es compatible (o falla), caemos exactamente
@@ -7114,43 +6136,6 @@ function shareResultAsText(shareText) {
   alert(shareText);
 }
 
-// ⚔️ Duelo: acción principal de la pantalla "RETO CREADO". Abre WhatsApp
-// con el mensaje de reto ya redactado y el código dinámico del reto que
-// se acaba de crear.
-// 2.0: enlace de invitación. Abre la app (o la web) y lleva directo a «Unirme a un reto» con el
-// código ya puesto. El código sigue yendo en el texto por si el enlace no se abre.
-function duelInviteUrl(code) {
-  try { return location.origin + location.pathname + '?reto=' + encodeURIComponent(code); }
-  catch (e) { return ''; }
-}
-function duelInviteText(score, totalQ, code) {
-  return `⚔️ Te reto a un Duelo en Sir Edwards Quiz: he sacado ${score}/${totalQ}. ¿Te atreves a superarlo?\n` +
-    `Entra aquí y el reto se abre solo: ${duelInviteUrl(code)}\nCódigo: ${code}`;
-}
-function shareDuelCodeWhatsApp(code) {
-  const info = lastDuelShareInfo && lastDuelShareInfo.code === code ? lastDuelShareInfo : null;
-  const text = info ? duelInviteText(info.score, info.totalQ, code) : code;
-  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
-}
-
-// ⚔️ Duelo: copia solo el código del reto (sin el texto de reto completo),
-// tanto al tocar el propio código como al pulsar "📋 Copiar código" en la
-// pantalla "¡Marca establecida!" / "RETO CREADO". Nunca usa alert(): el
-// resultado (éxito o fallo real de la copia) se muestra siempre con un
-// aviso interno — ver showDuelCodeCopyToast().
-function copyDuelCode(code) {
-  copyTextToClipboard(code).then((ok) => {
-    const btns = document.querySelectorAll('#results-duel-box button.btn-secondary');
-    btns.forEach(btn => {
-      const original = btn.dataset.originalLabel || btn.textContent;
-      btn.dataset.originalLabel = original;
-      btn.textContent = ok ? '✅ ¡Copiado!' : original;
-      if (ok) setTimeout(() => { btn.textContent = original; }, 1800);
-    });
-    showDuelCodeCopyToast(ok);
-  });
-}
-
 // Copia fiable de texto al portapapeles. Prioriza la Clipboard API moderna
 // (navigator.clipboard.writeText) y, si no existe o falla —habitual en
 // algunos navegadores/webviews de Android o contextos sin permiso—, recurre
@@ -7184,27 +6169,6 @@ function copyTextFallback(text) {
   } catch (e) {
     return false;
   }
-}
-
-// Feedback visual interno para el copiado del código de reto: sustituye a
-// alert()/confirm()/prompt(). Aparece pegado al propio código (dentro de
-// la interfaz, nunca como diálogo nativo del navegador) y desaparece solo
-// al cabo de 1,5-2s. No reutiliza .info-toast (pensado para avisos de toda
-// la pantalla) para quedar discreto, integrado justo junto al código.
-function showDuelCodeCopyToast(success) {
-  const codeEl = document.querySelector('#results-duel-box .duel-code-display');
-  if (!codeEl) return;
-  let toast = codeEl.parentElement.querySelector('.duel-code-copy-toast');
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.className = 'duel-code-copy-toast';
-    codeEl.insertAdjacentElement('afterend', toast);
-  }
-  toast.textContent = success ? '✓ Código copiado' : 'No se pudo copiar el código';
-  toast.classList.toggle('is-error', !success);
-  toast.classList.add('show');
-  clearTimeout(toast.__hideTimer);
-  toast.__hideTimer = setTimeout(() => { toast.classList.remove('show'); }, success ? 1600 : 2200);
 }
 
 function getMasteredCount(source = getStore()) {
@@ -7964,34 +6928,6 @@ function maybeShowUpdateModal() {
   modal.style.display = 'flex';
 }
 
-// 2.0: enlace de invitación a un duelo (?reto=SRW-XXXXX-XXXXXX). Se guarda el código, se limpia la
-// URL y, en cuanto no haya pantalla de acceso ni partida en curso, se abre «Unirme a un reto» con el
-// código puesto y la vista previa lista. Nunca arranca la partida solo.
-const INVITE_KEY = 'siredwards_quiz_v2_0_invite';
-function captureDuelInvite() {
-  try {
-    const raw = new URLSearchParams(location.search).get('reto');
-    if (!raw) return;
-    const d = decodeDuelCode(raw);
-    if (d && DUEL_MODES_READY.includes(d.modeId)) sessionStorage.setItem(INVITE_KEY, d.code);
-    history.replaceState(null, '', location.pathname + location.hash);
-  } catch (e) {}
-}
-function openDuelInviteIfReady() {
-  let code = null;
-  try { code = sessionStorage.getItem(INVITE_KEY); } catch (e) {}
-  if (!code) return true;
-  if (authGateActive() || (typeof hasSavedGame === 'function' && hasSavedGame()) || document.body.classList.contains('in-game')) return false;
-  try { sessionStorage.removeItem(INVITE_KEY); } catch (e) {}
-  switchTab('duelo');
-  try { if (window.SEQDuels && SEQDuels.openCodeHub) SEQDuels.openCodeHub(); } catch (e) {}
-  openDuelPanel('unirse');
-  const input = document.getElementById('duel-join-code-input');
-  if (input) { input.value = code; tryJoinDuelCode(); }
-  return true;
-}
-captureDuelInvite();
-
 // 2.0: «Compartir resultado» es discreto por defecto y gana presencia solo cuando el jugador tiene algo que
 // contar: récord, Lucidez superada, logro nuevo o modo desbloqueado. Regla simple, sin matriz de casos.
 function updateShareEmphasis() {
@@ -8016,7 +6952,6 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
   applyAppVersionText();
   maybeShowUpdateModal();
-  { let tries = 0; const t = setInterval(() => { if (openDuelInviteIfReady() || ++tries > 240) clearInterval(t); }, 500); }
   // v1.5 — Fase B (Prompt 3): se comprueba aquí (no antes) porque online.js
   // registra su propio listener 'DOMContentLoaded' más arriba en el documento
   // (se ejecuta primero) y es quien deja lista SEQOnline.enabled/session().

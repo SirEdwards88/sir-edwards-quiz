@@ -9,14 +9,14 @@
 //    (currentGame, XP, rachas, medallas locales). Un fallo aquí no puede
 //    afectar a Jugar/Estándar/Contrarreloj/Supervivencia.
 //  - Solo se muestra si hay sesión y el servidor activa `classic_duel` o
-//    `async_challenges`. Si no, el Duelo por código (v1.3) sigue igual.
+//    `async_challenges`. Si no están activas, la pestaña Duelo lo dice y no ofrece nada más.
 //  - Seguridad de pintado (mismas reglas que online.js; ver
 //    test/duels-ui-audit.test.mjs): todo texto del servidor pasa por esc(),
 //    todo número por num(), los avatares por la lista cerrada, y los IDs que
 //    se incrustan en atributos onclick se validan con ID_RE.
 //
 // Usa por nombre, en tiempo de ejecución: SEQOnline, TEST_QUESTIONS,
-// mulberry32, seededShuffle, escapeHtml, closeDuelPanels, openDuelPanel.
+// mulberry32, seededShuffle, escapeHtml, closeDuelPanels.
 
 (function () {
   'use strict';
@@ -40,7 +40,6 @@
     lastIdx: -1,           // duelo: índice de la ventana en curso según el reloj
     shown: null,           // pregunta PINTADA ahora mismo: {idx, qn}. Las respuestas van contra ESTA.
     reqSeq: 0, gotSeq: 0,  // descarta respuestas de load() que lleguen desordenadas
-    codeHub: false,        // hub: ¿está abierto el submenú secundario «Duelo por código»?
     streak: 0,             // partida: aciertos seguidos del propio jugador (solo para el sonido, como en la partida normal)
     shownAnswered: false,  // partida: la pregunta pintada ya está respondida (no hay tic-tac)
     lastSummary: 0,        // último refresco de los contadores de pendientes (sin sondeo continuo)
@@ -117,12 +116,6 @@
   }
 
   // ---- Tarjetas en el inicio de Duelo ---------------------------------------
-  function setSrwVisible(on) {
-    ['.duel-action-crear', '.duel-action-unirse', '.duel-action-retos'].forEach(function (sel) {
-      var el = document.querySelector('#duel-home ' + sel);
-      if (el) el.style.display = on ? '' : 'none';
-    });
-  }
   // ---- Hub de Duelos -----------------------------------------------------------
   // Mismo lenguaje que las tarjetas de Jugar (.mode-card + .mode-card-icon +
   // .mode-subtitle), con variantes de color propias y acotadas (.seq-d-v-*,
@@ -142,18 +135,14 @@
     if (!slot) return;
     var home = $('duel-home');
     var on = !!(window.SEQOnline && window.SEQOnline.enabled);
-    if (!on || !active()) { S.codeHub = false; if (home) home.classList.remove('seq-d-hub-on'); }
-    if (!on) { slot.innerHTML = ''; setSrwVisible(true); return; }
+    if (!on || !active()) { if (home) home.classList.remove('seq-d-hub-on'); }
+    if (!on) { slot.innerHTML = ''; return; }
     if (!session()) {
-      setSrwVisible(true);
       slot.innerHTML = '<div class="mode-card seq-d-card" onclick="SEQOnline.goToAccount()"><div class="seq-d-card-icon">👥</div><div class="duel-action-text"><h3>Duelos con amigos</h3><p>Inicia sesión para retar a tus amigos online.</p></div></div>';
       return;
     }
-    if (!active()) { slot.innerHTML = ''; setSrwVisible(true); return; }
-    // «Duelo por código» abierto: el hub cede el sitio a las tres tarjetas de
-    // siempre (Crear reto / Unirme / Mis retos), con su lógica intacta.
-    setSrwVisible(S.codeHub);
-    if (home) home.classList.toggle('seq-d-hub-on', !S.codeHub);
+    if (!active()) { slot.innerHTML = '<p class="stats-section-sub">Los duelos y los retos estarán disponibles muy pronto.</p>'; return; }
+    if (home) home.classList.add('seq-d-hub-on');
     var f = features(), L = S.lists;
     var fr = L.friends ? num(L.friends.incoming.length) : 0;
     var du = L.duels ? L.duels.filter(function (d) { return (d.estado === 'pendiente' && d.soy === 'rival') || d.estado === 'aceptado' || d.estado === 'en_curso'; }).length : 0;
@@ -167,11 +156,7 @@
     // tarjeta está bloqueada, sin navegación y sin datos.
     h += '<div class="mode-card locked seq-d-card seq-d-v-rank" aria-disabled="true"><span class="mode-lock-badge" aria-hidden="true"></span>' +
       '<div class="mode-card-icon" aria-hidden="true">🏆</div><h3>Ranking</h3><p>La clasificación de duelos entre amigos.</p><p class="mode-subtitle seq-d-soon">PRÓXIMAMENTE</p></div>';
-    // Opción secundaria, separada del flujo principal.
-    h += '<div class="seq-d-sep" aria-hidden="true">Otras formas de jugar</div>';
-    h += '<div class="mode-card seq-d-card seq-d-code" role="button" tabindex="0" onclick="SEQDuels.openCodeHub()" onkeydown="if(event.key===\'Enter\')SEQDuels.openCodeHub()">' +
-      '<div class="mode-card-icon" aria-hidden="true">🔑</div><div class="duel-action-text"><h3>Duelo por código</h3><p>Juega introduciendo un código.</p></div><span class="seq-d-chev" aria-hidden="true">›</span></div>';
-    slot.innerHTML = S.codeHub ? '' : h;
+    slot.innerHTML = h;
   }
   // Cabecera del hub (la usa también closeDuelPanels() en index.html). Solo se
   // aplica si el hub está a la vista: nunca pisa el título de un submenú abierto.
@@ -179,15 +164,7 @@
     if (typeof setDuelTopbar !== 'function') return;
     var home = $('duel-home');
     if (S.screen || (home && home.style.display === 'none')) return;
-    if (S.codeHub && active()) setDuelTopbar('Duelo por código', 'Juega introduciendo un código', closeCodeHub, true);
-    else setDuelTopbar();
-  }
-  function openCodeHub() {
-    if (!active()) return;
-    S.codeHub = true; renderCards(); syncHubTopbar();
-  }
-  function closeCodeHub() {
-    S.codeHub = false; renderCards(); syncHubTopbar();
+    setDuelTopbar();
   }
   // Contadores al abrir la app y al volver a ella (sin sondeo continuo):
   // como mucho un refresco cada SUMMARY_MIN_MS.
@@ -256,15 +233,16 @@
       schedule(true);
     });
   }
-  // Prompt 4: al ver un DUELO completado se avisa a index.html (una sola vez por
-  // duelo, lo controla registerOnlineDuelResult) con el ID estable del rival,
-  // para los logros «Revancha» y «¿Otra vez tú?». Los Retos no cuentan.
+  // Al ver un DUELO completado se avisa a index.html (una sola vez por duelo, lo controla
+  // registerOnlineDuelResult) con el ID estable del rival y el marcador, para las estadísticas y los
+  // logros de Duelo. Los Retos no cuentan.
   function recordResult(d) {
     try {
       if (S.screen !== 'duel' || !d || d.estado !== 'completado' || !d.resultado) return;
-      var rid = safeId(d.rival && d.rival.id), id = safeId(S.id), g = d.resultado.ganador;
-      if (!rid || !id || (g !== 'yo' && g !== 'rival') || typeof registerOnlineDuelResult !== 'function') return;
-      registerOnlineDuelResult({ duelId: id, rivalId: rid, result: g === 'yo' ? 'win' : 'loss', forfeit: d.motivo_fin === 'abandono' || d.motivo_fin === 'no_jugado' });
+      var r = d.resultado, rid = safeId(d.rival && d.rival.id), id = safeId(S.id), g = r.ganador;
+      var res = g === 'yo' ? 'win' : g === 'rival' ? 'loss' : (r.empate === true ? 'draw' : null);
+      if (!rid || !id || !res || typeof registerOnlineDuelResult !== 'function') return;
+      registerOnlineDuelResult({ duelId: id, rivalId: rid, result: res, myScore: num(r.mi_puntuacion), opponentScore: num(r.puntuacion_rival), forfeit: d.motivo_fin === 'abandono' || d.motivo_fin === 'no_jugado' });
     } catch (e) {}
   }
   // Solo se sondea cuando hace falta y nunca con la pestaña oculta.
@@ -425,7 +403,7 @@
   }
   // Partida de duelo / reto: su cabecera NO cambia en esta fase (se rediseña
   // junto con la pantalla de pregunta). Se oculta la cabecera común para no
-  // mostrar dos cabeceras a la vez, igual que hacían los submenús por código.
+  // mostrar dos cabeceras a la vez.
   function gameHeader(title, backFn) {
     topbarShown(false);
     return '<div class="submenu-header"><button class="btn btn-secondary" onclick="' + backFn + '">← Volver</button><h2 style="margin:0;">' + title + '</h2></div><div id="seq-d-msg" class="feedback" style="display:none;"></div>';
@@ -508,7 +486,7 @@
   function renderLogros() {
     var d = S.lists.logros;
     var h = header('Logros de duelo', 'Verificados por el servidor', back);
-    h += '<p class="stats-section-sub">Se calculan en el servidor a partir de tus duelos y retos terminados. Los logros de Duelo por código siguen en la pestaña Logros.</p>';
+    h += '<p class="stats-section-sub">Se calculan en el servidor a partir de tus duelos y retos terminados. Los logros de Duelo están en la pestaña Logros.</p>';
     if (!d) return h + '<p class="stats-section-sub">Cargando…</p>';
     var st = d.stats || { online: {}, retos: {} };
     h += '<p class="history-item-sub seq-d-rival">Duelos online: ' + num(st.online.jugados) + ' jugados · ' + num(st.online.ganados) + ' ganados · Retos: ' + num(st.retos.jugados) + ' jugados · ' + num(st.retos.ganados) + ' ganados</p>';
@@ -674,7 +652,7 @@
   function onShow() {
     if (!S.screen) {
       // Entrar en Duelo siempre muestra el hub principal.
-      S.codeHub = false; renderCards(); syncHubTopbar();
+      renderCards(); syncHubTopbar();
       refreshSummary();
       return;
     }
@@ -721,12 +699,7 @@
     duelAction: duelAction, retoAction: retoAction, listAction: listAction, answer: answer,
     doSearch: doSearch, friendAdd: friendAdd, friendResp: friendResp, reload: load,
     onAccountChange: onAccountChange, onShow: onShow,
-    openCodeHub: openCodeHub, closeCodeHub: closeCodeHub, syncHubTopbar: syncHubTopbar,
-    oldHistory: function () {
-      stopTimers(); S.screen = null; S.shown = null;
-      var root = $('seq-duel-root'); if (root) { root.style.display = 'none'; root.innerHTML = ''; root.classList.remove('seq-d-playing'); }
-      try { if (typeof openDuelPanel === 'function') openDuelPanel('retos'); } catch (e) {}
-    },
+    syncHubTopbar: syncHubTopbar,
     _state: function () { return S; },
   };
 })();

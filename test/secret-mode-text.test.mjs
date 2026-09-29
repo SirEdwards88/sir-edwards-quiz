@@ -11,12 +11,10 @@ test('los hitos de Fragmentos tienen versión secreta sin el nombre del modo', (
   assert.equal(secrets.length, 6, 'texto y objetivo secretos para los 3 hitos');
   for (const t of secrets) assert.ok(!/lucidez|error(es)? extra/i.test(t), 'no revela: ' + t);
 });
-test('bienvenida, subtítulo de Fragmentos, tarjeta bloqueada de Duelo e historial no nombran el modo', () => {
+test('bienvenida, subtítulo de Fragmentos e historial no nombran el modo', () => {
   const welcome = html.slice(html.indexOf('id="welcome-modal"'), html.indexOf('id="update-modal"'));
   assert.ok(!/lucidez/i.test(welcome), 'bienvenida');
   assert.ok(/Consigue Fragmentos de Mente para desbloquear un modo secreto/.test(html));
-  const duelCard = html.match(/id="duel-mode-card-lucidez_mental"[\s\S]*?<\/div>\s*<\/div>/)[0];
-  assert.ok(!/Lucidez/.test(duelCard), 'tarjeta de Duelo bloqueada');
   const changelog = html.slice(html.indexOf('<h3 style="margin-top:0;">Historial de versiones'), html.indexOf('<div class="settings-section settings-danger-zone">'));
   assert.ok(!/lucidez/i.test(changelog), 'historial de versiones');
 });

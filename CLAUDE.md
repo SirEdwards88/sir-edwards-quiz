@@ -28,6 +28,7 @@ Igual con `src/utils/sync-merge.js`: debe ser el mismo texto que `src/sync-merge
 
 ## Producto (decisiones cerradas de la 2.0)
 - «Lucidez Mental» es un modo secreto: no se nombra antes de desbloquearlo (10 Fragmentos de Mente). Textos misteriosos hasta entonces.
-- «Compartir reto» es la acción social principal; «Compartir resultado» es secundario y discreto.
+- No existe el «Duelo por código» (retirado): solo Duelo online (en directo, con amigos) y Retos (asíncronos, con plazo). Ambos exigen cuenta.
+- «Compartir resultado» es una acción secundaria y discreta.
 - Historial de versiones breve y en orden.
 - Nunca perder datos de usuarios existentes: la clave local `siredwards_quiz_v1_0_data` no se cambia.
