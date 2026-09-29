@@ -1022,6 +1022,7 @@ try {
               <li>Nuevos logros de Duelo: «Revancha» y «¿Otra vez tú?».</li>
               <li>Nueva tarjeta para compartir tu resultado, con diseño propio para victoria, derrota, Lucidez y Duelo.</li>
               <li>Nuevo enigma en Lucidez Mental y más preguntas.</li>
+              <li>Retar a un amigo es más fácil: al compartir tu duelo va un enlace que abre el reto directamente.</li>
               <li id="changelog-v2-save-note">Recuerda: en Ajustes puedes descargar una copia de seguridad de tu progreso.</li>
             </ul>
           </div>
@@ -3267,6 +3268,7 @@ function switchTab(tabId) {
   if (tabId === 'home') {
     updateBadges();
     updateResumeButton();
+    try { maybeShowPwaHint(); } catch (e) {}
   }
   if (tabId === 'modes') {
     closeDifficultyMenu();
@@ -7063,7 +7065,7 @@ function shareResult() {
   // en vez del texto genérico de arriba.
   if (lastDuelShareInfo) {
     if (lastDuelShareInfo.role === 'creator') {
-      shareText = `⚔️ Te reto a un Duelo en Sir Edwards Quiz: he sacado ${lastDuelShareInfo.score}/${lastDuelShareInfo.totalQ}. ¿Te atreves a superarlo? Código: ${lastDuelShareInfo.code}`;
+      shareText = duelInviteText(lastDuelShareInfo.score, lastDuelShareInfo.totalQ, lastDuelShareInfo.code);
     } else {
       const verb = lastDuelShareInfo.result === 'win' ? 'He ganado' : lastDuelShareInfo.result === 'loss' ? 'He perdido' : 'He empatado en';
       shareText = `⚔️ ${verb} un Duelo en Sir Edwards Quiz: ${lastDuelShareInfo.myScore} vs ${lastDuelShareInfo.opponentScore}. ¡Pruébalo tú también!`;
@@ -7111,8 +7113,19 @@ function shareResultAsText(shareText) {
 // ⚔️ Duelo: acción principal de la pantalla "RETO CREADO". Abre WhatsApp
 // con el mensaje de reto ya redactado y el código dinámico del reto que
 // se acaba de crear.
+// 2.0: enlace de invitación. Abre la app (o la web) y lleva directo a «Unirme a un reto» con el
+// código ya puesto. El código sigue yendo en el texto por si el enlace no se abre.
+function duelInviteUrl(code) {
+  try { return location.origin + location.pathname + '?reto=' + encodeURIComponent(code); }
+  catch (e) { return ''; }
+}
+function duelInviteText(score, totalQ, code) {
+  return `⚔️ Te reto a un Duelo en Sir Edwards Quiz: he sacado ${score}/${totalQ}. ¿Te atreves a superarlo?\n` +
+    `Entra aquí y el reto se abre solo: ${duelInviteUrl(code)}\nCódigo: ${code}`;
+}
 function shareDuelCodeWhatsApp(code) {
-  const text = code;
+  const info = lastDuelShareInfo && lastDuelShareInfo.code === code ? lastDuelShareInfo : null;
+  const text = info ? duelInviteText(info.score, info.totalQ, code) : code;
   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
 }
 
@@ -7934,9 +7947,38 @@ function maybeShowUpdateModal() {
   modal.style.display = 'flex';
 }
 
+// 2.0: enlace de invitación a un duelo (?reto=SRW-XXXXX-XXXXXX). Se guarda el código, se limpia la
+// URL y, en cuanto no haya pantalla de acceso ni partida en curso, se abre «Unirme a un reto» con el
+// código puesto y la vista previa lista. Nunca arranca la partida solo.
+const INVITE_KEY = 'siredwards_quiz_v2_0_invite';
+function captureDuelInvite() {
+  try {
+    const raw = new URLSearchParams(location.search).get('reto');
+    if (!raw) return;
+    const d = decodeDuelCode(raw);
+    if (d && DUEL_MODES_READY.includes(d.modeId)) sessionStorage.setItem(INVITE_KEY, d.code);
+    history.replaceState(null, '', location.pathname + location.hash);
+  } catch (e) {}
+}
+function openDuelInviteIfReady() {
+  let code = null;
+  try { code = sessionStorage.getItem(INVITE_KEY); } catch (e) {}
+  if (!code) return true;
+  if (authGateActive() || (typeof hasSavedGame === 'function' && hasSavedGame()) || document.body.classList.contains('in-game')) return false;
+  try { sessionStorage.removeItem(INVITE_KEY); } catch (e) {}
+  switchTab('duelo');
+  try { if (window.SEQDuels && SEQDuels.openCodeHub) SEQDuels.openCodeHub(); } catch (e) {}
+  openDuelPanel('unirse');
+  const input = document.getElementById('duel-join-code-input');
+  if (input) { input.value = code; tryJoinDuelCode(); }
+  return true;
+}
+captureDuelInvite();
+
 document.addEventListener('DOMContentLoaded', () => {
   applyAppVersionText();
   maybeShowUpdateModal();
+  { let tries = 0; const t = setInterval(() => { if (openDuelInviteIfReady() || ++tries > 240) clearInterval(t); }, 500); }
   // v1.5 — Fase B (Prompt 3): se comprueba aquí (no antes) porque online.js
   // registra su propio listener 'DOMContentLoaded' más arriba en el documento
   // (se ejecuta primero) y es quien deja lista SEQOnline.enabled/session().
@@ -7982,6 +8024,15 @@ function dismissPwaHint() {
 
 let deferredInstallPrompt = null;
 
+// 2.0: el aviso ya no salta al abrir la app por primera vez: espera a que el jugador haya
+// terminado al menos una partida y esté en el menú principal (no interrumpe nada).
+let pendingPwaHint = null;
+function maybeShowPwaHint() {
+  if (!pendingPwaHint || isStandaloneDisplay() || pwaHintDismissed()) return;
+  if (!(store && store.gamesPlayed >= 1)) return;
+  const h = pendingPwaHint; pendingPwaHint = null;
+  showPwaHint(h.text, h.action);
+}
 function showPwaHint(text, showActionBtn) {
   if (isStandaloneDisplay() || pwaHintDismissed()) return;
   const el = document.getElementById('pwa-install-hint');
@@ -8015,7 +8066,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const isIOS = /iPad|iPhone|iPod/.test(ua) || (ua.includes('Macintosh') && 'ontouchend' in document);
   const isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua);
   if (isIOS && isSafari && !isStandaloneDisplay()) {
-    showPwaHint('Toca el icono de compartir de Safari y elige "Añadir a pantalla de inicio" para instalar Sir Edwards.', false);
+    pendingPwaHint = { text: 'Toca el icono de compartir de Safari y elige "Añadir a pantalla de inicio" para instalar Sir Edwards.', action: false };
+    maybeShowPwaHint();
   }
 });
 
@@ -8023,7 +8075,8 @@ document.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('beforeinstallprompt', (event) => {
   event.preventDefault();
   deferredInstallPrompt = event;
-  showPwaHint('Instala Sir Edwards en tu pantalla de inicio para abrirlo como una app.', true);
+  pendingPwaHint = { text: 'Instala Sir Edwards en tu pantalla de inicio para abrirlo como una app.', action: true };
+  maybeShowPwaHint();
 });
 
 window.addEventListener('appinstalled', () => {

@@ -187,7 +187,9 @@ function encodeDuelCode({ modeId, cfgIdx, score, seed }) {
 
 function decodeDuelCode(rawCode) {
   if (!rawCode) return null;
-  const cleaned = String(rawCode).toUpperCase().replace(/[^A-Z0-9]/g, '');
+  // Acepta también un enlace o un mensaje pegado entero: se extrae el código SRW-XXXXX-XXXXXX.
+  const embedded = String(rawCode).toUpperCase().match(/SRW[-\s]?[A-Z0-9]{5}[-\s]?[A-Z0-9]{6}/);
+  const cleaned = (embedded ? embedded[0] : String(rawCode).toUpperCase()).replace(/[^A-Z0-9]/g, '');
   const full = cleaned.startsWith('SRW') ? cleaned.slice(3) : cleaned;
   if (full.length !== 11) return null;
   const core = full.slice(0, 10).toLowerCase();
