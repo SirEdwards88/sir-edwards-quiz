@@ -39,12 +39,12 @@
   // tienda (Nivel 1 del sistema, ver ficha de dirección artística cerrada).
   // "value" es lo que se guarda/envía como avatar del jugador.
   var CATALOG = [
-    { id: 'sombrero', value: 'sombrero', src: ASSET_DIR + 'sombrero.png', label: 'Sombrero de Sir Edwards', base: true },
-    { id: 'libro', value: 'libro', src: ASSET_DIR + 'libro.png', label: 'El Compendio', base: true },
-    { id: 'reloj', value: 'reloj', src: ASSET_DIR + 'reloj.png', label: 'Reloj de bolsillo', base: true },
-    { id: 'lupa', value: 'lupa', src: ASSET_DIR + 'lupa.png', label: 'Lupa', base: true },
-    { id: 'mascara', value: 'mascara', src: ASSET_DIR + 'mascara.png', label: 'Máscara', base: true },
-    { id: 'pluma', value: 'pluma', src: ASSET_DIR + 'pluma.png', label: 'Pluma estilográfica', base: true }
+    { id: 'sombrero', value: 'sombrero', short: 'Sombrero', src: ASSET_DIR + 'sombrero.png', label: 'Sombrero de Sir Edwards', base: true },
+    { id: 'libro', value: 'libro', short: 'Compendio', src: ASSET_DIR + 'libro.png', label: 'El Compendio', base: true },
+    { id: 'reloj', value: 'reloj', short: 'Reloj', src: ASSET_DIR + 'reloj.png', label: 'Reloj de bolsillo', base: true },
+    { id: 'lupa', value: 'lupa', short: 'Lupa', src: ASSET_DIR + 'lupa.png', label: 'Lupa', base: true },
+    { id: 'mascara', value: 'mascara', short: 'Máscara', src: ASSET_DIR + 'mascara.png', label: 'Máscara', base: true },
+    { id: 'pluma', value: 'pluma', short: 'Pluma', src: ASSET_DIR + 'pluma.png', label: 'Pluma estilográfica', base: true }
   ];
 
   // GLYPHS/DEFAULT_GLYPH conservan su nombre histórico de Fase C (para no
@@ -81,7 +81,14 @@
     return '<img class="seq-av-img" src="' + entry.src + '" alt="' + entry.label + '" draggable="false">';
   }
 
+  // Nombre corto para mostrar bajo cada avatar en el selector (texto fijo del catálogo).
+  function shortName(stored) {
+    var entry = entryForGlyph(resolveGlyph(stored)) || DEFAULT_ENTRY;
+    return entry.short || entry.label;
+  }
+
   window.SEQAvatars = {
+    shortName: shortName,
     CATALOG: CATALOG,
     GLYPHS: GLYPHS,
     DEFAULT_GLYPH: DEFAULT_ENTRY.value,

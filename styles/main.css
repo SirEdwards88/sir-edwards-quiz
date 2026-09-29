@@ -5165,3 +5165,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
     font-size:14px!important; border-radius:12px!important; margin:12px auto 0!important; display:block!important;
   }
 }
+
+/* 2.0: «Instalar la app» en Ajustes (src/ui/install-app.js). */
+.settings-install-btn { width: 100%; margin-top: 8px; }
+.settings-install-note { margin: 8px 0 0; font-size: 13.5px; line-height: 1.45; color: var(--sub); }

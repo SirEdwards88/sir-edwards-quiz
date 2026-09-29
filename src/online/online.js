@@ -783,7 +783,8 @@
         AVATARS.map(function (a) {
           var sel = (ui.editAvatar === a) || (ui.editAvatar == null && a === DEFAULT_AVATAR);
           var img = window.SEQAvatars ? window.SEQAvatars.avatarHTML(a) : a;
-          return '<button type="button" class="seq-av-btn' + (sel ? ' sel' : '') + '" onclick="SEQOnline.pickAvatar(\'' + a + '\')" aria-pressed="' + sel + '">' + img + '</button>';
+          var name = window.SEQAvatars && window.SEQAvatars.shortName ? '<span class="seq-av-name">' + esc(window.SEQAvatars.shortName(a)) + '</span>' : '';
+          return '<button type="button" class="seq-av-btn' + (sel ? ' sel' : '') + '" onclick="SEQOnline.pickAvatar(\'' + a + '\')" aria-pressed="' + sel + '">' + img + name + '</button>';
         }).join('') + '</div>' +
         // "Restaurar avatar por defecto" queda como acción secundaria de texto,
         // NO como una casilla de avatar más — solo tiene sentido ofrecerla

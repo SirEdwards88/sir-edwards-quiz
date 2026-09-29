@@ -821,6 +821,14 @@ try {
             </div>
           </div>
         </div>
+        <div class="settings-group" id="install-app-group" style="display:none;">
+          <p class="settings-kicker">Aplicación</p>
+          <div class="settings-field">
+            <span class="settings-field-label">Tenla a mano en tu pantalla de inicio</span>
+            <button type="button" class="btn btn-secondary settings-install-btn" onclick="SEQInstall.install()">📲 Instalar la app</button>
+            <p class="settings-install-note" id="install-app-note" style="display:none;"></p>
+          </div>
+        </div>
       </div>
 
       <!-- v1.4: cuenta online (la pinta src/online/online.js; oculta si la capa online no está configurada) -->
@@ -992,6 +1000,7 @@ try {
      config.js es PÚBLICO (URL del Worker + Client ID de Google); si está
      vacío, la capa online queda desactivada y la app es idéntica a la v1.3.
      online.js solo usa el store/funciones del juego en tiempo de ejecución. -->
+<script src="src/ui/install-app.js"></script>
 <script src="src/online/config.js"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
 <script src="src/utils/sync-merge.js"></script>
@@ -6986,13 +6995,19 @@ function isStandaloneDisplay() {
     window.navigator.standalone === true; // iOS Safari
 }
 
+// 2.0: cerrar el aviso lo silencia 14 días, no para siempre (el valor antiguo '1' cuenta como caducado).
+// Además, «Instalar la app» sigue siempre disponible en Ajustes (src/ui/install-app.js).
+const PWA_HINT_SNOOZE_MS = 14 * 24 * 60 * 60 * 1000;
 function pwaHintDismissed() {
-  try { return localStorage.getItem(PWA_HINT_DISMISSED_KEY) === '1'; } catch (e) { return false; }
+  try { return Date.now() - (Number(localStorage.getItem(PWA_HINT_DISMISSED_KEY)) || 0) < PWA_HINT_SNOOZE_MS; } catch (e) { return false; }
 }
-function dismissPwaHint() {
-  try { localStorage.setItem(PWA_HINT_DISMISSED_KEY, '1'); } catch (e) {}
+function hidePwaHint() {
   const el = document.getElementById('pwa-install-hint');
   if (el) el.style.display = 'none';
+}
+function dismissPwaHint() {
+  try { localStorage.setItem(PWA_HINT_DISMISSED_KEY, String(Date.now())); } catch (e) {}
+  hidePwaHint();
 }
 
 let deferredInstallPrompt = null;
@@ -7028,7 +7043,7 @@ document.addEventListener('DOMContentLoaded', () => {
       deferredInstallPrompt.prompt();
       try { await deferredInstallPrompt.userChoice; } catch (e) {}
       deferredInstallPrompt = null;
-      dismissPwaHint();
+      hidePwaHint();
     });
   }
 
@@ -7050,11 +7065,13 @@ window.addEventListener('beforeinstallprompt', (event) => {
   deferredInstallPrompt = event;
   pendingPwaHint = { text: 'Instala Sir Edwards en tu pantalla de inicio para abrirlo como una app.', action: true };
   maybeShowPwaHint();
+  try { SEQInstall.refresh(); } catch (e) {}
 });
 
+// Instalar no silencia el aviso para siempre: si luego se desinstala, puede volver a ofrecerse.
 window.addEventListener('appinstalled', () => {
   deferredInstallPrompt = null;
-  dismissPwaHint();
+  hidePwaHint();
 });
 </script>
 </body>
