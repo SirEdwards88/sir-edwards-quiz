@@ -156,18 +156,22 @@
   </symbol>
 </svg>
 
-<!-- Finestra de Benvinguda (Modal) -->
-<div id="welcome-modal" class="modal-overlay">
-  <div class="modal-card">
-    <div style="text-align:center; padding: 4px 2px 2px;">
-      <div style="font-family: var(--font-display); font-size: 14px; letter-spacing: 3px; text-transform: uppercase; opacity: .72; margin-bottom: 14px;">Sir Edwards Quiz</div>
-      <div style="width: 56px; height: 1px; margin: 0 auto 18px; background: linear-gradient(90deg, transparent, var(--gold, #d4af37), transparent);"></div>
-      <h2 style="font-family: var(--font-display); font-size: clamp(30px, 7vw, 40px); line-height: 1.12; margin: 0 0 22px; letter-spacing: .2px;">Bienvenido a la <span id="welcome-version">v2.0</span></h2>
-      <p style="font-size: clamp(17px, 4.2vw, 20px); line-height: 1.72; margin: 0 auto 22px; max-width: 560px; text-align: left;">Sir Edwards Quiz ya está disponible directamente en la web, sin instalación ni descargas.</p>
-      <p style="font-size: clamp(17px, 4.2vw, 20px); line-height: 1.72; margin: 0 auto; max-width: 560px; text-align: left;">Nuevos logros de Duelo y una tarjeta para compartir tus resultados. Hay algo oculto esperando a los más perseverantes: ¿serás capaz de descubrirlo? <span id="welcome-save-note">Tu progreso se guarda en este dispositivo: haz una copia de seguridad desde Ajustes de vez en cuando.</span></p>
-      <div style="width: 56px; height: 1px; margin: 28px auto 0; background: linear-gradient(90deg, transparent, var(--gold, #d4af37), transparent);"></div>
-    </div>
-    <button class="btn btn-primary" style="width: 100%; margin-top: 30px; font-size: 18px; min-height: 54px;" onclick="closeWelcomeModal()">Descubrir la <span id="welcome-btn-version">v2.0</span></button>
+<!-- Bienvenida (2.0): solo la primera vez, DESPUÉS de la pantalla de cuenta. La muestra src/ui/intro.js. -->
+<div id="welcome-modal" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+  <div class="modal-card welcome-card">
+    <div class="welcome-kicker">Sir Edwards Quiz · <span id="welcome-version">v2.0</span></div>
+    <div class="welcome-rule" aria-hidden="true"></div>
+    <h2 id="welcome-title" class="welcome-title">Vaya, un nuevo aspirante.</h2>
+    <p class="welcome-lead">Soy Sir Edwards. Llevo tiempo esperando a alguien capaz de acertar algo. Sin presión.</p>
+    <div class="welcome-sub">Lo que te espera</div>
+    <ul class="welcome-list">
+      <li><span aria-hidden="true">🎯</span><span>360 preguntas para demostrar lo que sabes. O lo que creías saber.</span></li>
+      <li><span aria-hidden="true">⚔️</span><span>Duelos en directo y retos contra tus amigos. La familia también cuenta como rival.</span></li>
+      <li><span aria-hidden="true">🏆</span><span>Logros, rachas y niveles, por si necesitas que alguien te diga que lo haces bien.</span></li>
+      <li><span aria-hidden="true">🗝️</span><span>Un modo secreto. No preguntes. Encuéntralo.</span></li>
+    </ul>
+    <p class="welcome-note" id="welcome-save-note">Tu progreso se guarda en este dispositivo: haz una copia de seguridad desde Ajustes de vez en cuando.</p>
+    <button class="btn btn-primary welcome-btn" onclick="closeWelcomeModal()">Que empiece la prueba</button>
   </div>
 </div>
 
@@ -178,10 +182,11 @@
      maybeShowUpdateModal() decide si debe mostrarse. -->
 <div id="update-modal" class="modal-overlay" style="display:none;">
   <div class="modal-card">
-    <h2><span aria-hidden="true">🆕</span> Novedades de <span id="update-modal-version"></span></h2>
+    <h2><span aria-hidden="true">🎩</span> Novedades de la <span id="update-modal-version"></span></h2>
+    <p class="update-modal-lead">Mientras no mirabas, Sir Edwards ha estado ocupado:</p>
     <ul id="update-modal-list" class="settings-changelog-list"></ul>
     <div class="modal-warning-actions">
-      <button class="btn btn-primary" onclick="closeUpdateModal()">Entendido</button>
+      <button class="btn btn-primary" onclick="closeUpdateModal()">Muy bien, veamos</button>
     </div>
   </div>
 </div>
@@ -256,12 +261,12 @@ const APP_VERSION = "2.0";
 // ciertos ajustes de privacidad en iOS) esta línea podía lanzar una
 // excepción y dejar toda la app sin cargar antes incluso de llegar a
 // loadStore(), que ya está protegido.
+// 2.0: la bienvenida ya no sale aquí (iría encima de la pantalla de cuenta); src/ui/intro.js la muestra
+// después. Solo se anota, antes de que nada escriba el progreso, si es la primera visita en este navegador.
 try {
-  if (localStorage.getItem('siredwards_quiz_v1_1_welcome_seen') === '1') {
-    document.getElementById('welcome-modal').style.display = 'none';
-  }
+  window.__seqFirstVisit = localStorage.getItem('siredwards_quiz_v1_0_data') === null;
 } catch (e) {
-  console.warn('No se pudo leer el estado del modal de bienvenida.', e);
+  window.__seqFirstVisit = false;
 }
 </script>
 
@@ -1080,6 +1085,7 @@ try {
 <script src="src/ui/game-fx.js"></script>
 <script src="src/ui/achievements.js"></script>
 <script src="src/ui/stats-extra.js"></script>
+<script src="src/ui/intro.js"></script>
 <script src="src/online/config.js"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
 <script src="src/utils/sync-merge.js"></script>
@@ -2925,6 +2931,7 @@ function updateAuthGate() {
     // primera llamada en el arranque), sin tocar foco.
     gate.style.display = shouldShow ? 'flex' : 'none';
     document.body.classList.toggle('auth-gate-open', shouldShow);
+    if (!shouldShow && window.SEQIntro) SEQIntro.afterGate();
     return;
   }
   if (shouldShow) {
@@ -2971,6 +2978,7 @@ function updateAuthGate() {
     }, 0);
   }
   authGateWasOpen = shouldShow;
+  if (!shouldShow && window.SEQIntro) SEQIntro.afterGate();
 }
 
 function switchTab(tabId) {
@@ -6831,7 +6839,7 @@ function applySyncCopy() {
   const progressSection = document.getElementById('progress-save-note');
   if (progressSection && progressSection.closest('.settings-section')) progressSection.closest('.settings-section').style.display = 'none';
   setText('progress-save-note', 'Tu progreso, tu historial, tus estadísticas, tus ajustes y tus duelos se guardan en tu cuenta automáticamente y se recuperan al iniciar sesión en cualquier dispositivo.');
-  setText('welcome-save-note', 'Tu progreso se guarda en tu cuenta y lo recuperas al iniciar sesión en cualquier dispositivo.');
+  setText('welcome-save-note', 'Tu progreso se guarda en tu cuenta y te acompaña a cualquier dispositivo. Tus excusas, no.');
 }
 
 function applyAppVersionText() {
@@ -6942,7 +6950,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
   applyAppVersionText();
-  maybeShowUpdateModal();
+  // Bienvenida / novedades: las decide src/ui/intro.js cuando se cierra (o no hace falta) la pantalla de cuenta.
   // v1.5 — Fase B (Prompt 3): se comprueba aquí (no antes) porque online.js
   // registra su propio listener 'DOMContentLoaded' más arriba en el documento
   // (se ejecuta primero) y es quien deja lista SEQOnline.enabled/session().

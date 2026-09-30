@@ -210,23 +210,6 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 .modal-card ul { padding-left: 20px; margin: 12px 0; color: var(--text); font-size: 14px; line-height: 1.5; }
 .modal-card li { margin-bottom: 6px; }
 
-/* Modal de bienvenida: versión compacta propia para que quepa entera
-   en una sola pantalla de móvil sin necesidad de hacer scroll. */
-#welcome-modal .modal-card { padding: 18px 22px; max-height: 94vh; }
-#welcome-modal .modal-card h2 { font-size: 16px; margin-bottom: 8px; }
-#welcome-modal .modal-card p { font-size: 12.5px; line-height: 1.35; margin: 0 0 7px 0; }
-#welcome-modal .modal-card ul { font-size: 12.5px; line-height: 1.35; margin: 6px 0; padding-left: 18px; }
-#welcome-modal .modal-card li { margin-bottom: 3px; }
-#welcome-modal .modal-card button { margin-top: 8px !important; }
-@media(max-width:600px){
-  #welcome-modal .modal-card { padding: 14px 16px; max-height: 97vh; }
-  #welcome-modal .modal-card h2 { font-size: 14px; margin-bottom: 6px; }
-  #welcome-modal .modal-card p { font-size: 10.5px; line-height: 1.28; margin: 0 0 5px 0; }
-  #welcome-modal .modal-card ul { font-size: 10.5px; line-height: 1.28; margin: 5px 0; padding-left: 15px; }
-  #welcome-modal .modal-card li { margin-bottom: 2px; }
-  #welcome-modal .modal-card button { padding: 9px; font-size: 12px; margin-top: 6px !important; }
-}
-
 /* IDENTIDAD VISUAL DE LOS MODOS */
 
 .card.theme-review {
@@ -5391,3 +5374,29 @@ h3.stats-h::before { display: none !important; content: none !important; }
   background: radial-gradient(circle at 50% 38%, #2a3560, #1c2340); border: 2px solid #c9992e; box-shadow: inset 0 0 0 3px #1c2340, inset 0 0 0 4px rgba(201,153,46,.55);
   font: 800 20px/1 var(--font-display, Georgia, serif); color: #e8c874; }
 .ach-row.is-secret .ach-ico { background: none; border: 0; box-shadow: none; padding: 0; filter: none; opacity: 1; }
+
+/* ===== 2.0 — Bienvenida (primera vez) y novedades con voz de Sir Edwards ===================== */
+#welcome-modal .welcome-card { max-width: 440px; width: calc(100% - 32px); padding: 26px 22px 22px; max-height: 92vh; overflow-y: auto;
+  border: 1px solid rgba(201,153,46,.55); box-shadow: 0 0 0 4px var(--card), 0 0 0 5px rgba(201,153,46,.35), 0 18px 40px rgba(0,0,0,.28); text-align: center; }
+#welcome-modal .welcome-kicker { font: 800 11px var(--font-ui); letter-spacing: 2.6px; text-transform: uppercase; color: var(--accent-gold-strong, #92400e); }
+#welcome-modal .welcome-rule { width: 56px; height: 1px; margin: 12px auto 16px; background: linear-gradient(90deg, transparent, #c9992e, transparent); }
+#welcome-modal .welcome-title { display: block; font: 700 clamp(24px, 6.6vw, 30px)/1.15 var(--font-display); color: var(--brand-navy, #16244a); margin: 0 0 10px; }
+#welcome-modal .welcome-lead { font-size: 15.5px; line-height: 1.5; font-style: italic; color: var(--sub); margin: 0 auto 18px; max-width: 34ch; }
+#welcome-modal .welcome-sub { font: 800 10.5px var(--font-ui); letter-spacing: 2px; text-transform: uppercase; color: var(--sub); margin-bottom: 8px; }
+#welcome-modal .welcome-list { list-style: none; padding: 0; margin: 0 0 16px; text-align: left; display: grid; gap: 8px; font-size: 14.5px; line-height: 1.4; }
+#welcome-modal .welcome-list li { display: flex; gap: 10px; align-items: flex-start; margin: 0; padding: 9px 12px; border-radius: 12px; background: var(--badge-bg); }
+#welcome-modal .welcome-list li > span:first-child { font-size: 18px; line-height: 1.2; flex: 0 0 auto; }
+#welcome-modal .welcome-note { font-size: 13px; line-height: 1.45; color: var(--sub); margin: 0 0 16px; }
+#welcome-modal .welcome-btn { width: 100%; min-height: 52px; font-size: 17px; margin-top: 0 !important; padding: 12px; }
+[data-theme="dark"] #welcome-modal .welcome-title { color: #f3ead6; }
+.update-modal-lead { font-style: italic; color: var(--sub) !important; margin: -6px 0 6px !important; }
+@media (max-width: 360px), (max-height: 700px) {
+  #welcome-modal .welcome-card { padding: 18px 16px 16px; }
+  #welcome-modal .welcome-rule { margin: 8px auto 10px; }
+  #welcome-modal .welcome-title { font-size: 23px; margin-bottom: 6px; }
+  #welcome-modal .welcome-lead { font-size: 14px; margin-bottom: 12px; }
+  #welcome-modal .welcome-list { font-size: 13.5px; gap: 6px; margin-bottom: 12px; }
+  #welcome-modal .welcome-list li { padding: 7px 10px; }
+  #welcome-modal .welcome-note { font-size: 12px; margin-bottom: 12px; }
+  #welcome-modal .welcome-btn { min-height: 48px; font-size: 16px; }
+}
