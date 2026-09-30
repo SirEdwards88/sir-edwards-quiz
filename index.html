@@ -669,7 +669,7 @@ try {
           <!-- 2.0: jerarquía clara. «Volver» es la acción principal; «Compartir resultado» es secundaria y discreta,
                y solo gana presencia cuando hay algo que contar (récord, Lucidez superada, logro o modo nuevo).
                -->
-          <button class="btn btn-primary" id="res-back-btn" onclick="handleResultsBackButton()" style="width: 100%;">Volver al Menú Principal</button>
+          <button class="btn btn-primary" id="res-back-btn" onclick="handleResultsBackButton()" style="width: 100%;">Volver al Menú principal</button>
           <button class="btn btn-share btn-share-quiet" id="res-share-btn" onclick="shareResult()"><img class="seq-ico" src="assets/ui/compartir.webp" alt="" draggable="false">Compartir resultado</button>
         </div>
       </div>
@@ -2904,7 +2904,7 @@ function exitGameToMenu() {
   switchTab('modes');
 }
 
-// Botón inferior de la pantalla de Resultados ("Volver al Menú Principal").
+// Botón inferior de la pantalla de Resultados ("Volver al Menú principal").
 function handleResultsBackButton() {
   switchTab('modes');
 }
@@ -4283,7 +4283,7 @@ function finishLucidezMode(failed, timedOut = false, phaseInsufficient = null) {
   const resShareBtn = document.getElementById('res-share-btn');
   if (resShareBtn) { resShareBtn.innerHTML = seqIco('compartir') + 'Compartir resultado'; resShareBtn.style.display = ''; }
   const resBackBtn = document.getElementById('res-back-btn');
-  if (resBackBtn) { resBackBtn.textContent = 'Volver al Menú Principal'; }
+  if (resBackBtn) { resBackBtn.textContent = 'Volver al Menú principal'; }
 
   // ⚔️ Duelo: mismo criterio que finishGame — ni el creador ni quien acepta
   // un reto deben contar como partida jugada, ni alimentar récords,
@@ -5803,7 +5803,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   const resShareBtn = document.getElementById('res-share-btn');
   if (resShareBtn) { resShareBtn.innerHTML = seqIco('compartir') + 'Compartir resultado'; resShareBtn.style.display = ''; }
   const resBackBtn = document.getElementById('res-back-btn');
-  if (resBackBtn) { resBackBtn.textContent = 'Volver al Menú Principal'; }
+  if (resBackBtn) { resBackBtn.textContent = 'Volver al Menú principal'; }
 
   // ⚔️ Duelo: ni el creador ni quien acepta un reto deben contar como
   // partida jugada para la progresión principal, ni alimentar récords
