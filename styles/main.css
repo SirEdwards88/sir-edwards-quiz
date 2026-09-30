@@ -5400,3 +5400,13 @@ h3.stats-h::before { display: none !important; content: none !important; }
   #welcome-modal .welcome-note { font-size: 12px; margin-bottom: 12px; }
   #welcome-modal .welcome-btn { min-height: 48px; font-size: 16px; }
 }
+.update-recap { margin: 4px 0 6px; padding: 12px 14px; border-radius: 12px; background: var(--badge-bg); border: 1px dashed rgba(201,153,46,.5); }
+.update-recap-lead { font-style: italic; color: var(--sub) !important; font-size: 13.5px !important; margin: 0 0 6px !important; }
+.update-recap ul { list-style: none; padding: 0 !important; margin: 0 !important; display: grid; gap: 6px; font-size: 13.5px !important; }
+.update-recap li { margin: 0 !important; line-height: 1.4; }
+.update-recap-v { display: inline-block; min-width: 34px; padding: 1px 6px; margin-right: 4px; border-radius: 6px; font: 800 11px var(--font-ui); text-align: center; color: #fff7d6; background: #1c2340; border: 1px solid #c9992e; vertical-align: 1px; }
+.update-recap-now { font: 800 10.5px var(--font-ui) !important; letter-spacing: 1.6px; text-transform: uppercase; color: var(--sub) !important; margin: 12px 0 4px !important; }
+#update-modal .modal-card.has-recap { padding: 18px 18px 16px; max-height: 94vh; overflow-y: auto; }
+#update-modal .modal-card.has-recap h2 { margin-bottom: 6px; }
+#update-modal .modal-card.has-recap #update-modal-list { font-size: 14px; line-height: 1.35; margin: 0 0 12px; }
+#update-modal .modal-card.has-recap #update-modal-list li { margin-bottom: 3px; }
