@@ -431,7 +431,7 @@
   function resultIco(r) { return !r ? '' : ico(r.ganador === 'yo' ? 'copa' : r.ganador === 'rival' ? 'derrota' : 'amigos'); }
   // Logros de duelo online: insignia ilustrada por id (el servidor sigue mandando su emoji, que queda de reserva).
   var ONLINE_ACH_IMG = {
-    online_primer_duelo: 'assets/modes/mini/duelo.webp', online_primera_victoria: 'assets/logros/duel_victoria_inaugural.webp',
+    online_primer_duelo: 'assets/modes/suelto/duelo.webp', online_primera_victoria: 'assets/logros/duel_victoria_inaugural.webp',
     online_cinco_victorias: 'assets/logros/games_50.webp', online_perfecto: 'assets/logros/lucidez_absoluta.webp',
     reto_primero: 'assets/modes/retos.webp', duelo_empate: 'assets/modes/amigos.webp'
   };
