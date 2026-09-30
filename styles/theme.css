@@ -150,3 +150,7 @@ body.in-game .actions .btn-primary {
   border-color: var(--mode-accent) !important;
   background: color-mix(in srgb, var(--mode-accent) 12%, var(--se-parch)) !important;
 }
+
+/* Último enigma: la insignia del ojo en lugar del emoji. */
+.lucidez-enigma-eye { width: 64px; height: 64px; margin: 0 auto 6px !important; font-size: 0 !important; }
+.lucidez-enigma-eye .mode-img { width: 100%; height: 100%; filter: drop-shadow(0 4px 10px rgba(91,46,143,.45)); }
