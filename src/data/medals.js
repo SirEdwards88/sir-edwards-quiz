@@ -7,22 +7,22 @@ const ALL_MEDALS = [
   {id:'streak_10', icon:'🌊', title:'Corriente Imparable', desc:'10 respuestas correctas consecutivas en Modo Estándar.', streak:10, check:s => (s.standardBestStreak || 0) >= 10},
 
   // 🎮 PROGRESIÓN
-  { id: 'first_game', icon: '🚪', title: 'Primeros Pasos', desc: 'Termina tu primera partida.', check: s => s.gamesPlayed >= 1 },
+  { id: 'first_game', icon: '👣', title: 'Primeros Pasos', desc: 'Termina tu primera partida.', check: s => s.gamesPlayed >= 1 },
   { id: 'games_5', icon: '🎟️', title: 'Cliente Habitual', desc: 'Juega 5 partidas.', check: s => s.gamesPlayed >= 5 },
-  { id: 'games_10', icon: '🪪', title: 'Ya eres de la casa', desc: 'Juega 10 partidas.', check: s => s.gamesPlayed >= 10 },
-  { id: 'games_20', icon: '🧭', title: 'Veterano del Quiz', desc: 'Juega 20 partidas.', check: s => s.gamesPlayed >= 20 },
+  { id: 'games_10', icon: '🏠', title: 'Ya eres de la casa', desc: 'Juega 10 partidas.', check: s => s.gamesPlayed >= 10 },
+  { id: 'games_20', icon: '🎖️', title: 'Veterano del Quiz', desc: 'Juega 20 partidas.', check: s => s.gamesPlayed >= 20 },
   { id: 'games_50', icon: '👑', title: 'Leyenda del Quiz', desc: 'Juega 50 partidas.', check: s => s.gamesPlayed >= 50 },
 
   // 🧠 NIVEL
-  { id: 'level_5', icon: '🧑‍🎓', title: 'Recluta Mental', desc: 'Alcanza el nivel 5.', check: s => getLevelData(s.xp) >= 5 },
-  { id: 'level_10', icon: '🌟', title: 'Cerebro en Marcha', desc: 'Alcanza el nivel 10.', check: s => getLevelData(s.xp) >= 10 },
+  { id: 'level_5', icon: '🪖', title: 'Recluta Mental', desc: 'Alcanza el nivel 5.', check: s => getLevelData(s.xp) >= 5 },
+  { id: 'level_10', icon: '⚙️', title: 'Cerebro en Marcha', desc: 'Alcanza el nivel 10.', check: s => getLevelData(s.xp) >= 10 },
   { id: 'level_20', icon: '🦉', title: 'Mente Superior', desc: 'Alcanza el nivel 20.', check: s => getLevelData(s.xp) >= 20 },
-  { id: 'level_30', icon: '🧬', title: 'Cerebro de Élite', desc: 'Alcanza el nivel máximo (30).', check: s => getLevelData(s.xp) >= 30 },
+  { id: 'level_30', icon: '🧠', title: 'Cerebro de Élite', desc: 'Alcanza el nivel máximo (30).', check: s => getLevelData(s.xp) >= 30 },
 
   // 📚 DOMINIO
-  { id: 'master_10', icon: '🔍', title: 'Primeros Conocimientos', desc: 'Domina 10 preguntas (3 aciertos consecutivos en cada una).', check: s => getMasteredCount(s) >= 10 },
+  { id: 'master_10', icon: '🌱', title: 'Primeros Conocimientos', desc: 'Domina 10 preguntas (3 aciertos consecutivos en cada una).', check: s => getMasteredCount(s) >= 10 },
   { id: 'master_50', icon: '📖', title: 'Estudioso', desc: 'Domina 50 preguntas.', check: s => getMasteredCount(s) >= 50 },
-  { id: 'master_150', icon: '🧠', title: 'Erudito', desc: 'Domina 100 preguntas.', check: s => getMasteredCount(s) >= 100 },
+  { id: 'master_150', icon: '🎓', title: 'Erudito', desc: 'Domina 100 preguntas.', check: s => getMasteredCount(s) >= 100 },
   { id: 'master_250', icon: '📚', title: 'Biblioteca Humana', desc: 'Domina 200 preguntas.', check: s => getMasteredCount(s) >= 200 },
 
   // 🔄 APRENDER DE LOS ERRORES
@@ -42,45 +42,45 @@ const ALL_MEDALS = [
 
   // ⏱️ CONTRARRELOJ
   { id: 'tt_15', icon: '🏃', title: 'Velocidad Mental', desc: 'Consigue al menos 15 aciertos en Contrarreloj.', check: s => (s.maxTimeTrialScore || 0) >= 15 },
-  { id: 'tt_30', icon: '💨', title: 'Rayo Intelectual', desc: 'Consigue al menos 30 aciertos en Contrarreloj.', check: s => (s.maxTimeTrialScore || 0) >= 30 },
+  { id: 'tt_30', icon: '⚡', title: 'Rayo Intelectual', desc: 'Consigue al menos 30 aciertos en Contrarreloj.', check: s => (s.maxTimeTrialScore || 0) >= 30 },
   { id: 'tt_50', icon: '🌪️', title: 'Furia Mental', desc: 'Consigue al menos 50 aciertos en Contrarreloj.', check: s => (s.maxTimeTrialScore || 0) >= 50 },
   { id: 'sin_frenos', icon: '🏎️', title: 'Sin Frenos', desc: 'Responde correctamente 10 preguntas consecutivas en Contrarreloj.', check: s => (s.timeTrialBestStreak || 0) >= 10 },
 
   // 🧮 CÁLCULO MENTAL
   { id: 'mental_calc_15', icon: '🧮', title: 'Cálculo Relámpago', desc: 'Consigue 15 aciertos de Cálculo Mental en una misma partida.', check: s => (s.bestMentalCalcCorrect || 0) >= 15 },
-  { id: 'mental_calc_30', icon: '📐', title: 'Calculadora Humana', desc: 'Consigue 30 aciertos de Cálculo Mental en una misma partida.', check: s => (s.bestMentalCalcCorrect || 0) >= 30 },
+  { id: 'mental_calc_30', icon: '➗', title: 'Calculadora Humana', desc: 'Consigue 30 aciertos de Cálculo Mental en una misma partida.', check: s => (s.bestMentalCalcCorrect || 0) >= 30 },
   { id: 'mental_calc_40', icon: '🔢', title: 'Genio Numérico', desc: 'Consigue 40 o más aciertos de Cálculo Mental en una misma partida.', check: s => (s.bestMentalCalcCorrect || 0) >= 40 },
 
   // 🎯 PRECISIÓN / HABILIDAD
   { id: 'correct_100', icon: '🎯', title: 'Cerebro de Precisión', desc: 'Acierta 100 preguntas en total.', check: s => s.totalCorrect >= 100 },
-  { id: 'correct_300', icon: '🗂️', title: 'Veterano del Conocimiento', desc: 'Acierta 300 preguntas en total.', check: s => s.totalCorrect >= 300 },
-  { id: 'correct_600', icon: '🏺', title: 'Máquina del Quiz', desc: 'Acierta 600 preguntas en total.', check: s => s.totalCorrect >= 600 },
+  { id: 'correct_300', icon: '📜', title: 'Veterano del Conocimiento', desc: 'Acierta 300 preguntas en total.', check: s => s.totalCorrect >= 300 },
+  { id: 'correct_600', icon: '🤖', title: 'Máquina del Quiz', desc: 'Acierta 600 preguntas en total.', check: s => s.totalCorrect >= 600 },
 
   // 🏅 COLECCIÓN
   { id: 'medal_collector_10', icon: '🗝️', title: 'Coleccionista', desc: 'Desbloquea 10 logros diferentes.', check: s => (s.unlockedMedals || []).filter(id => !['medal_collector_10','medal_collector_20','medal_collector_30','all_medals_secret'].includes(id)).length >= 10 },
-  { id: 'medal_collector_20', icon: '💠', title: 'Cazador de Logros', desc: 'Desbloquea 20 logros diferentes.', check: s => (s.unlockedMedals || []).filter(id => !['medal_collector_10','medal_collector_20','medal_collector_30','all_medals_secret'].includes(id)).length >= 20 },
-  { id: 'medal_collector_30', icon: '🏅', title: 'Maestro de los Logros', desc: 'Desbloquea 30 logros diferentes.', check: s => (s.unlockedMedals || []).filter(id => !['medal_collector_10','medal_collector_20','medal_collector_30','all_medals_secret'].includes(id)).length >= 30 },
+  { id: 'medal_collector_20', icon: '🏹', title: 'Cazador de Logros', desc: 'Desbloquea 20 logros diferentes.', check: s => (s.unlockedMedals || []).filter(id => !['medal_collector_10','medal_collector_20','medal_collector_30','all_medals_secret'].includes(id)).length >= 20 },
+  { id: 'medal_collector_30', icon: '🎩', title: 'Maestro de los Logros', desc: 'Desbloquea 30 logros diferentes.', check: s => (s.unlockedMedals || []).filter(id => !['medal_collector_10','medal_collector_20','medal_collector_30','all_medals_secret'].includes(id)).length >= 30 },
 
   // ✨ LOGROS ESPECIALES
-  { id: 'sharp_eye', icon: '🔭', title: 'Ojo de Halcón', desc: 'Responde correctamente 5 preguntas difíciles consecutivas.', check: s => (s.hardBestStreak || 0) >= 5 },
+  { id: 'sharp_eye', icon: '🦅', title: 'Ojo de Halcón', desc: 'Responde correctamente 5 preguntas difíciles consecutivas.', check: s => (s.hardBestStreak || 0) >= 5 },
   { id: 'world_citizen', icon: '🌎', title: 'Ciudadano del Mundo', desc: 'Domina al menos 10 preguntas de cada categoría.', check: s => getCategoryMastery(s).every(x => x.mastered >= 10) },
-  { id: 'sin_preferencias', icon: '🎭', title: 'Sin Preferencias', desc: 'Consigue 10 aciertos consecutivos sin repetir categoría.', check: s => (s.noRepeatCatBestStreak || 0) >= 10 },
+  { id: 'sin_preferencias', icon: '🔀', title: 'Sin Preferencias', desc: 'Consigue 10 aciertos consecutivos sin repetir categoría.', check: s => (s.noRepeatCatBestStreak || 0) >= 10 },
   { id: 'polimata', icon: '📊', title: 'Polímata', desc: 'Domina al menos el 50% de las preguntas de cada categoría.', check: s => getCategoryMastery(s).every(x => x.total > 0 && x.mastered / x.total >= 0.5) },
-  { id: 'balanced_master', icon: '🧩', title: 'Sin Puntos Débiles', desc: 'Alcanza al menos un 75% de dominio en todas las categorías.', check: s => getCategoryMastery(s).every(x => x.total > 0 && x.mastered / x.total >= 0.75) },
+  { id: 'balanced_master', icon: '⚖️', title: 'Sin Puntos Débiles', desc: 'Alcanza al menos un 75% de dominio en todas las categorías.', check: s => getCategoryMastery(s).every(x => x.total > 0 && x.mastered / x.total >= 0.75) },
   { id: 'noctambulo', icon: '🌙', title: 'Noctámbulo', desc: 'Completa una partida entre las 00:00 y las 04:00.', check: s => !!s.hasCompletedNightGame },
   { id: 'mente_fracturada', icon: '🔮', title: 'Mente Fracturada', desc: 'Consigue tu primer Fragmento de Mente.', check: s => getFragmentCount(s) >= 1 },
 
   // ⚔️ DUELO
   { id: 'duel_primera_sangre', icon: '⚔️', title: 'Primera Sangre', desc: 'Completa tu primer duelo.', check: s => (s.duelStats && s.duelStats.played || 0) >= 1 },
   { id: 'duel_victoria_inaugural', icon: '🏆', title: 'Victoria Inaugural', desc: 'Gana tu primer duelo.', check: s => (s.duelStats && s.duelStats.wins || 0) >= 1 },
-  { id: 'duel_por_los_pelos', icon: '⚡', title: 'Por los Pelos', desc: 'Gana un duelo por exactamente 1 punto.', check: s => !!(s.duelStats && s.duelStats.wonByOnePoint) },
+  { id: 'duel_por_los_pelos', icon: '😅', title: 'Por los Pelos', desc: 'Gana un duelo por exactamente 1 punto.', check: s => !!(s.duelStats && s.duelStats.wonByOnePoint) },
   { id: 'duel_eso_era_un_duelo', icon: '💥', title: '¿Eso Era un Duelo?', desc: 'Gana un duelo por 10 puntos o más.', check: s => !!(s.duelStats && s.duelStats.wonByTenPlus) },
   { id: 'duel_rey_del_empate', icon: '🤝', title: 'El Rey del Empate', desc: 'Consigue 3 empates en duelos.', check: s => (s.duelStats && s.duelStats.draws || 0) >= 3 },
-  // Icono 🥇 en vez de 🏆 (ya usado por Victoria Inaugural) para no repetir icono entre logros nuevos.
+  // Ningún icono de logro se repite (test/achievements-view.test.mjs lo comprueba).
   { id: 'duel_cinco_victorias', icon: '🥇', title: 'Cinco Victorias', desc: 'Gana 5 duelos.', check: s => (s.duelStats && s.duelStats.wins || 0) >= 5 },
   // Prompt 4 — dependen del ID estable del rival en Duelo online (ver
   // registerOnlineDuelResult en index.html). Sin avatar asociado todavía.
-  { id: 'duel_revancha', icon: '🗡️', title: 'Revancha', desc: 'Gana un duelo contra un rival contra el que anteriormente perdiste.', check: s => !!(s.duelStats && s.duelStats.revengeWon) },
+  { id: 'duel_revancha', icon: '🥊', title: 'Revancha', desc: 'Gana un duelo contra un rival contra el que anteriormente perdiste.', check: s => !!(s.duelStats && s.duelStats.revengeWon) },
   { id: 'duel_otra_vez_tu', icon: '👀', title: '¿Otra vez tú?', desc: 'Gana al mismo rival 3 veces.', check: s => (s.duelStats && s.duelStats.bestWinsVsRival || 0) >= 3 },
 
   // 👁️ LUCIDEZ MENTAL: LOGROS SECRETOS

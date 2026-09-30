@@ -49,17 +49,22 @@ test('el objetivo de cada barra es exactamente el umbral de su logro', () => {
   }
 });
 
-test('insignias: todos los logros tienen sello, símbolos existentes y ninguna pareja símbolo+cifra repetida', () => {
+test('pantalla de Logros: ningún icono se repite (logros, familias e hitos de Fragmentos)', () => {
   const c = load();
-  const B = c.window.SEQAchievements.BADGES;
-  const missing = c.ALL_MEDALS.filter((m) => !B[m.id]).map((m) => m.id);
-  assert.equal(missing.join(','), '', 'sin insignia: ' + missing.join(','));
-  const pairs = Object.values(B).map((b) => b[0] + '|' + b[1]);
-  const dup = pairs.filter((p, i) => pairs.indexOf(p) !== i);
-  assert.equal(dup.join(','), '', 'insignias repetidas: ' + dup.join(','));
-  const src = fs.readFileSync(new URL('../src/ui/achievements.js', import.meta.url), 'utf8');
+  const norm = (e) => e.replace(/\uFE0F/g, '');
   const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
-  for (const [sym] of Object.values(B)) {
-    assert.ok(src.includes(`<symbol id="${sym}"`) || html.includes(`<symbol id="${sym}"`), 'símbolo inexistente: ' + sym);
+  const ms = html.slice(html.indexOf('const FRAGMENT_MILESTONES'), html.indexOf('];', html.indexOf('const FRAGMENT_MILESTONES')));
+  const milestone = [...ms.matchAll(/(?:icon|secretIcon): '([^']+)'/g)].map((m) => m[1]);
+  const all = [
+    ...c.ALL_MEDALS.map((m) => ['logro ' + m.id, m.icon]),
+    ...c.window.SEQAchievements.GROUPS.map((g) => ['familia ' + g.key, g.icon]),
+    ...milestone.map((i, k) => ['hito ' + k, i])
+  ];
+  const seen = new Map(), dup = [];
+  for (const [who, icon] of all) {
+    assert.ok(icon && icon.trim(), 'sin icono: ' + who);
+    const k = norm(icon);
+    if (seen.has(k)) dup.push(icon + ' (' + seen.get(k) + ' / ' + who + ')'); else seen.set(k, who);
   }
+  assert.equal(dup.join(', '), '', 'iconos repetidos: ' + dup.join(', '));
 });

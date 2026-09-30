@@ -84,11 +84,13 @@
     return ok[0];
   }
 
-  // Ficha: nombre del jugador (cuenta online si la hay) y los tres datos principales solo cuando ya hay partidas.
+  // Ficha: nombre e icono de perfil del jugador (cuenta online si la hay) y los tres datos principales solo cuando ya hay partidas.
   function dossier() {
-    var name = 'Jugador';
-    try { var sess = window.SEQOnline && SEQOnline.session && SEQOnline.session(); if (sess && sess.display_name) name = sess.display_name; } catch (e) {}
+    var name = 'Jugador', avatar = null;
+    try { var sess = window.SEQOnline && SEQOnline.session && SEQOnline.session(); if (sess) { if (sess.display_name) name = sess.display_name; avatar = sess.avatar; } } catch (e) {}
     var n = $id('dossier-name'); if (n) n.textContent = name;
+    // El icono de perfil del jugador (el mismo de Ajustes y del ranking); sin cuenta, el sombrero por defecto.
+    var av = $id('dossier-avatar'); if (av && window.SEQAvatars) av.innerHTML = SEQAvatars.avatarHTML(avatar);
     var tiles = $id('dossier-tiles');
     var played = 0; try { played = Number(store.gamesPlayed) || 0; } catch (e) {}
     if (tiles) tiles.style.display = played > 0 ? '' : 'none';

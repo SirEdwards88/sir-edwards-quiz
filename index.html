@@ -710,7 +710,7 @@ try {
       <div class="stats-dossier" id="stats-dossier">
         <div class="dossier-head"><span class="dossier-kicker">Expediente de</span><span class="dossier-name" id="dossier-name">Jugador</span></div>
         <div class="stats-level-widget">
-          <div class="stats-level-widget-icon dossier-seal" aria-hidden="true"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#sb-hat"/></svg></div>
+          <div class="stats-level-widget-icon dossier-seal" id="dossier-avatar" aria-hidden="true"><img class="seq-av-img" src="assets/avatars/sombrero.png" alt="" draggable="false"></div>
           <div class="stats-level-widget-info">
             <div class="stats-level-widget-top">NIVEL <span id="stats-lbl-level">1</span></div>
             <div class="progress-bar stats-level-widget-bar"><div id="stats-level-bar-fill" class="bar-fill"></div></div>
@@ -4381,7 +4381,7 @@ function revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newMod
       const isAbsoluta = m.id === 'lucidez_absoluta';
       return `
       <div class="session-medal-item${isAbsoluta ? ' medal-lucidez-absoluta' : ''}">
-        <div class="session-medal-icon">${window.SEQAchievements ? SEQAchievements.badgeHTML(m.id, 'done') : m.icon}</div>
+        <div class="session-medal-icon">${m.icon}</div>
         <div>
           <div class="session-medal-info">${m.title}</div>
           <div class="session-medal-desc">${m.desc}</div>
@@ -6057,7 +6057,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     medalsBox.style.display = 'block';
     medalsList.innerHTML = newMedalsUnlocked.map(m => `
       <div class="session-medal-item">
-        <div class="session-medal-icon">${window.SEQAchievements ? SEQAchievements.badgeHTML(m.id, 'done') : m.icon}</div>
+        <div class="session-medal-icon">${m.icon}</div>
         <div>
           <div class="session-medal-info">${m.title}</div>
           <div class="session-medal-desc">${m.desc}</div>
@@ -6452,9 +6452,9 @@ const FRAGMENT_MILESTONES = [
   { fragments: FRAGMENT_TARGET, icon: '👁️', title: 'Lucidez Mental', text: 'Desbloquea Lucidez Mental', goal: 'desbloquear Lucidez Mental',
     secretText: 'Desbloquea un modo secreto', secretGoal: 'desbloquear un modo secreto' },
   { fragments: 12, icon: '🛡️', title: 'Error extra', text: '+1 error extra en Lucidez', goal: 'conseguir +1 error extra',
-    secretIcon: '✨', secretText: 'Una ventaja especial para el modo secreto', secretGoal: 'conseguir una ventaja especial' },
-  { fragments: 15, icon: '🛡️', title: 'Errores extra', text: '+2 errores extra en total', goal: 'conseguir +2 errores extra',
-    secretIcon: '✨', secretText: 'Una ventaja aún mayor para el modo secreto', secretGoal: 'conseguir una ventaja aún mayor' }
+    secretIcon: '💫', secretText: 'Una ventaja especial para el modo secreto', secretGoal: 'conseguir una ventaja especial' },
+  { fragments: 15, icon: '🧿', title: 'Errores extra', text: '+2 errores extra en total', goal: 'conseguir +2 errores extra',
+    secretIcon: '🌠', secretText: 'Una ventaja aún mayor para el modo secreto', secretGoal: 'conseguir una ventaja aún mayor' }
 ];
 // 2.0: hasta que el jugador desbloquea el modo secreto (10 Fragmentos), los hitos NO nombran «Lucidez Mental»
 // ni describen su ventaja: se muestran versiones misteriosas. Al desbloquearlo, los textos reales.

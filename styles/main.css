@@ -5317,46 +5317,6 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   font-variant-numeric: lining-nums tabular-nums; color: var(--brand-navy); }
 [data-theme="dark"] .achievements-progress-count { color: #f0d99a; }
 
-/* ===== 2.0 polish — Insignias de logros (sellos SVG, src/ui/achievements.js) ======================= */
-.ach-badge { position: relative; display: inline-block; width: 100%; height: 100%; line-height: 0; }
-.ach-badge svg { width: 100%; height: 100%; overflow: visible; }
-.ach-b-ring { fill: #c9992e; }
-.ach-b-disc { fill: #fbf6ea; }
-.ach-b-inner { fill: none; stroke: #1c2340; stroke-opacity: .18; stroke-width: 1; }
-.ach-badge.is-done .ach-b-ring { fill: #c9992e; filter: drop-shadow(0 2px 4px rgba(146,100,20,.35)); }
-.ach-badge.is-locked .ach-b-ring { fill: #cfd4de; }
-.ach-badge.is-locked .ach-b-disc { fill: #eef0f4; }
-.ach-badge.is-locked use { filter: grayscale(1) contrast(.8); opacity: .42; }
-.ach-badge.is-secret .ach-b-ring { fill: #1c2340; }
-.ach-badge.is-secret .ach-b-disc { fill: #2a3560; }
-.ach-badge.is-secret .ach-b-inner { stroke: #c9992e; stroke-opacity: .6; stroke-dasharray: 3 3; }
-.ach-q { font: 800 22px var(--font-display); fill: #e8c874; }
-/* Cinta con la cifra de la serie: pegada al borde inferior del sello, sin tocar el símbolo. */
-.ach-mark { position: absolute; left: 50%; bottom: -5px; transform: translateX(-50%); min-width: 20px; padding: 1px 5px; border-radius: 6px;
-  font: 800 9.5px/1.35 var(--font-ui); letter-spacing: .2px; text-align: center; color: #fff7d6; background: #1c2340;
-  border: 1px solid #c9992e; white-space: nowrap; font-variant-numeric: tabular-nums; }
-.ach-badge.is-locked .ach-mark { background: #8a91a3; border-color: #cfd4de; color: #fff; }
-
-/* La fila ya no pinta su propio círculo: el sello es el icono. */
-.ach-ico { width: 48px !important; height: 48px !important; background: none !important; border: 0 !important; box-shadow: none !important; }
-.ach-row.is-locked .ach-ico { filter: none; opacity: 1; }
-.ach-row.is-done .ach-ico { background: none !important; }
-.ach-row.is-done .ach-title::after { content: '✓'; margin-left: 2px; font-size: 12px; color: #16a34a; }
-.ach-row.is-locked .ach-title { color: var(--sub); }
-.ach-row.is-secret .ach-title { color: var(--sub); }
-
-/* Resultados: el sello del logro recién conseguido entra con un pequeño golpe de lacre. */
-.session-medal-icon .ach-badge { width: 44px; height: 44px; }
-.session-medal-item .session-medal-icon:has(.ach-badge) { background: none; border: 0; box-shadow: none; width: 48px; height: 48px; }
-.session-medal-icon .ach-badge { animation: ach-stamp .55s cubic-bezier(.2,.9,.3,1.3) both; }
-@keyframes ach-stamp { 0% { transform: scale(1.8) rotate(-12deg); opacity: 0; } 60% { transform: scale(.94) rotate(2deg); opacity: 1; } 100% { transform: scale(1) rotate(0); } }
-@media (prefers-reduced-motion: reduce) { .session-medal-icon .ach-badge { animation: none; } }
-
-[data-theme="dark"] .ach-b-disc { fill: #f3ead6; }
-[data-theme="dark"] .ach-badge.is-locked .ach-b-ring { fill: #3a4262; }
-[data-theme="dark"] .ach-badge.is-locked .ach-b-disc { fill: #252c47; }
-[data-theme="dark"] .ach-badge.is-locked use { opacity: .38; }
-
 /* ===== 2.0 polish — Estadísticas: «expediente» del jugador ======================================== */
 /* Ficha: papel crema con filete dorado y rombos en las esquinas (el mismo marco que la tarjeta para compartir). */
 .stats-dossier { position: relative; margin: 4px 0 18px; padding: 16px 16px 14px; border-radius: 18px;
@@ -5420,12 +5380,9 @@ h3.stats-h::after { content: ''; flex: 1 1 auto; height: 1px; background: linear
 .hist-score { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-end; line-height: 1.15; }
 .hist-score b { font-size: 16px; font-variant-numeric: tabular-nums; color: var(--text); }
 .hist-score span { font-size: 12px; font-weight: 800; color: var(--primary); }
-.ach-g-ico .se-sym { width: 74%; height: 74%; }
 /* Los títulos con sello propio no llevan además el rombo decorativo genérico de .stats-section h3. */
 h3.stats-h::before { display: none !important; content: none !important; }
 /* El Historial de duelos ya no va aparte: mismo espacio que las demás secciones. */
 #view-stats #stats-duel-section { margin-top: var(--space-lg); }
-/* Modo oscuro: los sellos pendientes y los iconos de grupo deben seguir leyéndose (silueta clara, apagada). */
-[data-theme="dark"] .ach-badge.is-locked use { filter: grayscale(1) brightness(2.6); opacity: .5; }
-[data-theme="dark"] .ach-g-ico .se-sym { filter: brightness(1.9) saturate(.8); }
-[data-theme="dark"] .ach-group.is-complete .ach-g-ico .se-sym { filter: none; }
+.dossier-seal { overflow: hidden; }
+.dossier-seal .seq-av-img { width: 88%; height: 88%; object-fit: contain; display: block; }
