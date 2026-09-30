@@ -6395,7 +6395,7 @@ function renderStats() {
 
 // Icono por modo para dar contexto visual rápido al historial (2.0: símbolos propios, mismos que en Jugar).
 function historyModeIcon(mode) {
-  const badge = window.SEQModeBadges ? SEQModeBadges.img(mode) : '';
+  const badge = window.SEQModeBadges ? SEQModeBadges.miniImg(mode) : '';
   if (badge) return badge;
   const icons = {
     'Modo Estándar': 'se-target', 'Repaso': 'se-review', 'Supervivencia': 'se-heart',

@@ -25,6 +25,16 @@
     var s = src(mode, tier);
     return s ? '<img class="mode-img" src="' + s + '" alt="" draggable="false">' : '';
   }
+  // Versión «mini» (assets/modes/mini/): la misma ilustración recortada al centro, sin marco ni gemas, para los
+  // sitios donde el icono sale pequeño (cabecera de la partida, historial). El aro dorado lo pone el CSS.
+  function miniSrc(mode, tier) {
+    var s = src(mode, tier);
+    return s ? s.replace(DIR, DIR + 'mini/') : '';
+  }
+  function miniImg(mode, tier) {
+    var s = miniSrc(mode, tier);
+    return s ? '<img class="mode-img mode-img-mini" src="' + s + '" alt="" draggable="false">' : '';
+  }
 
   // Mini insignia de la cabecera de la partida: sigue al modo en curso cada vez que cambia el marcador.
   function syncHud() {
@@ -32,7 +42,7 @@
     if (!el) return;
     var g = null;
     try { g = currentGame; } catch (e) {}
-    var s = g ? src(g.mode, g.survivalTier) : '';
+    var s = g ? miniSrc(g.mode, g.survivalTier) : '';
     if (s) { if (el.getAttribute('src') !== s) el.setAttribute('src', s); el.style.display = ''; }
     else el.style.display = 'none';
   }
@@ -43,5 +53,5 @@
     new MutationObserver(function () { try { syncHud(); } catch (e) {} }).observe(lbl, { childList: true, characterData: true, subtree: true });
   });
 
-  window.SEQModeBadges = { src: src, img: img, syncHud: syncHud };
+  window.SEQModeBadges = { src: src, img: img, miniSrc: miniSrc, miniImg: miniImg, syncHud: syncHud };
 })();

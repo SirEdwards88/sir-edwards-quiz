@@ -5440,3 +5440,7 @@ h3.stats-h::before { display: none !important; content: none !important; }
 .card .mode-header.game-hud:has(#game-mode-badge:not([style*="none"])) { padding-left: 50px !important; }
 /* El marcador ya no se corta con «…» (perdía el nº de pregunta en Supervivencia, Contrarreloj y Cálculo): si no cabe, pasa a dos líneas. */
 .game-hud #game-progress-lbl { white-space: normal !important; overflow: visible !important; text-overflow: clip !important; line-height: 1.3; }
+/* Insignia «mini» (sin marco): el aro dorado fino la sigue identificando como insignia a tamaño pequeño. */
+.game-mode-badge, .mode-img-mini { border-radius: 50%; box-shadow: 0 0 0 1.5px #c9992e, 0 2px 4px rgba(0,0,0,.25); filter: none; }
+.hist-ico:has(.mode-img-mini) { width: 40px; height: 40px; }
+.hist-ico .mode-img-mini { width: 36px; height: 36px; }
