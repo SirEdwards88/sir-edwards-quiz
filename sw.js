@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 50;
+const CACHE_VERSION = 51;
 const CACHE_NAME = `sedq-shell-v${CACHE_VERSION}`;
 
 // Rutas relativas al propio sw.js (que vive en la raíz de la app, tanto en
@@ -193,14 +193,14 @@ const APP_SHELL = [
   './src/utils/store.js',
   './src/state/read-facade.js',
   './src/state/write-helpers.js',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './icons/icon-192-maskable.png',
-  './icons/icon-512-maskable.png',
-  './icons/apple-touch-icon.png',
-  './icons/favicon-16.png',
-  './icons/favicon-32.png',
-  './icons/favicon-48.png',
+  './icons/icon-192.png?v=2',
+  './icons/icon-512.png?v=2',
+  './icons/icon-192-maskable.png?v=2',
+  './icons/icon-512-maskable.png?v=2',
+  './icons/apple-touch-icon.png?v=2',
+  './icons/favicon-16.png?v=2',
+  './icons/favicon-32.png?v=2',
+  './icons/favicon-48.png?v=2',
   './assets/avatars/sombrero.png',
   './assets/avatars/libro.png',
   './assets/avatars/reloj.png',
