@@ -251,3 +251,6 @@ body.keyboard-open .sabias-que-box { margin-top: 8px; padding: 6px 10px 7px; fon
 .seq-rank-pos .seq-ico { margin: 0; }
 .seq-d-ach-img { width: 38px; height: 38px; object-fit: contain; display: block; }
 .stamp-badge .seq-ico { width: 1.25em; height: 1.25em; }
+
+/* ---- Cabecera de la partida: el objeto del modo suelto (assets/modes/suelto/), sin aro ni disco ---- */
+.game-mode-badge { width: 36px !important; height: 36px !important; border-radius: 0 !important; box-shadow: none !important; filter: drop-shadow(0 1px 2px rgba(0,0,0,.35)) !important; }

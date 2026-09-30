@@ -36,13 +36,20 @@
     return s ? '<img class="mode-img mode-img-mini" src="' + s + '" alt="" draggable="false">' : '';
   }
 
-  // Mini insignia de la cabecera de la partida: sigue al modo en curso cada vez que cambia el marcador.
+  // Versión «suelta» (assets/modes/suelto/): solo el objeto, sin insignia, para la cabecera de la partida y la
+  // tarjeta final, donde el icono sale pequeño y la insignia completa se emborronaba.
+  function looseSrc(mode, tier) {
+    var s = src(mode, tier);
+    return s ? s.replace(DIR, DIR + 'suelto/') : '';
+  }
+
+  // Icono de la cabecera de la partida: sigue al modo en curso cada vez que cambia el marcador.
   function syncHud() {
     var el = document.getElementById('game-mode-badge');
     if (!el) return;
     var g = null;
     try { g = currentGame; } catch (e) {}
-    var s = g ? miniSrc(g.mode, g.survivalTier) : '';
+    var s = g ? looseSrc(g.mode, g.survivalTier) : '';
     if (s) { if (el.getAttribute('src') !== s) el.setAttribute('src', s); el.style.display = ''; }
     else el.style.display = 'none';
   }
@@ -53,5 +60,5 @@
     new MutationObserver(function () { try { syncHud(); } catch (e) {} }).observe(lbl, { childList: true, characterData: true, subtree: true });
   });
 
-  window.SEQModeBadges = { src: src, img: img, miniSrc: miniSrc, miniImg: miniImg, syncHud: syncHud };
+  window.SEQModeBadges = { src: src, img: img, miniSrc: miniSrc, miniImg: miniImg, looseSrc: looseSrc, syncHud: syncHud };
 })();

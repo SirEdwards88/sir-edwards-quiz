@@ -1650,8 +1650,8 @@ let lastResultShareTone = null; // Prompt 5: tono que se está mostrando (lo lee
 const RESULT_MOOD_IMAGES = {
   '💀': 'assets/ui/desastre.webp', '😬': 'assets/ui/suspenso.webp', '😐': 'assets/ui/mediocre.webp', '🙂': 'assets/ui/bien.webp',
   '😏': 'assets/ui/casi.webp', '🏆': 'assets/ui/perfecto.webp', '💔': 'assets/ui/derrota.webp',
-  '⚡': 'assets/modes/mini/contrarreloj.webp', '🧠': 'assets/modes/mini/repaso.webp', '🔢': 'assets/modes/mini/calculo.webp',
-  '👁️': 'assets/modes/mini/secreto.webp', '🎯': 'assets/modes/mini/estandar.webp'
+  '⚡': 'assets/modes/suelto/contrarreloj.webp', '🧠': 'assets/modes/suelto/repaso.webp', '🔢': 'assets/modes/suelto/calculo.webp',
+  '👁️': 'assets/modes/suelto/secreto.webp', '🎯': 'assets/modes/suelto/estandar.webp'
 };
 function fragmentMilestoneImg(m) {
   const src = ({ 10: 'assets/modes/mini/secreto.webp', 12: 'assets/ui/hito12.webp', 15: 'assets/ui/hito15.webp' })[m.fragments];
@@ -1724,7 +1724,7 @@ function renderModeChips(chips) {
   }
   box.innerHTML = chips.map(c => `
     <span class="result-chip" title="${c.label}">
-      <span class="result-chip-icon">${({'🔥': '<img class="ui-img" src="assets/ui/racha.webp" alt="" draggable="false">', '✨': '<img class="ui-img" src="assets/ui/xp.webp" alt="" draggable="false">', '⏱️': '<img class="ui-img" src="assets/ui/tiempo.webp" alt="" draggable="false">', '🏅': '<img class="ui-img" src="assets/ui/medalla.webp" alt="" draggable="false">', '🎯': '<img class="ui-img" src="assets/modes/mini/estandar.webp" alt="" draggable="false">'})[c.icon] || c.icon}</span><span class="result-chip-value">${c.value}</span>
+      <span class="result-chip-icon">${({'🔥': '<img class="ui-img" src="assets/ui/racha.webp" alt="" draggable="false">', '✨': '<img class="ui-img" src="assets/ui/xp.webp" alt="" draggable="false">', '⏱️': '<img class="ui-img" src="assets/ui/tiempo.webp" alt="" draggable="false">', '🏅': '<img class="ui-img" src="assets/ui/medalla.webp" alt="" draggable="false">', '🎯': '<img class="ui-img" src="assets/modes/suelto/estandar.webp" alt="" draggable="false">'})[c.icon] || c.icon}</span><span class="result-chip-value">${c.value}</span>
     </span>
   `).join('');
   box.classList.add('show');
