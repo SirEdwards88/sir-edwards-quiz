@@ -214,8 +214,8 @@ body.in-game .actions .btn-primary {
 [data-theme="dark"] .seq-av-btn.sel .seq-av-name { color: var(--se-gold-light) !important; }
 
 
-/* ---- Estadísticas: iconos de los títulos, sin disco ni fondo ---- */
-h3.stats-h .stats-h-img { width: 32px; height: 32px; flex: 0 0 auto; object-fit: contain; margin: -2px 0 -2px -2px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.30)); }
+/* ---- Estadísticas: iconos de los títulos (insignias completas, con su disco) ---- */
+h3.stats-h .stats-h-img { width: 34px; height: 34px; flex: 0 0 auto; object-fit: contain; border-radius: 50%; margin: -3px 0 -3px -2px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.25)); }
 
 /* ---- «¿Sabías que…?» y «Explicación»: nota de pergamino con filete dorado ---- */
 .sabias-que-box {
