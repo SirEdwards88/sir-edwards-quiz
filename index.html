@@ -1652,7 +1652,14 @@ const RESULT_MOOD_IMAGES = {
   '😏': 'assets/ui/casi.webp', '🏆': 'assets/ui/perfecto.webp', '💔': 'assets/ui/derrota.webp',
   '⚡': 'assets/modes/suelto/contrarreloj.webp', '🧠': 'assets/modes/suelto/repaso.webp', '🔢': 'assets/modes/suelto/calculo.webp',
   '👁️': 'assets/modes/suelto/secreto.webp', '🎯': 'assets/modes/suelto/estandar.webp',
-  '❤️': 'assets/modes/suelto/supervivencia.webp', '👑': 'assets/modes/suelto/muerte-subita.webp', '📈': 'assets/ui/progreso.webp'
+  '❤️': 'assets/modes/suelto/supervivencia.webp', '👑': 'assets/modes/suelto/muerte-subita.webp', '📈': 'assets/ui/progreso.webp',
+  '☠️': 'assets/ui/calavera.webp', '🕸️': 'assets/ui/libro-telaranas.webp', '🔮': 'assets/ui/bola-rota.webp', '💎': 'assets/ui/diamante.webp',
+  '🐌': 'assets/ui/caracol.webp', '🐇': 'assets/ui/liebre.webp', '💨': 'assets/ui/calculadora-humo.webp', '🧮': 'assets/ui/abaco.webp'
+};
+// 2.0: icono del resultado según el desenlace (mal / normal / bien) en los modos por puntuación.
+const RESULT_MOOD_BY_CATEGORY = {
+  timetrial: { mal: '🐌', normal: '⚡', bien: '🐇' },
+  mentalcalc: { mal: '💨', normal: '🔢', bien: '🧮' }
 };
 function fragmentMilestoneImg(m) {
   const src = ({ 10: 'assets/modes/mini/secreto.webp', 12: 'assets/ui/hito12.webp', 15: 'assets/ui/hito15.webp' })[m.fragments];
@@ -4385,7 +4392,7 @@ function revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newMod
     ? `Fase ${phaseInsufficient.phase === 1 ? 'I' : 'III'}: ${phaseInsufficient.achieved}/${phaseInsufficient.total} aciertos (mínimo ${phaseInsufficient.min})`
     : '';
   document.getElementById('res-phrase-text').textContent = phrase;
-  setResultTone(tone, '👁️');
+  setResultTone(tone, tone === 'fail' ? '🔮' : (tone === 'perfecto' ? '💎' : '👁️'));
 
   if (failed) {
     renderLucidezStamp('ENIGMA SIN RESOLVER', 'fail');
@@ -5972,10 +5979,10 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
       document.getElementById('res-category-text').textContent = "";
       if (accuracy <= 40) {
         customPhrase = pickRotatingPhrase(failDesastrePoolKey, failPhrases.desastre);
-        setResultTone('fail', RESULT_MOOD_ICONS.fail_desastre);
+        setResultTone('fail', currentGame.mode === 'sudden_death' ? '☠️' : RESULT_MOOD_ICONS.fail_desastre);
       } else {
         customPhrase = pickRotatingPhrase(failRegularPoolKey, failPhrases.regular);
-        setResultTone('fail', RESULT_MOOD_ICONS.fail_regular);
+        setResultTone('fail', currentGame.mode === 'sudden_death' ? '☠️' : RESULT_MOOD_ICONS.fail_regular);
       }
       stampText = currentGame.mode === 'survival' ? 'CAÍDO EN COMBATE' : 'ELIMINADO';
       stampTone = 'fail';
@@ -5989,14 +5996,14 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     const mentalResult = getModeEndPhrase(MENTAL_CALC_END_PHRASES, currentGame.correct || 0, 'mentalcalc');
     document.getElementById('res-category-text').textContent = '';
     document.getElementById('res-phrase-text').textContent = mentalResult.phrase;
-    setResultTone('mentalcalc', RESULT_MOOD_ICONS.mentalcalc);
+    setResultTone('mentalcalc', RESULT_MOOD_BY_CATEGORY.mentalcalc[mentalResult.category] || RESULT_MOOD_ICONS.mentalcalc);
   } else {
     if (currentGame.mode === 'timetrial') {
       const timeResult = getModeEndPhrase(TIMETRIAL_END_PHRASES, currentGame.score || 0, 'timetrial');
       const timeTitles = { mal: 'Mal resultado', normal: 'Resultado normal', bien: 'Buen resultado' };
       document.getElementById('res-category-text').textContent = timeTitles[timeResult.category];
       document.getElementById('res-phrase-text').textContent = timeResult.phrase;
-      setResultTone('timetrial', RESULT_MOOD_ICONS.timetrial);
+      setResultTone('timetrial', RESULT_MOOD_BY_CATEGORY.timetrial[timeResult.category] || RESULT_MOOD_ICONS.timetrial);
       // Sin sello de "completado": a diferencia de Supervivencia o Muerte
       // Súbita, Contrarreloj no tiene un desenlace de victoria/derrota que
       // contar aparte, así que un sello fijo en cada partida solo repetiría
@@ -6014,7 +6021,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
         const reviewPhrase = pickRotatingPhrase(`review_${reviewKey}`, reviewData.phrases);
         document.getElementById('res-category-text').textContent = reviewData.title;
         document.getElementById('res-phrase-text').textContent = reviewPhrase;
-        setResultTone('review', reviewKey === 'progreso' ? '📈' : RESULT_MOOD_ICONS.review);
+        setResultTone('review', reviewKey === 'progreso' ? '📈' : '🕸️');
       }
     }
   }
