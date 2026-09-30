@@ -80,6 +80,11 @@
   }
   if (typeof document !== 'undefined') { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ensureSprite); else ensureSprite(); }
 
+  // Insignia ilustrada del logro (assets/logros/<id>.webp). El emoji de medals.js queda como texto alternativo
+  // (avisos de texto) y como respaldo si la imagen no carga.
+  function iconHTML(m) {
+    return '<img class="ach-img" src="assets/logros/' + esc(m.id) + '.webp" alt="" draggable="false" onerror="this.replaceWith(document.createTextNode(\'' + esc(m.icon) + '\'))">';
+  }
   function esc(v) { return String(v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   var openState = {};
 
@@ -96,7 +101,7 @@
     }
     var tag = frag ? '<span class="ach-frag' + (unlocked ? ' got' : '') + '" title="' + (unlocked ? 'Fragmento obtenido' : 'Otorga un Fragmento de Mente') + '">🧩</span>' : '';
     return '<div class="ach-row ' + (unlocked ? 'is-done' : 'is-locked') + '">' +
-      '<div class="ach-ico">' + m.icon + (unlocked ? '<span class="ach-check" aria-hidden="true">✓</span>' : '') + '</div>' +
+      '<div class="ach-ico has-img">' + iconHTML(m) + (unlocked ? '<span class="ach-check" aria-hidden="true">✓</span>' : '') + '</div>' +
       '<div class="ach-body"><div class="ach-title">' + esc(m.title) + tag + '</div><div class="ach-desc">' + esc(m.desc) + '</div>' + prog + '</div></div>';
   }
 
@@ -136,5 +141,5 @@
     });
   }
 
-  window.SEQAchievements = { render: render, GROUPS: GROUPS, PROGRESS: PROGRESS };
+  window.SEQAchievements = { render: render, iconHTML: iconHTML, GROUPS: GROUPS, PROGRESS: PROGRESS };
 })();

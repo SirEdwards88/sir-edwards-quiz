@@ -165,3 +165,13 @@ body.in-game .actions .btn-primary {
 .mode-card.locked .mode-lock-badge::before { background-image: url("../assets/cats/candado.webp") !important; }
 .mode-card:not(.locked) .mode-lock-badge::before { background-image: url("../assets/cats/candado-abierto.webp") !important; }
 .knowledge-tag .cat-img { width: 18px; height: 18px; vertical-align: -4px; margin: 0 3px 0 2px; }
+
+/* Logros: insignias ilustradas (assets/logros/). */
+.ach-ico.has-img { background: none !important; border: 0 !important; box-shadow: none !important; width: 48px !important; height: 48px !important; }
+.ach-img { width: 100%; height: 100%; display: block; border-radius: 50%; -webkit-user-drag: none; user-select: none; }
+.ach-row.is-done .ach-ico.has-img .ach-img { filter: drop-shadow(0 3px 6px rgba(201,153,46,.45)); }
+.ach-row.is-locked .ach-ico.has-img { filter: grayscale(1) brightness(.95); opacity: .5; }
+.session-medal-icon.has-img { background: none !important; border: 0 !important; box-shadow: none !important; width: 46px; height: 46px; padding: 0 !important; }
+.session-medal-icon.has-img .ach-img { animation: ach-stamp .55s cubic-bezier(.2,.9,.3,1.3) both; }
+@keyframes ach-stamp { 0% { transform: scale(1.8) rotate(-12deg); opacity: 0; } 60% { transform: scale(.94) rotate(2deg); opacity: 1; } 100% { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .session-medal-icon.has-img .ach-img { animation: none; } }

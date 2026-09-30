@@ -4397,7 +4397,7 @@ function revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newMod
       const isAbsoluta = m.id === 'lucidez_absoluta';
       return `
       <div class="session-medal-item${isAbsoluta ? ' medal-lucidez-absoluta' : ''}">
-        <div class="session-medal-icon">${m.icon}</div>
+        <div class="session-medal-icon${window.SEQAchievements ? ' has-img' : ''}">${window.SEQAchievements ? SEQAchievements.iconHTML(m) : m.icon}</div>
         <div>
           <div class="session-medal-info">${m.title}</div>
           <div class="session-medal-desc">${m.desc}</div>
@@ -6073,7 +6073,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     medalsBox.style.display = 'block';
     medalsList.innerHTML = newMedalsUnlocked.map(m => `
       <div class="session-medal-item">
-        <div class="session-medal-icon">${m.icon}</div>
+        <div class="session-medal-icon${window.SEQAchievements ? ' has-img' : ''}">${window.SEQAchievements ? SEQAchievements.iconHTML(m) : m.icon}</div>
         <div>
           <div class="session-medal-info">${m.title}</div>
           <div class="session-medal-desc">${m.desc}</div>
