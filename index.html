@@ -773,7 +773,7 @@ try {
               <div>
                 <span class="stat-extra-label" id="best-lucidez-label">Mejor partida Modo Secreto</span>
                 <span class="stat-extra-value" id="best-lucidez">—</span>
-                <span class="stat-extra-context" id="best-lucidez-context">🔒 Modo bloqueado</span>
+                <span class="stat-extra-context" id="best-lucidez-context"><img class="lock-img" src="assets/cats/candado.webp" alt=""> Modo bloqueado</span>
               </div>
             </div>
             <div class="stat-extra stat-master">
@@ -6224,7 +6224,12 @@ function getDifficultyAccuracyStats() {
 }
 
 function categoryLabel(cat) {
-  return ({historia:'🏛️ Historia', geografia:'🌍 Geografía', ciencia:'🔬 Ciencia', arte_literatura:'🎨 Arte y Literatura', deporte:'⚽ Deporte', cultura_general:'🧠 Cultura General'})[cat] || cat;
+  // 2.0: sin emoji; la insignia de la categoría (assets/cats/) la pone quien lo pinta (categoryBadge).
+  return ({historia:'Historia', geografia:'Geografía', ciencia:'Ciencia', arte_literatura:'Arte y Literatura', deporte:'Deporte', cultura_general:'Cultura General'})[cat] || cat;
+}
+function categoryBadge(cat) {
+  const n = { historia: 'historia', geografia: 'geografia', ciencia: 'ciencia', arte_literatura: 'arte', deporte: 'deporte', cultura_general: 'cultura' }[cat];
+  return n ? `<img class="cat-img" src="assets/cats/${n}.webp" alt="">` : '';
 }
 
 function difficultyLabel(dif) {
@@ -6259,7 +6264,7 @@ function renderLearningStats() {
       const m = mastery[x.cat] || {mastered:0,total:x.total};
       const dom = x.total ? Math.round((m.mastered/m.total)*100) : 0;
       if (x.answered >= 5) categoriesWithData.push({ cat: x.cat, acc });
-      return `<div class="progress-row"><div class="progress-row-head"><span>${categoryLabel(x.cat)}</span><span>${acc}%</span></div><div class="progress-track"><div class="progress-fill" style="width:${acc}%"></div></div><div class="progress-meta">${x.correct} aciertos · ${x.wrong} fallos · ${m.mastered}/${m.total} dominadas (${dom}%)</div></div>`;
+      return `<div class="progress-row"><div class="progress-row-head"><span>${categoryBadge(x.cat)}${categoryLabel(x.cat)}</span><span>${acc}%</span></div><div class="progress-track"><div class="progress-fill" style="width:${acc}%"></div></div><div class="progress-meta">${x.correct} aciertos · ${x.wrong} fallos · ${m.mastered}/${m.total} dominadas (${dom}%)</div></div>`;
     }).join('');
   }
 
@@ -6275,7 +6280,7 @@ function renderLearningStats() {
         const tagClass = weakest.acc < 70 ? 'tag-weak' : 'tag-progress';
         const icon = weakest.acc < 70 ? '🔴' : '🟡';
         const label = weakest.acc < 70 ? 'A reforzar' : 'En progreso';
-        tags.push(`<span class="knowledge-tag ${tagClass}">${icon} ${label}: ${categoryLabel(weakest.cat)}</span>`);
+        tags.push(`<span class="knowledge-tag ${tagClass}">${icon} ${label}: ${categoryBadge(weakest.cat)}${categoryLabel(weakest.cat)}</span>`);
       }
       summaryEl.innerHTML = tags.join('');
     }
@@ -6351,7 +6356,7 @@ function renderStats() {
   }
   if (bestLucidezContext) {
     if (!lucidezUnlocked) {
-      bestLucidezContext.textContent = '🔒 Modo bloqueado';
+      bestLucidezContext.innerHTML = '<img class="lock-img" src="assets/cats/candado.webp" alt=""> Modo bloqueado';
     } else if (!getStore().lucidezPlayed) {
       bestLucidezContext.textContent = 'Aún no has jugado este modo';
     } else {
@@ -6518,7 +6523,7 @@ function renderFragmentsProgress() {
         <div class="fragment-milestone-title">${m.fragments} Fragmentos</div>
         <div class="fragment-milestone-text">${m.text}</div>
       </div>
-      <div class="fragment-milestone-state">${m.unlocked ? '✓' : '🔒'}</div>
+      <div class="fragment-milestone-state">${m.unlocked ? '✓' : '<img class="lock-img" src="assets/cats/candado.webp" alt="">'}</div>
     </div>`).join('');
 
   const subtitleEl = document.getElementById('fragments-progress-subtitle');

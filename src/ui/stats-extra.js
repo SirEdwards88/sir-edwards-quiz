@@ -10,12 +10,12 @@
   'use strict';
 
   var CATS = [
-    { key: 'historia', label: 'Historia', icon: '🏛️' },
-    { key: 'geografia', label: 'Geografía', icon: '🌍' },
-    { key: 'ciencia', label: 'Ciencia', icon: '🔬' },
-    { key: 'arte_literatura', label: 'Arte y Lit.', icon: '🎨' },
-    { key: 'deporte', label: 'Deporte', icon: '⚽' },
-    { key: 'cultura_general', label: 'Cultura', icon: '🧠' }
+    { key: 'historia', label: 'Historia', icon: '🏛️', img: 'assets/cats/historia.webp' },
+    { key: 'geografia', label: 'Geografía', icon: '🌍', img: 'assets/cats/geografia.webp' },
+    { key: 'ciencia', label: 'Ciencia', icon: '🔬', img: 'assets/cats/ciencia.webp' },
+    { key: 'arte_literatura', label: 'Arte y Lit.', icon: '🎨', img: 'assets/cats/arte.webp' },
+    { key: 'deporte', label: 'Deporte', icon: '⚽', img: 'assets/cats/deporte.webp' },
+    { key: 'cultura_general', label: 'Cultura', icon: '🧠', img: 'assets/cats/cultura.webp' }
   ];
 
   function radarSvg(values) {
@@ -36,8 +36,14 @@
     values.forEach(function (v, i) {
       var p = pt(i, R + 22), anchor = Math.abs(p[0] - cx) < 8 ? 'middle' : (p[0] > cx ? 'start' : 'end');
       var dx = anchor === 'start' ? -6 : anchor === 'end' ? 6 : 0;
-      h += '<text x="' + (p[0] + dx) + '" y="' + (p[1] - 3) + '" text-anchor="' + anchor + '" class="radar-lbl">' + v.icon + ' ' + v.label + '</text>';
-      h += '<text x="' + (p[0] + dx) + '" y="' + (p[1] + 12) + '" text-anchor="' + anchor + '" class="radar-pct">' + (v.answered ? v.pct + '%' : '—') + '</text>';
+      // Insignia de la categoría junto a su nombre: a un lado (izquierda/derecha) o encima/debajo (arriba/abajo).
+      var IS = 24, top = p[1] < cy, ix, iy, tx = p[0] + dx;
+      if (anchor === 'start') { ix = tx; tx += IS + 4; iy = p[1] - 17; }
+      else if (anchor === 'end') { ix = tx - IS; tx -= IS + 4; iy = p[1] - 17; }
+      else { ix = p[0] - IS / 2; iy = top ? p[1] - 3 - 13 - IS - 2 : p[1] + 17; }
+      h += '<image href="' + v.img + '" x="' + ix + '" y="' + iy + '" width="' + IS + '" height="' + IS + '"/>';
+      h += '<text x="' + tx + '" y="' + (p[1] - 3) + '" text-anchor="' + anchor + '" class="radar-lbl">' + v.label + '</text>';
+      h += '<text x="' + tx + '" y="' + (p[1] + 12) + '" text-anchor="' + anchor + '" class="radar-pct">' + (v.answered ? v.pct + '%' : '—') + '</text>';
     });
     return h + '</svg>';
   }
@@ -52,7 +58,7 @@
       var values = CATS.map(function (c) {
         var x = st[c.key] || { correct: 0, answered: 0 };
         var answered = Number(x.answered) || 0, correct = Number(x.correct) || 0;
-        return { label: c.label, icon: c.icon, answered: answered, pct: answered ? Math.round(correct / answered * 100) : 0 };
+        return { label: c.label, icon: c.icon, img: c.img, answered: answered, pct: answered ? Math.round(correct / answered * 100) : 0 };
       });
       var box = $id('stats-radar');
       if (!box) {
@@ -64,7 +70,7 @@
       var anyAnswered = values.some(function (v) { return v.answered > 0; });
       var spec = specialty(values);
       box.innerHTML = radarSvg(values) + (anyAnswered
-        ? (spec ? '<p class="radar-note">Tu especialidad: <b>' + spec.icon + ' ' + spec.label + '</b></p>'
+        ? (spec ? '<p class="radar-note">Tu especialidad: <b><img class="cat-img" src="' + spec.img + '" alt=""> ' + spec.label + '</b></p>'
                 : '<p class="radar-note">Sigue jugando: con unas partidas más se verá tu especialidad.</p>')
         : '<p class="radar-note">Juega unas partidas y aquí aparecerá la forma de tu conocimiento.</p>');
     } catch (e) { /* nunca debe romper Estadísticas */ }

@@ -154,3 +154,14 @@ body.in-game .actions .btn-primary {
 /* Último enigma: la insignia del ojo en lugar del emoji. */
 .lucidez-enigma-eye { width: 64px; height: 64px; margin: 0 auto 6px !important; font-size: 0 !important; }
 .lucidez-enigma-eye .mode-img { width: 100%; height: 100%; filter: drop-shadow(0 4px 10px rgba(91,46,143,.45)); }
+
+/* Categorías (Estadísticas) y candados con sus insignias. */
+.cat-img { width: 22px; height: 22px; vertical-align: -6px; margin-right: 7px; border-radius: 50%; }
+.radar-note .cat-img { width: 20px; height: 20px; margin-right: 3px; }
+.lock-img { width: 16px; height: 16px; vertical-align: -3px; margin-right: 3px; border-radius: 50%; }
+.fragment-milestone-state .lock-img { width: 22px; height: 22px; margin: 0; }
+.mode-lock-badge { background: none !important; border: 0 !important; box-shadow: none !important; }
+.mode-lock-badge::before { width: 38px !important; height: 38px !important; filter: drop-shadow(0 2px 4px rgba(0,0,0,.3)); }
+.mode-card.locked .mode-lock-badge::before { background-image: url("../assets/cats/candado.webp") !important; }
+.mode-card:not(.locked) .mode-lock-badge::before { background-image: url("../assets/cats/candado-abierto.webp") !important; }
+.knowledge-tag .cat-img { width: 18px; height: 18px; vertical-align: -4px; margin: 0 3px 0 2px; }
