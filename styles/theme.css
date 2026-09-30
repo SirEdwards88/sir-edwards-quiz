@@ -81,20 +81,13 @@ body.in-game .actions .btn-primary {
 /* «Continuar partida»: destacada con oro, sin el color del modo. */
 #resume-game-card { border: 1.5px solid var(--se-gold) !important; background: linear-gradient(170deg, var(--se-parch), var(--se-parch-2)) !important; }
 
-/* ---- Partida: marco dorado común; la identidad del modo la llevan su insignia y el color del texto ---- */
+/* ---- Partida: marco dorado común a todos los modos; el color de cada modo, en sus acentos (más abajo) ---- */
 .card[class*="theme-"]:not(.theme-lucidez) {
   border: 2px solid var(--se-gold-hair) !important;
   box-shadow: 0 0 0 4px var(--card), 0 0 0 5px var(--se-gold-soft), 0 14px 40px rgba(28,35,64,.10) !important;
 }
-.card[class*="theme-"]:not(.theme-lucidez) .mode-header.game-hud {
-  background: linear-gradient(170deg, var(--se-parch), var(--se-parch-2)) !important;
-  border: 1px solid var(--se-gold-hair) !important;
-}
-.card[class*="theme-"]:not(.theme-lucidez) .q-box {
-  background: var(--se-parch) !important;
-  border-left-color: var(--se-gold) !important;
-  box-shadow: 0 2px 10px rgba(28,35,64,.05) !important;
-}
+
+
 .card[class*="theme-"]:not(.theme-lucidez) #choice-options .choice-btn:not(.correct):not(.incorrect) {
   background: var(--se-parch) !important;
   border-color: var(--se-gold-soft) !important;
@@ -103,19 +96,14 @@ body.in-game .actions .btn-primary {
   border-color: var(--se-gold) !important;
   box-shadow: 0 4px 14px rgba(201,153,46,.18) !important;
 }
-.card[class*="theme-"]:not(.theme-lucidez) #choice-options .choice-btn.selected:not(.correct):not(.incorrect) {
-  border-color: var(--se-gold) !important;
-  background: color-mix(in srgb, var(--se-gold) 12%, var(--se-parch)) !important;
-}
-/* Barra de progreso de la partida en oro (la de Lucidez conserva la suya). */
-.card[class*="theme-"]:not(.theme-lucidez) #bar-fill { background: linear-gradient(90deg, #b8862a, var(--se-gold-light)) !important; }
+
+
 
 
 /* ---- Barras de nivel (inicio de partida, Jugar, expediente) en oro ---- */
 #game-level-bar-fill, #stats-level-bar-fill, #home-level-bar-fill { background: linear-gradient(90deg, #b8862a, var(--se-gold-light)) !important; }
 
-/* La franja de color de la parte superior de la tarjeta de partida pasa a oro (Lucidez conserva la suya). */
-.card[class*="theme-"]:not(.theme-lucidez)::before { background: linear-gradient(90deg, #b8862a, var(--se-gold-light), #b8862a) !important; }
+
 
 /* Aviso «¡Nuevo modo desbloqueado!»: insignia del modo. */
 .mode-unlock-toast .toast-badge { width: 44px; height: 44px; object-fit: contain; display: block; filter: drop-shadow(0 2px 4px rgba(0,0,0,.3)); }
@@ -128,3 +116,37 @@ body.in-game .actions .btn-primary {
 /* Récords personales con la insignia mini del modo. */
 .stat-extra-icon.has-img { background: none !important; border: 0 !important; box-shadow: none !important; }
 .stat-extra-icon.has-img .mode-img-mini { width: 34px; height: 34px; display: block; }
+
+/* ---- Color de cada modo dentro de la partida ----
+   El marco dorado es común; cada modo recupera su color (el mismo del texto de su cabecera) en cuatro acentos:
+   franja superior, barra lateral de la pregunta, barra de progreso y fondo de la cabecera (y la respuesta elegida). */
+.card.theme-standard   { --mode-accent: #2563eb; --mode-accent-2: #60a5fa; }
+.card.theme-review     { --mode-accent: #0d9488; --mode-accent-2: #2dd4bf; }
+.card.theme-survival   { --mode-accent: #d97706; --mode-accent-2: #fbbf24; }
+.card.theme-sudden     { --mode-accent: #b91c1c; --mode-accent-2: #ef4444; }
+.card.theme-timetrial  { --mode-accent: #7c3aed; --mode-accent-2: #06b6d4; }
+.card.theme-mentalcalc { --mode-accent: #3f3f46; --mode-accent-2: #71717a; }
+[data-theme="dark"] .card.theme-mentalcalc { --mode-accent: #a1a1aa; --mode-accent-2: #e4e4e7; }
+
+.card[class*="theme-"]:not(.theme-lucidez)::before {
+  background: linear-gradient(90deg, var(--mode-accent), var(--mode-accent-2), var(--mode-accent)) !important;
+}
+.card[class*="theme-"]:not(.theme-lucidez) {
+  box-shadow: 0 0 0 4px var(--card), 0 0 0 6px color-mix(in srgb, var(--mode-accent) 38%, transparent), 0 14px 40px color-mix(in srgb, var(--mode-accent) 18%, transparent) !important;
+}
+.card[class*="theme-"]:not(.theme-lucidez) .mode-header.game-hud {
+  background: linear-gradient(170deg, color-mix(in srgb, var(--mode-accent) 10%, var(--se-parch)), var(--se-parch-2)) !important;
+  border: 1px solid color-mix(in srgb, var(--mode-accent) 32%, transparent) !important;
+}
+.card[class*="theme-"]:not(.theme-lucidez) .q-box {
+  background: color-mix(in srgb, var(--mode-accent) 4%, var(--se-parch)) !important;
+  border-left-color: var(--mode-accent) !important;
+  box-shadow: 0 2px 10px rgba(28,35,64,.05) !important;
+}
+.card[class*="theme-"]:not(.theme-lucidez) #bar-fill {
+  background: linear-gradient(90deg, var(--mode-accent), var(--mode-accent-2)) !important;
+}
+.card[class*="theme-"]:not(.theme-lucidez) #choice-options .choice-btn.selected:not(.correct):not(.incorrect) {
+  border-color: var(--mode-accent) !important;
+  background: color-mix(in srgb, var(--mode-accent) 12%, var(--se-parch)) !important;
+}
