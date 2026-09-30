@@ -5386,3 +5386,8 @@ h3.stats-h::before { display: none !important; content: none !important; }
 #view-stats #stats-duel-section { margin-top: var(--space-lg); }
 .dossier-seal { overflow: hidden; }
 .dossier-seal .seq-av-img { width: 88%; height: 88%; object-fit: contain; display: block; }
+/* Logros secretos sin conseguir: sello azul marino con «?» dorado (misterioso, no un candado más). */
+.ach-secret-seal { width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 50% 38%, #2a3560, #1c2340); border: 2px solid #c9992e; box-shadow: inset 0 0 0 3px #1c2340, inset 0 0 0 4px rgba(201,153,46,.55);
+  font: 800 20px/1 var(--font-display, Georgia, serif); color: #e8c874; }
+.ach-row.is-secret .ach-ico { background: none; border: 0; box-shadow: none; padding: 0; filter: none; opacity: 1; }

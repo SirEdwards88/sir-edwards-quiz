@@ -7,6 +7,7 @@
 // Se descargan y decodifican una vez; mientras no estén listas (o si fallan) suena el sintetizado de siempre.
 // La progresión por racha se conserva: a partir de 5 seguidas, el acorde/arpegio de siempre se suma, más
 // suave, encima de la muestra.
+// Acierto (cierre 2.0): dos notas de mazo cálidas, Sol4→Do5, ~0,4 s y sin agudos (antes dominaba un pitido de ~1,5 kHz).
 
 let audioCtx = null;
 
@@ -83,11 +84,11 @@ function playCorrectSound(streak) {
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
       osc.start(now); osc.stop(now + 0.15);
     } else if (s < 8) {
-      // Racha 5-7: acorde más brillante, sobre las mismas notas del motivo.
-      const notes = [659.25, 830.61, 987.77];
+      // Racha 5-7: acorde suave en Do (misma tonalidad que la muestra Sol→Do), sinusoidal: acompaña sin chillar.
+      const notes = sampled ? [392.00, 523.25, 659.25] : [659.25, 830.61, 987.77];
       notes.forEach((freq, i) => {
         const o = ctx.createOscillator(); const g = ctx.createGain();
-        o.type = 'triangle'; o.connect(g); g.connect(ctx.destination);
+        o.type = sampled ? 'sine' : 'triangle'; o.connect(g); g.connect(ctx.destination);
         const start = now + i * 0.03;
         o.frequency.setValueAtTime(freq, start);
         g.gain.setValueAtTime(0.12 * layer, start);
@@ -95,11 +96,11 @@ function playCorrectSound(streak) {
         o.start(start); o.stop(start + 0.22);
       });
     } else {
-      // Racha 8+: pequeña celebración, arpegio de 4 notas sobre el mismo motivo.
-      const notes = [659.25, 830.61, 987.77, 1318.51];
+      // Racha 8+: pequeña celebración, arpegio de 4 notas en Do (sinusoidal con la muestra).
+      const notes = sampled ? [392.00, 523.25, 659.25, 783.99] : [659.25, 830.61, 987.77, 1318.51];
       notes.forEach((freq, i) => {
         const o = ctx.createOscillator(); const g = ctx.createGain();
-        o.type = 'triangle'; o.connect(g); g.connect(ctx.destination);
+        o.type = sampled ? 'sine' : 'triangle'; o.connect(g); g.connect(ctx.destination);
         const start = now + i * 0.06;
         o.frequency.setValueAtTime(freq, start);
         g.gain.setValueAtTime(0.001, start);

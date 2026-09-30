@@ -994,8 +994,7 @@ try {
               <span class="settings-changelog-entry-date">26/09/2026</span>
             </div>
             <ul class="settings-changelog-list">
-              <li>Amigos, Duelo online en directo (20 preguntas) y Retos con 3 días de plazo.</li>
-              <li>Requieren cuenta y se irán activando poco a poco.</li>
+              <li>Amigos, duelos online y retos.</li>
             </ul>
           </div>
           <div class="settings-changelog-entry">
@@ -1010,7 +1009,6 @@ try {
               <li>Nueva tarjeta para compartir tu resultado.</li>
               <li>Sonidos nuevos y música para los menús.</li>
               <li>Nuevas ventajas con los Fragmentos de Mente.</li>
-              <li id="changelog-v2-save-note">Recuerda: en Ajustes puedes descargar una copia de seguridad de tu progreso.</li>
             </ul>
           </div>
         </div>
@@ -6451,9 +6449,9 @@ function renderAchievementsProgress() {
 const FRAGMENT_MILESTONES = [
   { fragments: FRAGMENT_TARGET, icon: '👁️', title: 'Lucidez Mental', text: 'Desbloquea Lucidez Mental', goal: 'desbloquear Lucidez Mental',
     secretText: 'Desbloquea un modo secreto', secretGoal: 'desbloquear un modo secreto' },
-  { fragments: 12, icon: '🛡️', title: 'Error extra', text: '+1 error extra en Lucidez', goal: 'conseguir +1 error extra',
+  { fragments: 12, icon: '💫', title: 'Error extra', text: '+1 error extra en Lucidez', goal: 'conseguir +1 error extra',
     secretIcon: '💫', secretText: 'Una ventaja especial para el modo secreto', secretGoal: 'conseguir una ventaja especial' },
-  { fragments: 15, icon: '🧿', title: 'Errores extra', text: '+2 errores extra en total', goal: 'conseguir +2 errores extra',
+  { fragments: 15, icon: '🌠', title: 'Errores extra', text: '+2 errores extra en total', goal: 'conseguir +2 errores extra',
     secretIcon: '🌠', secretText: 'Una ventaja aún mayor para el modo secreto', secretGoal: 'conseguir una ventaja aún mayor' }
 ];
 // 2.0: hasta que el jugador desbloquea el modo secreto (10 Fragmentos), los hitos NO nombran «Lucidez Mental»
@@ -6834,7 +6832,6 @@ function applySyncCopy() {
   if (progressSection && progressSection.closest('.settings-section')) progressSection.closest('.settings-section').style.display = 'none';
   setText('progress-save-note', 'Tu progreso, tu historial, tus estadísticas, tus ajustes y tus duelos se guardan en tu cuenta automáticamente y se recuperan al iniciar sesión en cualquier dispositivo.');
   setText('welcome-save-note', 'Tu progreso se guarda en tu cuenta y lo recuperas al iniciar sesión en cualquier dispositivo.');
-  setText('changelog-v2-save-note', 'Todo tu progreso (historial, estadísticas, ajustes y duelos) se sincroniza con tu cuenta y se recupera en otro dispositivo. Ya no hace falta la copia de seguridad manual.');
 }
 
 function applyAppVersionText() {

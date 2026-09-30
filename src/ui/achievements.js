@@ -85,9 +85,8 @@
 
   function row(m, s, unlocked) {
     var frag = false; try { frag = FRAGMENT_MEDAL_IDS.indexOf(m.id) !== -1; } catch (e) {}
-    var lock = typeof MEDAL_LOCK_SVG === 'string' ? MEDAL_LOCK_SVG : '🔒';
     if (m.secret && !unlocked) {
-      return '<div class="ach-row is-secret"><div class="ach-ico">' + lock + '</div><div class="ach-body"><div class="ach-title">???</div>' +
+      return '<div class="ach-row is-secret"><div class="ach-ico"><span class="ach-secret-seal" aria-hidden="true">?</span></div><div class="ach-body"><div class="ach-title">???</div>' +
         '<div class="ach-desc">Logro secreto</div></div></div>';
     }
     var prog = '';

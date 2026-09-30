@@ -54,7 +54,8 @@ test('pantalla de Logros: ningún icono se repite (logros, familias e hitos de F
   const norm = (e) => e.replace(/\uFE0F/g, '');
   const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
   const ms = html.slice(html.indexOf('const FRAGMENT_MILESTONES'), html.indexOf('];', html.indexOf('const FRAGMENT_MILESTONES')));
-  const milestone = [...ms.matchAll(/(?:icon|secretIcon): '([^']+)'/g)].map((m) => m[1]);
+  // Cada hito cuenta una vez aunque conserve el mismo icono antes y después de desbloquear el modo secreto.
+  const milestone = ms.split('{ fragments:').slice(1).flatMap((h) => [...new Set([...h.matchAll(/(?:icon|secretIcon): '([^']+)'/g)].map((m) => m[1]))]);
   const all = [
     ...c.ALL_MEDALS.map((m) => ['logro ' + m.id, m.icon]),
     ...c.window.SEQAchievements.GROUPS.map((g) => ['familia ' + g.key, g.icon]),
