@@ -235,3 +235,6 @@ h3.stats-h .stats-h-img { width: 32px; height: 32px; flex: 0 0 auto; object-fit:
 @keyframes sqIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: no-preference) { .sabias-que-box { animation: sqIn .35s ease-out .12s both; } }
 body.keyboard-open .sabias-que-box { margin-top: 8px; padding: 6px 10px 7px; font-size: 12.5px; }
+
+/* Logros y Fragmentos: iconos del título sin el disco de la insignia, a tamaño legible. */
+.achievements-progress-title .ui-title-img, .fragments-progress-title .ui-title-img { width: 38px; height: 38px; margin: -8px .3em -8px 0; filter: drop-shadow(0 1px 2px rgba(0,0,0,.3)); }
