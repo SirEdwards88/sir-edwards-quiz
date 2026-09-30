@@ -268,3 +268,8 @@ body.keyboard-open .sabias-que-box { margin-top: 8px; padding: 6px 10px 7px; fon
 .ui-title-img.ui-title-loose { width: 40px; height: 40px; object-fit: contain; border-radius: 0; box-shadow: none; background: none; border: 0; filter: drop-shadow(0 2px 3px rgba(0,0,0,.25)); }
 /* Botones de Duelo/Retos: ilustración suelta (sin borde), un poco más grande para que se aprecie. */
 .btn .seq-ico[src*="modes/suelto/"] { width: 1.6em; height: 1.6em; vertical-align: -0.5em; margin-top: -0.2em; margin-bottom: -0.2em; }
+
+/* Estadísticas: iconos de título y de historial sueltos, sin círculo ni fondo */
+h3.stats-h .stats-h-img { border-radius: 0; background: none; border: 0; width: 36px; height: 36px; }
+.hist-ico:has(.mode-img-loose) { background: none; border: 0; width: 42px; height: 42px; }
+.hist-ico .mode-img-loose { width: 40px; height: 40px; object-fit: contain; background: none; border: 0; border-radius: 0; box-shadow: none; }
