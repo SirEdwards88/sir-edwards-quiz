@@ -263,3 +263,6 @@ body.keyboard-open .sabias-que-box { margin-top: 8px; padding: 6px 10px 7px; fon
 [data-theme="dark"] .home-subtitle { color: #b79be0; }
 /* «Novedades de la v2.0»: la versión hereda la tipografía del título. */
 #update-modal-version { font: inherit; letter-spacing: inherit; }
+
+/* Título «Supervivencia: Elige Dificultad»: corazón suelto, sin borde ni fondo. */
+.ui-title-img.ui-title-loose { width: 40px; height: 40px; object-fit: contain; border-radius: 0; box-shadow: none; background: none; border: 0; filter: drop-shadow(0 2px 3px rgba(0,0,0,.25)); }
