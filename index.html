@@ -5978,7 +5978,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
       document.getElementById('res-category-text').textContent = "";
       if (accuracy <= 40) {
         customPhrase = pickRotatingPhrase(failDesastrePoolKey, failPhrases.desastre);
-        setResultTone('fail', currentGame.mode === 'sudden_death' ? '☠️' : RESULT_MOOD_ICONS.fail_desastre);
+        setResultTone('fail', currentGame.mode === 'sudden_death' ? '☠️' : RESULT_MOOD_ICONS.fail_regular);
       } else {
         customPhrase = pickRotatingPhrase(failRegularPoolKey, failPhrases.regular);
         setResultTone('fail', currentGame.mode === 'sudden_death' ? '☠️' : RESULT_MOOD_ICONS.fail_regular);
