@@ -31,4 +31,7 @@ Igual con `src/utils/sync-merge.js`: debe ser el mismo texto que `src/sync-merge
 - No existe el «Duelo por código» (retirado): solo Duelo online (en directo, con amigos) y Retos (asíncronos, con plazo). Ambos exigen cuenta.
 - «Compartir resultado» es una acción secundaria y discreta.
 - Historial de versiones breve y en orden.
+- Bienvenida (primera vez, tras la cuenta) y aviso de novedades (al actualizar, lee la entrada del historial de la versión):
+  mantener SIEMPRE su tono de Sir Edwards, elegante y sarcástico («Vaya, un nuevo aspirante.», «Tus excusas, no.»,
+  «Mientras no mirabas, Sir Edwards ha estado ocupado:»). Cada versión nueva lleva su entrada en el historial con ese tono.
 - Nunca perder datos de usuarios existentes: la clave local `siredwards_quiz_v1_0_data` no se cambia.

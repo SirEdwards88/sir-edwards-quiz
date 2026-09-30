@@ -24,6 +24,9 @@
     if (window.__seqFirstVisit === true) {
       if (version) set(UPDATE_KEY, version);
       if (get(WELCOME_KEY) === '1') return;
+      // El número de preguntas sale del banco real (nunca se queda viejo al añadir preguntas).
+      var qc = document.getElementById('welcome-q-count');
+      try { if (qc && typeof TEST_QUESTIONS !== 'undefined' && TEST_QUESTIONS.length) qc.textContent = TEST_QUESTIONS.length; } catch (e) {}
       var modal = document.getElementById('welcome-modal');
       if (modal) modal.style.display = 'flex';
       return;
