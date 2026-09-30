@@ -5444,3 +5444,6 @@ h3.stats-h::before { display: none !important; content: none !important; }
 .game-mode-badge, .mode-img-mini { border-radius: 50%; box-shadow: 0 0 0 1.5px #c9992e, 0 2px 4px rgba(0,0,0,.25); filter: none; }
 .hist-ico:has(.mode-img-mini) { width: 40px; height: 40px; }
 .hist-ico .mode-img-mini { width: 36px; height: 36px; }
+/* Inicio: Estadísticas, Logros y Ajustes con su insignia (la insignia trae su propio marco). */
+.home-small-icon.has-img { background: none !important; box-shadow: none !important; border: 0 !important; width: 58px !important; height: 58px !important; padding: 0 !important; }
+.home-small-icon.has-img .mode-img { filter: drop-shadow(0 3px 6px rgba(0,0,0,.28)); }
