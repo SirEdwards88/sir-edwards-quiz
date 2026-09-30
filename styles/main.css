@@ -5421,3 +5421,22 @@ h3.stats-h::before { display: none !important; content: none !important; }
 .home-big-icon.has-img .mode-img { filter: drop-shadow(0 5px 9px rgba(0,0,0,.35)); }
 /* Bloqueado: la insignia se ve apagada, como el resto de la tarjeta. */
 .mode-card.locked .mode-card-icon.has-img .mode-img { filter: grayscale(.85) brightness(.9) drop-shadow(0 2px 3px rgba(0,0,0,.18)); opacity: .75; }
+/* Cabecera de la partida: mini insignia del modo delante del marcador. */
+/* Ocupa el hueco del emoji decorativo de cada tema (izquierda de la cabecera): el texto conserva su ancho. */
+.game-mode-lbl { display: contents; }
+.game-mode-badge { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 32px; height: 32px; object-fit: contain;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,.25)); -webkit-user-drag: none; user-select: none; pointer-events: none; }
+.card .mode-header.game-hud { position: relative; }
+/* Resumen «Continuar partida» e historial de Estadísticas con la insignia. */
+#resume-card-icon.has-img { background: none !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; }
+.hist-ico:has(.mode-img) { background: none; border: 0; width: 42px; height: 42px; }
+/* Selector de dificultad de Supervivencia: insignia arriba, como en Jugar. */
+#menu-difficulty-modes .diff-card .mode-card-icon.has-img { width: 64px !important; height: 64px !important; margin-bottom: 8px !important; }
+#menu-difficulty-modes .mode-card.diff-card { justify-content: flex-start !important; gap: 16px; text-align: left !important; }
+#menu-difficulty-modes .mode-card.diff-card h3 { text-align: left !important; flex: 1; }
+#menu-difficulty-modes .diff-card .mode-card-icon.has-img { margin: 0 !important; flex: 0 0 auto; }
+/* En partida la insignia sustituye al emoji decorativo que cada tema ponía delante del marcador. */
+.card .mode-header.game-hud:has(#game-mode-badge:not([style*="none"]))::before { display: none !important; }
+.card .mode-header.game-hud:has(#game-mode-badge:not([style*="none"])) { padding-left: 50px !important; }
+/* El marcador ya no se corta con «…» (perdía el nº de pregunta en Supervivencia, Contrarreloj y Cálculo): si no cabe, pasa a dos líneas. */
+.game-hud #game-progress-lbl { white-space: normal !important; overflow: visible !important; text-overflow: clip !important; line-height: 1.3; }

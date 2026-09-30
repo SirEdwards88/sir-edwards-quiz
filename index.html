@@ -534,14 +534,17 @@ try {
           <h2 id="diff-menu-title" style="margin: 0;">Selecciona Dificultad</h2>
         </div>
         <div class="modes-grid">
-          <div class="mode-card" onclick="selectDifficulty('ameba')">
-            <h3>🦠 Nivel Ameba</h3>
+          <div class="mode-card diff-card" data-difficulty="ameba" onclick="selectDifficulty('ameba')">
+            <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/ameba.webp" alt="" draggable="false"></div>
+            <h3>Nivel Ameba</h3>
           </div>
-          <div class="mode-card" onclick="selectDifficulty('humano')">
-            <h3>🧍 Humano Promedio</h3>
+          <div class="mode-card diff-card" data-difficulty="humano" onclick="selectDifficulty('humano')">
+            <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/humano.webp" alt="" draggable="false"></div>
+            <h3>Humano Promedio</h3>
           </div>
-          <div class="mode-card" onclick="selectDifficulty('derrame')">
-            <h3>💥 Derrame Cerebral</h3>
+          <div class="mode-card diff-card" data-difficulty="derrame" onclick="selectDifficulty('derrame')">
+            <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/derrame.webp" alt="" draggable="false"></div>
+            <h3>Derrame Cerebral</h3>
           </div>
         </div>
       </div>
@@ -579,7 +582,7 @@ try {
         <span class="game-level-inline-xp"><span id="game-lbl-xp">0</span> XP</span>
       </div>
       <div class="mode-header game-hud">
-        <span id="game-progress-lbl">Progreso: 1/30</span>
+        <span class="game-mode-lbl"><img id="game-mode-badge" class="game-mode-badge" alt="" draggable="false" style="display:none"><span id="game-progress-lbl">Progreso: 1/30</span></span>
         <div class="game-streak-inline" id="game-streak-inline">
           <span class="game-streak-inline-icon">🔥</span>
           <span class="game-streak-inline-text">Racha <span id="game-current-streak">0</span></span>
@@ -1087,6 +1090,7 @@ try {
 <script src="src/ui/achievements.js"></script>
 <script src="src/ui/stats-extra.js"></script>
 <script src="src/ui/intro.js"></script>
+<script src="src/ui/mode-badges.js"></script>
 <script src="src/online/config.js"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
 <script src="src/utils/sync-merge.js"></script>
@@ -2236,7 +2240,11 @@ function updateResumeButton() {
   if (card) {
     card.classList.remove('mode-standard', 'mode-review', 'mode-survival', 'mode-sudden', 'mode-timetrial', 'mode-mentalcalc', 'mode-lucidez');
     card.classList.add(info.cls);
-    document.getElementById('resume-card-icon').innerHTML = info.icon; // icono fijo del catálogo (SVG o emoji), nunca datos del jugador
+    // Insignia ilustrada del modo (en Supervivencia, la de su dificultad); si no la hay, el icono del catálogo.
+    const iconEl = document.getElementById('resume-card-icon');
+    const badge = window.SEQModeBadges ? SEQModeBadges.img(saved.mode, saved.survivalTier) : '';
+    iconEl.innerHTML = badge || info.icon; // iconos fijos del catálogo, nunca datos del jugador
+    iconEl.classList.toggle('has-img', !!badge);
     document.getElementById('resume-card-title').textContent = 'Continuar: ' + info.name;
     document.getElementById('resume-card-desc').textContent = descText;
     card.style.display = 'block';
@@ -5456,7 +5464,7 @@ function renderQuestion(preserveAnswered = false) {
     document.getElementById('bar-fill').style.width = ((currentGame.currentIdx) / totalQ) * 100 + '%';
   } else if (currentGame.mode === 'review') {
     const totalQ = currentGame.totalQuestionsToPlay;
-    document.getElementById('game-progress-lbl').textContent = `MODO REPASO · 🧠 ${currentGame.currentIdx + 1}/${totalQ}`;
+    document.getElementById('game-progress-lbl').textContent = `MODO REPASO · ${currentGame.currentIdx + 1}/${totalQ}`;
     document.getElementById('bar-fill').style.width = ((currentGame.currentIdx) / totalQ) * 100 + '%';
   } else if (currentGame.mode === 'sudden_death') {
     const totalQ = currentGame.totalQuestionsToPlay;
@@ -5466,7 +5474,7 @@ function renderQuestion(preserveAnswered = false) {
     document.getElementById('bar-fill').style.width = ((currentGame.currentIdx) / totalQ) * 100 + '%';
   } else {
     const totalQ = currentGame.totalQuestionsToPlay;
-    document.getElementById('game-progress-lbl').textContent = `MODO ESTÁNDAR · 🎯 ${currentGame.currentIdx + 1}/${totalQ}`;
+    document.getElementById('game-progress-lbl').textContent = `MODO ESTÁNDAR · ${currentGame.currentIdx + 1}/${totalQ}`;
     document.getElementById('bar-fill').style.width = ((currentGame.currentIdx) / totalQ) * 100 + '%';
   }
   
@@ -6387,6 +6395,8 @@ function renderStats() {
 
 // Icono por modo para dar contexto visual rápido al historial (2.0: símbolos propios, mismos que en Jugar).
 function historyModeIcon(mode) {
+  const badge = window.SEQModeBadges ? SEQModeBadges.img(mode) : '';
+  if (badge) return badge;
   const icons = {
     'Modo Estándar': 'se-target', 'Repaso': 'se-review', 'Supervivencia': 'se-heart',
     'Muerte Súbita': 'se-skull', 'Contrarreloj': 'se-watch', 'Cálculo Mental': 'se-calc',
