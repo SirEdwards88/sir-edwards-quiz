@@ -196,7 +196,7 @@
      Contenido y botones los pinta src/online/online.js (SEQOnline). -->
 <div id="seq-migrate-modal" class="modal-overlay" style="display:none;">
   <div class="modal-card seq-modal-card" role="dialog" aria-modal="true" aria-labelledby="seq-migrate-title">
-    <h2 id="seq-migrate-title"><span aria-hidden="true">☁️</span> Tu progreso y tu cuenta</h2>
+    <h2 id="seq-migrate-title"><img class="seq-ico seq-ico-h" src="assets/ui/nube.webp" alt="" draggable="false">Tu progreso y tu cuenta</h2>
     <div id="seq-migrate-body"></div>
   </div>
 </div>
@@ -204,7 +204,7 @@
 <!-- v1.4: ranking global por XP online (datos del servidor). -->
 <div id="seq-ranking-modal" class="modal-overlay" style="display:none;">
   <div class="modal-card seq-modal-card" role="dialog" aria-modal="true" aria-labelledby="seq-ranking-title">
-    <h2 id="seq-ranking-title"><span aria-hidden="true">🏆</span> Ranking global</h2>
+    <h2 id="seq-ranking-title"><img class="seq-ico seq-ico-h" src="assets/ui/copa.webp" alt="" draggable="false">Ranking global</h2>
     <div id="seq-ranking-body"></div>
     <div class="modal-warning-actions">
       <button class="btn btn-primary" onclick="SEQOnline.closeRanking()">Cerrar</button>
@@ -276,7 +276,7 @@ try {
      queda una partida sin terminar. Ver confirmDiscardSavedGame(). -->
 <div id="discard-game-modal" class="modal-overlay" style="display:none;">
   <div class="modal-card modal-card-warning">
-    <div class="modal-warning-icon">⚠️</div>
+    <div class="modal-warning-icon"><img class="seq-ico seq-ico-xl" src="assets/ui/atencion.webp" alt="" draggable="false"></div>
     <h2>¡Atención!</h2>
     <p>Tienes una <strong>partida a medias</strong> sin terminar. Si empiezas esta partida nueva, perderás su progreso.</p>
     <p>¿Quieres continuar con la partida nueva de todas formas?</p>
@@ -292,7 +292,7 @@ try {
      showAppConfirm() / resolveAppConfirmModal(). -->
 <div id="app-confirm-modal" class="modal-overlay" style="display:none;">
   <div class="modal-card modal-card-warning">
-    <div class="modal-warning-icon">⚠️</div>
+    <div class="modal-warning-icon"><img class="seq-ico seq-ico-xl" src="assets/ui/atencion.webp" alt="" draggable="false"></div>
     <h2 id="app-confirm-title">¡Atención!</h2>
     <p id="app-confirm-message"></p>
     <div class="modal-warning-actions">
@@ -661,7 +661,7 @@ try {
         </div>
 
         <div id="session-medals-box" class="session-medals-box">
-          <div class="session-medals-title">🏆 ¡Nuevo(s) Logro(s) Desbloqueado(s)!</div>
+          <div class="session-medals-title"><img class="seq-ico" src="assets/ui/copa.webp" alt="" draggable="false">¡Nuevo(s) Logro(s) Desbloqueado(s)!</div>
           <div class="session-medals-list" id="session-medals-list"></div>
         </div>
 
@@ -670,7 +670,7 @@ try {
                y solo gana presencia cuando hay algo que contar (récord, Lucidez superada, logro o modo nuevo).
                -->
           <button class="btn btn-primary" id="res-back-btn" onclick="handleResultsBackButton()" style="width: 100%;">Volver al Menú Principal</button>
-          <button class="btn btn-share btn-share-quiet" id="res-share-btn" onclick="shareResult()">↗ Compartir resultado</button>
+          <button class="btn btn-share btn-share-quiet" id="res-share-btn" onclick="shareResult()"><img class="seq-ico" src="assets/ui/compartir.webp" alt="" draggable="false">Compartir resultado</button>
         </div>
       </div>
 
@@ -750,7 +750,7 @@ try {
       <div id="seq-stats-slot" class="seq-stats-slot"></div>
 
       <div id="stats-empty-state" class="stats-empty">
-        <div class="stats-empty-icon">🧠</div>
+        <div class="stats-empty-icon"><img class="seq-ico seq-ico-xl" src="assets/ui/cerebro.webp" alt="" draggable="false"></div>
         <div class="stats-empty-title">Tu perfil está empezando a formarse</div>
         <p class="stats-empty-sub">Juega algunas partidas para descubrir tus puntos fuertes.</p>
       </div>
@@ -1093,6 +1093,7 @@ try {
 <script src="src/ui/intro.js"></script>
 <script src="src/ui/mode-badges.js"></script>
 <script src="src/ui/sabias.js"></script>
+<script src="src/ui/icons.js"></script>
 <script src="src/online/config.js"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
 <script src="src/utils/sync-merge.js"></script>
@@ -1723,7 +1724,7 @@ function renderModeChips(chips) {
   }
   box.innerHTML = chips.map(c => `
     <span class="result-chip" title="${c.label}">
-      <span class="result-chip-icon">${({'🔥': '<img class="ui-img" src="assets/ui/racha.webp" alt="" draggable="false">', '✨': '<img class="ui-img" src="assets/ui/xp.webp" alt="" draggable="false">'})[c.icon] || c.icon}</span><span class="result-chip-value">${c.value}</span>
+      <span class="result-chip-icon">${({'🔥': '<img class="ui-img" src="assets/ui/racha.webp" alt="" draggable="false">', '✨': '<img class="ui-img" src="assets/ui/xp.webp" alt="" draggable="false">', '⏱️': '<img class="ui-img" src="assets/ui/tiempo.webp" alt="" draggable="false">', '🏅': '<img class="ui-img" src="assets/ui/medalla.webp" alt="" draggable="false">', '🎯': '<img class="ui-img" src="assets/modes/mini/estandar.webp" alt="" draggable="false">'})[c.icon] || c.icon}</span><span class="result-chip-value">${c.value}</span>
     </span>
   `).join('');
   box.classList.add('show');
@@ -1858,7 +1859,7 @@ function tryForgiveLucidezError(g = currentGame) {
   return true;
 }
 function lucidezForgiveNote(g = currentGame) {
-  return g.lucidezForgiveLeft > 0 ? ` · 🛡️ Errores extra restantes: ${g.lucidezForgiveLeft}` : ' · 🛡️ Sin errores extra';
+  return g.lucidezForgiveLeft > 0 ? ` · ${seqIco('escudo')}Errores extra restantes: ${g.lucidezForgiveLeft}` : ` · ${seqIco('escudo')}Sin errores extra`;
 }
 // Devuelve el hito recién desbloqueado (solo el más alto si se alcanzaron
 // varios a la vez) y marca todos los alcanzados como ya avisados.
@@ -1875,7 +1876,7 @@ function checkFragmentRewardsAndGetNew() {
   return newest;
 }
 function fragmentRewardItemHtml(t) {
-  return `<div class="session-medal-item"><div class="session-medal-icon">🧠</div><div><div class="session-medal-info">${t.fragments} Fragmentos de Mente</div><div class="session-medal-fragment">${t.text}</div></div></div>`;
+  return `<div class="session-medal-item"><div class="session-medal-icon">${seqIco('fragmento', 'seq-ico-lg')}</div><div><div class="session-medal-info">${t.fragments} Fragmentos de Mente</div><div class="session-medal-fragment">${t.text}</div></div></div>`;
 }
 // Añade el aviso (si hay hito nuevo) a la caja de logros de la tarjeta final.
 function appendFragmentRewardToResults() {
@@ -1936,7 +1937,7 @@ function registerOnlineDuelResult(info) {
   const reward = checkFragmentRewardsAndGetNew();
   saveStore(false);
   const parts = medals.map(m => `${m.icon} ${m.title}`);
-  if (reward) parts.push(`🧠 ${reward.fragments} Fragmentos: ${reward.text}`);
+  if (reward) parts.push(`${reward.fragments} Fragmentos: ${reward.text}`);
   if (parts.length && typeof showInfoToast === 'function') showInfoToast('Desbloqueado: ' + parts.join(' · '), '🏆');
   return { medals, reward };
 }
@@ -2339,7 +2340,7 @@ function restoreSavedGame() {
       const fb = document.getElementById('feedback');
       fb.style.display = 'block';
       fb.className = 'feedback bad';
-      fb.innerHTML = `⏱️ ¡Se acabó el tiempo! Era: <b>${escapeHtml(String(currentGame.finalRiddle.a))}</b>` + (currentGame.finalRiddle.explanation ? SEQSabias.html('explicacion', currentGame.finalRiddle.explanation) : '');
+      fb.innerHTML = `${seqIco('tiempo')}¡Se acabó el tiempo! Era: <b>${escapeHtml(String(currentGame.finalRiddle.a))}</b>` + (currentGame.finalRiddle.explanation ? SEQSabias.html('explicacion', currentGame.finalRiddle.explanation) : '');
       finishLucidezMode(true, true);
       updateResumeButton();
       return true;
@@ -3761,7 +3762,7 @@ function renderLucidezPhase2Calc(preserveAnswered = false, item, isResume = fals
   }
 
   lucidezRevealQText();
-  document.getElementById('q-text').textContent = `🧮 ${op.text}`;
+  document.getElementById('q-text').innerHTML = seqIco('calculo', 'seq-ico-lg') + escapeHtml(String(op.text));
   input.value = '';
   input.style.display = 'none';
   fb.style.display = 'none';
@@ -3900,7 +3901,7 @@ function updateLucidezPhase3Header() {
     const chip = document.getElementById('lucidez-p3-timer-chip');
     const timerNum = document.getElementById('lucidez-p3-timer-num');
     if (!chip || !timerNum) {
-      lbl.innerHTML = `FASE III · ${localIdx + 1}/9 <span id="lucidez-p3-timer-chip" class="lucidez-timer-chip${low ? ' lucidez-timer-low' : ''}">⏱️ <span id="lucidez-p3-timer-num">${lucidezPhase3SecondsLeft}</span>s</span>`;
+      lbl.innerHTML = `FASE III · ${localIdx + 1}/9 <span id="lucidez-p3-timer-chip" class="lucidez-timer-chip${low ? ' lucidez-timer-low' : ''}">${seqIco('tiempo')}<span id="lucidez-p3-timer-num">${lucidezPhase3SecondsLeft}</span>s</span>`;
     } else {
       chip.classList.toggle('lucidez-timer-low', low);
       timerNum.textContent = lucidezPhase3SecondsLeft;
@@ -3929,7 +3930,7 @@ function startLucidezFinalTimer(resetTime = true) {
       const fb = document.getElementById('feedback');
       fb.style.display = 'block';
       fb.className = 'feedback bad';
-      fb.innerHTML = `⏱️ ¡Se acabó el tiempo! Era: <b>${escapeHtml(String(currentGame.finalRiddle.a))}</b>` + (currentGame.finalRiddle.explanation ? SEQSabias.html('explicacion', currentGame.finalRiddle.explanation) : '');
+      fb.innerHTML = `${seqIco('tiempo')}¡Se acabó el tiempo! Era: <b>${escapeHtml(String(currentGame.finalRiddle.a))}</b>` + (currentGame.finalRiddle.explanation ? SEQSabias.html('explicacion', currentGame.finalRiddle.explanation) : '');
       currentGame.finalAnswerCorrect = false;
       finishLucidezMode(true, true);
     }
@@ -3942,7 +3943,7 @@ function updateLucidezFinalHeader() {
   const timerEl = document.getElementById('lucidez-enigma-timer');
   const low = lucidezFinalSecondsLeft <= 8;
   if (timerEl) {
-    timerEl.textContent = `Una sola respuesta${currentGame.lucidezForgiveLeft > 0 ? ' · 🛡️×' + currentGame.lucidezForgiveLeft : ''}. ${lucidezFinalSecondsLeft}s`;
+    timerEl.innerHTML = `Una sola respuesta${currentGame.lucidezForgiveLeft > 0 ? ' · ' + seqIco('escudo') + '×' + currentGame.lucidezForgiveLeft : ''}. ${lucidezFinalSecondsLeft}s`;
     timerEl.className = 'lucidez-enigma-timer' + (low ? ' lucidez-timer-low' : '');
   }
 }
@@ -4031,14 +4032,14 @@ function checkLucidezAnswer() {
       }
     }
     fb.className = 'feedback ok';
-    fb.innerHTML = `✅ ¡Correcto! (Era: <b>${escapeHtml(String(q.a))}</b>)`;
+    fb.innerHTML = `${seqIco('correcto')}¡Correcto! (Era: <b>${escapeHtml(String(q.a))}</b>)`;
   } else if (forgiven) {
     // Prompt 4: fallo perdonado. Cuenta para el mínimo de la fase, pero no
     // suma aciertos (score), ni penaliza tiempo, ni toca estadísticas.
     if (phase === 1) currentGame.phase1Correct = (currentGame.phase1Correct || 0) + 1;
     if (phase === 3) currentGame.phase3Correct = (currentGame.phase3Correct || 0) + 1;
     fb.className = 'feedback bad';
-    fb.innerHTML = `🛡️ Error extra: no cuenta. Era: <b>${escapeHtml(String(q.a))}</b>${lucidezForgiveNote()}`;
+    fb.innerHTML = `${seqIco('escudo')}Error extra: no cuenta. Era: <b>${escapeHtml(String(q.a))}</b>${lucidezForgiveNote()}`;
   } else {
     updateAnswerStreak(false, q);
     playSound('bad');
@@ -4048,7 +4049,7 @@ function checkLucidezAnswer() {
       if (!store.failedQuestions.includes(q.n)) store.failedQuestions.push(q.n);
     }
     fb.className = 'feedback bad';
-    fb.innerHTML = `❌ Incorrecto. Era: <b>${escapeHtml(String(q.a))}</b>`;
+    fb.innerHTML = `${seqIco('incorrecto')}Incorrecto. Era: <b>${escapeHtml(String(q.a))}</b>`;
 
     if (phase === 3) {
       lucidezPhase3EndTime -= 2000;
@@ -4097,17 +4098,17 @@ function checkLucidezPhase2Answer(item) {
     }
     currentGame.score++;
     fb.className = 'feedback ok';
-    fb.innerHTML = `✅ ¡Correcto! Era ${op.answer}.`;
+    fb.innerHTML = `${seqIco('correcto')}¡Correcto! Era ${op.answer}.`;
   } else if (forgiven) {
     fb.className = 'feedback bad';
-    fb.innerHTML = `🛡️ Error extra: no cuenta. Era: <b>${escapeHtml(String(op.answer))}</b> · ${renderLivesHearts(currentGame.lucidezLives, 2)}${lucidezForgiveNote()}`;
+    fb.innerHTML = `${seqIco('escudo')}Error extra: no cuenta. Era: <b>${escapeHtml(String(op.answer))}</b> · ${renderLivesHearts(currentGame.lucidezLives, 2)}${lucidezForgiveNote()}`;
   } else {
     updateAnswerStreak(false);
     playSound('bad');
     if (!currentGame.isDuel) store.totalWrong++;
     currentGame.lucidezLives--;
     fb.className = 'feedback bad';
-    fb.innerHTML = `❌ Incorrecto. Era: <b>${escapeHtml(String(op.answer))}</b> · ${renderLivesHearts(currentGame.lucidezLives, 2)} Vidas restantes: ${Math.max(0, currentGame.lucidezLives)}`;
+    fb.innerHTML = `${seqIco('incorrecto')}Incorrecto. Era: <b>${escapeHtml(String(op.answer))}</b> · ${renderLivesHearts(currentGame.lucidezLives, 2)} Vidas restantes: ${Math.max(0, currentGame.lucidezLives)}`;
   }
 
   document.getElementById('btn-check').style.display = 'none';
@@ -4162,10 +4163,10 @@ function checkLucidezPhase2QuestionAnswer(q) {
       }
     }
     fb.className = 'feedback ok';
-    fb.innerHTML = `✅ ¡Correcto! (Era: <b>${escapeHtml(String(q.a))}</b>)`;
+    fb.innerHTML = `${seqIco('correcto')}¡Correcto! (Era: <b>${escapeHtml(String(q.a))}</b>)`;
   } else if (forgiven) {
     fb.className = 'feedback bad';
-    fb.innerHTML = `🛡️ Error extra: no cuenta. Era: <b>${escapeHtml(String(q.a))}</b> · ${renderLivesHearts(currentGame.lucidezLives, 2)}${lucidezForgiveNote()}`;
+    fb.innerHTML = `${seqIco('escudo')}Error extra: no cuenta. Era: <b>${escapeHtml(String(q.a))}</b> · ${renderLivesHearts(currentGame.lucidezLives, 2)}${lucidezForgiveNote()}`;
   } else {
     updateAnswerStreak(false, q);
     playSound('bad');
@@ -4176,7 +4177,7 @@ function checkLucidezPhase2QuestionAnswer(q) {
     }
     currentGame.lucidezLives--;
     fb.className = 'feedback bad';
-    fb.innerHTML = `❌ Incorrecto. Era: <b>${escapeHtml(String(q.a))}</b> · ${renderLivesHearts(currentGame.lucidezLives, 2)} Vidas restantes: ${Math.max(0, currentGame.lucidezLives)}`;
+    fb.innerHTML = `${seqIco('incorrecto')}Incorrecto. Era: <b>${escapeHtml(String(q.a))}</b> · ${renderLivesHearts(currentGame.lucidezLives, 2)} Vidas restantes: ${Math.max(0, currentGame.lucidezLives)}`;
   }
 
   document.getElementById('btn-check').style.display = 'none';
@@ -4207,7 +4208,7 @@ function checkLucidezFinalAnswer() {
     const fb = document.getElementById('feedback');
     fb.style.display = 'block';
     fb.className = 'feedback bad';
-    fb.innerHTML = `⏱️ ¡Se acabó el tiempo! Era: <b>${escapeHtml(String(currentGame.finalRiddle.a))}</b>` + (currentGame.finalRiddle.explanation ? SEQSabias.html('explicacion', currentGame.finalRiddle.explanation) : '');
+    fb.innerHTML = `${seqIco('tiempo')}¡Se acabó el tiempo! Era: <b>${escapeHtml(String(currentGame.finalRiddle.a))}</b>` + (currentGame.finalRiddle.explanation ? SEQSabias.html('explicacion', currentGame.finalRiddle.explanation) : '');
     currentGame.finalAnswerCorrect = false;
     finishLucidezMode(true, true);
     return;
@@ -4226,7 +4227,7 @@ function checkLucidezFinalAnswer() {
     const fbRetry = document.getElementById('feedback');
     fbRetry.style.display = 'block';
     fbRetry.className = 'feedback bad';
-    fbRetry.innerHTML = `🛡️ Error extra: no cuenta. Inténtalo de nuevo${lucidezForgiveNote()}`;
+    fbRetry.innerHTML = `${seqIco('escudo')}Error extra: no cuenta. Inténtalo de nuevo${lucidezForgiveNote()}`;
     const inp = document.getElementById('ans-input');
     if (inp) { inp.value = ''; inp.focus(); }
     saveStore();
@@ -4248,13 +4249,13 @@ function checkLucidezFinalAnswer() {
     }
     currentGame.score++;
     fb.className = 'feedback ok';
-    fb.innerHTML = `✅ ¡Correcto! (Era: <b>${escapeHtml(String(riddle.a))}</b>)`;
+    fb.innerHTML = `${seqIco('correcto')}¡Correcto! (Era: <b>${escapeHtml(String(riddle.a))}</b>)`;
   } else {
     updateAnswerStreak(false);
     playSound('bad');
     if (!currentGame.isDuel) store.totalWrong++;
     fb.className = 'feedback bad';
-    fb.innerHTML = `❌ Incorrecto. Era: <b>${escapeHtml(String(riddle.a))}</b>` + (riddle.explanation ? SEQSabias.html('explicacion', riddle.explanation) : '');
+    fb.innerHTML = `${seqIco('incorrecto')}Incorrecto. Era: <b>${escapeHtml(String(riddle.a))}</b>` + (riddle.explanation ? SEQSabias.html('explicacion', riddle.explanation) : '');
   }
 
   document.getElementById('btn-check').style.display = 'none';
@@ -4272,7 +4273,7 @@ function finishLucidezMode(failed, timedOut = false, phaseInsufficient = null) {
   cancelLucidezRevealTimeout();
 
   const resShareBtn = document.getElementById('res-share-btn');
-  if (resShareBtn) { resShareBtn.textContent = '↗ Compartir resultado'; resShareBtn.style.display = ''; }
+  if (resShareBtn) { resShareBtn.innerHTML = seqIco('compartir') + 'Compartir resultado'; resShareBtn.style.display = ''; }
   const resBackBtn = document.getElementById('res-back-btn');
   if (resBackBtn) { resBackBtn.textContent = 'Volver al Menú Principal'; }
 
@@ -4975,7 +4976,7 @@ function updateMentalCalcHeader() {
     // <span> para poder animarlo (flash +2/-3) sin reescribir todo el texto.
     let timerNum = document.getElementById('mc-timer-num');
     if (!timerNum) {
-      lbl.innerHTML = `CÁLCULO MENTAL · ⏱️ <span id="mc-timer-num">${mentalCalcSecondsLeft}</span>s | ⭐ ${currentGame.score} pts`;
+      lbl.innerHTML = `CÁLCULO MENTAL · ${seqIco('tiempo')}<span id="mc-timer-num">${mentalCalcSecondsLeft}</span>s | ${seqIco('xp')}${currentGame.score} pts`;
     } else {
       timerNum.textContent = mentalCalcSecondsLeft;
       lbl.lastChild.textContent = `s | ⭐ ${currentGame.score} pts`;
@@ -5083,12 +5084,12 @@ function checkMentalCalcAnswer() {
     playMentalCalcChangeFX(true);
 
     fb.className = 'feedback ok';
-    fb.innerHTML = `✅ ¡Correcto! <span style="color:#16a34a;font-weight:bold;">+${pointsWon} pts</span>`;
+    fb.innerHTML = `${seqIco('correcto')}¡Correcto! <span style="color:#16a34a;font-weight:bold;">+${pointsWon} pts</span>`;
   } else {
     playSound('bad');
     currentGame.streak = 0;
     fb.className = 'feedback bad';
-    fb.innerHTML = `❌ Incorrecto. Era: <b>${currentMentalOp.answer}</b>`;
+    fb.innerHTML = `${seqIco('incorrecto')}Incorrecto. Era: <b>${currentMentalOp.answer}</b>`;
 
     // -3s por fallo. Si el tiempo llega a 0, la partida termina de inmediato
     // en vez de esperar al siguiente tick del intervalo (cada 100ms).
@@ -5246,7 +5247,7 @@ function updateTimeTrialHeader() {
     // la animación a mitad de camino.
     let timerNum = document.getElementById('tt-timer-num');
     if (!timerNum) {
-      lbl.innerHTML = `CONTRARRELOJ · ⏱️ <span id="tt-timer-num">${timeTrialSecondsLeft}</span>s | Aciertos: ${currentGame.score}`;
+      lbl.innerHTML = `CONTRARRELOJ · ${seqIco('tiempo')}<span id="tt-timer-num">${timeTrialSecondsLeft}</span>s | Aciertos: ${currentGame.score}`;
     } else {
       timerNum.textContent = timeTrialSecondsLeft;
       lbl.lastChild.textContent = `s | Aciertos: ${currentGame.score}`;
@@ -5592,7 +5593,7 @@ function checkAnswer() {
 
       playTimeTrialChangeFX(true);
       fb.className = 'feedback ok';
-      fb.innerHTML = `✅ ¡Correcto!`;
+      fb.innerHTML = `${seqIco('correcto')}¡Correcto!`;
     } else {
       updateAnswerStreak(false, q);
       playSound('bad');
@@ -5604,7 +5605,7 @@ function checkAnswer() {
 
       playTimeTrialChangeFX(false);
       fb.className = 'feedback bad';
-      fb.innerHTML = `❌ Incorrecto. Era: <b>${escapeHtml(String(q.a))}</b>`;
+      fb.innerHTML = `${seqIco('incorrecto')}Incorrecto. Era: <b>${escapeHtml(String(q.a))}</b>`;
 
       if (timeTrialEndTime <= Date.now()) {
         if (timeTrialTimer) { clearInterval(timeTrialTimer); timeTrialTimer = null; }
@@ -5654,14 +5655,14 @@ function checkAnswer() {
         store.failedQuestions = store.failedQuestions.filter(id => id !== q.n);
         store.errorsCleaned = (store.errorsCleaned || 0) + 1;
         fb.className = 'feedback ok';
-        fb.innerHTML = `✅ ¡Correcto! (Era: <b>${escapeHtml(String(q.a))}</b>) 🧹 <b>¡Completado 3/3! Pregunta dominada y eliminada de Repaso.</b>`;
+        fb.innerHTML = `${seqIco('correcto')}¡Correcto! (Era: <b>${escapeHtml(String(q.a))}</b>) ${seqIco('escoba')}<b>¡Completado 3/3! Pregunta dominada y eliminada de Repaso.</b>`;
       } else {
         fb.className = 'feedback ok';
-        fb.innerHTML = `✅ ¡Correcto! (Era: <b>${escapeHtml(String(q.a))}</b>) 📈 Progreso para dominar esta pregunta: <b>${store.questionStreaks[q.n]}/3</b> aciertos seguidos.`;
+        fb.innerHTML = `${seqIco('correcto')}¡Correcto! (Era: <b>${escapeHtml(String(q.a))}</b>) ${seqIco('progreso')}Progreso para dominar esta pregunta: <b>${store.questionStreaks[q.n]}/3</b> aciertos seguidos.`;
       }
     } else {
       fb.className = 'feedback ok';
-      fb.innerHTML = `✅ ¡Correcto! (Era: <b>${escapeHtml(String(q.a))}</b>)`;
+      fb.innerHTML = `${seqIco('correcto')}¡Correcto! (Era: <b>${escapeHtml(String(q.a))}</b>)`;
     }
     if (q.sabias && (currentGame.mode === 'play' || currentGame.mode === 'review')) {
       fb.innerHTML += SEQSabias.html('sabias', q.sabias);
@@ -5699,7 +5700,7 @@ function checkAnswer() {
     recordWrongAnswer(q);
 
     fb.className = 'feedback bad';
-    fb.innerHTML = `❌ Incorrecto. Era: <b>${escapeHtml(String(q.a))}</b>`;
+    fb.innerHTML = `${seqIco('incorrecto')}Incorrecto. Era: <b>${escapeHtml(String(q.a))}</b>`;
     if (q.sabias && (currentGame.mode === 'play' || currentGame.mode === 'review')) {
       fb.innerHTML += SEQSabias.html('sabias', q.sabias);
     }
@@ -5792,7 +5793,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   // abajo si currentGame.isDuel es true, para que una partida normal
   // posterior no arrastre el bloque/código del duelo anterior.
   const resShareBtn = document.getElementById('res-share-btn');
-  if (resShareBtn) { resShareBtn.textContent = '↗ Compartir resultado'; resShareBtn.style.display = ''; }
+  if (resShareBtn) { resShareBtn.innerHTML = seqIco('compartir') + 'Compartir resultado'; resShareBtn.style.display = ''; }
   const resBackBtn = document.getElementById('res-back-btn');
   if (resBackBtn) { resBackBtn.textContent = 'Volver al Menú Principal'; }
 
@@ -5992,7 +5993,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     if (currentGame.mode === 'timetrial') {
       const timeResult = getModeEndPhrase(TIMETRIAL_END_PHRASES, currentGame.score || 0, 'timetrial');
       const timeTitles = { mal: 'Mal resultado', normal: 'Resultado normal', bien: 'Buen resultado' };
-      document.getElementById('res-category-text').textContent = `⚡ ${timeTitles[timeResult.category]}`;
+      document.getElementById('res-category-text').textContent = timeTitles[timeResult.category];
       document.getElementById('res-phrase-text').textContent = timeResult.phrase;
       setResultTone('timetrial', RESULT_MOOD_ICONS.timetrial);
       // Sin sello de "completado": a diferencia de Supervivencia o Muerte
@@ -6061,9 +6062,9 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   // Reconocimiento especial, solo si procede: prioriza el récord numérico
   // del modo (Contrarreloj/Cálculo Mental) y, si no aplica, la racha global.
   if (currentGame.mode === 'timetrial' && currentGame.isNewRecord) {
-    renderRecordBadge('🏆 NUEVO RÉCORD', 'gold');
+    renderRecordBadge(seqIco('copa') + 'NUEVO RÉCORD', 'gold');
   } else if (currentGame.mode === 'mental_calc' && currentGame.isNewRecord) {
-    renderRecordBadge('🏆 NUEVO RÉCORD', 'gold');
+    renderRecordBadge(seqIco('copa') + 'NUEVO RÉCORD', 'gold');
   } else if (['play', 'review', 'survival', 'sudden_death'].includes(currentGame.mode) && currentGame.newBestStreakThisGame) {
     renderRecordBadge('<img class="ui-img ui-stamp-img" src="assets/ui/racha.webp" alt="" draggable="false">NUEVA MEJOR RACHA', 'gold');
   } else {
@@ -6142,7 +6143,7 @@ function shareResultAsText(shareText) {
       const btn = document.getElementById('res-share-btn');
       if (!btn) return;
       const original = btn.textContent;
-      btn.textContent = '✅ ¡Copiado!';
+      btn.innerHTML = seqIco('correcto') + '¡Copiado!';
       // Prompt 2 — Fase C: mismo cambio de texto de siempre, solo se anima
       // (ver .btn-confirm-pulse en styles/main.css). No toca el resultado
       // real de copyar/compartir ni cuándo se revierte el texto.
@@ -6722,7 +6723,9 @@ function showInfoToast(message, icon){
     t.innerHTML = '<span class="toast-icon"></span><span class="toast-msg"></span>';
     document.body.appendChild(t);
   }
-  t.querySelector('.toast-icon').textContent = icon || 'ℹ️';
+  const toastIcon = t.querySelector('.toast-icon');
+  const toastImg = (typeof SEQIcons !== 'undefined') ? SEQIcons.fromEmoji(icon) : '';
+  if (toastImg) toastIcon.innerHTML = toastImg; else toastIcon.textContent = icon || 'ℹ️';
   t.querySelector('.toast-msg').textContent = message;
   t.classList.add('show');
   clearTimeout(window.__infoToastTimer);

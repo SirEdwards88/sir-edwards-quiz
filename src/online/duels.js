@@ -370,12 +370,18 @@
   }
   // Acierto / fallo con el mismo componente que la partida normal (.feedback.ok /
   // .feedback.bad), con texto propio de duelo. Se construye con textContent.
-  var VERDICT_OK = '✅ ¡Punto para ti!';
-  var VERDICT_BAD = '❌ Esta se te escapa. Era: ';
+  var VERDICT_OK = '¡Punto para ti!';
+  var VERDICT_BAD = 'Esta se te escapa. Era: ';
+  // 2.0: ilustración (HTML fijo, sin datos del servidor) delante del texto.
+  function ico(n) { return window.seqIco ? window.seqIco(n) : ''; }
   function setVerdict(ok, correct) {
     var el = $('seq-d-verdict'); if (!el) return;
     el.className = 'feedback seq-d-feedback ' + (ok ? 'ok' : 'bad');
     el.textContent = ok ? VERDICT_OK : VERDICT_BAD;
+    if (window.SEQIcons) {
+      var im = document.createElement('img'); im.className = 'seq-ico'; im.alt = ''; im.draggable = false;
+      im.src = window.SEQIcons.src(ok ? 'correcto' : 'incorrecto'); el.insertBefore(im, el.firstChild);
+    }
     if (!ok && correct != null) { var b = document.createElement('b'); b.textContent = String(correct); el.appendChild(b); }
     el.style.display = 'block';
   }
@@ -418,9 +424,20 @@
   function backToList() { open(S.pickKind === 'duel' ? 'duels' : 'retos'); }
   function resultLine(r) {
     if (!r) return '';
-    if (r.ganador === 'yo') return '🏆 Ganaste ' + num(r.mi_puntuacion) + '–' + num(r.puntuacion_rival);
-    if (r.ganador === 'rival') return '😔 Perdiste ' + num(r.mi_puntuacion) + '–' + num(r.puntuacion_rival);
-    return '🤝 Empate ' + num(r.mi_puntuacion) + '–' + num(r.puntuacion_rival);
+    if (r.ganador === 'yo') return 'Ganaste ' + num(r.mi_puntuacion) + '–' + num(r.puntuacion_rival);
+    if (r.ganador === 'rival') return 'Perdiste ' + num(r.mi_puntuacion) + '–' + num(r.puntuacion_rival);
+    return 'Empate ' + num(r.mi_puntuacion) + '–' + num(r.puntuacion_rival);
+  }
+  function resultIco(r) { return !r ? '' : ico(r.ganador === 'yo' ? 'copa' : r.ganador === 'rival' ? 'derrota' : 'amigos'); }
+  // Logros de duelo online: insignia ilustrada por id (el servidor sigue mandando su emoji, que queda de reserva).
+  var ONLINE_ACH_IMG = {
+    online_primer_duelo: 'assets/modes/mini/duelo.webp', online_primera_victoria: 'assets/logros/duel_victoria_inaugural.webp',
+    online_cinco_victorias: 'assets/logros/games_50.webp', online_perfecto: 'assets/logros/lucidez_absoluta.webp',
+    reto_primero: 'assets/modes/retos.webp', duelo_empate: 'assets/modes/amigos.webp'
+  };
+  function achIcon(a) {
+    var src = a && Object.prototype.hasOwnProperty.call(ONLINE_ACH_IMG, a.id) ? ONLINE_ACH_IMG[a.id] : '';
+    return src ? '<img class="seq-d-ach-img" src="' + src + '" alt="" draggable="false">' : esc(a && a.icon);
   }
   function rowFor(kind, x) {
     var p = player(x.rival), id = safeId(x.id);
@@ -437,7 +454,7 @@
   function renderList(kind) {
     var list = kind === 'duel' ? S.lists.duels : S.lists.retos;
     var h = kind === 'duel' ? header('Duelo online', 'En directo contra un amigo', back) : header('Retos', 'Cada uno juega cuando puede', back);
-    h += '<button class="btn btn-primary" style="width:100%;margin:10px 0;" onclick="SEQDuels.pick(\'' + kind + '\')">' + (kind === 'duel' ? '⚡ Retar a un amigo ahora' : '📨 Crear reto') + '</button>';
+    h += '<button class="btn btn-primary" style="width:100%;margin:10px 0;" onclick="SEQDuels.pick(\'' + kind + '\')">' + (kind === 'duel' ? ico('duelo') + 'Retar a un amigo ahora' : ico('retos') + 'Crear reto') + '</button>';
     if (!list) return h + '<p class="stats-section-sub">Cargando…</p>';
     var act_ = list.filter(function (x) { return ['pendiente', 'aceptado', 'en_curso'].indexOf(x.estado) >= 0; });
     var hist = list.filter(function (x) { return act_.indexOf(x) < 0; });
@@ -499,9 +516,9 @@
     h += '<p class="history-item-sub seq-d-rival">Duelos online: ' + num(st.online.jugados) + ' jugados · ' + num(st.online.ganados) + ' ganados · Retos: ' + num(st.retos.jugados) + ' jugados · ' + num(st.retos.ganados) + ' ganados</p>';
     return h + '<div class="history-list">' + (d.achievements || []).map(function (a) {
       var goal = num(a.goal) || 1, prog = Math.min(num(a.progress), goal);
-      return '<div class="history-item seq-d-ach' + (a.unlocked === true ? ' seq-d-ach-on' : '') + '"><div class="seq-d-ach-icon">' + esc(a.icon) + '</div><div class="seq-d-ach-body"><div class="history-item-info">' + esc(a.title) + '</div><div class="history-item-sub">' + esc(a.desc) + '</div>' +
+      return '<div class="history-item seq-d-ach' + (a.unlocked === true ? ' seq-d-ach-on' : '') + '"><div class="seq-d-ach-icon">' + achIcon(a) + '</div><div class="seq-d-ach-body"><div class="history-item-info">' + esc(a.title) + '</div><div class="history-item-sub">' + esc(a.desc) + '</div>' +
         (goal > 1 && a.unlocked !== true ? '<div class="progress-bar seq-d-ach-bar"><div class="bar-fill" style="width:' + Math.round(prog / goal * 100) + '%"></div></div>' : '') +
-        '</div><div class="history-item-score">' + (a.unlocked === true ? '✅' : prog + '/' + goal) + '</div></div>';
+        '</div><div class="history-item-score">' + (a.unlocked === true ? ico('correcto') : prog + '/' + goal) + '</div></div>';
     }).join('') + '</div>';
   }
   function quick(kind, id) { S.pickKind = kind === 'duel' ? 'duel' : 'reto'; create(id); }
@@ -518,7 +535,7 @@
     var h = kind === 'duel' ? '<button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.open(\'duels\')">← Duelo online</button>'
       : '<button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.open(\'retos\')">← Retos</button>';
     h += '<div id="seq-d-msg" class="feedback" style="display:none;"></div>';
-    h += '<div class="mode-header game-hud seq-d-hud"><span class="seq-d-hud-lbl">' + (kind === 'duel' ? 'DUELO<span class="seq-d-long"> ONLINE</span>' : 'RETO') + ' · ' + (num(idx) + 1) + '/20 · ⏱️ <span id="seq-d-time"></span>s</span>' +
+    h += '<div class="mode-header game-hud seq-d-hud"><span class="seq-d-hud-lbl">' + (kind === 'duel' ? 'DUELO<span class="seq-d-long"> ONLINE</span>' : 'RETO') + ' · ' + (num(idx) + 1) + '/20 · ' + ico('tiempo') + '<span id="seq-d-time"></span>s</span>' +
       '<span class="game-streak-inline seq-d-rival-chip" title="Tu rival"><span class="seq-d-vs-lbl">vs </span><span class="game-streak-inline-icon">' + p.avatar + '</span> <span class="seq-d-rival-name">' + p.name + '</span></span></div>';
     h += '<div class="progress-bar"><div id="seq-d-bar" class="bar-fill"></div></div>';
     return h + questionBlock(d.id, idx, qn, mine);
@@ -542,7 +559,7 @@
     // Veredicto ya conocido (al volver a pintar una pregunta respondida): mismo
     // .feedback que la partida normal, sin volver a sonar.
     if (mine) h += '<div id="seq-d-verdict" class="feedback seq-d-feedback ' + (mine.es_correcta ? 'ok' : 'bad') + '" aria-live="polite" style="display:block;">' +
-      (mine.es_correcta ? esc(VERDICT_OK) : esc(VERDICT_BAD) + '<b>' + esc(String(q.a)) + '</b>') + '</div>';
+      (mine.es_correcta ? ico('correcto') + esc(VERDICT_OK) : ico('incorrecto') + esc(VERDICT_BAD) + '<b>' + esc(String(q.a)) + '</b>') + '</div>';
     else h += '<div id="seq-d-verdict" class="feedback seq-d-feedback" aria-live="polite" style="display:none;"></div>';
     return h;
   }
@@ -555,7 +572,7 @@
     var cls = r.ganador === 'yo' ? 'duel-result-win' : r.ganador === 'rival' ? 'duel-result-loss' : 'duel-result-draw';
     var note = d.motivo_fin === 'abandono' ? (d.yo && d.yo.abandonado ? 'Perdiste por abandono (más de 30 s sin conexión).' : p.name + ' abandonó la partida.')
       : d.motivo_fin === 'no_jugado' ? (r.ganador === 'yo' ? p.name + ' no jugó a tiempo.' : 'No jugaste a tiempo.') : '';
-    var h = '<div class="duel-result-box ' + cls + '"><div class="duel-result-title">' + esc(resultLine(r)) + '</div><p class="duel-result-hint">Tú ' + num(r.mi_puntuacion) + ' · ' + p.avatar + ' ' + p.name + ' ' + num(r.puntuacion_rival) + '</p>' + (note ? '<p class="duel-result-hint">' + note + '</p>' : '') + '</div>';
+    var h = '<div class="duel-result-box ' + cls + '"><div class="duel-result-title">' + resultIco(r) + esc(resultLine(r)) + '</div><p class="duel-result-hint">Tú ' + num(r.mi_puntuacion) + ' · ' + p.avatar + ' ' + p.name + ' ' + num(r.puntuacion_rival) + '</p>' + (note ? '<p class="duel-result-hint">' + note + '</p>' : '') + '</div>';
     var ids = kind === 'duel' ? d.preguntas : r.preguntas;
     var mine = {}, his = {};
     (d.yo.respuestas || []).forEach(function (a) { mine[num(a.indice)] = a; });
@@ -566,8 +583,8 @@
       return '<div class="history-item"><div><div class="history-item-info">' + (i + 1) + '. ' + esc(q.q) + '</div><div class="history-item-sub">Respuesta: ' + esc(q.a) + (a && !a.es_correcta ? ' · tú: ' + esc(a.respuesta) : '') + '</div></div><div class="seq-d-marks" title="Tú · rival">' + (a ? (a.es_correcta ? '✅' : '❌') : '⏱️') + ' ' + (b ? (b.es_correcta ? '✅' : '❌') : '⏱️') + '</div></div>';
     }).join('') + '</div>';
     // Prompt 5: tarjeta de resultado para compartir (solo con un resultado ya visible arriba).
-    if (d.estado === 'completado') h += '<button class="btn btn-share" style="width:100%;margin-top:12px;" onclick="SEQDuels.shareResult()">📤 Compartir resultado</button>';
-    if (d.estado === 'completado') h += '<button class="btn btn-primary" style="width:100%;margin-top:12px;" onclick="SEQDuels.' + (kind === 'duel' ? 'duelAction' : 'retoAction') + '(\'rematch\')">🔁 Revancha</button>';
+    if (d.estado === 'completado') h += '<button class="btn btn-share" style="width:100%;margin-top:12px;" onclick="SEQDuels.shareResult()">' + ico('compartir') + 'Compartir resultado</button>';
+    if (d.estado === 'completado') h += '<button class="btn btn-primary" style="width:100%;margin-top:12px;" onclick="SEQDuels.' + (kind === 'duel' ? 'duelAction' : 'retoAction') + '(\'rematch\')">' + ico('revancha') + 'Revancha</button>';
     return h;
   }
   function renderDuel() {
@@ -581,7 +598,7 @@
       return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Esperando a que ' + p.name + ' acepte…</div><p class="duel-result-hint">Le quedan <span id="seq-d-count"></span> s. Lo verá al abrir el juego.</p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.duelAction(\'cancel\')">Cancelar</button></div>';
     }
     if (d.estado === 'aceptado') {
-      return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Sala de espera</div><p class="duel-result-hint">Tú: ' + (d.yo.listo ? '✅ listo' : '⏳') + ' · ' + p.name + ': ' + (d.rival_estado.listo ? '✅ listo' : '⏳') + '</p><p class="duel-result-hint">Quedan <span id="seq-d-count"></span> s para que los dos estéis listos.</p>' + (d.yo.listo ? '' : '<button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.duelAction(\'ready\')">✅ ¡Listo!</button>') + '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.duelAction(\'cancel\')">Salir</button></div>';
+      return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Sala de espera</div><p class="duel-result-hint">Tú: ' + (d.yo.listo ? ico('correcto') + 'listo' : ico('mediocre')) + ' · ' + p.name + ': ' + (d.rival_estado.listo ? ico('correcto') + 'listo' : ico('mediocre')) + '</p><p class="duel-result-hint">Quedan <span id="seq-d-count"></span> s para que los dos estéis listos.</p>' + (d.yo.listo ? '' : '<button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.duelAction(\'ready\')">✅ ¡Listo!</button>') + '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.duelAction(\'cancel\')">Salir</button></div>';
     }
     if (d.estado === 'en_curso') {
       var t0 = num(d.t0), dur = num(d.duracion_pregunta_ms) || 10000;

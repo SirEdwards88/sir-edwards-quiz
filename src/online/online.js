@@ -77,6 +77,7 @@
   function lsGet(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
   function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
   function lsDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  function ico(n, cls) { return window.seqIco ? window.seqIco(n, cls) : ''; }
   function toast(msg, icon) { try { if (typeof showInfoToast === 'function') showInfoToast(msg, icon); } catch (e) {} }
   // ¿Hay una partida REALMENTE a medias? hasSavedGame() ignora partidas ya terminadas/perdidas que aún dejan un `savedGame`
   // residual (p. ej. al cambiar el tema justo después de acabar): esas no deben bloquear la sincronización.
@@ -577,11 +578,11 @@
         text = 'Hay progreso en este dispositivo y en tu cuenta. Al combinar se conserva <b>el valor más alto de cada contador</b> y <b>todos los logros de ambos lados</b>. No se borra nada en ningún sitio.';
         primary = 'Combinar progreso';
       }
-      var warn = (sync && sync.otherAccountBefore) ? '<p class="seq-warn">⚠️ Este dispositivo estuvo enlazado a otra cuenta. Combina solo si el progreso de aquí es tuyo.</p>' : '';
+      var warn = (sync && sync.otherAccountBefore) ? '<p class="seq-warn">' + ico('atencion') + 'Este dispositivo estuvo enlazado a otra cuenta. Combina solo si el progreso de aquí es tuyo.</p>' : '';
       var host = $('seq-migrate-body');
       host.innerHTML =
         '<p>' + text + '</p>' +
-        '<div class="seq-sums">' + summaryHtml('📱 En este dispositivo', loc) + summaryHtml('☁️ En tu cuenta', { xp: on.xp, games: on.games, medals: on.medals }) + '</div>' + warn +
+        '<div class="seq-sums">' + summaryHtml(ico('movil') + 'En este dispositivo', loc) + summaryHtml(ico('nube') + 'En tu cuenta', { xp: on.xp, games: on.games, medals: on.medals }) + '</div>' + warn +
         '<p class="seq-note">Esta operación es segura y se puede repetir: nunca suma dos veces ni reduce nada.</p>' +
         '<div class="modal-warning-actions seq-actions">' +
         '<button class="btn btn-primary" id="seq-mig-primary" onclick="SEQOnline.doMerge()">' + primary + '</button>' +
@@ -712,7 +713,7 @@
       var rows = list.map(function (r) {
         var av = AVATARS.indexOf(r.avatar) !== -1 ? r.avatar : DEFAULT_AVATAR;
         var rk = n(r.rank), xp = n(r.xp), me = r.is_me === true;
-        var pos = rk === 1 ? '🥇' : rk === 2 ? '🥈' : rk === 3 ? '🥉' : rk;
+        var pos = rk === 1 ? ico('oro', 'seq-ico-lg') : rk === 2 ? ico('plata', 'seq-ico-lg') : rk === 3 ? ico('bronce', 'seq-ico-lg') : rk;
         return '<li class="seq-rank-row' + (me ? ' me' : '') + '"><span class="seq-rank-pos">' + pos + '</span><span class="seq-rank-av">' + (window.SEQAvatars ? window.SEQAvatars.avatarHTML(av) : av) + '</span>' +
           '<span class="seq-rank-name">' + esc(r.display_name) + (me ? ' <em>(tú)</em>' : '') + '</span>' +
           '<span class="seq-rank-xp"><b>Nv ' + levelOf(xp) + '</b><small>' + xp + ' XP</small></span></li>';
@@ -721,7 +722,7 @@
         ? '<div class="seq-rank-me-out">Tu puesto: <b>#' + n(d.me.rank) + '</b> de ' + n(d.total_players) + ' · ' + n(d.me.xp) + ' XP</div>' : '';
       body.innerHTML = (rows ? '<ol class="seq-rank-list">' + rows + '</ol>' : '<p>Aún no hay nadie en el ranking.</p>') + meOut +
         '<p class="seq-note">Clasificación por XP total online. Se actualiza cuando cada jugador sincroniza.</p>' +
-        '<p class="seq-warn">⚠️ Clasificación NO verificada: cada dispositivo informa de su propio progreso y el servidor no puede comprobar que los aciertos sean reales.</p>' + retryBtn();
+        '<p class="seq-warn">' + ico('atencion') + 'Clasificación NO verificada: cada dispositivo informa de su propio progreso y el servidor no puede comprobar que los aciertos sean reales.</p>' + retryBtn();
     }).catch(function (err) {
       if (authFailure(err)) { body.innerHTML = '<p>Tu sesión ha caducado. Vuelve a iniciar sesión desde Ajustes.</p>'; render(); return; }
       body.innerHTML = '<p>' + (err && err.network ? 'No se pudo conectar. El juego sigue funcionando sin conexión.' : 'No se pudo cargar el ranking.') + '</p>' + retryBtn();
