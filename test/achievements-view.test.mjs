@@ -48,3 +48,18 @@ test('el objetivo de cada barra es exactamente el umbral de su logro', () => {
     assert.equal(P[m.id](mk(target))[0], target, m.id + ': la barra no mide lo mismo que la condición');
   }
 });
+
+test('insignias: todos los logros tienen sello, símbolos existentes y ninguna pareja símbolo+cifra repetida', () => {
+  const c = load();
+  const B = c.window.SEQAchievements.BADGES;
+  const missing = c.ALL_MEDALS.filter((m) => !B[m.id]).map((m) => m.id);
+  assert.equal(missing.join(','), '', 'sin insignia: ' + missing.join(','));
+  const pairs = Object.values(B).map((b) => b[0] + '|' + b[1]);
+  const dup = pairs.filter((p, i) => pairs.indexOf(p) !== i);
+  assert.equal(dup.join(','), '', 'insignias repetidas: ' + dup.join(','));
+  const src = fs.readFileSync(new URL('../src/ui/achievements.js', import.meta.url), 'utf8');
+  const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  for (const [sym] of Object.values(B)) {
+    assert.ok(src.includes(`<symbol id="${sym}"`) || html.includes(`<symbol id="${sym}"`), 'símbolo inexistente: ' + sym);
+  }
+});

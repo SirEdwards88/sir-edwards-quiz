@@ -704,15 +704,35 @@ try {
         </div>
       </div>
 
-      <!-- [ NIVEL / XP ]: mismo dato que la home, en formato de resumen,
-           para que Estadísticas se sienta como un dashboard de progreso
-           personal y no solo una lista de contadores. -->
-      <div class="stats-level-widget">
-        <div class="stats-level-widget-icon">🧠</div>
-        <div class="stats-level-widget-info">
-          <div class="stats-level-widget-top">NIVEL <span id="stats-lbl-level">1</span></div>
-          <div class="progress-bar stats-level-widget-bar"><div id="stats-level-bar-fill" class="bar-fill"></div></div>
-          <div class="stats-level-widget-xp"><span id="stats-lbl-xp">0</span> XP</div>
+      <!-- 2.0 polish: «ficha» del jugador (expediente de Sir Edwards). Nivel, XP y progreso arriba; debajo los
+           tres datos principales. Mismos ids de siempre: renderStats() los rellena igual. El nombre y la ocultación
+           de los datos cuando aún no hay partidas los pone src/ui/stats-extra.js. -->
+      <div class="stats-dossier" id="stats-dossier">
+        <div class="dossier-head"><span class="dossier-kicker">Expediente de</span><span class="dossier-name" id="dossier-name">Jugador</span></div>
+        <div class="stats-level-widget">
+          <div class="stats-level-widget-icon dossier-seal" aria-hidden="true"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#sb-hat"/></svg></div>
+          <div class="stats-level-widget-info">
+            <div class="stats-level-widget-top">NIVEL <span id="stats-lbl-level">1</span></div>
+            <div class="progress-bar stats-level-widget-bar"><div id="stats-level-bar-fill" class="bar-fill"></div></div>
+            <div class="stats-level-widget-xp"><span id="stats-lbl-xp">0</span> XP</div>
+          </div>
+        </div>
+        <div class="dossier-tiles" id="dossier-tiles">
+          <div class="dossier-tile">
+            <div class="dossier-tile-label">Precisión</div>
+            <div class="dossier-tile-value" id="st-accuracy">0%</div>
+            <div class="dossier-tile-sub"><span id="st-correct">0</span> aciertos · <span id="st-played">0</span> partidas</div>
+          </div>
+          <div class="dossier-tile">
+            <div class="dossier-tile-label">Mejor racha</div>
+            <div class="dossier-tile-value" id="best-streak">0</div>
+            <div class="dossier-tile-sub">aciertos seguidos</div>
+          </div>
+          <div class="dossier-tile">
+            <div class="dossier-tile-label">Mejor resultado</div>
+            <div class="dossier-tile-value" id="best-game">—</div>
+            <div class="dossier-tile-sub" id="best-game-context"></div>
+          </div>
         </div>
       </div>
 
@@ -727,44 +747,19 @@ try {
 
       <div id="stats-content">
 
-        <!-- NIVEL 1 — ¿Cómo voy? -->
-        <div class="stats-hero">
-          <div class="stats-hero-value" id="st-accuracy">0%</div>
-          <div class="stats-hero-label">Precisión global</div>
-          <div class="stats-hero-sub"><span id="st-correct">0</span> aciertos en <span id="st-played">0</span> partidas</div>
-        </div>
-
-        <div class="stats-highlight-row">
-          <div class="stats-highlight">
-            <span class="stats-highlight-icon stats-icon-streak">🔥</span>
-            <div class="stats-highlight-body">
-              <div class="stats-highlight-value" id="best-streak">0</div>
-              <div class="stats-highlight-label">Mejor racha</div>
-            </div>
-          </div>
-          <div class="stats-highlight">
-            <span class="stats-highlight-icon stats-icon-best">🏆</span>
-            <div class="stats-highlight-body">
-              <div class="stats-highlight-value" id="best-game">—</div>
-              <div class="stats-highlight-label">Mejor resultado</div>
-              <div class="stats-highlight-context" id="best-game-context"></div>
-            </div>
-          </div>
-        </div>
-
         <div class="stats-section">
-          <h3>🏆 Récords personales</h3>
+          <h3 class="stats-h"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#se-trophy"/></svg>Récords personales</h3>
           <div class="stats-extra-grid" id="extra-stats">
             <div class="stat-extra stat-speed">
-              <span class="stat-extra-icon">⚡</span>
+              <span class="stat-extra-icon"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#se-watch"/></svg></span>
               <div><span class="stat-extra-label">Mejor Contrarreloj</span><span class="stat-extra-value" id="best-timetrial">0</span></div>
             </div>
             <div class="stat-extra stat-mentalcalc">
-              <span class="stat-extra-icon">🔢</span>
+              <span class="stat-extra-icon"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#se-calc"/></svg></span>
               <div><span class="stat-extra-label">Mejor Cálculo Mental</span><span class="stat-extra-value" id="best-mentalcalc">0</span></div>
             </div>
             <div class="stat-extra stat-lucidez" id="best-lucidez-box">
-              <span class="stat-extra-icon">👁️</span>
+              <span class="stat-extra-icon"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#sb-eye"/></svg></span>
               <div>
                 <span class="stat-extra-label" id="best-lucidez-label">Mejor partida Modo Secreto</span>
                 <span class="stat-extra-value" id="best-lucidez">—</span>
@@ -772,36 +767,38 @@ try {
               </div>
             </div>
             <div class="stat-extra stat-master">
-              <span class="stat-extra-icon">🧠</span>
+              <span class="stat-extra-icon"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#sb-book"/></svg></span>
               <div><span class="stat-extra-label">Preguntas dominadas</span><span class="stat-extra-value" id="mastered-count">0/300</span></div>
             </div>
           </div>
         </div>
 
         <div class="stats-section" id="stats-duel-section">
-          <h3>⚔️ Duelos</h3>
+          <h3 class="stats-h"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#se-swords"/></svg>Historial de duelos</h3>
           <div class="stats-mini-grid">
-            <div class="stats-mini"><div class="stats-mini-value" id="duel-played">0</div><div class="stats-mini-label">Retos jugados</div></div>
+            <div class="stats-mini"><div class="stats-mini-value" id="duel-played">0</div><div class="stats-mini-label">Partidas</div></div>
             <div class="stats-mini"><div class="stats-mini-value" id="duel-wins">0</div><div class="stats-mini-label">Victorias</div></div>
             <div class="stats-mini"><div class="stats-mini-value" id="duel-losses">0</div><div class="stats-mini-label">Derrotas</div></div>
             <div class="stats-mini"><div class="stats-mini-value" id="duel-draws">0</div><div class="stats-mini-label">Empates</div></div>
             <div class="stats-mini"><div class="stats-mini-value" id="duel-winrate">—</div><div class="stats-mini-label">% Victorias</div></div>
-            <div class="stats-mini"><div class="stats-mini-value" id="duel-best-streak">0</div><div class="stats-mini-label">🔥 Mejor racha de victorias</div></div>
+            <div class="stats-mini"><div class="stats-mini-value" id="duel-best-streak">0</div><div class="stats-mini-label">Mejor racha</div></div>
           </div>
         </div>
 
         <div class="stats-section">
-          <h3>📈 Progresión</h3>
+          <h3 class="stats-h"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#sb-key"/></svg>Tu colección</h3>
           <div class="stats-mini-grid">
-            <div class="stats-mini"><div class="stats-mini-value" id="st-achievements-count">0 / 0</div><div class="stats-mini-label">🏅 Logros</div></div>
-            <div class="stats-mini"><div class="stats-mini-value" id="st-fragments-count">0 / 15</div><div class="stats-mini-label">🧩 Fragmentos de Mente</div></div>
+            <div class="stats-mini"><div class="stats-mini-value" id="st-achievements-count">0 / 0</div><div class="stats-mini-label">Logros</div></div>
+            <div class="stats-mini"><div class="stats-mini-value" id="st-fragments-count">0 / 15</div><div class="stats-mini-label">Fragmentos de Mente</div></div>
           </div>
         </div>
 
         <!-- NIVEL 2 — ¿Qué sé? -->
         <div class="stats-section">
-          <h3>🧠 Dominio</h3>
+          <h3 class="stats-h"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#sb-book"/></svg>Dominio del conocimiento</h3>
           <p class="stats-section-sub">Dominada = la has acertado 3 veces seguidas. Tu avance sobre las <span id="stats-bank-total">360</span> preguntas disponibles.</p>
+          <div class="dominio-bar" aria-hidden="true"><span class="dom-seen" id="dom-seen-bar"></span><span class="dom-master" id="dom-master-bar"></span></div>
+          <div class="dominio-legend"><span><i class="dom-dot dom-dot-master"></i>Dominadas</span><span><i class="dom-dot dom-dot-seen"></i>Vistas</span></div>
           <div class="stats-mini-grid">
             <div class="stats-mini"><div class="stats-mini-value" id="st-seen">0/320</div><div class="stats-mini-label">Preguntas vistas</div></div>
             <div class="stats-mini"><div class="stats-mini-value" id="st-mastered">0/320</div><div class="stats-mini-label">Preguntas dominadas</div></div>
@@ -811,19 +808,19 @@ try {
         </div>
 
         <div class="stats-section">
-          <h3>🎯 Tu perfil de conocimiento</h3>
-          <p class="stats-section-sub">Aciertos reales registrados en cada categoría.</p>
+          <h3 class="stats-h"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#sb-compass"/></svg>Así funciona tu mente</h3>
+          <p class="stats-section-sub">Tu precisión real en cada categoría.</p>
           <div id="category-stats"></div>
           <div class="knowledge-summary" id="knowledge-summary"></div>
         </div>
 
         <div class="stats-section">
-          <h3>🎚️ ¿Hasta dónde llega tu nivel?</h3>
+          <h3 class="stats-h"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#sb-laurel"/></svg>¿Hasta dónde llega tu nivel?</h3>
           <div id="difficulty-stats"></div>
         </div>
 
         <div class="history-container">
-          <h3>📜 Últimas partidas</h3>
+          <h3 class="stats-h"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#sb-quill"/></svg>Últimas partidas</h3>
           <div class="history-list" id="history-list-container">
             <p style="color: var(--sub); font-size: 14px;">Aún no hay partidas registradas.</p>
           </div>
@@ -4384,7 +4381,7 @@ function revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newMod
       const isAbsoluta = m.id === 'lucidez_absoluta';
       return `
       <div class="session-medal-item${isAbsoluta ? ' medal-lucidez-absoluta' : ''}">
-        <div class="session-medal-icon">${m.icon}</div>
+        <div class="session-medal-icon">${window.SEQAchievements ? SEQAchievements.badgeHTML(m.id, 'done') : m.icon}</div>
         <div>
           <div class="session-medal-info">${m.title}</div>
           <div class="session-medal-desc">${m.desc}</div>
@@ -6060,7 +6057,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     medalsBox.style.display = 'block';
     medalsList.innerHTML = newMedalsUnlocked.map(m => `
       <div class="session-medal-item">
-        <div class="session-medal-icon">${m.icon}</div>
+        <div class="session-medal-icon">${window.SEQAchievements ? SEQAchievements.badgeHTML(m.id, 'done') : m.icon}</div>
         <div>
           <div class="session-medal-info">${m.title}</div>
           <div class="session-medal-desc">${m.desc}</div>
@@ -6258,7 +6255,6 @@ function renderLearningStats() {
       const strongest = categoriesWithData.reduce((a,b)=> b.acc > a.acc ? b : a);
       const weakest = categoriesWithData.reduce((a,b)=> b.acc < a.acc ? b : a);
       const tags = [];
-      tags.push(`<span class="knowledge-tag tag-strong">🟢 Tu fuerte: ${categoryLabel(strongest.cat)}</span>`);
       if (weakest.cat !== strongest.cat) {
         const tagClass = weakest.acc < 70 ? 'tag-weak' : 'tag-progress';
         const icon = weakest.acc < 70 ? '🔴' : '🟡';
@@ -6382,14 +6378,14 @@ function renderStats() {
   renderLearningStats();
 }
 
-// Icono por modo para dar contexto visual rápido al historial.
+// Icono por modo para dar contexto visual rápido al historial (2.0: símbolos propios, mismos que en Jugar).
 function historyModeIcon(mode) {
   const icons = {
-    'Modo Estándar': '🎯', 'Repaso': '🧠', 'Supervivencia': '❤️',
-    'Muerte Súbita': '☠️', 'Contrarreloj': '⚡', 'Cálculo Mental': '🔢',
-    'Lucidez Mental': '👁️'
+    'Modo Estándar': 'se-target', 'Repaso': 'se-review', 'Supervivencia': 'se-heart',
+    'Muerte Súbita': 'se-skull', 'Contrarreloj': 'se-watch', 'Cálculo Mental': 'se-calc',
+    'Lucidez Mental': 'sb-eye'
   };
-  return icons[mode] || '🎮';
+  return `<svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#${icons[mode] || 'se-target'}"/></svg>`;
 }
 
 // Escapa caracteres HTML especiales antes de insertar texto con innerHTML.
@@ -6411,12 +6407,13 @@ function renderHistory() {
     return;
   }
   container.innerHTML = store.gameHistory.map(item => `
-    <div class="history-item">
-      <div>
-        <div class="history-item-info">${historyModeIcon(item.mode)} ${escapeHtml(item.mode)} (${escapeHtml(item.score)})</div>
+    <div class="history-item hist-row">
+      <span class="hist-ico">${historyModeIcon(item.mode)}</span>
+      <div class="hist-body">
+        <div class="history-item-info">${escapeHtml(item.mode)}</div>
         <div class="history-item-sub">${escapeHtml(item.date)}</div>
       </div>
-      <div class="history-item-score">${escapeHtml(item.percentage)}%</div>
+      <div class="hist-score"><b>${escapeHtml(item.score)}</b><span>${escapeHtml(item.percentage)}%</span></div>
     </div>
   `).join('');
 }

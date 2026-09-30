@@ -62,11 +62,49 @@
         host.parentNode.insertBefore(box, host);
       }
       var anyAnswered = values.some(function (v) { return v.answered > 0; });
-      var best = values.filter(function (v) { return v.answered >= 3; }).sort(function (a, b) { return b.pct - a.pct; })[0];
+      var spec = specialty(values);
       box.innerHTML = radarSvg(values) + (anyAnswered
-        ? (best ? '<p class="radar-note">Tu punto fuerte: <b>' + best.icon + ' ' + best.label + '</b></p>' : '')
+        ? (spec ? '<p class="radar-note">Tu especialidad: <b>' + spec.icon + ' ' + spec.label + '</b></p>'
+                : '<p class="radar-note">Sigue jugando: con unas partidas más se verá tu especialidad.</p>')
         : '<p class="radar-note">Juega unas partidas y aquí aparecerá la forma de tu conocimiento.</p>');
     } catch (e) { /* nunca debe romper Estadísticas */ }
+    try { dossier(); dominio(); } catch (e) {}
+  }
+
+  // «Especialidad» solo cuando los datos la sostienen (sin datos nuevos, con los mismos aciertos por categoría):
+  // al menos 40 respuestas en total, 10 en la categoría ganadora, ≥60 % de acierto en ella y 8 puntos de ventaja
+  // sobre la segunda. Si no se cumple, no se inventa.
+  function specialty(values) {
+    var total = values.reduce(function (a, v) { return a + v.answered; }, 0);
+    if (total < 40) return null;
+    var ok = values.filter(function (v) { return v.answered >= 10; }).sort(function (a, b) { return b.pct - a.pct; });
+    if (!ok.length || ok[0].pct < 60) return null;
+    var second = values.filter(function (v) { return v !== ok[0] && v.answered >= 5; }).sort(function (a, b) { return b.pct - a.pct; })[0];
+    if (second && ok[0].pct - second.pct < 8) return null;
+    return ok[0];
+  }
+
+  // Ficha: nombre del jugador (cuenta online si la hay) y los tres datos principales solo cuando ya hay partidas.
+  function dossier() {
+    var name = 'Jugador';
+    try { var sess = window.SEQOnline && SEQOnline.session && SEQOnline.session(); if (sess && sess.display_name) name = sess.display_name; } catch (e) {}
+    var n = $id('dossier-name'); if (n) n.textContent = name;
+    var tiles = $id('dossier-tiles');
+    var played = 0; try { played = Number(store.gamesPlayed) || 0; } catch (e) {}
+    if (tiles) tiles.style.display = played > 0 ? '' : 'none';
+  }
+
+  // Dominio del conocimiento: barra con las vistas (claro) y las dominadas (oro) sobre el total del banco.
+  // Mismas fuentes que los cuatro números de la sección (seenQuestionIds y getMasteredCount).
+  function dominio() {
+    if (typeof TEST_QUESTIONS === 'undefined') return;
+    var total = TEST_QUESTIONS.length || 1;
+    var seen = 0, mastered = 0;
+    try { seen = Math.min(total, new Set(Array.isArray(store.seenQuestionIds) ? store.seenQuestionIds : []).size); } catch (e) {}
+    try { mastered = Math.min(total, getMasteredCount()); } catch (e) {}
+    var a = $id('dom-seen-bar'), b = $id('dom-master-bar');
+    if (a) a.style.width = (seen / total * 100) + '%';
+    if (b) b.style.width = (mastered / total * 100) + '%';
   }
   function $id(id) { return document.getElementById(id); }
 

@@ -5316,3 +5316,116 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 .achievements-progress-count { font-family: var(--font-ui); font-weight: 900; font-size: 30px; letter-spacing: .5px;
   font-variant-numeric: lining-nums tabular-nums; color: var(--brand-navy); }
 [data-theme="dark"] .achievements-progress-count { color: #f0d99a; }
+
+/* ===== 2.0 polish — Insignias de logros (sellos SVG, src/ui/achievements.js) ======================= */
+.ach-badge { position: relative; display: inline-block; width: 100%; height: 100%; line-height: 0; }
+.ach-badge svg { width: 100%; height: 100%; overflow: visible; }
+.ach-b-ring { fill: #c9992e; }
+.ach-b-disc { fill: #fbf6ea; }
+.ach-b-inner { fill: none; stroke: #1c2340; stroke-opacity: .18; stroke-width: 1; }
+.ach-badge.is-done .ach-b-ring { fill: #c9992e; filter: drop-shadow(0 2px 4px rgba(146,100,20,.35)); }
+.ach-badge.is-locked .ach-b-ring { fill: #cfd4de; }
+.ach-badge.is-locked .ach-b-disc { fill: #eef0f4; }
+.ach-badge.is-locked use { filter: grayscale(1) contrast(.8); opacity: .42; }
+.ach-badge.is-secret .ach-b-ring { fill: #1c2340; }
+.ach-badge.is-secret .ach-b-disc { fill: #2a3560; }
+.ach-badge.is-secret .ach-b-inner { stroke: #c9992e; stroke-opacity: .6; stroke-dasharray: 3 3; }
+.ach-q { font: 800 22px var(--font-display); fill: #e8c874; }
+/* Cinta con la cifra de la serie: pegada al borde inferior del sello, sin tocar el símbolo. */
+.ach-mark { position: absolute; left: 50%; bottom: -5px; transform: translateX(-50%); min-width: 20px; padding: 1px 5px; border-radius: 6px;
+  font: 800 9.5px/1.35 var(--font-ui); letter-spacing: .2px; text-align: center; color: #fff7d6; background: #1c2340;
+  border: 1px solid #c9992e; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.ach-badge.is-locked .ach-mark { background: #8a91a3; border-color: #cfd4de; color: #fff; }
+
+/* La fila ya no pinta su propio círculo: el sello es el icono. */
+.ach-ico { width: 48px !important; height: 48px !important; background: none !important; border: 0 !important; box-shadow: none !important; }
+.ach-row.is-locked .ach-ico { filter: none; opacity: 1; }
+.ach-row.is-done .ach-ico { background: none !important; }
+.ach-row.is-done .ach-title::after { content: '✓'; margin-left: 2px; font-size: 12px; color: #16a34a; }
+.ach-row.is-locked .ach-title { color: var(--sub); }
+.ach-row.is-secret .ach-title { color: var(--sub); }
+
+/* Resultados: el sello del logro recién conseguido entra con un pequeño golpe de lacre. */
+.session-medal-icon .ach-badge { width: 44px; height: 44px; }
+.session-medal-item .session-medal-icon:has(.ach-badge) { background: none; border: 0; box-shadow: none; width: 48px; height: 48px; }
+.session-medal-icon .ach-badge { animation: ach-stamp .55s cubic-bezier(.2,.9,.3,1.3) both; }
+@keyframes ach-stamp { 0% { transform: scale(1.8) rotate(-12deg); opacity: 0; } 60% { transform: scale(.94) rotate(2deg); opacity: 1; } 100% { transform: scale(1) rotate(0); } }
+@media (prefers-reduced-motion: reduce) { .session-medal-icon .ach-badge { animation: none; } }
+
+[data-theme="dark"] .ach-b-disc { fill: #f3ead6; }
+[data-theme="dark"] .ach-badge.is-locked .ach-b-ring { fill: #3a4262; }
+[data-theme="dark"] .ach-badge.is-locked .ach-b-disc { fill: #252c47; }
+[data-theme="dark"] .ach-badge.is-locked use { opacity: .38; }
+
+/* ===== 2.0 polish — Estadísticas: «expediente» del jugador ======================================== */
+/* Ficha: papel crema con filete dorado y rombos en las esquinas (el mismo marco que la tarjeta para compartir). */
+.stats-dossier { position: relative; margin: 4px 0 18px; padding: 16px 16px 14px; border-radius: 18px;
+  background: linear-gradient(160deg, var(--color-surface-highlight, #fdf7ea), var(--card) 70%);
+  border: 1px solid var(--color-border-accent, rgba(201,153,46,.38)); box-shadow: var(--shadow-soft), inset 0 0 0 4px var(--card), inset 0 0 0 5px rgba(201,153,46,.22); }
+.stats-dossier::before, .stats-dossier::after { content: '◆'; position: absolute; top: 9px; font-size: 8px; color: var(--accent-gold, #c9992e); }
+.stats-dossier::before { left: 11px; } .stats-dossier::after { right: 11px; }
+.dossier-head { display: flex; align-items: baseline; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; text-align: center; }
+.dossier-kicker { font: 800 10.5px var(--font-ui); letter-spacing: 2.2px; text-transform: uppercase; color: var(--accent-gold-strong, #92400e); }
+.dossier-name { font: 700 19px var(--font-display); color: var(--brand-navy, #16244a); overflow-wrap: anywhere; }
+.stats-dossier .stats-level-widget { margin: 0; padding: 0; border: 0; background: none; box-shadow: none; }
+.dossier-seal { width: 52px !important; height: 52px !important; border-radius: 50% !important; display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 50% 35%, #fff7d6, #f0d99a) !important; border: 2px solid #c9992e !important; box-shadow: 0 4px 10px rgba(201,153,46,.3); }
+.dossier-seal .se-sym { width: 70%; height: 70%; }
+.stats-dossier .stats-level-widget-top { font: 800 15px var(--font-ui); letter-spacing: .6px; color: var(--brand-navy, #16244a); }
+.dossier-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px dashed rgba(201,153,46,.45); }
+.dossier-tile { text-align: center; min-width: 0; }
+.dossier-tile-label { font: 800 9.5px var(--font-ui); letter-spacing: 1.2px; text-transform: uppercase; color: var(--sub); }
+.dossier-tile-value { font: 900 24px var(--font-ui); color: var(--brand-navy, #16244a); font-variant-numeric: tabular-nums; margin: 3px 0 2px; }
+.dossier-tile-sub { font-size: 11px; line-height: 1.3; color: var(--sub); overflow-wrap: anywhere; }
+[data-theme="dark"] .dossier-name, [data-theme="dark"] .stats-dossier .stats-level-widget-top, [data-theme="dark"] .dossier-tile-value { color: #f3ead6; }
+
+/* Títulos de sección: símbolo propio en un sello pequeño + filete dorado (en lugar del emoji). */
+h3.stats-h { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-size: 18px; }
+h3.stats-h .se-sym { width: 30px; height: 30px; flex: 0 0 auto; padding: 4px; border-radius: 50%; background: var(--badge-bg); border: 1px solid var(--badge-border); box-sizing: border-box; }
+h3.stats-h::after { content: ''; flex: 1 1 auto; height: 1px; background: linear-gradient(90deg, rgba(201,153,46,.45), transparent); }
+
+/* Récords personales: como placas de trofeo. */
+#extra-stats .stat-extra { border: 1px solid var(--color-border-accent, rgba(201,153,46,.38)); background: linear-gradient(160deg, var(--color-surface-highlight, #fdf7ea), var(--card)); }
+#extra-stats .stat-extra-icon { background: radial-gradient(circle at 50% 35%, #fff7d6, #f0d99a) !important; border: 1.5px solid #c9992e; }
+#extra-stats .stat-extra-icon .se-sym { width: 72%; height: 72%; }
+#extra-stats .stat-extra-value { color: var(--accent-gold-strong, #92400e); font-variant-numeric: tabular-nums; }
+[data-theme="dark"] #extra-stats .stat-extra-value { color: #e8c874; }
+
+/* Duelos y colección: cifras compactas. */
+#stats-duel-section .stats-mini-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+#stats-duel-section .stats-mini { padding: 10px 6px; }
+#stats-duel-section .stats-mini-value { font-size: 20px; }
+#stats-duel-section .stats-mini-label { font-size: 11px; }
+
+/* Dominio del conocimiento: una barra que se ve de un vistazo (vistas en claro, dominadas en oro). */
+.dominio-bar { position: relative; height: 14px; margin: 10px 0 6px; border-radius: 99px; background: var(--color-border-subtle, #e5e7eb); overflow: hidden; }
+.dominio-bar span { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 99px; transition: width .6s ease; }
+.dom-seen { background: rgba(37,99,235,.28); }
+.dom-master { background: linear-gradient(90deg, #c9992e, #e8c874); }
+.dominio-legend { display: flex; gap: 14px; font-size: 11.5px; color: var(--sub); margin-bottom: 8px; }
+.dom-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+.dom-dot-master { background: #c9992e; } .dom-dot-seen { background: rgba(37,99,235,.45); }
+[data-theme="dark"] .dominio-bar { background: rgba(255,255,255,.1); }
+
+/* Perfil de conocimiento y dificultad: barras más compactas. */
+#category-stats .progress-row, #difficulty-stats .progress-row { margin: 6px 0 10px; }
+#category-stats .progress-track, #difficulty-stats .progress-track { height: 7px; }
+#category-stats .progress-row-head, #difficulty-stats .progress-row-head { font-size: 12.5px; margin-bottom: 4px; }
+
+/* Últimas partidas: icono del modo, nombre y fecha, y el marcador a la derecha. */
+.hist-row { gap: 12px; justify-content: flex-start !important; }
+.hist-ico { flex: 0 0 auto; width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--badge-bg); border: 1px solid var(--badge-border); }
+.hist-ico .se-sym { width: 74%; height: 74%; }
+.hist-body { flex: 1 1 auto; min-width: 0; }
+.hist-score { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-end; line-height: 1.15; }
+.hist-score b { font-size: 16px; font-variant-numeric: tabular-nums; color: var(--text); }
+.hist-score span { font-size: 12px; font-weight: 800; color: var(--primary); }
+.ach-g-ico .se-sym { width: 74%; height: 74%; }
+/* Los títulos con sello propio no llevan además el rombo decorativo genérico de .stats-section h3. */
+h3.stats-h::before { display: none !important; content: none !important; }
+/* El Historial de duelos ya no va aparte: mismo espacio que las demás secciones. */
+#view-stats #stats-duel-section { margin-top: var(--space-lg); }
+/* Modo oscuro: los sellos pendientes y los iconos de grupo deben seguir leyéndose (silueta clara, apagada). */
+[data-theme="dark"] .ach-badge.is-locked use { filter: grayscale(1) brightness(2.6); opacity: .5; }
+[data-theme="dark"] .ach-g-ico .se-sym { filter: brightness(1.9) saturate(.8); }
+[data-theme="dark"] .ach-group.is-complete .ach-g-ico .se-sym { filter: none; }
