@@ -758,7 +758,7 @@ try {
       <div id="stats-content">
 
         <div class="stats-section">
-          <h3 class="stats-h"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#se-trophy"/></svg>Récords personales</h3>
+          <h3 class="stats-h"><img class="stats-h-img" src="assets/ui/copa.webp" alt="" draggable="false">Récords personales</h3>
           <div class="stats-extra-grid" id="extra-stats">
             <div class="stat-extra stat-speed">
               <span class="stat-extra-icon has-img" aria-hidden="true"><img class="mode-img mode-img-mini" src="assets/modes/mini/contrarreloj.webp" alt="" draggable="false"></span>
@@ -784,7 +784,7 @@ try {
         </div>
 
         <div class="stats-section" id="stats-duel-section">
-          <h3 class="stats-h"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#se-swords"/></svg>Historial de duelos</h3>
+          <h3 class="stats-h"><img class="stats-h-img" src="assets/ui/espadas.webp" alt="" draggable="false">Historial de duelos</h3>
           <div class="stats-mini-grid">
             <div class="stats-mini"><div class="stats-mini-value" id="duel-played">0</div><div class="stats-mini-label">Partidas</div></div>
             <div class="stats-mini"><div class="stats-mini-value" id="duel-wins">0</div><div class="stats-mini-label">Victorias</div></div>
@@ -796,7 +796,7 @@ try {
         </div>
 
         <div class="stats-section">
-          <h3 class="stats-h"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#sb-key"/></svg>Tu colección</h3>
+          <h3 class="stats-h"><img class="stats-h-img" src="assets/ui/fragmento.webp" alt="" draggable="false">Tu colección</h3>
           <div class="stats-mini-grid">
             <div class="stats-mini"><div class="stats-mini-value" id="st-achievements-count">0 / 0</div><div class="stats-mini-label">Logros</div></div>
             <div class="stats-mini"><div class="stats-mini-value" id="st-fragments-count">0 / 15</div><div class="stats-mini-label">Fragmentos de Mente</div></div>
@@ -805,7 +805,7 @@ try {
 
         <!-- NIVEL 2 — ¿Qué sé? -->
         <div class="stats-section">
-          <h3 class="stats-h"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#sb-book"/></svg>Dominio del conocimiento</h3>
+          <h3 class="stats-h"><img class="stats-h-img" src="assets/ui/libro.webp" alt="" draggable="false">Dominio del conocimiento</h3>
           <p class="stats-section-sub">Dominada = la has acertado 3 veces seguidas. Tu avance sobre las <span id="stats-bank-total">360</span> preguntas disponibles.</p>
           <div class="dominio-bar" aria-hidden="true"><span class="dom-seen" id="dom-seen-bar"></span><span class="dom-master" id="dom-master-bar"></span></div>
           <div class="dominio-legend"><span><i class="dom-dot dom-dot-master"></i>Dominadas</span><span><i class="dom-dot dom-dot-seen"></i>Vistas</span></div>
@@ -818,19 +818,19 @@ try {
         </div>
 
         <div class="stats-section">
-          <h3 class="stats-h"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#sb-compass"/></svg>Así funciona tu mente</h3>
+          <h3 class="stats-h"><img class="stats-h-img" src="assets/ui/cerebro.webp" alt="" draggable="false">Así funciona tu mente</h3>
           <p class="stats-section-sub">Tu precisión real en cada categoría.</p>
           <div id="category-stats"></div>
           <div class="knowledge-summary" id="knowledge-summary"></div>
         </div>
 
         <div class="stats-section">
-          <h3 class="stats-h"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#sb-laurel"/></svg>¿Hasta dónde llega tu nivel?</h3>
+          <h3 class="stats-h"><img class="stats-h-img" src="assets/ui/xp.webp" alt="" draggable="false">¿Hasta dónde llega tu nivel?</h3>
           <div id="difficulty-stats"></div>
         </div>
 
         <div class="history-container">
-          <h3 class="stats-h"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#sb-quill"/></svg>Últimas partidas</h3>
+          <h3 class="stats-h"><img class="stats-h-img" src="assets/ui/pergamino.webp" alt="" draggable="false">Últimas partidas</h3>
           <div class="history-list" id="history-list-container">
             <p style="color: var(--sub); font-size: 14px;">Aún no hay partidas registradas.</p>
           </div>
@@ -1092,6 +1092,7 @@ try {
 <script src="src/ui/stats-extra.js"></script>
 <script src="src/ui/intro.js"></script>
 <script src="src/ui/mode-badges.js"></script>
+<script src="src/ui/sabias.js"></script>
 <script src="src/online/config.js"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
 <script src="src/utils/sync-merge.js"></script>
@@ -2338,7 +2339,7 @@ function restoreSavedGame() {
       const fb = document.getElementById('feedback');
       fb.style.display = 'block';
       fb.className = 'feedback bad';
-      fb.innerHTML = `⏱️ ¡Se acabó el tiempo! Era: <b>${escapeHtml(String(currentGame.finalRiddle.a))}</b>` + (currentGame.finalRiddle.explanation ? `<div class="sabias-que-box">💡 <b>Explicación</b> ${escapeHtml(String(currentGame.finalRiddle.explanation))}</div>` : '');
+      fb.innerHTML = `⏱️ ¡Se acabó el tiempo! Era: <b>${escapeHtml(String(currentGame.finalRiddle.a))}</b>` + (currentGame.finalRiddle.explanation ? SEQSabias.html('explicacion', currentGame.finalRiddle.explanation) : '');
       finishLucidezMode(true, true);
       updateResumeButton();
       return true;
@@ -3928,7 +3929,7 @@ function startLucidezFinalTimer(resetTime = true) {
       const fb = document.getElementById('feedback');
       fb.style.display = 'block';
       fb.className = 'feedback bad';
-      fb.innerHTML = `⏱️ ¡Se acabó el tiempo! Era: <b>${escapeHtml(String(currentGame.finalRiddle.a))}</b>` + (currentGame.finalRiddle.explanation ? `<div class="sabias-que-box">💡 <b>Explicación</b> ${escapeHtml(String(currentGame.finalRiddle.explanation))}</div>` : '');
+      fb.innerHTML = `⏱️ ¡Se acabó el tiempo! Era: <b>${escapeHtml(String(currentGame.finalRiddle.a))}</b>` + (currentGame.finalRiddle.explanation ? SEQSabias.html('explicacion', currentGame.finalRiddle.explanation) : '');
       currentGame.finalAnswerCorrect = false;
       finishLucidezMode(true, true);
     }
@@ -4206,7 +4207,7 @@ function checkLucidezFinalAnswer() {
     const fb = document.getElementById('feedback');
     fb.style.display = 'block';
     fb.className = 'feedback bad';
-    fb.innerHTML = `⏱️ ¡Se acabó el tiempo! Era: <b>${escapeHtml(String(currentGame.finalRiddle.a))}</b>` + (currentGame.finalRiddle.explanation ? `<div class="sabias-que-box">💡 <b>Explicación</b> ${escapeHtml(String(currentGame.finalRiddle.explanation))}</div>` : '');
+    fb.innerHTML = `⏱️ ¡Se acabó el tiempo! Era: <b>${escapeHtml(String(currentGame.finalRiddle.a))}</b>` + (currentGame.finalRiddle.explanation ? SEQSabias.html('explicacion', currentGame.finalRiddle.explanation) : '');
     currentGame.finalAnswerCorrect = false;
     finishLucidezMode(true, true);
     return;
@@ -4253,7 +4254,7 @@ function checkLucidezFinalAnswer() {
     playSound('bad');
     if (!currentGame.isDuel) store.totalWrong++;
     fb.className = 'feedback bad';
-    fb.innerHTML = `❌ Incorrecto. Era: <b>${escapeHtml(String(riddle.a))}</b>` + (riddle.explanation ? `<div class="sabias-que-box">💡 <b>Explicación</b> ${escapeHtml(String(riddle.explanation))}</div>` : '');
+    fb.innerHTML = `❌ Incorrecto. Era: <b>${escapeHtml(String(riddle.a))}</b>` + (riddle.explanation ? SEQSabias.html('explicacion', riddle.explanation) : '');
   }
 
   document.getElementById('btn-check').style.display = 'none';
@@ -5663,7 +5664,7 @@ function checkAnswer() {
       fb.innerHTML = `✅ ¡Correcto! (Era: <b>${escapeHtml(String(q.a))}</b>)`;
     }
     if (q.sabias && (currentGame.mode === 'play' || currentGame.mode === 'review')) {
-      fb.innerHTML += `<div class="sabias-que-box">📚 <b>¿Sabías que…?</b> ${escapeHtml(String(q.sabias))}</div>`;
+      fb.innerHTML += SEQSabias.html('sabias', q.sabias);
     }
 
     if (currentGame.mode === 'survival') {
@@ -5700,7 +5701,7 @@ function checkAnswer() {
     fb.className = 'feedback bad';
     fb.innerHTML = `❌ Incorrecto. Era: <b>${escapeHtml(String(q.a))}</b>`;
     if (q.sabias && (currentGame.mode === 'play' || currentGame.mode === 'review')) {
-      fb.innerHTML += `<div class="sabias-que-box">📚 <b>¿Sabías que…?</b> ${escapeHtml(String(q.sabias))}</div>`;
+      fb.innerHTML += SEQSabias.html('sabias', q.sabias);
     }
 
     if (currentGame.mode === 'survival') {

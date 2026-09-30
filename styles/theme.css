@@ -156,15 +156,16 @@ body.in-game .actions .btn-primary {
 .lucidez-enigma-eye .mode-img { width: 100%; height: 100%; filter: drop-shadow(0 4px 10px rgba(91,46,143,.45)); }
 
 /* Categorías (Estadísticas) y candados con sus insignias. */
-.cat-img { width: 22px; height: 22px; vertical-align: -6px; margin-right: 7px; border-radius: 50%; }
-.radar-note .cat-img { width: 20px; height: 20px; margin-right: 3px; }
+.cat-img { width: 28px; height: 28px; vertical-align: -9px; margin-right: 8px; object-fit: contain; filter: drop-shadow(0 1px 2px rgba(0,0,0,.35)); }
+.radar-note .cat-img { width: 24px; height: 24px; vertical-align: -7px; margin-right: 3px; }
+.radar-svg image { filter: drop-shadow(0 1px 1.5px rgba(0,0,0,.35)); }
 .lock-img { width: 16px; height: 16px; vertical-align: -3px; margin-right: 3px; border-radius: 50%; }
 .fragment-milestone-state .lock-img { width: 22px; height: 22px; margin: 0; }
 .mode-lock-badge { background: none !important; border: 0 !important; box-shadow: none !important; }
 .mode-lock-badge::before { width: 38px !important; height: 38px !important; filter: drop-shadow(0 2px 4px rgba(0,0,0,.3)); }
 .mode-card.locked .mode-lock-badge::before { background-image: url("../assets/cats/candado.webp") !important; }
 .mode-card:not(.locked) .mode-lock-badge::before { background-image: url("../assets/cats/candado-abierto.webp") !important; }
-.knowledge-tag .cat-img { width: 18px; height: 18px; vertical-align: -4px; margin: 0 3px 0 2px; }
+.knowledge-tag .cat-img { width: 22px; height: 22px; vertical-align: -6px; margin: 0 3px 0 2px; }
 
 /* Logros: insignias ilustradas (assets/logros/). */
 .ach-ico.has-img { background: none !important; border: 0 !important; box-shadow: none !important; width: 48px !important; height: 48px !important; }
@@ -211,3 +212,26 @@ body.in-game .actions .btn-primary {
 .seq-av-btn.sel { border-color: var(--se-gold) !important; background: color-mix(in srgb, var(--se-gold) 12%, var(--card)) !important; }
 .seq-av-btn.sel .seq-av-name { color: var(--accent-gold-strong, #92400e) !important; }
 [data-theme="dark"] .seq-av-btn.sel .seq-av-name { color: var(--se-gold-light) !important; }
+
+
+/* ---- Estadísticas: iconos de los títulos, sin disco ni fondo ---- */
+h3.stats-h .stats-h-img { width: 32px; height: 32px; flex: 0 0 auto; object-fit: contain; margin: -2px 0 -2px -2px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.30)); }
+
+/* ---- «¿Sabías que…?» y «Explicación»: nota de pergamino con filete dorado ---- */
+.sabias-que-box {
+  margin-top: 12px; padding: 9px 13px 11px 12px; opacity: 1;
+  border: 0 !important; border-left: 3px solid var(--se-gold) !important; border-radius: 4px 12px 12px 4px;
+  background: color-mix(in srgb, var(--se-parch) 82%, transparent);
+  box-shadow: 0 1px 0 var(--se-gold-soft), 0 3px 10px rgba(28,35,64,.10);
+  color: var(--text); font-size: 13.5px; line-height: 1.5; text-align: left;
+}
+.sabias-que-box .sq-head {
+  display: flex; align-items: center; gap: 6px; margin-bottom: 3px;
+  font-family: var(--font-display); font-size: 11.5px; font-weight: 800; letter-spacing: 1.1px; text-transform: uppercase; color: #8a5a0b;
+}
+[data-theme="dark"] .sabias-que-box .sq-head { color: var(--se-gold-light); }
+.sabias-que-box .sq-ico { width: 28px; height: 28px; margin: -6px 0 -6px -4px; object-fit: contain; filter: drop-shadow(0 1px 2px rgba(0,0,0,.30)); }
+.sabias-que-box .sq-text { color: var(--text); }
+@keyframes sqIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: no-preference) { .sabias-que-box { animation: sqIn .35s ease-out .12s both; } }
+body.keyboard-open .sabias-que-box { margin-top: 8px; padding: 6px 10px 7px; font-size: 12.5px; }

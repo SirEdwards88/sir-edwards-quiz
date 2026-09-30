@@ -37,7 +37,7 @@
       var p = pt(i, R + 22), anchor = Math.abs(p[0] - cx) < 8 ? 'middle' : (p[0] > cx ? 'start' : 'end');
       var dx = anchor === 'start' ? -6 : anchor === 'end' ? 6 : 0;
       // Insignia de la categoría junto a su nombre: a un lado (izquierda/derecha) o encima/debajo (arriba/abajo).
-      var IS = 24, top = p[1] < cy, ix, iy, tx = p[0] + dx;
+      var IS = 28, top = p[1] < cy, ix, iy, tx = p[0] + dx;
       if (anchor === 'start') { ix = tx; tx += IS + 4; iy = p[1] - 17; }
       else if (anchor === 'end') { ix = tx - IS; tx -= IS + 4; iy = p[1] - 17; }
       else { ix = p[0] - IS / 2; iy = top ? p[1] - 3 - 13 - IS - 2 : p[1] + 17; }
