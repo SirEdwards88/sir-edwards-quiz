@@ -245,3 +245,7 @@
 .modal-card .gate-title { display: block; text-align: center; font-size: clamp(28px, 7.6vw, 34px); color: var(--brand-navy); margin: 0 0 10px; }
 [data-theme="dark"] .modal-card .gate-title { color: var(--text); }
 .auth-gate-card { max-height: none; box-shadow: 0 30px 70px rgba(0,0,0,.45), 0 0 0 1px rgba(232,200,116,.35); }
+/* 2.0: en móviles bajos la tarjeta de acceso era más alta que la pantalla y, centrada con flex, su parte de
+   arriba quedaba fuera sin poder desplazarse. Con margin:auto se centra cuando cabe y se desplaza cuando no. */
+.auth-gate { align-items: flex-start; }
+.auth-gate .auth-gate-card { margin: auto; }

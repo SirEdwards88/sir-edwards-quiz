@@ -181,10 +181,11 @@
     if (vis && !resultsVisible) {
       lastStreak = 0;
       setTimeout(function () {
+        // El porcentaje se lee ANTES de animar las cifras (la animación empieza escribiendo 0 %).
+        var pct = parseInt(($('res-percentage-text') || {}).textContent, 10);
         countUp($('res-score-text'), 900);
         countUp($('res-percentage-text'), 900);
         pluralTitles();
-        var pct = parseInt(($('res-percentage-text') || {}).textContent, 10);
         var metrics = $('results-metrics-grid');
         var metricsOn = metrics && metrics.style.display !== 'none';
         // Confeti solo si la partida ha ido bien o hay récord; un logro o modo nuevo en una partida floja

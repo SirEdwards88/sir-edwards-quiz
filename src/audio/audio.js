@@ -198,6 +198,9 @@ function playWinFanfare() {
 // No se descarga al instalar: el navegador la pide la primera vez que suena (tras el primer toque, que es
 // cuando los móviles dejan reproducir audio). El volumen ya viene bajo en el propio archivo porque en
 // iPhone el volumen de un <audio> no se puede cambiar desde la página.
+// iPhone/iPad (iOS 16.4+): sesión de audio «ambient» = respeta el interruptor de silencio y se mezcla con
+// la música que el jugador tenga puesta, en vez de cortarla. Sin soporte, no hace nada.
+try { if (navigator.audioSession) navigator.audioSession.type = 'ambient'; } catch (e) {}
 const MUSIC_SRC = 'assets/audio/menu-theme.mp3';
 const MUSIC_KEY = 'siredwards_quiz_v2_0_music';
 const MUSIC_VOLUME = 0.55;
@@ -259,8 +262,9 @@ function changeMusic(v) {
   updateMusicButtons();
   syncMusic();
 }
-// Primer toque en cualquier sitio: a partir de aquí el navegador deja sonar la música.
-['pointerdown', 'keydown', 'touchstart'].forEach((ev) => document.addEventListener(ev, function unlockMusic() {
+// Primer toque en cualquier sitio: a partir de aquí el navegador deja sonar la música. Se escuchan también
+// los eventos de «soltar» (pointerup/touchend/click): en móvil son los que cuentan como gesto para reproducir.
+['pointerdown', 'pointerup', 'touchend', 'click', 'keydown', 'touchstart'].forEach((ev) => document.addEventListener(ev, function unlockMusic() {
   document.removeEventListener(ev, unlockMusic, true);
   if (musicUnlocked) return;
   musicUnlocked = true;
