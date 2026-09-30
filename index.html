@@ -216,11 +216,10 @@
      Se muestra ÚNICAMENTE cuando la capa online está activa y configurada
      (SEQOnline.enabled === true, ver src/online/config.js) y no hay una
      sesión válida — decidido por authGateActive()/updateAuthGate() más
-     abajo. En este build, config.js no trae backend ni Client ID de Google
-     (ambos vacíos), así que SEQOnline.enabled es false y este overlay
-     permanece SIEMPRE oculto: la app sigue exactamente igual que hoy, sin
-     cuenta obligatoria, hasta que se despliegue un backend real con esas
-     dos claves. No es una pantalla nueva de login: reutiliza el mismo
+     abajo. En la 2.0 el config.js publicado trae el Worker y el Client ID de
+     Google, así que la cuenta es obligatoria; si esas claves estuvieran
+     vacías (p. ej. en pruebas sin backend), el overlay permanecería oculto.
+     No es una pantalla nueva de login: reutiliza el mismo
      botón de Google que ya pinta src/online/online.js en Ajustes (mismo
      init/credential/callback) — "Crear cuenta" e "Iniciar sesión" son, con
      este único método de autenticación (Google), la misma acción. -->
@@ -2911,9 +2910,9 @@ function handleResultsBackButton() {
 
 // v1.5 — Fase B (Prompt 3): gate de acceso obligatorio con cuenta. Solo se activa
 // cuando la capa online está realmente configurada (SEQOnline.enabled === true) —
-// si no lo está (como en este build, con src/online/config.js vacío), la función
-// siempre devuelve false y el juego sigue funcionando exactamente igual que hoy,
-// sin cuenta obligatoria. Cuando sí esté activa, se muestra mientras no haya una
+// en la 2.0 lo está (config.js con Worker y Client ID), así que la cuenta es
+// obligatoria. Si no lo estuviera (pruebas sin backend), la función devolvería
+// false y el juego funcionaría sin cuenta. Se muestra mientras no haya una
 // sesión válida (SEQOnline.session() === null cubre "sin cuenta" y "sesión
 // caducada" con la misma lógica que ya usa el resto de la app).
 function authGateActive() {

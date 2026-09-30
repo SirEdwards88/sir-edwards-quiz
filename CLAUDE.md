@@ -4,7 +4,7 @@ PWA de trivia (GitHub Pages) en JavaScript clásico, sin sistema de compilación
 Backend aparte (Cloudflare Worker + D1), que NO vive en este repositorio.
 
 ## Arquitectura: módulos, no más `index.html`
-- **No se refactoriza `index.html` en masa.** Ya tiene ~8.100 líneas; no crece con lógica nueva.
+- **No se refactoriza `index.html` en masa.** Ya tiene ~7.100 líneas; no crece con lógica nueva.
 - **Cada funcionalidad nueva va en su propio módulo de `src/`** (carpeta según su tipo: `data/`, `utils/`, `online/`, `share/`, `state/`…).
   `index.html` solo recibe la etiqueta `<script>` que lo enlaza y, si hace falta, la llamada.
 - Reutiliza los módulos existentes antes de crear otro. No crees módulos duplicados ni reorganices archivos sin una necesidad concreta.
