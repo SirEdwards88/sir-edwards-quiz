@@ -10,8 +10,8 @@
   var PATHS = {
     amigos: 'assets/modes/amigos.webp',
     calculo: 'assets/modes/mini/calculo.webp',
-    duelo: 'assets/modes/mini/duelo.webp',
-    retos: 'assets/modes/retos.webp'
+    duelo: 'assets/modes/suelto/duelo.webp',
+    retos: 'assets/modes/suelto/retos.webp'
   };
   var BY_EMOJI = {
     '✅': 'correcto', '❌': 'incorrecto', '⚠️': 'atencion', '⚠': 'atencion', '⏱️': 'tiempo', '⏱': 'tiempo',

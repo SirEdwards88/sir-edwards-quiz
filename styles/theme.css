@@ -266,3 +266,5 @@ body.keyboard-open .sabias-que-box { margin-top: 8px; padding: 6px 10px 7px; fon
 
 /* Título «Supervivencia: Elige Dificultad»: corazón suelto, sin borde ni fondo. */
 .ui-title-img.ui-title-loose { width: 40px; height: 40px; object-fit: contain; border-radius: 0; box-shadow: none; background: none; border: 0; filter: drop-shadow(0 2px 3px rgba(0,0,0,.25)); }
+/* Botones de Duelo/Retos: ilustración suelta (sin borde), un poco más grande para que se aprecie. */
+.btn .seq-ico[src*="modes/suelto/"] { width: 1.6em; height: 1.6em; vertical-align: -0.5em; margin-top: -0.2em; margin-bottom: -0.2em; }

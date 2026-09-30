@@ -433,7 +433,7 @@
   var ONLINE_ACH_IMG = {
     online_primer_duelo: 'assets/modes/suelto/duelo.webp', online_primera_victoria: 'assets/logros/duel_victoria_inaugural.webp',
     online_cinco_victorias: 'assets/logros/games_50.webp', online_perfecto: 'assets/logros/lucidez_absoluta.webp',
-    reto_primero: 'assets/modes/retos.webp', duelo_empate: 'assets/modes/amigos.webp'
+    reto_primero: 'assets/modes/suelto/retos.webp', duelo_empate: 'assets/modes/amigos.webp'
   };
   function achIcon(a) {
     var src = a && Object.prototype.hasOwnProperty.call(ONLINE_ACH_IMG, a.id) ? ONLINE_ACH_IMG[a.id] : '';
