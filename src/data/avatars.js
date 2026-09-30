@@ -35,7 +35,8 @@
 
   var ASSET_DIR = 'assets/avatars/';
 
-  // Los 6 emblemas base — todos disponibles desde el inicio, sin logros, sin
+  // 2.0 (cierre): 13 emblemas — los 6 originales + 7 nuevos (el backend los acepta desde su lista AVATARS).
+  // Los emblemas base — todos disponibles desde el inicio, sin logros, sin
   // tienda (Nivel 1 del sistema, ver ficha de dirección artística cerrada).
   // "value" es lo que se guarda/envía como avatar del jugador.
   var CATALOG = [
@@ -44,7 +45,14 @@
     { id: 'reloj', value: 'reloj', short: 'Reloj', src: ASSET_DIR + 'reloj.png', label: 'Reloj de bolsillo', base: true },
     { id: 'lupa', value: 'lupa', short: 'Lupa', src: ASSET_DIR + 'lupa.png', label: 'Lupa', base: true },
     { id: 'mascara', value: 'mascara', short: 'Máscara', src: ASSET_DIR + 'mascara.png', label: 'Máscara', base: true },
-    { id: 'pluma', value: 'pluma', short: 'Pluma', src: ASSET_DIR + 'pluma.png', label: 'Pluma estilográfica', base: true }
+    { id: 'pluma', value: 'pluma', short: 'Pluma', src: ASSET_DIR + 'pluma.png', label: 'Pluma estilográfica', base: true },
+    { id: 'cuervo', value: 'cuervo', short: 'Cuervo', src: ASSET_DIR + 'cuervo.png', label: 'Cuervo con monóculo', base: true },
+    { id: 'gato', value: 'gato', short: 'Gato', src: ASSET_DIR + 'gato.png', label: 'Gato con chistera', base: true },
+    { id: 'globo', value: 'globo', short: 'Globo', src: ASSET_DIR + 'globo.png', label: 'Globo aerostático', base: true },
+    { id: 'pipa', value: 'pipa', short: 'Pipa', src: ASSET_DIR + 'pipa.png', label: 'Pipa', base: true },
+    { id: 'paraguas', value: 'paraguas', short: 'Paraguas', src: ASSET_DIR + 'paraguas.png', label: 'Paraguas victoriano', base: true },
+    { id: 'caballo', value: 'caballo', short: 'Caballo', src: ASSET_DIR + 'caballo.png', label: 'Caballo de ajedrez', base: true },
+    { id: 'tetera', value: 'tetera', short: 'Tetera', src: ASSET_DIR + 'tetera.png', label: 'Tetera de porcelana', base: true }
   ];
 
   // GLYPHS/DEFAULT_GLYPH conservan su nombre histórico de Fase C (para no

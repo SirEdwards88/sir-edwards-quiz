@@ -206,3 +206,8 @@ body.in-game .actions .btn-primary {
 .ui-line-arrow { --ico: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M4%2012h15M13%206l6%206-6%206%27/%3E%3C/svg%3E"); }
 .ui-line-install { --ico: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M12%203v12M7%2010l5%205%205-5M5%2020h14%27/%3E%3C/svg%3E"); }
 .ui-line-warn { --ico: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M12%203L2%2020h20L12%203zM12%2010v4M12%2017v.5%27/%3E%3C/svg%3E"); }
+
+/* Selector de avatares: el elegido, con filete dorado (antes azul). */
+.seq-av-btn.sel { border-color: var(--se-gold) !important; background: color-mix(in srgb, var(--se-gold) 12%, var(--card)) !important; }
+.seq-av-btn.sel .seq-av-name { color: var(--accent-gold-strong, #92400e) !important; }
+[data-theme="dark"] .seq-av-btn.sel .seq-av-name { color: var(--se-gold-light) !important; }
