@@ -39,7 +39,7 @@
   }
 
   // Quien se salta varias versiones (p. ej. jugó en la 1.1 y vuelve en la 2.0) ve, además de las novedades de la
-  // versión actual, una línea por cada versión intermedia (la más reciente primero, máximo 3), con el texto corto
+  // versión actual, una línea por cada versión intermedia (las 3 más recientes, en orden cronológico), con el texto corto
   // «data-recap» de su entrada del historial. Sin clave de «visto» (versiones anteriores a la 1.3) cuenta como muy antigua.
   var MAX_RECAP = 3;
   function num(v) { return String(v || '0').replace(/^v/, '').split('.').map(function (x) { return parseInt(x, 10) || 0; }); }
@@ -55,8 +55,9 @@
       if (v && cmp(v, seen || '0') > 0 && cmp(v, current) < 0) missed.push({ v: v, t: entries[i].getAttribute('data-recap') });
     }
     if (!missed.length) return;
-    missed.sort(function (a, b) { return cmp(b.v, a.v); });
-    missed = missed.slice(0, MAX_RECAP);
+    // Las 3 más recientes, mostradas en orden cronológico (la más antigua arriba), como el historial.
+    missed.sort(function (a, b) { return cmp(a.v, b.v); });
+    missed = missed.slice(-MAX_RECAP);
     var box = document.createElement('div');
     box.id = 'update-modal-recap';
     box.className = 'update-recap';
