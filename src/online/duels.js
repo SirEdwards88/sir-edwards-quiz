@@ -269,7 +269,7 @@
     var d = S.data; if (!d) return;
     var now = serverNow();
     if (S.screen === 'duel' && d.estado === 'en_curso') {
-      var dur = num(d.duracion_pregunta_ms) || 15000, t0 = num(d.t0);
+      var dur = num(d.duracion_pregunta_ms) || 10000, t0 = num(d.t0);
       if (now < t0) { setCount(String(secs(t0 - now))); return; }
       var k = Math.floor((now - t0) / dur);
       if (k !== S.lastIdx) {
@@ -288,7 +288,7 @@
       var lim = d.estado === 'aceptado' ? num(d.listos_expira_at) : num(d.invitacion_expira_at);
       setText('seq-d-count', String(secs(lim - now)));
     } else if (S.screen === 'reto' && d.estado === 'aceptado' && d.yo.actual) {
-      var limit = num(d.yo.actual.limite_at), dd = num(d.duracion_pregunta_ms) || 15000;
+      var limit = num(d.yo.actual.limite_at), dd = num(d.duracion_pregunta_ms) || 10000;
       setBar('seq-d-bar', (limit - now) / dd); setText('seq-d-time', String(secs(limit - now)));
       if (S.shown && S.shown.idx === d.yo.actual.indice && !S.shownAnswered && now <= limit) urgency(limit - now);
       if (now > limit && S.shown && S.shown.idx === d.yo.actual.indice) lockChoices();
@@ -584,7 +584,7 @@
       return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Sala de espera</div><p class="duel-result-hint">Tú: ' + (d.yo.listo ? '✅ listo' : '⏳') + ' · ' + p.name + ': ' + (d.rival_estado.listo ? '✅ listo' : '⏳') + '</p><p class="duel-result-hint">Quedan <span id="seq-d-count"></span> s para que los dos estéis listos.</p>' + (d.yo.listo ? '' : '<button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.duelAction(\'ready\')">✅ ¡Listo!</button>') + '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.duelAction(\'cancel\')">Salir</button></div>';
     }
     if (d.estado === 'en_curso') {
-      var t0 = num(d.t0), dur = num(d.duracion_pregunta_ms) || 15000;
+      var t0 = num(d.t0), dur = num(d.duracion_pregunta_ms) || 10000;
       if (now < t0) { S.shown = null; return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Empieza en <span id="seq-d-count"></span>…</div></div>'; }
       var k = Math.min(19, Math.floor((now - t0) / dur)); S.lastIdx = k;
       if (d.yo.completado) { S.shown = null; return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">¡Has terminado!</div><p class="duel-result-hint">Esperando a que acabe ' + p.name + '…</p></div>'; }
@@ -606,14 +606,14 @@
     S.shown = null;
     if (d.estado === 'pendiente') {
       var cad = left(num(d.expira_at) - now);
-      if (d.soy === 'rival') return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">' + p.name + ' te ha retado</div><p class="duel-result-hint">20 preguntas, 15 s cada una. Caduca en ' + esc(cad) + '.</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.retoAction(\'accept\')">Aceptar</button> <button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.retoAction(\'reject\')">Rechazar</button></div>';
+      if (d.soy === 'rival') return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">' + p.name + ' te ha retado</div><p class="duel-result-hint">20 preguntas, 10 s cada una. Caduca en ' + esc(cad) + '.</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.retoAction(\'accept\')">Aceptar</button> <button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.retoAction(\'reject\')">Rechazar</button></div>';
       return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Esperando a que ' + p.name + ' acepte</div><p class="duel-result-hint">Lo verá cuando abra el juego. Caduca en ' + esc(cad) + '.</p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.retoAction(\'cancel\')">Cancelar reto</button></div>';
     }
     if (d.estado === 'aceptado') {
       var y = d.yo, rv = d.rival_estado;
       var rs = '<p class="history-item-sub seq-d-rival">' + p.avatar + ' ' + p.name + ': ' + (rv.terminado ? 'ya ha jugado (verás su marca al terminar tú)' : rv.empezado ? 'jugando…' : 'aún no ha jugado') + '</p>';
       if (y.terminado) return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Tu parte está hecha: ' + num(y.aciertos) + '/20</div><p class="duel-result-hint">Cuando ' + p.name + ' juegue verás el resultado. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.reload()">Actualizar</button></div>';
-      if (!y.empezado) return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">¿Preparado?</div><p class="duel-result-hint">20 preguntas, 15 s cada una. Una vez empieces el reloj no se detiene. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.retoAction(\'start\')">▶ Jugar mi parte</button></div>';
+      if (!y.empezado) return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">¿Preparado?</div><p class="duel-result-hint">20 preguntas, 10 s cada una. Una vez empieces el reloj no se detiene. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.retoAction(\'start\')">▶ Jugar mi parte</button></div>';
       if (!y.actual) return h + '<p class="stats-section-sub">Cargando…</p>';
       return playScreen('reto', d, y.actual.indice, y.actual.pregunta, null);
     }
