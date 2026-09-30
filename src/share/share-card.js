@@ -207,23 +207,24 @@
     diamond(ctx, cx, y, 11, color);
   }
 
-  // Avatar circular sobre disco oscuro con anillo. opts.frame reservado para
-  // futuros marcos PvP (se dibujaría aquí, alrededor del anillo). No se usa.
+  // Avatar circular sobre disco de pergamino con anillo (el avatar es un objeto con transparencia y se ve
+  // mal sobre oscuro). opts.frame reservado para futuros marcos PvP (se dibujaría alrededor del anillo).
   function drawAvatar(ctx, img, cx, cy, r, opts) {
     opts = opts || {};
     ctx.save();
-    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fillStyle = 'rgba(8,10,24,.85)'; ctx.fill();
+    var g = ctx.createRadialGradient(cx, cy - r * .25, r * .1, cx, cy, r);
+    g.addColorStop(0, '#fff7e0'); g.addColorStop(1, '#e9d4a0');
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
     if (!img && opts.initial) {
-      ctx.fillStyle = BRAND.goldLight; ctx.textAlign = 'center'; ctx.font = '800 ' + Math.round(r * 1.0) + 'px ' + SERIF;
+      ctx.fillStyle = BRAND.navy; ctx.textAlign = 'center'; ctx.font = '800 ' + Math.round(r * 1.0) + 'px ' + SERIF;
       ctx.fillText(String(opts.initial).charAt(0).toUpperCase(), cx, cy + r * 0.34);
     }
     if (img) {
-      ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, r - 3, 0, Math.PI * 2); ctx.clip();
-      var s = 130, sw = img.width - s * 2 * (img.width / 1024), k = img.width / 1024;
-      ctx.drawImage(img, s * k, s * k, sw, sw, cx - r, cy - r, r * 2, r * 2);
-      ctx.restore();
+      var pad = r * .16, box = (r - pad) * 2, k = Math.min(box / img.width, box / img.height);
+      var w = img.width * k, h = img.height * k;
+      ctx.drawImage(img, cx - w / 2, cy - h / 2, w, h);
     }
-    ctx.lineWidth = 4; ctx.strokeStyle = opts.ring || BRAND.gold; ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+    ctx.lineWidth = 5; ctx.strokeStyle = opts.ring || BRAND.gold; ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
     ctx.restore();
   }
 
@@ -302,7 +303,7 @@
     var name = player.name, maxW = 560;
     while (ctx.measureText(name).width > maxW && name.length > 3) name = name.slice(0, -2);
     if (name !== player.name) name += '…';
-    var tw = ctx.measureText(name).width, r = 44, total = r * 2 + 22 + tw, x0 = CX - total / 2;
+    var tw = ctx.measureText(name).width, r = 56, total = r * 2 + 22 + tw, x0 = CX - total / 2;
     drawAvatar(ctx, avatarImg, x0 + r, y, r, { ring: theme.ring, initial: player.name });
     ctx.fillStyle = BRAND.cream; ctx.textAlign = 'left'; ctx.fillText(name, x0 + r * 2 + 22, y + 13); ctx.textAlign = 'center';
     return true;
@@ -391,5 +392,25 @@
     });
   }
 
-  window.SEQShareCard = { buildModel: buildModel, render: render, THEMES: THEMES, SIZE: { w: W, h: H, scale: SCALE } };
+  // Texto que acompaña a la imagen al compartir. Puro (sin DOM); mismo tono que el resto del juego.
+  var SHARE_URL = 'https://siredwards88.github.io/sir-edwards-quiz/';
+  function shareText(d) {
+    d = d || {};
+    var head, remark;
+    if (d.online) {
+      head = 'Sir Edwards Quiz · ' + (d.online.kind === 'reto' ? 'Reto' : 'Duelo online') + ': ' + clampInt(d.online.me) + ' a ' + clampInt(d.online.them) + '.';
+      remark = d.online.result === 'win' ? 'Victoria. Sir Edwards asiente con discreción.'
+        : d.online.result === 'loss' ? 'Derrota. Sir Edwards prefiere mirar hacia otro lado.'
+        : 'Empate. Nadie gana, nadie se salva.';
+    } else {
+      var acc = clampInt(d.accuracy);
+      head = 'Sir Edwards Quiz · ' + (d.modeName || 'Partida') + ': ' + (d.scoreStr || '0') + ' aciertos (' + acc + ' %).';
+      remark = acc >= 90 ? 'Sir Edwards está impresionado. Cosa rara.'
+        : acc >= 60 ? 'Sir Edwards ha levantado una ceja. No es poco.'
+        : 'Sir Edwards prefiere no comentarlo.';
+    }
+    return head + '\n' + remark + '\n¿Te atreves a superarlo? ' + SHARE_URL;
+  }
+
+  window.SEQShareCard = { buildModel: buildModel, render: render, shareText: shareText, THEMES: THEMES, SIZE: { w: W, h: H, scale: SCALE } };
 })();

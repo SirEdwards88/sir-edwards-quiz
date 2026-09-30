@@ -717,8 +717,7 @@
       var res = r.ganador === 'yo' ? 'win' : r.ganador === 'rival' ? 'loss' : 'draw';
       var rv = d.rival || {}, sess = session(), kind = S.screen === 'duel' ? 'duel' : 'reto';
       var me = num(r.mi_puntuacion), them = num(r.puntuacion_rival);
-      var verb = res === 'win' ? 'He ganado' : res === 'loss' ? 'He perdido' : 'He empatado en';
-      var text = '⚔️ ' + verb + (kind === 'duel' ? ' un Duelo online' : ' un Reto') + ' en Sir Edwards Quiz: ' + me + ' vs ' + them + '. ¡Pruébalo tú también!';
+      var text = SEQShareCard.shareText({ online: { kind: kind, result: res, me: me, them: them } });
       var input = {
         online: { kind: kind, result: res, myScore: me, opponentScore: them, modeLabel: kind === 'reto' ? '20 preguntas' : '',
                   rival: { name: rv.display_name || 'Jugador', avatar: rv.avatar } },

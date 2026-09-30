@@ -1505,7 +1505,7 @@ function renderShareCanvas(input) {
 let preparedShare = null;
 function shareResultImage(custom) {
   const input = custom ? custom.input : buildShareCardInput();
-  const shareText = custom ? custom.text : (lastResultShareData ? `🧠 Acabo de jugar a Sir Edwards Quiz (${lastResultShareData.modeName}): ${lastResultShareData.scoreStr} aciertos (${lastResultShareData.accuracy}% de efectividad).` : undefined);
+  const shareText = custom ? custom.text : (lastResultShareData ? SEQShareCard.shareText(lastResultShareData) : undefined);
   // 2.0: si la tarjeta ya se preparó en el toque anterior (el navegador no dejó compartir porque tardó en
   // dibujarse), se comparte ahora mismo, dentro de este toque.
   const ready = preparedShare && preparedShare.text === shareText && Date.now() - preparedShare.at < 120000 ? preparedShare : null;
@@ -6126,7 +6126,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
 function shareResult() {
   if (!lastResultShareData) return;
   const { modeName, scoreStr, accuracy } = lastResultShareData;
-  let shareText = `🧠 Acabo de jugar a Sir Edwards Quiz (${modeName}): ${scoreStr} aciertos (${accuracy}% de efectividad).`;
+  let shareText = SEQShareCard.shareText({ modeName, scoreStr, accuracy });
 
   // Capa 1: intentar compartir la tarjeta-imagen si el navegador admite
   // compartir archivos. Si no es compatible (o falla), caemos exactamente
