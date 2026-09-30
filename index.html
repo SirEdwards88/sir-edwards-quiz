@@ -2696,7 +2696,7 @@ const LOCKABLE_MODE_UI = [
   {
     cardId: 'mode-card-survival_main', badgeId: 'lock-badge-survival_main', descId: 'mode-desc-survival-main', reqId: 'mode-req-survival-main',
     baseDesc: '50 preguntas y 3 vidas. Elige tu nivel y aguanta hasta el final.',
-    reqText: s => `🔒 Requiere terminar 5 partidas en Modo Estándar: ${s.standardGamesCount || 0}/5`,
+    reqText: s => `Requiere terminar 5 partidas en Modo Estándar: ${s.standardGamesCount || 0}/5`,
     isUnlocked: s => (s.standardGamesCount || 0) >= 5
   },
   {
