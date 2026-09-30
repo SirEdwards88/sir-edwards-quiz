@@ -1651,7 +1651,8 @@ const RESULT_MOOD_IMAGES = {
   '💀': 'assets/ui/desastre.webp', '😬': 'assets/ui/suspenso.webp', '😐': 'assets/ui/mediocre.webp', '🙂': 'assets/ui/bien.webp',
   '😏': 'assets/ui/casi.webp', '🏆': 'assets/ui/perfecto.webp', '💔': 'assets/ui/derrota.webp',
   '⚡': 'assets/modes/suelto/contrarreloj.webp', '🧠': 'assets/modes/suelto/repaso.webp', '🔢': 'assets/modes/suelto/calculo.webp',
-  '👁️': 'assets/modes/suelto/secreto.webp', '🎯': 'assets/modes/suelto/estandar.webp'
+  '👁️': 'assets/modes/suelto/secreto.webp', '🎯': 'assets/modes/suelto/estandar.webp',
+  '❤️': 'assets/modes/suelto/supervivencia.webp', '👑': 'assets/modes/suelto/muerte-subita.webp', '📈': 'assets/ui/progreso.webp'
 };
 function fragmentMilestoneImg(m) {
   const src = ({ 10: 'assets/modes/mini/secreto.webp', 12: 'assets/ui/hito12.webp', 15: 'assets/ui/hito15.webp' })[m.fragments];
@@ -5961,7 +5962,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     if (isWin) {
       document.getElementById('res-category-text').textContent = "¡Victoria Épica!";
       customPhrase = pickRotatingPhrase(winPoolKey, winPhrases);
-      setResultTone('win', RESULT_MOOD_ICONS.win);
+      setResultTone('win', currentGame.mode === 'survival' ? '❤️' : '👑');
       if (currentGame.mode === 'survival') {
         stampText = 'SUPERVIVIENTE'; stampTone = 'amber';
       } else {
@@ -6013,7 +6014,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
         const reviewPhrase = pickRotatingPhrase(`review_${reviewKey}`, reviewData.phrases);
         document.getElementById('res-category-text').textContent = reviewData.title;
         document.getElementById('res-phrase-text').textContent = reviewPhrase;
-        setResultTone('review', RESULT_MOOD_ICONS.review);
+        setResultTone('review', reviewKey === 'progreso' ? '📈' : RESULT_MOOD_ICONS.review);
       }
     }
   }
