@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 36;
+const CACHE_VERSION = 37;
 const CACHE_NAME = `sedq-shell-v${CACHE_VERSION}`;
 
 // Rutas relativas al propio sw.js (que vive en la raíz de la app, tanto en
@@ -62,6 +62,17 @@ const APP_SHELL = [
   './src/ui/achievements.js',
   './src/ui/stats-extra.js',
   './src/ui/intro.js',
+  './assets/modes/estandar.webp',
+  './assets/modes/duelo.webp',
+  './assets/modes/repaso.webp',
+  './assets/modes/supervivencia.webp',
+  './assets/modes/muerte-subita.webp',
+  './assets/modes/contrarreloj.webp',
+  './assets/modes/calculo.webp',
+  './assets/modes/lucidez.webp',
+  './assets/modes/retos.webp',
+  './assets/modes/amigos.webp',
+  './assets/modes/ranking.webp',
   './src/audio/audio.js',
   './assets/audio/correct.mp3',
   './assets/audio/wrong.mp3',

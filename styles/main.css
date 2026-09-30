@@ -5410,3 +5410,14 @@ h3.stats-h::before { display: none !important; content: none !important; }
 #update-modal .modal-card.has-recap h2 { margin-bottom: 6px; }
 #update-modal .modal-card.has-recap #update-modal-list { font-size: 14px; line-height: 1.35; margin: 0 0 12px; }
 #update-modal .modal-card.has-recap #update-modal-list li { margin-bottom: 3px; }
+
+/* ===== 2.0 — Insignias ilustradas de los modos (assets/modes/*.webp) ======================== */
+/* La insignia ya trae su marco: el contenedor deja de pintar su baldosa de color. */
+.mode-card-icon.has-img, .home-big-icon.has-img { background: none !important; border: 0 !important; box-shadow: none !important; padding: 0 !important; border-radius: 0 !important; }
+.mode-img { width: 100%; height: 100%; object-fit: contain; display: block; -webkit-user-drag: none; user-select: none; filter: drop-shadow(0 3px 5px rgba(0,0,0,.22)); }
+#view-modes .mode-card-icon.has-img, #duel-home .mode-card-icon.has-img { width: 64px !important; height: 64px !important; margin-bottom: 8px !important; }
+.seq-d-card-icon .mode-img { width: 52px; height: 52px; }
+.home-big-icon.has-img { width: 78px; height: 78px; }
+.home-big-icon.has-img .mode-img { filter: drop-shadow(0 5px 9px rgba(0,0,0,.35)); }
+/* Bloqueado: la insignia se ve apagada, como el resto de la tarjeta. */
+.mode-card.locked .mode-card-icon.has-img .mode-img { filter: grayscale(.85) brightness(.9) drop-shadow(0 2px 3px rgba(0,0,0,.18)); opacity: .75; }

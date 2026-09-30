@@ -347,8 +347,8 @@ try {
 
       <div class="home-big-cards">
         <div class="home-big-card home-card-jugar" onclick="switchTab('modes')">
-          <div class="home-big-icon">
-            <svg viewBox="0 0 64 64" aria-hidden="true"><use href="#se-target"/></svg>
+          <div class="home-big-icon has-img" aria-hidden="true">
+            <img class="mode-img" src="assets/modes/estandar.webp" alt="" draggable="false">
           </div>
           <div class="home-big-text">
             <div class="home-big-title">JUGAR</div>
@@ -357,8 +357,8 @@ try {
           <div class="home-big-arrow">›</div>
         </div>
         <div class="home-big-card home-card-duelo" onclick="switchTab('duelo')">
-          <div class="home-big-icon">
-            <svg viewBox="0 0 64 64" aria-hidden="true"><use href="#se-swords"/></svg>
+          <div class="home-big-icon has-img" aria-hidden="true">
+            <img class="mode-img" src="assets/modes/duelo.webp" alt="" draggable="false">
           </div>
           <div class="home-big-text">
             <div class="home-big-title">DUELO</div>
@@ -475,18 +475,18 @@ try {
         <h2>Selecciona un modo de juego</h2>
         <div class="modes-grid">
           <div class="mode-card mode-standard" onclick="startMode('play')">
-            <div class="mode-card-icon" aria-hidden="true"><svg class="se-sym" viewBox="0 0 64 64"><use href="#se-target"/></svg></div>
+            <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/estandar.webp" alt="" draggable="false"></div>
             <h3>Modo Estándar</h3>
             <p>20 preguntas de todo tipo. ¿Cuánto sabes de verdad?</p>
           </div>
           <div class="mode-card mode-review" onclick="startReviewMode()">
-            <div class="mode-card-icon" aria-hidden="true"><svg class="se-sym" viewBox="0 0 64 64"><use href="#se-review"/></svg></div>
+            <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/repaso.webp" alt="" draggable="false"></div>
             <h3>Modo Repaso (<span id="repaso-count">0</span>)</h3>
             <p>Tus fallos vuelven hasta que los aciertes 3 veces seguidas.</p>
           </div>
           <div class="mode-card mode-survival locked" id="mode-card-survival_main" onclick="openDifficultyMenu('survival')">
             <span class="mode-lock-badge" id="lock-badge-survival_main" aria-label="Bloqueado" title="Modo bloqueado"></span>
-            <div class="mode-card-icon" aria-hidden="true"><svg class="se-sym" viewBox="0 0 64 64"><use href="#se-heart"/></svg></div>
+            <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/supervivencia.webp" alt="" draggable="false"></div>
             <h3>Supervivencia</h3>
             <p id="mode-desc-survival-main">50 preguntas y 3 vidas. Elige tu nivel y aguanta hasta el final.</p>
             <p class="mode-req" id="mode-req-survival-main"></p>
@@ -494,7 +494,7 @@ try {
           </div>
           <div class="mode-card mode-sudden locked" id="mode-card-sudden_death_main" onclick="startSuddenDeathMode()">
             <span class="mode-lock-badge" id="lock-badge-sudden_death_main" aria-label="Bloqueado" title="Modo bloqueado"></span>
-            <div class="mode-card-icon" aria-hidden="true"><svg class="se-sym" viewBox="0 0 64 64"><use href="#se-skull"/></svg></div>
+            <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/muerte-subita.webp" alt="" draggable="false"></div>
             <h3>Muerte Súbita</h3>
             <p id="mode-desc-sd-main">30 preguntas cada vez más difíciles. Un fallo y se acabó.</p>
             <p class="mode-req" id="mode-req-sudden_death_main"></p>
@@ -502,7 +502,7 @@ try {
           </div>
           <div class="mode-card mode-timetrial locked" id="mode-card-timetrial" onclick="startMode('timetrial')">
             <span class="mode-lock-badge" id="lock-badge-timetrial" aria-label="Bloqueado" title="Modo bloqueado"></span>
-            <div class="mode-card-icon" aria-hidden="true"><svg class="se-sym" viewBox="0 0 64 64"><use href="#se-watch"/></svg></div>
+            <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/contrarreloj.webp" alt="" draggable="false"></div>
             <h3>Contrarreloj</h3>
             <p id="mode-desc-timetrial">Empiezas con 60 s: cada acierto suma 3 s y cada fallo los resta.</p>
             <p class="mode-req" id="mode-req-timetrial"></p>
@@ -510,7 +510,7 @@ try {
           </div>
           <div class="mode-card mode-mentalcalc locked" id="mode-card-mental_calc" onclick="startMentalCalcMode()">
             <span class="mode-lock-badge" id="lock-badge-mental_calc" aria-label="Bloqueado" title="Modo bloqueado"></span>
-            <div class="mode-card-icon" aria-hidden="true"><svg class="se-sym" viewBox="0 0 64 64"><use href="#se-calc"/></svg></div>
+            <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/calculo.webp" alt="" draggable="false"></div>
             <h3>Cálculo Mental</h3>
             <p id="mode-desc-mental-calc">Operaciones contra el reloj, cada vez más difíciles. Aciertos +2 s, fallos −3 s.</p>
             <p class="mode-req" id="mode-req-mental_calc"></p>
@@ -518,6 +518,7 @@ try {
           </div>
           <div class="mode-card mode-lucidez locked" id="mode-card-lucidez_mental" onclick="openLucidezMentalMode()">
             <span class="mode-lock-badge" id="lock-badge-lucidez_mental" aria-label="Bloqueado" title="Modo bloqueado"></span>
+            <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/lucidez.webp" alt="" draggable="false"></div>
             <h3 id="mode-title-lucidez-mental">👁️ MODO SECRETO</h3>
             <p id="mode-desc-lucidez-mental">El desafío definitivo te espera.</p>
             <p class="mode-req" id="mode-req-lucidez_mental"></p>

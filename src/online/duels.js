@@ -128,7 +128,7 @@
   }
   function hubCard(variant, icon, title, desc, action, status) {
     return '<div class="mode-card seq-d-card seq-d-v-' + variant + '" role="button" tabindex="0" onclick="' + action + '" onkeydown="if(event.key===\'Enter\')' + action + '">' +
-      '<div class="mode-card-icon" aria-hidden="true">' + icon + '</div><h3>' + title + '</h3><p>' + desc + '</p>' + (status || '') + '</div>';
+      '<div class="mode-card-icon' + (icon.indexOf('mode-img') !== -1 ? ' has-img' : '') + '" aria-hidden="true">' + icon + '</div><h3>' + title + '</h3><p>' + desc + '</p>' + (status || '') + '</div>';
   }
   function renderCards() {
     var slot = $('seq-duel-cards');
@@ -138,7 +138,7 @@
     if (!on || !active()) { if (home) home.classList.remove('seq-d-hub-on'); }
     if (!on) { slot.innerHTML = ''; return; }
     if (!session()) {
-      slot.innerHTML = '<div class="mode-card seq-d-card" onclick="SEQOnline.goToAccount()"><div class="seq-d-card-icon"><svg class="se-sym" viewBox="0 0 64 64"><use href="#se-friends"/></svg></div><div class="duel-action-text"><h3>Duelos con amigos</h3><p>Inicia sesión para retar a tus amigos online.</p></div></div>';
+      slot.innerHTML = '<div class="mode-card seq-d-card" onclick="SEQOnline.goToAccount()"><div class="seq-d-card-icon"><img class="mode-img" src="assets/modes/amigos.webp" alt="" draggable="false"></div><div class="duel-action-text"><h3>Duelos con amigos</h3><p>Inicia sesión para retar a tus amigos online.</p></div></div>';
       return;
     }
     if (!active()) { slot.innerHTML = '<p class="stats-section-sub">Los duelos y los retos estarán disponibles muy pronto.</p>'; return; }
@@ -148,14 +148,14 @@
     var du = L.duels ? L.duels.filter(function (d) { return (d.estado === 'pendiente' && d.soy === 'rival') || d.estado === 'aceptado' || d.estado === 'en_curso'; }).length : 0;
     var re = L.retos ? L.retos.filter(function (r) { return (r.estado === 'pendiente' && r.soy === 'rival') || (r.estado === 'aceptado' && !r.yo.terminado); }).length : 0;
     var h = '';
-    if (f.classic_duel) h += hubCard('duel', '<svg class="se-sym" viewBox="0 0 64 64"><use href="#se-swords"/></svg>', 'Duelo online', 'Juega un duelo en directo contra un amigo.', "SEQDuels.open('duels')", pending(du, 'PENDIENTE', 'PENDIENTES'));
-    if (f.async_challenges) h += hubCard('retos', '<svg class="se-sym" viewBox="0 0 64 64"><use href="#se-letter"/></svg>', 'Retos', 'Reta a un amigo y jugad cada uno cuando podáis.', "SEQDuels.open('retos')", pending(re, 'PENDIENTE', 'PENDIENTES'));
-    h += hubCard('amigos', '<svg class="se-sym" viewBox="0 0 64 64"><use href="#se-friends"/></svg>', 'Amigos', 'Añade amigos y rétalos desde tu lista.', "SEQDuels.open('friends')", pending(fr, 'SOLICITUD', 'SOLICITUDES'));
+    if (f.classic_duel) h += hubCard('duel', '<img class="mode-img" src="assets/modes/duelo.webp" alt="" draggable="false">', 'Duelo online', 'Juega un duelo en directo contra un amigo.', "SEQDuels.open('duels')", pending(du, 'PENDIENTE', 'PENDIENTES'));
+    if (f.async_challenges) h += hubCard('retos', '<img class="mode-img" src="assets/modes/retos.webp" alt="" draggable="false">', 'Retos', 'Reta a un amigo y jugad cada uno cuando podáis.', "SEQDuels.open('retos')", pending(re, 'PENDIENTE', 'PENDIENTES'));
+    h += hubCard('amigos', '<img class="mode-img" src="assets/modes/amigos.webp" alt="" draggable="false">', 'Amigos', 'Añade amigos y rétalos desde tu lista.', "SEQDuels.open('friends')", pending(fr, 'SOLICITUD', 'SOLICITUDES'));
     // Ranking: solo la entrada visual. Todavía no existe un ranking de duelos
     // (el ranking global por XP es otra cosa y está desactivado), así que la
     // tarjeta está bloqueada, sin navegación y sin datos.
     h += '<div class="mode-card locked seq-d-card seq-d-v-rank" aria-disabled="true"><span class="mode-lock-badge" aria-hidden="true"></span>' +
-      '<div class="mode-card-icon" aria-hidden="true"><svg class="se-sym" viewBox="0 0 64 64"><use href="#se-trophy"/></svg></div><h3>Ranking</h3><p>La clasificación de duelos entre amigos.</p><p class="mode-subtitle seq-d-soon">PRÓXIMAMENTE</p></div>';
+      '<div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/ranking.webp" alt="" draggable="false"></div><h3>Ranking</h3><p>La clasificación de duelos entre amigos.</p><p class="mode-subtitle seq-d-soon">PRÓXIMAMENTE</p></div>';
     slot.innerHTML = h;
   }
   // Cabecera del hub (la usa también closeDuelPanels() en index.html). Solo se
