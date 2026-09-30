@@ -48,6 +48,7 @@
 <link rel="stylesheet" href="styles/main.css">
 <!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
 <link rel="stylesheet" href="styles/online.css">
+<link rel="stylesheet" href="styles/theme.css">
 
 </head>
 <body class="on-home">
@@ -165,10 +166,10 @@
     <p class="welcome-lead">Soy Sir Edwards. Llevo tiempo esperando a alguien capaz de acertar algo. Sin presión.</p>
     <div class="welcome-sub">Lo que te espera</div>
     <ul class="welcome-list">
-      <li><span aria-hidden="true">🎯</span><span><span id="welcome-q-count">360</span> preguntas para demostrar lo que sabes. O lo que creías saber.</span></li>
-      <li><span aria-hidden="true">⚔️</span><span>Duelos en directo y retos contra tus amigos. La familia también cuenta como rival.</span></li>
-      <li><span aria-hidden="true">🏆</span><span>Logros, rachas y niveles, por si necesitas que alguien te diga que lo haces bien.</span></li>
-      <li><span aria-hidden="true">🗝️</span><span>Un modo secreto. No preguntes. Encuéntralo.</span></li>
+      <li><span aria-hidden="true"><img class="mode-img mode-img-mini" src="assets/modes/mini/estandar.webp" alt="" draggable="false"></span><span><span id="welcome-q-count">360</span> preguntas para demostrar lo que sabes. O lo que creías saber.</span></li>
+      <li><span aria-hidden="true"><img class="mode-img mode-img-mini" src="assets/modes/mini/duelo.webp" alt="" draggable="false"></span><span>Duelos en directo y retos contra tus amigos. La familia también cuenta como rival.</span></li>
+      <li><span aria-hidden="true"><img class="mode-img mode-img-mini" src="assets/modes/mini/logros.webp" alt="" draggable="false"></span><span>Logros, rachas y niveles, por si necesitas que alguien te diga que lo haces bien.</span></li>
+      <li><span aria-hidden="true"><img class="mode-img mode-img-mini" src="assets/modes/mini/secreto.webp" alt="" draggable="false"></span><span>Un modo secreto. No preguntes. Encuéntralo.</span></li>
     </ul>
     <p class="welcome-note" id="welcome-save-note">Tu progreso se guarda en este dispositivo: haz una copia de seguridad desde Ajustes de vez en cuando.</p>
     <button class="btn btn-primary welcome-btn" onclick="closeWelcomeModal()">Que empiece la prueba</button>
@@ -518,7 +519,7 @@ try {
           </div>
           <div class="mode-card mode-lucidez locked" id="mode-card-lucidez_mental" onclick="openLucidezMentalMode()">
             <span class="mode-lock-badge" id="lock-badge-lucidez_mental" aria-label="Bloqueado" title="Modo bloqueado"></span>
-            <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/lucidez.webp" alt="" draggable="false"></div>
+            <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/secreto.webp" alt="" draggable="false"></div>
             <h3 id="mode-title-lucidez-mental">👁️ MODO SECRETO</h3>
             <p id="mode-desc-lucidez-mental">El desafío definitivo te espera.</p>
             <p class="mode-req" id="mode-req-lucidez_mental"></p>
@@ -760,15 +761,15 @@ try {
           <h3 class="stats-h"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#se-trophy"/></svg>Récords personales</h3>
           <div class="stats-extra-grid" id="extra-stats">
             <div class="stat-extra stat-speed">
-              <span class="stat-extra-icon"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#se-watch"/></svg></span>
+              <span class="stat-extra-icon has-img" aria-hidden="true"><img class="mode-img mode-img-mini" src="assets/modes/mini/contrarreloj.webp" alt="" draggable="false"></span>
               <div><span class="stat-extra-label">Mejor Contrarreloj</span><span class="stat-extra-value" id="best-timetrial">0</span></div>
             </div>
             <div class="stat-extra stat-mentalcalc">
-              <span class="stat-extra-icon"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#se-calc"/></svg></span>
+              <span class="stat-extra-icon has-img" aria-hidden="true"><img class="mode-img mode-img-mini" src="assets/modes/mini/calculo.webp" alt="" draggable="false"></span>
               <div><span class="stat-extra-label">Mejor Cálculo Mental</span><span class="stat-extra-value" id="best-mentalcalc">0</span></div>
             </div>
             <div class="stat-extra stat-lucidez" id="best-lucidez-box">
-              <span class="stat-extra-icon"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#sb-eye"/></svg></span>
+              <span class="stat-extra-icon has-img" aria-hidden="true"><img class="mode-img mode-img-mini" src="assets/modes/mini/secreto.webp" alt="" draggable="false"></span>
               <div>
                 <span class="stat-extra-label" id="best-lucidez-label">Mejor partida Modo Secreto</span>
                 <span class="stat-extra-value" id="best-lucidez">—</span>
@@ -776,7 +777,7 @@ try {
               </div>
             </div>
             <div class="stat-extra stat-master">
-              <span class="stat-extra-icon"><svg class="se-sym" viewBox="0 0 64 64" aria-hidden="true"><use href="#sb-book"/></svg></span>
+              <span class="stat-extra-icon has-img" aria-hidden="true"><img class="mode-img mode-img-mini" src="assets/modes/mini/repaso.webp" alt="" draggable="false"></span>
               <div><span class="stat-extra-label">Preguntas dominadas</span><span class="stat-extra-value" id="mastered-count">0/300</span></div>
             </div>
           </div>
@@ -6669,10 +6670,13 @@ function showModeUnlockToast(modes){
     t.innerHTML='<span class="toast-icon"></span><span><span class="toast-small">🎮✨ ¡NUEVO MODO DESBLOQUEADO!</span><span class="toast-name"></span></span>';
     t.querySelector('.toast-icon').textContent = modes[0].icon || '🎮';
     t.querySelector('.toast-name').textContent = modes[0].name || 'Nuevo modo';
+    // 2.0: la insignia ilustrada del modo en lugar del emoji (src de una tabla fija, nunca datos del jugador).
+    const badgeSrc = window.SEQModeBadges ? SEQModeBadges.src(modes[0].name) : '';
+    if (badgeSrc) t.querySelector('.toast-icon').innerHTML = '<img class="toast-badge" src="' + badgeSrc + '" alt="" draggable="false">';
   } else {
     t.classList.add('mode-unlock-toast-multi');
     const itemsHtml = modes.map(m =>
-      `<span class="toast-multi-item"><span class="toast-multi-icon">${escapeHtml(String(m.icon || '🎮'))}</span>${escapeHtml(String(m.name || 'Nuevo modo'))}</span>`
+      `<span class="toast-multi-item"><span class="toast-multi-icon">${(window.SEQModeBadges && SEQModeBadges.src(m.name)) ? '<img class="toast-badge" src="' + SEQModeBadges.src(m.name) + '" alt="" draggable="false">' : escapeHtml(String(m.icon || '🎮'))}</span>${escapeHtml(String(m.name || 'Nuevo modo'))}</span>`
     ).join('');
     t.innerHTML = `<span class="toast-small toast-multi-title">🎮✨ ¡NUEVOS MODOS DESBLOQUEADOS!</span><span class="toast-multi-list">${itemsHtml}</span>`;
   }

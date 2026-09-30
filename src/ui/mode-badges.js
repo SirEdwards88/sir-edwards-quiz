@@ -11,7 +11,7 @@
 
   var DIR = 'assets/modes/';
   var BY_MODE = { play: 'estandar', review: 'repaso', survival: 'supervivencia', sudden_death: 'muerte-subita',
-    timetrial: 'contrarreloj', mental_calc: 'calculo', lucidez_mental: 'lucidez' };
+    timetrial: 'contrarreloj', mental_calc: 'calculo', lucidez_mental: 'secreto' };
   var BY_TIER = { ameba: 'ameba', humano: 'humano', derrame: 'derrame' };
   // El historial guarda el nombre visible del modo, no su clave.
   var BY_NAME = { 'Modo Estándar': 'play', 'Repaso': 'review', 'Supervivencia': 'survival', 'Muerte Súbita': 'sudden_death',

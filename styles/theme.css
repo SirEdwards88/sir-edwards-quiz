@@ -1,0 +1,130 @@
+/* SirEdwards Quiz v2.0 — «Tema Sir Edwards»: la app a juego con las insignias ilustradas.
+ *
+ * Solo presentación (colores, bordes, fondos y sombras). No cambia estructura, textos ni lógica.
+ * Se carga la ÚLTIMA (después de main.css y online.css) para poder ajustarla o retirarla de una vez.
+ * Paleta: marino #1c2340 / #2a3560, oro #c9992e / #e8c874, pergamino #fbf6ea / #f3e9d2.
+ * Se conserva todo lo que comunica algo: verde/rojo de acierto/fallo, color del texto de cada modo,
+ * bloqueados apagados y la atmósfera propia del modo secreto.
+ */
+
+:root {
+  --se-navy: #1c2340;
+  --se-navy-2: #2a3560;
+  --se-gold: #c9992e;
+  --se-gold-light: #e8c874;
+  --se-gold-hair: rgba(201,153,46,.45);
+  --se-gold-soft: rgba(201,153,46,.22);
+  --se-parch: #fffcf4;
+  --se-parch-2: #f7efdc;
+  --se-ink-on-navy: #f6e6b8;
+}
+[data-theme="dark"] {
+  --se-parch: #1d2544;
+  --se-parch-2: #171d36;
+  --se-gold-hair: rgba(201,153,46,.38);
+  --se-gold-soft: rgba(201,153,46,.16);
+}
+
+/* ---- Botón principal: marino con filete y texto dorados (en oscuro, al revés: oro con texto marino) ---- */
+.btn-primary,
+.card[class*="theme-"] .btn-primary,
+body.in-game .actions .btn-primary {
+  background: linear-gradient(180deg, var(--se-navy-2), var(--se-navy)) !important;
+  color: var(--se-ink-on-navy) !important;
+  border: 1.5px solid var(--se-gold) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.10), 0 4px 12px rgba(28,35,64,.22) !important;
+  letter-spacing: .2px;
+}
+.btn-primary:hover,
+.card[class*="theme-"] .btn-primary:hover {
+  background: linear-gradient(180deg, #34427a, var(--se-navy-2)) !important;
+}
+[data-theme="dark"] .btn-primary,
+[data-theme="dark"] .card[class*="theme-"] .btn-primary,
+[data-theme="dark"] body.in-game .actions .btn-primary {
+  background: linear-gradient(180deg, var(--se-gold-light), var(--se-gold)) !important;
+  color: var(--se-navy) !important;
+  border-color: #f0d99a !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 4px 14px rgba(0,0,0,.35) !important;
+}
+[data-theme="dark"] .btn-primary:hover,
+[data-theme="dark"] .card[class*="theme-"] .btn-primary:hover { background: linear-gradient(180deg, #f0d99a, #d6a93a) !important; }
+.btn-primary:disabled { opacity: .55; }
+
+/* Selector segmentado de Ajustes (Claro/Oscuro, Sonido…): la opción elegida, marino y oro. */
+.segmented-btn.active {
+  background: linear-gradient(180deg, var(--se-navy-2), var(--se-navy)) !important;
+  color: var(--se-ink-on-navy) !important;
+  border-color: var(--se-gold) !important;
+}
+[data-theme="dark"] .segmented-btn.active {
+  background: linear-gradient(180deg, var(--se-gold-light), var(--se-gold)) !important;
+  color: var(--se-navy) !important;
+  border-color: #f0d99a !important;
+}
+
+/* ---- Tarjetas de modos (Jugar, Duelos, dificultades no): pergamino con filete dorado, sin tintes pastel ---- */
+#view-modes .mode-card:not(.mode-lucidez),
+#duel-home .seq-d-card {
+  background: linear-gradient(170deg, var(--se-parch), var(--se-parch-2)) !important;
+  border: 1.5px solid var(--se-gold-hair) !important;
+  box-shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 6px 16px rgba(28,35,64,.07) !important;
+}
+#view-modes .mode-card:not(.mode-lucidez):hover,
+#duel-home .seq-d-card:not(.locked):hover { border-color: var(--se-gold) !important; }
+#view-modes .mode-card::after,
+#duel-home .seq-d-card::after { display: none !important; }
+[data-theme="dark"] #view-modes .mode-card:not(.mode-lucidez),
+[data-theme="dark"] #duel-home .seq-d-card { box-shadow: 0 6px 18px rgba(0,0,0,.28) !important; }
+/* El modo secreto conserva su atmósfera violeta, con el mismo filete dorado. */
+#view-modes .mode-card.mode-lucidez { border-color: var(--se-gold-hair) !important; }
+/* «Continuar partida»: destacada con oro, sin el color del modo. */
+#resume-game-card { border: 1.5px solid var(--se-gold) !important; background: linear-gradient(170deg, var(--se-parch), var(--se-parch-2)) !important; }
+
+/* ---- Partida: marco dorado común; la identidad del modo la llevan su insignia y el color del texto ---- */
+.card[class*="theme-"]:not(.theme-lucidez) {
+  border: 2px solid var(--se-gold-hair) !important;
+  box-shadow: 0 0 0 4px var(--card), 0 0 0 5px var(--se-gold-soft), 0 14px 40px rgba(28,35,64,.10) !important;
+}
+.card[class*="theme-"]:not(.theme-lucidez) .mode-header.game-hud {
+  background: linear-gradient(170deg, var(--se-parch), var(--se-parch-2)) !important;
+  border: 1px solid var(--se-gold-hair) !important;
+}
+.card[class*="theme-"]:not(.theme-lucidez) .q-box {
+  background: var(--se-parch) !important;
+  border-left-color: var(--se-gold) !important;
+  box-shadow: 0 2px 10px rgba(28,35,64,.05) !important;
+}
+.card[class*="theme-"]:not(.theme-lucidez) #choice-options .choice-btn:not(.correct):not(.incorrect) {
+  background: var(--se-parch) !important;
+  border-color: var(--se-gold-soft) !important;
+}
+.card[class*="theme-"]:not(.theme-lucidez) #choice-options .choice-btn:not(.correct):not(.incorrect):hover:not(:disabled) {
+  border-color: var(--se-gold) !important;
+  box-shadow: 0 4px 14px rgba(201,153,46,.18) !important;
+}
+.card[class*="theme-"]:not(.theme-lucidez) #choice-options .choice-btn.selected:not(.correct):not(.incorrect) {
+  border-color: var(--se-gold) !important;
+  background: color-mix(in srgb, var(--se-gold) 12%, var(--se-parch)) !important;
+}
+/* Barra de progreso de la partida en oro (la de Lucidez conserva la suya). */
+.card[class*="theme-"]:not(.theme-lucidez) #bar-fill { background: linear-gradient(90deg, #b8862a, var(--se-gold-light)) !important; }
+
+
+/* ---- Barras de nivel (inicio de partida, Jugar, expediente) en oro ---- */
+#game-level-bar-fill, #stats-level-bar-fill, #home-level-bar-fill { background: linear-gradient(90deg, #b8862a, var(--se-gold-light)) !important; }
+
+/* La franja de color de la parte superior de la tarjeta de partida pasa a oro (Lucidez conserva la suya). */
+.card[class*="theme-"]:not(.theme-lucidez)::before { background: linear-gradient(90deg, #b8862a, var(--se-gold-light), #b8862a) !important; }
+
+/* Aviso «¡Nuevo modo desbloqueado!»: insignia del modo. */
+.mode-unlock-toast .toast-badge { width: 44px; height: 44px; object-fit: contain; display: block; filter: drop-shadow(0 2px 4px rgba(0,0,0,.3)); }
+.mode-unlock-toast .toast-multi-icon .toast-badge { width: 26px; height: 26px; display: inline-block; vertical-align: middle; }
+.mode-unlock-toast { border-color: var(--se-gold) !important; }
+
+/* Bienvenida: franja superior en oro; la lista usa las insignias mini. */
+.welcome-card::before { background: linear-gradient(90deg, #b8862a, var(--se-gold-light), #b8862a) !important; }
+#welcome-modal .welcome-list li > span:first-child .mode-img-mini { width: 26px; height: 26px; display: block; margin-top: 1px; }
+/* Récords personales con la insignia mini del modo. */
+.stat-extra-icon.has-img { background: none !important; border: 0 !important; box-shadow: none !important; }
+.stat-extra-icon.has-img .mode-img-mini { width: 34px; height: 34px; display: block; }
