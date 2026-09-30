@@ -183,7 +183,7 @@
      maybeShowUpdateModal() decide si debe mostrarse. -->
 <div id="update-modal" class="modal-overlay" style="display:none;">
   <div class="modal-card">
-    <h2><span aria-hidden="true">🎩</span> Novedades de la <span id="update-modal-version"></span></h2>
+    <h2><span aria-hidden="true"><img class="ui-img ui-title-img" src="assets/avatars/sombrero.png" alt="" draggable="false"></span>Novedades de la <span id="update-modal-version"></span></h2>
     <p class="update-modal-lead">Mientras no mirabas, Sir Edwards ha estado ocupado:</p>
     <ul id="update-modal-list" class="settings-changelog-list"></ul>
     <div class="modal-warning-actions">
@@ -237,9 +237,9 @@
     <h2 id="auth-gate-title" class="gate-title" tabindex="-1">Tu cuenta, tu progreso</h2>
     <p id="auth-gate-desc" class="gate-desc">Entra con Google y lleva tu progreso a cualquier dispositivo.</p>
     <ul class="gate-perks">
-      <li><span class="gate-perk-ico" aria-hidden="true">☁️</span><span>Tu XP, logros e historial, siempre a salvo</span></li>
-      <li><span class="gate-perk-ico" aria-hidden="true">⚔️</span><span>Duelos en directo y Retos con tus amigos</span></li>
-      <li><span class="gate-perk-ico" aria-hidden="true">📱</span><span>Sigue jugando en el móvil o en el ordenador</span></li>
+      <li><span class="gate-perk-ico" aria-hidden="true"><img class="ui-img" src="assets/ui/nube.webp" alt="" draggable="false"></span><span>Tu XP, logros e historial, siempre a salvo</span></li>
+      <li><span class="gate-perk-ico" aria-hidden="true"><img class="ui-img" src="assets/modes/mini/duelo.webp" alt="" draggable="false"></span><span>Duelos en directo y Retos con tus amigos</span></li>
+      <li><span class="gate-perk-ico" aria-hidden="true"><img class="ui-img" src="assets/ui/movil.webp" alt="" draggable="false"></span><span>Sigue jugando en el móvil o en el ordenador</span></li>
     </ul>
     <div id="seq-gate-gsi-slot" class="seq-gsi-slot"></div>
     <p class="settings-note seq-msg gate-msg" id="seq-gate-msg"></p>
@@ -419,7 +419,7 @@ try {
          componente modal-overlay/modal-card que el resto de la app. -->
     <div id="duel-help-modal" class="modal-overlay" style="display:none;">
       <div class="modal-card">
-        <h2><span aria-hidden="true">⚔️</span> ¿Cómo funciona un Duelo?</h2>
+        <h2><span aria-hidden="true"><img class="ui-img ui-title-img" src="assets/modes/mini/duelo.webp" alt="" draggable="false"></span>¿Cómo funciona un Duelo?</h2>
         <p><strong>1. Añade a un amigo</strong><br>Los duelos y los retos son siempre con amigos de tu lista.</p>
         <p><strong>2. Duelo online</strong><br>Jugáis a la vez 20 preguntas en directo.</p>
         <p><strong>3. Retos</strong><br>Le envías un reto y lo juega cuando quiera, dentro del plazo.</p>
@@ -585,7 +585,7 @@ try {
       <div class="mode-header game-hud">
         <span class="game-mode-lbl"><img id="game-mode-badge" class="game-mode-badge" alt="" draggable="false" style="display:none"><span id="game-progress-lbl">Progreso: 1/30</span></span>
         <div class="game-streak-inline" id="game-streak-inline">
-          <span class="game-streak-inline-icon">🔥</span>
+          <span class="game-streak-inline-icon"><img class="ui-img" src="assets/ui/racha.webp" alt="" draggable="false"></span>
           <span class="game-streak-inline-text">Racha <span id="game-current-streak">0</span></span>
         </div>
         <div id="timetrial-change" class="timetrial-change" aria-live="polite"></div>
@@ -656,7 +656,7 @@ try {
 
 
         <div id="session-mode-unlock-box" class="session-mode-unlock-box">
-          <div class="session-mode-unlock-title">🎮✨ ¡Nuevo(s) Modo(s) Desbloqueado(s)!</div>
+          <div class="session-mode-unlock-title">¡Nuevo(s) Modo(s) Desbloqueado(s)!</div>
           <div class="session-mode-unlock-list" id="session-mode-unlock-list"></div>
         </div>
 
@@ -850,14 +850,14 @@ try {
       </div>
 
       <div class="achievements-progress-box" id="achievements-progress-box">
-        <div class="achievements-progress-title">🏅 Logros</div>
+        <div class="achievements-progress-title"><img class="ui-img ui-title-img" src="assets/modes/mini/logros.webp" alt="" draggable="false">Logros</div>
         <div class="achievements-progress-count" id="achievements-count-lbl">0 / 0</div>
         <div class="progress-bar achievements-bar"><div id="achievements-bar-fill" class="bar-fill achievements-bar-fill"></div></div>
         <p class="achievements-progress-subtitle" id="achievements-remaining-lbl">por conseguir</p>
       </div>
 
       <div class="fragments-progress-box" id="fragments-progress-box">
-        <div class="fragments-progress-title">🧩 Fragmentos de Mente</div>
+        <div class="fragments-progress-title"><img class="ui-img ui-title-img" src="assets/ui/fragmento.webp" alt="" draggable="false">Fragmentos de Mente</div>
         <div class="fragments-progress-count" id="fragments-count-lbl">0 / 15</div>
         <div class="fragments-bar-wrap">
           <div class="progress-bar fragments-bar"><div id="fragments-bar-fill" class="bar-fill fragments-bar-fill"></div></div>
@@ -916,7 +916,7 @@ try {
           <p class="settings-kicker">Aplicación</p>
           <div class="settings-field">
             <span class="settings-field-label">Tenla a mano en tu pantalla de inicio</span>
-            <button type="button" class="btn btn-secondary settings-install-btn" onclick="SEQInstall.install()">📲 Instalar la app</button>
+            <button type="button" class="btn btn-secondary settings-install-btn" onclick="SEQInstall.install()"><span class="ui-line ui-line-install" aria-hidden="true"></span>Instalar la app</button>
             <p class="settings-install-note" id="install-app-note" style="display:none;"></p>
           </div>
         </div>
@@ -1025,7 +1025,7 @@ try {
       </div>
 
       <div class="settings-section settings-danger-zone">
-        <h3 style="margin-top:0; color: var(--danger-txt);">⚠️ Zona de peligro</h3>
+        <h3 style="margin-top:0; color: var(--danger-txt);"><span class="ui-line ui-line-warn" aria-hidden="true"></span>Zona de peligro</h3>
         <p class="settings-note">Borra todo el progreso guardado en este dispositivo.</p>
         <button class="btn btn-danger" onclick="resetAppData()">Reiniciar progreso</button>
       </div>
@@ -1644,6 +1644,17 @@ function getResultData(score, total) {
 // La frase sarcástica es aleatoria en cada final, así que este toque visual
 // le da variedad real y coherencia con la identidad de color de cada modo.
 let lastResultShareTone = null; // Prompt 5: tono que se está mostrando (lo lee la tarjeta de compartir)
+// 2.0: ilustraciones del «ánimo» del resultado en lugar del emoji (mismas claves que RESULT_MOOD_ICONS).
+const RESULT_MOOD_IMAGES = {
+  '💀': 'assets/ui/desastre.webp', '😬': 'assets/ui/suspenso.webp', '😐': 'assets/ui/mediocre.webp', '🙂': 'assets/ui/bien.webp',
+  '😏': 'assets/ui/casi.webp', '🏆': 'assets/ui/perfecto.webp', '💔': 'assets/ui/derrota.webp',
+  '⚡': 'assets/modes/mini/contrarreloj.webp', '🧠': 'assets/modes/mini/repaso.webp', '🔢': 'assets/modes/mini/calculo.webp',
+  '👁️': 'assets/modes/mini/secreto.webp', '🎯': 'assets/modes/mini/estandar.webp'
+};
+function fragmentMilestoneImg(m) {
+  const src = ({ 10: 'assets/modes/mini/secreto.webp', 12: 'assets/ui/hito12.webp', 15: 'assets/ui/hito15.webp' })[m.fragments];
+  return src ? `<img class="ui-img" src="${src}" alt="" draggable="false">` : '';
+}
 function setResultTone(toneKey, icon) {
   lastResultShareTone = toneKey;
   const container = document.querySelector('.results-phrase-container');
@@ -1651,7 +1662,12 @@ function setResultTone(toneKey, icon) {
   if (container) {
     container.className = 'results-phrase-container' + (toneKey ? ' tone-' + toneKey : '');
   }
-  if (iconEl) iconEl.textContent = icon || '🎯';
+  if (iconEl) {
+    const moodImg = RESULT_MOOD_IMAGES[icon || '🎯'];
+    if (moodImg) iconEl.innerHTML = '<img class="mood-img" src="' + moodImg + '" alt="" draggable="false">';
+    else iconEl.textContent = icon || '🎯';
+    iconEl.classList.toggle('has-img', !!moodImg);
+  }
   setResultCharacter(toneKey);
 }
 
@@ -1706,7 +1722,7 @@ function renderModeChips(chips) {
   }
   box.innerHTML = chips.map(c => `
     <span class="result-chip" title="${c.label}">
-      <span class="result-chip-icon">${c.icon}</span><span class="result-chip-value">${c.value}</span>
+      <span class="result-chip-icon">${({'🔥': '<img class="ui-img" src="assets/ui/racha.webp" alt="" draggable="false">', '✨': '<img class="ui-img" src="assets/ui/xp.webp" alt="" draggable="false">'})[c.icon] || c.icon}</span><span class="result-chip-value">${c.value}</span>
     </span>
   `).join('');
   box.classList.add('show');
@@ -2676,19 +2692,19 @@ const LOCKABLE_MODE_UI = [
   {
     cardId: 'mode-card-sudden_death_main', badgeId: 'lock-badge-sudden_death_main', descId: 'mode-desc-sd-main', reqId: 'mode-req-sudden_death_main',
     baseDesc: '30 preguntas cada vez más difíciles. Un fallo y se acabó.',
-    reqText: () => '🔒 Requiere ganar Supervivencia Ameba',
+    reqText: () => 'Requiere ganar Supervivencia Ameba',
     isUnlocked: s => (s.unlockedMedals || []).includes('surv_ameba')
   },
   {
     cardId: 'mode-card-timetrial', badgeId: 'lock-badge-timetrial', descId: 'mode-desc-timetrial', reqId: 'mode-req-timetrial',
     baseDesc: 'Empiezas con 60 s: cada acierto suma 3 s y cada fallo los resta.',
-    reqText: () => '🔒 Requiere Nivel 10',
+    reqText: () => 'Requiere Nivel 10',
     isUnlocked: s => getLevelData(s.xp) >= 10
   },
   {
     cardId: 'mode-card-mental_calc', badgeId: 'lock-badge-mental_calc', descId: 'mode-desc-mental-calc', reqId: 'mode-req-mental_calc',
     baseDesc: 'Operaciones contra el reloj, cada vez más difíciles. Aciertos +2 s, fallos −3 s.',
-    reqText: () => '🔒 Requiere el logro «Velocidad Mental»',
+    reqText: () => 'Requiere el logro «Velocidad Mental»',
     isUnlocked: s => (s.unlockedMedals || []).includes('tt_15')
   },
   {
@@ -2696,7 +2712,7 @@ const LOCKABLE_MODE_UI = [
     titleId: 'mode-title-lucidez-mental', lockedTitle: 'MODO SECRETO', unlockedTitle: 'LUCIDEZ MENTAL',
     baseDesc: 'El desafío definitivo te espera.',
     unlockedDesc: (s) => `<div class="lucidez-phase-line"><strong>FASE I</strong> · 10 preguntas · mínimo 6 aciertos</div><div class="lucidez-phase-line"><strong>FASE II</strong> · 5 preguntas + 5 cálculos · ${LUCIDEZ_BASE_LIVES} vidas · las preguntas desaparecen a los 3 s</div><div class="lucidez-phase-line"><strong>FASE III</strong> · 9 preguntas · 45 s · −2 s por fallo · mínimo 5 aciertos</div><div class="lucidez-phase-line lucidez-phase-final"><strong>ENIGMA FINAL</strong> · 30 s para resolver el enigma final. ¿Lo conseguirás?</div>${getLucidezBonusLives(s) > 0 ? `<div class="lucidez-phase-line">🛡️ <strong>${getLucidezBonusLives(s)} ${getLucidezBonusLives(s) === 1 ? 'error extra' : 'errores extra'}</strong> en toda la partida (fases y enigma)</div>` : ''}`,
-    reqText: s => `🔒 Consigue ${FRAGMENT_TARGET} fragmentos de Mente para desbloquear este modo (${getFragmentCount(s)}/${FRAGMENT_TARGET})`,
+    reqText: s => `Consigue ${FRAGMENT_TARGET} fragmentos de Mente para desbloquear este modo (${getFragmentCount(s)}/${FRAGMENT_TARGET})`,
     isUnlocked: s => getFragmentCount(s) >= FRAGMENT_TARGET
   }
 ];
@@ -2772,7 +2788,7 @@ function updateBadges() {
     }
     if (cfg.reqId) {
       const reqEl = document.getElementById(cfg.reqId);
-      if (reqEl) reqEl.textContent = unlocked ? '' : (cfg.reqText ? cfg.reqText(store) : '');
+      if (reqEl) { reqEl.textContent = unlocked ? '' : (cfg.reqText ? cfg.reqText(store) : ''); if (reqEl.textContent) reqEl.insertAdjacentHTML('afterbegin', '<img class="lock-img" src="assets/cats/candado.webp" alt="" draggable="false">'); }
     }
     // Algunos modos (p. ej. Lucidez Mental) cambian de nombre al desbloquearse.
     if (cfg.titleId) {
@@ -3217,7 +3233,7 @@ function openDifficultyMenu(mode) {
   difficultyMenu.classList.add('diff-survival');
 
   difficultyMenu.style.display = 'block';
-  document.getElementById('diff-menu-title').textContent = '❤️ Supervivencia: Elige Dificultad';
+  document.getElementById('diff-menu-title').innerHTML = '<img class="ui-img ui-title-img" src="assets/modes/mini/supervivencia.webp" alt="" draggable="false">Supervivencia: Elige Dificultad';
 }
 
 // Muerte Súbita ya no elige dificultad de antemano: la dificultad es
@@ -6048,7 +6064,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   } else if (currentGame.mode === 'mental_calc' && currentGame.isNewRecord) {
     renderRecordBadge('🏆 NUEVO RÉCORD', 'gold');
   } else if (['play', 'review', 'survival', 'sudden_death'].includes(currentGame.mode) && currentGame.newBestStreakThisGame) {
-    renderRecordBadge('🔥 NUEVA MEJOR RACHA', 'gold');
+    renderRecordBadge('<img class="ui-img ui-stamp-img" src="assets/ui/racha.webp" alt="" draggable="false">NUEVA MEJOR RACHA', 'gold');
   } else {
     renderRecordBadge(null);
   }
@@ -6233,7 +6249,7 @@ function categoryBadge(cat) {
 }
 
 function difficultyLabel(dif) {
-  return ({facil:'🟢 Fácil', medio:'🟡 Medio', dificil:'🔴 Difícil'})[dif] || dif;
+  return ({facil:'<span class="dif-dot dif-facil"></span>Fácil', medio:'<span class="dif-dot dif-medio"></span>Medio', dificil:'<span class="dif-dot dif-dificil"></span>Difícil'})[dif] || dif;
 }
 
 function renderLearningStats() {
@@ -6518,7 +6534,7 @@ function renderFragmentsProgress() {
   const listEl = document.getElementById('fragments-milestones');
   if (listEl) listEl.innerHTML = state.items.map(m => `
     <div class="fragment-milestone${m.unlocked ? ' is-unlocked' : ' is-locked'}">
-      <div class="fragment-milestone-icon">${m.icon}</div>
+      <div class="fragment-milestone-icon">${fragmentMilestoneImg(m) || m.icon}</div>
       <div class="fragment-milestone-body">
         <div class="fragment-milestone-title">${m.fragments} Fragmentos</div>
         <div class="fragment-milestone-text">${m.text}</div>
@@ -6672,7 +6688,7 @@ function showModeUnlockToast(modes){
   }
   if (modes.length === 1) {
     t.classList.remove('mode-unlock-toast-multi');
-    t.innerHTML='<span class="toast-icon"></span><span><span class="toast-small">🎮✨ ¡NUEVO MODO DESBLOQUEADO!</span><span class="toast-name"></span></span>';
+    t.innerHTML='<span class="toast-icon"></span><span><span class="toast-small">¡NUEVO MODO DESBLOQUEADO!</span><span class="toast-name"></span></span>';
     t.querySelector('.toast-icon').textContent = modes[0].icon || '🎮';
     t.querySelector('.toast-name').textContent = modes[0].name || 'Nuevo modo';
     // 2.0: la insignia ilustrada del modo en lugar del emoji (src de una tabla fija, nunca datos del jugador).
@@ -6683,7 +6699,7 @@ function showModeUnlockToast(modes){
     const itemsHtml = modes.map(m =>
       `<span class="toast-multi-item"><span class="toast-multi-icon">${(window.SEQModeBadges && SEQModeBadges.src(m.name)) ? '<img class="toast-badge" src="' + SEQModeBadges.src(m.name) + '" alt="" draggable="false">' : escapeHtml(String(m.icon || '🎮'))}</span>${escapeHtml(String(m.name || 'Nuevo modo'))}</span>`
     ).join('');
-    t.innerHTML = `<span class="toast-small toast-multi-title">🎮✨ ¡NUEVOS MODOS DESBLOQUEADOS!</span><span class="toast-multi-list">${itemsHtml}</span>`;
+    t.innerHTML = `<span class="toast-small toast-multi-title">¡NUEVOS MODOS DESBLOQUEADOS!</span><span class="toast-multi-list">${itemsHtml}</span>`;
   }
   t.classList.add('show');
   clearTimeout(window.__modeUnlockToastTimer);

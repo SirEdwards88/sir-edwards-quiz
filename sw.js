@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 46;
+const CACHE_VERSION = 47;
 const CACHE_NAME = `sedq-shell-v${CACHE_VERSION}`;
 
 // Rutas relativas al propio sw.js (que vive en la raíz de la app, tanto en
@@ -81,6 +81,30 @@ const APP_SHELL = [
   './assets/modes/logros.webp',
   './assets/modes/ajustes.webp',
   './src/ui/mode-badges.js',
+  './assets/ui/bien.webp',
+  './assets/ui/casi.webp',
+  './assets/ui/derrota.webp',
+  './assets/ui/desastre.webp',
+  './assets/ui/fragmento.webp',
+  './assets/ui/hito12.webp',
+  './assets/ui/hito15.webp',
+  './assets/ui/mediocre.webp',
+  './assets/ui/movil.webp',
+  './assets/ui/nube.webp',
+  './assets/ui/perfecto.webp',
+  './assets/ui/racha.webp',
+  './assets/ui/suspenso.webp',
+  './assets/ui/xp.webp',
+  './assets/familias/aciertos.webp',
+  './assets/familias/dominio.webp',
+  './assets/familias/duelo.webp',
+  './assets/familias/errores.webp',
+  './assets/familias/especial.webp',
+  './assets/familias/modos.webp',
+  './assets/familias/nivel.webp',
+  './assets/familias/prog.webp',
+  './assets/familias/racha.webp',
+  './assets/familias/secretos.webp',
   './assets/cats/historia.webp',
   './assets/cats/geografia.webp',
   './assets/cats/ciencia.webp',
@@ -153,6 +177,7 @@ const APP_SHELL = [
   './assets/modes/mini/contrarreloj.webp',
   './assets/modes/mini/calculo.webp',
   './assets/modes/mini/secreto.webp',
+  './assets/modes/mini/ranking.webp',
   './assets/modes/mini/duelo.webp',
   './assets/modes/mini/logros.webp',
   './src/audio/audio.js',

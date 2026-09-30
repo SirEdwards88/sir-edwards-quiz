@@ -82,6 +82,8 @@
 
   // Insignia ilustrada del logro (assets/logros/<id>.webp). El emoji de medals.js queda como texto alternativo
   // (avisos de texto) y como respaldo si la imagen no carga.
+  // Escudos de cada familia (assets/familias/<key>.webp); «Otros» conserva su emoji.
+  var FAMILY_IMG = { prog: 1, racha: 1, nivel: 1, aciertos: 1, dominio: 1, errores: 1, modos: 1, duelo: 1, especial: 1, secretos: 1 };
   function iconHTML(m) {
     return '<img class="ach-img" src="assets/logros/' + esc(m.id) + '.webp" alt="" draggable="false" onerror="this.replaceWith(document.createTextNode(\'' + esc(m.icon) + '\'))">';
   }
@@ -99,7 +101,7 @@
       var p = PROGRESS[m.id](s), cur = Math.min(p[0], p[1]), pct = Math.round(cur / p[1] * 100);
       prog = '<div class="ach-prog"><div class="ach-bar"><span style="width:' + pct + '%"></span></div><span class="ach-num">' + cur + '/' + p[1] + '</span></div>';
     }
-    var tag = frag ? '<span class="ach-frag' + (unlocked ? ' got' : '') + '" title="' + (unlocked ? 'Fragmento obtenido' : 'Otorga un Fragmento de Mente') + '">🧩</span>' : '';
+    var tag = frag ? '<span class="ach-frag' + (unlocked ? ' got' : '') + '" title="' + (unlocked ? 'Fragmento obtenido' : 'Otorga un Fragmento de Mente') + '"><img src="assets/ui/fragmento.webp" alt="" draggable="false"></span>' : '';
     return '<div class="ach-row ' + (unlocked ? 'is-done' : 'is-locked') + '">' +
       '<div class="ach-ico has-img">' + iconHTML(m) + (unlocked ? '<span class="ach-check" aria-hidden="true">✓</span>' : '') + '</div>' +
       '<div class="ach-body"><div class="ach-title">' + esc(m.title) + tag + '</div><div class="ach-desc">' + esc(m.desc) + '</div>' + prog + '</div></div>';
@@ -131,7 +133,7 @@
       var isOpen = openState[g.key] != null ? openState[g.key] : (done > 0 && done < total);
       var complete = done === total;
       return '<details class="ach-group' + (complete ? ' is-complete' : '') + '" data-key="' + g.key + '"' + (isOpen ? ' open' : '') + '>' +
-        '<summary><span class="ach-g-ico" aria-hidden="true">' + g.icon + '</span><span class="ach-g-name">' + g.name + '</span>' +
+        '<summary><span class="ach-g-ico' + (FAMILY_IMG[g.key] ? ' has-img' : '') + '" aria-hidden="true">' + (FAMILY_IMG[g.key] ? '<img src="assets/familias/' + g.key + '.webp" alt="" draggable="false">' : g.icon) + '</span><span class="ach-g-name">' + g.name + '</span>' +
         '<span class="ach-g-count">' + (complete ? '✓ ' : '') + done + '/' + total + '</span>' +
         '<span class="ach-g-bar"><span style="width:' + Math.round(done / total * 100) + '%"></span></span></summary>' +
         '<div class="ach-list">' + sorted.map(function (m) { return row(m, s, got.indexOf(m.id) !== -1); }).join('') + '</div></details>';

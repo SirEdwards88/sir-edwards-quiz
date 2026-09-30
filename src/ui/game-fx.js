@@ -122,7 +122,7 @@
     var b = document.createElement('div');
     b.className = 'fx-streak-banner';
     b.setAttribute('aria-hidden', 'true');
-    b.innerHTML = '<span class="fx-streak-fire">🔥</span><span class="fx-streak-num"></span><span class="fx-streak-lbl">¡seguidas!</span>';
+    b.innerHTML = '<span class="fx-streak-fire"><img class="ui-img" src="assets/ui/racha.webp" alt=""></span><span class="fx-streak-num"></span><span class="fx-streak-lbl">¡seguidas!</span>';
     b.querySelector('.fx-streak-num').textContent = String(n);
     host.appendChild(b);
     setTimeout(function () { b.remove(); }, 1500);
@@ -165,14 +165,14 @@
     return !!el && (el.classList.contains('show') || el.style.display === 'block');
   }
   function pluralTitles() {
-    var set = function (boxId, listId, one, many) {
+    var set = function (boxId, listId, one, many, icon) {
       var box = $(boxId), list = $(listId); if (!box || !list) return;
       var title = box.firstElementChild; if (!title) return;
       var n = list.children.length;
-      if (n) title.textContent = n === 1 ? one : many;
+      if (n) title.innerHTML = (icon ? '<img class="ui-img ui-title-img" src="' + icon + '" alt="">' : '') + (n === 1 ? one : many);
     };
-    set('session-medals-box', 'session-medals-list', '🏆 ¡Nuevo logro desbloqueado!', '🏆 ¡Nuevos logros desbloqueados!');
-    set('session-mode-unlock-box', 'session-mode-unlock-list', '🎮✨ ¡Nuevo modo desbloqueado!', '🎮✨ ¡Nuevos modos desbloqueados!');
+    set('session-medals-box', 'session-medals-list', '¡Nuevo logro desbloqueado!', '¡Nuevos logros desbloqueados!', 'assets/modes/mini/logros.webp');
+    set('session-mode-unlock-box', 'session-mode-unlock-list', '¡Nuevo modo desbloqueado!', '¡Nuevos modos desbloqueados!');
   }
   var resultsVisible = false;
   function onResults() {

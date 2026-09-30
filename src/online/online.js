@@ -786,23 +786,23 @@
       '<span class="seq-avatar seq-avatar-lg">' + avHtml + '</span>' +
       '<span class="seq-profile-info"><span class="seq-name">' + esc(p.display_name) + '</span>' +
       '<span class="seq-profile-level">Nivel ' + levelOf(xp) + ' · ' + xp + ' XP</span></span>' +
-      '<span class="seq-profile-edit" aria-hidden="true">✏️</span></button>';
+      '<span class="seq-profile-edit" aria-hidden="true"><span class="ui-line ui-line-pencil" aria-hidden="true"></span></span></button>';
     if (st) {
       if (quiet) html += '<p class="seq-sync-line seq-sync-' + st.cls + '" id="seq-status"><span class="seq-sync-dot" aria-hidden="true"></span>' + esc(st.text) + '</p>';
       else html += '<p class="seq-status seq-' + st.cls + '" id="seq-status">' + esc(st.text) + '</p>';
     }
     // Acciones que solo aparecen cuando hacen falta.
     if (sync && (sync.migration === 'pending' || sync.needsMerge)) {
-      html += '<div class="seq-btnrow"><button class="btn btn-primary" onclick="SEQOnline.openMigration()">' + (sync.migration === 'pending' ? '➡️ Decidir sobre mi progreso local' : '🔀 Restaurar / combinar progreso') + '</button></div>';
+      html += '<div class="seq-btnrow"><button class="btn btn-primary" onclick="SEQOnline.openMigration()">' + (sync.migration === 'pending' ? '<span class="ui-line ui-line-arrow" aria-hidden="true"></span>Decidir sobre mi progreso local' : '<span class="ui-line ui-line-swap" aria-hidden="true"></span>Restaurar / combinar progreso') + '</button></div>';
     } else if (st && !quiet && navigator.onLine !== false) {
       html += '<div class="seq-btnrow"><button class="btn btn-primary" onclick="SEQOnline.syncNowUi()"' + (ui.syncing ? ' disabled' : '') + '>↻ Reintentar</button></div>';
     }
-    if (rankingOn()) html += '<div class="seq-btnrow"><button class="btn btn-secondary" onclick="SEQOnline.openRanking()">🏆 Ranking global</button></div>';
+    if (rankingOn()) html += '<div class="seq-btnrow"><button class="btn btn-secondary" onclick="SEQOnline.openRanking()"><img class="ui-img ui-btn-img" src="assets/modes/mini/ranking.webp" alt="" draggable="false">Ranking global</button></div>';
     html += '<details class="seq-manage"><summary>Cuenta</summary>' +
-      '<button class="seq-id" onclick="SEQOnline.copyId()" title="Copiar ID">Tu ID de jugador: <b>' + esc(p.id) + '</b> 📋</button>' +
+      '<button class="seq-id" onclick="SEQOnline.copyId()" title="Copiar ID">Tu ID de jugador: <b>' + esc(p.id) + '</b> <span class="ui-line ui-line-copy" aria-hidden="true"></span></button>' +
       '<div class="seq-btnrow">' +
       '<button class="btn btn-secondary" onclick="SEQOnline.syncNowUi()"' + (ui.syncing ? ' disabled' : '') + '>↻ Sincronizar ahora</button>' +
-      (sync && (sync.migration === 'pending' || sync.needsMerge) ? '' : '<button class="btn btn-secondary" onclick="SEQOnline.openMigration()">🔀 Restaurar / combinar progreso</button>') +
+      (sync && (sync.migration === 'pending' || sync.needsMerge) ? '' : '<button class="btn btn-secondary" onclick="SEQOnline.openMigration()"><span class="ui-line ui-line-swap" aria-hidden="true"></span>Restaurar / combinar progreso</button>') +
       '<button class="btn btn-secondary" onclick="SEQOnline.signOut()">Cerrar sesión</button>' +
       '<button class="btn btn-secondary" onclick="SEQOnline.logoutAll()">Cerrar sesión en todos los dispositivos</button>' +
       '<button class="btn btn-danger" onclick="SEQOnline.deleteAccount()">Eliminar mi cuenta online</button></div>' +
@@ -815,7 +815,7 @@
     var slot = $('seq-stats-slot');
     if (!slot) return;
     if (!rankingOn()) { slot.innerHTML = ''; return; }
-    slot.innerHTML = '<button class="btn btn-secondary seq-stats-rank-btn" onclick="SEQOnline.openRanking()">🏆 Ranking global</button>';
+    slot.innerHTML = '<button class="btn btn-secondary seq-stats-rank-btn" onclick="SEQOnline.openRanking()"><img class="ui-img ui-btn-img" src="assets/modes/mini/ranking.webp" alt="" draggable="false">Ranking global</button>';
   }
 
   function render() {

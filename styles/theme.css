@@ -175,3 +175,34 @@ body.in-game .actions .btn-primary {
 .session-medal-icon.has-img .ach-img { animation: ach-stamp .55s cubic-bezier(.2,.9,.3,1.3) both; }
 @keyframes ach-stamp { 0% { transform: scale(1.8) rotate(-12deg); opacity: 0; } 60% { transform: scale(.94) rotate(2deg); opacity: 1; } 100% { transform: none; } }
 @media (prefers-reduced-motion: reduce) { .session-medal-icon.has-img .ach-img { animation: none; } }
+
+/* ---- Últimos iconos ilustrados (assets/ui, assets/familias) y trazos dorados ---- */
+.ui-img { width: 1.35em; height: 1.35em; object-fit: contain; vertical-align: -0.32em; display: inline-block; -webkit-user-drag: none; user-select: none; }
+.ui-title-img { margin-right: .35em; }
+.ui-btn-img { width: 1.5em; height: 1.5em; margin-right: .4em; vertical-align: -.4em; border-radius: 50%; }
+.ui-stamp-img { width: 1.5em; height: 1.5em; margin-right: .35em; vertical-align: -.4em; }
+.seq-id .ui-line { margin: 0 0 0 .25em; color: var(--se-gold); }
+.seq-profile-edit .ui-line { margin: 0; color: var(--se-gold); }
+.gate-perk-ico .ui-img { width: 30px; height: 30px; vertical-align: middle; }
+.game-streak-inline-icon .ui-img { width: 22px; height: 22px; vertical-align: -5px; }
+.result-chip-icon .ui-img { width: 22px; height: 22px; vertical-align: -5px; }
+.fx-streak-fire .ui-img { width: 1.1em; height: 1.1em; vertical-align: -.15em; }
+.fragment-milestone-icon .ui-img { width: 34px; height: 34px; }
+.fragment-milestone-icon img[src*="mini/"] { border-radius: 50%; }
+.ach-frag img { width: 18px; height: 18px; vertical-align: -4px; }
+.ach-g-ico.has-img { background: none !important; box-shadow: none !important; border: 0 !important; }
+.ach-g-ico.has-img img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,.25)); }
+.results-mood-icon.has-img { font-size: 0; }
+.results-mood-icon .mood-img { width: 64px; height: 64px; object-fit: contain; filter: drop-shadow(0 3px 6px rgba(0,0,0,.25)); }
+.dif-dot { display: inline-block; width: .7em; height: .7em; border-radius: 50%; margin-right: .45em; vertical-align: .02em; box-shadow: inset 0 0 0 1.5px rgba(0,0,0,.12); }
+.dif-facil { background: #16a34a; } .dif-medio { background: #eab308; } .dif-dificil { background: #dc2626; }
+.mode-req .lock-img { width: 15px; height: 15px; }
+
+/* Trazos dorados de los botones pequeños (máscara CSS: sin <svg> en el DOM). */
+.ui-line { display: inline-block; width: 1.15em; height: 1.15em; vertical-align: -.2em; margin-right: .4em; background: currentColor; -webkit-mask: var(--ico) center / contain no-repeat; mask: var(--ico) center / contain no-repeat; }
+.ui-line-pencil { --ico: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M4%2020h4L19%209l-4-4L4%2016v4zM14%206l4%204%27/%3E%3C/svg%3E"); }
+.ui-line-copy { --ico: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M9%209h10v11H9zM5%2015V4h10%27/%3E%3C/svg%3E"); }
+.ui-line-swap { --ico: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M4%208h13l-3-3M20%2016H7l3%203%27/%3E%3C/svg%3E"); }
+.ui-line-arrow { --ico: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M4%2012h15M13%206l6%206-6%206%27/%3E%3C/svg%3E"); }
+.ui-line-install { --ico: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M12%203v12M7%2010l5%205%205-5M5%2020h14%27/%3E%3C/svg%3E"); }
+.ui-line-warn { --ico: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M12%203L2%2020h20L12%203zM12%2010v4M12%2017v.5%27/%3E%3C/svg%3E"); }
