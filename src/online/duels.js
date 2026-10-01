@@ -183,11 +183,9 @@
       call('GET', '/friends').then(function (d) { S.lists.friends = d; }).catch(function () {}),
       f.classic_duel ? call('GET', '/duels').then(function (d) {
         S.lists.duels = d.duels || [];
-        // Solo los que este dispositivo vio en juego (ver markPlaying): nunca se recuentan duelos antiguos.
-        var playing = playingIds();
-        S.lists.duels.forEach(function (x) { if (x && playing.indexOf(safeId(x.id)) >= 0 && x.estado === 'completado') { recordDuel(x, x.id); forgetPlaying(x.id); } });
+        recordFromList(S.lists.duels, 'duel'); // solo los que este dispositivo vio en juego: nunca se recuentan antiguos
       }).catch(function () {}) : null,
-      f.async_challenges ? call('GET', '/challenges').then(function (d) { S.lists.retos = d.challenges || []; }).catch(function () {}) : null,
+      f.async_challenges ? call('GET', '/challenges').then(function (d) { S.lists.retos = d.challenges || []; recordFromList(S.lists.retos, 'reto'); }).catch(function () {}) : null,
     ]).then(function () { renderCards(); if (S.screen && S.screen !== 'duel' && S.screen !== 'reto') render(); });
   }
 
@@ -241,24 +239,35 @@
       schedule(true);
     });
   }
-  // Al ver un DUELO completado se avisa a index.html (una sola vez por duelo, lo controla
-  // registerOnlineDuelResult) con el ID estable del rival y el marcador, para las estadísticas y los
-  // logros de Duelo. Los Retos no cuentan.
+  // Al ver un Duelo online o un Reto completado se avisa a index.html (una sola vez por partida, lo controla
+  // registerOnlineDuelResult) con el ID estable del rival y el marcador, para las estadísticas y los logros
+  // de Duelo. 2.0: los Retos también cuentan (los dos son duelos contra alguien); las victorias por
+  // abandono o «no jugado», no.
   function recordResult(d) {
-    if (S.screen !== 'duel') return;
-    if (d && d.estado === 'en_curso') markPlaying(S.id);
-    if (d && d.estado === 'completado') { recordDuel(d, S.id); forgetPlaying(S.id); }
+    if (!d || (S.screen !== 'duel' && S.screen !== 'reto')) return;
+    var kind = S.screen;
+    if (kind === 'duel' && d.estado === 'en_curso') markPlaying(kind, S.id);
+    if (kind === 'reto' && d.estado === 'aceptado' && d.yo && d.yo.empezado) markPlaying(kind, S.id);
+    if (d.estado === 'completado') { recordDuel(d, S.id, kind); forgetPlaying(kind, S.id); }
   }
-  // Duelos que este dispositivo ha visto «en juego» (lo guarda index.html: duels.js no toca el almacenamiento).
+  // Partidas que este dispositivo ha visto «en juego» (lo guarda index.html: duels.js no toca el almacenamiento).
+  // Clave: el id del duelo, o «reto:<id>» para los retos.
+  function playKey(kind, id) { id = safeId(id); return id ? (kind === 'reto' ? 'reto:' + id : id) : ''; }
   function playingIds() { try { return typeof onlineDuelsPlaying === 'function' ? onlineDuelsPlaying() : []; } catch (e) { return []; } }
-  function markPlaying(id) { id = safeId(id); if (id && typeof markOnlineDuelPlaying === 'function') markOnlineDuelPlaying(id); }
-  function forgetPlaying(id) { id = safeId(id); if (id && typeof forgetOnlineDuelPlaying === 'function') forgetOnlineDuelPlaying(id); }
-  // También desde la lista de duelos (al abrir el hub): así cuenta un duelo terminado aunque el jugador
-  // saliera antes que el rival y no lo haya vuelto a abrir. registerOnlineDuelResult evita contarlo dos veces.
-  function recordDuel(d, duelId) {
+  function markPlaying(kind, id) { var k = playKey(kind, id); if (k && typeof markOnlineDuelPlaying === 'function') markOnlineDuelPlaying(k); }
+  function forgetPlaying(kind, id) { var k = playKey(kind, id); if (k && typeof forgetOnlineDuelPlaying === 'function') forgetOnlineDuelPlaying(k); }
+  // También desde las listas (al abrir el hub): así cuenta una partida terminada aunque el jugador saliera antes
+  // que el rival y no la haya vuelto a abrir. registerOnlineDuelResult evita contarla dos veces.
+  function recordFromList(list, kind) {
+    var playing = playingIds();
+    (list || []).forEach(function (x) {
+      if (x && x.estado === 'completado' && playing.indexOf(playKey(kind, x.id)) >= 0) { recordDuel(x, x.id, kind); forgetPlaying(kind, x.id); }
+    });
+  }
+  function recordDuel(d, duelId, kind) {
     try {
       if (!d || d.estado !== 'completado' || !d.resultado) return;
-      var r = d.resultado, rid = safeId(d.rival && d.rival.id), id = safeId(duelId), g = r.ganador;
+      var r = d.resultado, rid = safeId(d.rival && d.rival.id), id = playKey(kind, duelId), g = r.ganador;
       var draw = r.empate === true || (g == null && num(r.mi_puntuacion) === num(r.puntuacion_rival));
       var res = g === 'yo' ? 'win' : g === 'rival' ? 'loss' : (draw ? 'draw' : null);
       if (!rid || !id || !res || typeof registerOnlineDuelResult !== 'function') return;
