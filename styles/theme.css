@@ -299,3 +299,14 @@ h3 .ui-btn-ico { width: 34px; height: 34px; vertical-align: middle; margin: -4px
 .results-character.char-neutral { animation: moodPop .4s cubic-bezier(.34,1.56,.64,1); }
 /* Etiqueta mínima en las pastillas de la tarjeta final (qué es cada número). */
 .result-chip-label { font-size: 11px; font-weight: 700; color: var(--text-muted, #6b7280); margin-left: -2px; white-space: nowrap; }
+
+/* ===== PROPUESTA home: Duelo en granate y acentos suaves en las tarjetas pequeñas ===== */
+.home-big-card.home-card-duelo { background: linear-gradient(150deg, #a3314f, #6e1630 55%, #3a0a18); }
+.home-big-card.home-card-duelo::after { opacity: .07; }
+.home-small-card { background: linear-gradient(var(--hc, #c9a227), var(--hc, #c9a227)) top / 100% 3px no-repeat, linear-gradient(180deg, color-mix(in srgb, var(--hc, #c9a227) 9%, #fffdf8), #faf3e6); }
+.home-small-card .home-small-arrow { color: var(--hc, var(--brand-gold)); }
+.home-small-card .home-small-divider { background: var(--hc, var(--brand-gold)); }
+.home-card-stats { --hc: #3b6fd6; }
+.home-card-medals { --hc: #c9a227; }
+.home-card-settings { --hc: #64748b; }
+[data-theme="dark"] .home-small-card { background: linear-gradient(var(--hc), var(--hc)) top / 100% 3px no-repeat, linear-gradient(180deg, color-mix(in srgb, var(--hc) 14%, var(--brand-cream)), var(--brand-cream-deep)); }
