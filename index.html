@@ -1488,7 +1488,7 @@ function buildShareCardInput() {
     scoreStr: lastResultShareData.scoreStr,
     accuracy: lastResultShareData.accuracy,
     streak: lastResultShareData.streak,
-    characterState: RESULT_CHARACTER_TONES[lastResultShareTone],
+    characterState: lastResultCharacterState || undefined,
     lucidez: lastResultShareData.lucidez || null,
     // La frase de Sir Edwards que el jugador ve en su tarjeta final (ya elegida; solo se lee, no se recalcula).
     phrase: ((document.getElementById('res-phrase-text') || {}).textContent || '').trim(),
@@ -1647,6 +1647,7 @@ function getResultData(score, total) {
 // Aplica el color e icono correspondientes al desenlace de la partida.
 // La frase sarcástica es aleatoria en cada final, así que este toque visual
 // le da variedad real y coherencia con la identidad de color de cada modo.
+let lastResultCharacterState = null; // retrato mostrado en la tarjeta final (lo lee la tarjeta de compartir)
 let lastResultShareTone = null; // Prompt 5: tono que se está mostrando (lo lee la tarjeta de compartir)
 // 2.0: ilustraciones del «ánimo» del resultado en lugar del emoji (mismas claves que RESULT_MOOD_ICONS).
 const RESULT_MOOD_IMAGES = {
@@ -1663,12 +1664,17 @@ const RESULT_MOOD_BY_CATEGORY = {
   timetrial: { mal: '🐌', normal: '⏱️', bien: '🐇' },
   mentalcalc: { mal: '💨', normal: '📝', bien: '⚙️' }
 };
+// Retrato de Sir Edwards en los modos por puntuación: mal → derrota, bien → victoria, normal → sin retrato.
+const RESULT_CHARACTER_BY_CATEGORY = { mal: 'defeat', bien: 'victory' };
 function fragmentMilestoneImg(m) {
   const src = ({ 10: 'assets/modes/mini/secreto.webp', 12: 'assets/ui/hito12.webp', 15: 'assets/ui/hito15.webp' })[m.fragments];
   return src ? `<img class="ui-img" src="${src}" alt="" draggable="false">` : '';
 }
-function setResultTone(toneKey, icon) {
+// charState (opcional): 'victory' | 'defeat' | null para forzar el retrato en los modos por puntuación
+// (Contrarreloj, Cálculo mental, Repaso), que no tienen victoria/derrota propiamente dicha.
+function setResultTone(toneKey, icon, charState) {
   lastResultShareTone = toneKey;
+  lastResultCharacterState = charState !== undefined ? charState : (RESULT_CHARACTER_TONES[toneKey] || null);
   const container = document.querySelector('.results-phrase-container');
   const iconEl = document.getElementById('res-mood-icon');
   if (container) {
@@ -1680,7 +1686,7 @@ function setResultTone(toneKey, icon) {
     else iconEl.textContent = icon || '🎯';
     iconEl.classList.toggle('has-img', !!moodImg);
   }
-  setResultCharacter(toneKey);
+  setResultCharacter(toneKey, lastResultCharacterState);
 }
 
 // Sir Edwards 2.0 (Prompt 1.5) — integración estática de los assets oficiales
@@ -1698,12 +1704,12 @@ const RESULT_CHARACTER_ASSETS = {
   victory: { png: 'assets/character/victory.png', webp: 'assets/character/victory.webp' },
   defeat: { png: 'assets/character/defeat.png', webp: 'assets/character/defeat.webp' }
 };
-function setResultCharacter(toneKey) {
+function setResultCharacter(toneKey, forcedState) {
   const box = document.getElementById('res-character');
   const img = document.getElementById('res-character-img');
   const source = document.getElementById('res-character-webp');
   if (!box || !img || !source) return;
-  const state = RESULT_CHARACTER_TONES[toneKey];
+  const state = forcedState !== undefined ? forcedState : RESULT_CHARACTER_TONES[toneKey];
   const asset = state ? RESULT_CHARACTER_ASSETS[state] : null;
   // Prompt 2 — Fase F: hook puramente visual (mismo patrón que
   // setLucidezStoryCharacter en Fase D) para que Victory/Defeat puedan
@@ -5998,14 +6004,14 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     const mentalResult = getModeEndPhrase(MENTAL_CALC_END_PHRASES, currentGame.correct || 0, 'mentalcalc');
     document.getElementById('res-category-text').textContent = '';
     document.getElementById('res-phrase-text').textContent = mentalResult.phrase;
-    setResultTone('mentalcalc', RESULT_MOOD_BY_CATEGORY.mentalcalc[mentalResult.category] || RESULT_MOOD_ICONS.mentalcalc);
+    setResultTone('mentalcalc', RESULT_MOOD_BY_CATEGORY.mentalcalc[mentalResult.category] || RESULT_MOOD_ICONS.mentalcalc, RESULT_CHARACTER_BY_CATEGORY[mentalResult.category] || null);
   } else {
     if (currentGame.mode === 'timetrial') {
       const timeResult = getModeEndPhrase(TIMETRIAL_END_PHRASES, currentGame.score || 0, 'timetrial');
       const timeTitles = { mal: 'Mal resultado', normal: 'Resultado normal', bien: 'Buen resultado' };
       document.getElementById('res-category-text').textContent = timeTitles[timeResult.category];
       document.getElementById('res-phrase-text').textContent = timeResult.phrase;
-      setResultTone('timetrial', RESULT_MOOD_BY_CATEGORY.timetrial[timeResult.category] || RESULT_MOOD_ICONS.timetrial);
+      setResultTone('timetrial', RESULT_MOOD_BY_CATEGORY.timetrial[timeResult.category] || RESULT_MOOD_ICONS.timetrial, RESULT_CHARACTER_BY_CATEGORY[timeResult.category] || null);
       // Sin sello de "completado": a diferencia de Supervivencia o Muerte
       // Súbita, Contrarreloj no tiene un desenlace de victoria/derrota que
       // contar aparte, así que un sello fijo en cada partida solo repetiría
@@ -6023,7 +6029,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
         const reviewPhrase = pickRotatingPhrase(`review_${reviewKey}`, reviewData.phrases);
         document.getElementById('res-category-text').textContent = reviewData.title;
         document.getElementById('res-phrase-text').textContent = reviewPhrase;
-        setResultTone('review', reviewKey === 'progreso' ? '📈' : '🫏');
+        setResultTone('review', reviewKey === 'progreso' ? '📈' : '🫏', reviewKey === 'progreso' ? 'victory' : 'defeat');
       }
     }
   }
