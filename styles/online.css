@@ -291,3 +291,7 @@
 .seq-d-final .results-phrase-container { margin-bottom: 14px; }
 .seq-d-final .results-phrase-container .duel-result-hint { margin: 10px 0 0; }
 .seq-d-review-toggle { display: block; margin: 8px auto 0; }
+/* Retos: el icono del modo sustituye a las espadas de la cabecera */
+#seq-duel-root .seq-d-hud.seq-d-hud-reto::before { content: none; display: none; }
+#seq-duel-root .seq-d-hud.seq-d-hud-reto { padding-left: 10px !important; justify-content: space-between; }
+.seq-d-hud-mode .seq-d-mode-ico { width: 26px; height: 26px; vertical-align: -8px; margin-right: 6px; }

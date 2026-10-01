@@ -647,7 +647,7 @@
     return h + '<div class="history-list seq-d-modes">' + list.map(function (m) {
       // Solo ids conocidos (RETO_MODE_UI): nunca se pega en el onclick un texto arbitrario del servidor.
       var mid = m && Object.prototype.hasOwnProperty.call(RETO_MODE_UI, m.id) ? m.id : null, ui = mid ? RETO_MODE_UI[mid] : null; if (!ui) return '';
-      var row = '<div class="seq-d-mode-icon">' + modeIco(ui) + '</div><div class="seq-d-mode-body"><div class="history-item-info">' + esc(ui.nombre) + '</div><div class="history-item-sub">' + esc(ui.reglas) + '</div>';
+      var row = '<div class="seq-d-mode-icon">' + modeIco(ui) + '</div><div class="seq-d-mode-body"><div class="history-item-info">' + esc(ui.nombre) + '</div>';
       if (mid === 'supervivencia') {
         if (!S.pickSurvival) return '<div class="history-item seq-d-row seq-d-mode" onclick="SEQDuels.createReto(\'supervivencia\')">' + row + '</div><div class="history-item-score">Elegir ›</div></div>';
         return '<div class="history-item seq-d-mode">' + row + '<div class="seq-d-levels">' + ['ameba', 'humano', 'derrame'].map(function (lv) {
@@ -674,16 +674,19 @@
     if (kind === 'duel') lbl = 'DUELO<span class="seq-d-long"> ONLINE</span> · ' + (num(idx) + 1) + '/20';
     else {
       var m = retoMode(d), clock = d.modo === 'contrarreloj' || d.modo === 'calculo_mental';
-      lbl = 'RETO<span class="seq-d-long"> · ' + esc(m.nombre.toUpperCase()) + '</span>';
-      if (d.modo === 'lucidez') lbl += ' · ' + (FASE_UI[num(est.fase)] || '');
-      lbl += ' · ' + (clock ? 'n.º ' + (num(idx) + 1) : (num(idx) + 1) + '/' + num(d.n_preguntas || 20));
+      // Cabecera: el modo y, según el modo, por qué pregunta vas (x/total), la fase (Lucidez) o los aciertos (modos con reloj).
+      // El icono del modo hace de título (el nombre ya no cabe en un móvil junto al reloj y las vidas).
+      lbl = '<span class="seq-d-hud-mode" title="' + esc(m.nombre) + '">' + modeIco(m) + '</span>';
+      if (d.modo === 'lucidez') lbl += (FASE_UI[num(est.fase)] || '');
+      else if (clock) lbl += ico('correcto') + num(d.yo && d.yo.aciertos);
+      else lbl += (num(idx) + 1) + '/' + num(d.n_preguntas || 20);
       if (est.vidas_max) {
         var hearts = '';
         for (var v = 0; v < num(est.vidas_max); v++) hearts += '<img class="seq-ico seq-d-heart' + (v < num(est.vidas) ? '' : ' seq-d-heart-off') + '" src="assets/modes/suelto/supervivencia.webp" alt="" draggable="false">';
         extra = ' <span class="seq-d-lives" aria-label="Vidas: ' + num(est.vidas) + '">' + hearts + '</span>';
       }
     }
-    h += '<div class="mode-header game-hud seq-d-hud"><span class="seq-d-hud-lbl">' + lbl + ' · ' + ico('tiempo') + '<span id="seq-d-time"></span>s' + extra + '</span>' +
+    h += '<div class="mode-header game-hud seq-d-hud' + (kind === 'reto' ? ' seq-d-hud-reto' : '') + '"><span class="seq-d-hud-lbl">' + lbl + ' · ' + ico('tiempo') + '<span id="seq-d-time"></span>s' + extra + '</span>' +
       '<span class="game-streak-inline seq-d-rival-chip" title="Tu rival"><span class="seq-d-vs-lbl">vs </span><span class="game-streak-inline-icon">' + p.avatar + '</span> <span class="seq-d-rival-name">' + p.name + '</span></span></div>';
     h += '<div class="progress-bar"><div id="seq-d-bar" class="bar-fill"></div></div>';
     return h + questionBlock(d.id, idx, qn, mine, kind === 'reto' && d.modo === 'lucidez' && num(est.fase) === 2);
