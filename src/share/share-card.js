@@ -61,12 +61,12 @@
     play:          { bg: ['#1f3576', '#0a1130'], glow: 'rgba(96,140,255,.36)', accent: '#9db8ff', ring: '#7d9cf0', icon: 'estandar' },
     survival:      { bg: ['#5e3712', '#1a0d04'], glow: 'rgba(245,158,11,.40)', accent: '#fbbf24', ring: '#f59e0b', icon: 'supervivencia' },
     sudden_death:  { bg: ['#601219', '#170407'], glow: 'rgba(220,38,38,.42)', accent: '#f87171', ring: '#ef4444', icon: 'muerte-subita' },
-    timetrial:     { bg: ['#36216f', '#05303a'], glow: 'rgba(6,182,212,.36)', accent: '#67e8f9', ring: '#22d3ee', icon: 'contrarreloj' },
-    mental_calc:   { bg: ['#3b3b44', '#0d0d10'], glow: 'rgba(212,212,216,.26)', accent: '#e4e4e7', ring: '#a1a1aa', icon: 'calculo' },
+    timetrial:     { bg: ['#6b1240', '#1c0512'], glow: 'rgba(236,72,153,.40)', accent: '#f9a8d4', ring: '#f472b6', icon: 'contrarreloj' },
+    mental_calc:   { bg: ['#14532d', '#04140b'], glow: 'rgba(74,222,128,.32)', accent: '#86efac', ring: '#4ade80', icon: 'calculo' },
     review:        { bg: ['#0e4d48', '#031615'], glow: 'rgba(20,184,166,.38)', accent: '#5eead4', ring: '#2dd4bf', icon: 'repaso' },
     lucidez_mental:{ bg: ['#1a1240', '#070510'], glow: 'rgba(120,90,255,.42)', accent: BRAND.purpleLight, ring: BRAND.goldLight, icon: 'secreto' },
-    duel:          { bg: ['#4a1426', '#14050b'], glow: 'rgba(176,58,92,.42)', accent: '#f4a3b3', ring: '#e0607a', icon: 'duelo' },
-    reto:          { bg: ['#14386b', '#050f24'], glow: 'rgba(96,165,250,.40)', accent: '#93c5fd', ring: '#60a5fa', icon: 'retos' }
+    duel:          { bg: ['#5a2108', '#170803'], glow: 'rgba(234,88,12,.40)', accent: '#fdba8c', ring: '#f0956a', icon: 'duelo' },
+    reto:          { bg: ['#0b4a5c', '#03161c'], glow: 'rgba(34,211,238,.38)', accent: '#a5f3fc', ring: '#22d3ee', icon: 'retos' }
   };
   var MODE_BY_NAME = { 'modo estándar': 'play', 'estándar': 'play', 'supervivencia': 'survival', 'muerte súbita': 'sudden_death',
     'contrarreloj': 'timetrial', 'cálculo mental': 'mental_calc', 'repaso': 'review', 'lucidez mental': 'lucidez_mental' };
@@ -133,7 +133,7 @@
 
     m.main = String(input.scoreStr || '');
     m.secondary = accuracy + ' % de efectividad' + (streak > 0 ? ' · racha máxima ' + streak : '');
-    m.pill = String(input.modeName || '').toUpperCase();
+    m.pill = String(input.modeName || '').toUpperCase().replace(/^MODO ESTÁNDAR$/, 'ESTÁNDAR');
     m.mode = input.modeId && MODE_BG[input.modeId] ? input.modeId : (MODE_BY_NAME[String(input.modeName || '').toLowerCase()] || null);
     // Frase de Sir Edwards tal como se ve en la tarjeta final (ya elegida por la app; aquí solo se dibuja).
     m.phrase = input.phrase ? String(input.phrase).replace(/\s+/g, ' ').trim().slice(0, 200) : '';

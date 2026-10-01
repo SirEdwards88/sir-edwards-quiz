@@ -135,9 +135,9 @@
 #duel-home .seq-d-card.seq-d-v-duel { border-color: var(--accent-purple-soft); background: linear-gradient(145deg, var(--accent-purple-soft), var(--card) 68%); }
 #duel-home .seq-d-v-duel .mode-card-icon { background: var(--accent-purple-soft); }
 #duel-home .seq-d-v-duel .mode-subtitle { color: var(--accent-purple-text); }
-#duel-home .seq-d-card.seq-d-v-retos { border-color: var(--accent-blue-soft); background: linear-gradient(145deg, var(--accent-blue-soft), var(--card) 68%); }
-#duel-home .seq-d-v-retos .mode-card-icon { background: var(--accent-blue-soft); }
-#duel-home .seq-d-v-retos .mode-subtitle { color: var(--accent-blue-text); }
+#duel-home .seq-d-card.seq-d-v-retos { border-color: var(--dz-reto-soft); background: linear-gradient(145deg, var(--dz-reto-soft), var(--card) 68%); }
+#duel-home .seq-d-v-retos .mode-card-icon { background: var(--dz-reto-soft); }
+#duel-home .seq-d-v-retos .mode-subtitle { color: var(--dz-reto-text); }
 #duel-home .seq-d-card.seq-d-v-amigos { border-color: var(--accent-teal-soft); background: linear-gradient(145deg, var(--accent-teal-soft), var(--card) 68%); }
 #duel-home .seq-d-v-amigos .mode-card-icon { background: var(--accent-teal-soft); }
 #duel-home .seq-d-v-amigos .mode-subtitle { color: var(--accent-teal-text); }
@@ -272,6 +272,7 @@
 .seq-d-mode > .history-item-score { white-space: nowrap; }
 .seq-d-levels .btn { width: auto; flex: 0 0 auto; margin: 0; }
 .history-list.seq-d-modes { max-height: none; overflow: visible; }
+.seq-d-mode > .history-item-score { color: var(--dz-reto-text); }
 .seq-d-levels .btn { display: inline-flex; }
 
 /* ---- Final de Duelo y Reto (2.0): la misma tarjeta con personalidad que una partida en solitario ---- */
@@ -296,22 +297,22 @@
 #seq-duel-root .seq-d-hud.seq-d-hud-reto { padding-left: 10px !important; justify-content: space-between; }
 .seq-d-hud-mode .seq-d-mode-ico { width: 26px; height: 26px; vertical-align: -8px; margin-right: 6px; }
 
-/* ===== 2.0 — Colores propios: Duelo online en granate (el forro del sombrero de Sir Edwards) y Retos en azul =====
+/* ===== 2.0 — Colores propios: Duelo online en cobre y Retos en cian (cada sección con un tono que no comparte ningún modo) =====
    Lucidez queda como el único púrpura. Las variables --dz-* se usan en toda la sección (#seq-duel-root). */
 :root {
-  --dz-duel: #9b1c31; --dz-duel-dark: #5c0f1d; --dz-duel-soft: rgba(155,28,49,.14); --dz-duel-surface: rgba(155,28,49,.055); --dz-duel-text: #8a1a2c;
-  --dz-reto: #2563eb; --dz-reto-dark: #1e3a8a; --dz-reto-soft: rgba(37,99,235,.14); --dz-reto-surface: rgba(37,99,235,.055); --dz-reto-text: #1d4ed8;
+  --dz-duel: #9a3412; --dz-duel-dark: #5a1f0a; --dz-duel-soft: rgba(154,52,18,.14); --dz-duel-surface: rgba(154,52,18,.055); --dz-duel-text: #8a2f10;
+  --dz-reto: #0891b2; --dz-reto-dark: #155e75; --dz-reto-soft: rgba(8,145,178,.14); --dz-reto-surface: rgba(8,145,178,.055); --dz-reto-text: #0e7490;
 }
 [data-theme="dark"] {
-  --dz-duel: #e0607a; --dz-duel-dark: #8c1f35; --dz-duel-soft: rgba(224,96,122,.22); --dz-duel-surface: rgba(224,96,122,.09); --dz-duel-text: #f4a3b3;
-  --dz-reto: #5b9dff; --dz-reto-dark: #1e3a8a; --dz-reto-soft: rgba(91,157,255,.22); --dz-reto-surface: rgba(91,157,255,.09); --dz-reto-text: #8fc1ff;
+  --dz-duel: #f0956a; --dz-duel-dark: #7c2d12; --dz-duel-soft: rgba(240,149,106,.22); --dz-duel-surface: rgba(240,149,106,.09); --dz-duel-text: #fdba8c;
+  --dz-reto: #22d3ee; --dz-reto-dark: #155e75; --dz-reto-soft: rgba(34,211,238,.22); --dz-reto-surface: rgba(34,211,238,.09); --dz-reto-text: #67e8f9;
 }
 #seq-duel-root { --dz: var(--dz-duel); --dz-dark: var(--dz-duel-dark); --dz-soft: var(--dz-duel-soft); --dz-surface: var(--dz-duel-surface); --dz-text: var(--dz-duel-text); }
 #seq-duel-root.seq-d-k-reto { --dz: var(--dz-reto); --dz-dark: var(--dz-reto-dark); --dz-soft: var(--dz-reto-soft); --dz-surface: var(--dz-reto-surface); --dz-text: var(--dz-reto-text); }
 /* Marco de «partida en curso» */
-.card:has(#view-duelo.active #seq-duel-root.seq-d-playing) { border-color: var(--dz-duel); box-shadow: 0 14px 42px rgba(155,28,49,.16); }
+.card:has(#view-duelo.active #seq-duel-root.seq-d-playing) { border-color: var(--dz-duel); box-shadow: 0 14px 42px rgba(154,52,18,.16); }
 .card:has(#view-duelo.active #seq-duel-root.seq-d-playing)::before { background: linear-gradient(90deg, var(--dz-duel-dark), var(--dz-duel), var(--dz-duel-dark)); }
-.card:has(#view-duelo.active #seq-duel-root.seq-d-playing.seq-d-k-reto) { border-color: var(--dz-reto); box-shadow: 0 14px 42px rgba(37,99,235,.16); }
+.card:has(#view-duelo.active #seq-duel-root.seq-d-playing.seq-d-k-reto) { border-color: var(--dz-reto); box-shadow: 0 14px 42px rgba(8,145,178,.16); }
 .card:has(#view-duelo.active #seq-duel-root.seq-d-playing.seq-d-k-reto)::before { background: linear-gradient(90deg, var(--dz-reto-dark), var(--dz-reto), var(--dz-reto-dark)); }
 /* Partida */
 #seq-duel-root .seq-d-hud { color: var(--dz-text); background: var(--dz-surface); border-color: var(--dz-soft); justify-content: space-between; gap: 8px; }
@@ -333,7 +334,7 @@
 /* Cajas de espera y avisos de la sección (sala de espera, «¿Preparado?», «Tu parte está hecha»…) */
 #seq-duel-root .duel-result-box.duel-result-neutral { background: linear-gradient(150deg, var(--dz-soft), var(--card) 55%); border-color: var(--dz-soft); }
 #seq-duel-root .duel-result-box.duel-result-neutral .duel-result-title { color: var(--dz-text); font-family: var(--font-display); font-size: 22px; }
-/* Hub: la tarjeta de Duelo online en granate (Retos ya va en azul) */
+/* Hub: la tarjeta de Duelo online en cobre (Retos ya va en cian) */
 #duel-home .seq-d-card.seq-d-v-duel { border-color: var(--dz-duel-soft); background: linear-gradient(145deg, var(--dz-duel-soft), var(--card) 68%); }
 #duel-home .seq-d-v-duel .mode-card-icon { background: var(--dz-duel-soft); }
 #duel-home .seq-d-v-duel .mode-subtitle { color: var(--dz-duel-text); }
@@ -349,7 +350,7 @@
 #seq-duel-root .seq-d-hud .seq-d-vs-chip { margin-left: auto; }
 #seq-duel-root .seq-d-hud .seq-d-hud-lbl { white-space: pre; }
 /* Final de Duelo / Reto: mismo marco de color que durante la partida */
-.card:has(#view-duelo.active #seq-duel-root.seq-d-final-on) { border: 3px solid var(--dz-duel); box-shadow: 0 14px 42px rgba(155,28,49,.16); }
+.card:has(#view-duelo.active #seq-duel-root.seq-d-final-on) { border: 3px solid var(--dz-duel); box-shadow: 0 14px 42px rgba(154,52,18,.16); }
 .card:has(#view-duelo.active #seq-duel-root.seq-d-final-on)::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; z-index: 2; background: linear-gradient(90deg, var(--dz-duel-dark), var(--dz-duel), var(--dz-duel-dark)); }
-.card:has(#view-duelo.active #seq-duel-root.seq-d-final-on.seq-d-k-reto) { border-color: var(--dz-reto); box-shadow: 0 14px 42px rgba(37,99,235,.16); }
+.card:has(#view-duelo.active #seq-duel-root.seq-d-final-on.seq-d-k-reto) { border-color: var(--dz-reto); box-shadow: 0 14px 42px rgba(8,145,178,.16); }
 .card:has(#view-duelo.active #seq-duel-root.seq-d-final-on.seq-d-k-reto)::before { background: linear-gradient(90deg, var(--dz-reto-dark), var(--dz-reto), var(--dz-reto-dark)); }

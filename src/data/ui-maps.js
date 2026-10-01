@@ -21,7 +21,7 @@ const RESULT_TIER_STYLE = {
 };;
 
 const MODE_IDENTITY = {
-  play: 'MODO ESTÁNDAR',
+  play: 'ESTÁNDAR',
   review: 'REPASO',
   survival: 'SUPERVIVENCIA',
   sudden_death: 'MUERTE SÚBITA',

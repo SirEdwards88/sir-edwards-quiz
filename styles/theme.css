@@ -124,9 +124,9 @@ body.in-game .actions .btn-primary {
 .card.theme-review     { --mode-accent: #0d9488; --mode-accent-2: #2dd4bf; }
 .card.theme-survival   { --mode-accent: #d97706; --mode-accent-2: #fbbf24; }
 .card.theme-sudden     { --mode-accent: #b91c1c; --mode-accent-2: #ef4444; }
-.card.theme-timetrial  { --mode-accent: #7c3aed; --mode-accent-2: #06b6d4; }
-.card.theme-mentalcalc { --mode-accent: #3f3f46; --mode-accent-2: #71717a; }
-[data-theme="dark"] .card.theme-mentalcalc { --mode-accent: #a1a1aa; --mode-accent-2: #e4e4e7; }
+.card.theme-timetrial  { --mode-accent: #db2777; --mode-accent-2: #f472b6; }
+.card.theme-mentalcalc { --mode-accent: #15803d; --mode-accent-2: #22c55e; }
+[data-theme="dark"] .card.theme-mentalcalc { --mode-accent: #4ade80; --mode-accent-2: #bbf7d0; }
 
 .card[class*="theme-"]:not(.theme-lucidez)::before {
   background: linear-gradient(90deg, var(--mode-accent), var(--mode-accent-2), var(--mode-accent)) !important;
@@ -290,3 +290,12 @@ h3 .ui-btn-ico { width: 34px; height: 34px; vertical-align: middle; margin: -4px
 
 /* Logros: cofre de medallas suelto, algo más grande que un icono de título normal */
 .achievements-progress-title .ui-title-img.ui-title-loose { width: 46px; height: 46px; margin: -8px 6px -8px 0; }
+
+/* 2.0 · Cabecera de juego en dos líneas fijas: nombre del modo (pequeño) y datos de la partida. */
+#game-progress-lbl:has(> .hud-name) { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 0; line-height: 1.32; white-space: nowrap; padding-top: 1px; }
+#game-progress-lbl > .hud-name { font-size: 9.5px; letter-spacing: .9px; opacity: .78; }
+#game-progress-lbl > .hud-data { font-size: 12px; letter-spacing: .2px; display: inline-flex; align-items: center; gap: 3px; flex-wrap: nowrap; }
+#game-progress-lbl > .hud-data .seq-ico { width: 13px; height: 13px; }
+.results-character.char-neutral { animation: moodPop .4s cubic-bezier(.34,1.56,.64,1); }
+/* Etiqueta mínima en las pastillas de la tarjeta final (qué es cada número). */
+.result-chip-label { font-size: 11px; font-weight: 700; color: var(--text-muted, #6b7280); margin-left: -2px; white-space: nowrap; }

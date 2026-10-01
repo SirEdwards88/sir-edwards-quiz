@@ -239,12 +239,12 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   box-shadow: 0 14px 42px rgba(220,38,38,.18);
 }
 .card.theme-timetrial {
-  border: 3px solid #7c3aed;
+  border: 3px solid #db2777;
   background:
-    radial-gradient(circle at 0% 0%, rgba(124,58,237,.14), transparent 32%),
-    radial-gradient(circle at 100% 100%, rgba(6,182,212,.10), transparent 35%),
+    radial-gradient(circle at 0% 0%, rgba(219,39,119,.14), transparent 32%),
+    radial-gradient(circle at 100% 100%, rgba(244,114,182,.10), transparent 35%),
     var(--card);
-  box-shadow: 0 14px 42px rgba(124,58,237,.17);
+  box-shadow: 0 14px 42px rgba(219,39,119,.17);
 }
 
 /* Franja superior */
@@ -266,7 +266,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   background: #dc2626;
   animation: suddenPulse 1.2s ease-in-out infinite;
 }
-.card.theme-timetrial::before { background: linear-gradient(90deg,#7c3aed,#06b6d4,#7c3aed); }
+.card.theme-timetrial::before { background: linear-gradient(90deg,#db2777,#f472b6,#db2777); }
 
 @keyframes suddenPulse {
   0%,100% { opacity: 1; }
@@ -345,9 +345,9 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 }
 
 .card.theme-timetrial .mode-header {
-  color: #5b21b6;
-  background: linear-gradient(90deg,rgba(124,58,237,.11),rgba(6,182,212,.08));
-  border: 1px solid rgba(124,58,237,.22);
+  color: #9d174d;
+  background: linear-gradient(90deg,rgba(219,39,119,.11),rgba(244,114,182,.08));
+  border: 1px solid rgba(219,39,119,.22);
   font-size: 15px;
 }
 .card.theme-timetrial .mode-header::before {
@@ -376,7 +376,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 .card.theme-review .bar-fill { background: #0d9488; }
 .card.theme-survival .bar-fill { background: linear-gradient(90deg,#d97706,#fbbf24); }
 .card.theme-sudden .bar-fill { background: #dc2626; }
-.card.theme-timetrial .bar-fill { background: linear-gradient(90deg,#7c3aed,#06b6d4); }
+.card.theme-timetrial .bar-fill { background: linear-gradient(90deg,#db2777,#f472b6); }
 
 .card.theme-survival .progress-bar {
   height: 11px;
@@ -390,8 +390,8 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 }
 .card.theme-timetrial .progress-bar {
   height: 13px;
-  border: 2px solid rgba(124,58,237,.25);
-  background: rgba(124,58,237,.08);
+  border: 2px solid rgba(219,39,119,.25);
+  background: rgba(219,39,119,.08);
 }
 
 /* PREGUNTA: tarjetas internas distintas */
@@ -426,10 +426,10 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 }
 
 .card.theme-timetrial .q-box {
-  border: 2px solid rgba(124,58,237,.20);
-  border-left: 7px solid #7c3aed;
+  border: 2px solid rgba(219,39,119,.20);
+  border-left: 7px solid #db2777;
   padding: 20px 18px;
-  background: linear-gradient(90deg,rgba(124,58,237,.065),rgba(6,182,212,.035));
+  background: linear-gradient(90deg,rgba(219,39,119,.065),rgba(244,114,182,.035));
   border-radius: var(--radius-sm);
   font-size: 21px;
 }
@@ -452,20 +452,20 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   background: linear-gradient(90deg,var(--card),rgba(220,38,38,.025));
 }
 .card.theme-timetrial input[type="text"] {
-  border-color: rgba(124,58,237,.35);
-  background: linear-gradient(90deg,var(--card),rgba(6,182,212,.025));
+  border-color: rgba(219,39,119,.35);
+  background: linear-gradient(90deg,var(--card),rgba(244,114,182,.025));
 }
 
 .card.theme-review input[type="text"]:focus { border-color:#0d9488; box-shadow:0 0 0 3px rgba(13,148,136,.12); }
 .card.theme-standard input[type="text"]:focus { border-color:#2563eb; box-shadow:0 0 0 3px rgba(37,99,235,.12); }
 .card.theme-survival input[type="text"]:focus { box-shadow:0 0 0 4px rgba(245,158,11,.13); }
 .card.theme-sudden input[type="text"]:focus { box-shadow:0 0 0 4px rgba(239,68,68,.14); }
-.card.theme-timetrial input[type="text"]:focus { border-color:#06b6d4; box-shadow:0 0 0 4px rgba(6,182,212,.13); }
+.card.theme-timetrial input[type="text"]:focus { border-color:#f472b6; box-shadow:0 0 0 4px rgba(244,114,182,.13); }
 
 /* BOTONES */
 .card.theme-standard .btn-primary { background:#2563eb; }
 .card.theme-review .btn-primary { background:#0d9488; }
-.card.theme-timetrial .btn-primary { background:linear-gradient(90deg,#7c3aed,#0891b2); }
+.card.theme-timetrial .btn-primary { background:linear-gradient(90deg,#db2777,#9d174d); }
 
 /* ===== ESTÁNDAR — pulido visual/UX (paso 1 de la revisión modo a modo) =====
    Solo CSS, sin tocar HTML/JS: la pregunta gana algo más de presencia
@@ -570,7 +570,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   box-shadow: 0 1px 3px rgba(0,0,0,.04);
 }
 .card.theme-timetrial #choice-options .choice-btn:hover:not(:disabled) {
-  box-shadow: 0 4px 14px rgba(124,58,237,.16);
+  box-shadow: 0 4px 14px rgba(219,39,119,.16);
 }
 .card.theme-timetrial #choice-options .choice-btn:active:not(:disabled) {
   transform: scale(.98);
@@ -583,7 +583,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   width: 100%;
   font-size: 11px;
   font-weight: 800;
-  color: #0e7490;
+  color: #be185d;
   margin-bottom: 2px;
 }
 
@@ -685,19 +685,19 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 [data-theme="dark"] .card.theme-review .mode-header { color:#5eead4; }
 [data-theme="dark"] .card.theme-survival .mode-header { color:#fcd34d; }
 [data-theme="dark"] .card.theme-sudden .mode-header { color:#fca5a5; }
-[data-theme="dark"] .card.theme-timetrial .mode-header { color:#c4b5fd; }
+[data-theme="dark"] .card.theme-timetrial .mode-header { color:#f9a8d4; }
 [data-theme="dark"] .card.theme-sudden .actions::before { color:#fca5a5; }
-[data-theme="dark"] .card.theme-timetrial .actions::before { color:#67e8f9; }
+[data-theme="dark"] .card.theme-timetrial .actions::before { color:#f9a8d4; }
 
 
 /* ====== TEMA: CÁLCULO MENTAL (verde, ritmo rápido) ====== */
 .card.theme-mentalcalc {
-  border: 3px solid #18181b;
+  border: 3px solid #14532d;
   background:
-    radial-gradient(circle at 0% 0%, rgba(24,24,27,.14), transparent 32%),
-    radial-gradient(circle at 100% 100%, rgba(82,82,91,.10), transparent 35%),
+    radial-gradient(circle at 0% 0%, rgba(21,128,61,.14), transparent 32%),
+    radial-gradient(circle at 100% 100%, rgba(34,197,94,.10), transparent 35%),
     var(--card);
-  box-shadow: 0 14px 42px rgba(24,24,27,.17);
+  box-shadow: 0 14px 42px rgba(21,128,61,.17);
 }
 .card.theme-mentalcalc::before {
   content: '';
@@ -705,7 +705,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   top: 0; left: 0; right: 0;
   height: 6px;
   z-index: 2;
-  background: linear-gradient(90deg,#18181b,#52525b,#18181b);
+  background: linear-gradient(90deg,#14532d,#16a34a,#14532d);
 }
 .card.theme-mentalcalc .mode-header {
   position: relative;
@@ -714,9 +714,9 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   border-radius: var(--radius-md);
   font-weight: 800;
   font-size: 15px;
-  color: #18181b;
-  background: linear-gradient(90deg,rgba(24,24,27,.11),rgba(82,82,91,.08));
-  border: 1px solid rgba(24,24,27,.22);
+  color: #14532d;
+  background: linear-gradient(90deg,rgba(21,128,61,.11),rgba(34,197,94,.08));
+  border: 1px solid rgba(21,128,61,.22);
 }
 .card.theme-mentalcalc .mode-header::before {
   content: "🔢";
@@ -738,42 +738,42 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 .card.theme-mentalcalc .mode-header.game-hud::after {
   display: none;
 }
-.card.theme-mentalcalc .bar-fill { background: linear-gradient(90deg,#18181b,#52525b); }
+.card.theme-mentalcalc .bar-fill { background: linear-gradient(90deg,#14532d,#16a34a); }
 .card.theme-mentalcalc .progress-bar {
   height: 13px;
-  border: 2px solid rgba(24,24,27,.25);
-  background: rgba(24,24,27,.08);
+  border: 2px solid rgba(21,128,61,.25);
+  background: rgba(21,128,61,.08);
 }
 .card.theme-mentalcalc .q-box {
-  border: 2px solid rgba(24,24,27,.20);
-  border-left: 7px solid #18181b;
+  border: 2px solid rgba(21,128,61,.20);
+  border-left: 7px solid #14532d;
   padding: 20px 18px;
-  background: linear-gradient(90deg,rgba(24,24,27,.065),rgba(82,82,91,.035));
+  background: linear-gradient(90deg,rgba(21,128,61,.065),rgba(34,197,94,.035));
   border-radius: var(--radius-sm);
   font-size: 26px;
   text-align: center;
   font-weight: 900;
 }
 .card.theme-mentalcalc input[type="text"] {
-  border-color: rgba(24,24,27,.35);
-  background: linear-gradient(90deg,var(--card),rgba(24,24,27,.025));
+  border-color: rgba(21,128,61,.35);
+  background: linear-gradient(90deg,var(--card),rgba(21,128,61,.025));
   text-align: center;
   font-size: 18px;
   font-weight: 800;
 }
-.card.theme-mentalcalc input[type="text"]:focus { border-color:#18181b; box-shadow:0 0 0 4px rgba(24,24,27,.13); }
-.card.theme-mentalcalc .btn-primary { background:linear-gradient(90deg,#18181b,#3f3f46); }
+.card.theme-mentalcalc input[type="text"]:focus { border-color:#14532d; box-shadow:0 0 0 4px rgba(21,128,61,.13); }
+.card.theme-mentalcalc .btn-primary { background:linear-gradient(90deg,#14532d,#15803d); }
 .card.theme-mentalcalc .actions::before {
   content: "🔢 La dificultad sube con tu racha de aciertos";
   display: none;
   width: 100%;
   font-size: 11px;
   font-weight: 800;
-  color: #18181b;
+  color: #14532d;
   margin-bottom: 2px;
 }
-[data-theme="dark"] .card.theme-mentalcalc .mode-header { color:#e4e4e7; }
-[data-theme="dark"] .card.theme-mentalcalc .actions::before { color:#e4e4e7; }
+[data-theme="dark"] .card.theme-mentalcalc .mode-header { color:#bbf7d0; }
+[data-theme="dark"] .card.theme-mentalcalc .actions::before { color:#bbf7d0; }
 
 /* ===== CÁLCULO MENTAL — pulido visual/UX (paso 5 de la revisión modo a modo) =====
    Solo CSS, sin tocar HTML/JS: este modo no usa las 4 opciones tipo test
@@ -785,7 +785,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
    dificultad por racha, que son lógica/JS específicos del modo. Scoped a
    .card.theme-mentalcalc: no afecta a ningún otro modo. */
 .card.theme-mentalcalc .q-box {
-  box-shadow: 0 2px 12px rgba(24,24,27,.09);
+  box-shadow: 0 2px 12px rgba(21,128,61,.09);
 }
 .card.theme-mentalcalc #game-progress-lbl {
   letter-spacing: .3px;
@@ -1162,8 +1162,8 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 .mode-review::after{background:#0d9488}
 .mode-survival::after{background:#f59e0b}
 .mode-sudden::after{background:#dc2626}
-.mode-timetrial::after{background:#7c3aed}
-.mode-mentalcalc::after{background:#18181b}
+.mode-timetrial::after{background:#db2777}
+.mode-mentalcalc::after{background:#14532d}
 .mode-lucidez::after{background:#6d28d9}
 
 .mode-card .mode-icon{
@@ -1178,8 +1178,8 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 .mode-review .mode-icon{background:rgba(13,148,136,.12)}
 .mode-survival .mode-icon{background:rgba(245,158,11,.14)}
 .mode-sudden .mode-icon{background:rgba(220,38,38,.12)}
-.mode-timetrial .mode-icon{background:linear-gradient(135deg,rgba(124,58,237,.14),rgba(6,182,212,.12))}
-.mode-mentalcalc .mode-icon{background:linear-gradient(135deg,rgba(24,24,27,.14),rgba(82,82,91,.12))}
+.mode-timetrial .mode-icon{background:linear-gradient(135deg,rgba(219,39,119,.14),rgba(244,114,182,.12))}
+.mode-mentalcalc .mode-icon{background:linear-gradient(135deg,rgba(21,128,61,.14),rgba(34,197,94,.12))}
 
 .mode-card .mode-subtitle{
   display:block;
@@ -1190,8 +1190,8 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 .mode-review .mode-subtitle{color:#0f766e}
 .mode-survival .mode-subtitle{color:#b45309}
 .mode-sudden .mode-subtitle{color:#b91c1c}
-.mode-timetrial .mode-subtitle{color:#6d28d9}
-.mode-mentalcalc .mode-subtitle{color:#18181b}
+.mode-timetrial .mode-subtitle{color:#be185d}
+.mode-mentalcalc .mode-subtitle{color:#14532d}
 /* v1.3 — auditoría Jugar: estos tonos *-700 se pensaban solo para fondo
    claro y no tenían variante oscura; en Dark el mentalcalc (#18181b) era
    prácticamente invisible sobre la tarjeta oscura y el resto perdía
@@ -1201,8 +1201,8 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 [data-theme="dark"] .mode-review .mode-subtitle{color:var(--accent-teal-text)}
 [data-theme="dark"] .mode-survival .mode-subtitle{color:var(--accent-gold-text)}
 [data-theme="dark"] .mode-sudden .mode-subtitle{color:var(--accent-red-text)}
-[data-theme="dark"] .mode-timetrial .mode-subtitle{color:var(--accent-purple-text)}
-[data-theme="dark"] .mode-mentalcalc .mode-subtitle{color:#d4d4d8}
+[data-theme="dark"] .mode-timetrial .mode-subtitle{color:#f9a8d4}
+[data-theme="dark"] .mode-mentalcalc .mode-subtitle{color:#86efac}
 .mode-standard > p:not(.mode-req),
 .mode-review > p:not(.mode-req),
 .mode-lucidez > p:not(.mode-req){
@@ -1345,7 +1345,7 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
 .card.theme-survival .btn-primary:hover { background: #b45309; }
 .card.theme-sudden .btn-primary { background: #dc2626; }
 .card.theme-sudden .btn-primary:hover { background: #b91c1c; }
-.card.theme-timetrial .btn-primary:hover { background: #6d28d9; }
+.card.theme-timetrial .btn-primary:hover { background: #be185d; }
 
 .btn-secondary { background: var(--color-surface-interactive); color: var(--text); border: 1px solid var(--border); }
 .btn-secondary:hover { background: var(--badge-bg); border-color: var(--color-border-accent); }
@@ -1442,8 +1442,8 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
 .card.theme-survival .choice-btn.selected:not(.correct):not(.incorrect) { border-color: #f59e0b; background: color-mix(in srgb, #f59e0b 14%, var(--card)); }
 .card.theme-sudden .choice-btn:hover:not(:disabled) { border-color: #dc2626; }
 .card.theme-sudden .choice-btn.selected:not(.correct):not(.incorrect) { border-color: #dc2626; background: color-mix(in srgb, #dc2626 12%, var(--card)); }
-.card.theme-timetrial .choice-btn:hover:not(:disabled) { border-color: #7c3aed; }
-.card.theme-timetrial .choice-btn.selected:not(.correct):not(.incorrect) { border-color: #7c3aed; background: color-mix(in srgb, #7c3aed 12%, var(--card)); }
+.card.theme-timetrial .choice-btn:hover:not(:disabled) { border-color: #db2777; }
+.card.theme-timetrial .choice-btn.selected:not(.correct):not(.incorrect) { border-color: #db2777; background: color-mix(in srgb, #db2777 12%, var(--card)); }
 .card.theme-review .choice-btn:hover:not(:disabled) { border-color: #0d9488; }
 .card.theme-review .choice-btn.selected:not(.correct):not(.incorrect) { border-color: #0d9488; background: color-mix(in srgb, #0d9488 12%, var(--card)); }
 .sabias-que-box {
@@ -1636,8 +1636,8 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
 .results-phrase-container.tone-perfecto,
 .results-phrase-container.tone-win { --tone-color:#c9971f; --tone-soft:rgba(212,175,55,.16); --tone-border:rgba(212,175,55,.45); border-color: rgba(212,175,55,.38); background: linear-gradient(150deg, rgba(212,175,55,.07), var(--card) 65%); }
 .results-phrase-container.tone-fail { --tone-color:#dc2626; --tone-soft:rgba(220,38,38,.12); --tone-border:rgba(220,38,38,.32); border-color: rgba(220,38,38,.28); }
-.results-phrase-container.tone-timetrial { --tone-color:#7c3aed; --tone-soft:rgba(124,58,237,.12); --tone-border:rgba(124,58,237,.32); border-color: rgba(124,58,237,.26); }
-.results-phrase-container.tone-mentalcalc { --tone-color:#18181b; --tone-soft:rgba(24,24,27,.10); --tone-border:rgba(24,24,27,.30); border-color: rgba(24,24,27,.24); }
+.results-phrase-container.tone-timetrial { --tone-color:#db2777; --tone-soft:rgba(219,39,119,.12); --tone-border:rgba(219,39,119,.32); border-color: rgba(219,39,119,.26); }
+.results-phrase-container.tone-mentalcalc { --tone-color:#14532d; --tone-soft:rgba(21,128,61,.10); --tone-border:rgba(21,128,61,.30); border-color: rgba(21,128,61,.24); }
 
 [data-theme="dark"] .results-phrase-container.tone-desastre,
 [data-theme="dark"] .results-phrase-container.tone-fail { --tone-color:#f87171; }
@@ -1648,8 +1648,8 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
 [data-theme="dark"] .results-phrase-container.tone-review { --tone-color:#5eead4; }
 [data-theme="dark"] .results-phrase-container.tone-perfecto,
 [data-theme="dark"] .results-phrase-container.tone-win { --tone-color:#fbbf24; }
-[data-theme="dark"] .results-phrase-container.tone-timetrial { --tone-color:#c4b5fd; }
-[data-theme="dark"] .results-phrase-container.tone-mentalcalc { --tone-color:#d4d4d8; }
+[data-theme="dark"] .results-phrase-container.tone-timetrial { --tone-color:#f9a8d4; }
+[data-theme="dark"] .results-phrase-container.tone-mentalcalc { --tone-color:#86efac; }
 
 @media(max-width:600px){
   .results-phrase-container{padding:26px 18px 20px;border-radius:16px;}
@@ -2291,8 +2291,8 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
 .mode-card.mode-review{border-color:rgba(13,148,136,.30);background:linear-gradient(145deg,rgba(13,148,136,.10),var(--card) 68%)}
 .mode-card.mode-survival{border-color:rgba(245,158,11,.34);background:linear-gradient(145deg,rgba(245,158,11,.12),var(--card) 68%)}
 .mode-card.mode-sudden{border-color:rgba(220,38,38,.30);background:linear-gradient(145deg,rgba(220,38,38,.10),var(--card) 68%)}
-.mode-card.mode-timetrial{border-color:rgba(124,58,237,.32);background:linear-gradient(145deg,rgba(124,58,237,.11),rgba(6,182,212,.06),var(--card) 72%)}
-.mode-card.mode-mentalcalc{border-color:rgba(24,24,27,.32);background:linear-gradient(145deg,rgba(24,24,27,.11),rgba(82,82,91,.06),var(--card) 72%)}
+.mode-card.mode-timetrial{border-color:rgba(219,39,119,.32);background:linear-gradient(145deg,rgba(219,39,119,.11),rgba(244,114,182,.06),var(--card) 72%)}
+.mode-card.mode-mentalcalc{border-color:rgba(21,128,61,.32);background:linear-gradient(145deg,rgba(21,128,61,.11),rgba(34,197,94,.06),var(--card) 72%)}
 /* 👁️ Lucidez Mental: el modo secreto final recibe un tratamiento propio,
    más marcado que el resto (borde más grueso + resplandor pulsante), para
    que se note que no es un modo más. */
@@ -2322,8 +2322,8 @@ display:flex;align-items:center;justify-content:center;
 .mode-review .mode-card-icon{background:rgba(13,148,136,.12)}
 .mode-survival .mode-card-icon{background:rgba(245,158,11,.14)}
 .mode-sudden .mode-card-icon{background:rgba(220,38,38,.12)}
-.mode-timetrial .mode-card-icon{background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(6,182,212,.12))}
-.mode-mentalcalc .mode-card-icon{background:linear-gradient(135deg,rgba(24,24,27,.15),rgba(82,82,91,.12))}
+.mode-timetrial .mode-card-icon{background:linear-gradient(135deg,rgba(219,39,119,.15),rgba(244,114,182,.12))}
+.mode-mentalcalc .mode-card-icon{background:linear-gradient(135deg,rgba(21,128,61,.15),rgba(34,197,94,.12))}
 .mode-card h3{margin:0 0 8px;}
 .mode-card p{margin:0;}
 .mode-card .mode-subtitle{
@@ -2359,8 +2359,8 @@ display:flex;align-items:center;justify-content:center;
 @keyframes resumeCardPulseReview{0%,100%{box-shadow:0 0 0 0 rgba(13,148,136,.16)}50%{box-shadow:0 0 0 8px rgba(13,148,136,0)}}
 @keyframes resumeCardPulseSurvival{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.18)}50%{box-shadow:0 0 0 8px rgba(245,158,11,0)}}
 @keyframes resumeCardPulseSudden{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.18)}50%{box-shadow:0 0 0 8px rgba(220,38,38,0)}}
-@keyframes resumeCardPulseTimetrial{0%,100%{box-shadow:0 0 0 0 rgba(124,58,237,.18)}50%{box-shadow:0 0 0 8px rgba(124,58,237,0)}}
-@keyframes resumeCardPulseMentalcalc{0%,100%{box-shadow:0 0 0 0 rgba(24,24,27,.18)}50%{box-shadow:0 0 0 8px rgba(24,24,27,0)}}
+@keyframes resumeCardPulseTimetrial{0%,100%{box-shadow:0 0 0 0 rgba(219,39,119,.18)}50%{box-shadow:0 0 0 8px rgba(219,39,119,0)}}
+@keyframes resumeCardPulseMentalcalc{0%,100%{box-shadow:0 0 0 0 rgba(21,128,61,.18)}50%{box-shadow:0 0 0 8px rgba(21,128,61,0)}}
 @keyframes resumeCardPulseLucidez{0%,100%{box-shadow:0 0 0 0 rgba(109,40,217,.22)}50%{box-shadow:0 0 0 8px rgba(109,40,217,0)}}
 @media(max-width:600px){
   /* En móvil, animar box-shadow en bucle infinito tiene un coste real de
@@ -2397,7 +2397,7 @@ box-sizing:border-box;
 .stat-streak .stat-extra-icon{background:linear-gradient(135deg,#f59e0b,#d97706)}
 .stat-best .stat-extra-icon{background:linear-gradient(135deg,#3b6fd6,#1d4ed8)}
 .stat-speed .stat-extra-icon{background:linear-gradient(135deg,#8b5cf6,var(--duel-purple-dark))}
-.stat-mentalcalc .stat-extra-icon{background:linear-gradient(135deg,#3f3f46,#18181b)}
+.stat-mentalcalc .stat-extra-icon{background:linear-gradient(135deg,#15803d,#14532d)}
 .stat-master .stat-extra-icon{background:linear-gradient(135deg,#14b8a6,#0d9488)}
 .stat-lucidez .stat-extra-icon{background:linear-gradient(135deg,#8b5cf6,#6d28d9)}
 
@@ -4238,15 +4238,15 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 .duel-mode-option.dmo-standard:not(.locked) { border-color: var(--accent-blue); background: linear-gradient(150deg, rgba(37,99,235,.28), var(--card) 65%); }
 .duel-mode-option.dmo-survival:not(.locked) { border-color: rgba(245,158,11,.6); background: linear-gradient(150deg, var(--accent-gold-soft), var(--card) 45%); }
 .duel-mode-option.dmo-sudden:not(.locked) { border-color: var(--accent-red); background: linear-gradient(150deg, var(--accent-red-soft), var(--card) 45%); }
-.duel-mode-option.dmo-timetrial:not(.locked) { border-color: var(--duel-purple); background: linear-gradient(150deg, var(--accent-purple-soft), var(--card) 45%); }
-.duel-mode-option.dmo-mentalcalc:not(.locked) { border-color: rgba(24,24,27,.5); background: linear-gradient(150deg, rgba(24,24,27,.10), var(--card) 45%); }
+.duel-mode-option.dmo-timetrial:not(.locked) { border-color: #db2777; background: linear-gradient(150deg, rgba(219,39,119,.12), var(--card) 45%); }
+.duel-mode-option.dmo-mentalcalc:not(.locked) { border-color: rgba(21,128,61,.5); background: linear-gradient(150deg, rgba(21,128,61,.10), var(--card) 45%); }
 .duel-mode-option.dmo-lucidez:not(.locked) { border-color: var(--duel-purple-dark); background: linear-gradient(150deg, var(--accent-purple-soft), var(--card) 45%); }
 [data-theme="dark"] .duel-mode-option.dmo-lucidez:not(.locked) { border-color: rgba(167,139,250,.48); }
 .dmo-standard .duel-mode-icon { background: rgba(37,99,235,.14); }
 .dmo-survival .duel-mode-icon { background: rgba(245,158,11,.16); }
 .dmo-sudden .duel-mode-icon { background: rgba(220,38,38,.14); }
-.dmo-timetrial .duel-mode-icon { background: linear-gradient(135deg, rgba(124,58,237,.18), rgba(6,182,212,.14)); }
-.dmo-mentalcalc .duel-mode-icon { background: linear-gradient(135deg, rgba(24,24,27,.16), rgba(82,82,91,.14)); }
+.dmo-timetrial .duel-mode-icon { background: linear-gradient(135deg, rgba(219,39,119,.18), rgba(244,114,182,.14)); }
+.dmo-mentalcalc .duel-mode-icon { background: linear-gradient(135deg, rgba(21,128,61,.16), rgba(34,197,94,.14)); }
 .dmo-lucidez .duel-mode-icon { background: linear-gradient(135deg, rgba(109,40,217,.18), rgba(6,182,212,.14)); }
 
 /* "Continuar reto": mismo tratamiento que #resume-game-card en Jugar
@@ -4671,7 +4671,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
    gris neutro deliberado, ver comentarios de la auditoría v1.3/v1.4):
    se iguala el tono del nuevo icono al que ya usa su .mode-subtitle,
    sin introducir un color nuevo. */
-[data-theme="dark"] .mode-mentalcalc .mode-card-icon { background: linear-gradient(135deg, rgba(212,212,216,.16), rgba(161,161,170,.10)); }
+[data-theme="dark"] .mode-mentalcalc .mode-card-icon { background: linear-gradient(135deg, rgba(134,239,172,.16), rgba(74,222,128,.10)); }
 
 /* Jugar y Duelo deben leerse como la misma familia: idéntico radio,
    idéntica sombra en reposo y el mismo salto sutil al pasar el ratón
@@ -4794,15 +4794,15 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 .card.theme-survival .metric-value#res-percentage-text { color: #b45309; }
 .card.theme-sudden #results-card { border-color: rgba(220,38,38,.45); background: linear-gradient(135deg, rgba(220,38,38,.09), var(--card) 72%); }
 .card.theme-sudden .metric-value#res-percentage-text { color: #b91c1c; }
-.card.theme-timetrial #results-card { border-color: rgba(124,58,237,.4); background: linear-gradient(135deg, rgba(124,58,237,.09), rgba(6,182,212,.05), var(--card) 74%); }
-.card.theme-timetrial .metric-value#res-percentage-text { color: #6d28d9; }
-.card.theme-mentalcalc #results-card { border-color: rgba(24,24,27,.32); background: linear-gradient(135deg, rgba(24,24,27,.08), rgba(82,82,91,.05), var(--card) 74%); }
-.card.theme-mentalcalc .metric-value#res-percentage-text { color: #27272a; }
+.card.theme-timetrial #results-card { border-color: rgba(219,39,119,.4); background: linear-gradient(135deg, rgba(219,39,119,.09), rgba(244,114,182,.05), var(--card) 74%); }
+.card.theme-timetrial .metric-value#res-percentage-text { color: #be185d; }
+.card.theme-mentalcalc #results-card { border-color: rgba(21,128,61,.32); background: linear-gradient(135deg, rgba(21,128,61,.08), rgba(34,197,94,.05), var(--card) 74%); }
+.card.theme-mentalcalc .metric-value#res-percentage-text { color: #166534; }
 .card.theme-lucidez #results-card { border-color: rgba(109,40,217,.45); background: linear-gradient(135deg, rgba(109,40,217,.10), rgba(6,182,212,.05), var(--card) 74%); }
 .card.theme-lucidez .metric-value#res-percentage-text { color: #5b21b6; }
 .card.theme-duel #results-card { border-color: var(--accent-purple-soft); background: linear-gradient(135deg, var(--accent-purple-surface), var(--card) 72%); }
 .card.theme-duel .metric-value#res-percentage-text { color: var(--duel-purple); }
-[data-theme="dark"] .card.theme-mentalcalc .metric-value#res-percentage-text { color: #e4e4e7; }
+[data-theme="dark"] .card.theme-mentalcalc .metric-value#res-percentage-text { color: #bbf7d0; }
 
 /* =========================================================
    SISTEMA VISUAL v1.8 — ESTADÍSTICAS, LOGROS Y AJUSTES
@@ -4820,7 +4820,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
    agrupe cada récord con su modo antes de leer el número. */
 .stat-extra { border-left: 3px solid transparent; }
 .stat-speed { border-left-color: var(--accent-purple); }
-.stat-mentalcalc { border-left-color: var(--color-text-secondary); }
+.stat-mentalcalc { border-left-color: #15803d; }
 .stat-lucidez { border-left-color: var(--accent-purple-strong); }
 .stat-master { border-left-color: var(--accent-teal); }
 

@@ -852,7 +852,7 @@
     root.classList.toggle('seq-d-playing', playing);
     // El final de un Duelo o un Reto lleva el mismo marco de color que la partida (como las tarjetas finales de cada modo).
     root.classList.toggle('seq-d-final-on', !!(d && (S.screen === 'duel' || S.screen === 'reto') && d.estado === 'completado'));
-    // Color de la sección: granate para el Duelo online, azul para los Retos.
+    // Color de la sección: cobre para el Duelo online, cian para los Retos.
     root.classList.toggle('seq-d-k-reto', S.screen === 'reto' || S.screen === 'retos' || S.screen === 'retomode' || (S.screen === 'pick' && S.pickKind === 'reto'));
     if (!playing) urgencyStop();
     var qEl = $('seq-d-q'), hadFocus = qEl && document.activeElement === qEl;

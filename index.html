@@ -45,10 +45,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles/main.css?v=94">
+<link rel="stylesheet" href="styles/main.css?v=95">
 <!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
-<link rel="stylesheet" href="styles/online.css?v=94">
-<link rel="stylesheet" href="styles/theme.css?v=94">
+<link rel="stylesheet" href="styles/online.css?v=95">
+<link rel="stylesheet" href="styles/theme.css?v=95">
 
 </head>
 <body class="on-home">
@@ -466,12 +466,12 @@ try {
         <div class="modes-grid">
           <div class="mode-card mode-standard" onclick="startMode('play')">
             <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/estandar.webp" alt="" draggable="false"></div>
-            <h3>Modo Estándar</h3>
+            <h3>Estándar</h3>
             <p>20 preguntas de todo tipo. ¿Cuánto sabes de verdad?</p>
           </div>
           <div class="mode-card mode-review" onclick="startReviewMode()">
             <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/repaso.webp" alt="" draggable="false"></div>
-            <h3>Modo Repaso (<span id="repaso-count">0</span>)</h3>
+            <h3>Repaso (<span id="repaso-count">0</span>)</h3>
             <p>Tus fallos vuelven hasta que los aciertes 3 veces seguidas.</p>
           </div>
           <div class="mode-card mode-survival locked" id="mode-card-survival_main" onclick="openDifficultyMenu('survival')">
@@ -680,7 +680,7 @@ try {
           <span id="q-text">Cargando pregunta...</span>
         </div>
 
-        <input type="text" id="ans-input" autocomplete="off" placeholder="Escribe tu respuesta y pulsa Intro..." />
+        <input type="text" id="ans-input" autocomplete="off" placeholder="Escribe tu respuesta…" />
 
         <div id="choice-options" role="group" aria-label="Opciones de respuesta"></div>
 
@@ -1028,29 +1028,29 @@ try {
 <!-- Fase 2: datos y constantes extraidos a modulos, cargados como scripts
      clasicos (no ES Modules) para conservar el scope global compartido con
      el script principal, sin convertir todavia la app a ES Modules. -->
-<script src="src/data/ui-maps.js?v=94"></script>
-<script src="src/data/questions.js?v=94"></script>
-<script src="src/data/phrases.js?v=94"></script>
-<script src="src/data/duel-phrases.js?v=94"></script>
-<script src="src/data/lucidez.js?v=94"></script>
-<script src="src/data/medals.js?v=94"></script>
+<script src="src/data/ui-maps.js?v=95"></script>
+<script src="src/data/questions.js?v=95"></script>
+<script src="src/data/phrases.js?v=95"></script>
+<script src="src/data/duel-phrases.js?v=95"></script>
+<script src="src/data/lucidez.js?v=95"></script>
+<script src="src/data/medals.js?v=95"></script>
 <!-- Prompt 3 — Fase C: sistema de avatares compartido (window.SEQAvatars). Debe
      cargarse antes de src/online/online.js y src/online/duels.js: ambos lo
      consumen en vez de mantener cada uno su propia copia de la lista. -->
-<script src="src/data/avatars.js?v=94"></script>
-<script src="src/share/share-card.js?v=94"></script>
+<script src="src/data/avatars.js?v=95"></script>
+<script src="src/share/share-card.js?v=95"></script>
 
 <!-- Fase 3 (Lote 3A): motor de coincidencia de respuestas extraido a
      src/utils/matching.js, mismo criterio que la Fase 2 (script clasico,
      sin ES Modules todavia). -->
-<script src="src/utils/matching.js?v=94"></script>
+<script src="src/utils/matching.js?v=95"></script>
 
 <!-- Fase 3 (Lote 3B): nucleo algoritmico de Duelo extraido a
      src/utils/duel.js, mismo criterio que el resto (script clasico, sin
      ES Modules todavia). Las dependencias compartidas con otros modos
      (arrangeStandardBlock, generateMentalCalcOp, generateLucidezMentalOp)
      permanecen en este script principal, sin moverse en este lote. -->
-<script src="src/utils/duel.js?v=94"></script>
+<script src="src/utils/duel.js?v=95"></script>
 
 <!-- Fase 3 (Lote 3C): defaults, migracion y saneamiento del Store
      extraidos a src/utils/store.js, mismo criterio que el resto (script
@@ -1062,40 +1062,40 @@ try {
      getLevelData) y las 8 funciones de persistencia real (loadStore,
      saveStore, exportProgress...) permanecen en este script principal,
      sin moverse en este lote. -->
-<script src="src/utils/store.js?v=94"></script>
+<script src="src/utils/store.js?v=95"></script>
 
 <!-- Fase 4B: fachada de estado de solo lectura (getStore/getCurrentGame),
      mismo criterio que el resto (script clasico, sin ES Modules todavia).
      No copia, no transforma, no cachea. Ver src/state/read-facade.js. -->
-<script src="src/state/read-facade.js?v=94"></script>
+<script src="src/state/read-facade.js?v=95"></script>
 
 <!-- Fase 4C: helpers minimos de escritura (pushCapped, resetStreak) para
      eliminar 2 duplicaciones reales concretas -- no un sistema de
      mutaciones. Ver src/state/write-helpers.js y CHANGELOG_FASE4C.md. -->
-<script src="src/state/write-helpers.js?v=94"></script>
+<script src="src/state/write-helpers.js?v=95"></script>
 
 <!-- v1.4: capa online (cuenta Google, sincronización, migración, ranking).
      config.js es PÚBLICO (URL del Worker + Client ID de Google); si está
      vacío, la capa online queda desactivada y la app es idéntica a la v1.3.
      online.js solo usa el store/funciones del juego en tiempo de ejecución. -->
-<script src="src/ui/install-app.js?v=94"></script>
-<script src="src/ui/a11y.js?v=94"></script>
-<script src="src/ui/game-fx.js?v=94"></script>
-<script src="src/ui/achievements.js?v=94"></script>
-<script src="src/ui/stats-extra.js?v=94"></script>
-<script src="src/ui/intro.js?v=94"></script>
-<script src="src/ui/mode-badges.js?v=94"></script>
-<script src="src/ui/sabias.js?v=94"></script>
-<script src="src/ui/icons.js?v=94"></script>
-<script src="src/online/config.js?v=94"></script>
+<script src="src/ui/install-app.js?v=95"></script>
+<script src="src/ui/a11y.js?v=95"></script>
+<script src="src/ui/game-fx.js?v=95"></script>
+<script src="src/ui/achievements.js?v=95"></script>
+<script src="src/ui/stats-extra.js?v=95"></script>
+<script src="src/ui/intro.js?v=95"></script>
+<script src="src/ui/mode-badges.js?v=95"></script>
+<script src="src/ui/sabias.js?v=95"></script>
+<script src="src/ui/icons.js?v=95"></script>
+<script src="src/online/config.js?v=95"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
-<script src="src/utils/sync-merge.js?v=94"></script>
-<script src="src/online/data-sync.js?v=94"></script>
-<script src="src/online/online.js?v=94"></script>
+<script src="src/utils/sync-merge.js?v=95"></script>
+<script src="src/online/data-sync.js?v=95"></script>
+<script src="src/online/online.js?v=95"></script>
 <!-- v1.5: Amigos, Duelo online y Retos. El servidor decide preguntas, tiempo, aciertos y ganador. -->
-<script src="src/online/duels.js?v=94"></script>
+<script src="src/online/duels.js?v=95"></script>
 <!-- Audio: sonidos del juego (src/audio/audio.js) -->
-<script src="src/audio/audio.js?v=94"></script>
+<script src="src/audio/audio.js?v=95"></script>
 
 <script>
 function closeWelcomeModal() {
@@ -1658,7 +1658,8 @@ const RESULT_MOOD_BY_CATEGORY = {
   mentalcalc: { mal: '💨', normal: '📝', bien: '⚙️' }
 };
 // Retrato de Sir Edwards en los modos por puntuación: mal → derrota, bien → victoria, normal → sin retrato.
-const RESULT_CHARACTER_BY_CATEGORY = { mal: 'defeat', bien: 'victory' };
+// 'neutral' (resultado normal): Sir Edwards aparece con el saludo de siempre, pero la tarjeta de compartir no lo cuenta como victoria.
+const RESULT_CHARACTER_BY_CATEGORY = { mal: 'defeat', normal: 'neutral', bien: 'victory' };
 function fragmentMilestoneImg(m) {
   const src = ({ 10: 'assets/modes/mini/secreto.webp', 12: 'assets/ui/hito12.webp', 15: 'assets/ui/hito15.webp' })[m.fragments];
   return src ? `<img class="ui-img" src="${src}" alt="" draggable="false">` : '';
@@ -1695,7 +1696,8 @@ const RESULT_CHARACTER_TONES = {
 };
 const RESULT_CHARACTER_ASSETS = {
   victory: { png: 'assets/character/victory.png', webp: 'assets/character/victory.webp' },
-  defeat: { png: 'assets/character/defeat.png', webp: 'assets/character/defeat.webp' }
+  defeat: { png: 'assets/character/defeat.png', webp: 'assets/character/defeat.webp' },
+  neutral: { png: 'assets/character/victory.png', webp: 'assets/character/victory.webp' }
 };
 function setResultCharacter(toneKey, forcedState) {
   const box = document.getElementById('res-character');
@@ -1708,7 +1710,7 @@ function setResultCharacter(toneKey, forcedState) {
   // setLucidezStoryCharacter en Fase D) para que Victory/Defeat puedan
   // recibir un pequeño gesto de personalidad propio en CSS. No cambia
   // ningún dato ni el criterio de qué retrato mostrar, ya decidido arriba.
-  box.classList.remove('char-victory', 'char-defeat');
+  box.classList.remove('char-victory', 'char-defeat', 'char-neutral');
   if (!asset) {
     box.classList.remove('show');
     return;
@@ -1733,7 +1735,7 @@ function renderModeChips(chips) {
   }
   box.innerHTML = chips.map(c => `
     <span class="result-chip" title="${c.label}">
-      <span class="result-chip-icon">${({'🔥': '<img class="ui-img" src="assets/ui/racha.webp" alt="" draggable="false">', '✨': '<img class="ui-img" src="assets/ui/xp.webp" alt="" draggable="false">', '⏱️': '<img class="ui-img" src="assets/ui/tiempo.webp" alt="" draggable="false">', '🏅': '<img class="ui-img" src="assets/ui/medalla.webp" alt="" draggable="false">', '🎯': '<img class="ui-img" src="assets/modes/suelto/estandar.webp" alt="" draggable="false">'})[c.icon] || c.icon}</span><span class="result-chip-value">${c.value}</span>
+      <span class="result-chip-icon">${({'🔥': '<img class="ui-img" src="assets/ui/racha.webp" alt="" draggable="false">', '✨': '<img class="ui-img" src="assets/ui/xp.webp" alt="" draggable="false">', '⏱️': '<img class="ui-img" src="assets/ui/tiempo.webp" alt="" draggable="false">', '🏅': '<img class="ui-img" src="assets/ui/medalla.webp" alt="" draggable="false">', '🎯': '<img class="ui-img" src="assets/modes/suelto/estandar.webp" alt="" draggable="false">'})[c.icon] || c.icon}</span><span class="result-chip-value">${c.value}</span>${c.short ? `<span class="result-chip-label">${c.short}</span>` : ''}
     </span>
   `).join('');
   box.classList.add('show');
@@ -2246,8 +2248,8 @@ function updateResumeButton() {
   }
 
   const modeInfo = {
-    play: { cls: 'mode-standard', icon: '<svg class=\"se-sym\" viewBox=\"0 0 64 64\"><use href=\"#se-target\"/></svg>', name: 'Modo Estándar' },
-    review: { cls: 'mode-review', icon: '<svg class=\"se-sym\" viewBox=\"0 0 64 64\"><use href=\"#se-review\"/></svg>', name: 'Modo Repaso' },
+    play: { cls: 'mode-standard', icon: '<svg class=\"se-sym\" viewBox=\"0 0 64 64\"><use href=\"#se-target\"/></svg>', name: 'Estándar' },
+    review: { cls: 'mode-review', icon: '<svg class=\"se-sym\" viewBox=\"0 0 64 64\"><use href=\"#se-review\"/></svg>', name: 'Repaso' },
     survival: { cls: 'mode-survival', icon: '<svg class=\"se-sym\" viewBox=\"0 0 64 64\"><use href=\"#se-heart\"/></svg>', name: 'Supervivencia' },
     sudden_death: { cls: 'mode-sudden', icon: '<svg class=\"se-sym\" viewBox=\"0 0 64 64\"><use href=\"#se-skull\"/></svg>', name: 'Muerte Súbita' },
     timetrial: { cls: 'mode-timetrial', icon: '<svg class=\"se-sym\" viewBox=\"0 0 64 64\"><use href=\"#se-watch\"/></svg>', name: 'Contrarreloj' },
@@ -5005,7 +5007,7 @@ function updateMentalCalcHeader() {
     // <span> para poder animarlo (flash +2/-3) sin reescribir todo el texto.
     let timerNum = document.getElementById('mc-timer-num');
     if (!timerNum) {
-      lbl.innerHTML = `CÁLCULO MENTAL · ${seqIco('tiempo')}<span id="mc-timer-num">${mentalCalcSecondsLeft}</span>s | ${seqIco('xp')}<span id="mc-pts-num">${currentGame.score}</span> pts`;
+      lbl.innerHTML = `CÁLCULO MENTAL · ${seqIco('tiempo')}<span id="mc-timer-num">${mentalCalcSecondsLeft}</span>s · <span id="mc-pts-num">${currentGame.score}</span> pts`;
     } else {
       timerNum.textContent = mentalCalcSecondsLeft;
       const ptsNum = document.getElementById('mc-pts-num');
@@ -5277,10 +5279,11 @@ function updateTimeTrialHeader() {
     // la animación a mitad de camino.
     let timerNum = document.getElementById('tt-timer-num');
     if (!timerNum) {
-      lbl.innerHTML = `CONTRARRELOJ · ${seqIco('tiempo')}<span id="tt-timer-num">${timeTrialSecondsLeft}</span>s | Aciertos: ${currentGame.score}`;
+      lbl.innerHTML = `CONTRARRELOJ · ${seqIco('tiempo')}<span id="tt-timer-num">${timeTrialSecondsLeft}</span>s · <span id="tt-score-num">${currentGame.score}</span> aciertos`;
     } else {
       timerNum.textContent = timeTrialSecondsLeft;
-      lbl.lastChild.textContent = `s | Aciertos: ${currentGame.score}`;
+      const ttScore = document.getElementById('tt-score-num');
+      if (ttScore) ttScore.textContent = currentGame.score;
     }
   }
   if (bar) {
@@ -5513,7 +5516,7 @@ function renderQuestion(preserveAnswered = false) {
     document.getElementById('bar-fill').style.width = ((currentGame.currentIdx) / totalQ) * 100 + '%';
   } else if (currentGame.mode === 'review') {
     const totalQ = currentGame.totalQuestionsToPlay;
-    document.getElementById('game-progress-lbl').textContent = `MODO REPASO · ${currentGame.currentIdx + 1}/${totalQ}`;
+    document.getElementById('game-progress-lbl').textContent = `REPASO · ${currentGame.currentIdx + 1}/${totalQ}`;
     document.getElementById('bar-fill').style.width = ((currentGame.currentIdx) / totalQ) * 100 + '%';
   } else if (currentGame.mode === 'sudden_death') {
     const totalQ = currentGame.totalQuestionsToPlay;
@@ -5524,7 +5527,7 @@ function renderQuestion(preserveAnswered = false) {
     document.getElementById('bar-fill').style.width = ((currentGame.currentIdx) / totalQ) * 100 + '%';
   } else {
     const totalQ = currentGame.totalQuestionsToPlay;
-    document.getElementById('game-progress-lbl').textContent = `MODO ESTÁNDAR · ${currentGame.currentIdx + 1}/${totalQ}`;
+    document.getElementById('game-progress-lbl').textContent = `ESTÁNDAR · ${currentGame.currentIdx + 1}/${totalQ}`;
     document.getElementById('bar-fill').style.width = ((currentGame.currentIdx) / totalQ) * 100 + '%';
   }
   
@@ -5999,10 +6002,13 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
       if (currentGame.mode === 'survival') {
         stampText = 'SUPERVIVIENTE'; stampTone = 'amber';
       } else {
-        stampText = 'SIN MARGEN DE ERROR'; stampTone = 'perfect';
+        stampText = 'SIN MARGEN DE ERROR'; stampTone = 'gold'; // victoria = oro; el lila es solo de Lucidez
       }
     } else {
-      document.getElementById('res-category-text').textContent = "";
+      const isSurv = currentGame.mode === 'survival';
+      document.getElementById('res-category-text').textContent = accuracy <= 40
+        ? (isSurv ? 'Derrota sin paliativos' : 'Muerte prematura')
+        : 'Derrota con honor';
       if (accuracy <= 40) {
         customPhrase = pickRotatingPhrase(failDesastrePoolKey, failPhrases.desastre);
         setResultTone('fail', currentGame.mode === 'sudden_death' ? '☠️' : RESULT_MOOD_ICONS.fail_regular);
@@ -6016,11 +6022,9 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     document.getElementById('res-phrase-text').textContent = customPhrase;
   } else if (currentGame.mode === 'mental_calc') {
     const avgTimeSec = currentGame.total > 0 ? (currentGame.totalTimeMs / currentGame.total / 1000).toFixed(1) : '0.0';
-    // La categoría (mal/normal/bien) se sigue calculando y se usa para elegir
-    // la frase apropiada, pero ya no se muestra como texto de interfaz: la
-    // puntuación (arriba) + la frase ya comunican el resultado por sí solas.
+    // 2.0: la categoría (mal/normal/bien) se muestra como en Contrarreloj, por coherencia entre tarjetas.
     const mentalResult = getModeEndPhrase(MENTAL_CALC_END_PHRASES, currentGame.correct || 0, 'mentalcalc');
-    document.getElementById('res-category-text').textContent = '';
+    document.getElementById('res-category-text').textContent = ({ mal: 'Mal resultado', normal: 'Resultado normal', bien: 'Buen resultado' })[mentalResult.category] || '';
     document.getElementById('res-phrase-text').textContent = mentalResult.phrase;
     setResultTone('mentalcalc', RESULT_MOOD_BY_CATEGORY.mentalcalc[mentalResult.category] || RESULT_MOOD_ICONS.mentalcalc, RESULT_CHARACTER_BY_CATEGORY[mentalResult.category] || null);
   } else {
@@ -6038,7 +6042,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     } else {
       const reviewFailed = isGameOverDueToFailure || isSurvivalFailure;
       if (reviewFailed) {
-        document.getElementById('res-category-text').textContent = "Modo Especial";
+        document.getElementById('res-category-text').textContent = "Sin vidas";
         document.getElementById('res-phrase-text').textContent = "Te quedaste sin vidas en el intento.";
         setResultTone('fail', '🕸️');
       } else {
@@ -6060,25 +6064,25 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     // ⚔️ Duelo: sin XP ni récords personales que mostrar; solo la racha de
     // esta partida tiene sentido aquí (record/logros van en handleDuelFinish).
     renderModeChips([
-      { icon: '🔥', label: 'Racha máxima', value: `${currentGame.sessionBestStreak || 0}` }
+      { icon: '🔥', label: 'Racha máxima', short: 'racha', value: `${currentGame.sessionBestStreak || 0}` }
     ]);
   } else if (currentGame.mode === 'play' || currentGame.mode === 'review') {
     renderModeChips([
-      { icon: '🔥', label: 'Racha máxima', value: `${currentGame.sessionBestStreak || 0}`, accent: '#2563eb' },
+      { icon: '🔥', label: 'Racha máxima', short: 'racha', value: `${currentGame.sessionBestStreak || 0}`, accent: '#2563eb' },
       { icon: '✨', label: 'XP ganada', value: `+${currentGame.sessionXpGained || 0} XP`, accent: '#2563eb' }
     ]);
   } else if (currentGame.mode === 'survival') {
     renderModeChips([
-      { icon: '🔥', label: 'Racha máxima', value: `${currentGame.sessionBestStreak || 0}`, accent: '#b45309' }
+      { icon: '🔥', label: 'Racha máxima', short: 'racha', value: `${currentGame.sessionBestStreak || 0}`, accent: '#b45309' }
     ]);
   } else if (currentGame.mode === 'sudden_death') {
     renderModeChips([
-      { icon: '🔥', label: 'Racha máxima', value: `${currentGame.sessionBestStreak || 0}`, accent: '#dc2626' }
+      { icon: '🔥', label: 'Racha máxima', short: 'racha', value: `${currentGame.sessionBestStreak || 0}`, accent: '#dc2626' }
     ]);
   } else if (currentGame.mode === 'timetrial') {
     renderModeChips([
-      { icon: '🏅', label: 'Récord personal', value: `${store.maxTimeTrialScore || 0}`, accent: '#7c3aed' },
-      { icon: '🎯', label: 'Efectividad', value: `${accuracy}%`, accent: '#7c3aed' }
+      { icon: '🏅', label: 'Récord personal', short: 'récord', value: `${store.maxTimeTrialScore || 0}`, accent: '#db2777' },
+      { icon: '🎯', label: 'Efectividad', short: 'acierto', value: `${accuracy}%`, accent: '#db2777' }
     ]);
   } else if (currentGame.mode === 'mental_calc') {
     // Solo racha y tiempo medio: la precisión y la puntuación ya se ven
@@ -6086,7 +6090,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     // por espacio con las dos métricas que de verdad definen la partida.
     const avgTimeChip = currentGame.total > 0 ? (currentGame.totalTimeMs / currentGame.total / 1000).toFixed(1) : '0.0';
     renderModeChips([
-      { icon: '🔥', label: 'Racha máxima', value: `${currentGame.bestStreak || 0}` },
+      { icon: '🔥', label: 'Racha máxima', short: 'racha', value: `${currentGame.bestStreak || 0}` },
       { icon: '⏱️', label: 'Tiempo medio por operación', value: `${avgTimeChip}s de media` }
     ]);
   } else {
@@ -6494,7 +6498,7 @@ function renderHistory() {
     <div class="history-item hist-row">
       <span class="hist-ico">${historyModeIcon(item.mode)}</span>
       <div class="hist-body">
-        <div class="history-item-info">${escapeHtml(item.mode)}</div>
+        <div class="history-item-info">${escapeHtml(item.mode === 'Modo Estándar' ? 'Estándar' : item.mode)}</div>
         <div class="history-item-sub">${escapeHtml(item.date)}</div>
       </div>
       <div class="hist-score"><b>${escapeHtml(item.score)}</b><span>${escapeHtml(item.percentage)}%</span></div>

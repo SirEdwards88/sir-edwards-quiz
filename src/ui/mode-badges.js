@@ -54,10 +54,27 @@
     else el.style.display = 'none';
   }
 
+  // 2.0: la etiqueta de la cabecera de juego llega como «NOMBRE · datos» desde muchos sitios de index.html.
+  // Aquí se parte siempre en dos líneas fijas (nombre del modo arriba, datos de la partida abajo) para que
+  // ningún modo se parta a mitad en el móvil. Se mueven los nodos (no se reescribe el HTML), así los <span>
+  // con id que se animan cada segundo (segundos, puntos, aciertos) siguen siendo los mismos.
+  function splitHudLabel(lbl) {
+    var first = lbl.firstChild;
+    if (!first || (first.nodeType === 1 && first.classList.contains('hud-name'))) return;
+    if (first.nodeType !== 3) return;
+    var t = first.nodeValue, i = t.indexOf(' · ');
+    if (i < 1) return;
+    var name = document.createElement('span'); name.className = 'hud-name'; name.textContent = t.slice(0, i);
+    var data = document.createElement('span'); data.className = 'hud-data';
+    first.nodeValue = t.slice(i + 3);
+    while (lbl.firstChild) data.appendChild(lbl.firstChild);
+    lbl.appendChild(name); lbl.appendChild(data);
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     var lbl = document.getElementById('game-progress-lbl');
     if (!lbl || typeof MutationObserver === 'undefined') return;
-    new MutationObserver(function () { try { syncHud(); } catch (e) {} }).observe(lbl, { childList: true, characterData: true, subtree: true });
+    new MutationObserver(function () { try { splitHudLabel(lbl); } catch (e) {} try { syncHud(); } catch (e) {} }).observe(lbl, { childList: true, characterData: true, subtree: true });
   });
 
   window.SEQModeBadges = { src: src, img: img, miniSrc: miniSrc, miniImg: miniImg, looseSrc: looseSrc, syncHud: syncHud };
