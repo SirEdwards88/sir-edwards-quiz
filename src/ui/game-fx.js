@@ -124,23 +124,11 @@
     b.setAttribute('aria-hidden', 'true');
     b.innerHTML = '<span class="fx-streak-fire"><img class="ui-img" src="assets/ui/racha.webp" alt=""></span><span class="fx-streak-num"></span><span class="fx-streak-lbl">¡seguidas!</span>';
     b.querySelector('.fx-streak-num').textContent = String(n);
-    // 2.0: en la fila de «← Menú principal», a la derecha del botón (hueco libre): así no tapa la insignia del
-    // modo, el contador ni la racha de la cabecera, ni el enunciado. Si esa fila no existe, el sitio de antes.
-    var exitBtn = $('game-exit-btn'), placed = false;
-    if (exitBtn && exitBtn.getBoundingClientRect) {
-      var hr = host.getBoundingClientRect(), er = exitBtn.getBoundingClientRect();
-      var top = er.top + er.height / 2 - hr.top, from = er.right - hr.left + 10, to = hr.width - 12;
-      if (er.width > 0 && isFinite(top) && top > 0 && to - from >= 150) {
-        b.className += ' fx-streak-banner-top';
-        b.style.top = Math.round(top) + 'px';        // el centro del aviso (translate -50%)
-        b.style.left = Math.round((from + to) / 2) + 'px';
-        placed = true;
-      }
-    }
+    // 2.0: sobre la cabecera de la partida (modo · contador), no encima del enunciado de la pregunta.
     var anchor = $('game-progress-lbl');
-    if (!placed && anchor && anchor.getBoundingClientRect) {
-      var ar = anchor.getBoundingClientRect(), top2 = ar.top + ar.height / 2 - host.getBoundingClientRect().top;
-      if (isFinite(top2) && top2 > 0) b.style.top = Math.max(34, Math.round(top2)) + 'px';
+    if (anchor && anchor.getBoundingClientRect) {
+      var ar = anchor.getBoundingClientRect(), top = ar.top + ar.height / 2 - host.getBoundingClientRect().top;
+      if (isFinite(top) && top > 0) b.style.top = Math.max(34, Math.round(top)) + 'px'; // el centro del aviso (translate -50%)
     }
     host.appendChild(b);
     setTimeout(function () { b.remove(); }, 1500);

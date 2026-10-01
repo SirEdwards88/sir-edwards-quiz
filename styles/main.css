@@ -5247,11 +5247,6 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 .fx-streak-fire { font-size: 26px; align-self: center; }
 .fx-streak-num { font-family: var(--font-display); font-size: 40px; font-weight: 800; line-height: 1; color: #e8c874; }
 .fx-streak-lbl { font-size: 15px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; }
-/* En la fila de «← Menú principal»: más compacto para que quepa en el hueco de la derecha del botón. */
-.fx-streak-banner.fx-streak-banner-top { padding: 3px 14px 3px 10px; gap: 6px; box-shadow: 0 8px 20px rgba(22,36,74,.35); }
-.fx-streak-banner-top .fx-streak-fire { font-size: 20px; }
-.fx-streak-banner-top .fx-streak-num { font-size: 26px; }
-.fx-streak-banner-top .fx-streak-lbl { font-size: 12px; }
 @keyframes fx-banner { 0% { opacity: 0; transform: translate(-50%, -30%) scale(.6); } 18% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
   30% { transform: translate(-50%, -50%) scale(1); } 80% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -75%) scale(.95); } }
 
