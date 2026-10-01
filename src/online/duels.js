@@ -184,7 +184,7 @@
     var fr = L.friends ? num(L.friends.incoming.length) : 0;
     var du = L.duels ? L.duels.filter(function (d) { return (d.estado === 'pendiente' && d.soy === 'rival') || d.estado === 'aceptado' || d.estado === 'en_curso'; }).length : 0;
     var re = L.retos ? L.retos.filter(function (r) { return (r.estado === 'pendiente' && r.soy === 'rival') || (r.estado === 'aceptado' && !r.yo.terminado); }).length : 0;
-    // Duelo en directo en marcha (p. ej. tras recargar): aviso arriba del todo, porque a los 30 s sin volver se pierde.
+    // Duelo en directo en marcha (p. ej. tras recargar): aviso arriba del todo, porque a los 60 s sin volver se pierde.
     var live = L.duels ? L.duels.filter(function (d) { return d.estado === 'en_curso'; })[0] : null;
     var h = live ? '<div class="mode-card seq-d-card seq-d-live" role="button" tabindex="0" onclick="SEQDuels.open(\'duel\',\'' + safeId(live.id) + '\')"><div class="duel-action-text"><h3>Un duelo te espera</h3><p>Sir Edwards no tiene todo el día. Vuelve antes de que te declaren desertor.</p><p class="mode-subtitle seq-d-pending">● VOLVER AL DUELO</p></div></div>' : '';
     h += navigator.onLine === false ? '<p class="stats-section-sub seq-d-offline">' + ico('nube') + 'Sin conexión: los duelos y los retos necesitan Internet.</p>' : '';
@@ -220,7 +220,7 @@
     var l = S.lists.duels || [], d = l.filter(function (x) { return x.estado === 'en_curso'; })[0];
     if (!d || (S.screen === 'duel' && S.id === safeId(d.id)) || S.liveWarned === d.id) return;
     S.liveWarned = d.id;
-    if (typeof showInfoToast === 'function') showInfoToast('Tienes un duelo en marcha: vuelve antes de 30 s o pierdes.', '⚔️');
+    if (typeof showInfoToast === 'function') showInfoToast('Tienes un duelo en marcha: vuelve antes de 60 s o pierdes.', '⚔️');
   }
   function refreshSummary() {
     if (!active()) { renderCards(); return Promise.resolve(); }
@@ -533,11 +533,11 @@
     topbarShown(false);
     return '<div class="submenu-header"><button class="btn btn-secondary" onclick="' + backFn + '">← Volver</button><h2 style="margin:0;">' + title + '</h2></div><div id="seq-d-msg" class="feedback" style="display:none;"></div>';
   }
-  // Salir de un duelo en marcha cuesta la partida (30 s sin latido = abandono): se avisa antes.
+  // Salir de un duelo en marcha cuesta la partida (60 s sin latido = abandono): se avisa antes.
   function leaveDuel() {
     var d = S.data, live = !!(d && d.estado === 'en_curso' && !(d.yo && d.yo.completado));
     if (live && typeof showAppConfirm === 'function') {
-      showAppConfirm({ title: 'Duelo en marcha', message: 'Si sales del duelo, a los 30 s sin volver pierdes por abandono.', confirmLabel: 'Salir igualmente', onConfirm: function () { open('duels'); } });
+      showAppConfirm({ title: 'Duelo en marcha', message: 'Si sales del duelo, a los 60 s sin volver pierdes por abandono.', confirmLabel: 'Salir igualmente', onConfirm: function () { open('duels'); } });
       return;
     }
     open('duels');
@@ -755,7 +755,7 @@
     }
     var res = r.ganador === 'yo' ? 'win' : r.ganador === 'rival' ? 'loss' : 'draw';
     var cls = res === 'win' ? 'duel-result-win' : res === 'loss' ? 'duel-result-loss' : 'duel-result-draw';
-    var note = d.motivo_fin === 'abandono' ? (d.yo && d.yo.abandonado ? 'Perdiste por abandono (más de 30 s sin conexión).' : p.name + ' abandonó la partida.')
+    var note = d.motivo_fin === 'abandono' ? (d.yo && d.yo.abandonado ? 'Perdiste por abandono (más de 60 s sin conexión).' : p.name + ' abandonó la partida.')
       : d.motivo_fin === 'no_jugado' ? (res === 'win' ? p.name + ' no jugó a tiempo.' : 'No jugaste a tiempo.') : '';
     var phrase = resultPhrase(d, r), me = session() || {};
     // 2.0: la misma tarjeta final que una partida en solitario (mismas piezas y estilos que #results-card):
@@ -823,7 +823,7 @@
       return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Esperando a que ' + p.name + ' acepte…</div><p class="duel-result-hint">Le quedan <span id="seq-d-count"></span> s. Lo verá al abrir el juego.</p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.duelAction(\'cancel\')">Cancelar</button></div>';
     }
     if (d.estado === 'aceptado') {
-      return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Sala de espera</div><p class="duel-result-hint">Tú: ' + (d.yo.listo ? ico('correcto') + 'listo' : ico('mediocre')) + ' · ' + p.name + ': ' + (d.rival_estado.listo ? ico('correcto') + 'listo' : ico('mediocre')) + '</p><p class="duel-result-hint">Quedan <span id="seq-d-count"></span> s para que los dos estéis listos.</p><p class="duel-result-hint seq-d-stay">Durante la partida no salgas de la app ni bloquees el móvil: a los 30 s sin conexión se pierde por abandono.</p>' + (d.yo.listo ? '' : '<button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.duelAction(\'ready\')">✅ ¡Listo!</button>') + '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.duelAction(\'cancel\')">Salir</button></div>';
+      return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Sala de espera</div><p class="duel-result-hint">Tú: ' + (d.yo.listo ? ico('correcto') + 'listo' : ico('mediocre')) + ' · ' + p.name + ': ' + (d.rival_estado.listo ? ico('correcto') + 'listo' : ico('mediocre')) + '</p><p class="duel-result-hint">Quedan <span id="seq-d-count"></span> s para que los dos estéis listos.</p><p class="duel-result-hint seq-d-stay">Durante la partida no salgas de la app ni bloquees el móvil: a los 60 s sin conexión se pierde por abandono.</p>' + (d.yo.listo ? '' : '<button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.duelAction(\'ready\')">✅ ¡Listo!</button>') + '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.duelAction(\'cancel\')">Salir</button></div>';
     }
     if (d.estado === 'en_curso') {
       var t0 = num(d.t0), dur = num(d.duracion_pregunta_ms) || 10000;
