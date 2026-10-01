@@ -300,9 +300,7 @@ h3 .ui-btn-ico { width: 34px; height: 34px; vertical-align: middle; margin: -4px
 /* Etiqueta mínima en las pastillas de la tarjeta final (qué es cada número). */
 .result-chip-label { font-size: 11px; font-weight: 700; color: var(--text-muted, #6b7280); margin-left: -2px; white-space: nowrap; }
 
-/* ===== PROPUESTA home: Duelo en granate y acentos suaves en las tarjetas pequeñas ===== */
-.home-big-card.home-card-duelo { background: linear-gradient(150deg, #a3314f, #6e1630 55%, #3a0a18); }
-.home-big-card.home-card-duelo::after { opacity: .07; }
+/* ===== Home: botones grandes en azul noche con oro («Noche y oro») y acentos suaves en las tarjetas pequeñas ===== */
 .home-small-card { background: linear-gradient(var(--hc, #c9a227), var(--hc, #c9a227)) top / 100% 3px no-repeat, linear-gradient(180deg, color-mix(in srgb, var(--hc, #c9a227) 9%, #fffdf8), #faf3e6); }
 .home-small-card .home-small-arrow { color: var(--hc, var(--brand-gold)); }
 .home-small-card .home-small-divider { background: var(--hc, var(--brand-gold)); }
@@ -311,7 +309,7 @@ h3 .ui-btn-ico { width: 34px; height: 34px; vertical-align: middle; margin: -4px
 .home-card-settings { --hc: #64748b; }
 [data-theme="dark"] .home-small-card { background: linear-gradient(var(--hc), var(--hc)) top / 100% 3px no-repeat, linear-gradient(180deg, color-mix(in srgb, var(--hc) 14%, var(--brand-cream)), var(--brand-cream-deep)); }
 
-/* ===== PROPUESTA: tarjetas de Duelo y de Jugar con el color de su sección/modo (mismo estilo que la home) ===== */
+/* ===== Tarjetas de Duelos y de Jugar con el color de su sección/modo (mismo estilo que la home) ===== */
 #duel-home .seq-d-card, .modes-grid .mode-card { --hc: var(--brand-gold); }
 #duel-home .seq-d-v-duel { --hc: var(--dz-duel); }
 #duel-home .seq-d-v-retos { --hc: var(--dz-reto); }
@@ -333,4 +331,16 @@ h3 .ui-btn-ico { width: 34px; height: 34px; vertical-align: middle; margin: -4px
   background: linear-gradient(var(--hc), var(--hc)) top / 100% 3px no-repeat, linear-gradient(160deg, color-mix(in srgb, var(--hc) 16%, var(--brand-cream)), var(--brand-cream-deep)) !important;
 }
 #view-modes .modes-grid .mode-card.locked { background: linear-gradient(color-mix(in srgb, var(--hc) 45%, transparent), color-mix(in srgb, var(--hc) 45%, transparent)) top / 100% 3px no-repeat, linear-gradient(160deg, color-mix(in srgb, var(--hc) 5%, #fffdf8), #f4eee2) !important; border-color: color-mix(in srgb, var(--hc) 18%, transparent) !important; }
-.home-big-card.home-card-duelo::after { content: "⚔"; }
+
+.home-big-card.home-card-jugar, .home-big-card.home-card-duelo {
+  background: linear-gradient(160deg, #1b2650, #0e1630 70%);
+  border: 1.5px solid #c9a227;
+  box-shadow: 0 0 0 3px rgba(201,162,39,.12), 0 14px 30px rgba(15,23,42,.35);
+}
+.home-big-card.home-card-jugar::before, .home-big-card.home-card-duelo::before { background: radial-gradient(120% 90% at 12% -15%, rgba(232,200,116,.18), transparent 55%); }
+.home-big-card.home-card-jugar::after, .home-big-card.home-card-duelo::after { display: none; }
+.home-big-card .home-big-title { color: #e8c874; letter-spacing: 2px; }
+.home-big-card .home-big-sub { color: #efe6cf; opacity: .9; }
+.home-big-card.home-card-jugar .home-big-arrow { background: #2d5bb8; border-color: #e8c874; }
+.home-big-card.home-card-duelo .home-big-arrow { background: #9f1d3f; border-color: #e8c874; }
+[data-theme="dark"] .home-big-card.home-card-jugar, [data-theme="dark"] .home-big-card.home-card-duelo { background: linear-gradient(160deg, #202d5e, #0b1228 70%); }
