@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 77;
+const CACHE_VERSION = 78;
 const CACHE_NAME = `sedq-shell-v${CACHE_VERSION}`;
 
 // Rutas relativas al propio sw.js (que vive en la raíz de la app, tanto en
@@ -89,7 +89,7 @@ const APP_SHELL = [
   './assets/ui/pizarra-operaciones.webp',
   './assets/ui/cerebro-engranajes.webp',
   './assets/ui/sombrero-saludo.webp',
-  './assets/ui/sombrero-dorado.webp',
+  './assets/ui/sombrero-laurel.webp',
   './assets/ui/bandera-blanca.webp',
   './assets/ui/cartel-peligro.webp',
   './assets/ui/cronometro.webp',
