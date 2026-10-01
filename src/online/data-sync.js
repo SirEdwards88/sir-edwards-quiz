@@ -101,6 +101,13 @@
         var server = res && res.data;
         if (!server || typeof server !== 'object') { var e = new Error('invalid'); e.invalid = true; throw e; }
         server = M().sanitizeDoc(server);
+        // El tema (claro/oscuro) es una preferencia de CADA dispositivo (móvil oscuro, ordenador claro…): lo que
+        // venga de la cuenta nunca lo cambia. Se sustituye el del servidor por el local antes de combinar, para que
+        // no haya conflicto ni vueltas extra de sincronización. El sonido sí sigue sincronizándose.
+        try {
+          var sg = server.g && server.g.settings;
+          if (sg && sg.v && (store.theme === 'light' || store.theme === 'dark')) sg.v.theme = store.theme;
+        } catch (e) {}
         // Se combina con el store ACTUAL (puede haber cambiado mientras volaba la petición) y se aplica.
         refreshMeta(state);
         var finalDoc = M().mergeDocs(M().extractDoc(store, state), server);
