@@ -51,7 +51,7 @@
     victory:  { bg: ['#1e2f63', '#0d1530'], glow: 'rgba(232,200,116,.42)', accent: BRAND.goldLight, ring: BRAND.goldLight },
     defeat:   { bg: ['#1a1830', '#0a0812'], glow: 'rgba(160,40,60,.45)', accent: BRAND.burgundyLight, ring: BRAND.burgundyLight },
     lucidez:  { bg: ['#1a1240', '#070510'], glow: 'rgba(120,90,255,.42)', accent: BRAND.purpleLight, ring: BRAND.goldLight },
-    duel:     { bg: ['#2a1358', '#0e0722'], glow: 'rgba(167,139,250,.42)', accent: '#c4b5fd', ring: '#a78bfa' },
+    duel:     { bg: ['#4a1426', '#14050b'], glow: 'rgba(176,58,92,.42)', accent: '#f4a3b3', ring: '#e0607a' },
     reto:     { bg: ['#2a1358', '#0e0722'], glow: 'rgba(167,139,250,.42)', accent: '#c4b5fd', ring: '#a78bfa' }
   };
 
@@ -65,7 +65,7 @@
     mental_calc:   { bg: ['#3b3b44', '#0d0d10'], glow: 'rgba(212,212,216,.26)', accent: '#e4e4e7', ring: '#a1a1aa', icon: 'calculo' },
     review:        { bg: ['#0e4d48', '#031615'], glow: 'rgba(20,184,166,.38)', accent: '#5eead4', ring: '#2dd4bf', icon: 'repaso' },
     lucidez_mental:{ bg: ['#1a1240', '#070510'], glow: 'rgba(120,90,255,.42)', accent: BRAND.purpleLight, ring: BRAND.goldLight, icon: 'secreto' },
-    duel:          { bg: ['#2a1358', '#0e0722'], glow: 'rgba(167,139,250,.42)', accent: '#c4b5fd', ring: '#a78bfa', icon: 'duelo' },
+    duel:          { bg: ['#4a1426', '#14050b'], glow: 'rgba(176,58,92,.42)', accent: '#f4a3b3', ring: '#e0607a', icon: 'duelo' },
     reto:          { bg: ['#14386b', '#050f24'], glow: 'rgba(96,165,250,.40)', accent: '#93c5fd', ring: '#60a5fa', icon: 'retos' }
   };
   var MODE_BY_NAME = { 'modo estándar': 'play', 'estándar': 'play', 'supervivencia': 'survival', 'muerte súbita': 'sudden_death',

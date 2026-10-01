@@ -667,8 +667,10 @@
   function playScreen(kind, d, idx, qn, mine) {
     var p = player(d.rival);
     topbarShown(false);
-    var h = kind === 'duel' ? '<button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.leaveDuel()">← Duelo online</button>'
-      : '<button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.open(\'retos\')">← Retos</button>';
+    // Fila superior: salir a la izquierda y el rival a la derecha (fuera de la cabecera, que así siempre deja ver el reloj).
+    var h = '<div class="seq-d-toprow">' + (kind === 'duel' ? '<button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.leaveDuel()">← Duelo online</button>'
+      : '<button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.open(\'retos\')">← Retos</button>') +
+      '<span class="seq-d-vs-chip" title="Tu rival"><span class="seq-d-vs-lbl2">vs</span>' + p.avatar + '<span class="seq-d-rival-name">' + p.name + '</span></span></div>';
     h += '<div id="seq-d-msg" class="feedback" style="display:none;"></div>';
     var lbl, extra = '', est = (d.yo && d.yo.estado) || {};
     if (kind === 'duel') lbl = 'DUELO<span class="seq-d-long"> ONLINE</span> · ' + (num(idx) + 1) + '/20';
@@ -686,8 +688,8 @@
         extra = ' <span class="seq-d-lives" aria-label="Vidas: ' + num(est.vidas) + '">' + hearts + '</span>';
       }
     }
-    h += '<div class="mode-header game-hud seq-d-hud' + (kind === 'reto' ? ' seq-d-hud-reto' : '') + '"><span class="seq-d-hud-lbl">' + lbl + ' · ' + ico('tiempo') + '<span id="seq-d-time"></span>s' + extra + '</span>' +
-      '<span class="game-streak-inline seq-d-rival-chip" title="Tu rival"><span class="seq-d-vs-lbl">vs </span><span class="game-streak-inline-icon">' + p.avatar + '</span> <span class="seq-d-rival-name">' + p.name + '</span></span></div>';
+    h += '<div class="mode-header game-hud seq-d-hud' + (kind === 'reto' ? ' seq-d-hud-reto' : '') + '"><span class="seq-d-hud-lbl">' + lbl + '</span>' +
+      '<span class="seq-d-hud-right">' + extra + '<span class="seq-d-hud-time">' + ico('tiempo') + '<span id="seq-d-time"></span>s</span></span></div>';
     h += '<div class="progress-bar"><div id="seq-d-bar" class="bar-fill"></div></div>';
     return h + questionBlock(d.id, idx, qn, mine, kind === 'reto' && d.modo === 'lucidez' && num(est.fase) === 2);
   }
@@ -851,6 +853,8 @@
     var d = S.data, playing = !!(d && ((S.screen === 'duel' && d.estado === 'en_curso' && !(d.yo && d.yo.completado)) ||
       (S.screen === 'reto' && d.estado === 'aceptado' && d.yo && d.yo.empezado && !d.yo.terminado)));
     root.classList.toggle('seq-d-playing', playing);
+    // Color de la sección: granate para el Duelo online, azul para los Retos.
+    root.classList.toggle('seq-d-k-reto', S.screen === 'reto' || S.screen === 'retos' || S.screen === 'retomode' || (S.screen === 'pick' && S.pickKind === 'reto'));
     if (!playing) urgencyStop();
     var qEl = $('seq-d-q'), hadFocus = qEl && document.activeElement === qEl;
     if (qEl) S.search.q = String(qEl.value || '').slice(0, 24);
