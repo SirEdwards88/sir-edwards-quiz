@@ -428,7 +428,7 @@
     if (r.ganador === 'rival') return 'Perdiste ' + num(r.mi_puntuacion) + '–' + num(r.puntuacion_rival);
     return 'Empate ' + num(r.mi_puntuacion) + '–' + num(r.puntuacion_rival);
   }
-  function resultIco(r) { return !r ? '' : ico(r.ganador === 'yo' ? 'copa' : r.ganador === 'rival' ? 'derrota' : 'amigos'); }
+  function resultIco(r) { return !r ? '' : ico(r.ganador === 'yo' ? 'copa' : r.ganador === 'rival' ? 'bandera' : 'amigos'); }
   // Logros de duelo online: insignia ilustrada por id (el servidor sigue mandando su emoji, que queda de reserva).
   var ONLINE_ACH_IMG = {
     online_primer_duelo: 'assets/modes/suelto/duelo.webp', online_primera_victoria: 'assets/logros/duel_victoria_inaugural.webp',

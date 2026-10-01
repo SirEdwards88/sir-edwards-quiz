@@ -8,6 +8,7 @@
   'use strict';
   var UI = 'assets/ui/';
   var PATHS = {
+    bandera: 'assets/ui/bandera-blanca.webp',
     amigos: 'assets/modes/amigos.webp',
     calculo: 'assets/modes/mini/calculo.webp',
     duelo: 'assets/modes/suelto/duelo.webp',

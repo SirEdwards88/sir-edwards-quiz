@@ -824,12 +824,12 @@ try {
         </div>
 
         <div class="stats-section">
-          <h3 class="stats-h"><img class="stats-h-img" src="assets/ui/escudo.webp" alt="" draggable="false">¿Hasta dónde llega tu nivel?</h3>
+          <h3 class="stats-h"><img class="stats-h-img" src="assets/ui/insignia-nivel.webp" alt="" draggable="false">¿Hasta dónde llega tu nivel?</h3>
           <div id="difficulty-stats"></div>
         </div>
 
         <div class="history-container">
-          <h3 class="stats-h"><img class="stats-h-img" src="assets/ui/revancha.webp" alt="" draggable="false">Últimas partidas</h3>
+          <h3 class="stats-h"><img class="stats-h-img" src="assets/ui/pergamino.webp" alt="" draggable="false">Últimas partidas</h3>
           <div class="history-list" id="history-list-container">
             <p style="color: var(--sub); font-size: 14px;">Aún no hay partidas registradas.</p>
           </div>
@@ -915,7 +915,7 @@ try {
           <p class="settings-kicker">Aplicación</p>
           <div class="settings-field">
             <span class="settings-field-label">Tenla a mano en tu pantalla de inicio</span>
-            <button type="button" class="btn btn-secondary settings-install-btn" onclick="SEQInstall.install()"><span class="ui-line ui-line-install" aria-hidden="true"></span>Instalar la app</button>
+            <button type="button" class="btn btn-secondary settings-install-btn" onclick="SEQInstall.install()"><img class="ui-btn-ico" src="assets/ui/instalar-app.webp" alt="" draggable="false">Instalar la app</button>
             <p class="settings-install-note" id="install-app-note" style="display:none;"></p>
           </div>
         </div>
@@ -1024,7 +1024,7 @@ try {
       </div>
 
       <div class="settings-section settings-danger-zone">
-        <h3 style="margin-top:0; color: var(--danger-txt);"><span class="ui-line ui-line-warn" aria-hidden="true"></span>Zona de peligro</h3>
+        <h3 style="margin-top:0; color: var(--danger-txt);"><img class="ui-btn-ico" src="assets/ui/cartel-peligro.webp" alt="" draggable="false">Zona de peligro</h3>
         <p class="settings-note">Borra todo el progreso guardado en este dispositivo.</p>
         <button class="btn btn-danger" onclick="resetAppData()">Reiniciar progreso</button>
       </div>
@@ -1647,18 +1647,18 @@ function getResultData(score, total) {
 let lastResultShareTone = null; // Prompt 5: tono que se está mostrando (lo lee la tarjeta de compartir)
 // 2.0: ilustraciones del «ánimo» del resultado en lugar del emoji (mismas claves que RESULT_MOOD_ICONS).
 const RESULT_MOOD_IMAGES = {
-  '💀': 'assets/ui/desastre.webp', '😬': 'assets/ui/suspenso.webp', '😐': 'assets/ui/mediocre.webp', '🙂': 'assets/ui/bien.webp',
+  '💀': 'assets/ui/sombrero-aplastado.webp', '😬': 'assets/ui/suspenso.webp', '😐': 'assets/ui/medalla-deslucida.webp', '🙂': 'assets/ui/bien.webp',
   '😏': 'assets/ui/casi.webp', '🏆': 'assets/ui/perfecto.webp', '💔': 'assets/ui/derrota.webp',
   '⚡': 'assets/modes/suelto/contrarreloj.webp', '🧠': 'assets/modes/suelto/repaso.webp', '🔢': 'assets/modes/suelto/calculo.webp',
   '👁️': 'assets/modes/suelto/secreto.webp', '🎯': 'assets/modes/suelto/estandar.webp',
-  '❤️': 'assets/modes/suelto/supervivencia.webp', '👑': 'assets/modes/suelto/muerte-subita.webp', '📈': 'assets/ui/progreso.webp',
+  '❤️': 'assets/modes/suelto/supervivencia.webp', '👑': 'assets/modes/suelto/muerte-subita.webp', '📈': 'assets/ui/libro-vela.webp', '🫏': 'assets/ui/gorro-burro.webp', '🫠': 'assets/ui/reloj-derretido.webp', '⏱️': 'assets/ui/cronometro.webp', '📏': 'assets/ui/regla-calculo.webp',
   '☠️': 'assets/ui/calavera.webp', '🕸️': 'assets/ui/libro-telaranas.webp', '🔮': 'assets/ui/bola-rota.webp', '💎': 'assets/ui/diamante.webp',
   '🐌': 'assets/ui/caracol.webp', '🐇': 'assets/ui/liebre.webp', '💨': 'assets/ui/calculadora-humo.webp', '🧮': 'assets/ui/abaco.webp'
 };
 // 2.0: icono del resultado según el desenlace (mal / normal / bien) en los modos por puntuación.
 const RESULT_MOOD_BY_CATEGORY = {
-  timetrial: { mal: '🐌', normal: '⚡', bien: '🐇' },
-  mentalcalc: { mal: '💨', normal: '🔢', bien: '🧮' }
+  timetrial: { mal: '🫠', normal: '⏱️', bien: '🐇' },
+  mentalcalc: { mal: '💨', normal: '📏', bien: '🧮' }
 };
 function fragmentMilestoneImg(m) {
   const src = ({ 10: 'assets/modes/mini/secreto.webp', 12: 'assets/ui/hito12.webp', 15: 'assets/ui/hito15.webp' })[m.fragments];
@@ -6013,14 +6013,14 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
       if (reviewFailed) {
         document.getElementById('res-category-text').textContent = "Modo Especial";
         document.getElementById('res-phrase-text').textContent = "Te quedaste sin vidas en el intento.";
-        setResultTone('fail', RESULT_MOOD_ICONS.fail_regular);
+        setResultTone('fail', '🕸️');
       } else {
         const reviewKey = accuracy >= 50 ? 'progreso' : 'insuficiente';
         const reviewData = REVIEW_END_PHRASES[reviewKey];
         const reviewPhrase = pickRotatingPhrase(`review_${reviewKey}`, reviewData.phrases);
         document.getElementById('res-category-text').textContent = reviewData.title;
         document.getElementById('res-phrase-text').textContent = reviewPhrase;
-        setResultTone('review', reviewKey === 'progreso' ? '📈' : '🕸️');
+        setResultTone('review', reviewKey === 'progreso' ? '📈' : '🫏');
       }
     }
   }

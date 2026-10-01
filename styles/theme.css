@@ -273,3 +273,8 @@ body.keyboard-open .sabias-que-box { margin-top: 8px; padding: 6px 10px 7px; fon
 h3.stats-h .stats-h-img { border-radius: 0; background: none; border: 0; width: 36px; height: 36px; }
 .hist-ico:has(.mode-img-loose) { background: none; border: 0; width: 42px; height: 42px; }
 .hist-ico .mode-img-loose { width: 40px; height: 40px; object-fit: contain; background: none; border: 0; border-radius: 0; box-shadow: none; }
+
+/* Iconos ilustrados sueltos junto a títulos y botones (zona de peligro, instalar la app) */
+.ui-btn-ico { width: 1.9em; height: 1.9em; object-fit: contain; vertical-align: -.5em; margin-right: .4em; background: none; border: 0; }
+h3 .ui-btn-ico { width: 34px; height: 34px; vertical-align: middle; margin: -4px 8px -4px 0; }
+.settings-install-btn .ui-btn-ico { width: 2.4em; height: 2.4em; vertical-align: middle; margin: -.6em .3em -.6em 0; }
