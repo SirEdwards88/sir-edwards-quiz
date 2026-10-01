@@ -23,13 +23,15 @@ Backend aparte (Cloudflare Worker + D1), que NO vive en este repositorio.
 
 ## Backend acoplado a esta PWA
 El Worker (fuera de este repo) tiene su propia copia del banco de preguntas (corrige Duelo/Retos), de la lista de logros y de la de avatares,
-**generadas a partir de `src/data/questions.js`, `medals.js` y `avatars.js`**. Si cambias cualquiera de ellos: regenerar (`scripts/gen-questions.mjs`,
-`scripts/gen-constants.mjs`) y **volver a desplegar el Worker**; si no, Duelo/Retos y el perfil pueden fallar en producción.
+**generadas a partir de `src/data/questions.js`, `lucidez.js`, `medals.js` y `avatars.js`**. Si cambias cualquiera de ellos: regenerar (`scripts/gen-questions.mjs`,
+`scripts/gen-lucidez.mjs`, `scripts/gen-constants.mjs`) y **volver a desplegar el Worker**; si no, Duelo/Retos y el perfil pueden fallar en producción.
+Los Retos por modo (2.0) los corrige el servidor (`src/reto-modes.js` del backend); `src/utils/matching.js` tiene una copia literal allí (`src/matching.js`).
 Igual con `src/utils/sync-merge.js`: debe ser el mismo texto que `src/sync-merge.js` del backend.
 
 ## Producto (decisiones cerradas de la 2.0)
 - «Lucidez Mental» es un modo secreto: no se nombra antes de desbloquearlo (10 Fragmentos de Mente). Textos misteriosos hasta entonces.
-- No existe el «Duelo por código» (retirado): solo Duelo online (en directo, con amigos) y Retos (asíncronos, con plazo). Ambos exigen cuenta.
+- No existe el «Duelo por código» (retirado): solo Duelo online (en directo, con amigos, 20 preguntas) y Retos (asíncronos, con plazo,
+  y con el modo que elija quien reta entre los que ambos tengan desbloqueados). Ambos exigen cuenta y cuentan para las estadísticas y logros de Duelo.
 - «Compartir resultado» es una acción secundaria y discreta.
 - Historial de versiones breve y en orden.
 - Bienvenida (primera vez, tras la cuenta) y aviso de novedades (al actualizar, lee la entrada del historial de la versión):

@@ -78,6 +78,47 @@
     if (!QMAP) { QMAP = {}; try { TEST_QUESTIONS.forEach(function (q) { QMAP[q.n] = q; }); } catch (e) {} }
     return QMAP[num(n)] || null;
   }
+  // ---- Retos por modo (2.0) --------------------------------------------------------
+  // Nombre, icono y reglas de cada modo. Las reglas las APLICA el servidor; aquí solo se explican.
+  var RETO_MODE_UI = {
+    estandar: { nombre: 'Estándar', icono: 'estandar', reglas: '20 preguntas · 10 s cada una' },
+    supervivencia: { nombre: 'Supervivencia', icono: 'supervivencia', reglas: 'Hasta 50 preguntas · 3 vidas · 10 s cada una' },
+    muerte_subita: { nombre: 'Muerte Súbita', icono: 'muerte-subita', reglas: '30 preguntas cada vez más difíciles · un fallo y fuera' },
+    contrarreloj: { nombre: 'Contrarreloj', icono: 'contrarreloj', reglas: '60 s · +3 s por acierto, −3 s por fallo' },
+    calculo_mental: { nombre: 'Cálculo Mental', icono: 'calculo', reglas: '60 s de operaciones · +2 s por acierto, −3 s por fallo' },
+    lucidez: { nombre: 'Lucidez Mental', icono: 'secreto', reglas: 'Tres fases y un enigma final, con respuestas escritas' }
+  };
+  var NIVEL_UI = { ameba: 'Nivel Ameba', humano: 'Humano Promedio', derrame: 'Derrame Cerebral' };
+  var FASE_UI = { 1: 'FASE I', 2: 'FASE II', 3: 'FASE III', 4: 'ENIGMA' };
+  function retoMode(d) { return RETO_MODE_UI[d && d.modo] || RETO_MODE_UI.estandar; }
+  function retoModeName(d) { return retoMode(d).nombre + (d && NIVEL_UI[d.nivel] ? ' · ' + NIVEL_UI[d.nivel] : ''); }
+  function modeIco(m) { return '<img class="seq-ico seq-d-mode-ico" src="assets/modes/suelto/' + m.icono + '.webp" alt="" draggable="false">'; }
+  function retoRules(d) {
+    if (!d || !d.modo || d.modo === 'estandar') return num((d && d.n_preguntas) || 20) + ' preguntas · ' + secsPerQ(d) + ' s cada una';
+    return retoMode(d).reglas;
+  }
+  // Un elemento de la partida (lo que manda el servidor) → texto, solución (si ya se puede ver) y forma de responder.
+  var LMAP = null;
+  function lucidezQ(n) {
+    if (!LMAP) { LMAP = {}; try { QUESTIONS.forEach(function (q) { LMAP[q.n] = q; }); } catch (e) {} }
+    return LMAP[num(n)] || null;
+  }
+  function itemInfo(it) {
+    if (typeof it === 'number' || typeof it === 'string') {
+      var q = question(it); return q ? { q: q.q, a: q.a, options: q.options, key: 'T' + num(it), qn: num(it) } : null;
+    }
+    if (!it || typeof it !== 'object') return null;
+    if (it.tipo === 'calculo') return { q: String(it.texto || '').slice(0, 60), a: it.respuesta != null ? String(it.respuesta) : null, numeric: true, key: 'C' + String(it.texto || '').slice(0, 60) };
+    if (it.tipo === 'lucidez') {
+      var l = lucidezQ(it.n); return l ? { q: l.q, a: l.a, options: l.options && l.options.length ? l.options : null, key: 'L' + num(it.n) } : null;
+    }
+    if (it.tipo === 'enigma') {
+      var r = null; try { r = LUCIDEZ_RIDDLES[num(it.i)]; } catch (e) {}
+      return r ? { q: r.q, a: r.a, key: 'R' + num(it.i) } : null;
+    }
+    return null;
+  }
+
   // Orden de las opciones: determinista por partida y pregunta, así una
   // recarga o una segunda pestaña muestran los botones en el mismo sitio.
   function hash(str) { var h = 2166136261; for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
@@ -149,7 +190,7 @@
     var re = L.retos ? L.retos.filter(function (r) { return (r.estado === 'pendiente' && r.soy === 'rival') || (r.estado === 'aceptado' && !r.yo.terminado); }).length : 0;
     var h = navigator.onLine === false ? '<p class="stats-section-sub seq-d-offline">' + ico('nube') + 'Sin conexión: los duelos y los retos necesitan Internet.</p>' : '';
     if (f.classic_duel) h += hubCard('duel', '<img class="mode-img" src="assets/modes/duelo.webp" alt="" draggable="false">', 'Duelo online', 'Juega un duelo en directo contra un amigo.', "SEQDuels.open('duels')", pending(du, 'PENDIENTE', 'PENDIENTES'));
-    if (f.async_challenges) h += hubCard('retos', '<img class="mode-img" src="assets/modes/retos.webp" alt="" draggable="false">', 'Retos', 'Reta a un amigo y jugad cada uno cuando podáis.', "SEQDuels.open('retos')", pending(re, 'PENDIENTE', 'PENDIENTES'));
+    if (f.async_challenges) h += hubCard('retos', '<img class="mode-img" src="assets/modes/retos.webp" alt="" draggable="false">', 'Retos', 'Elige el modo y reta a un amigo; cada uno juega cuando pueda.', "SEQDuels.open('retos')", pending(re, 'PENDIENTE', 'PENDIENTES'));
     h += hubCard('amigos', '<img class="mode-img" src="assets/modes/amigos.webp" alt="" draggable="false">', 'Amigos', 'Añade amigos y rétalos desde tu lista.', "SEQDuels.open('friends')", pending(fr, 'SOLICITUD', 'SOLICITUDES'));
     // Ranking: solo la entrada visual. Todavía no existe un ranking de duelos
     // (el ranking global por XP es otra cosa y está desactivado), así que la
@@ -317,10 +358,10 @@
       var lim = d.estado === 'aceptado' ? num(d.listos_expira_at) : num(d.invitacion_expira_at);
       setText('seq-d-count', String(secs(lim - now)));
     } else if (S.screen === 'reto' && d.estado === 'aceptado' && d.yo.actual) {
-      var limit = num(d.yo.actual.limite_at), dd = num(d.duracion_pregunta_ms) || 10000;
+      var limit = num(d.yo.actual.limite_at), dd = num(d.yo.actual.total_ms) || num(d.duracion_pregunta_ms) || 10000;
       setBar('seq-d-bar', (limit - now) / dd); setText('seq-d-time', String(secs(limit - now)));
       if (S.shown && S.shown.idx === d.yo.actual.indice && !S.shownAnswered && now <= limit) urgency(limit - now);
-      if (now > limit && S.shown && S.shown.idx === d.yo.actual.indice) lockChoices();
+      if (now > limit && S.shown && S.shown.idx === d.yo.actual.indice) { lockChoices(); var ai = $('seq-d-ans'); if (ai) ai.disabled = true; }
       if (now > limit + 2500 && !S.sending && S.shown && S.shown.idx === d.yo.actual.indice) { S.shown = null; load(); } // venció: el servidor ya abrió la siguiente
     }
   }
@@ -371,7 +412,26 @@
   function create(rivalId) {
     rivalId = safeId(rivalId); if (!rivalId) return;
     var kind = S.pickKind;
-    act('POST', kind === 'duel' ? '/duels' : '/challenges', { rival: rivalId }, function (d) { open(kind === 'duel' ? 'duel' : 'reto', d.id); });
+    if (kind !== 'duel') { pickMode(rivalId); return; } // un reto se crea después de elegir el modo
+    act('POST', '/duels', { rival: rivalId }, function (d) { open('duel', d.id); });
+  }
+  // Retos: elegir el modo (solo los que los dos tenéis desbloqueados; lo decide el servidor).
+  function pickMode(rivalId) {
+    rivalId = safeId(rivalId); if (!rivalId) return;
+    stopTimers();
+    S.pickKind = 'reto'; S.pickRival = rivalId; S.screen = 'retomode'; S.id = null; S.data = null; S.shown = null; S.lists.retoModes = null; S.pickSurvival = false;
+    var home = $('duel-home'); if (home) home.style.display = 'none';
+    var root = $('seq-duel-root'); if (root) root.style.display = 'block';
+    render();
+    call('GET', '/challenges/modes?rival=' + encodeURIComponent(rivalId)).then(function (d) {
+      S.lists.retoModes = (d && d.modos) || [];
+      if (S.screen === 'retomode') render();
+    }).catch(function (e) { say(errText(e), true); });
+  }
+  function createReto(modo, nivel) {
+    var rivalId = safeId(S.pickRival); if (!rivalId || !RETO_MODE_UI[modo]) return;
+    if (modo === 'supervivencia' && !NIVEL_UI[nivel]) { S.pickSurvival = true; render(); return; }
+    act('POST', '/challenges', { rival: rivalId, modo: modo, nivel: NIVEL_UI[nivel] ? nivel : undefined }, function (d) { open('reto', d.id); });
   }
   function pick(kind) { S.pickKind = kind === 'duel' ? 'duel' : 'reto'; S.screen = 'pick'; render(); refreshSummary(); }
 
@@ -380,9 +440,8 @@
   // El servidor corrige y, si la ventana ya se cerró, lo rechaza.
   function answer(optIdx) {
     var d = S.data, sh = S.shown;
-    if (!d || !sh || S.sending) return;
-    var q = question(sh.qn); if (!q) return;
-    var opts = optionsFor(d.id, sh.idx, q);
+    if (!d || !sh || S.sending || !sh.info || !sh.info.options) return;
+    var opts = optionsFor(d.id, sh.idx, sh.info);
     var chosen = opts[num(optIdx)]; if (chosen == null) return;
     S.sending = true; S.shownAnswered = true; urgencyStop();
     markButtons(opts, chosen, null);
@@ -395,6 +454,23 @@
         sfx(!!r.es_correcta);
       }
       setTimeout(load, S.screen === 'reto' ? 700 : 300);
+    }).catch(function (e) { S.sending = false; say(errText(e), true); setTimeout(load, 600); });
+  }
+  // Respuesta escrita (Retos por modo): se envía el texto tal cual; corrige el servidor.
+  function answerText() {
+    var d = S.data, sh = S.shown, inp = $('seq-d-ans');
+    if (!d || !sh || S.sending || !inp || inp.disabled) return;
+    var val = String(inp.value || '').trim().slice(0, 120); if (!val) { inp.focus(); return; }
+    S.sending = true; S.shownAnswered = true; urgencyStop();
+    inp.disabled = true; var btn = $('seq-d-send'); if (btn) btn.disabled = true;
+    call('POST', path() + '/answer', { indice: sh.idx, respuesta: val }).then(function (r) {
+      S.sending = false;
+      if (S.shown === sh) {
+        S.streak = r.es_correcta ? S.streak + 1 : 0;
+        setVerdict(!!r.es_correcta, r.respuesta_correcta);
+        sfx(!!r.es_correcta);
+      }
+      setTimeout(load, 900);
     }).catch(function (e) { S.sending = false; say(errText(e), true); setTimeout(load, 600); });
   }
   // Acierto / fallo con el mismo componente que la partida normal (.feedback.ok /
@@ -487,6 +563,7 @@
     } else if (x.estado === 'pendiente') sub = 'Esperando respuesta';
     else if (x.estado === 'completado') sub = resultLine(x.resultado);
     else if (kind === 'reto' && x.estado === 'aceptado') sub = x.yo.terminado ? 'Esperando a tu amigo' : '¡Te toca jugar!';
+    if (kind === 'reto' && x.modo) sub = retoModeName(x) + ' · ' + sub;
     return '<div class="history-item seq-d-row" onclick="SEQDuels.open(\'' + (kind === 'duel' ? 'duel' : 'reto') + '\',\'' + id + '\')"><div><div class="history-item-info">' + p.avatar + ' ' + p.name + '</div><div class="history-item-sub">' + esc(sub) + '</div></div><div>' + btns + '</div></div>';
   }
   function renderList(kind) {
@@ -504,7 +581,7 @@
     var fl = S.lists.friends;
     var h = header('Elige a quién retar', S.pickKind === 'duel' ? 'Duelo online' : 'Reto', backToList);
     if (S.pickKind === 'duel') h += '<p class="stats-section-sub">Tu amigo tendrá 60 s para aceptar. Luego los dos pulsáis «Listo» y empieza.</p>';
-    else h += '<p class="stats-section-sub">Tu amigo tiene 3 días para aceptar y jugar. Cada uno juega cuando pueda.</p>';
+    else h += '<p class="stats-section-sub">Tu amigo tiene 3 días para aceptar y jugar. Cada uno juega cuando pueda. Después eliges el modo.</p>';
     if (!fl) return h + '<p class="stats-section-sub">Cargando…</p>';
     if (!fl.friends.length) return h + '<p class="stats-section-sub">Aún no tienes amigos.</p><button class="btn btn-secondary" onclick="SEQDuels.open(\'friends\')">' + ico('amigos') + 'Añadir amigos</button>';
     return h + '<div class="history-list">' + fl.friends.map(function (f) {
@@ -560,6 +637,26 @@
     }).join('') + '</div>';
   }
   function quick(kind, id) { S.pickKind = kind === 'duel' ? 'duel' : 'reto'; create(id); }
+  function renderRetoMode() {
+    var rid = safeId(S.pickRival), fl = S.lists.friends, name = 'tu amigo';
+    (fl && fl.friends || []).forEach(function (f) { var p = player(f.player); if (p.id === rid) name = p.name; });
+    var h = header('Elige el modo', 'Reto a ' + name, backToList);
+    h += '<p class="stats-section-sub">Los dos jugaréis exactamente la misma partida. Solo aparecen los modos que los dos tenéis desbloqueados.</p>';
+    var list = S.lists.retoModes;
+    if (!list) return h + '<p class="stats-section-sub">Cargando…</p>';
+    return h + '<div class="history-list seq-d-modes">' + list.map(function (m) {
+      // Solo ids conocidos (RETO_MODE_UI): nunca se pega en el onclick un texto arbitrario del servidor.
+      var mid = m && Object.prototype.hasOwnProperty.call(RETO_MODE_UI, m.id) ? m.id : null, ui = mid ? RETO_MODE_UI[mid] : null; if (!ui) return '';
+      var row = '<div class="seq-d-mode-icon">' + modeIco(ui) + '</div><div class="seq-d-mode-body"><div class="history-item-info">' + esc(ui.nombre) + '</div><div class="history-item-sub">' + esc(ui.reglas) + '</div>';
+      if (mid === 'supervivencia') {
+        if (!S.pickSurvival) return '<div class="history-item seq-d-row seq-d-mode" onclick="SEQDuels.createReto(\'supervivencia\')">' + row + '</div><div class="history-item-score">Elegir ›</div></div>';
+        return '<div class="history-item seq-d-mode">' + row + '<div class="seq-d-levels">' + ['ameba', 'humano', 'derrame'].map(function (lv) {
+          return '<button type="button" class="btn btn-secondary seq-d-sm" onclick="SEQDuels.createReto(\'supervivencia\',\'' + lv + '\')">' + esc(NIVEL_UI[lv]) + '</button>';
+        }).join(' ') + '</div></div></div>';
+      }
+      return '<div class="history-item seq-d-row seq-d-mode" onclick="SEQDuels.createReto(\'' + mid + '\')">' + row + '</div><div class="history-item-score">Retar ›</div></div>';
+    }).join('') + '</div>';
+  }
 
   // ---- Partida: la misma de un jugador + una capa discreta de duelo ---------------
   // Mismo esquema que #view-game (botón de salida, HUD .mode-header.game-hud con el
@@ -570,34 +667,59 @@
   function playScreen(kind, d, idx, qn, mine) {
     var p = player(d.rival);
     topbarShown(false);
-    var h = kind === 'duel' ? '<button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.open(\'duels\')">← Duelo online</button>'
+    var h = kind === 'duel' ? '<button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.leaveDuel()">← Duelo online</button>'
       : '<button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.open(\'retos\')">← Retos</button>';
     h += '<div id="seq-d-msg" class="feedback" style="display:none;"></div>';
-    h += '<div class="mode-header game-hud seq-d-hud"><span class="seq-d-hud-lbl">' + (kind === 'duel' ? 'DUELO<span class="seq-d-long"> ONLINE</span>' : 'RETO') + ' · ' + (num(idx) + 1) + '/20 · ' + ico('tiempo') + '<span id="seq-d-time"></span>s</span>' +
+    var lbl, extra = '', est = (d.yo && d.yo.estado) || {};
+    if (kind === 'duel') lbl = 'DUELO<span class="seq-d-long"> ONLINE</span> · ' + (num(idx) + 1) + '/20';
+    else {
+      var m = retoMode(d), clock = d.modo === 'contrarreloj' || d.modo === 'calculo_mental';
+      lbl = 'RETO<span class="seq-d-long"> · ' + esc(m.nombre.toUpperCase()) + '</span>';
+      if (d.modo === 'lucidez') lbl += ' · ' + (FASE_UI[num(est.fase)] || '');
+      lbl += ' · ' + (clock ? 'n.º ' + (num(idx) + 1) : (num(idx) + 1) + '/' + num(d.n_preguntas || 20));
+      if (est.vidas_max) {
+        var hearts = '';
+        for (var v = 0; v < num(est.vidas_max); v++) hearts += '<img class="seq-ico seq-d-heart' + (v < num(est.vidas) ? '' : ' seq-d-heart-off') + '" src="assets/modes/suelto/supervivencia.webp" alt="" draggable="false">';
+        extra = ' <span class="seq-d-lives" aria-label="Vidas: ' + num(est.vidas) + '">' + hearts + '</span>';
+      }
+    }
+    h += '<div class="mode-header game-hud seq-d-hud"><span class="seq-d-hud-lbl">' + lbl + ' · ' + ico('tiempo') + '<span id="seq-d-time"></span>s' + extra + '</span>' +
       '<span class="game-streak-inline seq-d-rival-chip" title="Tu rival"><span class="seq-d-vs-lbl">vs </span><span class="game-streak-inline-icon">' + p.avatar + '</span> <span class="seq-d-rival-name">' + p.name + '</span></span></div>';
     h += '<div class="progress-bar"><div id="seq-d-bar" class="bar-fill"></div></div>';
-    return h + questionBlock(d.id, idx, qn, mine);
+    return h + questionBlock(d.id, idx, qn, mine, kind === 'reto' && d.modo === 'lucidez' && num(est.fase) === 2);
   }
-  // Pinta una pregunta y registra en S.shown cuál es (las respuestas irán contra ella).
-  function questionBlock(scope, idx, qn, mine) {
-    var q = question(qn);
-    if (!q) { S.shown = null; return '<p class="stats-section-sub">Cargando pregunta…</p>'; }
-    if (!S.shown || S.shown.idx !== num(idx) || S.shown.qn !== num(qn)) S.shownAnswered = false;
-    S.shown = { idx: num(idx), qn: num(qn) };
+  // `it` es lo que manda el servidor: el número de una pregunta tipo test (Duelo y Reto clásico) o, en los Retos
+  // por modo, un cálculo, una pregunta de Lucidez o el enigma. `fade`: Fase II de Lucidez (el texto se esconde a los 3 s).
+  function questionBlock(scope, idx, it, mine, fade) {
+    var info = itemInfo(it);
+    if (!info) { S.shown = null; return '<p class="stats-section-sub">Cargando pregunta…</p>'; }
+    if (!S.shown || S.shown.idx !== num(idx) || S.shown.key !== info.key) { S.shownAnswered = false; S.shownAt = Date.now(); }
+    S.shown = { idx: num(idx), key: info.key, info: info, qn: info.qn };
     if (mine) S.shownAnswered = true;
-    var opts = optionsFor(scope, idx, q);
-    var h = '<div class="q-box seq-d-qbox"><span>' + esc(q.q) + '</span></div>';
-    h += '<div id="seq-d-choices" class="seq-d-choices" role="group" aria-label="Opciones de respuesta" data-idx="' + num(idx) + '" data-qn="' + num(qn) + '">';
-    h += opts.map(function (o, i) {
-      var cls = 'choice-btn';
-      if (mine) { if (o === mine.respuesta) cls += ' selected'; if (o === q.a) cls += ' correct'; else if (o === mine.respuesta) cls += ' incorrect'; }
-      return '<button type="button" class="' + cls + '"' + (mine ? ' disabled' : '') + ' onclick="SEQDuels.answer(' + i + ')">' + esc(String(o)) + '</button>';
-    }).join('');
-    h += '</div>';
+    var fadeStyle = '';
+    if (fade && !mine) fadeStyle = ' style="animation-delay:' + Math.max(0, 3000 - (Date.now() - (S.shownAt || Date.now()))) + 'ms"';
+    var h = '<div class="q-box seq-d-qbox' + (fade && !mine ? ' seq-d-fade' : '') + '"><span' + fadeStyle + '>' + esc(info.q) + '</span></div>';
+    if (info.options) {
+      var opts = optionsFor(scope, idx, info);
+      h += '<div id="seq-d-choices" class="seq-d-choices" role="group" aria-label="Opciones de respuesta" data-idx="' + num(idx) + '"' + (info.qn ? ' data-qn="' + num(info.qn) + '"' : '') + '>';
+      h += opts.map(function (o, i) {
+        var cls = 'choice-btn';
+        if (mine) { if (o === mine.respuesta) cls += ' selected'; if (o === info.a) cls += ' correct'; else if (o === mine.respuesta) cls += ' incorrect'; }
+        return '<button type="button" class="' + cls + '"' + (mine ? ' disabled' : '') + ' onclick="SEQDuels.answer(' + i + ')">' + esc(String(o)) + '</button>';
+      }).join('');
+      h += '</div>';
+    } else {
+      // Respuesta escrita (cálculos, Lucidez y enigma). El valor que se está escribiendo sobrevive a los repintados (render()).
+      h += '<div class="seq-d-write" data-idx="' + num(idx) + '"><input type="text" id="seq-d-ans" class="seq-d-ans" maxlength="120" autocomplete="off" autocapitalize="off" spellcheck="false"' +
+        (info.numeric ? ' inputmode="numeric" pattern="[0-9]*"' : '') + ' placeholder="' + (info.numeric ? 'Resultado' : 'Tu respuesta') + '"' +
+        (mine ? ' disabled value="' + esc(String(mine.respuesta || '')) + '"' : ' onkeydown="if(event.key===\'Enter\')SEQDuels.answerText()"') + '>' +
+        '<button type="button" class="btn btn-primary" id="seq-d-send"' + (mine ? ' disabled' : '') + ' onclick="SEQDuels.answerText()">Responder</button></div>';
+    }
     // Veredicto ya conocido (al volver a pintar una pregunta respondida): mismo
     // .feedback que la partida normal, sin volver a sonar.
+    var sol = info.a != null ? info.a : (mine && mine.pregunta && mine.pregunta.respuesta);
     if (mine) h += '<div id="seq-d-verdict" class="feedback seq-d-feedback ' + (mine.es_correcta ? 'ok' : 'bad') + '" aria-live="polite" style="display:block;">' +
-      (mine.es_correcta ? ico('correcto') + esc(VERDICT_OK) : ico('incorrecto') + esc(VERDICT_BAD) + '<b>' + esc(String(q.a)) + '</b>') + '</div>';
+      (mine.es_correcta ? ico('correcto') + esc(VERDICT_OK) : ico('incorrecto') + esc(VERDICT_BAD) + (sol != null ? '<b>' + esc(String(sol)) + '</b>' : '')) + '</div>';
     else h += '<div id="seq-d-verdict" class="feedback seq-d-feedback" aria-live="polite" style="display:none;"></div>';
     return h;
   }
@@ -627,9 +749,11 @@
     var mine = {}, his = {};
     (d.yo.respuestas || []).forEach(function (a) { mine[num(a.indice)] = a; });
     (r.respuestas_rival || []).forEach(function (a) { his[num(a.indice)] = a; });
+    var byMode = kind === 'reto' && d.modo && d.modo !== 'estandar';
     h += '<div class="history-list seq-d-review">' + (ids || []).map(function (qn, i) {
-      var q = question(qn); if (!q) return '';
       var a = mine[i], b = his[i];
+      if (byMode && !a && !b) return ''; // en los modos con vidas o reloj, solo lo que llegó a jugar alguno
+      var q = itemInfo(qn); if (!q) return '';
       return '<div class="history-item"><div><div class="history-item-info">' + (i + 1) + '. ' + esc(q.q) + '</div><div class="history-item-sub">Respuesta: ' + esc(q.a) + (a && !a.es_correcta ? ' · tú: ' + esc(a.respuesta) : '') + '</div></div><div class="seq-d-marks" title="Tú · rival">' + mark(a) + ' ' + mark(b) + '</div></div>';
     }).join('') + '</div>';
     // Prompt 5: tarjeta de resultado para compartir (solo con un resultado ya visible arriba).
@@ -670,17 +794,18 @@
     if (!d) return h + '<p class="stats-section-sub">Cargando…</p>';
     var p = player(d.rival), now = serverNow();
     h += '<p class="stats-section-sub seq-d-vs">Tú contra ' + p.avatar + ' ' + p.name + '</p>';
+    h += '<p class="seq-d-mode-line">' + modeIco(retoMode(d)) + '<b>' + esc(retoModeName(d)) + '</b><span>' + esc(retoRules(d)) + '</span></p>';
     S.shown = null;
     if (d.estado === 'pendiente') {
       var cad = left(num(d.expira_at) - now);
-      if (d.soy === 'rival') return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">' + p.name + ' te ha retado</div><p class="duel-result-hint">20 preguntas, ' + secsPerQ(d) + ' s cada una. Caduca en ' + esc(cad) + '.</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.retoAction(\'accept\')">Aceptar</button> <button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.retoAction(\'reject\')">Rechazar</button></div>';
+      if (d.soy === 'rival') return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">' + p.name + ' te ha retado</div><p class="duel-result-hint">Caduca en ' + esc(cad) + '.</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.retoAction(\'accept\')">Aceptar</button> <button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.retoAction(\'reject\')">Rechazar</button></div>';
       return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Esperando a que ' + p.name + ' acepte</div><p class="duel-result-hint">Lo verá cuando abra el juego. Caduca en ' + esc(cad) + '.</p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.retoAction(\'cancel\')">Cancelar reto</button></div>';
     }
     if (d.estado === 'aceptado') {
       var y = d.yo, rv = d.rival_estado;
       var rs = '<p class="history-item-sub seq-d-rival">' + p.avatar + ' ' + p.name + ': ' + (rv.terminado ? 'ya ha jugado (verás su marca al terminar tú)' : rv.empezado ? 'jugando…' : 'aún no ha jugado') + '</p>';
-      if (y.terminado) return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Tu parte está hecha: ' + num(y.aciertos) + '/20</div><p class="duel-result-hint">Cuando ' + p.name + ' juegue verás el resultado. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.reload()">Actualizar</button></div>';
-      if (!y.empezado) return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">¿Preparado?</div><p class="duel-result-hint">20 preguntas, ' + secsPerQ(d) + ' s cada una. Una vez empieces el reloj no se detiene. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.retoAction(\'start\')">▶ Jugar mi parte</button></div>';
+      if (y.terminado) return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Tu parte está hecha: ' + num(y.aciertos) + (d.modo && d.modo !== 'estandar' ? (num(y.aciertos) === 1 ? ' acierto' : ' aciertos') : '/' + num(d.n_preguntas || 20)) + '</div><p class="duel-result-hint">Cuando ' + p.name + ' juegue verás el resultado. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.reload()">Actualizar</button></div>';
+      if (!y.empezado) return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">¿Preparado?</div><p class="duel-result-hint">Una vez empieces el reloj no se detiene. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.retoAction(\'start\')">▶ Jugar mi parte</button></div>';
       if (!y.actual) return h + '<p class="stats-section-sub">Cargando…</p>';
       return playScreen('reto', d, y.actual.indice, y.actual.pregunta, null);
     }
@@ -696,6 +821,7 @@
       else if (S.screen === 'duels') h = renderList('duel');
       else if (S.screen === 'retos') h = renderList('reto');
       else if (S.screen === 'pick') h = renderPick();
+      else if (S.screen === 'retomode') h = renderRetoMode();
       else if (S.screen === 'duel') h = renderDuel();
       else if (S.screen === 'reto') h = renderReto();
       else if (S.screen === 'logros') h = renderLogros();
@@ -708,7 +834,14 @@
     if (!playing) urgencyStop();
     var qEl = $('seq-d-q'), hadFocus = qEl && document.activeElement === qEl;
     if (qEl) S.search.q = String(qEl.value || '').slice(0, 24);
+    // Lo que se está escribiendo en una respuesta tampoco se pierde (misma pregunta).
+    var aEl = $('seq-d-ans'), aWrap = aEl && aEl.parentNode, aKeep = aEl && !aEl.disabled ? { v: String(aEl.value || ''), idx: aWrap && aWrap.getAttribute('data-idx'), focus: document.activeElement === aEl } : null;
     root.innerHTML = h;
+    var a2 = $('seq-d-ans');
+    if (a2 && !a2.disabled) {
+      if (aKeep && a2.parentNode.getAttribute('data-idx') === aKeep.idx) a2.value = aKeep.v;
+      if (!aKeep || aKeep.focus || a2.parentNode.getAttribute('data-idx') !== aKeep.idx) { try { a2.focus({ preventScroll: true }); } catch (e) {} }
+    }
     var q2 = $('seq-d-q');
     if (q2) { q2.value = S.search.q; if (hadFocus) { q2.focus(); try { q2.setSelectionRange(q2.value.length, q2.value.length); } catch (e) {} } }
     paintMsg();
@@ -769,7 +902,7 @@
       var me = num(r.mi_puntuacion), them = num(r.puntuacion_rival);
       var text = SEQShareCard.shareText({ online: { kind: kind, result: res, me: me, them: them } });
       var input = {
-        online: { kind: kind, result: res, myScore: me, opponentScore: them, modeLabel: kind === 'reto' ? '20 preguntas' : '',
+        online: { kind: kind, result: res, myScore: me, opponentScore: them, modeLabel: kind === 'reto' ? retoModeName(d) : '',
                   rival: { name: rv.display_name || 'Jugador', avatar: rv.avatar }, phrase: resultPhrase(d, r) },
         player: sess ? { name: sess.display_name, avatar: sess.avatar } : null
       };
@@ -780,7 +913,7 @@
   }
 
   window.SEQDuels = {
-    shareResult: shareResultCard, leaveDuel: leaveDuel,
+    shareResult: shareResultCard, leaveDuel: leaveDuel, answerText: answerText, createReto: createReto, pickMode: pickMode,
     open: open, back: back, pick: pick, create: create, quick: quick,
     duelAction: duelAction, retoAction: retoAction, listAction: listAction, answer: answer,
     doSearch: doSearch, friendAdd: friendAdd, friendResp: friendResp, reload: load,
