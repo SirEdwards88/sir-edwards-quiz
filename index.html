@@ -1647,18 +1647,18 @@ function getResultData(score, total) {
 let lastResultShareTone = null; // Prompt 5: tono que se está mostrando (lo lee la tarjeta de compartir)
 // 2.0: ilustraciones del «ánimo» del resultado en lugar del emoji (mismas claves que RESULT_MOOD_ICONS).
 const RESULT_MOOD_IMAGES = {
-  '💀': 'assets/ui/sombrero-aplastado.webp', '😬': 'assets/ui/suspenso.webp', '😐': 'assets/ui/medalla-deslucida.webp', '🙂': 'assets/ui/bien.webp',
-  '😏': 'assets/ui/casi.webp', '🏆': 'assets/ui/perfecto.webp', '💔': 'assets/ui/derrota.webp',
+  '💀': 'assets/ui/sombrero-aplastado.webp', '😬': 'assets/ui/suspenso.webp', '😐': 'assets/ui/medalla-deslucida.webp', '🙂': 'assets/ui/sombrero-saludo.webp',
+  '😏': 'assets/ui/casi.webp', '🏆': 'assets/ui/sombrero-dorado.webp', '💔': 'assets/ui/derrota.webp',
   '⚡': 'assets/modes/suelto/contrarreloj.webp', '🧠': 'assets/modes/suelto/repaso.webp', '🔢': 'assets/modes/suelto/calculo.webp',
   '👁️': 'assets/modes/suelto/secreto.webp', '🎯': 'assets/modes/suelto/estandar.webp',
-  '❤️': 'assets/modes/suelto/supervivencia.webp', '👑': 'assets/modes/suelto/muerte-subita.webp', '📈': 'assets/ui/libro-vela.webp', '🫏': 'assets/ui/gorro-burro.webp', '🫠': 'assets/ui/reloj-derretido.webp', '⏱️': 'assets/ui/cronometro.webp', '📏': 'assets/ui/regla-calculo.webp',
+  '❤️': 'assets/modes/suelto/supervivencia.webp', '👑': 'assets/modes/suelto/muerte-subita.webp', '📈': 'assets/ui/libro-vela.webp', '🫏': 'assets/ui/gorro-burro.webp', '🫠': 'assets/ui/reloj-derretido.webp', '⏱️': 'assets/ui/cronometro.webp', '📝': 'assets/ui/pizarra-operaciones.webp', '⚙️': 'assets/ui/cerebro-engranajes.webp',
   '☠️': 'assets/ui/calavera.webp', '🕸️': 'assets/ui/libro-telaranas.webp', '🔮': 'assets/ui/bola-rota.webp', '💎': 'assets/ui/diamante.webp',
   '🐌': 'assets/ui/caracol.webp', '🐇': 'assets/ui/liebre.webp', '💨': 'assets/ui/calculadora-humo.webp', '🧮': 'assets/ui/abaco.webp'
 };
 // 2.0: icono del resultado según el desenlace (mal / normal / bien) en los modos por puntuación.
 const RESULT_MOOD_BY_CATEGORY = {
   timetrial: { mal: '🐌', normal: '⏱️', bien: '🐇' },
-  mentalcalc: { mal: '💨', normal: '📏', bien: '🧮' }
+  mentalcalc: { mal: '💨', normal: '📝', bien: '⚙️' }
 };
 function fragmentMilestoneImg(m) {
   const src = ({ 10: 'assets/modes/mini/secreto.webp', 12: 'assets/ui/hito12.webp', 15: 'assets/ui/hito15.webp' })[m.fragments];
