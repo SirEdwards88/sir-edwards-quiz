@@ -64,7 +64,7 @@ function getDefaultStore() {
     // repeticiones entre partidas cuando todavía hay suficientes preguntas nuevas.
     recentQuestionIds: [],
     currentStreak: 0,
-    theme: 'light',
+    theme: 'dark', // 2.0: el oscuro es el tema principal (quien ya eligió uno lo conserva)
     // 2.0: true mientras el tema venga del móvil (primer arranque) y el jugador no haya elegido uno.
     themeAuto: false,
     sound: 'on',
