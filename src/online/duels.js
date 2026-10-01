@@ -184,7 +184,10 @@
     var fr = L.friends ? num(L.friends.incoming.length) : 0;
     var du = L.duels ? L.duels.filter(function (d) { return (d.estado === 'pendiente' && d.soy === 'rival') || d.estado === 'aceptado' || d.estado === 'en_curso'; }).length : 0;
     var re = L.retos ? L.retos.filter(function (r) { return (r.estado === 'pendiente' && r.soy === 'rival') || (r.estado === 'aceptado' && !r.yo.terminado); }).length : 0;
-    var h = navigator.onLine === false ? '<p class="stats-section-sub seq-d-offline">' + ico('nube') + 'Sin conexión: los duelos y los retos necesitan Internet.</p>' : '';
+    // Duelo en directo en marcha (p. ej. tras recargar): aviso arriba del todo, porque a los 30 s sin volver se pierde.
+    var live = L.duels ? L.duels.filter(function (d) { return d.estado === 'en_curso'; })[0] : null;
+    var h = live ? '<div class="mode-card seq-d-card seq-d-live" role="button" tabindex="0" onclick="SEQDuels.open(\'duel\',\'' + safeId(live.id) + '\')"><div class="duel-action-text"><h3>Un duelo te espera</h3><p>Sir Edwards no tiene todo el día. Vuelve antes de que te declaren desertor.</p><p class="mode-subtitle seq-d-pending">● VOLVER AL DUELO</p></div></div>' : '';
+    h += navigator.onLine === false ? '<p class="stats-section-sub seq-d-offline">' + ico('nube') + 'Sin conexión: los duelos y los retos necesitan Internet.</p>' : '';
     if (f.classic_duel) h += hubCard('duel', '<img class="mode-img" src="assets/modes/duelo.webp" alt="" draggable="false">', 'Duelo online', 'Juega un duelo en directo contra un amigo.', "SEQDuels.open('duels')", pending(du, 'PENDIENTE', 'PENDIENTES'));
     if (f.async_challenges) h += hubCard('retos', '<img class="mode-img" src="assets/modes/retos.webp" alt="" draggable="false">', 'Retos', 'Elige el modo y reta a un amigo; cada uno juega cuando pueda.', "SEQDuels.open('retos')", pending(re, 'PENDIENTE', 'PENDIENTES'));
     h += hubCard('amigos', '<img class="mode-img" src="assets/modes/amigos.webp" alt="" draggable="false">', 'Amigos', 'Añade amigos y rétalos desde tu lista.', "SEQDuels.open('friends')", pending(fr, 'SOLICITUD', 'SOLICITUDES'));
@@ -212,6 +215,13 @@
     if (!active() || Date.now() - S.lastSummary < SUMMARY_MIN_MS) return;
     refreshSummary();
   }
+  // Un solo toast por duelo en marcha cuando el jugador no está dentro de él (recarga, vuelta a la app).
+  function notifyLiveDuel() {
+    var l = S.lists.duels || [], d = l.filter(function (x) { return x.estado === 'en_curso'; })[0];
+    if (!d || (S.screen === 'duel' && S.id === safeId(d.id)) || S.liveWarned === d.id) return;
+    S.liveWarned = d.id;
+    if (typeof showInfoToast === 'function') showInfoToast('Tienes un duelo en marcha: vuelve antes de 30 s o pierdes.', '⚔️');
+  }
   function refreshSummary() {
     if (!active()) { renderCards(); return Promise.resolve(); }
     S.lastSummary = Date.now();
@@ -220,6 +230,7 @@
       call('GET', '/friends').then(function (d) { S.lists.friends = d; }).catch(function () {}),
       f.classic_duel ? call('GET', '/duels').then(function (d) {
         S.lists.duels = d.duels || [];
+        notifyLiveDuel();
         recordFromList(S.lists.duels, 'duel'); // solo los que este dispositivo vio en juego: nunca se recuentan antiguos
       }).catch(function () {}) : null,
       f.async_challenges ? call('GET', '/challenges').then(function (d) { S.lists.retos = d.challenges || []; recordFromList(S.lists.retos, 'reto'); }).catch(function () {}) : null,
@@ -279,7 +290,7 @@
   // Al ver un Duelo online o un Reto completado se avisa a index.html (una sola vez por partida, lo controla
   // registerOnlineDuelResult) con el ID estable del rival y el marcador, para las estadísticas y los logros
   // de Duelo. 2.0: los Retos también cuentan (los dos son duelos contra alguien); las victorias por
-  // abandono o «no jugado», no.
+  // abandono o «no jugado», no; la derrota de quien abandona, sí.
   function recordResult(d) {
     if (!d || (S.screen !== 'duel' && S.screen !== 'reto')) return;
     var kind = S.screen;
@@ -308,7 +319,7 @@
       var draw = r.empate === true || (g == null && num(r.mi_puntuacion) === num(r.puntuacion_rival));
       var res = g === 'yo' ? 'win' : g === 'rival' ? 'loss' : (draw ? 'draw' : null);
       if (!rid || !id || !res || typeof registerOnlineDuelResult !== 'function') return;
-      registerOnlineDuelResult({ duelId: id, rivalId: rid, result: res, myScore: num(r.mi_puntuacion), opponentScore: num(r.puntuacion_rival), forfeit: d.motivo_fin === 'abandono' || d.motivo_fin === 'no_jugado' });
+      registerOnlineDuelResult({ duelId: id, rivalId: rid, result: res, myScore: num(r.mi_puntuacion), opponentScore: num(r.puntuacion_rival), forfeit: d.motivo_fin === 'abandono' || d.motivo_fin === 'no_jugado', abandoned: d.motivo_fin === 'abandono' });
     } catch (e) {}
   }
   // Solo se sondea cuando hace falta y nunca con la pestaña oculta.

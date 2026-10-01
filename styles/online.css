@@ -564,3 +564,7 @@
 #seq-duel-root .seq-d-results .results-mode-chips { display: flex; justify-content: center; margin: 0 0 12px; }
 #seq-duel-root .seq-d-results .results-actions .btn-share { width: 100%; margin-top: 10px; }
 #seq-duel-root .seq-d-results .seq-d-review-toggle { display: block; margin: 12px auto 0; }
+
+/* Aviso de duelo en marcha en el hub */
+.seq-d-live { border: 2px solid var(--dz-duel, #9a3412); box-shadow: 0 0 0 3px color-mix(in srgb, var(--dz-duel, #9a3412) 22%, transparent); cursor: pointer; }
+.seq-d-live h3 { color: var(--dz-duel, #9a3412); }
