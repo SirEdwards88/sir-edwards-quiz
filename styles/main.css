@@ -772,8 +772,8 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   color: #14532d;
   margin-bottom: 2px;
 }
-[data-theme="dark"] .card.theme-mentalcalc .mode-header { color:#bbf7d0; }
-[data-theme="dark"] .card.theme-mentalcalc .actions::before { color:#bbf7d0; }
+[data-theme="dark"] .card.theme-mentalcalc .mode-header { color:#86c59a; }
+[data-theme="dark"] .card.theme-mentalcalc .actions::before { color:#86c59a; }
 
 /* ===== CÁLCULO MENTAL — pulido visual/UX (paso 5 de la revisión modo a modo) =====
    Solo CSS, sin tocar HTML/JS: este modo no usa las 4 opciones tipo test
@@ -988,7 +988,11 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   border-radius: var(--radius-pill);
   background: rgba(6,182,212,.14);
   border: 1px solid rgba(6,182,212,.4);
+  color: #0e7490;
 }
+/* 2.0: en oscuro la cabecera de la Fase III heredaba el violeta profundo del modo claro (#4c1d95) y el chip no tenía color propio. */
+[data-theme="dark"] .card.theme-lucidez.lucidez-fase-3 .mode-header { color: #ddd6fe; }
+[data-theme="dark"] #game-progress-lbl .lucidez-timer-chip { color: #a5f3fc; background: rgba(34,211,238,.16); border-color: rgba(103,232,249,.55); }
 #game-progress-lbl .lucidez-timer-chip.lucidez-timer-low {
   animation: lucidezTimerPulse .8s ease-in-out infinite;
   background: rgba(220,38,38,.16);
@@ -1032,16 +1036,28 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 }
 [data-theme="dark"] .lucidez-enigma-title { color: #ddd6fe; }
 .lucidez-enigma-timer {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   margin-top: 8px;
-  padding: 4px 16px;
+  padding: 5px 18px;
   border-radius: var(--radius-pill);
   font-weight: 900;
-  font-size: 15px;
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
   background: rgba(6,182,212,.14);
   border: 1px solid rgba(6,182,212,.4);
   color: #0e7490;
 }
+.lucidez-enigma-timer .seq-ico { width: 1.05em; height: 1.05em; }
+.lucidez-enigma-note {
+  margin-top: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .2px;
+  color: #5b21b6;
+}
+[data-theme="dark"] .lucidez-enigma-note { color: #c4b5fd; }
 [data-theme="dark"] .lucidez-enigma-timer { color: #67e8f9; }
 .lucidez-enigma-timer.lucidez-timer-low {
   animation: lucidezTimerPulse .7s ease-in-out infinite;
@@ -1066,14 +1082,18 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   display: none;
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 1200;
+  width: 100vw; height: 100vh; height: 100dvh;
+  z-index: 100000;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 24px;
-  background: radial-gradient(circle at 50% 40%, rgba(76,29,149,.94), rgba(20,10,40,.97));
+  padding: max(24px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+  box-sizing: border-box;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 40%, #4c1d95, #140a28 92%);
   animation: lucidezOverlayFade .35s ease-out;
 }
+.lucidez-story-overlay > div { max-width: 100%; display: flex; flex-direction: column; align-items: center; }
 .lucidez-story-overlay.show { display: flex; }
 /* Sir Edwards 2.0 (Prompt 1.5, corrección): retrato de fase, remate visual
    DEBAJO del título/frase (título → frase → personaje). Oculto por defecto;
@@ -1091,8 +1111,8 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 .lucidez-story-character img {
   display: block;
   margin: 0 auto;
-  max-width: min(56vw, 210px);
-  max-height: 32vh;
+  max-width: min(78vw, 300px);
+  max-height: 46vh; max-height: 46dvh;
   width: auto;
   height: auto;
   object-fit: contain;
@@ -1103,7 +1123,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 }
 .lucidez-story-overlay .lucidez-story-icon { font-size: 46px; margin-bottom: 10px; animation: lucidezOverlayPop .6s ease-out; }
 .lucidez-story-overlay .lucidez-story-title {
-  font-size: 24px;
+  font-size: 30px;
   font-weight: 900;
   letter-spacing: .5px;
   color: #f5f3ff;
@@ -1111,12 +1131,15 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   margin-bottom: 8px;
 }
 .lucidez-story-overlay .lucidez-story-sub {
-  font-size: 14px;
+  font-size: 15px;
+  max-width: 320px;
+  line-height: 1.35;
+  text-wrap: balance;
   font-style: italic;
   color: #ddd6fe;
   opacity: .9;
 }
-.lucidez-story-overlay.tone-fail { background: radial-gradient(circle at 50% 40%, rgba(76,29,149,.9), rgba(15,10,25,.97)); }
+.lucidez-story-overlay.tone-fail { background: radial-gradient(circle at 50% 40%, #44198a, #0f0a19 92%); }
 .lucidez-story-overlay.tone-fail .lucidez-story-title { color: #f1f5f9; text-shadow: 0 0 16px rgba(148,163,184,.5); }
 .lucidez-story-overlay.tone-success .lucidez-story-icon { animation: lucidezOverlayGlow 1.1s ease-in-out infinite; }
 /* Prompt 2 — Fase D (sección 20): el Enigma es la culminación de Lucidez,
@@ -1202,7 +1225,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 [data-theme="dark"] .mode-survival .mode-subtitle{color:var(--accent-gold-text)}
 [data-theme="dark"] .mode-sudden .mode-subtitle{color:var(--accent-red-text)}
 [data-theme="dark"] .mode-timetrial .mode-subtitle{color:#f9a8d4}
-[data-theme="dark"] .mode-mentalcalc .mode-subtitle{color:#86efac}
+[data-theme="dark"] .mode-mentalcalc .mode-subtitle{color:#86c59a}
 .mode-standard > p:not(.mode-req),
 .mode-review > p:not(.mode-req),
 .mode-lucidez > p:not(.mode-req){
@@ -1649,7 +1672,7 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
 [data-theme="dark"] .results-phrase-container.tone-perfecto,
 [data-theme="dark"] .results-phrase-container.tone-win { --tone-color:#fbbf24; }
 [data-theme="dark"] .results-phrase-container.tone-timetrial { --tone-color:#f9a8d4; }
-[data-theme="dark"] .results-phrase-container.tone-mentalcalc { --tone-color:#86efac; }
+[data-theme="dark"] .results-phrase-container.tone-mentalcalc { --tone-color:#86c59a; }
 
 @media(max-width:600px){
   .results-phrase-container{padding:26px 18px 20px;border-radius:16px;}
@@ -3494,10 +3517,10 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 
   #results-card .metric-label{
     margin-top:4px!important;
-    font-size:7.5px!important;
-    line-height:1.05!important;
+    font-size:10px!important;
+    line-height:1.12!important;
     font-weight:700!important;
-    letter-spacing:.65px!important;
+    letter-spacing:.35px!important;
     text-transform:uppercase;
     opacity:.62;
   }
@@ -3665,8 +3688,8 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   }
 
   #results-card .metric-label{
-    font-size:6.8px!important;
-    letter-spacing:.5px!important;
+    font-size:10px!important;
+    letter-spacing:.2px!important;
   }
 
   #results-card .results-phrase-container{
@@ -3756,7 +3779,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 
   #results-card .metric-label{
     margin-top:2px!important;
-    font-size:6.5px!important;
+    font-size:10px!important;
   }
 
   #results-card .results-phrase-container{
@@ -4096,7 +4119,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
    con acento violeta propio de Duelo (subtítulo) en vez de duplicar el
    componente o añadir gradientes/glows nuevos. Sin icono en el h2, igual
    que el resto de secciones (Jugar/Estadísticas/Logros/Ajustes). */
-#view-duelo .section-topbar-sub { color: var(--accent-purple-text); }
+#view-duelo .section-topbar-sub { color: var(--dz-duel-text); }
 
 /* Tres acciones principales: jerarquía primaria (Crear reto) / secundaria
    (Unirme) / histórico (Mis retos). Pasada visual final: cada acción es
@@ -4395,7 +4418,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   background-size: 22px 22px; opacity: .14;
 }
 .home-big-card.home-card-duelo {
-  background: linear-gradient(150deg, #6d3fc0, var(--brand-purple) 55%, #2c1250);
+  background: linear-gradient(150deg, #c2622b, #9a3412 55%, #4a1808);
 }
 .home-big-card.home-card-duelo::after {
   content: "⚔"; position: absolute; right: 4px; bottom: -18px; z-index: 0;
@@ -4624,9 +4647,9 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
    app (--duel-purple / --accent-purple-soft), sin tokens nuevos. */
 #stats-duel-section {
   margin-top: calc(var(--space-xl) + var(--space-md));
-  border-color: var(--accent-purple-soft);
+  border-color: var(--dz-duel-soft);
 }
-#stats-duel-section h3::before { content: '⚔'; font-size: 10px; color: var(--duel-purple); opacity: .85; top: -1px; }
+#stats-duel-section h3::before { content: '⚔'; font-size: 10px; color: var(--dz-duel); opacity: .85; top: -1px; }
 
 /* Los números son el protagonista de un dashboard de progreso: alineación
    tabular para que no "bailen" al cambiar de valor. */
@@ -4671,7 +4694,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
    gris neutro deliberado, ver comentarios de la auditoría v1.3/v1.4):
    se iguala el tono del nuevo icono al que ya usa su .mode-subtitle,
    sin introducir un color nuevo. */
-[data-theme="dark"] .mode-mentalcalc .mode-card-icon { background: linear-gradient(135deg, rgba(134,239,172,.16), rgba(74,222,128,.10)); }
+[data-theme="dark"] .mode-mentalcalc .mode-card-icon { background: linear-gradient(135deg, rgba(134,197,154,.16), rgba(95,174,125,.10)); }
 
 /* Jugar y Duelo deben leerse como la misma familia: idéntico radio,
    idéntica sombra en reposo y el mismo salto sutil al pasar el ratón
@@ -4800,9 +4823,15 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 .card.theme-mentalcalc .metric-value#res-percentage-text { color: #166534; }
 .card.theme-lucidez #results-card { border-color: rgba(109,40,217,.45); background: linear-gradient(135deg, rgba(109,40,217,.10), rgba(6,182,212,.05), var(--card) 74%); }
 .card.theme-lucidez .metric-value#res-percentage-text { color: #5b21b6; }
-.card.theme-duel #results-card { border-color: var(--accent-purple-soft); background: linear-gradient(135deg, var(--accent-purple-surface), var(--card) 72%); }
-.card.theme-duel .metric-value#res-percentage-text { color: var(--duel-purple); }
-[data-theme="dark"] .card.theme-mentalcalc .metric-value#res-percentage-text { color: #bbf7d0; }
+.card.theme-duel #results-card { border-color: var(--dz-duel-soft); background: linear-gradient(135deg, var(--dz-duel-surface), var(--card) 72%); }
+.card.theme-duel .metric-value#res-percentage-text { color: var(--dz-duel-text); }
+/* 2.0: en oscuro el número de cada modo usa el tono claro de su color (≥ 4,5:1 sobre el fondo de la tarjeta). */
+[data-theme="dark"] .card.theme-review .metric-value#res-percentage-text { color: #5eead4; }
+[data-theme="dark"] .card.theme-survival .metric-value#res-percentage-text { color: #fbbf24; }
+[data-theme="dark"] .card.theme-sudden .metric-value#res-percentage-text { color: #fca5a5; }
+[data-theme="dark"] .card.theme-timetrial .metric-value#res-percentage-text { color: #f9a8d4; }
+[data-theme="dark"] .card.theme-lucidez .metric-value#res-percentage-text { color: #c4b5fd; }
+[data-theme="dark"] .card.theme-mentalcalc .metric-value#res-percentage-text { color: #86c59a; }
 
 /* =========================================================
    SISTEMA VISUAL v1.8 — ESTADÍSTICAS, LOGROS Y AJUSTES
@@ -5161,16 +5190,17 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   align-items:center; gap:10px;
   min-width:0; width:max-content; max-width:min(440px, calc(100vw - 32px));
   padding:11px 18px 11px 14px;
-  border:1px solid rgba(232,200,116,.45);
+  border:1px solid rgba(201,153,46,.5);
   border-radius:var(--radius-pill);
-  background:rgba(22,36,74,.94); color:#fdf7ea;
+  background:rgba(250,243,230,.97); color:#16244a;
   -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
   box-shadow:0 14px 34px rgba(10,16,36,.32);
   font-size:14px; font-weight:600;
 }
 .info-toast.show{ transform:translate(-50%,0) scale(1); }
 .info-toast .toast-icon{ font-size:17px; }
-[data-theme="dark"] .info-toast{ background:rgba(250,243,230,.96); color:#16244a; border-color:rgba(201,153,46,.5); }
+/* 2.0: el aviso sigue el tema: en claro, crema con texto oscuro; en oscuro, fondo oscuro con texto claro. */
+[data-theme="dark"] .info-toast{ background:rgba(30,41,82,.97); color:#fdf7ea; border-color:rgba(232,200,116,.45); }
 
 /* 2.0: la familia de iconos propia (#se-*) sustituye a los emojis: insignias algo más grandes para que se
    lean los detalles (corazón, calavera, reloj, pizarra…), en Jugar y en Duelo. */
@@ -5217,6 +5247,11 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 .fx-streak-fire { font-size: 26px; align-self: center; }
 .fx-streak-num { font-family: var(--font-display); font-size: 40px; font-weight: 800; line-height: 1; color: #e8c874; }
 .fx-streak-lbl { font-size: 15px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; }
+/* En la fila de «← Menú principal»: más compacto para que quepa en el hueco de la derecha del botón. */
+.fx-streak-banner.fx-streak-banner-top { padding: 3px 14px 3px 10px; gap: 6px; box-shadow: 0 8px 20px rgba(22,36,74,.35); }
+.fx-streak-banner-top .fx-streak-fire { font-size: 20px; }
+.fx-streak-banner-top .fx-streak-num { font-size: 26px; }
+.fx-streak-banner-top .fx-streak-lbl { font-size: 12px; }
 @keyframes fx-banner { 0% { opacity: 0; transform: translate(-50%, -30%) scale(.6); } 18% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
   30% { transform: translate(-50%, -50%) scale(1); } 80% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -75%) scale(.95); } }
 

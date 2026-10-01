@@ -126,7 +126,7 @@ body.in-game .actions .btn-primary {
 .card.theme-sudden     { --mode-accent: #b91c1c; --mode-accent-2: #ef4444; }
 .card.theme-timetrial  { --mode-accent: #db2777; --mode-accent-2: #f472b6; }
 .card.theme-mentalcalc { --mode-accent: #15803d; --mode-accent-2: #22c55e; }
-[data-theme="dark"] .card.theme-mentalcalc { --mode-accent: #4ade80; --mode-accent-2: #bbf7d0; }
+[data-theme="dark"] .card.theme-mentalcalc { --mode-accent: #5fae7d; --mode-accent-2: #86c59a; }
 
 .card[class*="theme-"]:not(.theme-lucidez)::before {
   background: linear-gradient(90deg, var(--mode-accent), var(--mode-accent-2), var(--mode-accent)) !important;
