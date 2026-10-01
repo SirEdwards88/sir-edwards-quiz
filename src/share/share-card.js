@@ -65,7 +65,7 @@
     mental_calc:   { bg: ['#14532d', '#04140b'], glow: 'rgba(74,222,128,.32)', accent: '#86efac', ring: '#4ade80', icon: 'calculo' },
     review:        { bg: ['#0e4d48', '#031615'], glow: 'rgba(20,184,166,.38)', accent: '#5eead4', ring: '#2dd4bf', icon: 'repaso' },
     lucidez_mental:{ bg: ['#1a1240', '#070510'], glow: 'rgba(120,90,255,.42)', accent: BRAND.purpleLight, ring: BRAND.goldLight, icon: 'secreto' },
-    duel:          { bg: ['#5a2108', '#170803'], glow: 'rgba(234,88,12,.40)', accent: '#fdba8c', ring: '#f0956a', icon: 'duelo' },
+    duel:          { bg: ['#4a1426', '#14050b'], glow: 'rgba(176,58,92,.42)', accent: '#f4a3b3', ring: '#e0607a', icon: 'duelo' },
     reto:          { bg: ['#0b4a5c', '#03161c'], glow: 'rgba(34,211,238,.38)', accent: '#a5f3fc', ring: '#22d3ee', icon: 'retos' }
   };
   var MODE_BY_NAME = { 'modo estándar': 'play', 'estándar': 'play', 'supervivencia': 'survival', 'muerte súbita': 'sudden_death',

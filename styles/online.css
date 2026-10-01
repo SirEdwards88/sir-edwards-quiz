@@ -298,14 +298,14 @@
 #seq-duel-root .seq-d-hud.seq-d-hud-reto { padding-left: 10px !important; justify-content: space-between; }
 .seq-d-hud-mode .seq-d-mode-ico { width: 26px; height: 26px; vertical-align: -8px; margin-right: 6px; }
 
-/* ===== 2.0 — Colores propios: Duelo online en cobre y Retos en cian (cada sección con un tono que no comparte ningún modo) =====
+/* ===== 2.0 — Colores propios: Duelo online en granate y Retos en cian (cada sección con un tono que no comparte ningún modo) =====
    Lucidez queda como el único púrpura. Las variables --dz-* se usan en toda la sección (#seq-duel-root). */
 :root {
-  --dz-duel: #9a3412; --dz-duel-dark: #5a1f0a; --dz-duel-soft: rgba(154,52,18,.14); --dz-duel-surface: rgba(154,52,18,.055); --dz-duel-text: #8a2f10;
+  --dz-duel: #9f1d3f; --dz-duel-dark: #5b1226; --dz-duel-soft: rgba(159,29,63,.14); --dz-duel-surface: rgba(159,29,63,.055); --dz-duel-text: #8f1a39;
   --dz-reto: #0891b2; --dz-reto-dark: #155e75; --dz-reto-soft: rgba(8,145,178,.14); --dz-reto-surface: rgba(8,145,178,.055); --dz-reto-text: #0e7490;
 }
 [data-theme="dark"] {
-  --dz-duel: #f0956a; --dz-duel-dark: #7c2d12; --dz-duel-soft: rgba(240,149,106,.22); --dz-duel-surface: rgba(240,149,106,.09); --dz-duel-text: #fdba8c;
+  --dz-duel: #f08aa3; --dz-duel-dark: #6e1630; --dz-duel-soft: rgba(240,138,163,.22); --dz-duel-surface: rgba(240,138,163,.09); --dz-duel-text: #f9b4c5;
   --dz-reto: #22d3ee; --dz-reto-dark: #155e75; --dz-reto-soft: rgba(34,211,238,.22); --dz-reto-surface: rgba(34,211,238,.09); --dz-reto-text: #67e8f9;
 }
 #seq-duel-root { --dz: var(--dz-duel); --dz-dark: var(--dz-duel-dark); --dz-soft: var(--dz-duel-soft); --dz-surface: var(--dz-duel-surface); --dz-text: var(--dz-duel-text); }

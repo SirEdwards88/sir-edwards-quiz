@@ -310,3 +310,27 @@ h3 .ui-btn-ico { width: 34px; height: 34px; vertical-align: middle; margin: -4px
 .home-card-medals { --hc: #c9a227; }
 .home-card-settings { --hc: #64748b; }
 [data-theme="dark"] .home-small-card { background: linear-gradient(var(--hc), var(--hc)) top / 100% 3px no-repeat, linear-gradient(180deg, color-mix(in srgb, var(--hc) 14%, var(--brand-cream)), var(--brand-cream-deep)); }
+
+/* ===== PROPUESTA: tarjetas de Duelo y de Jugar con el color de su sección/modo (mismo estilo que la home) ===== */
+#duel-home .seq-d-card, .modes-grid .mode-card { --hc: var(--brand-gold); }
+#duel-home .seq-d-v-duel { --hc: var(--dz-duel); }
+#duel-home .seq-d-v-retos { --hc: var(--dz-reto); }
+#duel-home .seq-d-v-amigos { --hc: #b8932f; }
+[data-theme="dark"] #duel-home .seq-d-v-amigos { --hc: #e0b94f; }
+.modes-grid .mode-standard { --hc: #2563eb; }
+.modes-grid .mode-review { --hc: #0d9488; }
+.modes-grid .mode-survival { --hc: #d97706; }
+.modes-grid .mode-sudden { --hc: #b91c1c; }
+.modes-grid .mode-timetrial { --hc: #db2777; }
+.modes-grid .mode-mentalcalc { --hc: #15803d; }
+[data-theme="dark"] .modes-grid .mode-mentalcalc { --hc: #5fae7d; }
+.modes-grid .mode-lucidez { --hc: #7c3aed; }
+#duel-home .seq-d-card:not(.seq-d-v-rank), #view-modes .modes-grid .mode-card {
+  border: 1px solid color-mix(in srgb, var(--hc) 38%, transparent) !important;
+  background: linear-gradient(var(--hc), var(--hc)) top / 100% 3px no-repeat, linear-gradient(160deg, color-mix(in srgb, var(--hc) 11%, #fffdf8), #faf3e6) !important;
+}
+[data-theme="dark"] #duel-home .seq-d-card:not(.seq-d-v-rank), [data-theme="dark"] #view-modes .modes-grid .mode-card {
+  background: linear-gradient(var(--hc), var(--hc)) top / 100% 3px no-repeat, linear-gradient(160deg, color-mix(in srgb, var(--hc) 16%, var(--brand-cream)), var(--brand-cream-deep)) !important;
+}
+#view-modes .modes-grid .mode-card.locked { background: linear-gradient(color-mix(in srgb, var(--hc) 45%, transparent), color-mix(in srgb, var(--hc) 45%, transparent)) top / 100% 3px no-repeat, linear-gradient(160deg, color-mix(in srgb, var(--hc) 5%, #fffdf8), #f4eee2) !important; border-color: color-mix(in srgb, var(--hc) 18%, transparent) !important; }
+.home-big-card.home-card-duelo::after { content: "⚔"; }
