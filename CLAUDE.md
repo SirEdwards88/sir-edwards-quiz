@@ -18,6 +18,8 @@ Backend aparte (Cloudflare Worker + D1), que NO vive en este repositorio.
 ## Al publicar
 - Cada archivo nuevo del que dependa el modo sin conexión se añade a la lista de `sw.js` y se **sube `CACHE_VERSION`** en cada publicación
   con `node scripts/bump-version.mjs` (pone el mismo número en los `?v=` de los `<script>`/`<link>` de `index.html`; un test lo comprueba).
+- La tarjeta final de Duelo/Reto reutiliza los estilos de `#results-card`: si cambias esa tarjeta en `styles/main.css`/`theme.css`,
+  ejecuta `node scripts/gen-duel-results-css.mjs` (regenera su bloque en `styles/online.css`; un test lo comprueba).
 - Antes de subir: `node --test test/*.test.mjs` y comprobación en navegador (móvil y sin conexión cuando corresponda), sin errores de JavaScript.
 - No sobrescribir `src/data/questions.js` (lo edita el propietario a mano) ni subir un `src/online/config.js` con valores inventados.
 
