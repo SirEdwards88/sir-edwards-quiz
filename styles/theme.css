@@ -346,5 +346,13 @@ h3 .ui-btn-ico { width: 34px; height: 34px; vertical-align: middle; margin: -4px
 [data-theme="dark"] .home-big-card.home-card-jugar, [data-theme="dark"] .home-big-card.home-card-duelo { background: linear-gradient(160deg, #202d5e, #0b1228 70%); }
 
 /* ===== Logros: fila del título de cada grupo con un fondo dorado suave, para distinguirla de los logros ===== */
-.ach-group > summary { background: linear-gradient(90deg, rgba(201,153,46,.24), rgba(201,153,46,.07)); }
+/* Logros (L1): franja dorada lateral + tinte muy suave en el título */
+.ach-group { border-left: 5px solid #c9992e !important; }
+.ach-group > summary { background: linear-gradient(90deg, rgba(201,153,46,.10), transparent 60%); }
 .ach-group[open] > summary { border-bottom: 1px solid rgba(201,153,46,.55); }
+
+/* Estadísticas y Ajustes: franja dorada lateral (la zona de peligro conserva su rojo) */
+#view-stats .stats-section, #view-stats .history-container, #view-settings .settings-section:not(.settings-danger-zone) {
+  border-left: 4px solid #c9992e !important;
+  background: linear-gradient(90deg, rgba(201,153,46,.07), transparent 45%);
+}
