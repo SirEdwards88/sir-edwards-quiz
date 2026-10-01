@@ -537,15 +537,23 @@
     var id = account.player.id;
     showAppConfirm({
       title: 'Eliminar cuenta online',
-      message: 'Se borrará tu cuenta, tu perfil y tu progreso guardados en el servidor. Esta acción no se puede deshacer. El progreso guardado en este dispositivo NO se borra.',
+      message: 'Se borrará tu cuenta, tu perfil y tu progreso guardados en el servidor, y también el progreso de este dispositivo (nivel, XP, logros y estadísticas). Esta acción no se puede deshacer.',
       confirmLabel: 'Eliminar cuenta',
       onConfirm: function () {
         api('DELETE', '/me', { confirm: id }).then(function () {
           account = null; saveAccount(); sync = null; lsDel(SYNC_KEY); try { if (window.SEQDataSync) window.SEQDataSync.reset(); } catch (e) {}
           clearTimeout(timer); clearTimeout(retryTimer);
           ui.editing = false; ui.expired = false; ui.error = '';
-          toast('Cuenta eliminada. Tu progreso local sigue en este dispositivo.', '🗑️');
-          render();
+          // También se borra el progreso local: si no, el dispositivo conservaba logros y nivel de una cuenta que ya no existe.
+          try {
+            // Se vacía la partida en memoria para que 'pagehide' no vuelva a guardar el progreso al recargar.
+            if (typeof currentGame !== 'undefined') currentGame = { mode: 'play', queue: [], currentIdx: 0, score: 0, answered: false, totalQuestionsToPlay: 30, lives: 3 };
+            if (typeof store !== 'undefined' && store) store.savedGame = null;
+            localStorage.removeItem('siredwards_quiz_v1_0_data');
+            localStorage.removeItem('siredwards_quiz_v1_1_welcome_seen');
+            localStorage.removeItem('siredwards_quiz_v2_0_datasync');
+          } catch (e) {}
+          location.reload();
         }).catch(function (err) {
           if (authFailure(err)) { render(); return; }
           toast(err && err.network ? 'Necesitas conexión para eliminar la cuenta.' : 'No se pudo eliminar la cuenta.', '⚠️');
