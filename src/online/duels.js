@@ -563,6 +563,13 @@
     else h += '<div id="seq-d-verdict" class="feedback seq-d-feedback" aria-live="polite" style="display:none;"></div>';
     return h;
   }
+  // Frase de Sir Edwards para el final de la partida (solo si se jugó entera: no en abandonos ni «no jugado»).
+  // Estable para la misma partida (se elige por id), así que no cambia al repintar la pantalla.
+  function resultPhrase(d, r) {
+    if (!r || (d.motivo_fin && d.motivo_fin !== 'normal') || !window.SEQDuelPhrases) return '';
+    var res = r.ganador === 'yo' ? 'win' : r.ganador === 'rival' ? 'loss' : 'draw';
+    return SEQDuelPhrases.pick(res, num(r.mi_puntuacion) - num(r.puntuacion_rival), S.id || d.id);
+  }
   function resultBlock(d, kind) {
     var r = d.resultado, p = player(d.rival);
     if (!r) {
@@ -572,7 +579,8 @@
     var cls = r.ganador === 'yo' ? 'duel-result-win' : r.ganador === 'rival' ? 'duel-result-loss' : 'duel-result-draw';
     var note = d.motivo_fin === 'abandono' ? (d.yo && d.yo.abandonado ? 'Perdiste por abandono (más de 30 s sin conexión).' : p.name + ' abandonó la partida.')
       : d.motivo_fin === 'no_jugado' ? (r.ganador === 'yo' ? p.name + ' no jugó a tiempo.' : 'No jugaste a tiempo.') : '';
-    var h = '<div class="duel-result-box ' + cls + '"><div class="duel-result-title">' + resultIco(r) + esc(resultLine(r)) + '</div><p class="duel-result-hint">Tú ' + num(r.mi_puntuacion) + ' · ' + p.avatar + ' ' + p.name + ' ' + num(r.puntuacion_rival) + '</p>' + (note ? '<p class="duel-result-hint">' + note + '</p>' : '') + '</div>';
+    var phrase = resultPhrase(d, r);
+    var h = '<div class="duel-result-box ' + cls + '"><div class="duel-result-title">' + resultIco(r) + esc(resultLine(r)) + '</div><p class="duel-result-hint">Tú ' + num(r.mi_puntuacion) + ' · ' + p.avatar + ' ' + p.name + ' ' + num(r.puntuacion_rival) + '</p>' + (note ? '<p class="duel-result-hint">' + note + '</p>' : '') + (phrase ? '<p class="duel-result-phrase">' + esc(phrase) + '</p>' : '') + '</div>';
     var ids = kind === 'duel' ? d.preguntas : r.preguntas;
     var mine = {}, his = {};
     (d.yo.respuestas || []).forEach(function (a) { mine[num(a.indice)] = a; });
@@ -720,7 +728,7 @@
       var text = SEQShareCard.shareText({ online: { kind: kind, result: res, me: me, them: them } });
       var input = {
         online: { kind: kind, result: res, myScore: me, opponentScore: them, modeLabel: kind === 'reto' ? '20 preguntas' : '',
-                  rival: { name: rv.display_name || 'Jugador', avatar: rv.avatar } },
+                  rival: { name: rv.display_name || 'Jugador', avatar: rv.avatar }, phrase: resultPhrase(d, r) },
         player: sess ? { name: sess.display_name, avatar: sess.avatar } : null
       };
       shareResultImage({ input: input, text: text }).then(function (handled) {

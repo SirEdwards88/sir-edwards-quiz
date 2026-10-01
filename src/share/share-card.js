@@ -85,6 +85,7 @@
                    rival: o.rival && o.rival.name ? { name: String(o.rival.name), avatar: o.rival.avatar } : null };
       m.main = m.versus.me + ' — ' + m.versus.them;
       m.mainLabel = '';
+      m.phrase = o.phrase ? String(o.phrase).replace(/\s+/g, ' ').trim().slice(0, 200) : '';
       return m;
     }
     if (d) {
@@ -401,8 +402,16 @@
 
       if (model.versus) {
         // Duelo / Reto: personaje más pequeño y fila de enfrentamiento.
+        if (model.phrase) {
+          var LV = phraseLayout(ctx, model.phrase);
+          var yEndV = 922, topV = yEndV - (LV.lines.length - 1) * LV.lh;
+          drawCharacter(ctx, charImg, { y: 470, w: 540, h: Math.max(220, Math.min(380, topV - LV.px - 24 - 470)) }, theme);
+          drawPhraseLayout(ctx, LV, yEndV);
+          drawVersus(ctx, theme, model, { me: meImg, rival: rivalImg }, (model.player || model.versus.rival) ? 1048 : 1090);
+        } else {
         drawCharacter(ctx, charImg, { y: 480, w: 540, h: 380 }, theme);
         drawVersus(ctx, theme, model, { me: meImg, rival: rivalImg }, (model.player || model.versus.rival) ? 1010 : 1060);
+        }
         if (model.code) { /* solo el creador de un duelo por código; ver rama siguiente */ }
       } else {
         var big = model.character === 'hat';
