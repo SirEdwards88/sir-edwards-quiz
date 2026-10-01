@@ -682,8 +682,9 @@
         extra = ' <span class="seq-d-lives" aria-label="Vidas: ' + num(est.vidas) + '">' + hearts + '</span>';
       }
     }
-    h += '<div class="mode-header game-hud seq-d-hud' + (kind === 'reto' ? ' seq-d-hud-reto' : '') + '"><span class="seq-d-hud-lbl">' + lbl + '</span>' +
-      '<span class="seq-d-hud-right">' + extra + '<span class="seq-d-hud-time">' + ico('tiempo') + '<span id="seq-d-time"></span>s</span></span>' +
+    // Izquierda: los datos de la partida (progreso, segundos y vidas). Derecha: el rival.
+    h += '<div class="mode-header game-hud seq-d-hud' + (kind === 'reto' ? ' seq-d-hud-reto' : '') + '"><span class="seq-d-hud-lbl">' + lbl + ' · </span>' +
+      '<span class="seq-d-hud-right"><span class="seq-d-hud-time">' + ico('tiempo') + '<span id="seq-d-time"></span>s</span>' + extra + '</span>' +
       // El rival, en la misma línea: con el icono del modo en lugar de su nombre, cabe todo (progreso, segundos y rival).
       '<span class="seq-d-vs-chip" title="Tu rival">' + p.avatar + '<span class="seq-d-rival-name">' + p.name + '</span></span></div>';
     h += '<div class="progress-bar"><div id="seq-d-bar" class="bar-fill"></div></div>';
@@ -849,6 +850,8 @@
     var d = S.data, playing = !!(d && ((S.screen === 'duel' && d.estado === 'en_curso' && !(d.yo && d.yo.completado)) ||
       (S.screen === 'reto' && d.estado === 'aceptado' && d.yo && d.yo.empezado && !d.yo.terminado)));
     root.classList.toggle('seq-d-playing', playing);
+    // El final de un Duelo o un Reto lleva el mismo marco de color que la partida (como las tarjetas finales de cada modo).
+    root.classList.toggle('seq-d-final-on', !!(d && (S.screen === 'duel' || S.screen === 'reto') && d.estado === 'completado'));
     // Color de la sección: granate para el Duelo online, azul para los Retos.
     root.classList.toggle('seq-d-k-reto', S.screen === 'reto' || S.screen === 'retos' || S.screen === 'retomode' || (S.screen === 'pick' && S.pickKind === 'reto'));
     if (!playing) urgencyStop();

@@ -344,3 +344,12 @@
 #seq-duel-root .seq-d-hud .seq-d-vs-chip .seq-av-img { width: 20px; height: 20px; }
 #seq-duel-root .seq-d-hud .seq-d-hud-lbl { flex: 0 1 auto; }
 #seq-duel-root .seq-d-hud .seq-d-hud-right { margin-left: auto; }
+/* Izquierda: progreso · segundos · vidas; derecha: el rival */
+#seq-duel-root .seq-d-hud .seq-d-hud-right { margin-left: 0; }
+#seq-duel-root .seq-d-hud .seq-d-vs-chip { margin-left: auto; }
+#seq-duel-root .seq-d-hud .seq-d-hud-lbl { white-space: pre; }
+/* Final de Duelo / Reto: mismo marco de color que durante la partida */
+.card:has(#view-duelo.active #seq-duel-root.seq-d-final-on) { border: 3px solid var(--dz-duel); box-shadow: 0 14px 42px rgba(155,28,49,.16); }
+.card:has(#view-duelo.active #seq-duel-root.seq-d-final-on)::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; z-index: 2; background: linear-gradient(90deg, var(--dz-duel-dark), var(--dz-duel), var(--dz-duel-dark)); }
+.card:has(#view-duelo.active #seq-duel-root.seq-d-final-on.seq-d-k-reto) { border-color: var(--dz-reto); box-shadow: 0 14px 42px rgba(37,99,235,.16); }
+.card:has(#view-duelo.active #seq-duel-root.seq-d-final-on.seq-d-k-reto)::before { background: linear-gradient(90deg, var(--dz-reto-dark), var(--dz-reto), var(--dz-reto-dark)); }
