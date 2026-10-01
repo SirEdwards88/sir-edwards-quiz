@@ -684,7 +684,7 @@ try {
                cabecera se queda solo con el icono, el título y el temporizador. -->
           <div class="lucidez-enigma-eye"><img class="mode-img" src="assets/modes/secreto.webp" alt="" draggable="false"></div>
           <div class="lucidez-enigma-title">EL ÚLTIMO ENIGMA</div>
-          <div><span class="lucidez-enigma-timer" id="lucidez-enigma-timer">30s</span></div>
+          <div><span class="lucidez-enigma-timer" id="lucidez-enigma-timer">60s</span></div>
         </div>
         <div class="q-box">
           <span id="q-text">Cargando pregunta...</span>
@@ -2729,7 +2729,7 @@ const LOCKABLE_MODE_UI = [
     cardId: 'mode-card-lucidez_mental', badgeId: 'lock-badge-lucidez_mental', descId: 'mode-desc-lucidez-mental', reqId: 'mode-req-lucidez_mental',
     titleId: 'mode-title-lucidez-mental', lockedTitle: 'MODO SECRETO', unlockedTitle: 'LUCIDEZ MENTAL',
     baseDesc: 'El desafío definitivo te espera.',
-    unlockedDesc: (s) => `<div class="lucidez-phase-line"><strong>FASE I</strong> · 10 preguntas · mínimo 6 aciertos</div><div class="lucidez-phase-line"><strong>FASE II</strong> · 5 preguntas + 5 cálculos · ${LUCIDEZ_BASE_LIVES} vidas · las preguntas desaparecen a los 3 s</div><div class="lucidez-phase-line"><strong>FASE III</strong> · 9 preguntas · 45 s · −2 s por fallo · mínimo 5 aciertos</div><div class="lucidez-phase-line lucidez-phase-final"><strong>ENIGMA FINAL</strong> · 30 s para resolver el enigma final. ¿Lo conseguirás?</div>${getLucidezBonusLives(s) > 0 ? `<div class="lucidez-phase-line">🛡️ <strong>${getLucidezBonusLives(s)} ${getLucidezBonusLives(s) === 1 ? 'error extra' : 'errores extra'}</strong> en toda la partida (fases y enigma)</div>` : ''}`,
+    unlockedDesc: (s) => `<div class="lucidez-phase-line"><strong>FASE I</strong> · 10 preguntas · mínimo 6 aciertos</div><div class="lucidez-phase-line"><strong>FASE II</strong> · 5 preguntas + 5 cálculos · ${LUCIDEZ_BASE_LIVES} vidas · las preguntas desaparecen a los 3 s</div><div class="lucidez-phase-line"><strong>FASE III</strong> · 9 preguntas · 45 s · −2 s por fallo · mínimo 5 aciertos</div><div class="lucidez-phase-line lucidez-phase-final"><strong>ENIGMA FINAL</strong> · 60 s para resolver el enigma final. ¿Lo conseguirás?</div>${getLucidezBonusLives(s) > 0 ? `<div class="lucidez-phase-line">🛡️ <strong>${getLucidezBonusLives(s)} ${getLucidezBonusLives(s) === 1 ? 'error extra' : 'errores extra'}</strong> en toda la partida (fases y enigma)</div>` : ''}`,
     reqText: s => `Consigue ${FRAGMENT_TARGET} fragmentos de Mente para desbloquear este modo (${getFragmentCount(s)}/${FRAGMENT_TARGET})`,
     isUnlocked: s => getFragmentCount(s) >= FRAGMENT_TARGET
   }
@@ -3929,8 +3929,8 @@ function updateLucidezPhase3Header() {
 function startLucidezFinalTimer(resetTime = true) {
   if (lucidezFinalTimer) { clearInterval(lucidezFinalTimer); lucidezFinalTimer = null; }
   if (resetTime) {
-    lucidezFinalEndTime = Date.now() + 30000;
-    lucidezFinalSecondsLeft = 30;
+    lucidezFinalEndTime = Date.now() + LUCIDEZ_FINAL_SECONDS * 1000;
+    lucidezFinalSecondsLeft = LUCIDEZ_FINAL_SECONDS;
   }
 
   const tick = () => {
@@ -4502,7 +4502,9 @@ let lucidezPhase2RevealEndTime = 0;
 let lucidezPhase3SecondsLeft = 45;
 let lucidezFinalTimer = null;
 let lucidezFinalEndTime = 0;
-let lucidezFinalSecondsLeft = 30;
+// Tiempo para resolver el enigma final de Lucidez Mental (2.0: de 30 a 60 s, para pensarlo con calma).
+const LUCIDEZ_FINAL_SECONDS = 60;
+let lucidezFinalSecondsLeft = LUCIDEZ_FINAL_SECONDS;
 
 function applyCurrentGameTheme() {
   const container = document.getElementById('main-card-container');
