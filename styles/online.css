@@ -273,3 +273,21 @@
 .seq-d-levels .btn { width: auto; flex: 0 0 auto; margin: 0; }
 .history-list.seq-d-modes { max-height: none; overflow: visible; }
 .seq-d-levels .btn { display: inline-flex; }
+
+/* ---- Final de Duelo y Reto (2.0): la misma tarjeta con personalidad que una partida en solitario ---- */
+#seq-duel-root .duel-result-box.seq-d-final { background: none; border: 0; box-shadow: none; padding: 4px 0 0; text-align: center; }
+.seq-d-final-title { font-family: var(--font-display); font-size: 34px; font-weight: 800; letter-spacing: 1px; margin: 0 0 12px; }
+.duel-result-win .seq-d-final-title { color: #c9971f; }
+.duel-result-loss .seq-d-final-title { color: #dc2626; }
+.duel-result-draw .seq-d-final-title { color: var(--primary); }
+[data-theme="dark"] .duel-result-win .seq-d-final-title { color: #fbbf24; }
+[data-theme="dark"] .duel-result-loss .seq-d-final-title { color: #f87171; }
+.seq-d-final-score { display: flex; align-items: center; justify-content: center; gap: 18px; margin: 0 0 18px; }
+.seq-d-final-side { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 64px; max-width: 110px; }
+.seq-d-final-side .seq-av-img { width: 48px; height: 48px; }
+.seq-d-final-side small { font-size: 12px; font-weight: 700; color: var(--sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.seq-d-final-num { font-size: 40px; font-weight: 900; font-variant-numeric: tabular-nums; color: var(--text); white-space: nowrap; }
+.seq-d-final-num span { margin: 0 10px; color: var(--sub); font-weight: 700; }
+.seq-d-final .results-phrase-container { margin-bottom: 14px; }
+.seq-d-final .results-phrase-container .duel-result-hint { margin: 10px 0 0; }
+.seq-d-review-toggle { display: block; margin: 8px auto 0; }

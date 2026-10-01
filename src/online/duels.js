@@ -236,7 +236,7 @@
     if (!active()) return;
     stopTimers();
     try { if (typeof closeDuelPanels === 'function') closeDuelPanels(); } catch (e) {}
-    S.screen = screen; S.id = id ? safeId(id) : null; S.data = null; S.msg = ''; S.lastIdx = -1; S.shown = null; S.streak = 0;
+    S.screen = screen; S.id = id ? safeId(id) : null; S.data = null; S.msg = ''; S.lastIdx = -1; S.shown = null; S.streak = 0; S.showReview = false;
     var home = $('duel-home'); if (home) home.style.display = 'none';
     var root = $('seq-duel-root'); if (root) root.style.display = 'block';
     render();
@@ -740,11 +740,31 @@
       var why = { rechazado: 'Tu amigo rechazó el reto.', expirado: 'Se acabó el plazo sin que se jugara.', cancelado: d.motivo_fin === 'sin_listos' ? 'No os marcasteis «Listo» a tiempo.' : 'Se canceló.' }[d.estado] || '';
       return '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">' + esc(ESTADO[d.estado] || '') + '</div><p class="duel-result-hint">' + esc(why) + '</p></div>';
     }
-    var cls = r.ganador === 'yo' ? 'duel-result-win' : r.ganador === 'rival' ? 'duel-result-loss' : 'duel-result-draw';
+    var res = r.ganador === 'yo' ? 'win' : r.ganador === 'rival' ? 'loss' : 'draw';
+    var cls = res === 'win' ? 'duel-result-win' : res === 'loss' ? 'duel-result-loss' : 'duel-result-draw';
     var note = d.motivo_fin === 'abandono' ? (d.yo && d.yo.abandonado ? 'Perdiste por abandono (más de 30 s sin conexión).' : p.name + ' abandonó la partida.')
-      : d.motivo_fin === 'no_jugado' ? (r.ganador === 'yo' ? p.name + ' no jugó a tiempo.' : 'No jugaste a tiempo.') : '';
-    var phrase = resultPhrase(d, r);
-    var h = '<div class="duel-result-box ' + cls + '"><div class="duel-result-title">' + resultIco(r) + esc(resultLine(r)) + '</div><p class="duel-result-hint">Tú ' + num(r.mi_puntuacion) + ' · ' + p.avatar + ' ' + p.name + ' ' + num(r.puntuacion_rival) + '</p>' + (note ? '<p class="duel-result-hint">' + note + '</p>' : '') + (phrase ? '<p class="duel-result-phrase">' + esc(phrase) + '</p>' : '') + '</div>';
+      : d.motivo_fin === 'no_jugado' ? (res === 'win' ? p.name + ' no jugó a tiempo.' : 'No jugaste a tiempo.') : '';
+    var phrase = resultPhrase(d, r), me = session() || {};
+    // 2.0: la misma tarjeta final que una partida en solitario: Sir Edwards, marcador, icono y su frase.
+    var charKey = res === 'win' ? 'victory' : res === 'loss' ? 'defeat' : 'hat';
+    var moodSrc = res === 'win' ? 'assets/ui/copa.webp' : res === 'loss' ? 'assets/ui/bandera-blanca.webp' : 'assets/modes/amigos.webp';
+    var label = kind === 'duel' ? 'Duelo online' : 'Reto · ' + retoModeName(d);
+    var h = '<div class="duel-result-box ' + cls + ' seq-d-final">' +
+      '<div class="duel-result-title seq-d-final-title">' + ({ win: 'VICTORIA', loss: 'DERROTA', draw: 'EMPATE' })[res] + '</div>' +
+      '<div class="results-character show' + (res === 'draw' ? '' : ' char-' + charKey) + ' seq-d-final-char"><picture><source srcset="assets/character/' + charKey + '.webp" type="image/webp"><img src="assets/character/' + charKey + '.png" alt="" draggable="false"></picture></div>' +
+      '<div class="seq-d-final-score"><span class="seq-d-final-side">' + avatar(me.avatar) + '<small>Tú</small></span>' +
+      '<b class="seq-d-final-num">' + num(r.mi_puntuacion) + '<span>—</span>' + num(r.puntuacion_rival) + '</b>' +
+      '<span class="seq-d-final-side">' + p.avatar + '<small>' + p.name + '</small></span></div>' +
+      '<div class="results-phrase-container ' + (res === 'win' ? 'tone-win' : res === 'loss' ? 'tone-fail' : 'tone-bien') + '">' +
+      '<div class="results-mood-icon has-img"><img class="mood-img" src="' + moodSrc + '" alt="" draggable="false"></div>' +
+      '<div class="results-category-title">' + esc(label) + '</div>' +
+      (phrase ? '<div class="results-phrase duel-result-phrase">' + esc(phrase) + '</div>' : '') +
+      (note ? '<p class="duel-result-hint">' + esc(note) + '</p>' : '') + '</div></div>';
+    if (d.estado === 'completado') h += '<button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="SEQDuels.' + (kind === 'duel' ? 'duelAction' : 'retoAction') + '(\'rematch\')">' + ico('revancha') + 'Revancha</button>';
+    if (d.estado === 'completado') h += '<button class="btn btn-share" style="width:100%;margin-top:10px;" onclick="SEQDuels.shareResult()">' + ico('compartir') + 'Compartir resultado</button>';
+    // El repaso de preguntas, plegado: quien quiera curiosear, lo abre.
+    h += '<button type="button" class="seq-link seq-d-review-toggle" onclick="SEQDuels.toggleReview()">' + (S.showReview ? 'Ocultar las preguntas' : 'Ver las preguntas') + '</button>';
+    if (!S.showReview) return h;
     var ids = kind === 'duel' ? d.preguntas : r.preguntas;
     var mine = {}, his = {};
     (d.yo.respuestas || []).forEach(function (a) { mine[num(a.indice)] = a; });
@@ -756,9 +776,6 @@
       var q = itemInfo(qn); if (!q) return '';
       return '<div class="history-item"><div><div class="history-item-info">' + (i + 1) + '. ' + esc(q.q) + '</div><div class="history-item-sub">Respuesta: ' + esc(q.a) + (a && !a.es_correcta ? ' · tú: ' + esc(a.respuesta) : '') + '</div></div><div class="seq-d-marks" title="Tú · rival">' + mark(a) + ' ' + mark(b) + '</div></div>';
     }).join('') + '</div>';
-    // Prompt 5: tarjeta de resultado para compartir (solo con un resultado ya visible arriba).
-    if (d.estado === 'completado') h += '<button class="btn btn-share" style="width:100%;margin-top:12px;" onclick="SEQDuels.shareResult()">' + ico('compartir') + 'Compartir resultado</button>';
-    if (d.estado === 'completado') h += '<button class="btn btn-primary" style="width:100%;margin-top:12px;" onclick="SEQDuels.' + (kind === 'duel' ? 'duelAction' : 'retoAction') + '(\'rematch\')">' + ico('revancha') + 'Revancha</button>';
     return h;
   }
   function renderDuel() {
@@ -794,7 +811,7 @@
     if (!d) return h + '<p class="stats-section-sub">Cargando…</p>';
     var p = player(d.rival), now = serverNow();
     h += '<p class="stats-section-sub seq-d-vs">Tú contra ' + p.avatar + ' ' + p.name + '</p>';
-    h += '<p class="seq-d-mode-line">' + modeIco(retoMode(d)) + '<b>' + esc(retoModeName(d)) + '</b><span>' + esc(retoRules(d)) + '</span></p>';
+    if (d.estado !== 'completado') h += '<p class="seq-d-mode-line">' + modeIco(retoMode(d)) + '<b>' + esc(retoModeName(d)) + '</b><span>' + esc(retoRules(d)) + '</span></p>';
     S.shown = null;
     if (d.estado === 'pendiente') {
       var cad = left(num(d.expira_at) - now);
@@ -913,7 +930,7 @@
   }
 
   window.SEQDuels = {
-    shareResult: shareResultCard, leaveDuel: leaveDuel, answerText: answerText, createReto: createReto, pickMode: pickMode,
+    shareResult: shareResultCard, leaveDuel: leaveDuel, toggleReview: function () { S.showReview = !S.showReview; render(); }, answerText: answerText, createReto: createReto, pickMode: pickMode,
     open: open, back: back, pick: pick, create: create, quick: quick,
     duelAction: duelAction, retoAction: retoAction, listAction: listAction, answer: answer,
     doSearch: doSearch, friendAdd: friendAdd, friendResp: friendResp, reload: load,
