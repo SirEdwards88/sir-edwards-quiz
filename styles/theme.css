@@ -345,19 +345,6 @@ h3 .ui-btn-ico { width: 34px; height: 34px; vertical-align: middle; margin: -4px
 .home-big-card.home-card-duelo .home-big-arrow { background: #9f1d3f; border-color: #e8c874; }
 [data-theme="dark"] .home-big-card.home-card-jugar, [data-theme="dark"] .home-big-card.home-card-duelo { background: linear-gradient(160deg, #202d5e, #0b1228 70%); }
 
-/* ===== Logros: cada grupo con el color de su familia en la fila del título ===== */
-.ach-group { --fc: #c9992e; }
-.ach-group[data-key="prog"] { --fc: #3b6fd6; }
-.ach-group[data-key="racha"] { --fc: #e0702e; }
-.ach-group[data-key="nivel"] { --fc: #c9992e; }
-.ach-group[data-key="aciertos"] { --fc: #2f9e5b; }
-.ach-group[data-key="dominio"] { --fc: #5a67c9; }
-.ach-group[data-key="errores"] { --fc: #0d9488; }
-.ach-group[data-key="modos"] { --fc: #b45309; }
-.ach-group[data-key="duelo"] { --fc: #9f1d3f; }
-.ach-group[data-key="especial"] { --fc: #7c3aed; }
-.ach-group[data-key="secretos"] { --fc: #5b2e8f; }
-.ach-group > summary { background: linear-gradient(90deg, color-mix(in srgb, var(--fc) 22%, transparent), color-mix(in srgb, var(--fc) 6%, transparent)); box-shadow: inset 4px 0 0 var(--fc); }
-.ach-group[open] > summary { border-bottom: 1px solid color-mix(in srgb, var(--fc) 50%, transparent); }
-.ach-group .ach-g-name { color: color-mix(in srgb, var(--fc) 70%, var(--text)); }
-[data-theme="dark"] .ach-group .ach-g-name { color: color-mix(in srgb, var(--fc) 50%, var(--text)); }
+/* ===== Logros: fila del título de cada grupo con un fondo dorado suave, para distinguirla de los logros ===== */
+.ach-group > summary { background: linear-gradient(90deg, rgba(201,153,46,.24), rgba(201,153,46,.07)); }
+.ach-group[open] > summary { border-bottom: 1px solid rgba(201,153,46,.55); }
