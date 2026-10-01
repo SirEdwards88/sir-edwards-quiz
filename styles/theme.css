@@ -287,3 +287,6 @@ h3 .ui-btn-ico { width: 34px; height: 34px; vertical-align: middle; margin: -4px
 .dif-dot.dif-facil { background: #16a34a; }
 .dif-dot.dif-medio { background: #eab308; }
 .dif-dot.dif-dificil { background: #dc2626; }
+
+/* Logros: cofre de medallas suelto, algo más grande que un icono de título normal */
+.achievements-progress-title .ui-title-img.ui-title-loose { width: 46px; height: 46px; margin: -8px 6px -8px 0; }
