@@ -356,3 +356,10 @@ h3 .ui-btn-ico { width: 34px; height: 34px; vertical-align: middle; margin: -4px
   border-left: 4px solid #c9992e !important;
   background: linear-gradient(90deg, rgba(201,153,46,.07), transparent 45%);
 }
+
+/* Jugar, modo oscuro: las tarjetas bloqueadas conservan un fondo oscuro (antes heredaban el claro y no se leían) */
+[data-theme="dark"] #view-modes .modes-grid .mode-card.locked {
+  background: linear-gradient(color-mix(in srgb, var(--hc) 45%, transparent), color-mix(in srgb, var(--hc) 45%, transparent)) top / 100% 3px no-repeat, linear-gradient(160deg, color-mix(in srgb, var(--hc) 7%, var(--brand-cream)), var(--brand-cream-deep)) !important;
+  border-color: color-mix(in srgb, var(--hc) 22%, transparent) !important;
+  opacity: .85;
+}
