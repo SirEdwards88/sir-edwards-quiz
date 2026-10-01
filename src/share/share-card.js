@@ -72,7 +72,7 @@
     var accuracy = clampInt(input.accuracy);
     var streak = clampInt(input.streak);
     var m = { variant: 'standard', outcome: null, title: 'RESULTADO', pill: '', character: 'hat', player: player,
-              main: '', mainLabel: 'ACIERTOS', secondary: '', versus: null, code: null };
+              main: '', mainLabel: 'ACIERTOS', secondary: '', versus: null, code: null, phrase: '' };
 
     var o = input.online, d = input.duel;
     if (o) {
@@ -107,6 +107,8 @@
     m.main = String(input.scoreStr || '');
     m.secondary = accuracy + ' % de efectividad' + (streak > 0 ? ' · racha máxima ' + streak : '');
     m.pill = String(input.modeName || '').toUpperCase();
+    // Frase de Sir Edwards tal como se ve en la tarjeta final (ya elegida por la app; aquí solo se dibuja).
+    m.phrase = input.phrase ? String(input.phrase).replace(/\s+/g, ' ').trim().slice(0, 200) : '';
 
     if (input.lucidez) {
       var L = input.lucidez;
@@ -297,21 +299,49 @@
     drawContain(ctx, img, CX - box.w / 2, box.y, box.w, box.h);
   }
 
-  function drawPlayerChip(ctx, theme, player, avatarImg, y) {
+  function drawPlayerChip(ctx, theme, player, avatarImg, y, radius) {
     if (!player) return false;
-    ctx.font = '700 38px ' + SERIF;
+    ctx.font = '700 ' + (radius && radius < 56 ? 34 : 38) + 'px ' + SERIF;
     var name = player.name, maxW = 560;
     while (ctx.measureText(name).width > maxW && name.length > 3) name = name.slice(0, -2);
     if (name !== player.name) name += '…';
-    var tw = ctx.measureText(name).width, r = 56, total = r * 2 + 22 + tw, x0 = CX - total / 2;
+    var tw = ctx.measureText(name).width, r = radius || 56, total = r * 2 + 22 + tw, x0 = CX - total / 2;
     drawAvatar(ctx, avatarImg, x0 + r, y, r, { ring: theme.ring, initial: player.name });
     ctx.fillStyle = BRAND.cream; ctx.textAlign = 'left'; ctx.fillText(name, x0 + r * 2 + 22, y + 13); ctx.textAlign = 'center';
     return true;
   }
 
-  function drawScore(ctx, theme, model, y) {
+  // Frase de Sir Edwards: cursiva serif entre comillas, centrada, hasta 3 líneas.
+  // phraseLayout mide; drawPhraseLayout dibuja con la última línea en yEnd.
+  function phraseLayout(ctx, text) {
+    var maxW = 840, px = 38, lines;
+    function wrap() {
+      ctx.font = 'italic 600 ' + px + 'px ' + SERIF;
+      var words = ('«' + text + '»').split(' '), out = [], cur = '';
+      words.forEach(function (w) {
+        var t = cur ? cur + ' ' + w : w;
+        if (ctx.measureText(t).width > maxW && cur) { out.push(cur); cur = w; } else cur = t;
+      });
+      if (cur) out.push(cur);
+      return out;
+    }
+    lines = wrap();
+    while (lines.length > 3 && px > 28) { px -= 2; lines = wrap(); }
+    return { lines: lines, px: px, lh: Math.round(px * 1.22) };
+  }
+  function drawPhraseLayout(ctx, L, yEnd) {
+    ctx.font = 'italic 600 ' + L.px + 'px ' + SERIF;
     ctx.textAlign = 'center'; ctx.fillStyle = BRAND.cream;
-    fitFont(ctx, model.main, '900', SANS, 104, 60, W - 240, 0);
+    ctx.shadowColor = 'rgba(0,0,0,.4)'; ctx.shadowBlur = 8; ctx.shadowOffsetY = 2;
+    var top = yEnd - (L.lines.length - 1) * L.lh;
+    L.lines.forEach(function (ln, k) { ctx.fillText(ln, CX, top + k * L.lh); });
+    ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+    return top;
+  }
+
+  function drawScore(ctx, theme, model, y, startPx) {
+    ctx.textAlign = 'center'; ctx.fillStyle = BRAND.cream;
+    fitFont(ctx, model.main, '900', SANS, startPx || 104, 60, W - 240, 0);
     ctx.fillText(model.main, CX, y);
     var ny = y + 46;
     if (model.mainLabel) { ctx.fillStyle = theme.accent; ctx.font = '700 24px ' + SANS; spaced(ctx, model.mainLabel, CX, ny, 5); ny += 44; }
@@ -376,9 +406,23 @@
         if (model.code) { /* solo el creador de un duelo por código; ver rama siguiente */ }
       } else {
         var big = model.character === 'hat';
+        if (model.phrase && !model.code) {
+          // Con frase: el personaje cede altura según las líneas de la frase; debajo, jugador y puntuación.
+          var hasP = !!model.player;
+          var L = phraseLayout(ctx, model.phrase);
+          var yEnd = hasP ? 950 : 1010;
+          var topBase = yEnd - (L.lines.length - 1) * L.lh;
+          var boxH = Math.max(220, Math.min(420, topBase - L.px - 24 - 470));
+          var hatH = Math.min(boxH, 300);
+          drawCharacter(ctx, charImg, big ? { y: 470 + (boxH - hatH) / 2, w: 500, h: hatH } : { y: 470, w: 560, h: boxH }, theme);
+          drawPhraseLayout(ctx, L, yEnd);
+          if (hasP) drawPlayerChip(ctx, theme, model.player, meImg, 1030, 40);
+          drawScore(ctx, theme, model, hasP ? 1150 : 1120, 88);
+        } else {
         drawCharacter(ctx, charImg, big ? { y: 500, w: 520, h: 330 } : { y: 476, w: 600, h: 420 }, theme);
         var hasChip = drawPlayerChip(ctx, theme, model.player, meImg, model.code ? 930 : 950);
         drawScore(ctx, theme, model, model.code ? (hasChip ? 1085 : 1070) : (hasChip ? 1112 : 1090));
+        }
         if (model.code) {
           ctx.font = '800 40px ui-monospace, Menlo, Consolas, monospace';
           var cw = ctx.measureText(model.code).width + 70;

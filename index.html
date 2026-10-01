@@ -1489,6 +1489,8 @@ function buildShareCardInput() {
     streak: lastResultShareData.streak,
     characterState: RESULT_CHARACTER_TONES[lastResultShareTone],
     lucidez: lastResultShareData.lucidez || null,
+    // La frase de Sir Edwards que el jugador ve en su tarjeta final (ya elegida; solo se lee, no se recalcula).
+    phrase: ((document.getElementById('res-phrase-text') || {}).textContent || '').trim(),
     player: sess ? { name: sess.display_name, avatar: sess.avatar } : null
   };
 }
