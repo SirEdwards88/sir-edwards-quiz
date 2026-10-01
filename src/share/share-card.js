@@ -55,6 +55,31 @@
     reto:     { bg: ['#2a1358', '#0e0722'], glow: 'rgba(167,139,250,.42)', accent: '#c4b5fd', ring: '#a78bfa' }
   };
 
+  // Fondo propio de cada modo (mismos tonos que la franja de color del modo en el juego, oscurecidos
+  // para que el texto crema se lea). El desenlace (victoria/derrota) se marca con el marco y el acento.
+  var MODE_BG = {
+    play:          { bg: ['#1f3576', '#0a1130'], glow: 'rgba(96,140,255,.36)', accent: '#9db8ff', ring: '#7d9cf0', icon: 'estandar' },
+    survival:      { bg: ['#5e3712', '#1a0d04'], glow: 'rgba(245,158,11,.40)', accent: '#fbbf24', ring: '#f59e0b', icon: 'supervivencia' },
+    sudden_death:  { bg: ['#601219', '#170407'], glow: 'rgba(220,38,38,.42)', accent: '#f87171', ring: '#ef4444', icon: 'muerte-subita' },
+    timetrial:     { bg: ['#36216f', '#05303a'], glow: 'rgba(6,182,212,.36)', accent: '#67e8f9', ring: '#22d3ee', icon: 'contrarreloj' },
+    mental_calc:   { bg: ['#3b3b44', '#0d0d10'], glow: 'rgba(212,212,216,.26)', accent: '#e4e4e7', ring: '#a1a1aa', icon: 'calculo' },
+    review:        { bg: ['#0e4d48', '#031615'], glow: 'rgba(20,184,166,.38)', accent: '#5eead4', ring: '#2dd4bf', icon: 'repaso' },
+    lucidez_mental:{ bg: ['#1a1240', '#070510'], glow: 'rgba(120,90,255,.42)', accent: BRAND.purpleLight, ring: BRAND.goldLight, icon: 'secreto' },
+    duel:          { bg: ['#2a1358', '#0e0722'], glow: 'rgba(167,139,250,.42)', accent: '#c4b5fd', ring: '#a78bfa', icon: 'duelo' },
+    reto:          { bg: ['#14386b', '#050f24'], glow: 'rgba(96,165,250,.40)', accent: '#93c5fd', ring: '#60a5fa', icon: 'retos' }
+  };
+  var MODE_BY_NAME = { 'modo estándar': 'play', 'estándar': 'play', 'supervivencia': 'survival', 'muerte súbita': 'sudden_death',
+    'contrarreloj': 'timetrial', 'cálculo mental': 'mental_calc', 'repaso': 'review', 'lucidez mental': 'lucidez_mental' };
+  var MODE_ICON_DIR = 'assets/modes/suelto/';
+  function themeFor(model) {
+    var base = MODE_BG[model.mode] || THEMES[model.variant] || THEMES.standard;
+    var t = { bg: base.bg, glow: base.glow, accent: base.accent, ring: base.ring };
+    // Victoria: marco dorado y halo cálido. Derrota: marco y acento granate. El fondo sigue siendo el del modo.
+    if (model.outcome === 'win') { t.ring = BRAND.goldLight; t.accent = BRAND.goldLight; t.glow = 'rgba(232,200,116,.40)'; }
+    else if (model.outcome === 'loss') { t.ring = BRAND.burgundyLight; t.accent = BRAND.burgundyLight; }
+    return t;
+  }
+
   // ---------------------------------------------------------------- modelo
   function clampInt(n) { n = Math.floor(Number(n)); return isFinite(n) ? n : 0; }
   function outcomeTitle(o) { return o === 'win' ? 'VICTORIA' : o === 'loss' ? 'DERROTA' : o === 'draw' ? 'EMPATE' : 'RESULTADO'; }
@@ -71,12 +96,13 @@
     var player = input.player && input.player.name ? { name: String(input.player.name), avatar: input.player.avatar } : null;
     var accuracy = clampInt(input.accuracy);
     var streak = clampInt(input.streak);
-    var m = { variant: 'standard', outcome: null, title: 'RESULTADO', pill: '', character: 'hat', player: player,
+    var m = { variant: 'standard', mode: null, outcome: null, title: 'RESULTADO', pill: '', character: 'hat', player: player,
               main: '', mainLabel: 'ACIERTOS', secondary: '', versus: null, code: null, phrase: '' };
 
     var o = input.online, d = input.duel;
     if (o) {
       m.variant = o.kind === 'reto' ? 'reto' : 'duel';
+      m.mode = m.variant;
       m.outcome = o.result === 'win' || o.result === 'loss' ? o.result : 'draw';
       m.title = outcomeTitle(m.outcome);
       m.pill = (m.variant === 'reto' ? 'RETO' : 'DUELO ONLINE') + (o.modeLabel ? ' · ' + String(o.modeLabel).toUpperCase() : '');
@@ -108,6 +134,7 @@
     m.main = String(input.scoreStr || '');
     m.secondary = accuracy + ' % de efectividad' + (streak > 0 ? ' · racha máxima ' + streak : '');
     m.pill = String(input.modeName || '').toUpperCase();
+    m.mode = input.modeId && MODE_BG[input.modeId] ? input.modeId : (MODE_BY_NAME[String(input.modeName || '').toLowerCase()] || null);
     // Frase de Sir Edwards tal como se ve en la tarjeta final (ya elegida por la app; aquí solo se dibuja).
     m.phrase = input.phrase ? String(input.phrase).replace(/\s+/g, ' ').trim().slice(0, 200) : '';
 
@@ -260,11 +287,15 @@
       for (var i = 0; i < label.length; i++) tw += ctx.measureText(label[i]).width + gap;
       // Recorta la etiqueta si es demasiado larga para la pastilla.
       while (tw > W - 260 && label.length > 6) { label = label.slice(0, -2); tw = 0; for (var j = 0; j < label.length; j++) tw += ctx.measureText(label[j]).width + gap; label += '…'; tw += 20; break; }
-      var pw = tw + 56, ph = 46, py = 268;
+      // Icono del modo (suelto) dentro de la pastilla, a la izquierda del nombre.
+      var mi = model._modeIcon, iw = mi ? 50 : 0, ig = mi ? 10 : 0;
+      var pw = tw + 56 + iw + ig, ph = 46, py = 268;
       roundRect(ctx, CX - pw / 2, py, pw, ph, ph / 2);
       ctx.fillStyle = 'rgba(255,255,255,.07)'; ctx.fill();
       ctx.lineWidth = 1.5; ctx.strokeStyle = theme.ring; ctx.globalAlpha = .7; ctx.stroke(); ctx.globalAlpha = 1;
-      ctx.fillStyle = BRAND.cream; spaced(ctx, label, CX, py + 31, gap);
+      var x0 = CX - (iw + ig + tw) / 2;
+      if (mi) drawContain(ctx, mi, x0 - 4, py - 6, iw + 4, iw + 4);
+      ctx.fillStyle = BRAND.cream; spaced(ctx, label, x0 + iw + ig + tw / 2, py + 31, gap);
     }
     return y;
   }
@@ -382,16 +413,19 @@
   // Compone la tarjeta. Devuelve Promise<canvas>. Nunca lanza por un asset o
   // una fuente que falte: simplemente lo omite.
   function render(model) {
-    var theme = THEMES[model.variant] || THEMES.standard;
+    var theme = themeFor(model);
+    var modeIcon = MODE_BG[model.mode] ? MODE_BG[model.mode].icon : null;
     var loads = [
       ensureFonts(),
       characterImage('hat'),
       model.character === 'hat' ? null : characterImage(model.character),
       model.player ? avatarImage(model.player.avatar) : null,
-      model.versus && model.versus.rival ? avatarImage(model.versus.rival.avatar) : null
+      model.versus && model.versus.rival ? avatarImage(model.versus.rival.avatar) : null,
+      modeIcon ? loadImage([MODE_ICON_DIR + modeIcon + '.webp']) : null
     ];
     return Promise.all(loads).then(function (r) {
       var hat = r[1], charImg = r[2] || (model.character === 'hat' ? hat : null), meImg = r[3], rivalImg = r[4];
+      model._modeIcon = r[5] || null;
       var canvas = document.createElement('canvas');
       canvas.width = W * SCALE; canvas.height = H * SCALE;
       var ctx = canvas.getContext('2d'); ctx.scale(SCALE, SCALE);
