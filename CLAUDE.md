@@ -16,7 +16,8 @@ Backend aparte (Cloudflare Worker + D1), que NO vive en este repositorio.
 - No mezclar cambios de modularización con cambios funcionales ajenos a la tarea.
 
 ## Al publicar
-- Cada archivo nuevo del que dependa el modo sin conexión se añade a la lista de `sw.js` y se **sube `CACHE_VERSION`** en cada publicación.
+- Cada archivo nuevo del que dependa el modo sin conexión se añade a la lista de `sw.js` y se **sube `CACHE_VERSION`** en cada publicación
+  con `node scripts/bump-version.mjs` (pone el mismo número en los `?v=` de los `<script>`/`<link>` de `index.html`; un test lo comprueba).
 - Antes de subir: `node --test test/*.test.mjs` y comprobación en navegador (móvil y sin conexión cuando corresponda), sin errores de JavaScript.
 - No sobrescribir `src/data/questions.js` (lo edita el propietario a mano) ni subir un `src/online/config.js` con valores inventados.
 

@@ -124,6 +124,12 @@
     b.setAttribute('aria-hidden', 'true');
     b.innerHTML = '<span class="fx-streak-fire"><img class="ui-img" src="assets/ui/racha.webp" alt=""></span><span class="fx-streak-num"></span><span class="fx-streak-lbl">¡seguidas!</span>';
     b.querySelector('.fx-streak-num').textContent = String(n);
+    // 2.0: sobre la cabecera de la partida (modo · contador), no encima del enunciado de la pregunta.
+    var anchor = $('game-progress-lbl');
+    if (anchor && anchor.getBoundingClientRect) {
+      var ar = anchor.getBoundingClientRect(), top = ar.top + ar.height / 2 - host.getBoundingClientRect().top;
+      if (isFinite(top) && top > 0) b.style.top = Math.max(34, Math.round(top)) + 'px'; // el centro del aviso (translate -50%)
+    }
     host.appendChild(b);
     setTimeout(function () { b.remove(); }, 1500);
   }

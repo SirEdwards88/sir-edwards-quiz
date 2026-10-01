@@ -25,6 +25,14 @@
     if (window.__seqFirstVisit === true) {
       if (version) set(UPDATE_KEY, version);
       if (get(WELCOME_KEY) === '1') return;
+      // Jugador con progreso en su cuenta que estrena dispositivo: no es un «nuevo aspirante».
+      try {
+        if (window.SEQOnline && SEQOnline.accountHadProgress && SEQOnline.accountHadProgress()) {
+          set(WELCOME_KEY, '1');
+          if (typeof showInfoToast === 'function') showInfoToast('Vaya, de vuelta. Tu progreso te esperaba. Tus excusas, también.', '🎩');
+          return;
+        }
+      } catch (e) {}
       // El número de preguntas sale del banco real (nunca se queda viejo al añadir preguntas).
       var qc = document.getElementById('welcome-q-count');
       try { if (qc && typeof TEST_QUESTIONS !== 'undefined' && TEST_QUESTIONS.length) qc.textContent = TEST_QUESTIONS.length; } catch (e) {}

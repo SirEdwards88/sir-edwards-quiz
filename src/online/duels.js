@@ -147,7 +147,7 @@
     var fr = L.friends ? num(L.friends.incoming.length) : 0;
     var du = L.duels ? L.duels.filter(function (d) { return (d.estado === 'pendiente' && d.soy === 'rival') || d.estado === 'aceptado' || d.estado === 'en_curso'; }).length : 0;
     var re = L.retos ? L.retos.filter(function (r) { return (r.estado === 'pendiente' && r.soy === 'rival') || (r.estado === 'aceptado' && !r.yo.terminado); }).length : 0;
-    var h = '';
+    var h = navigator.onLine === false ? '<p class="stats-section-sub seq-d-offline">' + ico('nube') + 'Sin conexión: los duelos y los retos necesitan Internet.</p>' : '';
     if (f.classic_duel) h += hubCard('duel', '<img class="mode-img" src="assets/modes/duelo.webp" alt="" draggable="false">', 'Duelo online', 'Juega un duelo en directo contra un amigo.', "SEQDuels.open('duels')", pending(du, 'PENDIENTE', 'PENDIENTES'));
     if (f.async_challenges) h += hubCard('retos', '<img class="mode-img" src="assets/modes/retos.webp" alt="" draggable="false">', 'Retos', 'Reta a un amigo y jugad cada uno cuando podáis.', "SEQDuels.open('retos')", pending(re, 'PENDIENTE', 'PENDIENTES'));
     h += hubCard('amigos', '<img class="mode-img" src="assets/modes/amigos.webp" alt="" draggable="false">', 'Amigos', 'Añade amigos y rétalos desde tu lista.', "SEQDuels.open('friends')", pending(fr, 'SOLICITUD', 'SOLICITUDES'));
@@ -158,6 +158,9 @@
       '<div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/ranking.webp" alt="" draggable="false"></div><h3>Ranking</h3><p>La clasificación de duelos entre amigos.</p><p class="mode-subtitle seq-d-soon">PRÓXIMAMENTE</p></div>';
     slot.innerHTML = h;
   }
+  // El aviso «sin conexión» del hub se actualiza en cuanto cambia la red.
+  window.addEventListener('online', function () { renderCards(); });
+  window.addEventListener('offline', function () { renderCards(); });
   // Cabecera del hub (la usa también closeDuelPanels() en index.html). Solo se
   // aplica si el hub está a la vista: nunca pisa el título de un submenú abierto.
   function syncHubTopbar() {
@@ -178,7 +181,12 @@
     var f = features();
     return Promise.all([
       call('GET', '/friends').then(function (d) { S.lists.friends = d; }).catch(function () {}),
-      f.classic_duel ? call('GET', '/duels').then(function (d) { S.lists.duels = d.duels || []; }).catch(function () {}) : null,
+      f.classic_duel ? call('GET', '/duels').then(function (d) {
+        S.lists.duels = d.duels || [];
+        // Solo los que este dispositivo vio en juego (ver markPlaying): nunca se recuentan duelos antiguos.
+        var playing = playingIds();
+        S.lists.duels.forEach(function (x) { if (x && playing.indexOf(safeId(x.id)) >= 0 && x.estado === 'completado') { recordDuel(x, x.id); forgetPlaying(x.id); } });
+      }).catch(function () {}) : null,
       f.async_challenges ? call('GET', '/challenges').then(function (d) { S.lists.retos = d.challenges || []; }).catch(function () {}) : null,
     ]).then(function () { renderCards(); if (S.screen && S.screen !== 'duel' && S.screen !== 'reto') render(); });
   }
@@ -237,10 +245,22 @@
   // registerOnlineDuelResult) con el ID estable del rival y el marcador, para las estadísticas y los
   // logros de Duelo. Los Retos no cuentan.
   function recordResult(d) {
+    if (S.screen !== 'duel') return;
+    if (d && d.estado === 'en_curso') markPlaying(S.id);
+    if (d && d.estado === 'completado') { recordDuel(d, S.id); forgetPlaying(S.id); }
+  }
+  // Duelos que este dispositivo ha visto «en juego» (lo guarda index.html: duels.js no toca el almacenamiento).
+  function playingIds() { try { return typeof onlineDuelsPlaying === 'function' ? onlineDuelsPlaying() : []; } catch (e) { return []; } }
+  function markPlaying(id) { id = safeId(id); if (id && typeof markOnlineDuelPlaying === 'function') markOnlineDuelPlaying(id); }
+  function forgetPlaying(id) { id = safeId(id); if (id && typeof forgetOnlineDuelPlaying === 'function') forgetOnlineDuelPlaying(id); }
+  // También desde la lista de duelos (al abrir el hub): así cuenta un duelo terminado aunque el jugador
+  // saliera antes que el rival y no lo haya vuelto a abrir. registerOnlineDuelResult evita contarlo dos veces.
+  function recordDuel(d, duelId) {
     try {
-      if (S.screen !== 'duel' || !d || d.estado !== 'completado' || !d.resultado) return;
-      var r = d.resultado, rid = safeId(d.rival && d.rival.id), id = safeId(S.id), g = r.ganador;
-      var res = g === 'yo' ? 'win' : g === 'rival' ? 'loss' : (r.empate === true ? 'draw' : null);
+      if (!d || d.estado !== 'completado' || !d.resultado) return;
+      var r = d.resultado, rid = safeId(d.rival && d.rival.id), id = safeId(duelId), g = r.ganador;
+      var draw = r.empate === true || (g == null && num(r.mi_puntuacion) === num(r.puntuacion_rival));
+      var res = g === 'yo' ? 'win' : g === 'rival' ? 'loss' : (draw ? 'draw' : null);
       if (!rid || !id || !res || typeof registerOnlineDuelResult !== 'function') return;
       registerOnlineDuelResult({ duelId: id, rivalId: rid, result: res, myScore: num(r.mi_puntuacion), opponentScore: num(r.puntuacion_rival), forfeit: d.motivo_fin === 'abandono' || d.motivo_fin === 'no_jugado' });
     } catch (e) {}
@@ -421,6 +441,15 @@
     topbarShown(false);
     return '<div class="submenu-header"><button class="btn btn-secondary" onclick="' + backFn + '">← Volver</button><h2 style="margin:0;">' + title + '</h2></div><div id="seq-d-msg" class="feedback" style="display:none;"></div>';
   }
+  // Salir de un duelo en marcha cuesta la partida (30 s sin latido = abandono): se avisa antes.
+  function leaveDuel() {
+    var d = S.data, live = !!(d && d.estado === 'en_curso' && !(d.yo && d.yo.completado));
+    if (live && typeof showAppConfirm === 'function') {
+      showAppConfirm({ title: 'Duelo en marcha', message: 'Si sales del duelo, a los 30 s sin volver pierdes por abandono.', confirmLabel: 'Salir igualmente', onConfirm: function () { open('duels'); } });
+      return;
+    }
+    open('duels');
+  }
   function backToList() { open(S.pickKind === 'duel' ? 'duels' : 'retos'); }
   function resultLine(r) {
     if (!r) return '';
@@ -468,7 +497,7 @@
     if (S.pickKind === 'duel') h += '<p class="stats-section-sub">Tu amigo tendrá 60 s para aceptar. Luego los dos pulsáis «Listo» y empieza.</p>';
     else h += '<p class="stats-section-sub">Tu amigo tiene 3 días para aceptar y jugar. Cada uno juega cuando pueda.</p>';
     if (!fl) return h + '<p class="stats-section-sub">Cargando…</p>';
-    if (!fl.friends.length) return h + '<p class="stats-section-sub">Aún no tienes amigos.</p><button class="btn btn-secondary" onclick="SEQDuels.open(\'friends\')">👥 Añadir amigos</button>';
+    if (!fl.friends.length) return h + '<p class="stats-section-sub">Aún no tienes amigos.</p><button class="btn btn-secondary" onclick="SEQDuels.open(\'friends\')">' + ico('amigos') + 'Añadir amigos</button>';
     return h + '<div class="history-list">' + fl.friends.map(function (f) {
       var p = player(f.player);
       return '<div class="history-item seq-d-row" onclick="SEQDuels.create(\'' + p.id + '\')"><div class="history-item-info">' + p.avatar + ' ' + p.name + '</div><div class="history-item-score">Retar ›</div></div>';
@@ -502,8 +531,8 @@
     if (!fl.friends.length) return h + '<p class="stats-section-sub">Busca a un amigo por su nombre o su ID para empezar.</p>';
     return h + '<div class="history-list">' + fl.friends.map(function (x) {
       var p = player(x.player), b = '';
-      if (f.classic_duel) b += '<button class="btn btn-primary seq-d-sm" title="Duelo online" onclick="SEQDuels.quick(\'duel\',\'' + p.id + '\')">⚡</button> ';
-      if (f.async_challenges) b += '<button class="btn btn-secondary seq-d-sm" title="Reto" onclick="SEQDuels.quick(\'reto\',\'' + p.id + '\')">📨</button>';
+      if (f.classic_duel) b += '<button class="btn btn-primary seq-d-sm" title="Duelo online" aria-label="Duelo online" onclick="SEQDuels.quick(\'duel\',\'' + p.id + '\')">' + ico('duelo') + '</button> ';
+      if (f.async_challenges) b += '<button class="btn btn-secondary seq-d-sm" title="Reto" aria-label="Reto" onclick="SEQDuels.quick(\'reto\',\'' + p.id + '\')">' + ico('retos') + '</button>';
       return '<div class="history-item"><div class="history-item-info">' + p.avatar + ' ' + p.name + '</div><div>' + b + '</div></div>';
     }).join('') + '</div>';
   }
@@ -570,6 +599,10 @@
     var res = r.ganador === 'yo' ? 'win' : r.ganador === 'rival' ? 'loss' : 'draw';
     return SEQDuelPhrases.pick(res, num(r.mi_puntuacion) - num(r.puntuacion_rival), S.id || d.id);
   }
+  // Marca de cada respuesta en el repaso del duelo: acierto, fallo o sin responder (iconos ilustrados).
+  // Segundos por pregunta del propio reto (los creados antes de la 2.0 tienen 15 s).
+  function secsPerQ(d) { return Math.round((num(d && d.duracion_pregunta_ms) || 10000) / 1000); }
+  function mark(a) { return a ? ico(a.es_correcta ? 'correcto' : 'incorrecto') : ico('tiempo'); }
   function resultBlock(d, kind) {
     var r = d.resultado, p = player(d.rival);
     if (!r) {
@@ -588,7 +621,7 @@
     h += '<div class="history-list seq-d-review">' + (ids || []).map(function (qn, i) {
       var q = question(qn); if (!q) return '';
       var a = mine[i], b = his[i];
-      return '<div class="history-item"><div><div class="history-item-info">' + (i + 1) + '. ' + esc(q.q) + '</div><div class="history-item-sub">Respuesta: ' + esc(q.a) + (a && !a.es_correcta ? ' · tú: ' + esc(a.respuesta) : '') + '</div></div><div class="seq-d-marks" title="Tú · rival">' + (a ? (a.es_correcta ? '✅' : '❌') : '⏱️') + ' ' + (b ? (b.es_correcta ? '✅' : '❌') : '⏱️') + '</div></div>';
+      return '<div class="history-item"><div><div class="history-item-info">' + (i + 1) + '. ' + esc(q.q) + '</div><div class="history-item-sub">Respuesta: ' + esc(q.a) + (a && !a.es_correcta ? ' · tú: ' + esc(a.respuesta) : '') + '</div></div><div class="seq-d-marks" title="Tú · rival">' + mark(a) + ' ' + mark(b) + '</div></div>';
     }).join('') + '</div>';
     // Prompt 5: tarjeta de resultado para compartir (solo con un resultado ya visible arriba).
     if (d.estado === 'completado') h += '<button class="btn btn-share" style="width:100%;margin-top:12px;" onclick="SEQDuels.shareResult()">' + ico('compartir') + 'Compartir resultado</button>';
@@ -597,7 +630,7 @@
   }
   function renderDuel() {
     var d = S.data;
-    var h = gameHeader('⚡ Duelo online', "SEQDuels.open('duels')");
+    var h = gameHeader(ico('duelo') + 'Duelo online', 'SEQDuels.leaveDuel()');
     if (!d) return h + '<p class="stats-section-sub">Cargando…</p>';
     var p = player(d.rival), now = serverNow();
     h += '<p class="stats-section-sub seq-d-vs">Tú contra ' + p.avatar + ' ' + p.name + '</p>';
@@ -606,7 +639,7 @@
       return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Esperando a que ' + p.name + ' acepte…</div><p class="duel-result-hint">Le quedan <span id="seq-d-count"></span> s. Lo verá al abrir el juego.</p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.duelAction(\'cancel\')">Cancelar</button></div>';
     }
     if (d.estado === 'aceptado') {
-      return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Sala de espera</div><p class="duel-result-hint">Tú: ' + (d.yo.listo ? ico('correcto') + 'listo' : ico('mediocre')) + ' · ' + p.name + ': ' + (d.rival_estado.listo ? ico('correcto') + 'listo' : ico('mediocre')) + '</p><p class="duel-result-hint">Quedan <span id="seq-d-count"></span> s para que los dos estéis listos.</p>' + (d.yo.listo ? '' : '<button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.duelAction(\'ready\')">✅ ¡Listo!</button>') + '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.duelAction(\'cancel\')">Salir</button></div>';
+      return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Sala de espera</div><p class="duel-result-hint">Tú: ' + (d.yo.listo ? ico('correcto') + 'listo' : ico('mediocre')) + ' · ' + p.name + ': ' + (d.rival_estado.listo ? ico('correcto') + 'listo' : ico('mediocre')) + '</p><p class="duel-result-hint">Quedan <span id="seq-d-count"></span> s para que los dos estéis listos.</p><p class="duel-result-hint seq-d-stay">Durante la partida no salgas de la app ni bloquees el móvil: a los 30 s sin conexión se pierde por abandono.</p>' + (d.yo.listo ? '' : '<button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.duelAction(\'ready\')">✅ ¡Listo!</button>') + '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.duelAction(\'cancel\')">Salir</button></div>';
     }
     if (d.estado === 'en_curso') {
       var t0 = num(d.t0), dur = num(d.duracion_pregunta_ms) || 10000;
@@ -624,21 +657,21 @@
   }
   function renderReto() {
     var d = S.data;
-    var h = gameHeader('📨 Reto', "SEQDuels.open('retos')");
+    var h = gameHeader(ico('retos') + 'Reto', "SEQDuels.open('retos')");
     if (!d) return h + '<p class="stats-section-sub">Cargando…</p>';
     var p = player(d.rival), now = serverNow();
     h += '<p class="stats-section-sub seq-d-vs">Tú contra ' + p.avatar + ' ' + p.name + '</p>';
     S.shown = null;
     if (d.estado === 'pendiente') {
       var cad = left(num(d.expira_at) - now);
-      if (d.soy === 'rival') return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">' + p.name + ' te ha retado</div><p class="duel-result-hint">20 preguntas, 10 s cada una. Caduca en ' + esc(cad) + '.</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.retoAction(\'accept\')">Aceptar</button> <button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.retoAction(\'reject\')">Rechazar</button></div>';
+      if (d.soy === 'rival') return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">' + p.name + ' te ha retado</div><p class="duel-result-hint">20 preguntas, ' + secsPerQ(d) + ' s cada una. Caduca en ' + esc(cad) + '.</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.retoAction(\'accept\')">Aceptar</button> <button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.retoAction(\'reject\')">Rechazar</button></div>';
       return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Esperando a que ' + p.name + ' acepte</div><p class="duel-result-hint">Lo verá cuando abra el juego. Caduca en ' + esc(cad) + '.</p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.retoAction(\'cancel\')">Cancelar reto</button></div>';
     }
     if (d.estado === 'aceptado') {
       var y = d.yo, rv = d.rival_estado;
       var rs = '<p class="history-item-sub seq-d-rival">' + p.avatar + ' ' + p.name + ': ' + (rv.terminado ? 'ya ha jugado (verás su marca al terminar tú)' : rv.empezado ? 'jugando…' : 'aún no ha jugado') + '</p>';
       if (y.terminado) return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Tu parte está hecha: ' + num(y.aciertos) + '/20</div><p class="duel-result-hint">Cuando ' + p.name + ' juegue verás el resultado. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.reload()">Actualizar</button></div>';
-      if (!y.empezado) return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">¿Preparado?</div><p class="duel-result-hint">20 preguntas, 10 s cada una. Una vez empieces el reloj no se detiene. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.retoAction(\'start\')">▶ Jugar mi parte</button></div>';
+      if (!y.empezado) return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">¿Preparado?</div><p class="duel-result-hint">20 preguntas, ' + secsPerQ(d) + ' s cada una. Una vez empieces el reloj no se detiene. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.retoAction(\'start\')">▶ Jugar mi parte</button></div>';
       if (!y.actual) return h + '<p class="stats-section-sub">Cargando…</p>';
       return playScreen('reto', d, y.actual.indice, y.actual.pregunta, null);
     }
@@ -738,7 +771,7 @@
   }
 
   window.SEQDuels = {
-    shareResult: shareResultCard,
+    shareResult: shareResultCard, leaveDuel: leaveDuel,
     open: open, back: back, pick: pick, create: create, quick: quick,
     duelAction: duelAction, retoAction: retoAction, listAction: listAction, answer: answer,
     doSearch: doSearch, friendAdd: friendAdd, friendResp: friendResp, reload: load,

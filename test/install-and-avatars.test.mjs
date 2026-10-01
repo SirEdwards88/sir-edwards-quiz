@@ -11,7 +11,7 @@ test('instalar la app no silencia el aviso para siempre y Ajustes ofrece instala
   assert.ok(!/dismissPwaHint\(\)/.test(onInstalled.slice(0, 200)), 'appinstalled no debe marcar el aviso como descartado');
   assert.match(html, /PWA_HINT_SNOOZE_MS/);
   assert.match(html, /id="install-app-group"/);
-  assert.match(html, /<script src="src\/ui\/install-app\.js"><\/script>/);
+  assert.match(html, /<script src="src\/ui\/install-app\.js(\?v=\d+)?"><\/script>/);
 });
 test('los avatares y su catálogo están en la caché sin conexión', () => {
   for (const f of ['src/data/avatars.js', 'src/ui/install-app.js', ...['sombrero', 'libro', 'reloj', 'lupa', 'mascara', 'pluma'].map((n) => `assets/avatars/${n}.png`)]) {

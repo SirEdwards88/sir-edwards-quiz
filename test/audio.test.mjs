@@ -6,7 +6,7 @@ const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const sw = fs.readFileSync(new URL('../sw.js', import.meta.url), 'utf8');
 const audio = fs.readFileSync(new URL('../src/audio/audio.js', import.meta.url), 'utf8');
 test('el audio vive en src/audio/audio.js y no en index.html', () => {
-  assert.match(html, /<script src="src\/audio\/audio\.js"><\/script>/);
+  assert.match(html, /<script src="src\/audio\/audio\.js(\?v=\d+)?"><\/script>/);
   for (const fn of ['function playSound(', 'function playCorrectSound(', 'function getAudioCtx(']) {
     assert.ok(!html.includes(fn), 'index.html aún define ' + fn); assert.ok(audio.includes(fn), 'falta ' + fn);
   }

@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 83;
+const CACHE_VERSION = 84;
 const CACHE_NAME = `sedq-shell-v${CACHE_VERSION}`;
 
 // Rutas relativas al propio sw.js (que vive en la raíz de la app, tanto en
@@ -56,6 +56,7 @@ const APP_SHELL = [
   './src/data/medals.js',
   './src/data/phrases.js',
   './src/data/duel-phrases.js',
+  './src/ui/a11y.js',
   './src/data/questions.js',
   './src/data/ui-maps.js',
   './src/online/config.js',
@@ -270,25 +271,24 @@ const APP_SHELL = [
   './assets/avatars/pipa.png',
   './assets/avatars/paraguas.png',
   './assets/avatars/caballo.png',
-  './assets/character/hat.png',
   './assets/character/hat.webp',
-  './assets/character/victory.png',
   './assets/character/victory.webp',
-  './assets/character/defeat.png',
   './assets/character/defeat.webp',
-  './assets/character/lucidez-fase1.png',
   './assets/character/lucidez-fase1.webp',
-  './assets/character/lucidez-fase2.png',
   './assets/character/lucidez-fase2.webp',
-  './assets/character/lucidez-fase3.png',
   './assets/character/lucidez-fase3.webp',
-  './assets/character/lucidez-enigma.png',
   './assets/character/lucidez-enigma.webp',
 ];
 
+// JS y CSS se piden desde index.html con ?v=<CACHE_VERSION> (ver scripts/bump-version.mjs): se precargan
+// con la misma URL exacta para que la caché los encuentre.
+// Los retratos PNG que tienen versión WebP no se precargan (los navegadores actuales usan el WebP; un
+// navegador antiguo los pide a la red). La música tampoco: suena solo con conexión.
+const SHELL_URLS = APP_SHELL.map((u) => (/^\.\/(src|styles)\/.+\.(js|css)$/.test(u) ? u + '?v=' + CACHE_VERSION : u));
+
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL_URLS))
   );
   // Deliberadamente NO se llama a self.skipWaiting() aquí: si alguien está
   // a mitad de una partida cuando se publica una versión nueva, no queremos

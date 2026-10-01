@@ -6,7 +6,7 @@
 <title>SirEdwards Quiz: Test de Lucidez Mental</title>
 
 <!-- SEO / vista previa al compartir el enlace -->
-<meta name="description" content="Pon a prueba tu cultura general y tu lucidez mental con SirEdwards Quiz: preguntas, modos de juego, logros y estadísticas. Tu progreso se guarda automáticamente en este dispositivo.">
+<meta name="description" content="Pon a prueba tu cultura general y tu lucidez mental con SirEdwards Quiz: preguntas, modos de juego, logros y estadísticas. Tu progreso se guarda en tu cuenta y te acompaña a cualquier dispositivo.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="SirEdwards Quiz: Test de Lucidez Mental">
 <meta property="og:description" content="Pon a prueba tu cultura general y tu lucidez mental. Distintos modos de juego, logros y estadísticas.">
@@ -45,10 +45,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles/main.css">
+<link rel="stylesheet" href="styles/main.css?v=84">
 <!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
-<link rel="stylesheet" href="styles/online.css">
-<link rel="stylesheet" href="styles/theme.css">
+<link rel="stylesheet" href="styles/online.css?v=84">
+<link rel="stylesheet" href="styles/theme.css?v=84">
 
 </head>
 <body class="on-home">
@@ -400,18 +400,6 @@ try {
       </div>
     </div>
 
-    <!-- Modal de información básica de la app (icono ℹ️ del nuevo menú) -->
-    <div id="home-info-modal" class="modal-overlay" style="display:none;">
-      <div class="modal-card">
-        <h2><svg class="icon-svg" viewBox="0 0 24 24" aria-hidden="true" style="color:var(--primary)"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16.5"/><circle cx="12" cy="7.6" r="1" fill="currentColor" stroke="none"/></svg> Sir Edwards Quiz</h2>
-        <p id="info-modal-version-text">Test de Lucidez Mental · v2.0</p>
-        <p>Un quiz de cultura general con varios modos de juego, logros por desbloquear y Duelos online y Retos para jugar con tus amigos. Todo tu progreso se guarda únicamente en este dispositivo.</p>
-        <div class="modal-warning-actions">
-          <button class="btn btn-primary" onclick="closeInfoModal()">Entendido</button>
-        </div>
-      </div>
-    </div>
-
     <!-- Ayuda breve de Duelo: aparece sola la primera vez que se entra a
          Duelo (ver showDuelHelpIfNeeded/switchTab) y también se puede
          reabrir a mano con el icono (?) del propio menú de Duelo. Mismo
@@ -423,6 +411,8 @@ try {
         <p><strong>2. Duelo online</strong><br>Veinte preguntas a la vez, en directo. Nadie espera a nadie.</p>
         <p><strong>3. Retos</strong><br>Le envías un reto y lo juega cuando quiera, dentro del plazo. La paciencia también es una estrategia.</p>
         <p><strong>4. Gana quien acierte más</strong><br>Lo decide el servidor, que no tiene favoritos.</p>
+        <p><strong>5. Lo que cuenta</strong><br>Las estadísticas y los logros de Duelo solo cuentan los Duelos online jugados hasta el final. Los Retos y las victorias por abandono, no. La gloria fácil no computa.</p>
+        <p><strong>6. No te vayas a mitad</strong><br>Durante un Duelo online no salgas de la app ni bloquees el móvil: a los 30 s sin conexión pierdes por abandono.</p>
         <div class="modal-warning-actions">
           <button class="btn btn-primary" onclick="closeDuelHelpModal()">Entendido</button>
         </div>
@@ -1018,6 +1008,7 @@ try {
               <li>Una tarjeta para presumir de resultado, con discreción.</li>
               <li>Sonidos nuevos y música para los menús.</li>
               <li>Más ventajas con los Fragmentos de Mente.</li>
+              <li>Tu cuenta ya lo recuerda todo: historial, estadísticas y ajustes. La copia de seguridad se jubila.</li>
             </ul>
           </div>
         </div>
@@ -1036,29 +1027,29 @@ try {
 <!-- Fase 2: datos y constantes extraidos a modulos, cargados como scripts
      clasicos (no ES Modules) para conservar el scope global compartido con
      el script principal, sin convertir todavia la app a ES Modules. -->
-<script src="src/data/ui-maps.js"></script>
-<script src="src/data/questions.js"></script>
-<script src="src/data/phrases.js"></script>
-<script src="src/data/duel-phrases.js"></script>
-<script src="src/data/lucidez.js"></script>
-<script src="src/data/medals.js"></script>
+<script src="src/data/ui-maps.js?v=84"></script>
+<script src="src/data/questions.js?v=84"></script>
+<script src="src/data/phrases.js?v=84"></script>
+<script src="src/data/duel-phrases.js?v=84"></script>
+<script src="src/data/lucidez.js?v=84"></script>
+<script src="src/data/medals.js?v=84"></script>
 <!-- Prompt 3 — Fase C: sistema de avatares compartido (window.SEQAvatars). Debe
      cargarse antes de src/online/online.js y src/online/duels.js: ambos lo
      consumen en vez de mantener cada uno su propia copia de la lista. -->
-<script src="src/data/avatars.js"></script>
-<script src="src/share/share-card.js"></script>
+<script src="src/data/avatars.js?v=84"></script>
+<script src="src/share/share-card.js?v=84"></script>
 
 <!-- Fase 3 (Lote 3A): motor de coincidencia de respuestas extraido a
      src/utils/matching.js, mismo criterio que la Fase 2 (script clasico,
      sin ES Modules todavia). -->
-<script src="src/utils/matching.js"></script>
+<script src="src/utils/matching.js?v=84"></script>
 
 <!-- Fase 3 (Lote 3B): nucleo algoritmico de Duelo extraido a
      src/utils/duel.js, mismo criterio que el resto (script clasico, sin
      ES Modules todavia). Las dependencias compartidas con otros modos
      (arrangeStandardBlock, generateMentalCalcOp, generateLucidezMentalOp)
      permanecen en este script principal, sin moverse en este lote. -->
-<script src="src/utils/duel.js"></script>
+<script src="src/utils/duel.js?v=84"></script>
 
 <!-- Fase 3 (Lote 3C): defaults, migracion y saneamiento del Store
      extraidos a src/utils/store.js, mismo criterio que el resto (script
@@ -1070,39 +1061,40 @@ try {
      getLevelData) y las 8 funciones de persistencia real (loadStore,
      saveStore, exportProgress...) permanecen en este script principal,
      sin moverse en este lote. -->
-<script src="src/utils/store.js"></script>
+<script src="src/utils/store.js?v=84"></script>
 
 <!-- Fase 4B: fachada de estado de solo lectura (getStore/getCurrentGame),
      mismo criterio que el resto (script clasico, sin ES Modules todavia).
      No copia, no transforma, no cachea. Ver src/state/read-facade.js. -->
-<script src="src/state/read-facade.js"></script>
+<script src="src/state/read-facade.js?v=84"></script>
 
 <!-- Fase 4C: helpers minimos de escritura (pushCapped, resetStreak) para
      eliminar 2 duplicaciones reales concretas -- no un sistema de
      mutaciones. Ver src/state/write-helpers.js y CHANGELOG_FASE4C.md. -->
-<script src="src/state/write-helpers.js"></script>
+<script src="src/state/write-helpers.js?v=84"></script>
 
 <!-- v1.4: capa online (cuenta Google, sincronización, migración, ranking).
      config.js es PÚBLICO (URL del Worker + Client ID de Google); si está
      vacío, la capa online queda desactivada y la app es idéntica a la v1.3.
      online.js solo usa el store/funciones del juego en tiempo de ejecución. -->
-<script src="src/ui/install-app.js"></script>
-<script src="src/ui/game-fx.js"></script>
-<script src="src/ui/achievements.js"></script>
-<script src="src/ui/stats-extra.js"></script>
-<script src="src/ui/intro.js"></script>
-<script src="src/ui/mode-badges.js"></script>
-<script src="src/ui/sabias.js"></script>
-<script src="src/ui/icons.js"></script>
-<script src="src/online/config.js"></script>
+<script src="src/ui/install-app.js?v=84"></script>
+<script src="src/ui/a11y.js?v=84"></script>
+<script src="src/ui/game-fx.js?v=84"></script>
+<script src="src/ui/achievements.js?v=84"></script>
+<script src="src/ui/stats-extra.js?v=84"></script>
+<script src="src/ui/intro.js?v=84"></script>
+<script src="src/ui/mode-badges.js?v=84"></script>
+<script src="src/ui/sabias.js?v=84"></script>
+<script src="src/ui/icons.js?v=84"></script>
+<script src="src/online/config.js?v=84"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
-<script src="src/utils/sync-merge.js"></script>
-<script src="src/online/data-sync.js"></script>
-<script src="src/online/online.js"></script>
+<script src="src/utils/sync-merge.js?v=84"></script>
+<script src="src/online/data-sync.js?v=84"></script>
+<script src="src/online/online.js?v=84"></script>
 <!-- v1.5: Amigos, Duelo online y Retos. El servidor decide preguntas, tiempo, aciertos y ganador. -->
-<script src="src/online/duels.js"></script>
+<script src="src/online/duels.js?v=84"></script>
 <!-- Audio: sonidos del juego (src/audio/audio.js) -->
-<script src="src/audio/audio.js"></script>
+<script src="src/audio/audio.js?v=84"></script>
 
 <script>
 function closeWelcomeModal() {
@@ -1911,6 +1903,21 @@ function appendFragmentRewardToResults() {
 // ganados/perdidos por abandono o por no jugar no cuentan, para evitar farmeo. De aquí salen todas
 // las estadísticas de Duelo y, con ellas, todos los logros de Duelo.
 // info: { duelId, rivalId, result: 'win'|'loss'|'draw', myScore, opponentScore, forfeit }
+// Duelos online que este dispositivo vio «en juego» (clave local pequeña, no se sincroniza): así un duelo
+// terminado cuenta aunque el jugador saliera antes que el rival y no lo volviera a abrir (ver duels.js).
+const ONLINE_DUELS_PLAYING_KEY = 'siredwards_quiz_v2_0_duels_playing';
+function onlineDuelsPlaying() {
+  try { const a = JSON.parse(localStorage.getItem(ONLINE_DUELS_PLAYING_KEY)); return Array.isArray(a) ? a.filter(x => typeof x === 'string') : []; } catch (e) { return []; }
+}
+function markOnlineDuelPlaying(id) {
+  const a = onlineDuelsPlaying(); if (a.includes(id)) return;
+  a.push(id); try { localStorage.setItem(ONLINE_DUELS_PLAYING_KEY, JSON.stringify(a.slice(-20))); } catch (e) {}
+}
+function forgetOnlineDuelPlaying(id) {
+  const a = onlineDuelsPlaying().filter(x => x !== id);
+  try { localStorage.setItem(ONLINE_DUELS_PLAYING_KEY, JSON.stringify(a)); } catch (e) {}
+}
+
 function registerOnlineDuelResult(info) {
   if (!info || !info.duelId || !info.rivalId || info.forfeit) return null;
   if (info.result !== 'win' && info.result !== 'loss' && info.result !== 'draw') return null;
@@ -1994,6 +2001,10 @@ function loadStore() {
       }
     } else {
       store = getDefaultStore();
+      // Primer arranque: el tema sigue al del móvil hasta que el jugador elija uno en Ajustes.
+      try {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) { store.theme = 'dark'; store.themeAuto = true; }
+      } catch (e) {}
     }
   } catch (e) {
     // localStorage puede lanzar (modos de privacidad, cuotas, navegadores
@@ -2206,15 +2217,6 @@ function resolveAppConfirmModal(proceed) {
   const action = pendingAppConfirmAction;
   pendingAppConfirmAction = null;
   if (proceed && action) action();
-}
-
-// 🏠 Nuevo menú principal: modal informativo del icono ℹ️ (solo informa, sin
-// confirmación ni efectos secundarios, así que no reutiliza showAppConfirm).
-function showInfoModal() {
-  document.getElementById('home-info-modal').style.display = 'flex';
-}
-function closeInfoModal() {
-  document.getElementById('home-info-modal').style.display = 'none';
 }
 
 // Ayuda breve de Duelo: mismo patrón de persistencia ya usado por el
@@ -2462,6 +2464,7 @@ function restoreSavedGame() {
     survivalTier: saved.survivalTier || null,
     survivalFailed: !!saved.survivalFailed,
     timeTrialFailed: !!saved.timeTrialFailed,
+    ttBonusMs: Number(saved.ttBonusMs) || 0,
     // Para preguntas tipo test: conservamos el mismo orden de opciones
     // mostrado y cuál se había seleccionado, así al reanudar una pregunta
     // ya respondida se puede reconstruir su estado final exacto (selección,
@@ -2556,8 +2559,11 @@ function saveStore(persistCurrentGame = true) {
   if (typeof SEQOnline !== 'undefined') SEQOnline.onLocalSave();
 }
 function resetAppData() {
+  const withAccount = typeof SEQOnline !== 'undefined' && SEQOnline.hasAccount && SEQOnline.hasAccount();
   showAppConfirm({
-    message: 'Esto borrará todo tu progreso (nivel, XP, logros, estadísticas y partidas guardadas) de este dispositivo. Esta acción no se puede deshacer.',
+    message: withAccount
+      ? 'Se borrará el progreso de este dispositivo (nivel, XP, logros, estadísticas y partidas guardadas). Tu cuenta lo conserva todo: al volver podrás recuperarlo.'
+      : 'Esto borrará todo tu progreso (nivel, XP, logros, estadísticas y partidas guardadas) de este dispositivo. Esta acción no se puede deshacer.',
     confirmLabel: 'Sí, reiniciar todo',
     onConfirm: () => {
       // Si hay una partida a medias en memoria (p. ej. saliste de una partida
@@ -2567,7 +2573,13 @@ function resetAppData() {
       // en memoria antes de recargar para que eso no pueda pasar.
       currentGame = { mode: 'play', queue: [], currentIdx: 0, score: 0, answered: false, totalQuestionsToPlay: 30, lives: 3 };
       localStorage.removeItem('siredwards_quiz_v1_0_data');
-      localStorage.removeItem('siredwards_quiz_v1_1_welcome_seen');
+      if (withAccount) {
+        // Con cuenta: la sincronización queda lista para ofrecer «Recuperar el progreso de tu cuenta» al
+        // recargar, y no se repite la bienvenida (el jugador no es nuevo).
+        SEQOnline.prepareLocalReset();
+      } else {
+        localStorage.removeItem('siredwards_quiz_v1_1_welcome_seen');
+      }
       location.reload();
     }
   });
@@ -2668,7 +2680,7 @@ function applyImportedProgress(incoming, parsed) {
     location.reload();
 }
 
-function changeTheme(theme) { store.theme = theme; applyTheme(theme); updateThemeButtons(theme); saveStore(); }
+function changeTheme(theme) { store.theme = theme; store.themeAuto = false; applyTheme(theme); updateThemeButtons(theme); saveStore(); }
 function changeSound(sound) { store.sound = sound; updateSoundButtons(sound); if (sound === 'off') stopUrgencySound(); saveStore(); }
 
 function updateThemeButtons(theme) {
@@ -2710,7 +2722,7 @@ const LOCKABLE_MODE_UI = [
   {
     cardId: 'mode-card-sudden_death_main', badgeId: 'lock-badge-sudden_death_main', descId: 'mode-desc-sd-main', reqId: 'mode-req-sudden_death_main',
     baseDesc: '30 preguntas cada vez más difíciles. Un fallo y se acabó.',
-    reqText: () => 'Requiere ganar Supervivencia Ameba',
+    reqText: () => 'Requiere el logro «Sobreviviente Primordial» (gana Supervivencia en Nivel Ameba)',
     isUnlocked: s => (s.unlockedMedals || []).includes('surv_ameba')
   },
   {
@@ -2729,8 +2741,8 @@ const LOCKABLE_MODE_UI = [
     cardId: 'mode-card-lucidez_mental', badgeId: 'lock-badge-lucidez_mental', descId: 'mode-desc-lucidez-mental', reqId: 'mode-req-lucidez_mental',
     titleId: 'mode-title-lucidez-mental', lockedTitle: 'MODO SECRETO', unlockedTitle: 'LUCIDEZ MENTAL',
     baseDesc: 'El desafío definitivo te espera.',
-    unlockedDesc: (s) => `<div class="lucidez-phase-line"><strong>FASE I</strong> · 10 preguntas · mínimo 6 aciertos</div><div class="lucidez-phase-line"><strong>FASE II</strong> · 5 preguntas + 5 cálculos · ${LUCIDEZ_BASE_LIVES} vidas · las preguntas desaparecen a los 3 s</div><div class="lucidez-phase-line"><strong>FASE III</strong> · 9 preguntas · 45 s · −2 s por fallo · mínimo 5 aciertos</div><div class="lucidez-phase-line lucidez-phase-final"><strong>ENIGMA FINAL</strong> · 60 s para resolver el enigma final. ¿Lo conseguirás?</div>${getLucidezBonusLives(s) > 0 ? `<div class="lucidez-phase-line">🛡️ <strong>${getLucidezBonusLives(s)} ${getLucidezBonusLives(s) === 1 ? 'error extra' : 'errores extra'}</strong> en toda la partida (fases y enigma)</div>` : ''}`,
-    reqText: s => `Consigue ${FRAGMENT_TARGET} fragmentos de Mente para desbloquear este modo (${getFragmentCount(s)}/${FRAGMENT_TARGET})`,
+    unlockedDesc: (s) => `<div class="lucidez-phase-line"><strong>FASE I</strong> · 10 preguntas · mínimo 6 aciertos</div><div class="lucidez-phase-line"><strong>FASE II</strong> · 5 preguntas + 5 cálculos · ${LUCIDEZ_BASE_LIVES} vidas · las preguntas desaparecen a los 3 s</div><div class="lucidez-phase-line"><strong>FASE III</strong> · 9 preguntas · 45 s · −2 s por fallo · mínimo 5 aciertos</div><div class="lucidez-phase-line lucidez-phase-final"><strong>ENIGMA FINAL</strong> · 60 s para resolver el enigma final. ¿Lo conseguirás?</div>${getLucidezBonusLives(s) > 0 ? `<div class="lucidez-phase-line">${seqIco('escudo')}<strong>${getLucidezBonusLives(s)} ${getLucidezBonusLives(s) === 1 ? 'error extra' : 'errores extra'}</strong> en toda la partida (fases y enigma)</div>` : ''}`,
+    reqText: s => `Consigue ${FRAGMENT_TARGET} Fragmentos de Mente para desbloquear este modo (${getFragmentCount(s)}/${FRAGMENT_TARGET})`,
     isUnlocked: s => getFragmentCount(s) >= FRAGMENT_TARGET
   }
 ];
@@ -3259,7 +3271,7 @@ function openDifficultyMenu(mode) {
 // que el modo se lanza directamente sin pasar por el submenú.
 function startSuddenDeathMode() {
   if (!(store.unlockedMedals || []).includes('surv_ameba')) {
-    showInfoToast('El modo Muerte Súbita está bloqueado. Debes conseguir el logro "Superviviente Ameba".', '🔒');
+    showInfoToast('El modo Muerte Súbita está bloqueado. Requiere el logro «Sobreviviente Primordial» (gana Supervivencia en Nivel Ameba).', '🔒');
     return;
   }
   startMode('sudden_death', 30);
@@ -4328,11 +4340,12 @@ function finishLucidezMode(failed, timedOut = false, phaseInsufficient = null) {
     // Banderas/contadores de los 3 logros secretos de Lucidez Mental. Se
     // calculan aquí, al terminar la partida (gane o pierda):
     // - Ganar: llegar al enigma final y responderlo bien (failed = false).
-    // - Acertijos resueltos: acumulado histórico de aciertos en el modo,
-    //   sumando lo conseguido en esta partida (currentGame.score).
+    // - Acertijos resueltos (logro «Conexiones Imposibles»): enigmas finales resueltos, uno por partida
+    //   ganada. 2.0: antes sumaba todos los aciertos del modo y el logro salía en la primera partida.
+    //   Se reutiliza el mismo campo (ya sincronizado con la cuenta) para no tocar el Worker.
     // - Partida perfecta: coincide exactamente con isPerfect (30/30).
     if (!failed) store.lucidezEverWon = true;
-    store.lucidezTotalCorrect = (store.lucidezTotalCorrect || 0) + score;
+    if (!failed) store.lucidezTotalCorrect = (store.lucidezTotalCorrect || 0) + 1;
     if (isPerfect) store.lucidezEverPerfect = true;
 
     const historyEntry = {
@@ -4436,7 +4449,7 @@ function revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newMod
           <div class="session-medal-info">${m.title}</div>
           <div class="session-medal-desc">${m.desc}</div>
           ${isAbsoluta ? '<div class="session-medal-lucidez-tag">👁️ Has visto lo que pocos llegan a ver.</div>' : ''}
-          ${FRAGMENT_MEDAL_IDS.includes(m.id) ? '<div class="session-medal-fragment">✨ 🧩 +1 Fragmento de Mente</div>' : ''}
+          ${FRAGMENT_MEDAL_IDS.includes(m.id) ? '<div class="session-medal-fragment">' + seqIco('fragmento') + '+1 Fragmento de Mente</div>' : ''}
         </div>
       </div>
     `;
@@ -4994,10 +5007,11 @@ function updateMentalCalcHeader() {
     // <span> para poder animarlo (flash +2/-3) sin reescribir todo el texto.
     let timerNum = document.getElementById('mc-timer-num');
     if (!timerNum) {
-      lbl.innerHTML = `CÁLCULO MENTAL · ${seqIco('tiempo')}<span id="mc-timer-num">${mentalCalcSecondsLeft}</span>s | ${seqIco('xp')}${currentGame.score} pts`;
+      lbl.innerHTML = `CÁLCULO MENTAL · ${seqIco('tiempo')}<span id="mc-timer-num">${mentalCalcSecondsLeft}</span>s | ${seqIco('xp')}<span id="mc-pts-num">${currentGame.score}</span> pts`;
     } else {
       timerNum.textContent = mentalCalcSecondsLeft;
-      lbl.lastChild.textContent = `s | ⭐ ${currentGame.score} pts`;
+      const ptsNum = document.getElementById('mc-pts-num');
+      if (ptsNum) ptsNum.textContent = currentGame.score;
     }
   }
   // La racha se muestra en la misma píldora "🔥 Racha" que el resto de
@@ -5506,8 +5520,9 @@ function renderQuestion(preserveAnswered = false) {
   } else if (currentGame.mode === 'sudden_death') {
     const totalQ = currentGame.totalQuestionsToPlay;
     const currentQ = currentGame.queue[currentGame.currentIdx];
-    const difIcon = { facil: '🟢', medio: '🟡', dificil: '🔴' }[currentQ && currentQ.dif] || '☠️';
-    document.getElementById('game-progress-lbl').textContent = `MUERTE SÚBITA · ${difIcon} ${currentGame.currentIdx + 1}/${totalQ}`;
+    const dif = currentQ && ['facil', 'medio', 'dificil'].includes(currentQ.dif) ? currentQ.dif : '';
+    const difDot = dif ? `<span class="dif-dot dif-${dif}" aria-label="Dificultad ${({ facil: 'fácil', medio: 'media', dificil: 'difícil' })[dif]}"></span>` : '';
+    document.getElementById('game-progress-lbl').innerHTML = `MUERTE SÚBITA · ${difDot}${currentGame.currentIdx + 1}/${totalQ}`;
     document.getElementById('bar-fill').style.width = ((currentGame.currentIdx) / totalQ) * 100 + '%';
   } else {
     const totalQ = currentGame.totalQuestionsToPlay;
@@ -5594,7 +5609,10 @@ function checkAnswer() {
 
       // +3s por acierto, con un límite máximo de tiempo acumulable de 90s
       // (evita que la partida pueda escalar indefinidamente).
+      const ttBefore = timeTrialEndTime;
       timeTrialEndTime = Math.min(timeTrialEndTime + 3000, Date.now() + TIMETRIAL_MAX_MS);
+      // Segundos que de verdad se han sumado (tras el tope de 90 s), para la tarjeta final.
+      currentGame.ttBonusMs = (currentGame.ttBonusMs || 0) + Math.max(0, timeTrialEndTime - ttBefore);
       timeTrialSecondsLeft = Math.ceil(Math.max(0, timeTrialEndTime - Date.now()) / 1000);
       updateTimeTrialHeader();
       updateUrgencySound(timeTrialSecondsLeft);
@@ -5942,7 +5960,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   if (currentGame.mode === 'timetrial') {
     document.getElementById('res-score-text').textContent = `${currentGame.score}`;
     document.getElementById('res-score-label').textContent = 'Aciertos';
-    document.getElementById('res-percentage-text').textContent = `${currentGame.score * 2}s`;
+    document.getElementById('res-percentage-text').textContent = `${Math.round((currentGame.ttBonusMs || 0) / 1000)}s`;
     document.getElementById('res-percentage-label').textContent = 'Segundos extra obtenidos';
   } else if (currentGame.mode === 'mental_calc') {
     document.getElementById('res-score-text').textContent = `${totalQ}`;
@@ -5953,7 +5971,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     document.getElementById('res-score-text').textContent = `${currentGame.score}`;
     document.getElementById('res-score-label').textContent = 'Preguntas acertadas';
     document.getElementById('res-percentage-text').textContent = `${Math.max(0, currentGame.lives)}`;
-    document.getElementById('res-percentage-label').textContent = 'Vidas restantes';
+    document.getElementById('res-percentage-label').textContent = Math.max(0, currentGame.lives) === 1 ? 'Vida restante' : 'Vidas restantes';
   } else {
     document.getElementById('res-score-text').textContent = `${currentGame.score} / ${totalQ}`;
     document.getElementById('res-score-label').textContent = 'Aciertos';
@@ -6113,7 +6131,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
         <div>
           <div class="session-medal-info">${m.title}</div>
           <div class="session-medal-desc">${m.desc}</div>
-          ${FRAGMENT_MEDAL_IDS.includes(m.id) ? '<div class="session-medal-fragment">✨ 🧩 +1 Fragmento de Mente</div>' : ''}
+          ${FRAGMENT_MEDAL_IDS.includes(m.id) ? '<div class="session-medal-fragment">' + seqIco('fragmento') + '+1 Fragmento de Mente</div>' : ''}
         </div>
       </div>
     `).join('');
@@ -6124,7 +6142,8 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
 
   // El confeti de celebración se reserva exclusivamente para un modo nuevo.
   // Los logros y una victoria normal no generan celebración emergente.
-  if (!isGameOverDueToFailure && !isSurvivalFailure && newModesUnlocked.length === 0) {
+  // Sin fanfarria de victoria cuando el resultado es una derrota (también en los modos por puntuación).
+  if (!isGameOverDueToFailure && !isSurvivalFailure && newModesUnlocked.length === 0 && lastResultCharacterState !== 'defeat') {
     playSound('win');
   }
 
@@ -6160,7 +6179,7 @@ function shareResultAsText(shareText) {
     navigator.clipboard.writeText(shareText).then(() => {
       const btn = document.getElementById('res-share-btn');
       if (!btn) return;
-      const original = btn.textContent;
+      const original = btn.innerHTML; // con su icono
       btn.innerHTML = seqIco('correcto') + '¡Copiado!';
       // Prompt 2 — Fase C: mismo cambio de texto de siempre, solo se anima
       // (ver .btn-confirm-pulse en styles/main.css). No toca el resultado
@@ -6168,7 +6187,7 @@ function shareResultAsText(shareText) {
       btn.classList.remove('btn-confirm-pulse');
       void btn.offsetWidth;
       btn.classList.add('btn-confirm-pulse');
-      setTimeout(() => { btn.textContent = original; }, 1800);
+      setTimeout(() => { btn.innerHTML = original; }, 1800);
     }).catch(() => {
       alert(shareText);
     });
@@ -6314,7 +6333,7 @@ function renderLearningStats() {
       const tags = [];
       if (weakest.cat !== strongest.cat) {
         const tagClass = weakest.acc < 70 ? 'tag-weak' : 'tag-progress';
-        const icon = weakest.acc < 70 ? '🔴' : '🟡';
+        const icon = `<span class="dif-dot ${weakest.acc < 70 ? 'dif-dificil' : 'dif-medio'}" aria-hidden="true"></span>`;
         const label = weakest.acc < 70 ? 'A reforzar' : 'En progreso';
         tags.push(`<span class="knowledge-tag ${tagClass}">${icon} ${label}: ${categoryBadge(weakest.cat)}${categoryLabel(weakest.cat)}</span>`);
       }
@@ -6336,15 +6355,17 @@ function renderLearningStats() {
 // Mejor resultado: no gana la partida con más aciertos en bruto, sino la
 // que tiene mejor porcentaje de precisión (18/20 = 90% gana a 20/30 = 67%).
 // A igualdad de porcentaje, desempata por número de aciertos.
+// Solo los modos de preguntas con porcentaje comparable (2.0): un 7/8 de Cálculo Mental no debe ganarle a un 27/30.
+const BEST_RESULT_MODES = ['Modo Estándar', 'Supervivencia', 'Muerte Súbita'];
 function getBestResult() {
   const histories = Array.isArray(store.gameHistory) ? store.gameHistory : [];
   return histories.reduce((best, item) => {
-    if (!item) return best;
+    if (!item || !BEST_RESULT_MODES.includes(item.mode)) return best;
     const pct = Number(item.percentage || 0);
-    const correct = parseInt((item.score || '0/1').split('/')[0], 10) || 0;
+    const correct = parseInt(String(item.score || '0/1').split('/')[0], 10) || 0;
     if (!best) return item;
     const bestPct = Number(best.percentage || 0);
-    const bestCorrect = parseInt((best.score || '0/1').split('/')[0], 10) || 0;
+    const bestCorrect = parseInt(String(best.score || '0/1').split('/')[0], 10) || 0;
     if (pct > bestPct) return item;
     if (pct === bestPct && correct > bestCorrect) return item;
     return best;
@@ -6913,7 +6934,6 @@ function applyAppVersionText() {
   setText('welcome-version', 'v' + APP_VERSION);
   setText('welcome-btn-version', 'v' + APP_VERSION);
   setText('home-sub-version-text', 'TEST DE LUCIDEZ MENTAL · v' + APP_VERSION);
-  setText('info-modal-version-text', 'Test de Lucidez Mental · v' + APP_VERSION);
   setText('brand-sub-version', 'v' + APP_VERSION);
   const brandEl = document.getElementById('quiz-brand');
   if (brandEl) brandEl.setAttribute('aria-label', 'SirEdwards Quiz: Test de Lucidez Mental v' + APP_VERSION);

@@ -448,6 +448,7 @@
     });
   }
   var nonceTimer = null;
+  var loginHadProgress = false;
 
   function onCredential(resp) {
     if (!resp || !resp.credential) { setMsg('No se recibió la credencial de Google.'); return; }
@@ -471,6 +472,7 @@
         var otherBefore = !!(sync && sync.playerId !== data.player.id);
         var hasLocal = hasLocalProgress();
         var hasOnline = progressHasData(data.progress);
+        loginHadProgress = hasOnline; // para no dar la bienvenida de «nuevo aspirante» a quien ya jugaba en otro dispositivo
         sync = newSyncState(data.player.id, 'pending', baseFromLocal(), seenFrom(data.progress));
         sync.otherAccountBefore = otherBefore;
         saveSync();
@@ -567,7 +569,7 @@
       var title, text, primary;
       if (hasLocal && !hasOnline) {
         title = 'Guardar tu progreso en la cuenta';
-        text = 'Tienes progreso en este dispositivo. Puedes asociarlo a tu cuenta para no perderlo y verlo en el ranking. <b>No se borra nada de este dispositivo.</b>';
+        text = 'Tienes progreso en este dispositivo. Puedes asociarlo a tu cuenta para no perderlo y llevarlo a cualquier dispositivo. <b>No se borra nada de este dispositivo.</b>';
         primary = 'Asociar mi progreso a la cuenta';
       } else if (!hasLocal && hasOnline) {
         title = 'Recuperar el progreso de tu cuenta';
@@ -641,6 +643,19 @@
         toast(err && err.network ? 'Sin conexión: inténtalo de nuevo cuando vuelva Internet.' : 'No se pudo combinar' + (err && err.message ? ': ' + err.message : '.'), '⚠️');
       })
       .then(function () { ui.busy = false; render(); });
+  }
+
+  // «Reiniciar progreso» con cuenta: el dispositivo vuelve a empezar de cero y, al recargar, se ofrece
+  // «Recuperar el progreso de tu cuenta». Se deja la sincronización en «pendiente» con línea base 0
+  // (si no, el cliente creería que el servidor ya tenía contado lo borrado y nunca lo devolvería) y se
+  // olvida el estado de la sincronización de datos (historial, estadísticas…).
+  function prepareLocalReset() {
+    if (!ENABLED || !account) return false;
+    sync = newSyncState(account.player.id, 'pending', { xp: 0, games: 0, correct: 0, wrong: 0 }, emptySeen());
+    sync.afterReset = true;
+    saveSync();
+    try { localStorage.removeItem('siredwards_quiz_v2_0_datasync'); } catch (e) {}
+    return true;
   }
 
   function skipMigration() {
@@ -861,7 +876,12 @@
     window.addEventListener('offline', function () { render(); });
     document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && account) { render(); scheduleSync(1000, 'visible'); } });
     if (account) scheduleSync(1500, 'startup');
-    if (account && sync && sync.migration === 'pending') { /* la decisión queda visible en Ajustes; no se fuerza al arrancar */ }
+    if (account && sync && sync.migration === 'pending' && sync.afterReset) {
+      // Tras «Reiniciar progreso» con cuenta: se ofrece recuperar lo de la cuenta en cuanto haya conexión.
+      sync.afterReset = false; saveSync();
+      setTimeout(function () { if (navigator.onLine !== false) openMigration(); }, 1200);
+    }
+    // En el resto de casos, la decisión pendiente queda visible en Ajustes; no se fuerza al arrancar.
   }
 
   window.SEQOnline = {
@@ -872,7 +892,7 @@
     syncNowUi: function () { retryStep = 0; syncNow('manual'); },
     signOut: signOut, logoutAll: logoutAll, deleteAccount: deleteAccount,
     openRanking: openRanking, closeRanking: closeRanking, loadRanking: loadRanking, goToAccount: goToAccount,
-    openMigration: function () { openMigration(); }, closeMigration: closeMigration, doMerge: doMerge, skipMigration: skipMigration,
+    openMigration: function () { openMigration(); }, prepareLocalReset: prepareLocalReset, accountHadProgress: function () { return loginHadProgress; }, hasAccount: function () { return !!(ENABLED && account); }, closeMigration: closeMigration, doMerge: doMerge, skipMigration: skipMigration,
     toggleEdit: toggleEdit, pickAvatar: pickAvatar, saveProfile: saveProfile, copyId: copyId,
     // v1.5 — para src/online/duels.js: mismo cliente HTTP (sesión, timeouts, errores) sin duplicarlo.
     api: function (method, path, body) { if (!ENABLED || !account) return Promise.reject(Object.assign(new Error('Inicia sesión para usar esta función.'), { code: 'no_session' })); return api(method, path, body); },

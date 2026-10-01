@@ -65,6 +65,8 @@ function getDefaultStore() {
     recentQuestionIds: [],
     currentStreak: 0,
     theme: 'light',
+    // 2.0: true mientras el tema venga del móvil (primer arranque) y el jugador no haya elegido uno.
+    themeAuto: false,
     sound: 'on',
     notifiedModeUnlocks: [],
     // Prompt 4: hitos de Fragmentos (12/15) cuyo aviso ya se mostró. El bonus
@@ -244,6 +246,7 @@ function sanitizeStore(s) {
   s.duelPlayedCodes = asArray(s.duelPlayedCodes).filter(c => typeof c === 'string' && c);
 
   if (s.theme !== 'light' && s.theme !== 'dark') s.theme = 'light';
+  s.themeAuto = s.themeAuto === true;
   if (s.sound !== 'on' && s.sound !== 'off') s.sound = 'on';
 
   return s;

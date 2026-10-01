@@ -50,7 +50,8 @@
   function isDefaultGroup(name) {
     var v = {};
     M().GROUPS[name].forEach(function (k) { v[k] = store[k]; });
-    if (name === 'settings') return (v.theme === undefined || v.theme === 'light') && (v.sound === undefined || v.sound === 'on');
+    // El tema puesto automáticamente desde el móvil (themeAuto) cuenta como «por defecto»: no pisa el de la cuenta.
+    if (name === 'settings') return (v.theme === undefined || v.theme === 'light' || store.themeAuto === true) && (v.sound === undefined || v.sound === 'on');
     return !(v.failedQuestions && v.failedQuestions.length) && !(v.recentQuestionIds && v.recentQuestionIds.length) &&
       !(v.questionStreaks && Object.keys(v.questionStreaks).length);
   }
