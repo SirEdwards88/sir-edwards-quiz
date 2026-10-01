@@ -339,3 +339,8 @@
 #duel-home .seq-d-v-duel .mode-subtitle { color: var(--dz-duel-text); }
 .seq-d-mode-line span { flex-basis: 100%; }
 .seq-d-mode-line span::before { content: none; }
+/* El rival vuelve a la cabecera (a la derecha); la cabecera reparte: progreso · segundos/vidas · rival */
+#seq-duel-root .seq-d-hud .seq-d-vs-chip { flex: 0 1 auto; max-width: 40%; padding: 3px 9px 3px 5px; font-size: 12px; background: var(--card); }
+#seq-duel-root .seq-d-hud .seq-d-vs-chip .seq-av-img { width: 20px; height: 20px; }
+#seq-duel-root .seq-d-hud .seq-d-hud-lbl { flex: 0 1 auto; }
+#seq-duel-root .seq-d-hud .seq-d-hud-right { margin-left: auto; }

@@ -93,10 +93,6 @@
   function retoMode(d) { return RETO_MODE_UI[d && d.modo] || RETO_MODE_UI.estandar; }
   function retoModeName(d) { return retoMode(d).nombre + (d && NIVEL_UI[d.nivel] ? ' · ' + NIVEL_UI[d.nivel] : ''); }
   function modeIco(m) { return '<img class="seq-ico seq-d-mode-ico" src="assets/modes/suelto/' + m.icono + '.webp" alt="" draggable="false">'; }
-  function retoRules(d) {
-    if (!d || !d.modo || d.modo === 'estandar') return num((d && d.n_preguntas) || 20) + ' preguntas · ' + secsPerQ(d) + ' s cada una';
-    return retoMode(d).reglas;
-  }
   // Un elemento de la partida (lo que manda el servidor) → texto, solución (si ya se puede ver) y forma de responder.
   var LMAP = null;
   function lucidezQ(n) {
@@ -667,10 +663,8 @@
   function playScreen(kind, d, idx, qn, mine) {
     var p = player(d.rival);
     topbarShown(false);
-    // Fila superior: salir a la izquierda y el rival a la derecha (fuera de la cabecera, que así siempre deja ver el reloj).
     var h = '<div class="seq-d-toprow">' + (kind === 'duel' ? '<button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.leaveDuel()">← Duelo online</button>'
-      : '<button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.open(\'retos\')">← Retos</button>') +
-      '<span class="seq-d-vs-chip" title="Tu rival"><span class="seq-d-vs-lbl2">vs</span>' + p.avatar + '<span class="seq-d-rival-name">' + p.name + '</span></span></div>';
+      : '<button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.open(\'retos\')">← Retos</button>') + '</div>';
     h += '<div id="seq-d-msg" class="feedback" style="display:none;"></div>';
     var lbl, extra = '', est = (d.yo && d.yo.estado) || {};
     if (kind === 'duel') lbl = 'DUELO<span class="seq-d-long"> ONLINE</span> · ' + (num(idx) + 1) + '/20';
@@ -689,7 +683,9 @@
       }
     }
     h += '<div class="mode-header game-hud seq-d-hud' + (kind === 'reto' ? ' seq-d-hud-reto' : '') + '"><span class="seq-d-hud-lbl">' + lbl + '</span>' +
-      '<span class="seq-d-hud-right">' + extra + '<span class="seq-d-hud-time">' + ico('tiempo') + '<span id="seq-d-time"></span>s</span></span></div>';
+      '<span class="seq-d-hud-right">' + extra + '<span class="seq-d-hud-time">' + ico('tiempo') + '<span id="seq-d-time"></span>s</span></span>' +
+      // El rival, en la misma línea: con el icono del modo en lugar de su nombre, cabe todo (progreso, segundos y rival).
+      '<span class="seq-d-vs-chip" title="Tu rival">' + p.avatar + '<span class="seq-d-rival-name">' + p.name + '</span></span></div>';
     h += '<div class="progress-bar"><div id="seq-d-bar" class="bar-fill"></div></div>';
     return h + questionBlock(d.id, idx, qn, mine, kind === 'reto' && d.modo === 'lucidez' && num(est.fase) === 2);
   }
@@ -816,7 +812,7 @@
     if (!d) return h + '<p class="stats-section-sub">Cargando…</p>';
     var p = player(d.rival), now = serverNow();
     h += '<p class="stats-section-sub seq-d-vs">Tú contra ' + p.avatar + ' ' + p.name + '</p>';
-    if (d.estado !== 'completado') h += '<p class="seq-d-mode-line">' + modeIco(retoMode(d)) + '<b>' + esc(retoModeName(d)) + '</b><span>' + esc(retoRules(d)) + '</span></p>';
+    if (d.estado !== 'completado') h += '<p class="seq-d-mode-line">' + modeIco(retoMode(d)) + '<b>' + esc(retoModeName(d)) + '</b></p>';
     S.shown = null;
     if (d.estado === 'pendiente') {
       var cad = left(num(d.expira_at) - now);
