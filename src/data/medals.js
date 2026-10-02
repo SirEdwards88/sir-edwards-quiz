@@ -53,8 +53,8 @@ const ALL_MEDALS = [
 
   // 🎯 PRECISIÓN / HABILIDAD
   { id: 'correct_100', icon: '🎯', title: 'Cerebro de Precisión', desc: 'Acierta 100 preguntas en total.', check: s => s.totalCorrect >= 100 },
-  { id: 'correct_300', icon: '📜', title: 'Veterano del Conocimiento', desc: 'Acierta 300 preguntas en total.', check: s => s.totalCorrect >= 300 },
-  { id: 'correct_600', icon: '🤖', title: 'Máquina del Quiz', desc: 'Acierta 600 preguntas en total.', check: s => s.totalCorrect >= 600 },
+  { id: 'correct_300', icon: '📜', title: 'Veterano del Conocimiento', desc: 'Acierta 400 preguntas en total.', check: s => s.totalCorrect >= 400 },
+  { id: 'correct_600', icon: '🤖', title: 'Máquina del Quiz', desc: 'Acierta 800 preguntas en total.', check: s => s.totalCorrect >= 800 },
 
   // 🏅 COLECCIÓN
   { id: 'medal_collector_10', icon: '🗝️', title: 'Coleccionista', desc: 'Desbloquea 10 logros diferentes.', check: s => (s.unlockedMedals || []).filter(id => !['medal_collector_10','medal_collector_20','medal_collector_30','all_medals_secret'].includes(id)).length >= 10 },
