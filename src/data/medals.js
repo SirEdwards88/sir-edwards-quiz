@@ -65,8 +65,8 @@ const ALL_MEDALS = [
   { id: 'sharp_eye', icon: '🦅', title: 'Ojo de Halcón', desc: 'Responde correctamente 5 preguntas difíciles consecutivas.', check: s => (s.hardBestStreak || 0) >= 5 },
   { id: 'world_citizen', icon: '🌎', title: 'Ciudadano del Mundo', desc: 'Domina al menos 10 preguntas de cada categoría.', check: s => getCategoryMastery(s).every(x => x.mastered >= 10) },
   { id: 'sin_preferencias', icon: '🔀', title: 'Sin Preferencias', desc: 'Consigue 10 aciertos consecutivos sin repetir categoría.', check: s => (s.noRepeatCatBestStreak || 0) >= 10 },
-  { id: 'polimata', icon: '📊', title: 'Polímata', desc: 'Domina al menos el 50% de las preguntas de cada categoría.', check: s => getCategoryMastery(s).every(x => x.total > 0 && x.mastered / x.total >= 0.5) },
-  { id: 'balanced_master', icon: '⚖️', title: 'Sin Puntos Débiles', desc: 'Alcanza al menos un 75% de dominio en todas las categorías.', check: s => getCategoryMastery(s).every(x => x.total > 0 && x.mastered / x.total >= 0.75) },
+  { id: 'polimata', icon: '📊', title: 'Polímata', desc: 'Domina al menos el 40% de las preguntas de cada categoría.', check: s => getCategoryMastery(s).every(x => x.total > 0 && x.mastered / x.total >= 0.4) },
+  { id: 'balanced_master', icon: '⚖️', title: 'Sin Puntos Débiles', desc: 'Alcanza al menos un 60% de dominio en todas las categorías.', check: s => getCategoryMastery(s).every(x => x.total > 0 && x.mastered / x.total >= 0.6) },
   { id: 'noctambulo', icon: '🌙', title: 'Noctámbulo', desc: 'Completa una partida entre las 00:00 y las 04:00.', check: s => !!s.hasCompletedNightGame },
   { id: 'mente_fracturada', icon: '🔮', title: 'Mente Fracturada', desc: 'Consigue tu primer Fragmento de Mente.', check: s => getFragmentCount(s) >= 1 },
 
