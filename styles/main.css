@@ -5485,7 +5485,9 @@ h3.stats-h::before { display: none !important; content: none !important; }
 .fx-lastlife-banner { position: absolute; left: 50%; top: 150px; z-index: 30; pointer-events: none; display: flex; flex-direction: column; align-items: center; gap: 2px;
   width: max-content; max-width: calc(100% - 32px); padding: 10px 22px; border-radius: 18px; text-align: center; color: #fdf7ea; transform: translate(-50%, -50%);
   background: linear-gradient(135deg, #16244a, #5b2e8f); border: 1.5px solid rgba(232,200,116,.7); box-shadow: 0 18px 40px rgba(22,36,74,.4);
-  animation: fx-banner 1.6s cubic-bezier(.2,.9,.3,1.2) both; }
+  animation: fx-lastlife 3s cubic-bezier(.2,.9,.3,1.2) both; }
+@keyframes fx-lastlife { 0% { opacity: 0; transform: translate(-50%, -30%) scale(.6); } 10% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+  16% { transform: translate(-50%, -50%) scale(1); } 87% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -75%) scale(.95); } }
 .fx-lastlife-banner.is-life { background: linear-gradient(135deg, #7f1d1d, #dc2626); border-color: rgba(252,165,165,.8); box-shadow: 0 18px 40px rgba(220,38,38,.4); }
 .fx-lastlife-banner.is-ok { background: linear-gradient(135deg, #14532d, #16a34a); border-color: rgba(134,239,172,.7); box-shadow: 0 18px 40px rgba(22,163,74,.35); }
 .fx-lastlife-title { font-size: 18px; font-weight: 900; letter-spacing: .6px; text-transform: uppercase; line-height: 1.15; }

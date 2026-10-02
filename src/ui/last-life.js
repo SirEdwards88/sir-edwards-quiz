@@ -48,7 +48,7 @@
       if (isFinite(top) && top > 0) b.style.top = Math.max(34, Math.round(top)) + 'px';
     }
     host.appendChild(b);
-    timer = setTimeout(function () { b.remove(); }, 1600);
+    timer = setTimeout(function () { b.remove(); }, 3000); // coincide con la animación fx-lastlife (3 s)
   }
 
   // Se llama cada vez que se pinta la cabecera de una pregunta (cualquier modo).
