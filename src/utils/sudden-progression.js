@@ -11,20 +11,3 @@ const SUDDEN_SHAPE = [
   'dificil', 'medio', 'dificil', 'medio', 'dificil',    // 21-25  difícil (con alguna media)
   'dificil', 'dificil', 'dificil', 'dificil', 'dificil' // 26-30  difícil
 ];
-// Rango de Sir Edwards según las preguntas sobrevividas (aciertos antes de caer; 30 = las completó todas).
-const SUDDEN_RANGOS = [
-  { desde: 0, hasta: 5, nombre: 'Aprendiz de superviviente' },
-  { desde: 6, hasta: 10, nombre: 'Resistente' },
-  { desde: 11, hasta: 15, nombre: 'Veterano' },
-  { desde: 16, hasta: 20, nombre: 'Curtido' },
-  { desde: 21, hasta: 25, nombre: 'Superviviente de élite' },
-  { desde: 26, hasta: 29, nombre: 'Casi inmortal' },
-  { desde: 30, hasta: 30, nombre: 'Inmortal' }
-];
-function suddenRango(survived) {
-  const n = Math.max(0, Math.min(30, Math.floor(Number(survived) || 0)));
-  for (let i = 0; i < SUDDEN_RANGOS.length; i++) {
-    if (n >= SUDDEN_RANGOS[i].desde && n <= SUDDEN_RANGOS[i].hasta) return SUDDEN_RANGOS[i].nombre;
-  }
-  return SUDDEN_RANGOS[0].nombre;
-}

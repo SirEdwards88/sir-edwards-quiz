@@ -8,8 +8,8 @@ import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const ctx = vm.createContext({});
-vm.runInContext(fs.readFileSync(path.join(here, '..', 'src', 'utils', 'sudden-progression.js'), 'utf8') + '\n;globalThis.S = { SUDDEN_SHAPE, suddenRango };', ctx);
-const { SUDDEN_SHAPE, suddenRango } = ctx.S;
+vm.runInContext(fs.readFileSync(path.join(here, '..', 'src', 'utils', 'sudden-progression.js'), 'utf8') + '\n;globalThis.S = { SUDDEN_SHAPE };', ctx);
+const { SUDDEN_SHAPE } = ctx.S;
 
 test('forma de 30 preguntas: 10 de cada dificultad y subida gradual', () => {
   assert.equal(SUDDEN_SHAPE.length, 30);
@@ -24,14 +24,6 @@ test('forma de 30 preguntas: 10 de cada dificultad y subida gradual', () => {
   for (let k = 0; k < 5; k++) assert.ok(avg(k * 5, k * 5 + 5) < avg(k * 5 + 5, k * 5 + 10), 'cada bloque de 5 es más difícil que el anterior');
   // Sin saltos bruscos: nunca una fácil pegada a una difícil.
   for (let i = 1; i < 30; i++) assert.ok(Math.abs(rank[SUDDEN_SHAPE[i]] - rank[SUDDEN_SHAPE[i - 1]]) <= 1, 'sin saltos de fácil a difícil');
-});
-
-test('rango según las preguntas sobrevividas', () => {
-  assert.deepEqual([0, 5, 6, 10, 11, 15, 16, 20, 21, 25, 26, 29, 30].map(suddenRango),
-    ['Aprendiz de superviviente', 'Aprendiz de superviviente', 'Resistente', 'Resistente', 'Veterano', 'Veterano', 'Curtido', 'Curtido',
-      'Superviviente de élite', 'Superviviente de élite', 'Casi inmortal', 'Casi inmortal', 'Inmortal']);
-  assert.equal(suddenRango(-3), 'Aprendiz de superviviente');
-  assert.equal(suddenRango(99), 'Inmortal');
 });
 
 test('index.html y sw.js enlazan el módulo', () => {
