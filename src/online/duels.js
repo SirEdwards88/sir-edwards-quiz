@@ -61,6 +61,9 @@
   function call(method, path, body) { return window.SEQOnline.api(method, path, body); }
   function serverNow() { return Date.now() + S.offset; }
   function player(p) { p = p || {}; return { name: esc(p.display_name || 'Jugador'), avatar: avatar(p.avatar), id: safeId(p.id) }; }
+  // Tarjeta de jugador (amigos, rival, listas): avatar grande con marco dorado + nombre + detalle opcional.
+  // `sub` ya llega escapado por quien llama. Estilos: .seq-pl* en styles/online.css.
+  function who(p, sub) { return '<div class="seq-pl"><span class="seq-pl-av">' + p.avatar + '</span><div class="seq-pl-body"><div class="seq-pl-name">' + p.name + '</div>' + (sub ? '<div class="seq-pl-sub">' + sub + '</div>' : '') + '</div></div>'; }
   function secs(ms) { return Math.max(0, Math.ceil(ms / 1000)); }
   function left(ms) {
     if (ms <= 0) return 'ya';
@@ -571,7 +574,7 @@
     else if (x.estado === 'completado') sub = resultLine(x.resultado);
     else if (kind === 'reto' && x.estado === 'aceptado') sub = x.yo.terminado ? 'Esperando a tu amigo' : '¡Te toca jugar!';
     if (kind === 'reto' && x.modo) sub = retoModeName(x) + ' · ' + sub;
-    return '<div class="history-item seq-d-row" onclick="SEQDuels.open(\'' + (kind === 'duel' ? 'duel' : 'reto') + '\',\'' + id + '\')"><div><div class="history-item-info">' + p.avatar + ' ' + p.name + '</div><div class="history-item-sub">' + esc(sub) + '</div></div><div>' + btns + '</div></div>';
+    return '<div class="history-item seq-d-row seq-pl-row" onclick="SEQDuels.open(\'' + (kind === 'duel' ? 'duel' : 'reto') + '\',\'' + id + '\')">' + who(p, esc(sub)) + (btns ? '<div class="seq-pl-act seq-pl-act-full">' + btns + '</div>' : '') + '</div>';
   }
   function renderList(kind) {
     var list = kind === 'duel' ? S.lists.duels : S.lists.retos;
@@ -593,7 +596,7 @@
     if (!fl.friends.length) return h + '<p class="stats-section-sub">Aún no tienes amigos.</p><button class="btn btn-secondary" onclick="SEQDuels.open(\'friends\')">' + ico('amigos') + 'Añadir amigos</button>';
     return h + '<div class="history-list">' + fl.friends.map(function (f) {
       var p = player(f.player);
-      return '<div class="history-item seq-d-row" onclick="SEQDuels.create(\'' + p.id + '\')"><div class="history-item-info">' + p.avatar + ' ' + p.name + '</div><div class="history-item-score">Retar ›</div></div>';
+      return '<div class="history-item seq-d-row seq-pl-row" onclick="SEQDuels.create(\'' + p.id + '\')">' + who(p) + '<div class="history-item-score">Retar ›</div></div>';
     }).join('') + '</div>';
   }
   function renderFriends() {
@@ -604,20 +607,20 @@
     if (S.search.results) {
       h += S.search.results.length ? '<div class="history-list">' + S.search.results.map(function (x) {
         var p = player(x);
-        return '<div class="history-item"><div class="history-item-info">' + p.avatar + ' ' + p.name + ' <span class="history-item-sub">' + p.id + '</span></div><button class="btn btn-primary seq-d-sm" onclick="SEQDuels.friendAdd(\'' + p.id + '\')">Añadir</button></div>';
+        return '<div class="history-item seq-pl-row">' + who(p, p.id) + '<div class="seq-pl-act"><button class="btn btn-primary seq-d-sm" onclick="SEQDuels.friendAdd(\'' + p.id + '\')">Añadir</button></div></div>';
       }).join('') + '</div>' : '<p class="stats-section-sub">No se ha encontrado a nadie.</p>';
     }
     if (!fl) return h + '<p class="stats-section-sub">Cargando…</p>';
     if (fl.incoming.length) {
       h += '<h3 class="seq-d-h3">Solicitudes recibidas</h3><div class="history-list">' + fl.incoming.map(function (x) {
         var p = player(x.player), fid = safeId(x.friendship_id);
-        return '<div class="history-item"><div class="history-item-info">' + p.avatar + ' ' + p.name + '</div><div><button class="btn btn-primary seq-d-sm" onclick="SEQDuels.friendResp(\'' + fid + '\',\'accept\')">Aceptar</button> <button class="btn btn-secondary seq-d-sm" onclick="SEQDuels.friendResp(\'' + fid + '\',\'reject\')">Rechazar</button></div></div>';
+        return '<div class="history-item seq-pl-row">' + who(p) + '<div class="seq-pl-act seq-pl-act-full"><button class="btn btn-primary seq-d-sm" onclick="SEQDuels.friendResp(\'' + fid + '\',\'accept\')">Aceptar</button> <button class="btn btn-secondary seq-d-sm" onclick="SEQDuels.friendResp(\'' + fid + '\',\'reject\')">Rechazar</button></div></div>';
       }).join('') + '</div>';
     }
     if (fl.outgoing.length) {
       h += '<h3 class="seq-d-h3">Solicitudes enviadas</h3><div class="history-list">' + fl.outgoing.map(function (x) {
         var p = player(x.player), fid = safeId(x.friendship_id);
-        return '<div class="history-item"><div class="history-item-info">' + p.avatar + ' ' + p.name + ' <span class="history-item-sub">pendiente</span></div><button class="btn btn-secondary seq-d-sm" onclick="SEQDuels.friendResp(\'' + fid + '\',\'cancel\')">Cancelar</button></div>';
+        return '<div class="history-item seq-pl-row">' + who(p, 'pendiente') + '<div class="seq-pl-act"><button class="btn btn-secondary seq-d-sm" onclick="SEQDuels.friendResp(\'' + fid + '\',\'cancel\')">Cancelar</button></div></div>';
       }).join('') + '</div>';
     }
     h += '<h3 class="seq-d-h3">Mis amigos</h3>';
@@ -626,7 +629,7 @@
       var p = player(x.player), b = '';
       if (f.classic_duel) b += '<button class="btn btn-primary seq-d-sm" title="Duelo online" aria-label="Duelo online" onclick="SEQDuels.quick(\'duel\',\'' + p.id + '\')">' + ico('duelo') + '</button> ';
       if (f.async_challenges) b += '<button class="btn btn-secondary seq-d-sm" title="Reto" aria-label="Reto" onclick="SEQDuels.quick(\'reto\',\'' + p.id + '\')">' + ico('retos') + '</button>';
-      return '<div class="history-item"><div class="history-item-info">' + p.avatar + ' ' + p.name + '</div><div>' + b + '</div></div>';
+      return '<div class="history-item seq-pl-row">' + who(p) + '<div class="seq-pl-act">' + b + '</div></div>';
     }).join('') + '</div>';
   }
   function renderLogros() {

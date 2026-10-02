@@ -568,3 +568,20 @@
 /* Aviso de duelo en marcha en el hub */
 .seq-d-live { border: 2px solid var(--dz-duel, #9a3412); box-shadow: 0 0 0 3px color-mix(in srgb, var(--dz-duel, #9a3412) 22%, transparent); cursor: pointer; }
 .seq-d-live h3 { color: var(--dz-duel, #9a3412); }
+
+/* Tarjeta de jugador (amigos, rival, listas de Duelos y Retos): src/online/duels.js → who().
+   Avatar grande con el mismo marco dorado que el del perfil; el nombre manda y los botones no se apilan. */
+.history-item.seq-pl-row { gap: 12px; flex-wrap: wrap; padding: 12px 14px; }
+.seq-pl { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1 1 150px; }
+.seq-pl-av { width: 52px; height: 52px; border-radius: 50%; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; overflow: hidden;
+  background: var(--badge-bg); border: 2px solid var(--accent-gold, #c9992e); box-shadow: 0 2px 8px rgba(0,0,0,.18); }
+.seq-pl-av .seq-av-img { width: 84%; height: 84%; }
+.seq-pl-body { min-width: 0; }
+.seq-pl-name { font-weight: 800; font-size: 17px; line-height: 1.2; color: var(--text); overflow-wrap: anywhere; }
+.seq-pl-sub { margin-top: 2px; font-size: 12px; line-height: 1.3; color: var(--sub); letter-spacing: .3px; }
+.seq-pl-act { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; margin-left: auto; }
+/* Aceptar / Rechazar: a ancho completo bajo el nombre. */
+.seq-pl-act-full { flex: 1 1 100%; margin-left: 0; }
+.seq-pl-act-full .btn { flex: 1; }
+/* «Tú contra …» y el rival en la ficha de un duelo/reto: avatar legible junto al nombre. */
+.seq-d-vs .seq-av-img, .seq-d-rival .seq-av-img { width: 30px; height: 30px; vertical-align: -9px; margin-right: 4px; }
