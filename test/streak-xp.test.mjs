@@ -65,10 +65,10 @@ test('Estándar: tramos de resultado para 20 preguntas (casi perfecto alcanzable
   const c = vm.createContext({ END_PHRASES: Object.fromEntries(['desastre', 'mediocre', 'bien', 'casi_perfecto', 'perfecto'].map(k => [k, { title: k, phrases: [k] }])), pickRotatingPhrase: (k, p) => p.join('+') });
   vm.runInContext(src + ';globalThis.f = getResultData;', c);
   const key = (n) => c.f(n, 20).key;
-  assert.deepEqual([0, 12].map(key), ['desastre', 'desastre']);
-  assert.deepEqual([13, 15].map(key), ['mediocre', 'mediocre']);
-  assert.deepEqual([16, 17].map(key), ['bien', 'bien']);
-  assert.equal(c.f(14, 20).phrase, 'mediocre+desastre', 'mediocre mezcla sus frases con las de desastre');
+  assert.deepEqual([0, 10].map(key), ['desastre', 'desastre']);
+  assert.deepEqual([11, 14].map(key), ['mediocre', 'mediocre']);
+  assert.deepEqual([15, 17].map(key), ['bien', 'bien']);
+  assert.equal(c.f(12, 20).phrase, 'mediocre+desastre', 'mediocre mezcla sus frases con las de desastre');
   assert.equal(c.f(5, 20).phrase, 'desastre', 'desastre conserva solo las suyas');
   assert.deepEqual([18, 19].map(key), ['casi_perfecto', 'casi_perfecto']);
   assert.equal(key(20), 'perfecto');
