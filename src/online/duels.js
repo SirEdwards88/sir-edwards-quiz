@@ -748,11 +748,10 @@
   function secsPerQ(d) { return Math.round((num(d && d.duracion_pregunta_ms) || 10000) / 1000); }
   function mark(a) { return a ? ico(a.es_correcta ? 'correcto' : 'incorrecto') : ico('tiempo'); }
   // 2.0: XP que concede el servidor por esta partida (10 por acierto; Cálculo Mental no da; nivel máximo no suma).
-  var XP_LEVEL_MAX = 30;
   function xpFor(kind, d, aciertos) {
     try {
       if (kind === 'reto' && d.modo === 'calculo_mental') return 0;
-      if (typeof getLevelData === 'function' && typeof store !== 'undefined' && getLevelData(store.xp) >= XP_LEVEL_MAX) return 0;
+      if (window.SEQStreakXp && SEQStreakXp.atMaxLevel()) return 0;
     } catch (e) {}
     return 10 * Math.max(0, num(aciertos));
   }

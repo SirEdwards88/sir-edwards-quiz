@@ -27,5 +27,10 @@
   }
   function modeGivesXp(mode) { return MODES.indexOf(mode) !== -1; }
 
-  root.SEQStreakXp = { XP_PER_CORRECT: XP_PER_CORRECT, XP_CAP: XP_CAP, bonus: bonus, modeGivesXp: modeGivesXp };
+  // ¿Este dispositivo ya está en el nivel máximo (30)? Entonces no se gana más XP (solo lectura del estado).
+  function atMaxLevel() {
+    try { return typeof getLevelData === 'function' && typeof store !== 'undefined' && getLevelData(store.xp) >= 30; } catch (e) { return false; }
+  }
+
+  root.SEQStreakXp = { XP_PER_CORRECT: XP_PER_CORRECT, XP_CAP: XP_CAP, bonus: bonus, modeGivesXp: modeGivesXp, atMaxLevel: atMaxLevel };
 })(typeof window !== 'undefined' ? window : globalThis);

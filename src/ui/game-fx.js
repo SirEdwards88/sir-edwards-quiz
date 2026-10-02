@@ -120,7 +120,7 @@
     try {
       if (!window.SEQStreakXp || typeof currentGame === 'undefined' || !currentGame || currentGame.isDuel) return 0;
       if (!SEQStreakXp.modeGivesXp(currentGame.mode)) return 0;
-      if (typeof getLevelData === 'function' && typeof store !== 'undefined' && getLevelData(store.xp) >= 30) return 0;
+      if (SEQStreakXp.atMaxLevel()) return 0;
       return SEQStreakXp.bonus(n);
     } catch (e) { return 0; }
   }
