@@ -5492,27 +5492,26 @@ h3.stats-h::before { display: none !important; content: none !important; }
 .fx-lastlife-sub { font-size: 13px; font-weight: 600; opacity: .9; }
 @media (prefers-reduced-motion: reduce) { .fx-lastlife-banner, .card.theme-survival #game-progress-lbl.last-life { animation: none; } }
 
-/* «Momento Sir Edwards» (src/ui/hitos.js): aparece de medio cuerpo con una frase en los hitos. */
-.sir-hito { position: fixed; inset: 0; z-index: 190; display: flex; align-items: flex-end; justify-content: center; cursor: pointer;
-  background: radial-gradient(ellipse at 50% 100%, rgba(10,14,30,.35), rgba(6,8,18,.78)); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+/* «Momento Sir Edwards» (src/ui/hitos.js): aparece en el centro, de medio cuerpo, apoyado sobre el bocadillo. */
+.sir-hito { position: fixed; inset: 0; z-index: 190; display: flex; align-items: center; justify-content: center; cursor: pointer;
+  background: radial-gradient(ellipse at 50% 50%, rgba(10,14,30,.45), rgba(6,8,18,.82)); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
   animation: sir-hito-fade .25s ease-out both; }
 .sir-hito.is-leaving { animation: sir-hito-out .26s ease-in both; }
-.sir-hito-stage { position: relative; width: min(100%, 460px); padding: 0 16px; display: flex; flex-direction: column; align-items: center; }
-.sir-hito-bubble { position: relative; z-index: 2; width: 100%; box-sizing: border-box; margin-bottom: -6px; padding: 14px 18px 16px; border-radius: 18px;
+.sir-hito-stage { width: min(100%, 420px); padding: 0 16px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; margin-top: -4vh; }
+.sir-hito-img { position: relative; z-index: 1; display: block; width: min(66vw, 270px); height: auto; aspect-ratio: 1; object-fit: contain; margin-bottom: -3px;
+  pointer-events: none; filter: drop-shadow(0 10px 22px rgba(0,0,0,.5)); animation: sir-hito-rise .5s cubic-bezier(.2,.9,.3,1.1) both; }
+.sir-hito-bubble { position: relative; z-index: 2; width: 100%; box-sizing: border-box; overflow: hidden; padding: 16px 20px 18px; border-radius: 18px; text-align: center;
   background: linear-gradient(135deg, #16244a, #3b2466); color: #fdf7ea; border: 1.5px solid rgba(232,200,116,.8);
-  box-shadow: 0 18px 40px rgba(0,0,0,.45); animation: sir-hito-bubble .45s .18s cubic-bezier(.2,.9,.3,1.15) both; }
+  box-shadow: 0 18px 40px rgba(0,0,0,.45); animation: sir-hito-bubble .45s .12s cubic-bezier(.2,.9,.3,1.15) both; }
 .sir-hito.is-sudden .sir-hito-bubble { background: linear-gradient(135deg, #1a1020, #5a1420); border-color: rgba(248,113,113,.7); }
-.sir-hito-bubble::after { content: ''; position: absolute; left: 50%; bottom: -9px; width: 16px; height: 16px; transform: translateX(-50%) rotate(45deg);
-  background: inherit; border-right: 1.5px solid rgba(232,200,116,.8); border-bottom: 1.5px solid rgba(232,200,116,.8); }
-.sir-hito.is-sudden .sir-hito-bubble::after { background: #3d1220; border-color: rgba(248,113,113,.7); }
-.sir-hito-tag { display: block; font-size: 11px; font-weight: 800; letter-spacing: 1.3px; text-transform: uppercase; color: #e8c874; }
-.sir-hito-text { margin: 5px 0 0; font-family: var(--font-display, inherit); font-size: 18px; font-weight: 700; line-height: 1.32; font-style: italic; }
-.sir-hito-img { display: block; width: min(78vw, 340px); height: auto; aspect-ratio: 1; object-fit: contain; margin-bottom: -2px; pointer-events: none;
-  filter: drop-shadow(0 -6px 24px rgba(0,0,0,.45)); animation: sir-hito-rise .5s cubic-bezier(.2,.9,.3,1.1) both; }
-.sir-hito-hint { position: absolute; right: 22px; bottom: 14px; z-index: 3; font-size: 11px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase;
-  color: rgba(253,247,234,.75); background: rgba(6,8,18,.55); padding: 4px 9px; border-radius: 999px; animation: sir-hito-fade .3s 1.2s both; }
+.sir-hito-text { margin: 0; font-family: var(--font-display, inherit); font-size: 18px; font-weight: 700; line-height: 1.34; font-style: italic; }
+.sir-hito-sign { display: block; margin-top: 8px; font-size: 12px; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; color: #e8c874; }
+.sir-hito-timer { position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: linear-gradient(90deg, #c9992e, #e8c874); transform-origin: left center;
+  animation: sir-hito-timer 5.2s linear both; }
+.sir-hito.is-sudden .sir-hito-timer { background: linear-gradient(90deg, #b91c1c, #f87171); }
 @keyframes sir-hito-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes sir-hito-out { from { opacity: 1; } to { opacity: 0; } }
-@keyframes sir-hito-rise { from { opacity: 0; transform: translateY(40%); } to { opacity: 1; transform: none; } }
-@keyframes sir-hito-bubble { from { opacity: 0; transform: translateY(14px) scale(.94); } to { opacity: 1; transform: none; } }
-@media (prefers-reduced-motion: reduce) { .sir-hito, .sir-hito *, .sir-hito.is-leaving { animation: none !important; } }
+@keyframes sir-hito-rise { from { opacity: 0; transform: translateY(18%) scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes sir-hito-bubble { from { opacity: 0; transform: translateY(14px) scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes sir-hito-timer { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@media (prefers-reduced-motion: reduce) { .sir-hito, .sir-hito-img, .sir-hito-bubble, .sir-hito.is-leaving { animation: none !important; } }

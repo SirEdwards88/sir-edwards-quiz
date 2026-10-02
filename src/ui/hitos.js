@@ -69,6 +69,7 @@
 
   // ---- Parte con DOM ---------------------------------------------------------------------------
   var LAST_KEY = 'siredwards_quiz_v2_hitos_last';
+  var SHOW_MS = 5200;   // la línea dorada del bocadillo dura lo mismo (styles/main.css)
   // Hitos ya mostrados, por partida (la partida es el objeto currentGame; no se le añade nada).
   var shownByGame = typeof WeakMap === 'function' ? new WeakMap() : null;
   var shownFallback = {};
@@ -106,13 +107,13 @@
     el.className = 'sir-hito' + (h.mode === 'sudden_death' ? ' is-sudden' : '');
     el.setAttribute('role', 'status');
     el.setAttribute('aria-live', 'polite');
+    // En el centro de la pantalla, donde el jugador tiene la vista: el busto se apoya sobre el bocadillo.
     el.innerHTML =
       '<div class="sir-hito-stage">' +
-        '<div class="sir-hito-bubble"><span class="sir-hito-tag"></span><p class="sir-hito-text"></p></div>' +
         '<img class="sir-hito-img" alt="" draggable="false">' +
-        '<span class="sir-hito-hint">Toca para continuar</span>' +
+        '<div class="sir-hito-bubble"><p class="sir-hito-text"></p><span class="sir-hito-sign">— Sir Edwards</span>' +
+          '<span class="sir-hito-timer" aria-hidden="true"></span></div>' +
       '</div>';
-    el.querySelector('.sir-hito-tag').textContent = 'Sir Edwards · ' + h.n + '/' + h.total;
     el.querySelector('.sir-hito-text').textContent = '«' + h.phrases[pi] + '»';
     var img = el.querySelector('.sir-hito-img');
     img.src = h.img;
@@ -120,7 +121,7 @@
     doc.body.appendChild(el);
     openEl = el;
     doc.addEventListener('keydown', onKey, true);
-    closeTimer = setTimeout(close, 5200);
+    closeTimer = setTimeout(close, SHOW_MS);
   }
 
   // Se llama al pintar cada pregunta (cualquier modo); solo actúa en los hitos.
