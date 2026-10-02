@@ -1624,9 +1624,13 @@ function getResultData(score, total) {
   const percentage = (score / total) * 100;
   let categoryData, key;
   // 2.0: tramos ajustados a las 20 preguntas de Estándar (antes «casi perfecto» era inalcanzable y casi nadie bajaba de 15):
-  // 0-11 desastre · 12-14 mediocre · 15-17 bien · 18-19 casi perfecto · 20 perfecto.
-  if (percentage < 60) { categoryData = END_PHRASES.desastre; key = 'desastre'; }
-  else if (percentage < 75) { categoryData = END_PHRASES.mediocre; key = 'mediocre'; }
+  // 0-12 desastre · 13-15 mediocre · 16-17 bien · 18-19 casi perfecto · 20 perfecto.
+  if (percentage < 65) { categoryData = END_PHRASES.desastre; key = 'desastre'; }
+  else if (percentage < 80) {
+    // «Mediocre» se alcanza mucho más que «desastre»: comparte también las frases de desastre, para más variedad.
+    categoryData = { title: END_PHRASES.mediocre.title, phrases: END_PHRASES.mediocre.phrases.concat(END_PHRASES.desastre.phrases) };
+    key = 'mediocre';
+  }
   else if (percentage < 90) { categoryData = END_PHRASES.bien; key = 'bien'; }
   else if (percentage < 100) { categoryData = END_PHRASES.casi_perfecto; key = 'casi_perfecto'; }
   else { categoryData = END_PHRASES.perfecto; key = 'perfecto'; }
