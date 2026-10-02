@@ -14,8 +14,8 @@
   --se-gold-light: #e8c874;
   --se-gold-hair: rgba(201,153,46,.45);
   --se-gold-soft: rgba(201,153,46,.22);
-  --se-parch: #fffcf4;
-  --se-parch-2: #f7efdc;
+  --se-parch: #f4ecd8;
+  --se-parch-2: #e8dcc0;
   --se-ink-on-navy: #f6e6b8;
 }
 [data-theme="dark"] {
@@ -301,7 +301,7 @@ h3 .ui-btn-ico { width: 34px; height: 34px; vertical-align: middle; margin: -4px
 .result-chip-label { font-size: 11px; font-weight: 700; color: var(--text-muted, #6b7280); margin-left: -2px; white-space: nowrap; }
 
 /* ===== Home: botones grandes en azul noche con oro («Noche y oro») y acentos suaves en las tarjetas pequeñas ===== */
-.home-small-card { background: linear-gradient(var(--hc, #c9a227), var(--hc, #c9a227)) top / 100% 3px no-repeat, linear-gradient(180deg, color-mix(in srgb, var(--hc, #c9a227) 9%, #fffdf8), #faf3e6); }
+.home-small-card { background: linear-gradient(var(--hc, #c9a227), var(--hc, #c9a227)) top / 100% 3px no-repeat, linear-gradient(180deg, color-mix(in srgb, var(--hc, #c9a227) 9%, #f4ecd8), #e8dcc0); }
 .home-small-card .home-small-arrow { color: var(--hc, var(--brand-gold)); }
 .home-small-card .home-small-divider { background: var(--hc, var(--brand-gold)); }
 .home-card-stats { --hc: #3b6fd6; }
@@ -325,12 +325,12 @@ h3 .ui-btn-ico { width: 34px; height: 34px; vertical-align: middle; margin: -4px
 .modes-grid .mode-lucidez { --hc: #7c3aed; }
 #duel-home .seq-d-card:not(.seq-d-v-rank), #view-modes .modes-grid .mode-card {
   border: 1px solid color-mix(in srgb, var(--hc) 38%, transparent) !important;
-  background: linear-gradient(var(--hc), var(--hc)) top / 100% 3px no-repeat, linear-gradient(160deg, color-mix(in srgb, var(--hc) 11%, #fffdf8), #faf3e6) !important;
+  background: linear-gradient(var(--hc), var(--hc)) top / 100% 3px no-repeat, linear-gradient(160deg, color-mix(in srgb, var(--hc) 11%, #f4ecd8), #e8dcc0) !important;
 }
 [data-theme="dark"] #duel-home .seq-d-card:not(.seq-d-v-rank), [data-theme="dark"] #view-modes .modes-grid .mode-card {
   background: linear-gradient(var(--hc), var(--hc)) top / 100% 3px no-repeat, linear-gradient(160deg, color-mix(in srgb, var(--hc) 16%, var(--brand-cream)), var(--brand-cream-deep)) !important;
 }
-#view-modes .modes-grid .mode-card.locked { background: linear-gradient(color-mix(in srgb, var(--hc) 45%, transparent), color-mix(in srgb, var(--hc) 45%, transparent)) top / 100% 3px no-repeat, linear-gradient(160deg, color-mix(in srgb, var(--hc) 5%, #fffdf8), #f4eee2) !important; border-color: color-mix(in srgb, var(--hc) 18%, transparent) !important; }
+#view-modes .modes-grid .mode-card.locked { background: linear-gradient(color-mix(in srgb, var(--hc) 45%, transparent), color-mix(in srgb, var(--hc) 45%, transparent)) top / 100% 3px no-repeat, linear-gradient(160deg, color-mix(in srgb, var(--hc) 5%, #f4ecd8), #dfd3b4) !important; border-color: color-mix(in srgb, var(--hc) 18%, transparent) !important; }
 
 .home-big-card.home-card-jugar, .home-big-card.home-card-duelo {
   background: linear-gradient(160deg, #1b2650, #0e1630 70%);

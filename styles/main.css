@@ -1,10 +1,10 @@
 :root {
-  --bg: #f7f2e6; --card: #fffdf8; --text: #111827; --sub: #6b7280;
+  --bg: #e6dcc3; --card: #f4ecd8; --text: #111827; --sub: #6b7280;
   --primary: #2563eb; --primary-hover: #1d4ed8; --border: #d1d5db;
   --ok-bg: #dcfce7; --ok-txt: #166534; --bad-bg: #fee2e2; --bad-txt: #991b1b;
   --wsp: #25d366; --wsp-hover: #1da851; --danger-bg: #fee2e2; --danger-txt: #991b1b;
   --danger-hover: #fecaca;
-  --badge-bg: #f6efe0; --badge-border: #e8dfc9;
+  --badge-bg: #ebe0c6; --badge-border: #d9ccab;
 
   /* ===== Atmósfera cálida del modo claro (v1.4) =====
      Capa ambiental muy sutil (halos dorados/crema) que se aplica al fondo
@@ -91,8 +91,8 @@
      Profundidad: --shadow-soft (ligera) / -card (media) / -elevated (importante). */
   --brand-navy: #16244a;
   --brand-navy-deep: #16244a;
-  --brand-cream: #faf3e6;
-  --brand-cream-deep: #f1e6d2;
+  --brand-cream: #f4ecd8;
+  --brand-cream-deep: #e8dcc0;
   --brand-gold: #c9992e;
   --brand-gold-light: #e8c874;
   --brand-purple: #5b2e8f;
@@ -4358,7 +4358,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   position: relative;
   margin: -24px -24px -24px -24px;
   padding: 34px 22px 26px;
-  background: radial-gradient(120% 65% at 50% 0%, #fffaf0 0%, var(--brand-cream) 45%, var(--brand-cream-deep) 100%);
+  background: radial-gradient(120% 65% at 50% 0%, #f8f1de 0%, var(--brand-cream) 45%, var(--brand-cream-deep) 100%);
 }
 
 .home-header {
@@ -4426,7 +4426,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 }
 .home-big-icon {
   width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0; padding: 8px;
-  background: radial-gradient(circle at 35% 30%, #fffaf0, #f1e6d2 80%);
+  background: radial-gradient(circle at 35% 30%, #f8f1de, #e3d6b8 80%);
   border: 3px solid var(--brand-gold);
   box-shadow: 0 6px 14px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,.5);
   display: flex; align-items: center; justify-content: center;
@@ -4444,7 +4444,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 
 .home-small-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 22px; }
 .home-small-card {
-  background: linear-gradient(180deg, #fffdf8, #faf3e6); text-align: center;
+  background: linear-gradient(180deg, #f4ecd8, #e8dcc0); text-align: center;
   border: 1px solid var(--color-border-accent); border-radius: var(--radius-md);
   padding: 18px 8px 14px; cursor: pointer; touch-action: manipulation;
   display: flex; flex-direction: column; align-items: center; position: relative;
