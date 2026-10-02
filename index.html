@@ -2751,7 +2751,7 @@ const LOCKABLE_MODE_UI = [
     cardId: 'mode-card-lucidez_mental', badgeId: 'lock-badge-lucidez_mental', descId: 'mode-desc-lucidez-mental', reqId: 'mode-req-lucidez_mental',
     titleId: 'mode-title-lucidez-mental', lockedTitle: 'MODO SECRETO', unlockedTitle: 'LUCIDEZ MENTAL',
     baseDesc: 'El desafío definitivo te espera.',
-    unlockedDesc: (s) => `<div class="lucidez-phase-line"><strong>FASE I</strong> · 10 preguntas · mínimo 6 aciertos</div><div class="lucidez-phase-line"><strong>FASE II</strong> · 5 preguntas + 5 cálculos · ${LUCIDEZ_BASE_LIVES} vidas · las preguntas desaparecen a los 3 s</div><div class="lucidez-phase-line"><strong>FASE III</strong> · 9 preguntas · 45 s · −2 s por fallo · mínimo 5 aciertos</div><div class="lucidez-phase-line lucidez-phase-final"><strong>ENIGMA FINAL</strong> · 60 s para resolver el enigma final. ¿Lo conseguirás?</div>${getLucidezBonusLives(s) > 0 ? `<div class="lucidez-phase-line">${seqIco('escudo')}<strong>${getLucidezBonusLives(s)} ${getLucidezBonusLives(s) === 1 ? 'error extra' : 'errores extra'}</strong> en toda la partida (fases y enigma)</div>` : ''}`,
+    unlockedDesc: (s) => `<div class="lucidez-phase-line"><strong>FASE I</strong> · 10 preguntas · mínimo 6 aciertos</div><div class="lucidez-phase-line"><strong>FASE II</strong> · 5 preguntas + 5 cálculos · ${LUCIDEZ_BASE_LIVES} vidas · las preguntas desaparecen a los 3 s</div><div class="lucidez-phase-line"><strong>FASE III</strong> · 9 preguntas · ${LUCIDEZ_PHASE3_SECONDS} s · −2 s por fallo · mínimo 5 aciertos</div><div class="lucidez-phase-line lucidez-phase-final"><strong>ENIGMA FINAL</strong> · 60 s para resolver el enigma final. ¿Lo conseguirás?</div>${getLucidezBonusLives(s) > 0 ? `<div class="lucidez-phase-line">${seqIco('escudo')}<strong>${getLucidezBonusLives(s)} ${getLucidezBonusLives(s) === 1 ? 'error extra' : 'errores extra'}</strong> en toda la partida (fases y enigma)</div>` : ''}`,
     reqText: s => `Consigue ${FRAGMENT_TARGET} Fragmentos de Mente para desbloquear este modo (${getFragmentCount(s)}/${FRAGMENT_TARGET})`,
     isUnlocked: s => getFragmentCount(s) >= FRAGMENT_TARGET
   }
@@ -3747,7 +3747,7 @@ function renderLucidezQuestion(preserveAnswered = false, isResume = false) {
     };
     // Capítulo nuevo: al entrar en la Fase III (y solo entonces, nunca al
     // reanudar) mostramos la transición narrativa antes de arrancar el
-    // temporizador de 45s.
+    // temporizador de la Fase III.
     if (idx === 20 && !isResume) {
       showLucidezStoryOverlay(LUCIDEZ_PHASE_COPY[3].icon, LUCIDEZ_PHASE_COPY[3].label, LUCIDEZ_PHASE_COPY[3].sub, '', 2300, enterPhase3, 'phase3');
     } else {
@@ -3902,8 +3902,8 @@ function renderLucidezPhase2Question(preserveAnswered = false, item, isResume = 
 function startLucidezPhase3Timer(resetTime = true) {
   if (lucidezPhase3Timer) { clearInterval(lucidezPhase3Timer); lucidezPhase3Timer = null; }
   if (resetTime) {
-    lucidezPhase3EndTime = Date.now() + 45000;
-    lucidezPhase3SecondsLeft = 45;
+    lucidezPhase3EndTime = Date.now() + LUCIDEZ_PHASE3_SECONDS * 1000;
+    lucidezPhase3SecondsLeft = LUCIDEZ_PHASE3_SECONDS;
   }
 
   const tick = () => {
@@ -4518,7 +4518,9 @@ let lucidezPhase3EndTime = 0;
 // Marca de tiempo absoluta del bloqueo de 3s de Fase II (lectura antes de
 // poder responder). Ver renderLucidezPhase2Calc/Question.
 let lucidezPhase2RevealEndTime = 0;
-let lucidezPhase3SecondsLeft = 45;
+// Tiempo de la Fase III de Lucidez Mental (2.1: de 45 a 120 s). El Worker tiene el mismo valor en LUCIDEZ_RETO.p3.clock (src/reto-modes.js).
+const LUCIDEZ_PHASE3_SECONDS = 120;
+let lucidezPhase3SecondsLeft = LUCIDEZ_PHASE3_SECONDS;
 let lucidezFinalTimer = null;
 let lucidezFinalEndTime = 0;
 // Tiempo para resolver el enigma final de Lucidez Mental (2.0: de 30 a 60 s, para pensarlo con calma).
