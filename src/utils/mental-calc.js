@@ -380,7 +380,7 @@ const SEQMentalCalc = (function () {
     if (acc >= 0.7) return 0;                                                    // rápido pero con algún fallo: no se sube
     return -Math.min(8, Math.round((0.7 - acc) * 20));                           // varios fallos: baja
   }
-  function createSession(rng) { return { rng: rng || null, recent: [], bag: [], types: [], perf: [], carry: 0, noAdapt: false }; }
+  function createSession(rng) { return { rng: rng || null, recent: [], bag: [], types: [], perf: [], carry: 0, noAdapt: false, cap: 92 }; }
   // Tipo de operación con una bolsa (2 de cada) → reparto equilibrado; nunca 3 seguidas del mismo.
   function nextType(s) {
     if (!s.bag.length) {
@@ -404,7 +404,7 @@ const SEQMentalCalc = (function () {
     var r = rnd(rng);
     if (r < 0.10) jitter -= 12; else if (r > 0.92) jitter += 8; // un respiro o un pico de vez en cuando
     var adj = (s && !s.noAdapt) ? performanceAdjust(s.perf) : 0;
-    return clamp(Math.round(base + jitter + adj), 8, 92);
+    return clamp(Math.round(base + jitter + adj), 8, s && s.cap ? s.cap : 92);
   }
   function nextOperation(s, opts) {
     var streak = opts && opts.streak ? opts.streak : 0;
@@ -422,9 +422,11 @@ const SEQMentalCalc = (function () {
   }
   // Secuencia fija de `count` operaciones, sin adaptación (la usa el Worker para los Retos: los dos jugadores juegan lo mismo).
   // La posición hace de «racha» (juego perfecto): la dificultad sube de forma suave a lo largo de la secuencia.
-  function buildSequence(count, rng) {
+  // `cap` (opcional): dificultad máxima a la que se pide; los Retos la limitan para que la parte final no sea más dura que el antiguo «difícil».
+  function buildSequence(count, rng, cap) {
     var s = createSession(rng), out = [];
     s.noAdapt = true;
+    if (cap) s.cap = cap;
     for (var i = 0; i < count; i++) out.push(nextOperation(s, { streak: i }));
     return out;
   }

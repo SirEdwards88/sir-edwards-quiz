@@ -130,6 +130,14 @@ test('buildSequence: determinista por semilla, 150 operaciones, sin adaptación 
   assert.ok(mean(a.slice(0, 10).map((o) => o.difficulty)) < mean(a.slice(40, 50).map((o) => o.difficulty)));
 });
 
+test('buildSequence con tope: la dificultad se estabiliza y no lo supera de forma notable', () => {
+  const seq = M.buildSequence(150, mulberry32(5), 64);
+  assert.ok(seq.every((o) => o.difficulty <= 74), 'ninguna muy por encima del tope');
+  const late = seq.slice(50).map((o) => o.difficulty);
+  assert.ok(mean(late) > 52 && mean(late) < 66, 'media final ' + mean(late));
+  assert.ok(mean(seq.slice(0, 8).map((o) => o.difficulty)) < mean(seq.slice(25, 35).map((o) => o.difficulty)));
+});
+
 test('puntuación existente: puntos base 10/20/35, bonus de velocidad y de racha intactos; temporizador intacto', () => {
   assert.equal(M.basePoints(5), 10); assert.equal(M.basePoints(20), 10);
   assert.equal(M.basePoints(45), 20); assert.equal(M.basePoints(75), 35); assert.equal(M.basePoints(100), 35);
