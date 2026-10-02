@@ -182,7 +182,7 @@
   }
   function characterImage(key) {
     var base = CHARACTER_ASSETS[key]; if (!base) return Promise.resolve(null);
-    return loadImage([base + '.webp', base + '.png']);
+    return loadImage([base + '.webp']);
   }
   function avatarImage(value) {
     var entry = null;

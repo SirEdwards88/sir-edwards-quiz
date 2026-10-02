@@ -28,7 +28,7 @@
 // cambiaron index.html, styles/main.css, manifest.json y los 4 PNG de
 // icons/ (el sombrero oficial sustituye al icono "SE"). Nuevos en el shell:
 // los PNG de favicon/apple-touch-icon y los assets estáticos del personaje
-// (assets/character/, PNG + WebP). Estrategia de caché intacta.
+// (assets/character/, solo WebP). Estrategia de caché intacta.
 // 2.0 (Prompt 1.5, corrección de uso de los assets de Lucidez): subido de 8
 // a 9; cambiaron index.html y styles/main.css (el retrato pasa a ir debajo
 // del título/frase en las 4 transiciones, y se retira por completo de la
@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 112;
+const CACHE_VERSION = 113;
 const CACHE_NAME = `sedq-shell-v${CACHE_VERSION}`;
 
 // Rutas relativas al propio sw.js (que vive en la raíz de la app, tanto en
