@@ -7,8 +7,8 @@ const SUDDEN_SHAPE = [
   'facil', 'facil', 'facil', 'facil', 'facil',          //  1-5   fácil
   'facil', 'medio', 'facil', 'medio', 'facil',          //  6-10  de fácil a media
   'medio', 'facil', 'medio', 'facil', 'medio',          // 11-15  media (con alguna fácil)
-  'medio', 'medio', 'medio', 'dificil', 'medio',        // 16-20  de media a difícil
-  'dificil', 'dificil', 'medio', 'dificil', 'dificil',  // 21-25  difícil (con una media)
+  'medio', 'dificil', 'medio', 'dificil', 'medio',      // 16-20  de media a difícil
+  'dificil', 'medio', 'dificil', 'medio', 'dificil',    // 21-25  difícil (con alguna media)
   'dificil', 'dificil', 'dificil', 'dificil', 'dificil' // 26-30  difícil
 ];
 const SUDDEN_TRAMOS = [
