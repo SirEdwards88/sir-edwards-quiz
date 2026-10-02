@@ -1086,6 +1086,7 @@ try {
 <script src="src/ui/a11y.js?v=119"></script>
 <script src="src/ui/game-fx.js?v=119"></script>
 <script src="src/ui/last-life.js?v=119"></script>
+<script src="src/ui/hitos.js?v=119"></script>
 <script src="src/ui/achievements.js?v=119"></script>
 <script src="src/ui/stats-extra.js?v=119"></script>
 <script src="src/ui/intro.js?v=119"></script>
@@ -5225,6 +5226,7 @@ function startModeImpl(mode, count, customPool) {
   // Imparable" o "Sin Frenos".
   resetStreak();
   SEQLastLife.reset();
+  SEQHitos.reset(mode);
   currentGame = { 
     mode, queue, currentIdx: 0, score: 0, answered: false, 
     totalQuestionsToPlay: customPool ? customPool.length : count,
@@ -5540,6 +5542,7 @@ function renderQuestion(preserveAnswered = false) {
     document.getElementById('bar-fill').style.width = ((currentGame.currentIdx) / totalQ) * 100 + '%';
   }
   SEQLastLife.decorate(currentGame);
+  SEQHitos.check(currentGame);
   
   currentGame.answered = preserveAnswered ? !!currentGame.answered : false;
   // No enfocamos el input de texto en preguntas tipo test: está oculto y

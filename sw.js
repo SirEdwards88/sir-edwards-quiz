@@ -63,6 +63,7 @@ const APP_SHELL = [
   './src/ui/install-app.js',
   './src/ui/game-fx.js',
   './src/ui/last-life.js',
+  './src/ui/hitos.js',
   './src/ui/achievements.js',
   './src/ui/stats-extra.js',
   './src/ui/intro.js',
@@ -282,6 +283,9 @@ const APP_SHELL = [
   './assets/character/lucidez-fase2.webp',
   './assets/character/lucidez-fase3.webp',
   './assets/character/lucidez-enigma.webp',
+  './assets/character/hito-barbilla.webp',
+  './assets/character/hito-monoculo.webp',
+  './assets/character/hito-manos.webp',
 ];
 
 // JS y CSS se piden desde index.html con ?v=<CACHE_VERSION> (ver scripts/bump-version.mjs): se precargan
