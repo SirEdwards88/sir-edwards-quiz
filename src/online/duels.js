@@ -773,11 +773,12 @@
       : (big ? 'assets/ui/sombrero-aplastado.webp' : 'assets/ui/bandera-blanca.webp');
     var charKey = res === 'win' ? 'victory' : res === 'loss' ? 'defeat' : 'victory';
     var title = kind === 'duel' ? 'Duelo online' : 'Reto · ' + retoModeName(d);
-    var unit = kind === 'reto' && d.modo && d.modo !== 'estandar' ? '' : ' / ' + num(d.n_preguntas || 20);
+    var unit = kind === 'reto' && d.modo && d.modo !== 'estandar' && d.modo !== 'muerte_subita' ? '' : ' / ' + num(d.n_preguntas || (d.modo === 'muerte_subita' ? 30 : 20));
+    var diffWord = d.modo === 'muerte_subita' ? (diff === 1 ? 'pregunta de diferencia' : 'preguntas de diferencia') : (diff === 1 ? 'acierto de diferencia' : 'aciertos de diferencia');
     var side = function (av, name, val, cls) {
       return '<div class="metric-box seq-d-mbox ' + cls + '"><div class="seq-d-mbox-av">' + av + '</div><div class="metric-value">' + val + '<small>' + esc(unit) + '</small></div><div class="metric-label">' + esc(name) + '</div></div>';
     };
-    var chips = res === 'draw' ? '' : '<div class="results-mode-chips show"><span class="result-chip"><span class="result-chip-icon">' + ico(res === 'win' ? 'copa' : 'duelo') + '</span><span class="result-chip-value">' + (res === 'win' ? '+' : '−') + diff + '</span><span class="result-chip-label">' + (diff === 1 ? 'acierto de diferencia' : 'aciertos de diferencia') + '</span></span></div>';
+    var chips = res === 'draw' ? '' : '<div class="results-mode-chips show"><span class="result-chip"><span class="result-chip-icon">' + ico(res === 'win' ? 'copa' : 'duelo') + '</span><span class="result-chip-value">' + (res === 'win' ? '+' : '−') + diff + '</span><span class="result-chip-label">' + diffWord + '</span></span></div>';
     var stamp = ({ win: ['VICTORIA', 'gold'], loss: ['DERROTA', 'fail'], draw: ['EMPATE', 'ok'] })[res];
     var h = '<div class="results-card seq-d-results seq-d-final duel-result-box ' + cls + '">' +
       '<div class="results-character show char-' + (res === 'draw' ? 'neutral' : charKey) + '" aria-hidden="true"><picture><source srcset="assets/character/' + charKey + '.webp" type="image/webp"><img src="assets/character/' + charKey + '.webp" alt="" draggable="false"></picture></div>' +

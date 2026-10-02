@@ -41,6 +41,7 @@ function getDefaultStore() {
     // Muerte Súbita ya no tiene 3 variantes de dificultad: es un único modo
     // de 30 preguntas con dificultad progresiva, así que un único contador basta.
     suddenWins: 0,
+    suddenBestSurvived: 0, // récord personal de Muerte Súbita (preguntas sobrevividas)
     maxTimeTrialScore: 0,
     lastGameAccuracy: 0,
     gameHistory: [],
@@ -201,6 +202,7 @@ function sanitizeStore(s) {
   s.survivalHumanoWins = asFiniteNonNegNumber(s.survivalHumanoWins);
   s.survivalDerrameWins = asFiniteNonNegNumber(s.survivalDerrameWins);
   s.suddenWins = asFiniteNonNegNumber(s.suddenWins);
+  s.suddenBestSurvived = asFiniteNonNegNumber(s.suddenBestSurvived);
   s.maxTimeTrialScore = asFiniteNonNegNumber(s.maxTimeTrialScore);
   s.lastGameAccuracy = asFiniteNonNegNumber(s.lastGameAccuracy);
   s.timeTrialBestStreak = asFiniteNonNegNumber(s.timeTrialBestStreak);

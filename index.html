@@ -47,10 +47,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles/main.css?v=113">
+<link rel="stylesheet" href="styles/main.css?v=115">
 <!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
-<link rel="stylesheet" href="styles/online.css?v=113">
-<link rel="stylesheet" href="styles/theme.css?v=113">
+<link rel="stylesheet" href="styles/online.css?v=115">
+<link rel="stylesheet" href="styles/theme.css?v=115">
 
 </head>
 <body class="on-home">
@@ -1031,29 +1031,30 @@ try {
 <!-- Fase 2: datos y constantes extraidos a modulos, cargados como scripts
      clasicos (no ES Modules) para conservar el scope global compartido con
      el script principal, sin convertir todavia la app a ES Modules. -->
-<script src="src/data/ui-maps.js?v=113"></script>
-<script src="src/data/questions.js?v=113"></script>
-<script src="src/data/phrases.js?v=113"></script>
-<script src="src/data/duel-phrases.js?v=113"></script>
-<script src="src/data/lucidez.js?v=113"></script>
-<script src="src/data/medals.js?v=113"></script>
+<script src="src/data/ui-maps.js?v=115"></script>
+<script src="src/data/questions.js?v=115"></script>
+<script src="src/data/phrases.js?v=115"></script>
+<script src="src/data/duel-phrases.js?v=115"></script>
+<script src="src/data/lucidez.js?v=115"></script>
+<script src="src/data/medals.js?v=115"></script>
 <!-- Prompt 3 — Fase C: sistema de avatares compartido (window.SEQAvatars). Debe
      cargarse antes de src/online/online.js y src/online/duels.js: ambos lo
      consumen en vez de mantener cada uno su propia copia de la lista. -->
-<script src="src/data/avatars.js?v=113"></script>
-<script src="src/share/share-card.js?v=113"></script>
+<script src="src/data/avatars.js?v=115"></script>
+<script src="src/share/share-card.js?v=115"></script>
 
 <!-- Fase 3 (Lote 3A): motor de coincidencia de respuestas extraido a
      src/utils/matching.js, mismo criterio que la Fase 2 (script clasico,
      sin ES Modules todavia). -->
-<script src="src/utils/matching.js?v=113"></script>
+<script src="src/utils/matching.js?v=115"></script>
+<script src="src/utils/sudden-progression.js?v=115"></script>
 
 <!-- Fase 3 (Lote 3B): nucleo algoritmico de Duelo extraido a
      src/utils/duel.js, mismo criterio que el resto (script clasico, sin
      ES Modules todavia). Las dependencias compartidas con otros modos
      (arrangeStandardBlock, generateMentalCalcOp, generateLucidezMentalOp)
      permanecen en este script principal, sin moverse en este lote. -->
-<script src="src/utils/duel.js?v=113"></script>
+<script src="src/utils/duel.js?v=115"></script>
 
 <!-- Fase 3 (Lote 3C): defaults, migracion y saneamiento del Store
      extraidos a src/utils/store.js, mismo criterio que el resto (script
@@ -1065,41 +1066,41 @@ try {
      getLevelData) y las 8 funciones de persistencia real (loadStore,
      saveStore, exportProgress...) permanecen en este script principal,
      sin moverse en este lote. -->
-<script src="src/utils/store.js?v=113"></script>
+<script src="src/utils/store.js?v=115"></script>
 
 <!-- Fase 4B: fachada de estado de solo lectura (getStore/getCurrentGame),
      mismo criterio que el resto (script clasico, sin ES Modules todavia).
      No copia, no transforma, no cachea. Ver src/state/read-facade.js. -->
-<script src="src/state/read-facade.js?v=113"></script>
+<script src="src/state/read-facade.js?v=115"></script>
 
 <!-- Fase 4C: helpers minimos de escritura (pushCapped, resetStreak) para
      eliminar 2 duplicaciones reales concretas -- no un sistema de
      mutaciones. Ver src/state/write-helpers.js y CHANGELOG_FASE4C.md. -->
-<script src="src/state/write-helpers.js?v=113"></script>
+<script src="src/state/write-helpers.js?v=115"></script>
 
 <!-- v1.4: capa online (cuenta Google, sincronización, migración, ranking).
      config.js es PÚBLICO (URL del Worker + Client ID de Google); si está
      vacío, la capa online queda desactivada y la app es idéntica a la v1.3.
      online.js solo usa el store/funciones del juego en tiempo de ejecución. -->
-<script src="src/ui/install-app.js?v=113"></script>
-<script src="src/ui/a11y.js?v=113"></script>
-<script src="src/ui/game-fx.js?v=113"></script>
-<script src="src/ui/achievements.js?v=113"></script>
-<script src="src/ui/stats-extra.js?v=113"></script>
-<script src="src/ui/intro.js?v=113"></script>
-<script src="src/ui/mode-badges.js?v=113"></script>
-<script src="src/ui/lucidez-ui.js?v=113"></script>
-<script src="src/ui/sabias.js?v=113"></script>
-<script src="src/ui/icons.js?v=113"></script>
-<script src="src/online/config.js?v=113"></script>
+<script src="src/ui/install-app.js?v=115"></script>
+<script src="src/ui/a11y.js?v=115"></script>
+<script src="src/ui/game-fx.js?v=115"></script>
+<script src="src/ui/achievements.js?v=115"></script>
+<script src="src/ui/stats-extra.js?v=115"></script>
+<script src="src/ui/intro.js?v=115"></script>
+<script src="src/ui/mode-badges.js?v=115"></script>
+<script src="src/ui/lucidez-ui.js?v=115"></script>
+<script src="src/ui/sabias.js?v=115"></script>
+<script src="src/ui/icons.js?v=115"></script>
+<script src="src/online/config.js?v=115"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
-<script src="src/utils/sync-merge.js?v=113"></script>
-<script src="src/online/data-sync.js?v=113"></script>
-<script src="src/online/online.js?v=113"></script>
+<script src="src/utils/sync-merge.js?v=115"></script>
+<script src="src/online/data-sync.js?v=115"></script>
+<script src="src/online/online.js?v=115"></script>
 <!-- v1.5: Amigos, Duelo online y Retos. El servidor decide preguntas, tiempo, aciertos y ganador. -->
-<script src="src/online/duels.js?v=113"></script>
+<script src="src/online/duels.js?v=115"></script>
 <!-- Audio: sonidos del juego (src/audio/audio.js) -->
-<script src="src/audio/audio.js?v=113"></script>
+<script src="src/audio/audio.js?v=115"></script>
 
 <script>
 function closeWelcomeModal() {
@@ -4874,14 +4875,18 @@ function buildSuddenDeathQueue(count) {
     medio: TEST_QUESTIONS.filter(q => q.dif === 'medio'),
     dificil: TEST_QUESTIONS.filter(q => q.dif === 'dificil'),
   };
-  const blockSize = Math.floor(count / 3) || 1;
-  const lastBlockSize = count - blockSize * 2;
+  // Dificultad progresiva pregunta a pregunta (ver src/utils/sudden-progression.js): se piden de golpe las
+  // preguntas de cada dificultad (la bolsa evita repetir dentro de la partida) y se colocan según la forma.
+  const shape = Array.from({ length: count }, (_, i) => SUDDEN_SHAPE[Math.min(i, SUDDEN_SHAPE.length - 1)]);
+  const need = { facil: 0, medio: 0, dificil: 0 };
+  shape.forEach(d => { need[d]++; });
   const recentCategories = [];
-  const queue = [];
-  queue.push(...pickDiverseFromBag('facil', pools.facil, blockSize, recentCategories));
-  queue.push(...pickDiverseFromBag('medio', pools.medio, blockSize, recentCategories));
-  queue.push(...pickDiverseFromBag('dificil', pools.dificil, lastBlockSize, recentCategories));
-  return queue.slice(0, count);
+  const picked = {
+    facil: pickDiverseFromBag('facil', pools.facil, need.facil, recentCategories),
+    medio: pickDiverseFromBag('medio', pools.medio, need.medio, recentCategories),
+    dificil: pickDiverseFromBag('dificil', pools.dificil, need.dificil, recentCategories),
+  };
+  return shape.map(d => picked[d].shift()).filter(Boolean);
 }
 
 function registerRecentQuestions(queue) {
@@ -5916,6 +5921,11 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     if (currentGame.mode === 'sudden_death' && currentGame.score === totalQ && !isGameOverDueToFailure) {
       store.suddenWins = (store.suddenWins || 0) + 1;
     }
+    // Récord personal de Muerte Súbita: preguntas sobrevividas (aciertos antes del fallo, o las 30).
+    if (currentGame.mode === 'sudden_death' && currentGame.score > (store.suddenBestSurvived || 0)) {
+      store.suddenBestSurvived = currentGame.score;
+      currentGame.isNewRecord = true;
+    }
   }
 
   // ⚔️ Duelo: los logros y desbloqueos GENERALES de JUGAR nunca se evalúan
@@ -6078,8 +6088,11 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
       { icon: '🔥', label: 'Racha máxima', short: 'racha', value: `${currentGame.sessionBestStreak || 0}`, accent: '#b45309' }
     ]);
   } else if (currentGame.mode === 'sudden_death') {
+    // Distancia alcanzada: el tramo de dificultad donde cayó (o el último si completó las 30) y el récord.
+    const suddenReached = Math.min(currentGame.score + (isGameOverDueToFailure ? 1 : 0), 30);
     renderModeChips([
-      { icon: '🔥', label: 'Racha máxima', short: 'racha', value: `${currentGame.sessionBestStreak || 0}`, accent: '#dc2626' }
+      { icon: '🎯', label: 'Tramo de dificultad alcanzado', short: 'tramo', value: suddenTramoName(suddenReached), accent: '#dc2626' },
+      { icon: '🏅', label: 'Récord personal', short: 'récord', value: `${store.suddenBestSurvived || 0}`, accent: '#dc2626' }
     ]);
   } else if (currentGame.mode === 'timetrial') {
     renderModeChips([
@@ -6102,6 +6115,8 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   // Reconocimiento especial, solo si procede: prioriza el récord numérico
   // del modo (Contrarreloj/Cálculo Mental) y, si no aplica, la racha global.
   if (currentGame.mode === 'timetrial' && currentGame.isNewRecord) {
+    renderRecordBadge(seqIco('copa') + 'NUEVO RÉCORD', 'gold');
+  } else if (currentGame.mode === 'sudden_death' && currentGame.isNewRecord) {
     renderRecordBadge(seqIco('copa') + 'NUEVO RÉCORD', 'gold');
   } else if (currentGame.mode === 'mental_calc' && currentGame.isNewRecord) {
     renderRecordBadge(seqIco('copa') + 'NUEVO RÉCORD', 'gold');
