@@ -73,3 +73,14 @@ test('Estándar: tramos de resultado para 20 preguntas (casi perfecto alcanzable
   assert.deepEqual([18, 19].map(key), ['casi_perfecto', 'casi_perfecto']);
   assert.equal(key(20), 'perfecto');
 });
+
+test('sync-merge: «gana el más reciente» de verdad (la marca de tiempo no se recorta a 1e9)', () => {
+  const c = vm.createContext({});
+  vm.runInContext(read('src/utils/sync-merge.js') + ';globalThis.M=SEQSyncMerge', c);
+  const M = c.M, now = Date.now();
+  const mk = (t, f) => ({ v: 1, f: {}, g: { learning: { t, v: { failedQuestions: f } } } });
+  const viejo = M.sanitizeDoc(mk(now - 86400000, [3, 4])), nuevo = M.sanitizeDoc(mk(now, [21, 22]));
+  assert.ok(nuevo.g.learning.t > viejo.g.learning.t, 'las marcas de tiempo conservan el orden');
+  assert.deepEqual(JSON.parse(JSON.stringify(M.mergeDocs(viejo, nuevo).g.learning.v.failedQuestions)), [21, 22]);
+  assert.deepEqual(JSON.parse(JSON.stringify(M.mergeDocs(nuevo, viejo).g.learning.v.failedQuestions)), [21, 22], 'sin depender del orden de los argumentos');
+});

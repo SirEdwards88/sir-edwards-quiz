@@ -123,7 +123,10 @@ const SEQSyncMerge = (function () {
       }
     }
     if (!Object.keys(v).length) return null;
-    return { t: Math.min(cleanNum(g.t), 1e13), v: v };
+    // `t` es una marca de tiempo en ms (~1,7e12): NO puede pasar por cleanNum (tope 1e9), porque dejaba a todos los
+    // grupos con el mismo `t` y el «gana el más reciente» se decidía por el contenido, no por la fecha (v2.0).
+    const tt = Number(g.t);
+    return { t: isFinite(tt) && tt > 0 ? Math.min(Math.floor(tt), 1e13) : 0, v: v };
   }
 
   // ---- saneado de un documento entero (todo lo que llega del cliente pasa por aquí) ---------
