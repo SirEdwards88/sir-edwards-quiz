@@ -31,7 +31,7 @@ const MODE_IDENTITY = {
 };;
 
 const RESULT_MOOD_ICONS = {
-  desastre: '💀', suspenso: '😬', mediocre: '😐', bien: '🙂',
+  desastre: '💀', suspenso: '😬', mediocre: '💀', bien: '🙂',   // mediocre también con el sombrero pisado
   casi_perfecto: '😏', perfecto: '🏆',
   win: '🏆', fail_desastre: '💀', fail_regular: '💔',
   timetrial: '⚡', review: '🧠', mentalcalc: '🔢'

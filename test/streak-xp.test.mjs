@@ -57,3 +57,17 @@ test('Repaso no tiene racha: updateAnswerStreak sale pronto y no toca récords',
   const body = html.slice(i, html.indexOf('\n}\n', i));
   assert.match(body, /currentGame\.mode === 'review'[\s\S]*?return;[\s\S]*?answerStreak\+\+/, 'el early return de Repaso va antes de contar la racha');
 });
+
+test('Estándar: tramos de resultado para 20 preguntas (casi perfecto alcanzable)', () => {
+  const html = read('index.html');
+  const i = html.indexOf('function getResultData');
+  const src = html.slice(i, html.indexOf('\n}\n', i) + 3);
+  const c = vm.createContext({ END_PHRASES: Object.fromEntries(['desastre', 'mediocre', 'bien', 'casi_perfecto', 'perfecto'].map(k => [k, { title: k, phrases: ['x'] }])), pickRotatingPhrase: (k, p) => p[0] });
+  vm.runInContext(src + ';globalThis.f = getResultData;', c);
+  const key = (n) => c.f(n, 20).key;
+  assert.deepEqual([0, 11].map(key), ['desastre', 'desastre']);
+  assert.deepEqual([12, 14].map(key), ['mediocre', 'mediocre']);
+  assert.deepEqual([15, 17].map(key), ['bien', 'bien']);
+  assert.deepEqual([18, 19].map(key), ['casi_perfecto', 'casi_perfecto']);
+  assert.equal(key(20), 'perfecto');
+});
