@@ -1047,11 +1047,12 @@ try {
 <script src="src/utils/matching.js?v=127"></script>
 <script src="src/utils/sudden-progression.js?v=127"></script>
 <script src="src/utils/fresh-first.js?v=127"></script>
+<script src="src/utils/mental-calc.js?v=127"></script>
 
 <!-- Fase 3 (Lote 3B): nucleo algoritmico de Duelo extraido a
      src/utils/duel.js, mismo criterio que el resto (script clasico, sin
      ES Modules todavia). Las dependencias compartidas con otros modos
-     (arrangeStandardBlock, generateMentalCalcOp, generateLucidezMentalOp)
+     (arrangeStandardBlock, generateLucidezMentalOp)
      permanecen en este script principal, sin moverse en este lote. -->
 <script src="src/utils/duel.js?v=127"></script>
 
@@ -4529,6 +4530,7 @@ let mentalCalcTimer = null;
 let mentalCalcEndTime = 0;
 let mentalCalcSecondsLeft = 60;
 let currentMentalOp = null;
+let mentalCalcSession = null; // memoria de operaciones recientes y rendimiento (src/utils/mental-calc.js)
 let mentalCalcAutoCheckTimer = null;
 let lucidezPhase3Timer = null;
 let lucidezPhase3EndTime = 0;
@@ -4934,41 +4936,7 @@ function randInt(min, max, rng) {
   return Math.floor(r * (max - min + 1)) + min;
 }
 
-// Genera una operación de cálculo mental según el tramo de dificultad.
-// El resultado de las divisiones siempre es un entero exacto.
-// `rng` opcional (ver randInt): permite generar la misma operación de forma
-// determinista para Duelo.
-function generateMentalCalcOp(tier, rng) {
-  const ops = ['+', '-', '×', '÷'];
-  const op = ops[randInt(0, 3, rng)];
-  let a, b, answer, text;
-
-  if (tier === 'easy') {
-    if (op === '+') { a = randInt(10, 60, rng); b = randInt(10, 40, rng); }
-    else if (op === '-') { a = randInt(30, 99, rng); b = randInt(5, a - 1, rng); }
-    else if (op === '×') { a = randInt(2, 9, rng); b = randInt(2, 9, rng); }
-    else { b = randInt(2, 9, rng); answer = randInt(2, 9, rng); a = b * answer; }
-  } else if (tier === 'medium') {
-    if (op === '+') { a = randInt(80, 500, rng); b = randInt(50, 400, rng); }
-    else if (op === '-') { a = randInt(200, 900, rng); b = randInt(50, a - 1, rng); }
-    else if (op === '×') { a = randInt(11, 25, rng); b = randInt(2, 9, rng); }
-    else { b = randInt(6, 12, rng); answer = randInt(6, 15, rng); a = b * answer; }
-  } else {
-    if (op === '+') { a = randInt(400, 2000, rng); b = randInt(200, 1500, rng); }
-    else if (op === '-') { a = randInt(800, 3000, rng); b = randInt(100, a - 1, rng); }
-    else if (op === '×') { a = randInt(12, 29, rng); b = randInt(11, 19, rng); }
-    else { b = randInt(8, 17, rng); answer = randInt(8, 20, rng); a = b * answer; }
-  }
-
-  if (op === '÷') {
-    text = `${a} ÷ ${b}`;
-  } else {
-    answer = op === '+' ? a + b : op === '-' ? a - b : a * b;
-    text = `${a} ${op} ${b}`;
-  }
-
-  return { text, answer, tier };
-}
+// Las operaciones de Cálculo Mental las genera src/utils/mental-calc.js (dificultad real + progresión por racha).
 
 function startMentalCalcMode() {
   if (!(store.unlockedMedals || []).includes('tt_15')) {
@@ -5001,6 +4969,7 @@ function startMentalCalcModeImpl() {
     totalTimeMs: 0
   };
 
+  mentalCalcSession = SEQMentalCalc.createSession();
   mentalCalcSecondsLeft = 60;
   mentalCalcEndTime = Date.now() + MENTALCALC_START_MS;
 
@@ -5057,8 +5026,8 @@ function updateMentalCalcHeader() {
 function renderMentalCalcOp(preserveOp = false) {
   clearTimeout(mentalCalcAutoCheckTimer);
   if (!preserveOp || !currentMentalOp) {
-    const tier = currentGame.streak >= 15 ? 'hard' : currentGame.streak >= 5 ? 'medium' : 'easy';
-    currentMentalOp = generateMentalCalcOp(tier);
+    if (!mentalCalcSession) mentalCalcSession = SEQMentalCalc.createSession();
+    currentMentalOp = SEQMentalCalc.nextOperation(mentalCalcSession, { streak: currentGame.streak });
     currentMentalOp.startedAt = Date.now();
   }
 
@@ -5116,6 +5085,7 @@ function checkMentalCalcAnswer() {
 
   const elapsedMs = Date.now() - currentMentalOp.startedAt;
   currentGame.totalTimeMs += elapsedMs;
+  if (mentalCalcSession && Number.isFinite(currentMentalOp.difficulty)) SEQMentalCalc.recordResult(mentalCalcSession, currentMentalOp, correct, elapsedMs);
 
   const fb = document.getElementById('feedback');
   fb.style.display = 'block';
@@ -5131,7 +5101,7 @@ function checkMentalCalcAnswer() {
       store.mentalCalcTotalCorrect = (store.mentalCalcTotalCorrect || 0) + 1;
     }
 
-    const basePoints = { easy: 10, medium: 20, hard: 35 }[currentMentalOp.tier];
+    const basePoints = Number.isFinite(currentMentalOp.difficulty) ? SEQMentalCalc.basePoints(currentMentalOp.difficulty) : { easy: 10, medium: 20, hard: 35 }[currentMentalOp.tier];
     // Bonus de velocidad continuo: crece de forma progresiva según el
     // tiempo de respuesta, hasta un máximo de +18 puntos a velocidad máxima.
     const speedBonus = Math.max(0, Math.round((6000 - Math.min(elapsedMs, 6000)) * 3 / 1000));
