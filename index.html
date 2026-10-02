@@ -47,10 +47,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles/main.css?v=121">
+<link rel="stylesheet" href="styles/main.css?v=122">
 <!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
-<link rel="stylesheet" href="styles/online.css?v=121">
-<link rel="stylesheet" href="styles/theme.css?v=121">
+<link rel="stylesheet" href="styles/online.css?v=122">
+<link rel="stylesheet" href="styles/theme.css?v=122">
 
 </head>
 <body class="on-home">
@@ -1029,30 +1029,30 @@ try {
 <!-- Fase 2: datos y constantes extraidos a modulos, cargados como scripts
      clasicos (no ES Modules) para conservar el scope global compartido con
      el script principal, sin convertir todavia la app a ES Modules. -->
-<script src="src/data/ui-maps.js?v=121"></script>
-<script src="src/data/questions.js?v=121"></script>
-<script src="src/data/phrases.js?v=121"></script>
-<script src="src/data/duel-phrases.js?v=121"></script>
-<script src="src/data/lucidez.js?v=121"></script>
-<script src="src/data/medals.js?v=121"></script>
+<script src="src/data/ui-maps.js?v=122"></script>
+<script src="src/data/questions.js?v=122"></script>
+<script src="src/data/phrases.js?v=122"></script>
+<script src="src/data/duel-phrases.js?v=122"></script>
+<script src="src/data/lucidez.js?v=122"></script>
+<script src="src/data/medals.js?v=122"></script>
 <!-- Prompt 3 — Fase C: sistema de avatares compartido (window.SEQAvatars). Debe
      cargarse antes de src/online/online.js y src/online/duels.js: ambos lo
      consumen en vez de mantener cada uno su propia copia de la lista. -->
-<script src="src/data/avatars.js?v=121"></script>
-<script src="src/share/share-card.js?v=121"></script>
+<script src="src/data/avatars.js?v=122"></script>
+<script src="src/share/share-card.js?v=122"></script>
 
 <!-- Fase 3 (Lote 3A): motor de coincidencia de respuestas extraido a
      src/utils/matching.js, mismo criterio que la Fase 2 (script clasico,
      sin ES Modules todavia). -->
-<script src="src/utils/matching.js?v=121"></script>
-<script src="src/utils/sudden-progression.js?v=121"></script>
+<script src="src/utils/matching.js?v=122"></script>
+<script src="src/utils/sudden-progression.js?v=122"></script>
 
 <!-- Fase 3 (Lote 3B): nucleo algoritmico de Duelo extraido a
      src/utils/duel.js, mismo criterio que el resto (script clasico, sin
      ES Modules todavia). Las dependencias compartidas con otros modos
      (arrangeStandardBlock, generateMentalCalcOp, generateLucidezMentalOp)
      permanecen en este script principal, sin moverse en este lote. -->
-<script src="src/utils/duel.js?v=121"></script>
+<script src="src/utils/duel.js?v=122"></script>
 
 <!-- Fase 3 (Lote 3C): defaults, migracion y saneamiento del Store
      extraidos a src/utils/store.js, mismo criterio que el resto (script
@@ -1064,44 +1064,44 @@ try {
      getLevelData) y las 8 funciones de persistencia real (loadStore,
      saveStore, exportProgress...) permanecen en este script principal,
      sin moverse en este lote. -->
-<script src="src/utils/store.js?v=121"></script>
+<script src="src/utils/store.js?v=122"></script>
 
 <!-- Fase 4B: fachada de estado de solo lectura (getStore/getCurrentGame),
      mismo criterio que el resto (script clasico, sin ES Modules todavia).
      No copia, no transforma, no cachea. Ver src/state/read-facade.js. -->
-<script src="src/state/read-facade.js?v=121"></script>
+<script src="src/state/read-facade.js?v=122"></script>
 
-<script src="src/utils/streak-xp.js?v=121"></script>
+<script src="src/utils/streak-xp.js?v=122"></script>
 <!-- Fase 4C: helpers minimos de escritura (pushCapped, resetStreak) para
      eliminar 2 duplicaciones reales concretas -- no un sistema de
      mutaciones. Ver src/state/write-helpers.js y CHANGELOG_FASE4C.md. -->
-<script src="src/state/write-helpers.js?v=121"></script>
+<script src="src/state/write-helpers.js?v=122"></script>
 
 <!-- v1.4: capa online (cuenta Google, sincronización, migración, ranking).
      config.js es PÚBLICO (URL del Worker + Client ID de Google); si está
      vacío, la capa online queda desactivada y la app es idéntica a la v1.3.
      online.js solo usa el store/funciones del juego en tiempo de ejecución. -->
-<script src="src/ui/install-app.js?v=121"></script>
-<script src="src/ui/a11y.js?v=121"></script>
-<script src="src/ui/game-fx.js?v=121"></script>
-<script src="src/ui/last-life.js?v=121"></script>
-<script src="src/ui/hitos.js?v=121"></script>
-<script src="src/ui/achievements.js?v=121"></script>
-<script src="src/ui/stats-extra.js?v=121"></script>
-<script src="src/ui/intro.js?v=121"></script>
-<script src="src/ui/mode-badges.js?v=121"></script>
-<script src="src/ui/lucidez-ui.js?v=121"></script>
-<script src="src/ui/sabias.js?v=121"></script>
-<script src="src/ui/icons.js?v=121"></script>
-<script src="src/online/config.js?v=121"></script>
+<script src="src/ui/install-app.js?v=122"></script>
+<script src="src/ui/a11y.js?v=122"></script>
+<script src="src/ui/game-fx.js?v=122"></script>
+<script src="src/ui/last-life.js?v=122"></script>
+<script src="src/ui/hitos.js?v=122"></script>
+<script src="src/ui/achievements.js?v=122"></script>
+<script src="src/ui/stats-extra.js?v=122"></script>
+<script src="src/ui/intro.js?v=122"></script>
+<script src="src/ui/mode-badges.js?v=122"></script>
+<script src="src/ui/lucidez-ui.js?v=122"></script>
+<script src="src/ui/sabias.js?v=122"></script>
+<script src="src/ui/icons.js?v=122"></script>
+<script src="src/online/config.js?v=122"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
-<script src="src/utils/sync-merge.js?v=121"></script>
-<script src="src/online/data-sync.js?v=121"></script>
-<script src="src/online/online.js?v=121"></script>
+<script src="src/utils/sync-merge.js?v=122"></script>
+<script src="src/online/data-sync.js?v=122"></script>
+<script src="src/online/online.js?v=122"></script>
 <!-- v1.5: Amigos, Duelo online y Retos. El servidor decide preguntas, tiempo, aciertos y ganador. -->
-<script src="src/online/duels.js?v=121"></script>
+<script src="src/online/duels.js?v=122"></script>
 <!-- Audio: sonidos del juego (src/audio/audio.js) -->
-<script src="src/audio/audio.js?v=121"></script>
+<script src="src/audio/audio.js?v=122"></script>
 
 <script>
 function closeWelcomeModal() {
@@ -3166,6 +3166,15 @@ let lastResultShareData = null;
 // duelo): se usa para añadir el código/resultado al texto de compartir.
 
 function updateAnswerStreak(isCorrect, q = null) {
+  // 2.0: Repaso es para estudiar errores, no para competir: aquí NO hay racha (ni aviso, ni bonus de XP,
+  // ni récords ni logros de racha). Los aciertos siguen contando para limpiar errores y para el XP base.
+  if (currentGame && currentGame.mode === 'review') {
+    answerStreak = 0;
+    store.currentStreak = 0;
+    updateStreakDisplay();
+    saveStore();
+    return;
+  }
   if (isCorrect) {
     answerStreak++;
   } else {
@@ -3226,6 +3235,9 @@ function updateAnswerStreak(isCorrect, q = null) {
 
 function updateStreakDisplay() {
   const value = answerStreak || 0;
+  // En Repaso no hay racha: se oculta la píldora de la cabecera.
+  const pill = document.getElementById('game-streak-inline');
+  if (pill) pill.style.display = (currentGame && currentGame.mode === 'review') ? 'none' : '';
   const ids = ['lbl-current-streak', 'game-current-streak', 'res-current-streak'];
   ids.forEach(id => {
     // Cálculo Mental muestra en esta misma píldora su propia racha de
@@ -5543,6 +5555,8 @@ function renderQuestion(preserveAnswered = false) {
     document.getElementById('bar-fill').style.width = ((currentGame.currentIdx) / totalQ) * 100 + '%';
   }
   SEQLastLife.decorate(currentGame);
+  updateStreakDisplay(); // Repaso oculta la píldora de racha
+  updateStreakDisplay(); // Repaso oculta la píldora de racha
   SEQHitos.check(currentGame);
   
   currentGame.answered = preserveAnswered ? !!currentGame.answered : false;
@@ -5599,7 +5613,9 @@ function checkAnswer() {
   // ⚔️ Duelo: preguntas de una cola con semilla, ajenas a la bolsa
   // personal; no deben alimentar questionStats/XP/logros generales.
   const isDuelGame = !!currentGame.isDuel;
-  if (!isDuelGame) {
+  // 2.0: Repaso solo sirve para dominar preguntas falladas: no alimenta estadísticas, XP, rachas ni logros.
+  const isReview = currentGame.mode === 'review';
+  if (!isDuelGame && !isReview) {
     recordQuestionStat(q.n, correct);
   }
   currentGame.answered = true;
@@ -5691,7 +5707,7 @@ function checkAnswer() {
   if (correct) {
     updateAnswerStreak(true, q);
     playCorrectSound(answerStreak);
-    if (!isDuelGame) {
+    if (!isDuelGame && !isReview) {
       grantXp();
       store.totalCorrect++;
     }
@@ -5855,7 +5871,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   // personales (Contrarreloj/Cálculo Mental) que disparan logros generales.
   const isDuelGame = !!currentGame.isDuel;
 
-  if (!isDuelGame) {
+  if (!isDuelGame && currentGame.mode !== 'review') {
     store.gamesPlayed++;
     if (currentGame.mode === 'play') {
       store.standardGamesCount = (store.standardGamesCount || 0) + 1;
@@ -5895,7 +5911,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     accuracy = Math.round((currentGame.score / totalQ) * 100);
   }
 
-  if (!isDuelGame) store.lastGameAccuracy = accuracy;
+  if (!isDuelGame && currentGame.mode !== 'review') store.lastGameAccuracy = accuracy;
 
   const modeNames = { play: 'Modo Estándar', survival: 'Supervivencia', sudden_death: 'Muerte Súbita', timetrial: 'Contrarreloj', review: 'Repaso', mental_calc: 'Cálculo Mental' };
   const shareScoreStr = currentGame.mode === 'mental_calc' ? `${currentGame.correct}/${totalQ}` : `${currentGame.score}/${totalQ}`;
@@ -5918,7 +5934,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
       ts: Date.now()
     };
     if (!store.gameHistory) store.gameHistory = [];
-    pushCapped(store.gameHistory, historyEntry, 5);
+    if (currentGame.mode !== 'review') pushCapped(store.gameHistory, historyEntry, 5);
 
     if (currentGame.mode === 'survival' && !isSurvivalFailure && currentGame.score >= totalQ - 3) {
       const tier = currentGame.survivalTier;
@@ -6087,7 +6103,9 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     renderModeChips([
       { icon: '🔥', label: 'Racha máxima', short: 'racha', value: `${currentGame.sessionBestStreak || 0}` }
     ]);
-  } else if (currentGame.mode === 'play' || currentGame.mode === 'review') {
+  } else if (currentGame.mode === 'review') {
+    renderModeChips([]);   // Repaso: sin racha, sin XP, sin récords
+  } else if (currentGame.mode === 'play') {
     renderModeChips([
       { icon: '🔥', label: 'Racha máxima', short: 'racha', value: `${currentGame.sessionBestStreak || 0}`, accent: '#2563eb' },
       { icon: '✨', label: 'XP ganada', value: `+${currentGame.sessionXpGained || 0} XP`, accent: '#2563eb' }

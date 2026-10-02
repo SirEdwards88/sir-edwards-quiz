@@ -54,6 +54,8 @@ function grantXp() {
 // No toca currentGame.
 function recordWrongAnswer(q) {
   if (currentGame.isDuel) return;
+  // Repaso: un fallo solo reinicia el dominio de esa pregunta (sigue en la lista); no cuenta como fallo en estadísticas.
+  if (currentGame.mode === 'review') { store.questionStreaks[q.n] = 0; return; }
   store.totalWrong++;
   store.questionStreaks[q.n] = 0;
   if (!store.failedQuestions.includes(q.n)) store.failedQuestions.push(q.n);

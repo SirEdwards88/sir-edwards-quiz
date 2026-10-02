@@ -50,3 +50,10 @@ test('index.html y sw.js enlazan el módulo antes que write-helpers', () => {
   assert.ok(html.indexOf('src/utils/streak-xp.js') !== -1 && html.indexOf('src/utils/streak-xp.js') < html.indexOf('src/state/write-helpers.js'));
   assert.ok(read('sw.js').includes('./src/utils/streak-xp.js'));
 });
+
+test('Repaso no tiene racha: updateAnswerStreak sale pronto y no toca récords', () => {
+  const html = read('index.html');
+  const i = html.indexOf('function updateAnswerStreak');
+  const body = html.slice(i, html.indexOf('\n}\n', i));
+  assert.match(body, /currentGame\.mode === 'review'[\s\S]*?return;[\s\S]*?answerStreak\+\+/, 'el early return de Repaso va antes de contar la racha');
+});
