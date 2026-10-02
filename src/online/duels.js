@@ -82,8 +82,8 @@
   // Nombre, icono y reglas de cada modo. Las reglas las APLICA el servidor; aquí solo se explican.
   var RETO_MODE_UI = {
     estandar: { nombre: 'Estándar', icono: 'estandar', reglas: '20 preguntas · 10 s cada una' },
-    supervivencia: { nombre: 'Supervivencia', icono: 'supervivencia', reglas: 'Hasta 50 preguntas · 3 vidas · 10 s cada una' },
-    muerte_subita: { nombre: 'Muerte Súbita', icono: 'muerte-subita', reglas: '30 preguntas cada vez más difíciles · un fallo y fuera' },
+    supervivencia: { nombre: 'Supervivencia', icono: 'supervivencia', reglas: 'Hasta 40 preguntas · 3 vidas · 10 s cada una' },
+    muerte_subita: { nombre: 'Muerte Súbita', icono: 'muerte-subita', reglas: '25 preguntas cada vez más difíciles · un fallo y fuera' },
     contrarreloj: { nombre: 'Contrarreloj', icono: 'contrarreloj', reglas: '60 s · +3 s por acierto, −3 s por fallo' },
     calculo_mental: { nombre: 'Cálculo Mental', icono: 'calculo', reglas: '60 s de operaciones · +2 s por acierto, −3 s por fallo' },
     lucidez: { nombre: 'Lucidez Mental', icono: 'secreto', reglas: 'Tres fases y un enigma final, con respuestas escritas' }
@@ -792,7 +792,7 @@
       : (big ? 'assets/ui/sombrero-aplastado.webp' : 'assets/ui/bandera-blanca.webp');
     var charKey = res === 'win' ? 'victory' : res === 'loss' ? 'defeat' : 'victory';
     var title = kind === 'duel' ? 'Duelo online' : 'Reto · ' + retoModeName(d);
-    var unit = kind === 'reto' && d.modo && d.modo !== 'estandar' && d.modo !== 'muerte_subita' ? '' : ' / ' + num(d.n_preguntas || (d.modo === 'muerte_subita' ? 30 : 20));
+    var unit = kind === 'reto' && d.modo && d.modo !== 'estandar' && d.modo !== 'muerte_subita' ? '' : ' / ' + num(d.n_preguntas || (d.modo === 'muerte_subita' ? 25 : 20));
     var diffWord = d.modo === 'muerte_subita' ? (diff === 1 ? 'pregunta de diferencia' : 'preguntas de diferencia') : (diff === 1 ? 'acierto de diferencia' : 'aciertos de diferencia');
     var side = function (av, name, val, cls) {
       return '<div class="metric-box seq-d-mbox ' + cls + '"><div class="seq-d-mbox-av">' + av + '</div><div class="metric-value">' + val + '<small>' + esc(unit) + '</small></div><div class="metric-label">' + esc(name) + '</div></div>';

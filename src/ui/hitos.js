@@ -1,7 +1,7 @@
 // SirEdwards Quiz — «Momento Sir Edwards»: hitos con frase en Supervivencia y Muerte Súbita.
 //
 // Solo presentación: NO cambia preguntas, vidas, puntuación ni resultados. Al llegar a ciertas preguntas
-// (Supervivencia 10/25/40 de 50, Muerte Súbita 15/25 de 30) aparece Sir Edwards en persona, de medio cuerpo,
+// (Supervivencia 10/20/30 de 40, Muerte Súbita 13/20 de 25) aparece Sir Edwards en persona, de medio cuerpo,
 // con una frase al azar entre tres. Se cierra al tocar o a los pocos segundos; la pregunta ya está debajo.
 // Estos dos modos no tienen cronómetro, así que la pausa no cuesta nada al jugador.
 // Una vez por hito y partida. Si en ese momento hay un aviso de racha o de última vida, espera a que acabe.
@@ -13,37 +13,37 @@
   var IMG = 'assets/character/hito-';
   var HITOS = {
     survival: {
-      total: 50,
+      total: 40,
       at: {
         10: { img: 'barbilla', phrases: [
           'Diez. Empiezo a sospechar que esto podría acabar bien. Qué preocupación.',
           'Diez preguntas y ni una ambulancia. Seguiré mirando.',
           'Diez. Una hazaña modesta, pero no pienso arruinártela. Todavía.'
         ] },
-        25: { img: 'monoculo', phrases: [
-          'La mitad. Si llegas a cincuenta, fingiré que siempre confié en ti.',
-          'Veinticinco. Esto empieza a parecer talento. O una casualidad extraordinaria.',
+        20: { img: 'monoculo', phrases: [
+          'La mitad. Si llegas a cuarenta, fingiré que siempre confié en ti.',
+          'Veinte. Esto empieza a parecer talento. O una casualidad extraordinaria.',
           'La mitad del camino. Ahora llega la parte en la que empiezas a dudar de todo.'
         ] },
-        40: { img: 'manos', phrases: [
-          'Cuarenta. Si vas a cometer un error, te agradecería que esperases diez preguntas.',
-          'Cuarenta. Ya casi eres digno de celebrarlo. Casi.',
-          'Cuarenta. La meta está a la vista. Procura no tropezar con ella.'
+        30: { img: 'manos', phrases: [
+          'Treinta. Si vas a cometer un error, te agradecería que esperases diez preguntas.',
+          'Treinta. Ya casi eres digno de celebrarlo. Casi.',
+          'Treinta. La meta está a la vista. Procura no tropezar con ella.'
         ] }
       }
     },
     sudden_death: {
-      total: 30,
+      total: 25,
       at: {
-        15: { img: 'monoculo', phrases: [
-          'Quince. Sigues vivo. No te acostumbres.',
+        13: { img: 'monoculo', phrases: [
+          'Trece. Sigues vivo. No te acostumbres.',
           'La mitad. Ahora empieza la parte divertida. Para mí.',
-          'Quince y ningún error. Esto empieza a resultar sospechoso.'
+          'Trece y ningún error. Esto empieza a resultar sospechoso.'
         ] },
-        25: { img: 'manos', phrases: [
-          'Veinticinco. La gloria está cerca. La muerte también.',
+        20: { img: 'manos', phrases: [
+          'Veinte. La gloria está cerca. La muerte también.',
           'Cinco preguntas. Has llegado demasiado lejos para morir de forma tan vulgar.',
-          'Veinticinco. No arruines mi apuesta.'
+          'Veinte. No arruines mi apuesta.'
         ] }
       }
     }

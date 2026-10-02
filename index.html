@@ -480,7 +480,7 @@ try {
             <span class="mode-lock-badge" id="lock-badge-survival_main" aria-label="Bloqueado" title="Modo bloqueado"></span>
             <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/supervivencia.webp" alt="" draggable="false"></div>
             <h3>Supervivencia</h3>
-            <p id="mode-desc-survival-main">50 preguntas y 3 vidas. Elige tu nivel y aguanta hasta el final.</p>
+            <p id="mode-desc-survival-main">40 preguntas y 3 vidas. Elige tu nivel y aguanta hasta el final.</p>
             <p class="mode-req" id="mode-req-survival-main"></p>
             <p class="mode-subtitle mode-status-open">✓ DISPONIBLE</p>
           </div>
@@ -488,7 +488,7 @@ try {
             <span class="mode-lock-badge" id="lock-badge-sudden_death_main" aria-label="Bloqueado" title="Modo bloqueado"></span>
             <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/muerte-subita.webp" alt="" draggable="false"></div>
             <h3>Muerte Súbita</h3>
-            <p id="mode-desc-sd-main">30 preguntas cada vez más difíciles. Un fallo y se acabó.</p>
+            <p id="mode-desc-sd-main">25 preguntas cada vez más difíciles. Un fallo y se acabó.</p>
             <p class="mode-req" id="mode-req-sudden_death_main"></p>
             <p class="mode-subtitle mode-status-open">✓ DISPONIBLE</p>
           </div>
@@ -1829,8 +1829,8 @@ let store = getDefaultStore();
 // Modos que se desbloquean con el progreso. Se usan para detectar cuándo
 // avisar al jugador (al final de la partida) de que ha desbloqueado uno nuevo.
 const UNLOCKABLE_MODES = [
-  { id: 'survival', icon: '❤️', name: 'Supervivencia', desc: 'Sobrevive 50 preguntas con 3 vidas.', check: s => (s.standardGamesCount || 0) >= 5 },
-  { id: 'sudden_death', icon: '💀', name: 'Muerte Súbita', desc: '30 preguntas, dificultad creciente. Un fallo y pierdes.', check: s => (s.unlockedMedals || []).includes('surv_ameba') },
+  { id: 'survival', icon: '❤️', name: 'Supervivencia', desc: 'Sobrevive 40 preguntas con 3 vidas.', check: s => (s.standardGamesCount || 0) >= 5 },
+  { id: 'sudden_death', icon: '💀', name: 'Muerte Súbita', desc: '25 preguntas, dificultad creciente. Un fallo y pierdes.', check: s => (s.unlockedMedals || []).includes('surv_ameba') },
   { id: 'mental_calc', icon: '🔢', name: 'Cálculo Mental', desc: 'Resuelve tantas operaciones matemáticas como puedas en 60 segundos.', check: s => (s.unlockedMedals || []).includes('tt_15') },
   { id: 'timetrial', icon: '⏱️', name: 'Contrarreloj', desc: 'Acierta el máximo posible en 60s.', check: s => getLevelData(s.xp) >= 10 },
   { id: 'lucidez_mental', icon: '👁️', name: 'Lucidez Mental', desc: 'Tres fases. Un enigma final. Tu mente será puesta a prueba. ¿Estás preparado para llegar hasta el final?', check: s => getFragmentCount(s) >= FRAGMENT_TARGET }
@@ -2729,13 +2729,13 @@ function applyTheme(theme) {
 const LOCKABLE_MODE_UI = [
   {
     cardId: 'mode-card-survival_main', badgeId: 'lock-badge-survival_main', descId: 'mode-desc-survival-main', reqId: 'mode-req-survival-main',
-    baseDesc: '50 preguntas y 3 vidas. Elige tu nivel y aguanta hasta el final.',
+    baseDesc: '40 preguntas y 3 vidas. Elige tu nivel y aguanta hasta el final.',
     reqText: s => `Requiere terminar 5 partidas en Modo Estándar: ${s.standardGamesCount || 0}/5`,
     isUnlocked: s => (s.standardGamesCount || 0) >= 5
   },
   {
     cardId: 'mode-card-sudden_death_main', badgeId: 'lock-badge-sudden_death_main', descId: 'mode-desc-sd-main', reqId: 'mode-req-sudden_death_main',
-    baseDesc: '30 preguntas cada vez más difíciles. Un fallo y se acabó.',
+    baseDesc: '25 preguntas cada vez más difíciles. Un fallo y se acabó.',
     reqText: () => 'Requiere el logro «Sobreviviente Primordial» (gana Supervivencia en Nivel Ameba)',
     isUnlocked: s => (s.unlockedMedals || []).includes('surv_ameba')
   },
@@ -3300,7 +3300,7 @@ function startSuddenDeathMode() {
     showInfoToast('El modo Muerte Súbita está bloqueado. Requiere el logro «Sobreviviente Primordial» (gana Supervivencia en Nivel Ameba).', '🔒');
     return;
   }
-  startMode('sudden_death', 30);
+  startMode('sudden_death', 25);
 }
 
 // ====== 👁️ MODO LUCIDEZ MENTAL ======
@@ -4508,7 +4508,7 @@ let selectedDifficultyTier = null;
 
 function selectDifficulty(tier) {
   selectedDifficultyTier = tier;
-  if (selectedPendingMode) startMode(selectedPendingMode, 50);
+  if (selectedPendingMode) startMode(selectedPendingMode, 40);
 }
 
 let currentGame = { mode: 'play', queue: [], currentIdx: 0, score: 0, answered: false, totalQuestionsToPlay: 30, lives: 3 };

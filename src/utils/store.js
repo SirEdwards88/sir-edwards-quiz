@@ -34,12 +34,12 @@ function getDefaultStore() {
     questionStats: {},
     // Preguntas que el jugador ya ha visto al menos una vez.
     seenQuestionIds: [],
-    // Las tres dificultades de Supervivencia siempre duran 50 preguntas
+    // Las tres dificultades de Supervivencia siempre duran 40 preguntas
     // (lo que cambia es la proporción de dificultades, no la longitud), así
     // que el progreso se guarda por tramo elegido, no por longitud de partida.
     survivalAmebaWins: 0, survivalHumanoWins: 0, survivalDerrameWins: 0,
     // Muerte Súbita ya no tiene 3 variantes de dificultad: es un único modo
-    // de 30 preguntas con dificultad progresiva, así que un único contador basta.
+    // de 25 preguntas con dificultad progresiva, así que un único contador basta.
     suddenWins: 0,
     suddenBestSurvived: 0, // récord personal de Muerte Súbita (preguntas sobrevividas)
     maxTimeTrialScore: 0,

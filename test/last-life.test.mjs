@@ -21,23 +21,23 @@ test('última vida: solo con 1 vida y solo en Supervivencia', () => {
 });
 
 test('última pregunta: solo la final de Supervivencia y Muerte Súbita', () => {
-  assert.equal(L.isLastQuestion('survival', 48, 50), false);
-  assert.equal(L.isLastQuestion('survival', 49, 50), true);
-  assert.equal(L.isLastQuestion('sudden_death', 28, 30), false);
-  assert.equal(L.isLastQuestion('sudden_death', 29, 30), true);
+  assert.equal(L.isLastQuestion('survival', 38, 40), false);
+  assert.equal(L.isLastQuestion('survival', 39, 40), true);
+  assert.equal(L.isLastQuestion('sudden_death', 23, 25), false);
+  assert.equal(L.isLastQuestion('sudden_death', 24, 25), true);
   assert.equal(L.isLastQuestion('play', 29, 30), false);
   assert.equal(L.isLastQuestion('timetrial', 29, 30), false);
 });
 
 test('contador: «n/total» salvo en la última pregunta', () => {
-  assert.equal(L.counter('survival', 0, 50), '1/50');
-  assert.equal(L.counter('survival', 48, 50), '49/50');
-  assert.equal(L.counter('survival', 49, 50), 'ÚLTIMA');
-  assert.equal(L.counter('sudden_death', 29, 30), 'ÚLTIMA');
+  assert.equal(L.counter('survival', 0, 40), '1/40');
+  assert.equal(L.counter('survival', 38, 40), '39/40');
+  assert.equal(L.counter('survival', 39, 40), 'ÚLTIMA');
+  assert.equal(L.counter('sudden_death', 24, 25), 'ÚLTIMA');
 });
 
 test('no toca el estado de la partida', () => {
-  const g = { mode: 'survival', lives: 1, currentIdx: 10, totalQuestionsToPlay: 50, score: 7 };
+  const g = { mode: 'survival', lives: 1, currentIdx: 10, totalQuestionsToPlay: 40, score: 7 };
   const copy = JSON.stringify(g);
   L.decorate(g); L.onLifeLost(g); L.onCorrect(g);
   assert.equal(JSON.stringify(g), copy);

@@ -12,10 +12,10 @@ const ctx = vm.createContext({});
 vm.runInContext(fs.readFileSync(path.join(root, 'src', 'ui', 'hitos.js'), 'utf8'), ctx);
 const H = ctx.SEQHitos;
 
-test('hitos solo en Supervivencia 10/25/40 y Muerte Súbita 15/25', () => {
+test('hitos solo en Supervivencia 10/20/30 y Muerte Súbita 13/20', () => {
   const at = (mode) => Array.from({ length: 60 }, (_, i) => i).filter((i) => H.hitoFor(mode, i));
-  assert.deepEqual(at('survival'), [10, 25, 40]);
-  assert.deepEqual(at('sudden_death'), [15, 25]);
+  assert.deepEqual(at('survival'), [10, 20, 30]);
+  assert.deepEqual(at('sudden_death'), [13, 20]);
   for (const m of ['play', 'timetrial', 'mental_calc', 'review', 'lucidez']) assert.deepEqual(at(m), []);
 });
 
