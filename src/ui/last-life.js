@@ -63,7 +63,7 @@
     var key = game.mode + ':' + game.currentIdx;
     if (key === lastKey || reduced()) { lastKey = key; return; }
     lastKey = key;
-    if (last) banner('Última vida · Última pregunta', '', 'is-life');
+    if (last) banner('Una vida. Una pregunta.', 'Haz que cuente.', 'is-life');
     else banner('Última pregunta', game.mode === 'sudden_death' ? 'Aquí se decide todo.' : 'Ya casi. No lo estropees.', 'is-last');
   }
 
