@@ -112,7 +112,8 @@ test('adaptación: suave y según la regla pedida', () => {
 });
 
 test('un fallo suaviza la caída de dificultad pero la racha vuelve a 0 como siempre', () => {
-  const s = M.createSession(mulberry32(1)); const op = M.nextOperation(s, { streak: 20 });
+  const s = M.createSession(mulberry32(1)); for (let i = 0; i < 3; i++) M.nextOperation(s, { streak: 20 }); // pasado el calentamiento
+  const op = M.nextOperation(s, { streak: 20 });
   M.recordResult(s, op, false, 5000);
   const t = []; for (let i = 0; i < 300; i++) t.push(M.targetForStreak(0, s));
   assert.ok(mean(t) > M.curve(0) + 5, 'tras fallar no se cae al suelo de golpe');
@@ -136,6 +137,15 @@ test('buildSequence con tope: la dificultad se estabiliza y no lo supera de form
   const late = seq.slice(50).map((o) => o.difficulty);
   assert.ok(mean(late) > 52 && mean(late) < 66, 'media final ' + mean(late));
   assert.ok(mean(seq.slice(0, 8).map((o) => o.difficulty)) < mean(seq.slice(25, 35).map((o) => o.difficulty)));
+});
+
+test('calentamiento: las 3 primeras operaciones de una partida son suaves; ÷5 con 3 cifras ya no es «fácil»', () => {
+  for (let k = 0; k < 300; k++) {
+    const s = M.createSession(mulberry32(k + 1));
+    for (let i = 0; i < 3; i++) assert.ok(M.nextOperation(s, { streak: 0 }).difficulty <= 22, 'calentamiento');
+  }
+  assert.ok(D('÷', 265, 5) >= 22 && D('÷', 265, 5) > D('÷', 48, 6) + 10);
+  assert.ok(D('÷', 130, 2) > D('÷', 26, 2));
 });
 
 test('puntuación existente: puntos base 10/20/35, bonus de velocidad y de racha intactos; temporizador intacto', () => {

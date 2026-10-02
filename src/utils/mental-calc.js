@@ -174,9 +174,9 @@ const SEQMentalCalc = (function () {
     if (a % 10 === 0 && b % 10 === 0) { var r = divAnalysis(a / 10, b / 10); return { load: r.load * 0.85 + 0.15, strategy: r.strategy }; }
     var c = [];
     if (b <= 12 && q <= 12) c.push({ load: 0.6 + 0.008 * a + ((b > 9 || q > 9) ? 0.3 : 0), strategy: 'tabla' });
-    if (b === 2) c.push({ load: 0.5 + 0.3 * dg(a), strategy: 'dividir2' });
-    if (b === 4) c.push({ load: 1.0 + 0.3 * dg(a), strategy: 'dividir4' });
-    if (b === 5) c.push({ load: 0.9 + 0.3 * dg(a), strategy: 'dividir5' });
+    if (b === 2) c.push({ load: 0.5 + 0.3 * dg(a) + 0.7 * Math.max(0, dg(a) - 2), strategy: 'dividir2' });
+    if (b === 4) c.push({ load: 1.0 + 0.3 * dg(a) + 0.7 * Math.max(0, dg(a) - 2), strategy: 'dividir4' });
+    if (b === 5) c.push({ load: 0.9 + 0.3 * dg(a) + 0.7 * Math.max(0, dg(a) - 2), strategy: 'dividir5' });
     if (b === 10) c.push({ load: 0.3, strategy: 'dividir10' });
     if (b === 25) c.push({ load: 1.4 + 0.3 * dg(a), strategy: 'dividir25' });
     if (b > 9) {
@@ -380,7 +380,7 @@ const SEQMentalCalc = (function () {
     if (acc >= 0.7) return 0;                                                    // rápido pero con algún fallo: no se sube
     return -Math.min(8, Math.round((0.7 - acc) * 20));                           // varios fallos: baja
   }
-  function createSession(rng) { return { rng: rng || null, recent: [], bag: [], types: [], perf: [], carry: 0, noAdapt: false, cap: 92 }; }
+  function createSession(rng) { return { rng: rng || null, recent: [], bag: [], types: [], perf: [], carry: 0, noAdapt: false, cap: 92, n: 0 }; }
   // Tipo de operación con una bolsa (2 de cada) → reparto equilibrado; nunca 3 seguidas del mismo.
   function nextType(s) {
     if (!s.bag.length) {
@@ -406,9 +406,12 @@ const SEQMentalCalc = (function () {
     var adj = (s && !s.noAdapt) ? performanceAdjust(s.perf) : 0;
     return clamp(Math.round(base + jitter + adj), 8, s && s.cap ? s.cap : 92);
   }
+  var WARMUP_OPS = 3, WARMUP_MAX = 14;
   function nextOperation(s, opts) {
     var streak = opts && opts.streak ? opts.streak : 0;
     var target = targetForStreak(streak, s), type = nextType(s);
+    if (s.n < WARMUP_OPS) target = Math.min(target, WARMUP_MAX); // calentamiento: las primeras operaciones de una partida, suaves
+    s.n++;
     var op = generateOperation(target, type, s.rng, { recent: s.recent });
     s.recent.push({ text: op.text, a: op.a, b: op.b, family: op.family });
     if (s.recent.length > 40) s.recent.shift();
