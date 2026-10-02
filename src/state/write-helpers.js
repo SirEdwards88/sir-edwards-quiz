@@ -36,8 +36,14 @@ function resetStreak() {
 // grantXp: replica exacta de las 2 apariciones dentro de checkAnswer
 // (idénticas caracter a caracter). No toca currentGame.answered ni nada
 // mas alla de xp/sessionXpGained.
+// 2.0: además de los 10 XP del acierto, las rachas dan un bonus al llegar a 5/10/15/20… seguidas (src/utils/streak-xp.js).
+// `answerStreak` ya cuenta este acierto (todos los sitios que llaman a grantXp actualizan antes la racha).
 function grantXp() {
-  if (getLevelData(store.xp) < 30) { store.xp += 10; currentGame.sessionXpGained = (currentGame.sessionXpGained || 0) + 10; }
+  if (getLevelData(store.xp) < 30) {
+    const before = store.xp;
+    store.xp = Math.min(before + SEQStreakXp.XP_PER_CORRECT + SEQStreakXp.bonus(answerStreak), SEQStreakXp.XP_CAP);
+    currentGame.sessionXpGained = (currentGame.sessionXpGained || 0) + (store.xp - before);
+  }
 }
 
 // recordWrongAnswer(q): replica funcional de las 2 apariciones dentro de

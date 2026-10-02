@@ -898,6 +898,8 @@
     onLocalSave: onLocalSave,
     onTabShown: onTabShown,
     syncNowUi: function () { retryStep = 0; syncNow('manual'); },
+    // 2.0: el servidor concede XP al cerrar un Duelo / terminar tu parte de un Reto; el pull la trae a este dispositivo.
+    syncSoon: function () { if (ENABLED && account) scheduleSync(1500, 'duelxp'); },
     signOut: signOut, logoutAll: logoutAll, deleteAccount: deleteAccount,
     openRanking: openRanking, closeRanking: closeRanking, loadRanking: loadRanking, goToAccount: goToAccount,
     openMigration: function () { openMigration(); }, prepareLocalReset: prepareLocalReset, accountHadProgress: function () { return loginHadProgress; }, hasAccount: function () { return !!(ENABLED && account); }, closeMigration: closeMigration, doMerge: doMerge, skipMigration: skipMigration,

@@ -115,6 +115,15 @@
   // ---- Racha -----------------------------------------------------------------------------------
   var MILESTONES = [3, 5, 10, 15, 20, 25, 30, 40, 50];
   var lastStreak = 0;
+  // XP extra de este hito de racha, o 0 si no hay (modo sin XP, Duelo, nivel máximo o racha sin bonus).
+  function streakXp(n) {
+    try {
+      if (!window.SEQStreakXp || typeof currentGame === 'undefined' || !currentGame || currentGame.isDuel) return 0;
+      if (!SEQStreakXp.modeGivesXp(currentGame.mode)) return 0;
+      if (typeof getLevelData === 'function' && typeof store !== 'undefined' && getLevelData(store.xp) >= 30) return 0;
+      return SEQStreakXp.bonus(n);
+    } catch (e) { return 0; }
+  }
   function streakBanner(n) {
     var host = $('view-game');
     if (!host || reduce) return;
@@ -124,6 +133,14 @@
     b.setAttribute('aria-hidden', 'true');
     b.innerHTML = '<span class="fx-streak-fire"><img class="ui-img" src="assets/ui/racha.webp" alt=""></span><span class="fx-streak-num"></span><span class="fx-streak-lbl">¡seguidas!</span>';
     b.querySelector('.fx-streak-num').textContent = String(n);
+    // 2.0: las rachas dan XP extra (src/utils/streak-xp.js). El aviso lo dice solo si de verdad se ha concedido.
+    var xp = streakXp(n);
+    if (xp > 0) {
+      var chip = document.createElement('span');
+      chip.className = 'fx-streak-xp';
+      chip.textContent = '+' + xp + ' XP';
+      b.appendChild(chip);
+    }
     // 2.0: sobre la cabecera de la partida (modo · contador), no encima del enunciado de la pregunta.
     var anchor = $('game-progress-lbl');
     if (anchor && anchor.getBoundingClientRect) {

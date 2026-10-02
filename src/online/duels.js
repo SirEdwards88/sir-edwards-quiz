@@ -747,6 +747,26 @@
   // Segundos por pregunta del propio reto (los creados antes de la 2.0 tienen 15 s).
   function secsPerQ(d) { return Math.round((num(d && d.duracion_pregunta_ms) || 10000) / 1000); }
   function mark(a) { return a ? ico(a.es_correcta ? 'correcto' : 'incorrecto') : ico('tiempo'); }
+  // 2.0: XP que concede el servidor por esta partida (10 por acierto; Cálculo Mental no da; nivel máximo no suma).
+  var XP_LEVEL_MAX = 30;
+  function xpFor(kind, d, aciertos) {
+    try {
+      if (kind === 'reto' && d.modo === 'calculo_mental') return 0;
+      if (typeof getLevelData === 'function' && typeof store !== 'undefined' && getLevelData(store.xp) >= XP_LEVEL_MAX) return 0;
+    } catch (e) {}
+    return 10 * Math.max(0, num(aciertos));
+  }
+  // Una sola vez por partida: pide una sincronización para traer a este dispositivo la XP recién concedida.
+  var xpSynced = {};
+  function syncXpOnce(kind, d, xp) {
+    var k = kind + ':' + (d && d.id);
+    if (!xp || xpSynced[k]) return;
+    xpSynced[k] = true;
+    try { if (window.SEQOnline && SEQOnline.syncSoon) SEQOnline.syncSoon(); } catch (e) {}
+  }
+  function xpChipHtml(xp) {
+    return xp > 0 ? '<span class="result-chip"><span class="result-chip-value">+' + xp + '</span><span class="result-chip-label">XP</span></span>' : '';
+  }
   function resultBlock(d, kind) {
     var r = d.resultado, p = player(d.rival);
     if (!r) {
@@ -778,7 +798,8 @@
     var side = function (av, name, val, cls) {
       return '<div class="metric-box seq-d-mbox ' + cls + '"><div class="seq-d-mbox-av">' + av + '</div><div class="metric-value">' + val + '<small>' + esc(unit) + '</small></div><div class="metric-label">' + esc(name) + '</div></div>';
     };
-    var chips = res === 'draw' ? '' : '<div class="results-mode-chips show"><span class="result-chip"><span class="result-chip-icon">' + ico(res === 'win' ? 'copa' : 'duelo') + '</span><span class="result-chip-value">' + (res === 'win' ? '+' : '−') + diff + '</span><span class="result-chip-label">' + diffWord + '</span></span></div>';
+    var xpGain = xpFor(kind, d, mine); syncXpOnce(kind, d, xpGain);
+    var chips = '<div class="results-mode-chips show">' + (res === 'draw' ? '' : '<span class="result-chip"><span class="result-chip-icon">' + ico(res === 'win' ? 'copa' : 'duelo') + '</span><span class="result-chip-value">' + (res === 'win' ? '+' : '−') + diff + '</span><span class="result-chip-label">' + diffWord + '</span></span>') + xpChipHtml(xpGain) + '</div>';
     var stamp = ({ win: ['VICTORIA', 'gold'], loss: ['DERROTA', 'fail'], draw: ['EMPATE', 'ok'] })[res];
     var h = '<div class="results-card seq-d-results seq-d-final duel-result-box ' + cls + '">' +
       '<div class="results-character show char-' + (res === 'draw' ? 'neutral' : charKey) + '" aria-hidden="true"><picture><source srcset="assets/character/' + charKey + '.webp" type="image/webp"><img src="assets/character/' + charKey + '.webp" alt="" draggable="false"></picture></div>' +
@@ -856,7 +877,7 @@
     if (d.estado === 'aceptado') {
       var y = d.yo, rv = d.rival_estado;
       var rs = '<p class="history-item-sub seq-d-rival">' + p.avatar + ' ' + p.name + ': ' + (rv.terminado ? 'ya ha jugado (verás su marca al terminar tú)' : rv.empezado ? 'jugando…' : 'aún no ha jugado') + '</p>';
-      if (y.terminado) return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Tu parte está hecha: ' + num(y.aciertos) + (d.modo && d.modo !== 'estandar' ? (num(y.aciertos) === 1 ? ' acierto' : ' aciertos') : '/' + num(d.n_preguntas || 20)) + '</div><p class="duel-result-hint">Cuando ' + p.name + ' juegue verás el resultado. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.reload()">Actualizar</button></div>';
+      if (y.terminado) { syncXpOnce('reto', d, xpFor('reto', d, y.aciertos)); return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Tu parte está hecha: ' + num(y.aciertos) + (d.modo && d.modo !== 'estandar' ? (num(y.aciertos) === 1 ? ' acierto' : ' aciertos') : '/' + num(d.n_preguntas || 20)) + '</div><p class="duel-result-hint">' + (xpFor('reto', d, y.aciertos) ? '+' + xpFor('reto', d, y.aciertos) + ' XP ya en tu cuenta. ' : '') + 'Cuando ' + p.name + ' juegue verás el resultado. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.reload()">Actualizar</button></div>' }
       if (!y.empezado) return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">¿Preparado?</div><p class="duel-result-hint">Una vez empieces el reloj no se detiene. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.retoAction(\'start\')">▶ Jugar mi parte</button></div>';
       if (!y.actual) return h + '<p class="stats-section-sub">Cargando…</p>';
       return playScreen('reto', d, y.actual.indice, y.actual.pregunta, null);
