@@ -1046,6 +1046,7 @@ try {
      sin ES Modules todavia). -->
 <script src="src/utils/matching.js?v=126"></script>
 <script src="src/utils/sudden-progression.js?v=126"></script>
+<script src="src/utils/fresh-first.js?v=126"></script>
 
 <!-- Fase 3 (Lote 3B): nucleo algoritmico de Duelo extraido a
      src/utils/duel.js, mismo criterio que el resto (script clasico, sin
@@ -5219,6 +5220,8 @@ function startModeImpl(mode, count, customPool) {
     // ninguna pregunta hasta haberlas visto todas, y evita en la medida de
     // lo posible que se repita la misma temática en preguntas seguidas.
     queue = pickDiverseFromBag('full', TEST_QUESTIONS, TEST_QUESTIONS.length, []);
+    // Lo jugado hace poco (p. ej. en Estándar) va al final: en una partida normal no llega a salir (src/utils/fresh-first.js).
+    queue = freshFirst(queue, store.recentQuestionIds);
   } else if (mode === 'survival') {
     // Cada tramo respeta una proporción exacta de dificultades (ver
     // SURVIVAL_TIER_RATIOS y buildSurvivalQueue) en vez de solo filtrar qué

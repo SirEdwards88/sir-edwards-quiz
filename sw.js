@@ -253,6 +253,7 @@ const APP_SHELL = [
   './src/utils/duel.js',
   './src/utils/matching.js',
   './src/utils/sudden-progression.js',
+  './src/utils/fresh-first.js',
   './src/utils/store.js',
   './src/state/read-facade.js',
   './src/utils/streak-xp.js',
