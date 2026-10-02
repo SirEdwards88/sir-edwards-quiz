@@ -11,14 +11,19 @@ const ctx = vm.createContext({});
 vm.runInContext(fs.readFileSync(path.join(here, '..', 'src', 'utils', 'sudden-progression.js'), 'utf8') + '\n;globalThis.S = { SUDDEN_SHAPE, suddenTramoName };', ctx);
 const { SUDDEN_SHAPE, suddenTramoName } = ctx.S;
 
-test('forma de 30 preguntas: fácil al inicio, difícil al final, y la dificultad nunca baja de un tramo al siguiente', () => {
+test('forma de 30 preguntas: 10 de cada dificultad y subida gradual', () => {
   assert.equal(SUDDEN_SHAPE.length, 30);
-  assert.ok(SUDDEN_SHAPE.slice(0, 5).every((d) => d === 'facil'));
-  assert.ok(SUDDEN_SHAPE.slice(20).every((d) => d === 'dificil'));
-  assert.ok(SUDDEN_SHAPE.slice(10, 15).every((d) => d === 'medio'));
+  const count = (d) => SUDDEN_SHAPE.filter((x) => x === d).length;
+  assert.deepEqual([count('facil'), count('medio'), count('dificil')], [10, 10, 10]);
+  assert.ok(SUDDEN_SHAPE.slice(0, 5).every((d) => d === 'facil'), 'arranca fácil');
+  assert.ok(SUDDEN_SHAPE.slice(25).every((d) => d === 'dificil'), 'termina difícil');
+  assert.ok(SUDDEN_SHAPE.slice(0, 15).every((d) => d !== 'dificil'), 'sin difíciles en la primera mitad');
+  assert.ok(SUDDEN_SHAPE.slice(15).every((d) => d !== 'facil'), 'sin fáciles en la segunda mitad');
   const rank = { facil: 0, medio: 1, dificil: 2 };
   const avg = (a, b) => SUDDEN_SHAPE.slice(a, b).reduce((s, d) => s + rank[d], 0) / (b - a);
-  assert.ok(avg(0, 5) < avg(5, 10) && avg(5, 10) < avg(10, 15) && avg(10, 15) < avg(15, 20) && avg(15, 20) < avg(20, 30));
+  for (let k = 0; k < 5; k++) assert.ok(avg(k * 5, k * 5 + 5) < avg(k * 5 + 5, k * 5 + 10), 'cada bloque de 5 es más difícil que el anterior');
+  // Sin saltos bruscos: nunca una fácil pegada a una difícil.
+  for (let i = 1; i < 30; i++) assert.ok(Math.abs(rank[SUDDEN_SHAPE[i]] - rank[SUDDEN_SHAPE[i - 1]]) <= 1, 'sin saltos de fácil a difícil');
 });
 
 test('nombre del tramo según la pregunta alcanzada', () => {
