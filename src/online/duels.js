@@ -194,11 +194,8 @@
     if (f.classic_duel) h += hubCard('duel', '<img class="mode-img" src="assets/modes/duelo.webp" alt="" draggable="false">', 'Duelo online', 'Juega un duelo en directo contra un amigo.', "SEQDuels.open('duels')", pending(du, 'PENDIENTE', 'PENDIENTES'));
     if (f.async_challenges) h += hubCard('retos', '<img class="mode-img" src="assets/modes/retos.webp" alt="" draggable="false">', 'Retos', 'Elige el modo y reta a un amigo; cada uno juega cuando pueda.', "SEQDuels.open('retos')", pending(re, 'PENDIENTE', 'PENDIENTES'));
     h += hubCard('amigos', '<img class="mode-img" src="assets/modes/amigos.webp" alt="" draggable="false">', 'Amigos', 'Añade amigos y rétalos desde tu lista.', "SEQDuels.open('friends')", pending(fr, 'SOLICITUD', 'SOLICITUDES'));
-    // Ranking: solo la entrada visual. Todavía no existe un ranking de duelos
-    // (el ranking global por XP es otra cosa y está desactivado), así que la
-    // tarjeta está bloqueada, sin navegación y sin datos.
-    h += '<div class="mode-card locked seq-d-card seq-d-v-rank" aria-disabled="true"><span class="mode-lock-badge" aria-hidden="true"></span>' +
-      '<div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/ranking.webp" alt="" draggable="false"></div><h3>Ranking</h3><p>La clasificación de duelos entre amigos.</p><p class="mode-subtitle seq-d-soon">PRÓXIMAMENTE</p></div>';
+    // 2.1: Rankings (PvP, Cálculo Mental y Contrarreloj; entre amigos o global). Pantalla propia, en src/online/duels-v21.js.
+    h += hubCard('rank', '<img class="mode-img" src="assets/modes/ranking.webp" alt="" draggable="false">', 'Rankings', 'PvP, Cálculo Mental y Contrarreloj. Entre amigos o global.', "SEQDuels.open('rankings')", '');
     slot.innerHTML = h;
   }
   // El aviso «sin conexión» del hub se actualiza en cuanto cambia la red.
@@ -252,6 +249,7 @@
     render();
     if (screen === 'duel' || screen === 'reto') load();
     else if (screen === 'logros') loadLogros();
+    else if (screen === 'rankings') { if (window.SEQDuels21) SEQDuels21.loadRankings(); }
     else refreshSummary();
   }
   function loadLogros() {
@@ -282,6 +280,7 @@
       S.offset = num(d.server_now) - Date.now();
       S.data = d;
       recordResult(d);
+      if (d.estado === 'completado' && S.screen === 'duel' && window.SEQDuels21 && S.invalidated !== d.id) { S.invalidated = d.id; SEQDuels21.invalidate(); }
       render();
       schedule();
     }).catch(function (e) {
@@ -322,7 +321,7 @@
       var draw = r.empate === true || (g == null && num(r.mi_puntuacion) === num(r.puntuacion_rival));
       var res = g === 'yo' ? 'win' : g === 'rival' ? 'loss' : (draw ? 'draw' : null);
       if (!rid || !id || !res || typeof registerOnlineDuelResult !== 'function') return;
-      registerOnlineDuelResult({ duelId: id, rivalId: rid, result: res, myScore: num(r.mi_puntuacion), opponentScore: num(r.puntuacion_rival), forfeit: d.motivo_fin === 'abandono' || d.motivo_fin === 'no_jugado', abandoned: d.motivo_fin === 'abandono' });
+      registerOnlineDuelResult({ duelId: id, rivalId: rid, result: res, myScore: num(r.mi_puntuacion), opponentScore: num(r.puntuacion_rival), forfeit: d.motivo_fin === 'abandono' || d.motivo_fin === 'no_jugado', abandoned: d.motivo_fin === 'abandono', hitos: kind === 'duel' && r.hitos && typeof r.hitos === 'object' ? r.hitos : null });
     } catch (e) {}
   }
   // Solo se sondea cuando hace falta y nunca con la pestaña oculta.
@@ -348,7 +347,9 @@
   function tick() {
     var d = S.data; if (!d) return;
     var now = serverNow();
-    if (S.screen === 'duel' && d.estado === 'en_curso') {
+    if (S.screen === 'duel' && d.estado === 'en_curso' && d.modo === 'stakes') {
+      if (window.SEQDuels21) SEQDuels21.tick(d, now);
+    } else if (S.screen === 'duel' && d.estado === 'en_curso') {
       var dur = num(d.duracion_pregunta_ms) || 10000, t0 = num(d.t0);
       if (now < t0) { setCount(String(secs(t0 - now))); return; }
       var k = Math.floor((now - t0) / dur);
@@ -423,7 +424,7 @@
     rivalId = safeId(rivalId); if (!rivalId) return;
     var kind = S.pickKind;
     if (kind !== 'duel') { pickMode(rivalId); return; } // un reto se crea después de elegir el modo
-    act('POST', '/duels', { rival: rivalId }, function (d) { open('duel', d.id); });
+    act('POST', '/duels', { rival: rivalId, modo: S.pickModo === 'stakes' ? 'stakes' : 'classic' }, function (d) { open('duel', d.id); });
   }
   // Retos: elegir el modo (solo los que los dos tenéis desbloqueados; lo decide el servidor).
   function pickMode(rivalId) {
@@ -443,7 +444,8 @@
     if (modo === 'supervivencia' && !NIVEL_UI[nivel]) { S.pickSurvival = true; render(); return; }
     act('POST', '/challenges', { rival: rivalId, modo: modo, nivel: NIVEL_UI[nivel] ? nivel : undefined }, function (d) { open('reto', d.id); });
   }
-  function pick(kind) { S.pickKind = kind === 'duel' ? 'duel' : 'reto'; S.screen = 'pick'; render(); refreshSummary(); }
+  // 2.1: en Duelo online se elige antes el modo (clásico o apuestas); el servidor lo valida.
+  function pick(kind, modo) { S.pickKind = kind === 'duel' ? 'duel' : 'reto'; S.pickModo = modo === 'stakes' ? 'stakes' : 'classic'; S.screen = 'pick'; render(); refreshSummary(); }
 
   // Respuesta: se envía el TEXTO de la opción elegida, contra la pregunta que
   // está PINTADA (S.shown), no contra la que "debería" tocar según el reloj.
@@ -574,12 +576,15 @@
     else if (x.estado === 'completado') sub = resultLine(x.resultado);
     else if (kind === 'reto' && x.estado === 'aceptado') sub = x.yo.terminado ? 'Esperando a tu amigo' : '¡Te toca jugar!';
     if (kind === 'reto' && x.modo) sub = retoModeName(x) + ' · ' + sub;
+    if (kind === 'duel' && x.modo === 'stakes') sub = '🎲 Apuestas · ' + sub;
+    if (kind === 'duel' && x.estado === 'completado' && x.elo) { var ec = Number(x.elo.cambio) || 0; sub += ' · ' + (ec > 0 ? '+' : ec < 0 ? '−' : '±') + Math.abs(ec) + ' ELO'; }
     return '<div class="history-item seq-d-row seq-pl-row" onclick="SEQDuels.open(\'' + (kind === 'duel' ? 'duel' : 'reto') + '\',\'' + id + '\')">' + who(p, esc(sub)) + (btns ? '<div class="seq-pl-act seq-pl-act-full">' + btns + '</div>' : '') + '</div>';
   }
   function renderList(kind) {
     var list = kind === 'duel' ? S.lists.duels : S.lists.retos;
     var h = kind === 'duel' ? header('Duelo online', 'En directo contra un amigo', back) : header('Retos', 'Cada uno juega cuando puede', back);
-    h += '<button class="btn btn-primary" style="width:100%;margin:10px 0;" onclick="SEQDuels.pick(\'' + kind + '\')">' + (kind === 'duel' ? ico('duelo') + 'Retar a un amigo ahora' : ico('retos') + 'Crear reto') + '</button>';
+    if (kind === 'duel' && window.SEQDuels21) h += SEQDuels21.modeButtons();
+    else h += '<button class="btn btn-primary" style="width:100%;margin:10px 0;" onclick="SEQDuels.pick(\'' + kind + '\')">' + (kind === 'duel' ? ico('duelo') + 'Retar a un amigo ahora' : ico('retos') + 'Crear reto') + '</button>';
     if (!list) return h + '<p class="stats-section-sub">Cargando…</p>';
     var act_ = list.filter(function (x) { return ['pendiente', 'aceptado', 'en_curso'].indexOf(x.estado) >= 0; });
     var hist = list.filter(function (x) { return act_.indexOf(x) < 0; });
@@ -589,7 +594,7 @@
   }
   function renderPick() {
     var fl = S.lists.friends;
-    var h = header('Elige a quién retar', S.pickKind === 'duel' ? 'Duelo online' : 'Reto', backToList);
+    var h = header('Elige a quién retar', S.pickKind === 'duel' ? (S.pickModo === 'stakes' ? 'Duelo por apuestas' : 'Duelo clásico') : 'Reto', backToList);
     if (S.pickKind === 'duel') h += '<p class="stats-section-sub">Tu amigo tendrá 60 s para aceptar. Luego los dos pulsáis «Listo» y empieza.</p>';
     else h += '<p class="stats-section-sub">Tu amigo tiene 3 días para aceptar y jugar. Cada uno juega cuando pueda. Después eliges el modo.</p>';
     if (!fl) return h + '<p class="stats-section-sub">Cargando…</p>';
@@ -701,6 +706,8 @@
       '<span class="seq-d-hud-right"><span class="seq-d-hud-time">' + ico('tiempo') + '<span id="seq-d-time"></span>s</span>' + extra + '</span>' +
       // El rival, en la misma línea: con el icono del modo en lugar de su nombre, cabe todo (progreso, segundos y rival).
       '<span class="seq-d-vs-chip" title="Tu rival">' + p.avatar + '<span class="seq-d-rival-name">' + p.name + '</span></span></div>';
+    // 2.1: marcador en vivo del duelo clásico («TÚ 7 — 6 RIVAL», «Pregunta 9 / 20»). Solo cuenta preguntas ya resueltas.
+    if (kind === 'duel' && window.SEQDuels21 && d.marcador) h += SEQDuels21.scoreboard(d, idx);
     h += '<div class="progress-bar"><div id="seq-d-bar" class="bar-fill"></div></div>';
     return h + questionBlock(d.id, idx, qn, mine, kind === 'reto' && d.modo === 'lucidez' && num(est.fase) === 2);
   }
@@ -794,13 +801,18 @@
       : res === 'win' ? (big ? 'assets/ui/sombrero-laurel.webp' : 'assets/ui/copa.webp')
       : (big ? 'assets/ui/sombrero-aplastado.webp' : 'assets/ui/bandera-blanca.webp');
     var charKey = res === 'win' ? 'victory' : res === 'loss' ? 'defeat' : 'victory';
-    var title = kind === 'duel' ? 'Duelo online' : 'Reto · ' + retoModeName(d);
-    var unit = kind === 'reto' && d.modo && d.modo !== 'estandar' && d.modo !== 'muerte_subita' ? '' : ' / ' + num(d.n_preguntas || (d.modo === 'muerte_subita' ? 25 : 20));
+    var stakes = kind === 'duel' && d.modo === 'stakes';
+    var title = kind === 'duel' ? (stakes ? 'Duelo por apuestas' : 'Duelo clásico') : 'Reto · ' + retoModeName(d);
+    // En apuestas el marcador no es «aciertos sobre N»: se muestra solo el número.
+    var unit = stakes || (kind === 'reto' && d.modo && d.modo !== 'estandar' && d.modo !== 'muerte_subita') ? '' : ' / ' + num(d.n_preguntas || (d.modo === 'muerte_subita' ? 25 : 20));
     var diffWord = d.modo === 'muerte_subita' ? (diff === 1 ? 'pregunta de diferencia' : 'preguntas de diferencia') : (diff === 1 ? 'acierto de diferencia' : 'aciertos de diferencia');
     var side = function (av, name, val, cls) {
       return '<div class="metric-box seq-d-mbox ' + cls + '"><div class="seq-d-mbox-av">' + av + '</div><div class="metric-value">' + val + '<small>' + esc(unit) + '</small></div><div class="metric-label">' + esc(name) + '</div></div>';
     };
-    var xpGain = xpFor(kind, d, mine); syncXpOnce(kind, d, xpGain);
+    // La XP son 10 por ACIERTO (no por puntos): en apuestas se cuentan los aciertos reales, no el marcador.
+    var hits = stakes ? (d.yo.respuestas || []).filter(function (a) { return a.es_correcta; }).length : mine;
+    var xpGain = xpFor(kind, d, hits); syncXpOnce(kind, d, xpGain);
+    var eloHtml = kind === 'duel' && r.elo && window.SEQDuels21 ? SEQDuels21.eloBlock(r.elo) : '';
     var chips = '<div class="results-mode-chips show">' + (res === 'draw' ? '' : '<span class="result-chip"><span class="result-chip-icon">' + ico(res === 'win' ? 'copa' : 'duelo') + '</span><span class="result-chip-value">' + (res === 'win' ? '+' : '−') + diff + '</span><span class="result-chip-label">' + diffWord + '</span></span>') + xpChipHtml(xpGain) + '</div>';
     var stamp = ({ win: ['VICTORIA', 'gold'], loss: ['DERROTA', 'fail'], draw: ['EMPATE', 'ok'] })[res];
     var h = '<div class="results-card seq-d-results seq-d-final duel-result-box ' + cls + '">' +
@@ -812,13 +824,14 @@
       '<div class="results-category-title">' + esc(cat) + '</div>' +
       (phrase ? '<div class="results-phrase duel-result-phrase">' + esc(phrase) + '</div>' : '') +
       (note ? '<p class="duel-result-hint">' + esc(note) + '</p>' : '') + '</div>' +
-      chips +
+      (eloHtml || chips) +
       '<div class="results-lucidez-stamp show"><span class="stamp-badge tone-' + stamp[1] + '">' + stamp[0] + '</span></div>';
     var hEnd = '</div>';
     if (d.estado === 'completado') {
       h += '<div class="results-actions"><button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="SEQDuels.' + (kind === 'duel' ? 'duelAction' : 'retoAction') + '(\'rematch\')">' + ico('revancha') + 'Revancha</button>';
       // «Compartir» discreto, como en solitario; gana presencia cuando hay algo que presumir (una victoria).
-      h += '<button class="btn btn-share' + (res === 'win' ? '' : ' btn-share-quiet') + '" onclick="SEQDuels.shareResult()">' + ico('compartir') + 'Compartir resultado</button></div>';
+      h += '<button class="btn btn-share' + (res === 'win' ? '' : ' btn-share-quiet') + '" onclick="SEQDuels.shareResult()">' + ico('compartir') + 'Compartir resultado</button>';
+      h += '<button type="button" class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.back()">Volver a Duelos</button></div>';
     }
     // El repaso de preguntas, plegado: quien quiera curiosear, lo abre.
     h += '<button type="button" class="seq-link seq-d-review-toggle" onclick="SEQDuels.toggleReview()">' + (S.showReview ? 'Ocultar las preguntas' : 'Ver las preguntas') + '</button>' + hEnd;
@@ -838,7 +851,7 @@
   }
   function renderDuel() {
     var d = S.data;
-    var h = gameHeader(ico('duelo') + 'Duelo online', 'SEQDuels.leaveDuel()');
+    var h = gameHeader(ico('duelo') + (d && d.modo === 'stakes' ? 'Duelo por apuestas' : 'Duelo online'), 'SEQDuels.leaveDuel()');
     if (!d) return h + '<p class="stats-section-sub">Cargando…</p>';
     var p = player(d.rival), now = serverNow();
     h += '<p class="stats-section-sub seq-d-vs">Tú contra ' + p.avatar + ' ' + p.name + '</p>';
@@ -851,9 +864,10 @@
     }
     if (d.estado === 'en_curso') {
       var t0 = num(d.t0), dur = num(d.duracion_pregunta_ms) || 10000;
-      if (now < t0) { S.shown = null; return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Empieza en <span id="seq-d-count"></span>…</div></div>'; }
+      if (now < t0 && d.modo !== 'stakes') { S.shown = null; return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Empieza en <span id="seq-d-count"></span>…</div></div>'; }
+      if (d.modo === 'stakes' && window.SEQDuels21) { S.shown = null; return SEQDuels21.play(d, HELPERS); }
       var k = Math.min(19, Math.floor((now - t0) / dur)); S.lastIdx = k;
-      if (d.yo.completado) { S.shown = null; return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">¡Has terminado!</div><p class="duel-result-hint">Esperando a que acabe ' + p.name + '…</p></div>'; }
+      if (d.yo.completado && d.modo !== 'stakes') { S.shown = null; return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">¡Has terminado!</div><p class="duel-result-hint">Esperando a que acabe ' + p.name + '…</p></div>'; }
       // Si el servidor aún no ha revelado la pregunta k (los datos son de
       // antes de que se abriera), no se pinta nada respondible: se espera.
       if (!d.preguntas || d.preguntas.length <= k) { S.shown = null; return h + '<p class="stats-section-sub">Cargando pregunta…</p>'; }
@@ -900,6 +914,7 @@
       else if (S.screen === 'duel') h = renderDuel();
       else if (S.screen === 'reto') h = renderReto();
       else if (S.screen === 'logros') h = renderLogros();
+      else if (S.screen === 'rankings') h = window.SEQDuels21 ? SEQDuels21.renderRankings() : '';
     } catch (e) { S.shown = null; h = header('Duelos', '', back) + '<p class="stats-section-sub">No se pudo mostrar esta pantalla.</p>'; }
     // Un repintado (al llegar datos del servidor) no debe borrar lo que el
     // usuario está escribiendo en la búsqueda ni quitarle el foco.
@@ -992,6 +1007,11 @@
     } catch (e) {}
   }
 
+  // Para src/online/duels-v21.js: mismos helpers de pintado y cliente HTTP, sin duplicarlos.
+  var HELPERS = {
+    esc: esc, num: num, player: player, itemInfo: itemInfo, optionsFor: optionsFor, ico: ico, serverNow: serverNow,
+    call: call, say: say, errText: errText, header: header, back: function () { back(); }
+  };
   window.SEQDuels = {
     shareResult: shareResultCard, leaveDuel: leaveDuel, toggleReview: function () { S.showReview = !S.showReview; render(); }, answerText: answerText, createReto: createReto, pickMode: pickMode,
     open: open, back: back, pick: pick, create: create, quick: quick,
@@ -999,6 +1019,6 @@
     doSearch: doSearch, friendAdd: friendAdd, friendResp: friendResp, reload: load,
     onAccountChange: onAccountChange, onShow: onShow,
     syncHubTopbar: syncHubTopbar,
-    _state: function () { return S; },
+    _state: function () { return S; }, _h: HELPERS, rerender: function () { render(); },
   };
 })();

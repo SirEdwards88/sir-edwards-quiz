@@ -61,6 +61,7 @@ function getDefaultStore() {
     // Se pone a true la primera vez que se completa una partida entre las
     // 00:00 y las 04:00 (logro "Noctámbulo").
     hasCompletedNightGame: false,
+    hasCompletedMorningGame: false,
     // IDs de las preguntas mostradas recientemente. Se usan para evitar
     // repeticiones entre partidas cuando todavía hay suficientes preguntas nuevas.
     recentQuestionIds: [],
@@ -94,7 +95,7 @@ function getDefaultStore() {
     // Prompt 4: revengeWon (logro «Revancha»), bestWinsVsRival (logro «¿Otra
     // vez tú?») y rivals ({[idRival]: {wins, losses}}, solo Duelo online, con
     // el ID estable del rival) viven dentro de duelStats, igual que el resto.
-    duelStats: { played: 0, wins: 0, losses: 0, draws: 0, currentWinStreak: 0, bestWinStreak: 0, wonByOnePoint: false, wonByTenPlus: false, revengeWon: false, bestWinsVsRival: 0, rivals: {} },
+    duelStats: { played: 0, wins: 0, losses: 0, draws: 0, currentWinStreak: 0, bestWinStreak: 0, wonByOnePoint: false, wonByTenPlus: false, revengeWon: false, comebackWon: false, lastWordWon: false, stakesLastMadness: false, stakesAllThree: false, bestWinsVsRival: 0, rivals: {} },
     duelHistory: [],
     // ⚔️ Duelo: códigos de reto ya jugados como retador (joiner), para que
     // repetir un mismo reto no vuelva a contar en duelStats/logros — solo
@@ -175,6 +176,12 @@ function sanitizeStore(s) {
 
   s.failedQuestions = asArray(s.failedQuestions);
   s.unlockedMedals = asArray(s.unlockedMedals);
+  // IDs históricos → IDs actuales (master_150→master_100…): un desbloqueo antiguo no se pierde. Los retirados
+  // (world_citizen…) se conservan tal cual; simplemente ya no cuentan ni se conceden.
+  if (typeof resolveMedalId === 'function') {
+    const seen = {};
+    s.unlockedMedals = s.unlockedMedals.map(id => resolveMedalId(id)).filter(id => (seen[id] ? false : (seen[id] = true)));
+  }
   s.gameHistory = asArray(s.gameHistory).filter(item => item && typeof item === 'object');
   s.seenQuestionIds = asArray(s.seenQuestionIds);
   s.recentQuestionIds = asArray(s.recentQuestionIds);
@@ -221,6 +228,7 @@ function sanitizeStore(s) {
   // haberlo conseguido. Exigimos el booleano real `true`; cualquier otra
   // cosa (incluida esa string) se trata como no conseguido.
   s.hasCompletedNightGame = asBoolean(s.hasCompletedNightGame);
+  s.hasCompletedMorningGame = asBoolean(s.hasCompletedMorningGame);
   s.lucidezPlayed = asBoolean(s.lucidezPlayed);
   s.lucidezEverWon = asBoolean(s.lucidezEverWon);
   s.lucidezTotalCorrect = asFiniteNonNegNumber(s.lucidezTotalCorrect);
@@ -236,6 +244,10 @@ function sanitizeStore(s) {
   s.duelStats.wonByOnePoint = asBoolean(s.duelStats.wonByOnePoint);
   s.duelStats.wonByTenPlus = asBoolean(s.duelStats.wonByTenPlus);
   s.duelStats.revengeWon = asBoolean(s.duelStats.revengeWon);
+  s.duelStats.comebackWon = asBoolean(s.duelStats.comebackWon);
+  s.duelStats.lastWordWon = asBoolean(s.duelStats.lastWordWon);
+  s.duelStats.stakesLastMadness = asBoolean(s.duelStats.stakesLastMadness);
+  s.duelStats.stakesAllThree = asBoolean(s.duelStats.stakesAllThree);
   s.duelStats.bestWinsVsRival = asFiniteNonNegNumber(s.duelStats.bestWinsVsRival);
   const rawRivals = asPlainObject(s.duelStats.rivals);
   s.duelStats.rivals = {};

@@ -76,7 +76,7 @@ test('Ambos logros pueden desbloquearse en la misma partida', () => {
   const c = makeEnv(); duel(c, BRUNO, 'loss'); duel(c, BRUNO, 'win'); duel(c, BRUNO, 'win');
   const r = duel(c, BRUNO, 'win');
   assert.ok(has(c, 'duel_revancha') && has(c, 'duel_otra_vez_tu'));
-  assert.deepEqual(JSON.parse(JSON.stringify(r.medals.map(m => m.id))), ['duel_otra_vez_tu']); // Revancha ya estaba
+  assert.deepEqual(JSON.parse(JSON.stringify(r.medals.map(m => m.id))), ['duel_otra_vez_tu', 'duel_tres_al_hilo']); // Revancha ya estaba; la 3ª victoria seguida da Caballero Invicto
 });
 test('Un mismo duelo (mismo ID) no cuenta dos veces; abandono no cuenta', () => {
   const c = makeEnv();

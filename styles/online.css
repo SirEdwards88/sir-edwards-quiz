@@ -585,3 +585,107 @@
 .seq-pl-act-full .btn { flex: 1; }
 /* «Tú contra …» y el rival en la ficha de un duelo/reto: avatar legible junto al nombre. */
 .seq-d-vs .seq-av-img, .seq-d-rival .seq-av-img { width: 30px; height: 30px; vertical-align: -9px; margin-right: 4px; }
+
+/* ===== 2.1: Duelo por apuestas, ELO, Rankings y estadísticas de Duelos (src/online/duels-v21.js) ===== */
+.seq-v21-ico { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; line-height: 1; vertical-align: middle; }
+.seq-v21-ico img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.seq-v21-ico-mode { width: 34px; height: 34px; font-size: 26px; }
+.seq-v21-ico-stake { width: 34px; height: 34px; font-size: 26px; }
+.seq-v21-ico-rank { width: 30px; height: 30px; font-size: 24px; }
+.seq-v21-badge .seq-v21-ico-mode, .seq-v21-hud .seq-v21-ico-mode, .seq-v21-hrow .seq-v21-ico-mode { width: 20px; height: 20px; font-size: 16px; }
+/* Elección de modo */
+.seq-v21-modes { display: grid; gap: 10px; margin: 10px 0 14px; }
+.seq-v21-mode { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; text-align: left; cursor: pointer; font: inherit; color: var(--text);
+  background: var(--card); border: 1.5px solid var(--border); border-radius: 16px; }
+.seq-v21-mode:active { transform: scale(.985); }
+.seq-v21-mode-stakes { border-color: var(--dz-duel, var(--primary)); }
+.seq-v21-mode .seq-v21-ico-mode { width: 44px; height: 44px; font-size: 34px; }
+.seq-v21-mode-body { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.seq-v21-mode-name { font-family: var(--font-display, inherit); font-weight: 800; font-size: 16px; }
+.seq-v21-mode-desc { font-size: 12px; color: var(--sub); line-height: 1.3; }
+.seq-v21-mode-go { font-size: 22px; color: var(--sub); }
+/* Marcador dinámico */
+.seq-v21-score { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 6px 0 2px; font-family: var(--font-display, inherit); }
+.seq-v21-score b { font-size: 38px; line-height: 1; }
+.seq-v21-score small { display: block; font-size: 10px; letter-spacing: 1.2px; color: var(--sub); font-weight: 800; }
+.seq-v21-score-me, .seq-v21-score-rv { display: flex; align-items: flex-end; gap: 8px; }
+.seq-v21-score-sep { font-size: 22px; color: var(--sub); }
+.seq-v21-round { text-align: center; font-size: 12px; font-weight: 800; letter-spacing: .6px; color: var(--sub); margin-bottom: 8px; text-transform: uppercase; }
+.seq-v21-prompt { text-align: center; font-family: var(--font-display, inherit); font-weight: 800; font-size: 17px; margin: 14px 0 10px; }
+.seq-v21-wait { text-align: center; }
+/* Apuestas */
+.seq-v21-stakes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.seq-v21-stake { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 6px; cursor: pointer; font: inherit; color: var(--text);
+  background: var(--card); border: 2px solid var(--border); border-radius: 16px; }
+.seq-v21-stake .seq-v21-ico-stake { width: 48px; height: 48px; font-size: 38px; }
+.seq-v21-stake-name { font-weight: 900; font-size: 14px; }
+.seq-v21-stake-val { display: flex; gap: 8px; font-size: 12px; font-weight: 800; font-style: normal; }
+.seq-v21-stake-val i { font-style: normal; }
+.seq-v21-stake-val i:first-child { color: var(--ok, #2e9d5b); }
+.seq-v21-stake-val i:last-child { color: var(--bad, #c0453a); }
+.seq-v21-stake-osado { border-color: color-mix(in srgb, var(--primary) 55%, var(--border)); }
+.seq-v21-stake-insensato { border-color: var(--bad, #c0453a); }
+.seq-v21-stake.sel { outline: 3px solid var(--primary); outline-offset: 1px; }
+.seq-v21-stake:disabled:not(.sel) { opacity: .45; cursor: default; }
+.seq-v21-reveal { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 6px 0 10px; }
+.seq-v21-reveal-side { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 13px; }
+.seq-v21-reveal-side small { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--sub); font-weight: 800; }
+.seq-v21-reveal-vs { font-size: 12px; color: var(--sub); font-weight: 800; }
+.seq-v21-resolved { display: grid; gap: 8px; }
+.seq-v21-res-row { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; }
+.seq-v21-res-row span { width: 42px; font-size: 11px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; color: var(--sub); }
+.seq-v21-res-row b:last-child { margin-left: auto; font-size: 17px; }
+.seq-v21-res-row.ok b:last-child { color: var(--ok, #2e9d5b); }
+.seq-v21-res-row.bad b:last-child { color: var(--bad, #c0453a); }
+/* Carta final: ELO */
+.seq-v21-elo { text-align: center; margin: 10px 0 4px; padding: 12px 10px; border: 1.5px solid var(--border); border-radius: 16px; background: var(--card); }
+.seq-v21-elo-label { font-size: 10px; letter-spacing: 1.6px; font-weight: 900; color: var(--sub); }
+.seq-v21-elo-line { display: flex; align-items: baseline; justify-content: center; gap: 10px; font-family: var(--font-display, inherit); }
+.seq-v21-elo-line span { font-size: 18px; color: var(--sub); }
+.seq-v21-elo-line b { font-size: 34px; line-height: 1.1; }
+.seq-v21-elo-change { font-weight: 900; font-size: 16px; margin: 2px 0 8px; }
+.seq-v21-elo-up .seq-v21-elo-change { color: var(--ok, #2e9d5b); }
+.seq-v21-elo-down .seq-v21-elo-change { color: var(--bad, #c0453a); }
+.seq-v21-elo-rank { display: inline-flex; align-items: center; gap: 8px; font-weight: 800; }
+.seq-v21-place { margin-top: 6px; font-size: 12px; color: var(--sub); }
+/* Rankings */
+.seq-v21-seg { display: flex; gap: 6px; margin: 8px 0; }
+.seq-v21-seg-btn { flex: 1; padding: 9px 6px; font: inherit; font-size: 13px; font-weight: 800; cursor: pointer; color: var(--text);
+  background: var(--card); border: 1.5px solid var(--border); border-radius: 12px; white-space: nowrap; }
+.seq-v21-seg-btn.sel { background: var(--primary); border-color: var(--primary); color: #fff; }
+.seq-v21-rk-sub { margin: 2px 0 8px; }
+.seq-v21-me { display: flex; align-items: center; gap: 10px; padding: 10px 12px; margin-bottom: 8px; border-radius: 14px; border: 1.5px solid var(--primary); background: var(--card); }
+.seq-v21-me small { display: block; color: var(--sub); font-size: 12px; }
+.seq-v21-rk { display: flex; align-items: center; gap: 10px; }
+.seq-v21-rk.me { border-color: var(--primary); }
+.seq-v21-rk-pos { width: 34px; font-weight: 900; color: var(--sub); }
+.seq-v21-rk-av { width: 30px; height: 30px; flex: 0 0 auto; }
+.seq-v21-rk-name { flex: 1; min-width: 0; display: flex; flex-direction: column; font-weight: 700; overflow: hidden; text-overflow: ellipsis; }
+.seq-v21-rk-name small { font-weight: 600; color: var(--sub); font-size: 11px; }
+.seq-v21-rk-val small { font-size: 10px; color: var(--sub); }
+/* Estadísticas y Perfil */
+.seq-v21-sum { display: flex; flex-direction: column; gap: 10px; }
+.seq-v21-sum-head { display: flex; align-items: center; gap: 12px; }
+.seq-v21-sum-head .seq-v21-ico-rank { width: 44px; height: 44px; font-size: 34px; }
+.seq-v21-sum-elo { font-size: 15px; }
+.seq-v21-sum-elo b { font-size: 24px; font-family: var(--font-display, inherit); }
+.seq-v21-sum-line { font-size: 13px; color: var(--sub); }
+.seq-v21-sum-btn { width: 100%; }
+.seq-v21-profile { margin: 10px 0; padding: 12px; border: 1.5px solid var(--border); border-radius: 16px; background: var(--card); }
+.seq-v21-h { margin: 14px 0 8px; font-size: 12px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--sub); }
+.seq-v21-profile .seq-v21-h { margin-top: 0; display: flex; align-items: center; gap: 6px; }
+.seq-v21-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.seq-v21-cell { padding: 8px 6px; text-align: center; border: 1.5px solid var(--border); border-radius: 12px; background: var(--card); }
+.seq-v21-cell b { display: block; font-size: 16px; }
+.seq-v21-cell small { font-size: 10px; color: var(--sub); }
+.seq-v21-hrow { display: flex; align-items: center; gap: 10px; }
+.seq-v21-hrow-body { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.seq-v21-hrow-body small { color: var(--sub); font-size: 11px; }
+.seq-v21-hrow-elo { font-size: 15px; }
+.seq-v21-hrow.w .seq-v21-hrow-elo { color: var(--ok, #2e9d5b); }
+.seq-v21-hrow.l .seq-v21-hrow-elo { color: var(--bad, #c0453a); }
+.seq-v21-h2h { display: flex; flex-direction: column; gap: 2px; }
+.seq-v21-h2h small { color: var(--sub); }
+/* 2.1: avatares que se ganan con un logro, todavía bloqueados */
+.seq-av-btn.seq-av-locked { opacity: .5; filter: grayscale(1); cursor: not-allowed; }
+.ach-avatar { font-size: 13px; line-height: 1; }

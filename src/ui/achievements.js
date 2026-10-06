@@ -14,14 +14,14 @@
 
   var GROUPS = [
     { key: 'prog', name: 'Progresión', icon: '🎮', ids: ['first_game', 'games_5', 'games_10', 'games_20', 'games_50'] },
-    { key: 'racha', name: 'Rachas', icon: '📈', ids: ['streak_5', 'streak_10', 'sharp_eye', 'sin_preferencias'] },
+    { key: 'racha', name: 'Rachas', icon: '📈', ids: ['streak_5', 'streak_10', 'streak_20', 'streak_30', 'sharp_eye', 'sin_preferencias'] },
     { key: 'nivel', name: 'Nivel', icon: '⭐', ids: ['level_5', 'level_10', 'level_20', 'level_30'] },
-    { key: 'aciertos', name: 'Aciertos', icon: '✅', ids: ['correct_100', 'correct_300', 'correct_600'] },
-    { key: 'dominio', name: 'Dominio', icon: '🏛️', ids: ['master_10', 'master_50', 'master_150', 'master_250', 'world_citizen', 'polimata', 'balanced_master'] },
+    { key: 'aciertos', name: 'Aciertos', icon: '✅', ids: ['correct_100', 'correct_400', 'correct_800'] },
+    { key: 'dominio', name: 'Dominio', icon: '🏛️', ids: ['master_10', 'master_50', 'master_100', 'master_200', 'polimata', 'balanced_master'] },
     { key: 'errores', name: 'Aprender de los errores', icon: '✏️', ids: ['cleaner_5', 'cleaner_25', 'limpieza_general'] },
     { key: 'modos', name: 'Modos de juego', icon: '🎲', ids: ['surv_ameba', 'surv_humano', 'surv_derrame', 'sd_primer_riesgo', 'tt_15', 'tt_30', 'tt_50', 'sin_frenos', 'mental_calc_15', 'mental_calc_30', 'mental_calc_40'] },
-    { key: 'duelo', name: 'Duelo', icon: '🤺', ids: ['duel_primera_sangre', 'duel_victoria_inaugural', 'duel_por_los_pelos', 'duel_eso_era_un_duelo', 'duel_rey_del_empate', 'duel_cinco_victorias', 'duel_revancha', 'duel_otra_vez_tu'] },
-    { key: 'especial', name: 'Especiales', icon: '🃏', ids: ['noctambulo', 'mente_fracturada', 'medal_collector_10', 'medal_collector_20', 'medal_collector_30'] },
+    { key: 'duelo', name: 'Duelo', icon: '🤺', ids: ['duel_primera_sangre', 'duel_victoria_inaugural', 'duel_por_los_pelos', 'duel_contra_las_cuerdas', 'duel_rey_del_empate', 'duel_cinco_victorias', 'duel_tres_al_hilo', 'duel_revancha', 'duel_otra_vez_tu', 'ultimo_cerebro', 'duel_apuestas_calculada', 'duel_apuestas_ultima_locura'] },
+    { key: 'especial', name: 'Especiales', icon: '🃏', ids: ['noctambulo', 'diurno', 'mente_fracturada', 'medal_collector_10', 'medal_collector_20', 'medal_collector_30'] },
     { key: 'secretos', name: 'Secretos', icon: '🤫', ids: ['lucidez_mente_despierta', 'lucidez_conexiones_imposibles', 'lucidez_absoluta', 'all_medals_secret'] }
   ];
 
@@ -31,7 +31,7 @@
   function safe(fn) { try { return fn(); } catch (e) { return 0; } }
   function collectorCount(s) {
     var skip = ['medal_collector_10', 'medal_collector_20', 'medal_collector_30', 'all_medals_secret'];
-    return (s.unlockedMedals || []).filter(function (id) { return skip.indexOf(id) === -1; }).length;
+    return (s.unlockedMedals || []).filter(function (id) { return skip.indexOf(id) === -1 && isActiveMedalId(id); }).length;
   }
   var PROGRESS = {
     games_5: function (s) { return [n(s.gamesPlayed), 5, 'partidas']; },
@@ -40,6 +40,8 @@
     games_50: function (s) { return [n(s.gamesPlayed), 50, 'partidas']; },
     streak_5: function (s) { return [n(s.standardBestStreak), 5, 'seguidas']; },
     streak_10: function (s) { return [n(s.standardBestStreak), 10, 'seguidas']; },
+    streak_20: function (s) { return [n(s.standardBestStreak), 20, 'seguidas']; },
+    streak_30: function (s) { return [n(s.standardBestStreak), 30, 'seguidas']; },
     sharp_eye: function (s) { return [n(s.hardBestStreak), 5, 'seguidas']; },
     sin_preferencias: function (s) { return [n(s.noRepeatCatBestStreak), 10, 'seguidas']; },
     level_5: function (s) { return [safe(function () { return getLevelData(s.xp); }), 5, 'nivel']; },
@@ -47,12 +49,12 @@
     level_20: function (s) { return [safe(function () { return getLevelData(s.xp); }), 20, 'nivel']; },
     level_30: function (s) { return [safe(function () { return getLevelData(s.xp); }), 30, 'nivel']; },
     correct_100: function (s) { return [n(s.totalCorrect), 100, 'aciertos']; },
-    correct_300: function (s) { return [n(s.totalCorrect), 400, 'aciertos']; },
-    correct_600: function (s) { return [n(s.totalCorrect), 800, 'aciertos']; },
+    correct_400: function (s) { return [n(s.totalCorrect), 400, 'aciertos']; },
+    correct_800: function (s) { return [n(s.totalCorrect), 800, 'aciertos']; },
     master_10: function (s) { return [safe(function () { return getMasteredCount(s); }), 10, 'dominadas']; },
     master_50: function (s) { return [safe(function () { return getMasteredCount(s); }), 50, 'dominadas']; },
-    master_150: function (s) { return [safe(function () { return getMasteredCount(s); }), 100, 'dominadas']; },
-    master_250: function (s) { return [safe(function () { return getMasteredCount(s); }), 200, 'dominadas']; },
+    master_100: function (s) { return [safe(function () { return getMasteredCount(s); }), 100, 'dominadas']; },
+    master_200: function (s) { return [safe(function () { return getMasteredCount(s); }), 200, 'dominadas']; },
     cleaner_5: function (s) { return [n(s.errorsCleaned), 5, 'superadas']; },
     cleaner_25: function (s) { return [n(s.errorsCleaned), 25, 'superadas']; },
     tt_15: function (s) { return [n(s.maxTimeTrialScore), 15, 'aciertos']; },
@@ -64,6 +66,7 @@
     mental_calc_40: function (s) { return [n(s.bestMentalCalcCorrect), 40, 'aciertos']; },
     duel_rey_del_empate: function (s) { return [n(s.duelStats && s.duelStats.draws), 3, 'empates']; },
     duel_cinco_victorias: function (s) { return [n(s.duelStats && s.duelStats.wins), 5, 'victorias']; },
+    duel_tres_al_hilo: function (s) { return [n(s.duelStats && s.duelStats.bestWinStreak), 3, 'victorias seguidas']; },
     duel_otra_vez_tu: function (s) { return [n(s.duelStats && s.duelStats.bestWinsVsRival), 3, 'victorias']; },
     medal_collector_10: function (s) { return [collectorCount(s), 10, 'logros']; },
     medal_collector_20: function (s) { return [collectorCount(s), 20, 'logros']; },
@@ -101,7 +104,9 @@
       var p = PROGRESS[m.id](s), cur = Math.min(p[0], p[1]), pct = Math.round(cur / p[1] * 100);
       prog = '<div class="ach-prog"><div class="ach-bar"><span style="width:' + pct + '%"></span></div><span class="ach-num">' + cur + '/' + p[1] + '</span></div>';
     }
-    var tag = frag ? '<span class="ach-frag' + (unlocked ? ' got' : '') + '" title="' + (unlocked ? 'Fragmento obtenido' : 'Otorga un Fragmento de Mente') + '"><img src="assets/ui/fragmento.webp" alt="" draggable="false"></span>' : '';
+    var av = ''; try { av = getMedalAvatar(m.id) || ''; } catch (e) {}
+    var avTag = av ? '<span class="ach-frag ach-avatar' + (unlocked ? ' got' : '') + '" title="' + (unlocked ? 'Avatar desbloqueado' : 'Desbloquea un avatar') + '">🎭</span>' : '';
+    var tag = (frag ? '<span class="ach-frag' + (unlocked ? ' got' : '') + '" title="' + (unlocked ? 'Fragmento obtenido' : 'Otorga un Fragmento de Mente') + '"><img src="assets/ui/fragmento.webp" alt="" draggable="false"></span>' : '') + avTag;
     return '<div class="ach-row ' + (unlocked ? 'is-done' : 'is-locked') + '">' +
       '<div class="ach-ico has-img">' + iconHTML(m) + (unlocked ? '<span class="ach-check" aria-hidden="true">✓</span>' : '') + '</div>' +
       '<div class="ach-body"><div class="ach-title">' + esc(m.title) + tag + '</div><div class="ach-desc">' + esc(m.desc) + '</div>' + prog + '</div></div>';

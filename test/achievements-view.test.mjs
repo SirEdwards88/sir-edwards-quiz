@@ -33,13 +33,14 @@ test('el objetivo de cada barra es exactamente el umbral de su logro', () => {
       const s = { duelStats: { draws: 0, wins: 0, bestWinsVsRival: 0 }, unlockedMedals: [] };
       if (m.id.startsWith('level_')) { let xp = 0; while (c.getLevelData(xp) < v) xp += 10; s.xp = xp; }
       else if (m.id.startsWith('master_')) s._mastered = v;
-      else if (m.id.startsWith('medal_collector')) s.unlockedMedals = Array.from({ length: v }, (_, i) => 'x' + i);
+      else if (m.id.startsWith('medal_collector')) s.unlockedMedals = c.ALL_MEDALS.filter((x) => !x.id.startsWith('medal_collector') && x.id !== 'all_medals_secret').slice(0, v).map((x) => x.id); // solo cuentan logros ACTIVOS
       else if (m.id === 'sharp_eye') s.hardBestStreak = v;
       else if (m.id === 'sin_preferencias') s.noRepeatCatBestStreak = v;
       else if (m.id === 'sin_frenos') s.timeTrialBestStreak = v;
       else if (m.id === 'duel_rey_del_empate') s.duelStats.draws = v;
       else if (m.id === 'duel_cinco_victorias') s.duelStats.wins = v;
       else if (m.id === 'duel_otra_vez_tu') s.duelStats.bestWinsVsRival = v;
+      else if (m.id === 'duel_tres_al_hilo') s.duelStats.bestWinStreak = v;
       else { const k = Object.keys(field).find((p) => m.id.startsWith(p)); assert.ok(k, 'sin campo para ' + m.id); s[field[k]] = v; }
       return s;
     };

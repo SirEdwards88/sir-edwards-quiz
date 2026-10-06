@@ -51,7 +51,15 @@
     { id: 'globo', value: 'globo', short: 'Globo', src: ASSET_DIR + 'globo.png', label: 'Globo aerostático', base: true },
     { id: 'pipa', value: 'pipa', short: 'Pipa', src: ASSET_DIR + 'pipa.png', label: 'Pipa', base: true },
     { id: 'paraguas', value: 'paraguas', short: 'Paraguas', src: ASSET_DIR + 'paraguas.png', label: 'Paraguas victoriano', base: true },
-    { id: 'caballo', value: 'caballo', short: 'Caballo', src: ASSET_DIR + 'caballo.png', label: 'Caballo de ajedrez', base: true }
+    { id: 'caballo', value: 'caballo', short: 'Caballo', src: ASSET_DIR + 'caballo.png', label: 'Caballo de ajedrez', base: true },
+    // 2.1: avatares que se GANAN con un logro (`medal` = ID del logro; la recompensa se define en MEDAL_REWARDS, medals.js).
+    // El servidor solo deja elegirlos a quien tiene el logro. Cualquiera los VE en el perfil de otro jugador.
+    { id: 'avatar_siredwards_coleccionista', value: 'avatar_siredwards_coleccionista', short: 'Coleccionista', src: ASSET_DIR + 'avatar_siredwards_coleccionista.png', label: 'SirEdwards Coleccionista', base: false, medal: 'medal_collector_30' },
+    { id: 'avatar_siredwards_vengador', value: 'avatar_siredwards_vengador', short: 'Vengador', src: ASSET_DIR + 'avatar_siredwards_vengador.png', label: 'SirEdwards Vengador', base: false, medal: 'duel_revancha' },
+    { id: 'avatar_siredwards_imparable', value: 'avatar_siredwards_imparable', short: 'Imparable', src: ASSET_DIR + 'avatar_siredwards_imparable.png', label: 'SirEdwards Imparable', base: false, medal: 'streak_30' },
+    { id: 'avatar_siredwards_insensato', value: 'avatar_siredwards_insensato', short: 'Insensato', src: ASSET_DIR + 'avatar_siredwards_insensato.png', label: 'SirEdwards Insensato', base: false, medal: 'duel_apuestas_ultima_locura' },
+    { id: 'avatar_siredwards_medianoche', value: 'avatar_siredwards_medianoche', short: 'Medianoche', src: ASSET_DIR + 'avatar_siredwards_medianoche.png', label: 'SirEdwards de Medianoche', base: false, medal: 'noctambulo' },
+    { id: 'avatar_siredwards_supremo', value: 'avatar_siredwards_supremo', short: 'Supremo', src: ASSET_DIR + 'avatar_siredwards_supremo.png', label: 'SirEdwards Supremo', base: false, medal: 'all_medals_secret' }
   ];
 
   // GLYPHS/DEFAULT_GLYPH conservan su nombre histórico de Fase C (para no
@@ -85,7 +93,8 @@
   // así no hace falta duplicar tamaños aquí.
   function avatarHTML(stored) {
     var entry = entryForGlyph(resolveGlyph(stored)) || DEFAULT_ENTRY;
-    return '<img class="seq-av-img" src="' + entry.src + '" alt="' + entry.label + '" draggable="false">';
+    // Si el archivo de un avatar nuevo aún no existe, se muestra el Sombrero en vez de una imagen rota.
+    return '<img class="seq-av-img" src="' + entry.src + '" alt="' + entry.label + '" draggable="false" onerror="this.onerror=null;this.src=\'' + DEFAULT_ENTRY.src + '\'">';
   }
 
   // Nombre corto para mostrar bajo cada avatar en el selector (texto fijo del catálogo).
@@ -94,7 +103,17 @@
     return entry.short || entry.label;
   }
 
+  // ¿Puede elegirlo este jugador? Los base, siempre; los de logro, solo con el logro desbloqueado.
+  function isAvailable(stored, unlockedMedals) {
+    var e = entryForGlyph(stored); if (!e) return false;
+    if (!e.medal) return true;
+    return Array.isArray(unlockedMedals) && unlockedMedals.indexOf(e.medal) !== -1;
+  }
+  function medalOf(stored) { var e = entryForGlyph(stored); return e && e.medal ? e.medal : null; }
+
   window.SEQAvatars = {
+    isAvailable: isAvailable,
+    medalOf: medalOf,
     shortName: shortName,
     CATALOG: CATALOG,
     GLYPHS: GLYPHS,
