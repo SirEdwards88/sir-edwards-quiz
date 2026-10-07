@@ -12,7 +12,7 @@
 // cada una de las seis categorías; nunca 3 seguidas iguales. Pares (`par`): dos preguntas cuyo enunciado destapa la
 // respuesta de la otra no coinciden en la misma partida. Dentro de cada nivel las A pesan 3 y las B pesan 1.
 // `avoid` (opcional, Set o array de ids): preguntas a evitar si hay alternativa (la memoria del cliente).
-// Si las restricciones no se pueden cumplir, se relajan en este orden: variedad, memoria; la curva nunca.
+// Si las restricciones no se pueden cumplir, se relajan en este orden: memoria, variedad; la curva nunca (la variedad manda sobre la memoria).
 //
 // Script clásico (scope global), sin dependencias.
 // IMPORTANTE: el Worker (backend) tiene una COPIA LITERAL de este archivo en src/lucidez-select.js (con un `export` al final);
@@ -123,14 +123,15 @@ const SEQLucidezSelect = (function () {
         var nivel = tramo[0], cuantas = tramo[1];
         for (var n = 0; n < cuantas; n++) {
           var base = pool.filter(function (q) { return q.dif === nivel && !blocked(q); });
-          // Intentos de más estricto a más laxo. La memoria manda sobre la variedad (no se repite nada hasta agotar el
-          // nivel): variedad completa y memoria → solo límite de fase con memoria → solo memoria → variedad sin memoria → lo que haya.
+          // Intentos de más estricto a más laxo. La variedad manda sobre la memoria (los límites de categoría no se
+          // rompen): variedad completa y memoria → variedad completa sin memoria → solo límite de fase con memoria →
+          // solo límite de fase → lo que haya (último recurso, banco casi vacío).
           var full = function (q) { return (catPhase[q.cat] || 0) < CAT_LIMIT_PHASE[fase] && (catGame[q.cat] || 0) < CAT_LIMIT_GAME; };
           var tiers = [
             function (q) { return !avoidSet[q.n] && full(q); },
-            function (q) { return !avoidSet[q.n] && (catPhase[q.cat] || 0) < CAT_LIMIT_PHASE[fase]; },
-            function (q) { return !avoidSet[q.n]; },
             full,
+            function (q) { return !avoidSet[q.n] && (catPhase[q.cat] || 0) < CAT_LIMIT_PHASE[fase]; },
+            function (q) { return (catPhase[q.cat] || 0) < CAT_LIMIT_PHASE[fase]; },
             function () { return true; }
           ];
           var cand = [];

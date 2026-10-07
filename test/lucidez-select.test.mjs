@@ -44,7 +44,9 @@ test('alias: las respuestas naturales que fallaban ahora se aceptan', () => {
   const casos = { 389: 'rocas ígneas', 421: 'memoria RAM', 226: 'The Matrix', 227: 'Citizen Kane', 289: 'Naciones Unidas',
     292: 'Producto Interno Bruto', 274: 'Sputnik', 271: 'Apolo XI', 160: 'C-14', 245: 'once', 379: 'Ulaanbaatar', 351: 'ARNt',
     305: 'dilatación del tiempo', 147: 'Hz', 36: 'crac del 29', 198: 'Raphael', 218: 'film noir', 320: 'BCE', 410: 'programa espía',
-    142: '300000', 35: 'Revolución americana', 359: 'Clavicémbalo' };
+    142: '300000', 35: 'Revolución americana', 359: 'Clavicémbalo',
+    23: 'batalla de Waterloo', 93: 'monte Kilimanjaro', 374: 'río Mekong', 376: 'cordillera de los Andes', 196: 'Alhambra de Granada',
+    147: 'Hertz', 266: 'telégrafo eléctrico', 205: 'dinastía nazarí', 399: 'chita', 405: 'fenómeno de El Niño', 411: 'rey Hammurabi', 192: 'estilo gótico' };
   for (const [n, u] of Object.entries(casos)) assert.ok(M(u, por(+n)), '#' + n + ' «' + u + '»');
   assert.ok(!M('rocas sedimentarias', por(389)));
 });
@@ -85,7 +87,7 @@ test('ignora las preguntas sin lz aunque sean medias o difíciles', () => {
   for (let s = 1; s <= 200; s++) { const sel = S.select(BANK, mulberry32(s)); for (const q of sel.p1.concat(sel.p2, sel.p3)) assert.ok(!sinLz.includes(q.n)); }
 });
 
-test('memoria (avoid): se evita lo visto y se reparte sin repetir hasta agotar el nivel', () => {
+test('memoria (avoid): se evita lo visto; solo se repite alguna difícil tarde, por la variedad', () => {
   const seen = new Set();
   const rng = mulberry32(99);
   let dup = 0;
@@ -93,7 +95,7 @@ test('memoria (avoid): se evita lo visto y se reparte sin repetir hasta agotar e
     const sel = S.select(BANK, rng, seen);
     for (const q of sel.p1.concat(sel.p2, sel.p3)) { if (q.dif === 'dificil' && seen.has(q.n)) dup++; seen.add(q.n); }
   }
-  assert.equal(dup, 0, '6 partidas = 42 difíciles de 50: ninguna repetida');
+  assert.ok(dup <= 3, 'difíciles repetidas en 6 partidas: ' + dup);
 });
 
 test('con la memoria llena no falla: relaja la memoria, nunca la curva', () => {
@@ -116,20 +118,22 @@ function bagCtx(initialSeen) {
   return c;
 }
 
-test('pickLucidezGame: guarda las vistas y no repite difíciles en 6 partidas seguidas', () => {
+test('pickLucidezGame: guarda las vistas y apenas repite difíciles en 6 partidas seguidas', () => {
   const c = bagCtx();
   const vistas = new Set();
+  let dup = 0;
   for (let g = 0; g < 6; g++) {
     const sel = c.P();
-    check(sel, 'cliente' + g, true);
-    for (const q of sel.p1.concat(sel.p2, sel.p3)) { if (q.dif === 'dificil') assert.ok(!vistas.has(q.n), 'repetida #' + q.n); vistas.add(q.n); }
+    check(sel, 'cliente' + g);
+    for (const q of sel.p1.concat(sel.p2, sel.p3)) { if (q.dif === 'dificil' && vistas.has(q.n)) dup++; vistas.add(q.n); }
   }
+  assert.ok(dup <= 5, 'difíciles repetidas en 6 partidas: ' + dup);
   assert.ok(c.store.questionBags.lucidez_vistas.length >= 40);
 });
 
-test('pickLucidezGame: al agotar un nivel olvida solo ese nivel y sigue funcionando', () => {
+test('pickLucidezGame: en 12 partidas seguidas la variedad y la curva nunca se rompen', () => {
   const c = bagCtx();
-  for (let g = 0; g < 12; g++) check(c.P(), 'ciclo' + g, true);
+  for (let g = 0; g < 12; g++) check(c.P(), 'ciclo' + g);
   const vistas = c.store.questionBags.lucidez_vistas;
   assert.ok(vistas.length <= 244);
 });
