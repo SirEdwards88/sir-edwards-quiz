@@ -1940,8 +1940,8 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
 
 /* Caja de "nuevo modo desbloqueado": más destacada que la de logros */
 @keyframes modeUnlockGlow {
-  0%, 100% { box-shadow: 0 0 0 rgba(124,58,237,.0), 0 10px 30px rgba(124,58,237,.18); }
-  50% { box-shadow: 0 0 26px rgba(124,58,237,.45), 0 10px 34px rgba(124,58,237,.30); }
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
 }
 @keyframes modeUnlockPop {
   0% { transform: scale(.92); opacity: 0; }
@@ -1961,8 +1961,17 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
   /* Prompt 2 — Fase C: el glow en bucle es un aviso ya existente y se deja
      tal cual; solo se retrasa un poco la entrada (modeUnlockPop) para que
      caiga en el escalón de "recompensas", junto a las chips. */
-  animation: modeUnlockGlow 2.2s ease-in-out infinite, modeUnlockPop .4s ease-out .28s both;
+  box-shadow: 0 10px 30px rgba(124,58,237,.18);
+  animation: modeUnlockPop .4s ease-out .28s both;
 }
+/* Resplandor en bucle: capa interior (la caja recorta con overflow:hidden) que solo anima opacity. */
+.session-mode-unlock-box::before,
+.mode-unlock-toast::before{
+  content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  box-shadow: inset 0 0 26px rgba(124,58,237,.45);
+  opacity:0; will-change:opacity;
+}
+.session-mode-unlock-box::before{ animation: modeUnlockGlow 2.2s ease-in-out infinite; }
 .session-mode-unlock-title {
   font-size: 14px;
   font-weight: 900;
@@ -2025,7 +2034,11 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
 .mode-unlock-toast.show{
   opacity:1;
   transform:translate(-50%,0) scale(1);
-  animation: modeUnlockGlow 1.8s ease-in-out infinite;
+}
+.mode-unlock-toast.show::before{ animation: modeUnlockGlow 1.8s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce){
+  .session-mode-unlock-box::before,
+  .mode-unlock-toast::before{ animation:none !important; opacity:0; }
 }
 .mode-unlock-toast .toast-icon{font-size:40px}
 .mode-unlock-toast .toast-small{
@@ -2337,17 +2350,23 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
     radial-gradient(circle at 90% 88%, rgba(6,182,212,.14), transparent 46%),
     linear-gradient(145deg,rgba(109,40,217,.12),var(--card) 68%);
   box-shadow:0 10px 30px rgba(109,40,217,.20);
+}
+/* Resplandor pulsante: capa propia con opacity (sin animar box-shadow). */
+.mode-card.mode-lucidez::before{
+  content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  box-shadow:0 16px 42px rgba(109,40,217,.38);
+  opacity:0; will-change:opacity;
   animation: lucidezCardGlow 3s ease-in-out infinite;
 }
 .mode-card.mode-lucidez:hover{ border-color:rgba(109,40,217,.60); }
 @keyframes lucidezCardGlow{
-  0%,100%{ box-shadow:0 10px 30px rgba(109,40,217,.20); }
-  50%{ box-shadow:0 16px 42px rgba(109,40,217,.38); }
+  0%,100%{ opacity:0; }
+  50%{ opacity:1; }
 }
 [data-theme="dark"] .mode-card.mode-lucidez{ border-color:rgba(167,139,250,.32); }
 [data-theme="dark"] .mode-card.mode-lucidez:hover{ border-color:rgba(167,139,250,.60); }
 @media (prefers-reduced-motion: reduce){
-  .mode-card.mode-lucidez{ animation:none; }
+  .mode-card.mode-lucidez::before{ animation:none; opacity:0; }
 }
 .mode-card-icon{
 display:flex;align-items:center;justify-content:center;
@@ -2375,36 +2394,38 @@ display:flex;align-items:center;justify-content:center;
    de modo (hereda mode-standard/review/survival/sudden/timetrial vía JS),
    pero con borde reforzado y un pulso sutil para que destaque como acción
    prioritaria frente a empezar una partida nueva. */
+/* El pulso vive en un pseudo-elemento (::before) que solo anima opacity y
+   transform: no repinta sombras en cada fotograma. El color sale de --pulse. */
 #resume-game-card{
   border-width:3px;
-  animation: resumeCardPulse 2.4s ease-in-out infinite;
+  --pulse:rgba(37,99,235,.20);
 }
 #resume-game-card .mode-card-icon{ position:relative; }
-@keyframes resumeCardPulse{
-  0%,100%{ box-shadow:0 0 0 0 rgba(37,99,235,.16); }
-  50%{ box-shadow:0 0 0 8px rgba(37,99,235,0); }
+#resume-game-card.mode-review{ --pulse:rgba(13,148,136,.20); }
+#resume-game-card.mode-survival{ --pulse:rgba(245,158,11,.22); }
+#resume-game-card.mode-sudden{ --pulse:rgba(220,38,38,.22); }
+#resume-game-card.mode-timetrial{ --pulse:rgba(219,39,119,.22); }
+#resume-game-card.mode-mentalcalc{ --pulse:rgba(21,128,61,.22); }
+#resume-game-card.mode-lucidez{ --pulse:rgba(109,40,217,.26); }
+#resume-game-card::before,
+.duel-resume-card::before{
+  content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none;
+  box-shadow:0 0 0 8px var(--pulse);
+  opacity:0; will-change:opacity,transform;
+  animation: resumeCardPulse 2.4s ease-in-out infinite;
 }
-#resume-game-card.mode-review{ animation-name:resumeCardPulseReview; }
-#resume-game-card.mode-survival{ animation-name:resumeCardPulseSurvival; }
-#resume-game-card.mode-sudden{ animation-name:resumeCardPulseSudden; }
-#resume-game-card.mode-timetrial{ animation-name:resumeCardPulseTimetrial; }
-#resume-game-card.mode-mentalcalc{ animation-name:resumeCardPulseMentalcalc; }
-#resume-game-card.mode-lucidez{ animation-name:resumeCardPulseLucidez; }
-@keyframes resumeCardPulseReview{0%,100%{box-shadow:0 0 0 0 rgba(13,148,136,.16)}50%{box-shadow:0 0 0 8px rgba(13,148,136,0)}}
-@keyframes resumeCardPulseSurvival{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.18)}50%{box-shadow:0 0 0 8px rgba(245,158,11,0)}}
-@keyframes resumeCardPulseSudden{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.18)}50%{box-shadow:0 0 0 8px rgba(220,38,38,0)}}
-@keyframes resumeCardPulseTimetrial{0%,100%{box-shadow:0 0 0 0 rgba(219,39,119,.18)}50%{box-shadow:0 0 0 8px rgba(219,39,119,0)}}
-@keyframes resumeCardPulseMentalcalc{0%,100%{box-shadow:0 0 0 0 rgba(21,128,61,.18)}50%{box-shadow:0 0 0 8px rgba(21,128,61,0)}}
-@keyframes resumeCardPulseLucidez{0%,100%{box-shadow:0 0 0 0 rgba(109,40,217,.22)}50%{box-shadow:0 0 0 8px rgba(109,40,217,0)}}
+@keyframes resumeCardPulse{
+  0%,100%{ opacity:0; transform:scale(.985); }
+  50%{ opacity:1; transform:scale(1); }
+}
 @media(max-width:600px){
-  /* En móvil, animar box-shadow en bucle infinito tiene un coste real de
-     repintado/batería y aporta poco frente al borde y el degradado, que ya
-     dan identidad visual de sobra. En desktop es barato y se mantiene. */
-  .mode-card.mode-lucidez{ animation:none; }
-  #resume-game-card{ animation:none; }
+  /* En móvil el pulso en bucle aporta poco frente al borde y el degradado. */
+  #resume-game-card::before,
+  .mode-card.mode-lucidez::before{ animation:none; opacity:0; }
 }
 @media (prefers-reduced-motion: reduce){
-  #resume-game-card{ animation:none; }
+  #resume-game-card::before,
+  .duel-resume-card::before{ animation:none; opacity:0; }
 }
 
 
@@ -4294,12 +4315,11 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   border-width: 3px;
   border-color: var(--duel-purple);
   background: linear-gradient(150deg, var(--accent-purple-soft), var(--card) 45%);
-  animation: resumeCardPulseTimetrial 2.4s ease-in-out infinite;
+  --pulse: rgba(219,39,119,.22);
 }
 .duel-resume-card:hover, .duel-resume-card:focus-visible { border-color: var(--duel-purple); }
 .duel-resume-card .mode-card-icon { background: linear-gradient(135deg, var(--accent-purple-surface), var(--accent-purple-soft)); }
-@media(max-width:600px){ .duel-resume-card{ animation:none; } }
-@media (prefers-reduced-motion: reduce){ .duel-resume-card{ animation:none; } }
+@media(max-width:600px){ .duel-resume-card::before{ animation:none; opacity:0; } }
 
 /* Dificultades de "Crear reto": Mixta hereda la identidad violeta de Duelo
    (equivale al Modo Estándar) y ocupa el ancho completo, igual que ya hace
@@ -4917,16 +4937,15 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 .medal-card.unlocked::before {
   content: ""; position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.5) 50%, transparent 65%);
-  background-size: 220% 100%; background-position: 150% 0;
+  transform: translateX(100%);
   animation: medalShine 1.6s ease-out .1s 1;
   mix-blend-mode: soft-light;
 }
 [data-theme="dark"] .medal-card.unlocked::before {
   background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.16) 50%, transparent 65%);
-  background-size: 220% 100%; background-position: 150% 0;
   mix-blend-mode: soft-light;
 }
-@keyframes medalShine { from { background-position: 150% 0; } to { background-position: -50% 0; } }
+@keyframes medalShine { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
 
 /* Fragmento: la franja lateral morada ya existente gana un poco más de
    presencia para que "otorga Fragmento" se note sin depender solo del
