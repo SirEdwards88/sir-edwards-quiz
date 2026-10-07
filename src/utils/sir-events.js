@@ -23,7 +23,7 @@ const SEQSirEvents = (function () {
   var COOLDOWN_MS = 40000;        // mínimo entre dos eventos
   var MIN_ANSWERS_BETWEEN = 4;    // y al menos 4 respuestas de por medio
   var MIN_ANSWERS_START = 3;      // nunca en las primeras respuestas de la partida
-  var P = { visit: 0.03, day: 0.025, night: 0.02 };       // probabilidad por acierto evaluado
+  var P = { visit: 0.03, day: 0.10, night: 0.15 };        // probabilidad por acierto evaluado (día y noche: horas raras, más probables)
   var STREAK_P = { 10: 0.7, 15: 0.85, 20: 1, 30: 1 };     // 10 «puede», 15 más probable, 20 y 30 especiales
   var MILESTONES = [10, 15, 20, 30];
   var RARE_P = 0.05;              // frase «muy rara»
@@ -37,33 +37,49 @@ const SEQSirEvents = (function () {
   var LABELS = { streak: '🔥 SirEdwards ha detectado una racha' };
 
   // Frases. `h` (opcional) limita la frase a esas horas locales (para que no mienta con la hora).
+  // Los grupos normales no llevan `h`: así se pueden rotar con bolsa (ver `rotate`). Las frases ligadas a una hora exacta
+  // viven en los grupos «raros» y se eligen al azar entre las válidas para la hora.
   var VISIT = [
     '«Ah, tú por aquí.»', '«Veo que has vuelto.»', '«Continúa, continúa.»', '«No quería interrumpir.»',
     '«Solo estaba pasando por aquí.»', '«Muy bien. Prosigue.»', '«Me alegra verte por aquí.»',
     '«He venido a supervisar. No te pongas nervioso.»', '«No hay presión. Bueno... quizá un poco.»',
     '«Continúa. Fingiré que no estoy mirando.»', '«Estoy de paso. Procura no hacer el ridículo.»',
-    '«Todo parece estar en orden. De momento.»', '«Interesante. Sigue, sigue.»', '«No te preocupes. Mi libreta es confidencial.»'
+    '«Todo parece estar en orden. De momento.»', '«Interesante. Sigue, sigue.»', '«No te preocupes. Mi libreta es confidencial.»',
+    '«Un caballero siempre observa antes de opinar.»', '«Sigue. Tomo notas, por si acaso.»', '«Estoy aquí solo por si necesitas un testigo.»',
+    '«Qué concentración. Casi parece que te importa.»', '«Pasaba por aquí y me quedé por curiosidad.»', '«No me hagas caso. Hazlo bien, sin más.»'
   ];
-  var VISIT_RARE = ['«No tengo nada que añadir. Es preocupante.»'];
+  var VISIT_RARE = ['«No tengo nada que añadir. Es preocupante.»', '«Si estás leyendo esto, deberías estar mirando la pregunta.»'];
   var STREAK_PHRASES = {
-    10: ['«Hmm... llevas unas cuantas.»', '«Eso empieza a parecer una racha.»', '«Bien. Muy bien.»', '«No parece que quieras fallar hoy.»'],
-    15: ['«Esto empieza a ponerse serio.»', '«¿Piensas parar en algún momento?»', '«Estoy empezando a preocuparme por tus respuestas.»', '«Curiosamente, todavía no has cometido ningún desastre.»'],
-    20: ['«Veinte. Eso ya merece mi atención.»', '«Excelente racha. No la estropees ahora.»', '«Esto empieza a ser digno de un caballero.»', '«No quiero presionarte, pero... veinte.»'],
-    30: ['«Treinta. Bien. Ahora sí estoy impresionado.»', '«Esto ya no es suerte.»', '«Creo que acabamos de encontrar un problema para tus rivales.»', '«SirEdwards Imparable. Te lo has ganado.»']
+    10: ['«Hmm... llevas unas cuantas.»', '«Eso empieza a parecer una racha.»', '«Bien. Muy bien.»', '«No parece que quieras fallar hoy.»',
+      '«Diez. Empiezo a tomarte en serio.»', '«Aciertas con una regularidad sospechosa.»'],
+    15: ['«Esto empieza a ponerse serio.»', '«¿Piensas parar en algún momento?»', '«Estoy empezando a preocuparme por tus respuestas.»', '«Curiosamente, todavía no has cometido ningún desastre.»',
+      '«Quince. Si fallas ahora, lo recordaré.»', '«Alguien se ha estudiado los apuntes.»'],
+    20: ['«Veinte. Eso ya merece mi atención.»', '«Excelente racha. No la estropees ahora.»', '«Esto empieza a ser digno de un caballero.»', '«No quiero presionarte, pero... veinte.»',
+      '«Veinte sin fallar. Ya no me atrevo ni a pestañear.»', '«Mi libreta necesita una página nueva.»'],
+    30: ['«Treinta. Bien. Ahora sí estoy impresionado.»', '«Esto ya no es suerte.»', '«Creo que acabamos de encontrar un problema para tus rivales.»', '«SirEdwards Imparable. Te lo has ganado.»',
+      '«Treinta. Voy a tener que retirar algunas de mis opiniones.»', '«Hay que ser muy valiente para seguir ahora.»']
   };
   var DAY = [
     '«Buenos días. Veamos qué estás tramando.»', '«Una mañana prometedora. No la estropees.»', '«Ya despierto y haciendo preguntas. Admirable.»',
     '«El día acaba de empezar. Procura no decepcionarme demasiado pronto.»', '«Un poco de cultura antes del desayuno. Excelente decisión.»',
     '«He decidido madrugar. Tú también, aparentemente.»', '«Buenos días. Espero que tu cerebro haya llegado antes que tú.»',
-    '«A estas horas hasta las malas decisiones parecen razonables.»'
+    '«A estas horas hasta las malas decisiones parecen razonables.»',
+    '«Madrugador. Sospechoso, pero encomiable.»', '«Café, luz y preguntas. Una combinación peligrosa para tu ego.»',
+    '«El mundo todavía se despereza y tú ya estás en plena faena.»', '«Una mente despierta a primera hora. Qué desconcertante.»',
+    '«Cultura antes del mediodía. Los demás aún buscan las zapatillas.»', '«A estas horas, hasta mi paciencia está recién planchada.»'
   ];
   var DAY_RARE = [{ t: '«Son las siete de la mañana y ya estoy supervisando tu rendimiento. Qué vida tan plena.»', h: [7] }];
-  var NIGHT_EARLY = ['«Buenas noches... supongo.»', '«¿Todavía jugando?»', '«Veo que la noche te ha dado conocimientos.»', '«Una partida nocturna. Excelente decisión cuestionable.»']; // 00:00–02:00
+  var NIGHT_EARLY = ['«Buenas noches... supongo.»', '«¿Todavía jugando?»', '«Veo que la noche te ha dado conocimientos.»', '«Una partida nocturna. Excelente decisión cuestionable.»', // 00:00–02:00
+    '«Pasada la medianoche, la mente rinde... o eso dicen.»', '«La noche es joven. Tu criterio, quizá menos.»', '«Medianoche y todavía respondiendo. Qué disciplina tan discutible.»',
+    '«Mañana habrá que madrugar, pero tú sabrás.»', '«Otra pregunta antes de dormir. Cómo no.»'];
   var NIGHT_LATE = [                                                                                                                              // 02:00–04:00
-    { t: '«Son las tres de la mañana. Esto ya es personal.»', h: [3] }, '«¿Dormir? No. ¿Otra partida? Evidentemente.»',
-    '«A estas horas solo quedan los valientes y los insensatos.»', '«No preguntaré por qué sigues despierto.»', '«He venido a comprobar que no soy el único.»'
+    '«¿Dormir? No. ¿Otra partida? Evidentemente.»', '«A estas horas solo quedan los valientes y los insensatos.»', '«No preguntaré por qué sigues despierto.»',
+    '«He venido a comprobar que no soy el único.»', '«A estas horas la cultura general es un acto de rebeldía.»',
+    '«Las mejores ideas llegan de madrugada. Las peores, también.»', '«Ya no es tarde, es temprano. Y sigues aquí.»',
+    '«Tu almohada debe de sentirse bastante ofendida.»', '«La madrugada: donde la lucidez y el insomnio se dan la mano.»'
   ];
-  var NIGHT_RARE = [{ t: '«03:17. La hora exacta en la que normalmente tomo decisiones cuestionables.»', h: [3] }];
+  var NIGHT_RARE = [{ t: '«03:17. La hora exacta en la que normalmente tomo decisiones cuestionables.»', h: [3] },
+    { t: '«Son las tres de la mañana. Esto ya es personal.»', h: [3] }];
 
   function isNight(hour) { return hour >= 0 && hour < 4; }
   function isDay(hour) { return hour >= 6 && hour < 10; }
@@ -81,13 +97,19 @@ const SEQSirEvents = (function () {
     if (!pool.length) return null;
     return pool[Math.min(pool.length - 1, Math.floor(rng() * pool.length))];
   }
-  function phraseFor(type, hour, rng, avoid, milestone) {
+  // Grupos normales: si quien llama aporta `rotate(clave, lista)` (bolsa persistente del juego: no se repite ninguna hasta
+  // haberlas visto todas, también entre partidas), se usa; si no, se elige al azar evitando la última.
+  function choose(key, list, hour, rng, avoid, rotate) {
+    if (typeof rotate === 'function') { var t = rotate(key, list); if (typeof t === 'string' && t) return t; }
+    return pick(list, hour, rng, avoid);
+  }
+  function phraseFor(type, hour, rng, avoid, milestone, rotate) {
     var rare = { visit: VISIT_RARE, day: DAY_RARE, night: NIGHT_RARE }[type];
     if (rare && rng() < RARE_P) { var r = pick(rare, hour, rng, avoid); if (r) return r; }
-    if (type === 'streak') return pick(STREAK_PHRASES[milestone], hour, rng, avoid);
-    if (type === 'visit') return pick(VISIT, hour, rng, avoid);
-    if (type === 'day') return pick(DAY, hour, rng, avoid);
-    return pick(hour < 2 ? NIGHT_EARLY : NIGHT_LATE, hour, rng, avoid);
+    if (type === 'streak') return choose('streak_' + milestone, STREAK_PHRASES[milestone], hour, rng, avoid, rotate);
+    if (type === 'visit') return choose('visit', VISIT, hour, rng, avoid, rotate);
+    if (type === 'day') return choose('day', DAY, hour, rng, avoid, rotate);
+    return hour < 2 ? choose('night_early', NIGHT_EARLY, hour, rng, avoid, rotate) : choose('night_late', NIGHT_LATE, hour, rng, avoid, rotate);
   }
 
   // Hito de racha disponible: el mayor ≤ racha todavía no usado, alcanzado hace como mucho 1 acierto.
@@ -99,7 +121,8 @@ const SEQSirEvents = (function () {
     return null;
   }
 
-  // ctx = { nowMs, hour (0-23, hora LOCAL), streak, correct, last (¿última pregunta / sin tiempo?), blocked (¿no interrumpir?) }
+  // ctx = { nowMs, hour (0-23, hora LOCAL), streak, correct, last (¿última pregunta?), blocked (¿no interrumpir?),
+//         rotate (opcional: función (clave, lista) → frase, con bolsa persistente) }
   // Devuelve null o { type, asset, label, message, durationMs } y anota el evento en `state`.
   function evaluate(state, ctx, rng) {
     rng = rng || Math.random;
@@ -118,7 +141,7 @@ const SEQSirEvents = (function () {
     if (!chosen && state.shown.visit < 1 && rng() < P.visit) chosen = 'visit';
 
     if (!chosen) return null;
-    var text = phraseFor(chosen, hour, rng, state.last[chosen], milestone);
+    var text = phraseFor(chosen, hour, rng, state.last[chosen], milestone, ctx.rotate);
     if (!text) return null;
     if (chosen === 'streak') state.milestones[milestone] = true; else state.shown[chosen]++;
     // Un hito superado sin evento queda cerrado para no disparar tarde: los inferiores se consideran vistos.

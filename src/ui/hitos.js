@@ -2,7 +2,7 @@
 //
 // Solo presentación: NO cambia preguntas, vidas, puntuación ni resultados. Al llegar a ciertas preguntas
 // (Supervivencia 10/20/30 de 40, Muerte Súbita 13/20 de 25) aparece Sir Edwards en persona, de medio cuerpo,
-// con una frase al azar entre tres. Se cierra al tocar o a los pocos segundos; la pregunta ya está debajo.
+// con una frase que rota: no se repite ninguna del hito hasta haberlas visto todas (cinco por hito). Se cierra al tocar o a los pocos segundos; la pregunta ya está debajo.
 // Estos dos modos no tienen cronómetro, así que la pausa no cuesta nada al jugador.
 // Una vez por hito y partida. Si en ese momento hay un aviso de racha o de última vida, espera a que acabe.
 // Script clásico, sin dependencias. La parte pura (hitoFor / pickPhrase) se prueba en test/hitos.test.mjs.
@@ -18,17 +18,23 @@
         10: { img: 'barbilla', phrases: [
           'Diez. Empiezo a sospechar que esto podría acabar bien. Qué preocupación.',
           'Diez preguntas y ni una ambulancia. Seguiré mirando.',
-          'Diez. Una hazaña modesta, pero no pienso arruinártela. Todavía.'
+          'Diez. Una hazaña modesta, pero no pienso arruinártela. Todavía.',
+          'Diez. El primer cuarto, y todavía conservas la dignidad.',
+          'Diez. Esto va mejor de lo que apostaba.'
         ] },
         20: { img: 'monoculo', phrases: [
           'La mitad. Si llegas a cuarenta, fingiré que siempre confié en ti.',
           'Veinte. Esto empieza a parecer talento. O una casualidad extraordinaria.',
-          'La mitad del camino. Ahora llega la parte en la que empiezas a dudar de todo.'
+          'La mitad del camino. Ahora llega la parte en la que empiezas a dudar de todo.',
+          'Veinte. A partir de aquí, cada fallo duele con más elegancia.',
+          'La mitad. Si lo estropeas ahora, lo haré constar en acta.'
         ] },
         30: { img: 'manos', phrases: [
           'Treinta. Si vas a cometer un error, te agradecería que esperases diez preguntas.',
           'Treinta. Ya casi eres digno de celebrarlo. Casi.',
-          'Treinta. La meta está a la vista. Procura no tropezar con ella.'
+          'Treinta. La meta está a la vista. Procura no tropezar con ella.',
+          'Treinta. Diez más y te perdonaré varios defectos.',
+          'Treinta. Casi puedo oler el final. Tú también, supongo.'
         ] }
       }
     },
@@ -38,12 +44,16 @@
         13: { img: 'monoculo', phrases: [
           'Trece. Sigues vivo. No te acostumbres.',
           'La mitad. Ahora empieza la parte divertida. Para mí.',
-          'Trece y ningún error. Esto empieza a resultar sospechoso.'
+          'Trece y ningún error. Esto empieza a resultar sospechoso.',
+          'Trece. Mala fama, buen comienzo.',
+          'Trece sin caer. La superstición se queda sin argumentos.'
         ] },
         20: { img: 'manos', phrases: [
           'Veinte. La gloria está cerca. La muerte también.',
           'Cinco preguntas. Has llegado demasiado lejos para morir de forma tan vulgar.',
-          'Veinte. No arruines mi apuesta.'
+          'Veinte. No arruines mi apuesta.',
+          'Veinte. Un solo error y todo esto habrá sido un precioso ensayo.',
+          'Veinte. Cinco más y podrás presumir. Un poco.'
         ] }
       }
     }
@@ -57,7 +67,7 @@
     return { mode: mode, n: idx, total: m.total, img: IMG + h.img + '.webp', phrases: h.phrases.slice() };
   }
 
-  // Frase al azar, evitando repetir la última que salió en ese mismo hito.
+  // Frase al azar, evitando repetir la última que salió en ese mismo hito (se conserva por compatibilidad y para las pruebas).
   function pickPhrase(phrases, lastIdx, rnd) {
     var r = typeof rnd === 'function' ? rnd : Math.random;
     if (phrases.length < 2) return 0;
@@ -65,6 +75,24 @@
     var i = Math.floor(r() * (phrases.length - 1));
     if (lastIdx >= 0 && i >= lastIdx) i++;
     return Math.min(i, phrases.length - 1);
+  }
+
+  // Rotación como la de las preguntas («bolsa»): no sale ninguna frase del hito hasta haber salido todas, y al agotarse
+  // se baraja de nuevo sin empezar por la última. `memo` es lo guardado para ese hito: un número (versión anterior: solo la
+  // última) o { b: [índices pendientes], l: última }. Devuelve { i: índice elegido, memo: lo que hay que guardar }.
+  function nextPhrase(phrases, memo, rnd) {
+    var r = typeof rnd === 'function' ? rnd : Math.random, n = phrases.length;
+    if (n < 2) return { i: 0, memo: { b: [], l: 0 } };
+    var last = typeof memo === 'number' ? memo : (memo && typeof memo.l === 'number' ? memo.l : -1);
+    var bag = [], seen = {};
+    if (memo && Array.isArray(memo.b)) memo.b.forEach(function (x) { if (x >= 0 && x < n && x === Math.floor(x) && !seen[x]) { seen[x] = true; bag.push(x); } });
+    if (!bag.length) {
+      for (var k = 0; k < n; k++) bag.push(k);
+      for (var j = n - 1; j > 0; j--) { var m = Math.floor(r() * (j + 1)); var t = bag[j]; bag[j] = bag[m]; bag[m] = t; }
+      if (bag[bag.length - 1] === last) { var sw = Math.min(n - 2, Math.floor(r() * (n - 1))); var u = bag[bag.length - 1]; bag[bag.length - 1] = bag[sw]; bag[sw] = u; }
+    }
+    var i = bag.pop();
+    return { i: i, memo: { b: bag, l: i } };
   }
 
   // ---- Parte con DOM ---------------------------------------------------------------------------
@@ -100,8 +128,8 @@
     if (!doc || !doc.body) return;
     if (openEl) close();
     var memo = readLast(), key = h.mode + ':' + h.n;
-    var pi = pickPhrase(h.phrases, typeof memo[key] === 'number' ? memo[key] : -1);
-    memo[key] = pi; writeLast(memo);
+    var nx = nextPhrase(h.phrases, memo[key]), pi = nx.i;
+    memo[key] = nx.memo; writeLast(memo);
 
     var el = doc.createElement('div');
     el.className = 'sir-hito' + (h.mode === 'sudden_death' ? ' is-sudden' : '');
@@ -155,5 +183,5 @@
     Object.keys(m.at).forEach(function (k) { var i = new root.Image(); i.src = IMG + m.at[k].img + '.webp'; });
   }
 
-  root.SEQHitos = { HITOS: HITOS, hitoFor: hitoFor, pickPhrase: pickPhrase, check: check, reset: reset, close: close };
+  root.SEQHitos = { HITOS: HITOS, hitoFor: hitoFor, pickPhrase: pickPhrase, nextPhrase: nextPhrase, check: check, reset: reset, close: close };
 })(typeof window !== 'undefined' ? window : globalThis);

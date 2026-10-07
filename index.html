@@ -509,7 +509,7 @@ try {
             <span class="mode-lock-badge" id="lock-badge-mental_calc" aria-label="Bloqueado" title="Modo bloqueado"></span>
             <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/calculo.webp" alt="" draggable="false"></div>
             <h3>Cálculo Mental</h3>
-            <p id="mode-desc-mental-calc">Operaciones contra el reloj, cada vez más difíciles. Aciertos +2 s, fallos −3 s.</p>
+            <p id="mode-desc-mental-calc">Operaciones contra el reloj, cada vez más difíciles. Aciertos +3 s, fallos −3 s.</p>
             <p class="mode-req" id="mode-req-mental_calc"></p>
             <p class="mode-subtitle mode-status-open">✓ DISPONIBLE</p>
           </div>
@@ -1083,6 +1083,7 @@ try {
 <script src="src/utils/encargos-core.js?v=134"></script>
 <script src="src/utils/encargos-progress.js?v=134"></script>
 <script src="src/state/encargos.js?v=134"></script>
+<script src="src/data/encargos-phrases.js?v=134"></script>
 <script src="src/ui/encargos-ui.js?v=134"></script>
 <script src="src/utils/sir-events.js?v=134"></script>
 <script src="src/ui/sir-events-ui.js?v=134"></script>
@@ -2800,7 +2801,7 @@ const LOCKABLE_MODE_UI = [
   },
   {
     cardId: 'mode-card-mental_calc', badgeId: 'lock-badge-mental_calc', descId: 'mode-desc-mental-calc', reqId: 'mode-req-mental_calc',
-    baseDesc: 'Operaciones contra el reloj, cada vez más difíciles. Aciertos +2 s, fallos −3 s.',
+    baseDesc: 'Operaciones contra el reloj, cada vez más difíciles. Aciertos +3 s, fallos −3 s.',
     reqText: () => 'Requiere el logro «Velocidad Mental»',
     isUnlocked: s => (s.unlockedMedals || []).includes('tt_15')
   },
@@ -3121,7 +3122,7 @@ function switchTab(tabId) {
     try { maybeShowPwaHint(); } catch (e) {}
     try { SEQEncargosUI.renderHome(); } catch (e) {}
   }
-  if (tabId === 'encargos') { try { SEQEncargosUI.renderScreen(); } catch (e) {} }
+  if (tabId === 'encargos') { try { SEQEncargosUI.renderScreen(true); } catch (e) {} }
   if (tabId === 'modes') {
     closeDifficultyMenu();
     clearCardThemeClasses();
@@ -4472,8 +4473,10 @@ const TIMETRIAL_START_MS = 60000;
 const TIMETRIAL_MAX_MS = 90000;
 let timeTrialTotalAnswered = 0;
 // Tiempo inicial y límite máximo acumulable de Cálculo Mental (mismo criterio
-// que Contrarreloj: evita que el modo escale indefinidamente).
+// que Contrarreloj: evita que el modo escale indefinidamente). Mismas reglas que Contrarreloj: +3 s por acierto, −3 s por fallo.
+// (El servidor corrige los Retos con las mismas cifras: `calculo_mental` en reto-modes.js del backend.)
 const MENTALCALC_START_MS = 60000;
+const MENTALCALC_BONUS_MS = 3000;
 const MENTALCALC_MAX_MS = 90000;
 let mentalCalcTimer = null;
 let mentalCalcEndTime = 0;
@@ -4951,7 +4954,7 @@ function updateMentalCalcHeader() {
   const bar = document.getElementById('bar-fill');
   if (lbl) {
     // Mismo criterio que Contrarreloj: número de segundos en su propio
-    // <span> para poder animarlo (flash +2/-3) sin reescribir todo el texto.
+    // <span> para poder animarlo (flash +3/-3) sin reescribir todo el texto.
     let timerNum = document.getElementById('mc-timer-num');
     if (!timerNum) {
       lbl.innerHTML = `CÁLCULO MENTAL · ${seqIco('tiempo')}<span id="mc-timer-num">${mentalCalcSecondsLeft}</span>s · <span id="mc-pts-num">${currentGame.score}</span> pts`;
@@ -4995,7 +4998,7 @@ function renderMentalCalcOp(preserveOp = false) {
   document.getElementById('btn-check').style.display = 'none';
   document.getElementById('btn-next').style.display = 'none';
 
-  // Corta cualquier animación de +2/-3 que siguiera en curso al pasar de
+  // Corta cualquier animación de +3/-3 que siguiera en curso al pasar de
   // operación, para que nunca se solape con el feedback de la siguiente.
   const changeBox = document.getElementById('timetrial-change');
   if (changeBox) {
@@ -5058,8 +5061,8 @@ function checkMentalCalcAnswer() {
     const pointsWon = basePoints + speedBonus + streakBonus;
     currentGame.score += pointsWon;
 
-    // +2s por acierto, con el mismo tope máximo acumulable que Contrarreloj.
-    mentalCalcEndTime = Math.min(mentalCalcEndTime + 2000, Date.now() + MENTALCALC_MAX_MS);
+    // +3s por acierto, con el mismo tope máximo acumulable que Contrarreloj.
+    mentalCalcEndTime = Math.min(mentalCalcEndTime + MENTALCALC_BONUS_MS, Date.now() + MENTALCALC_MAX_MS);
     mentalCalcSecondsLeft = Math.ceil(Math.max(0, mentalCalcEndTime - Date.now()) / 1000);
     playMentalCalcChangeFX(true);
 
@@ -5283,7 +5286,7 @@ function playTimeTrialChangeFX(isGain) {
 }
 
 function playMentalCalcChangeFX(isGain) {
-  playTimeChangeFX(isGain, isGain ? '+2 SEGUNDOS' : '−3 SEGUNDOS', 'mc-timer-num');
+  playTimeChangeFX(isGain, isGain ? '+3 SEGUNDOS' : '−3 SEGUNDOS', 'mc-timer-num');
 }
 
 // Penalización de Fase III (Lucidez Mental): mismo aviso grande y flash del

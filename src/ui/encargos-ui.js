@@ -23,12 +23,24 @@ const SEQEncargosUI = (function () {
     return m + ' min';
   }
 
-  // Frases de Sir Edwards según cómo vaya la semana.
-  function phrase(v) {
-    if (v.allDone) return 'Semana saldada. No cantaré victoria: la próxima ya viene de camino.';
-    if (v.doneCount === 3) return 'Los tres cumplidos. Casi parece usted competente. Queda el Gran Encargo, claro.';
-    if (v.doneCount > 0 || v.missions.some(function (m) { return m.r.cur > 0; })) return 'Veo avances. Todavía no me atrevo a llamarlos mérito.';
-    return 'Esta semana, sus obligaciones son estas. No me haga repetirlas.';
+  // Frases de Sir Edwards según cuántos de los 4 encargos de la rotación ACTUAL (3 semanales + Gran Encargo) estén
+  // cobrados: 0/4 … 4/4. Nunca se usa el histórico de semanas anteriores.
+  function stateOf(v) {
+    var n = (v.doneCount || 0) + (v.great && v.great.claimed ? 1 : 0);
+    return Math.max(0, Math.min(4, n));
+  }
+  // La frase se elige UNA vez por visita a la pantalla (y otra si el estado cambia mientras está abierta); repintar
+  // por un avance de progreso no gasta una frase de la bolsa. Rotan con pickRotatingPhrase (sin repetir hasta agotarlas).
+  var shown = { state: -1, text: '' };
+  function phrase(v, fresh) {
+    var st = stateOf(v);
+    if (!fresh && shown.state === st && shown.text) return shown.text;
+    var list = typeof ENCARGOS_PHRASES !== 'undefined' ? ENCARGOS_PHRASES['encargos_' + st] : null, text = '';
+    if (list && list.length) {
+      try { text = typeof pickRotatingPhrase === 'function' ? pickRotatingPhrase('encargos_' + st, list) : list[0]; } catch (e) { text = list[0]; }
+    }
+    shown = { state: st, text: text || 'Esta semana, tus obligaciones son estas. No me hagas repetirlas.' };
+    return shown.text;
   }
 
   // ---- tira de Inicio -------------------------------------------------------------------------------
@@ -70,14 +82,14 @@ const SEQEncargosUI = (function () {
       '<div class="enc-card-prog">' + (m.claimed ? '✓ Completado' : esc(m.r.label)) + '</div>' +
       '</div>';
   }
-  function renderScreen() {
+  function renderScreen(fresh) {
     var el = document.getElementById('encargos-body');
     if (!el || typeof encargosView !== 'function') return;
     var v = encargosView();
     el.innerHTML =
       '<div class="enc-scene">' +
         '<img class="enc-scene-img" src="' + (v.allDone ? IMG_DONE : IMG_SCENE) + '" alt="Sir Edwards" decoding="async" draggable="false">' +
-        '<div class="enc-bubble">' + esc(phrase(v)) + '</div>' +
+        '<div class="enc-bubble">' + esc(phrase(v, fresh === true)) + '</div>' +
       '</div>' +
       '<div class="enc-meta"><span>' + v.doneCount + '/3 encargos' + (v.bonusClaimed ? ' · bonus cobrado' : '') + '</span><span>Quedan ' + esc(timeLeftText(v.msLeft)) + '</span></div>' +
       '<div class="enc-list">' + v.missions.map(function (m) { return missionCard(m, false); }).join('') + '</div>' +
@@ -114,5 +126,5 @@ const SEQEncargosUI = (function () {
     if (!showing) next();
   }
 
-  return { renderHome: renderHome, renderScreen: renderScreen, toast: toast, timeLeftText: timeLeftText, phrase: phrase };
+  return { renderHome: renderHome, renderScreen: renderScreen, toast: toast, timeLeftText: timeLeftText, phrase: phrase, stateOf: stateOf };
 })();

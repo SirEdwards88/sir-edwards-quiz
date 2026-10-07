@@ -98,7 +98,7 @@ test('day: solo de 06:00 a 09:59 hora local; night: solo de 00:00 a 03:59; fuera
   assert.equal(S.isDay(5), false); assert.equal(S.isDay(6), true); assert.equal(S.isDay(9), true); assert.equal(S.isDay(10), false);
 });
 
-test('day y night: máx. 1 por partida y no en todas las partidas', () => {
+test('day y night: máx. 1 por partida, frecuentes (horas raras) pero no en todas las partidas', () => {
   for (const [hour, type] of [[7, 'day'], [2, 'night']]) {
     const st = S.newState(); warm(st);
     const types = [];
@@ -111,7 +111,9 @@ test('day y night: máx. 1 por partida y no en todas las partidas', () => {
       for (let i = 0; i < 20; i++) { const ev = ans(s, i * 60000, hour, 1, {}, rng); if (ev && ev.type === type) n++; }
       assert.ok(n <= 1); games++; if (n) withEv++;
     }
-    assert.ok(withEv / games < 0.55, type + ' aparece en ' + withEv / games);
+    // 15 % de noche y 10 % de día por acierto evaluado: sale en la mayoría de partidas de 20 preguntas, pero nunca en todas.
+    const lo = type === 'night' ? 0.8 : 0.65, hi = type === 'night' ? 0.99 : 0.95;
+    assert.ok(withEv / games > lo && withEv / games < hi, type + ' aparece en ' + withEv / games);
   }
 });
 
@@ -133,7 +135,7 @@ test('frases: todas en «tú», sin plurales, con comillas; las de hora concreta
   const all = [];
   const walk = (x) => { if (typeof x === 'string') all.push(x); else if (Array.isArray(x)) x.forEach(walk); else if (x && typeof x === 'object') { if (x.t) all.push(x.t); else Object.values(x).forEach(walk); } };
   walk(S.PHRASES);
-  assert.ok(all.length >= 45);
+  assert.ok(all.length >= 75);
   all.forEach((t) => {
     assert.ok(t.startsWith('«') && t.endsWith('»'), t);
     assert.ok(!/\b(vuestr\w*|seguid|preocupéis|tramáis|estáis|os\b|decepcionéis|estropeéis)/i.test(t), 'plural en: ' + t);
@@ -200,15 +202,15 @@ test('enganche: no escribe en la partida (puntuación, tiempo, vidas…) ni en e
   assert.ok(!JSON.stringify(game).includes('_sev'));
 });
 
-test('enganche: Duelo y modos desconocidos, fallos, última pregunta y poco tiempo de Contrarreloj → nada', () => {
+test('enganche: Duelo y modos desconocidos, fallos, última pregunta, Contrarreloj y Cálculo Mental → nada', () => {
   const run = (game, correct = true, extra = {}) => { const c = makeGameEnv(game, extra); vm.runInContext('Math.random = () => 0', c); let n = 0; for (let i = 0; i < 40; i++) { game.currentIdx = game.currentIdx; if (vm.runInContext(`sirEventsOnAnswer(${correct})`, c)) n++; c.flush(); } return c.shown.length; };
   assert.equal(run({ mode: 'play', isDuel: true, currentIdx: 3, totalQuestionsToPlay: 30 }), 0);
   assert.equal(run({ mode: 'duelo_online', currentIdx: 3, totalQuestionsToPlay: 30 }), 0);
   assert.equal(run({ mode: 'play', currentIdx: 3, totalQuestionsToPlay: 30 }, false), 0);
   assert.equal(run({ mode: 'play', currentIdx: 29, totalQuestionsToPlay: 30 }), 0);
-  assert.equal(run({ mode: 'timetrial', currentIdx: 3, totalQuestionsToPlay: 20 }, true, { timeTrialEndTime: Date.now() + 5000 }), 0);
-  assert.ok(run({ mode: 'timetrial', currentIdx: 3, totalQuestionsToPlay: 20 }, true, { timeTrialEndTime: Date.now() + 60000 }) >= 1);
-  ['play', 'survival', 'sudden_death', 'timetrial', 'mental_calc', 'review', 'lucidez_mental'].forEach((m) => assert.ok(run({ mode: m, currentIdx: 3, totalQuestionsToPlay: 30 }, true, { timeTrialEndTime: Date.now() + 99999 }) >= 1, m));
+  // Contrarreloj y Cálculo Mental: nunca eventos, por mucho que dure la partida ni cuántos aciertos lleve (racha incluida).
+  ['timetrial', 'mental_calc'].forEach((m) => assert.equal(run({ mode: m, currentIdx: 3, totalQuestionsToPlay: 20 }, true, { timeTrialEndTime: Date.now() + 60000 }), 0, m));
+  ['play', 'survival', 'sudden_death', 'review', 'lucidez_mental'].forEach((m) => assert.ok(run({ mode: m, currentIdx: 3, totalQuestionsToPlay: 30 }, true, { timeTrialEndTime: Date.now() + 99999 }) >= 1, m));
   assert.equal(run({ mode: 'play', currentIdx: 3, totalQuestionsToPlay: 30 }, true, { document: { hidden: true } }), 0);
 });
 
@@ -264,4 +266,62 @@ test('enganche: si la partida cambió o ya hay resultados cuando toca mostrarlo,
   const c2 = makeGameEnv(g2); vm.runInContext('Math.random = () => 0', c2);
   for (let i = 0; i < 6; i++) { vm.runInContext('sirEventsOnAnswer(true)', c2); c2.currentGame = { mode: 'play' }; vm.runInContext('currentGame = this.currentGame', c2); c2.flush(); c2.currentGame = g2; vm.runInContext('currentGame = this.currentGame', c2); }
   assert.equal(c2.shown.length, 0);
+});
+
+// ---- Rotación de frases (bolsa persistente) ---------------------------------------------------------------------
+function grabFn(html, name) { const i = html.indexOf('function ' + name); assert.ok(i > 0, name); let d = 0; for (let k = html.indexOf('{', i); k < html.length; k++) { if (html[k] === '{') d++; else if (html[k] === '}' && --d === 0) return html.slice(i, k + 1); } }
+function withRotation(game, store, showResult = true) {
+  const c = makeGameEnv(game, { store });
+  const html = read('index.html');
+  vm.runInContext(grabFn(html, 'shuffleArray') + '\n' + grabFn(html, 'pickRotatingPhrase'), c);
+  if (!showResult) c.SEQSirEventsUI.show = () => false;
+  return c;
+}
+function playStreakGame(store, showResult = true) {
+  const game = { mode: 'play', currentIdx: 3, totalQuestionsToPlay: 30 };
+  const c = withRotation(game, store, showResult);
+  vm.runInContext('Math.random = () => 0.3; answerStreak = 10', c);
+  let ev = null;
+  for (let i = 0; i < 6 && !ev; i++) { ev = vm.runInContext('sirEventsOnAnswer(true)', c); c.flush(); }
+  return { ev, c };
+}
+
+test('rotación: cada grupo normal pide su bolsa (visit, day, night_early/late, streak_10/15/20/30)', () => {
+  const keys = new Set();
+  for (let g = 0; g < 4000; g++) {
+    const hour = g % 24, rng = mulberry(7000 + g), st = S.newState(); warm(st);
+    const streak = [1, 10, 15, 20, 30][g % 5];
+    S.evaluate(st, { nowMs: 1e6, hour, streak, correct: true, last: false, blocked: false, rotate: (k, l) => { keys.add(k); return l[0]; } }, rng);
+  }
+  for (const k of ['visit', 'day', 'night_early', 'night_late', 'streak_10', 'streak_15', 'streak_20', 'streak_30']) assert.ok(keys.has(k), k);
+});
+
+test('rotación: las frases de un evento no se repiten hasta agotarlas, ni entre partidas, y se guardan en el store', () => {
+  const store = {};
+  const n = S.PHRASES.streak[10].length;
+  const seen = [];
+  for (let g = 0; g < n; g++) { const { ev } = playStreakGame(store); assert.equal(ev.type, 'streak'); seen.push(ev.message); }
+  assert.equal(new Set(seen).size, n, 'las ' + n + ' antes de repetir');
+  assert.ok(Array.isArray(store.phraseBags.sev_streak_10) && store.phraseBags.sev_streak_10.length === 0);
+  const again = playStreakGame(store).ev.message;
+  assert.ok(S.PHRASES.streak[10].includes(again), 'recomienza');
+  assert.notEqual(again, seen[n - 1], 'sin repetir la última al empezar otra vuelta');
+});
+
+test('rotación: un evento que no llega a verse devuelve su frase a la bolsa', () => {
+  const store = {};
+  const first = playStreakGame(store).ev.message; // se muestra y se consume
+  const before = JSON.stringify([store.phraseBags, store.lastPhraseIndex]);
+  const { ev } = playStreakGame(store, false); // la UI lo rechaza (no hay sitio): como si no hubiera salido
+  assert.ok(ev && first);
+  assert.equal(JSON.stringify([store.phraseBags, store.lastPhraseIndex]), before, 'bolsa intacta');
+});
+
+test('catálogos: ningún grupo normal lleva frases ligadas a una hora; las de hora exacta están en los raros', () => {
+  const ph = S.PHRASES;
+  for (const list of [ph.visit, ph.day, ph.nightEarly, ph.nightLate, ph.streak[10], ph.streak[15], ph.streak[20], ph.streak[30]]) assert.ok(list.every((x) => typeof x === 'string'));
+  assert.ok(ph.day.length >= 14 && ph.nightEarly.length >= 9 && ph.nightLate.length >= 9 && ph.visit.length >= 20);
+  [10, 15, 20, 30].forEach((m) => assert.ok(ph.streak[m].length >= 6));
+  assert.ok(S.P.night > S.P.day && S.P.day > S.P.visit, 'noche más probable que día, y ambos más que la visita genérica');
+  assert.equal(S.P.night, 0.15); assert.equal(S.P.day, 0.10);
 });

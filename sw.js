@@ -282,6 +282,7 @@ const APP_SHELL = [
   './src/utils/encargos-core.js',
   './src/utils/encargos-progress.js',
   './src/state/encargos.js',
+  './src/data/encargos-phrases.js',
   './src/ui/encargos-ui.js',
   './styles/encargos.css',
   './styles/sir-events.css',

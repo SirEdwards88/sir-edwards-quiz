@@ -91,7 +91,7 @@
     supervivencia: { nombre: 'Supervivencia', icono: 'supervivencia', reglas: 'Hasta 40 preguntas · 3 vidas · 10 s cada una' },
     muerte_subita: { nombre: 'Muerte Súbita', icono: 'muerte-subita', reglas: '25 preguntas cada vez más difíciles · un fallo y fuera' },
     contrarreloj: { nombre: 'Contrarreloj', icono: 'contrarreloj', reglas: '60 s · +3 s por acierto, −3 s por fallo' },
-    calculo_mental: { nombre: 'Cálculo Mental', icono: 'calculo', reglas: '60 s de operaciones · +2 s por acierto, −3 s por fallo' },
+    calculo_mental: { nombre: 'Cálculo Mental', icono: 'calculo', reglas: '60 s de operaciones · +3 s por acierto, −3 s por fallo' },
     lucidez: { nombre: 'Lucidez Mental', icono: 'secreto', reglas: 'Tres fases y un enigma final, con respuestas escritas' }
   };
   var NIVEL_UI = { ameba: 'Nivel Ameba', humano: 'Humano Promedio', derrame: 'Derrame Cerebral' };

@@ -155,7 +155,7 @@ test('puntuación existente: puntos base 10/20/35, bonus de velocidad y de racha
   assert.match(html, /const speedBonus = Math\.max\(0, Math\.round\(\(6000 - Math\.min\(elapsedMs, 6000\)\) \* 3 \/ 1000\)\);/);
   assert.match(html, /const streakBonus = Math\.min\(currentGame\.streak, 20\) \* 2;/);
   assert.match(html, /MENTALCALC_START_MS = 60000/); assert.match(html, /MENTALCALC_MAX_MS = 90000/);
-  assert.match(html, /mentalCalcEndTime \+ 2000/); assert.match(html, /mentalCalcEndTime -= 3000/);
+  assert.match(html, /MENTALCALC_BONUS_MS = 3000/); assert.match(html, /mentalCalcEndTime \+ MENTALCALC_BONUS_MS/); assert.ok(!/mentalCalcEndTime \+ 2000/.test(html), 'ya no es +2 s'); assert.match(html, /mentalCalcEndTime -= 3000/);
 });
 
 test('mental-calc.js está en index.html y en la caché sin conexión', () => {
