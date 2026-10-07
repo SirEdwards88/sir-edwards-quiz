@@ -21,7 +21,7 @@ test('bienvenida, subtítulo de Fragmentos e historial no nombran el modo', () =
 test('el historial va en orden, la 2.0 incluye mejoras visuales y 40 preguntas nuevas y la 1.4 ya no menciona el ranking por XP', () => {
   const changelog = html.slice(html.indexOf('<h3 style="margin-top:0;">Historial de versiones'), html.indexOf('<div class="settings-section settings-danger-zone">'));
   const versions = [...changelog.matchAll(/settings-changelog-entry-version">v([0-9.]+)</g)].map((m) => m[1]);
-  assert.deepEqual(versions, ['1.0', '1.1', '1.2', '1.3', '1.4', '1.5', '2.0', '2.1']);
+  assert.deepEqual(versions, ['1.0', '1.1', '1.2', '1.3', '1.4', '1.5', '2.0', '2.1', '2.2']);
   const v2 = changelog.slice(changelog.lastIndexOf('v2.0'), changelog.lastIndexOf('v2.1'));
   assert.match(v2, /Mejoras visuales/); assert.match(v2, /40 preguntas nuevas/);
   const v14 = changelog.slice(changelog.indexOf('v1.4'), changelog.indexOf('v1.5'));
