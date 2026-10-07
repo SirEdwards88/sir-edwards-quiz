@@ -760,11 +760,11 @@
     return h;
   }
   // Frase de Sir Edwards para el final de la partida (solo si se jugó entera: no en abandonos ni «no jugado»).
-  // Estable para la misma partida (se elige por id), así que no cambia al repintar la pantalla.
+  // Rota con bolsa (no repite ninguna hasta agotar el grupo) y es estable para la misma partida: no cambia al repintar.
   function resultPhrase(d, r) {
     if (!r || (d.motivo_fin && d.motivo_fin !== 'normal') || !window.SEQDuelPhrases) return '';
     var res = r.ganador === 'yo' ? 'win' : r.ganador === 'rival' ? 'loss' : 'draw';
-    return SEQDuelPhrases.pick(res, num(r.mi_puntuacion) - num(r.puntuacion_rival), S.id || d.id);
+    return SEQDuelPhrases.pickRotating(res, num(r.mi_puntuacion) - num(r.puntuacion_rival), S.id || d.id);
   }
   // Marca de cada respuesta en el repaso del duelo: acierto, fallo o sin responder (iconos ilustrados).
   // Segundos por pregunta del propio reto (los creados antes de la 2.0 tienen 15 s).

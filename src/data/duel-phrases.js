@@ -100,8 +100,8 @@
     return 'derrota_clara';
   }
 
-  // Frase estable para una misma partida: se elige por hash del id (no cambia al repintar la pantalla,
-  // ni al reabrir el resultado, y no consume la «bolsa» de frases de los modos en solitario).
+  // Frase estable para una misma partida: se elige por hash del id (no cambia al repintar la pantalla ni al reabrir el
+  // resultado). Es la versión SIN bolsa: queda de reserva si no hay almacén (y para las pruebas).
   function pick(result, margin, seedId) {
     var list = PHRASES[poolKey(result, Math.abs(Number(margin) || 0))];
     if (!list || !list.length) return '';
@@ -110,5 +110,27 @@
     return list[(h >>> 0) % list.length];
   }
 
-  window.SEQDuelPhrases = { PHRASES: PHRASES, pick: pick, poolKey: poolKey };
+  // Versión con BOLSA (la que usa el juego): como las frases de los modos en solitario, no se repite ninguna del grupo hasta
+  // haberlas dicho todas (también entre partidas). La frase de cada partida se recuerda (store.duelPhraseByGame, las últimas 40)
+  // para que no cambie al repintar la pantalla ni al reabrir el resultado, y para que repintar no gaste frases de la bolsa.
+  var KEEP_GAMES = 40;
+  function pickRotating(result, margin, seedId) {
+    var key = poolKey(result, Math.abs(Number(margin) || 0)), list = PHRASES[key];
+    if (!list || !list.length) return '';
+    var ok = typeof pickRotatingPhrase === 'function' && typeof store === 'object' && store && seedId != null && seedId !== '';
+    if (!ok) return pick(result, margin, seedId);
+    var id = String(seedId), memo = store.duelPhraseByGame;
+    if (!memo || typeof memo !== 'object' || Array.isArray(memo)) memo = store.duelPhraseByGame = {};
+    var m = memo[id];
+    if (m && m.k === key && typeof m.i === 'number' && list[m.i]) return list[m.i];
+    var text = pickRotatingPhrase('duel_' + key, list), i = list.indexOf(text);
+    if (i < 0) return pick(result, margin, seedId);
+    memo[id] = { k: key, i: i };
+    var ids = Object.keys(memo);
+    for (var j = 0; j < ids.length - KEEP_GAMES; j++) delete memo[ids[j]];
+    try { if (typeof saveStore === 'function') saveStore(); } catch (e) {}
+    return text;
+  }
+
+  window.SEQDuelPhrases = { PHRASES: PHRASES, pick: pick, pickRotating: pickRotating, poolKey: poolKey };
 })();

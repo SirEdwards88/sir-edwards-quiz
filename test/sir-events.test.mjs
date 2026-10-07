@@ -325,3 +325,15 @@ test('catálogos: ningún grupo normal lleva frases ligadas a una hora; las de h
   assert.ok(S.P.night > S.P.day && S.P.day > S.P.visit, 'noche más probable que día, y ambos más que la visita genérica');
   assert.equal(S.P.night, 0.15); assert.equal(S.P.day, 0.10);
 });
+
+test('rotación: las frases raras también usan bolsa (una por hora si dependen de la hora) y solo salen a su hora', () => {
+  const keys = new Map();
+  for (let g = 0; g < 24000; g++) {
+    const hour = [3, 7, 12, 22][g % 4], st = S.newState(); warm(st);
+    const ev = S.evaluate(st, { nowMs: 1e6, hour, streak: 1, correct: true, last: false, blocked: false,
+      rotate: (k, l) => { keys.set(k, (keys.get(k) || new Set()).add(hour)); return l[0]; } }, mulberry(31000 + g));
+    if (ev && /^«(Son las|03:17)/.test(ev.message)) assert.ok([3, 7].includes(hour), ev.message + ' a las ' + hour);
+  }
+  assert.ok(keys.has('visit_rare') && keys.has('night_rare_3') && keys.has('day_rare_7'));
+  assert.ok([...keys.keys()].filter((k) => /_rare_\d+$/.test(k)).every((k) => keys.get(k).size === 1), 'cada bolsa horaria solo se pide a su hora');
+});

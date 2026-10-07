@@ -103,9 +103,19 @@ const SEQSirEvents = (function () {
     if (typeof rotate === 'function') { var t = rotate(key, list); if (typeof t === 'string' && t) return t; }
     return pick(list, hour, rng, avoid);
   }
+  // Frases raras: igual que las normales (bolsa persistente), pero solo entre las válidas para la hora. Si alguna depende de la
+  // hora, hay una bolsa por hora (así cada bolsa contiene siempre las mismas frases).
+  function chooseRare(key, list, hour, rng, avoid, rotate) {
+    var timed = list.some(function (x) { return typeof x !== 'string' && x.h; });
+    var ok = list.filter(function (x) { return typeof x === 'string' || !x.h || x.h.indexOf(hour) !== -1; })
+      .map(function (x) { return typeof x === 'string' ? x : x.t; });
+    if (!ok.length) return null;
+    if (typeof rotate === 'function') { var t = rotate(timed ? key + '_' + hour : key, ok); if (typeof t === 'string' && t) return t; }
+    return pick(list, hour, rng, avoid);
+  }
   function phraseFor(type, hour, rng, avoid, milestone, rotate) {
     var rare = { visit: VISIT_RARE, day: DAY_RARE, night: NIGHT_RARE }[type];
-    if (rare && rng() < RARE_P) { var r = pick(rare, hour, rng, avoid); if (r) return r; }
+    if (rare && rng() < RARE_P) { var r = chooseRare(type + '_rare', rare, hour, rng, avoid, rotate); if (r) return r; }
     if (type === 'streak') return choose('streak_' + milestone, STREAK_PHRASES[milestone], hour, rng, avoid, rotate);
     if (type === 'visit') return choose('visit', VISIT, hour, rng, avoid, rotate);
     if (type === 'day') return choose('day', DAY, hour, rng, avoid, rotate);
