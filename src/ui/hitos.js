@@ -16,7 +16,7 @@
       total: 40,
       at: {
         10: { img: 'barbilla', phrases: [
-          'Diez. Empiezo a sospechar que esto podría acabar bien. Qué preocupación.',
+          'Diez. Esto podría acabar bien. La perspectiva me inquieta.',
           'Diez preguntas y ni una ambulancia. Seguiré mirando.',
           'Diez. Una hazaña modesta, pero no pienso arruinártela. Todavía.',
           'Diez. El primer cuarto, y todavía conservas la dignidad.',
@@ -42,9 +42,9 @@
       total: 25,
       at: {
         13: { img: 'monoculo', phrases: [
-          'Trece. Sigues vivo. No te acostumbres.',
+          'Trece. Sigues con vida. Qué detalle por tu parte.',
           'La mitad. Ahora empieza la parte divertida. Para mí.',
-          'Trece y ningún error. Esto empieza a resultar sospechoso.',
+          'Trece y ningún error. Un comportamiento muy poco humano.',
           'Trece. Mala fama, buen comienzo.',
           'Trece sin caer. La superstición se queda sin argumentos.'
         ] },

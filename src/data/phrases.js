@@ -19,7 +19,7 @@ const END_PHRASES = {
     ] 
   },
   mediocre: { 
-    title: "Mediocridad neutra", 
+    title: "Mediocridad con modales", 
     phrases: [
       "Ni fu ni fa. Un resultado ideal para opinar con aplomo sin que nadie pida pruebas.",
       "El triunfo de la mediocridad: saber lo justo para no asustar y callar lo justo para no molestar.",

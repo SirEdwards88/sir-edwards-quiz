@@ -194,8 +194,8 @@
       var n = list.children.length;
       if (n) title.innerHTML = (icon ? '<img class="ui-img ui-title-img" src="' + icon + '" alt="">' : '') + (n === 1 ? one : many);
     };
-    set('session-medals-box', 'session-medals-list', '¡Nuevo logro desbloqueado!', '¡Nuevos logros desbloqueados!', 'assets/modes/mini/logros.webp');
-    set('session-mode-unlock-box', 'session-mode-unlock-list', '¡Nuevo modo desbloqueado!', '¡Nuevos modos desbloqueados!');
+    set('session-medals-box', 'session-medals-list', 'Logro desbloqueado. A regañadientes.', 'Logros desbloqueados. Me estoy ablandando.', 'assets/modes/mini/logros.webp');
+    set('session-mode-unlock-box', 'session-mode-unlock-list', 'Modo desbloqueado. Cuidado dónde pisas.', 'Modos desbloqueados. Cuidado dónde pisas.');
   }
   var resultsVisible = false;
   function onResults() {

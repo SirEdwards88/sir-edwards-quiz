@@ -3,7 +3,7 @@
 // NO cambia vidas, puntuación, preguntas ni resultados: lee el estado que ya existe (modo, vidas,
 // índice y total) y solo decide qué texto/aviso mostrar.
 //   - Supervivencia: al quedar con 1 vida aparece el aviso «ÚLTIMA VIDA» y el marcador se tiñe;
-//     el primer acierto después muestra «¡Sigues con vida!» (una sola vez).
+//     el primer acierto después muestra «Sigues con vida. Por ahora.» (una sola vez).
 //   - Supervivencia y Muerte Súbita: en la última pregunta el contador pasa a «ÚLTIMA PREGUNTA»
 //     y sale un aviso breve. Con una vida y última pregunta, un solo aviso con ambas cosas.
 // Script clásico, sin dependencias. La parte pura (counter / isLastLife / isLastQuestion) se prueba en test/.
@@ -93,7 +93,7 @@
   function onCorrect(game) {
     if (!game || !armed || !isLastLife(game.mode, game.lives)) return;
     armed = false;
-    if (!reduced() && !isLastQuestion(game.mode, game.currentIdx, game.totalQuestionsToPlay)) banner('¡Sigues con vida!', '', 'is-ok');
+    if (!reduced() && !isLastQuestion(game.mode, game.currentIdx, game.totalQuestionsToPlay)) banner('Sigues con vida. Por ahora.', '', 'is-ok');
   }
 
   function reset() { armed = false; lastKey = ''; }

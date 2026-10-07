@@ -403,7 +403,7 @@ try {
       <div class="home-footer">
         <div class="home-footer-line"></div>
         <div class="home-footer-quote-mark" aria-hidden="true">❝</div>
-        <p class="home-quote">«La mente es como un músculo. Cuanto más la ejercitas, más fuerte se vuelve.»</p>
+        <p class="home-quote">«Se aprende más de un error que de diez aciertos. De ahí tu enorme potencial.»</p>
         <div class="home-quote-author">— Sir Edwards —</div>
       </div>
     </div>
@@ -3365,7 +3365,7 @@ function openDifficultyMenu(mode) {
 // que el modo se lanza directamente sin pasar por el submenú.
 function startSuddenDeathMode() {
   if (!(store.unlockedMedals || []).includes('surv_ameba')) {
-    showInfoToast('El modo Muerte Súbita está bloqueado. Requiere el logro «Sobreviviente Primordial» (gana Supervivencia en Nivel Ameba).', 'candado');
+    showInfoToast('Muerte Súbita sigue cerrada. Antes, el logro «Sobreviviente Primordial»: gana Supervivencia en Nivel Ameba.', 'candado');
     return;
   }
   startMode('sudden_death', 25);
@@ -3380,7 +3380,7 @@ function startSuddenDeathMode() {
 
 function openLucidezMentalMode() {
   if (getFragmentCount(store) < FRAGMENT_TARGET) {
-    showInfoToast(`El Modo Secreto está bloqueado. Consigue ${FRAGMENT_TARGET} Fragmentos de Mente (tienes ${getFragmentCount(store)}/${FRAGMENT_TARGET}).`, 'candado');
+    showInfoToast(`El Modo Secreto sigue cerrado. Consigue ${FRAGMENT_TARGET} Fragmentos de Mente (tienes ${getFragmentCount(store)}/${FRAGMENT_TARGET}). Todo a su tiempo.`, 'candado');
     return;
   }
 
@@ -4900,7 +4900,7 @@ function randInt(min, max, rng) {
 
 function startMentalCalcMode() {
   if (!(store.unlockedMedals || []).includes('tt_15')) {
-    showInfoToast('El Modo Cálculo Mental está bloqueado. Requiere el logro «Velocidad Mental».', 'candado');
+    showInfoToast('Cálculo Mental sigue cerrado. Antes necesitas el logro «Velocidad Mental».', 'candado');
     return;
   }
 
@@ -5116,7 +5116,7 @@ function checkMentalCalcAnswer() {
 
 function startMode(mode, count = 30, customPool = null) {
   if (mode === 'timetrial' && getLevelData(store.xp) < 10) {
-    showInfoToast('El Modo Contrarreloj está bloqueado. Necesitas alcanzar el Nivel 10.', 'candado');
+    showInfoToast('Contrarreloj sigue cerrada. Alcanza el Nivel 10 y hablamos.', 'candado');
     return;
   }
 
@@ -5973,7 +5973,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     const failRegularPoolKey = currentGame.mode === 'survival' ? 'survival_fail_regular' : 'sudden_fail_regular';
 
     if (isWin) {
-      document.getElementById('res-category-text').textContent = "¡Victoria Épica!";
+      document.getElementById('res-category-text').textContent = currentGame.mode === 'survival' ? "Victoria contra pronóstico" : "Victoria sin red";
       customPhrase = pickRotatingPhrase(winPoolKey, winPhrases);
       setResultTone('win', currentGame.mode === 'survival' ? 'modo-supervivencia' : 'modo-muerte-subita');
       if (currentGame.mode === 'survival') {
@@ -6001,13 +6001,13 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     const avgTimeSec = currentGame.total > 0 ? (currentGame.totalTimeMs / currentGame.total / 1000).toFixed(1) : '0.0';
     // 2.0: la categoría (mal/normal/bien) se muestra como en Contrarreloj, por coherencia entre tarjetas.
     const mentalResult = getModeEndPhrase(MENTAL_CALC_END_PHRASES, currentGame.correct || 0, 'mentalcalc');
-    document.getElementById('res-category-text').textContent = ({ mal: 'Mal resultado', normal: 'Resultado normal', bien: 'Buen resultado' })[mentalResult.category] || '';
+    document.getElementById('res-category-text').textContent = ({ mal: 'Las matemáticas ganan', normal: 'Tregua con los números', bien: 'Los números se rinden' })[mentalResult.category] || '';
     document.getElementById('res-phrase-text').textContent = mentalResult.phrase;
     setResultTone('mentalcalc', RESULT_MOOD_BY_CATEGORY.mentalcalc[mentalResult.category] || RESULT_MOOD_ICONS.mentalcalc, RESULT_CHARACTER_BY_CATEGORY[mentalResult.category] || null);
   } else {
     if (currentGame.mode === 'timetrial') {
       const timeResult = getModeEndPhrase(TIMETRIAL_END_PHRASES, currentGame.score || 0, 'timetrial');
-      const timeTitles = { mal: 'Mal resultado', normal: 'Resultado normal', bien: 'Buen resultado' };
+      const timeTitles = { mal: 'El reloj gana', normal: 'Tregua con el reloj', bien: 'El reloj pierde' };
       document.getElementById('res-category-text').textContent = timeTitles[timeResult.category];
       document.getElementById('res-phrase-text').textContent = timeResult.phrase;
       setResultTone('timetrial', RESULT_MOOD_BY_CATEGORY.timetrial[timeResult.category] || RESULT_MOOD_ICONS.timetrial, RESULT_CHARACTER_BY_CATEGORY[timeResult.category] || null);
