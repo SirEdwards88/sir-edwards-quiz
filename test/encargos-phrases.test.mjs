@@ -15,12 +15,12 @@ function env() {
 }
 const view = (done, great) => ({ doneCount: done, great: { claimed: great }, missions: [], allDone: done === 3 && great });
 
-test('25 frases: 5 por estado, sin repetidas, sin emojis y sin números del histórico', () => {
+test('frases por estado (mínimo 5 cada uno), sin repetidas, sin emojis y sin números del histórico', () => {
   const { PH } = env();
   assert.deepEqual(Object.keys(PH), ['encargos_0', 'encargos_1', 'encargos_2', 'encargos_3', 'encargos_4']);
   const all = [];
-  for (const k of Object.keys(PH)) { assert.equal(PH[k].length, 5, k); all.push(...PH[k]); }
-  assert.equal(new Set(all).size, 25);
+  for (const k of Object.keys(PH)) { assert.ok(PH[k].length >= 5, k); all.push(...PH[k]); }
+  assert.equal(new Set(all).size, all.length);
   assert.ok(all.every((t) => t.length > 20 && t.length < 100 && !/\p{Extended_Pictographic}/u.test(t)));
 });
 
@@ -36,18 +36,18 @@ test('el estado sale de los 4 encargos de la rotación actual cobrados (3 semana
   assert.equal(UI.stateOf({ doneCount: 37, great: { claimed: true } }), 4, 'tope en 4 aunque haya un contador enorme');
 });
 
-test('cada visita da una frase de SU estado, rotan sin repetir hasta agotar las cinco y luego recomienzan', () => {
+test('cada visita da una frase de SU estado, rotan sin repetir hasta agotar todas y luego recomienzan', () => {
   const ctx = env();
   const { UI, PH } = ctx;
   for (let st = 0; st <= 4; st++) {
     const v = st === 4 ? view(3, true) : view(st, false);
-    const got = [];
-    for (let i = 0; i < 5; i++) got.push(UI.phrase(v, true));
-    assert.equal(new Set(got).size, 5, 'estado ' + st + ': las cinco antes de repetir');
+    const got = [], n = PH['encargos_' + st].length;
+    for (let i = 0; i < n; i++) got.push(UI.phrase(v, true));
+    assert.equal(new Set(got).size, n, 'estado ' + st + ': todas antes de repetir');
     assert.ok(got.every((t) => PH['encargos_' + st].includes(t)));
     const next = UI.phrase(v, true);
     assert.ok(PH['encargos_' + st].includes(next), 'vuelve a empezar');
-    assert.notEqual(next, got[4], 'la primera de la nueva vuelta no repite la última');
+    assert.notEqual(next, got[n - 1], 'la primera de la nueva vuelta no repite la última');
   }
 });
 

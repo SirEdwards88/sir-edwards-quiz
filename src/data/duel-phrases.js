@@ -11,7 +11,9 @@
     "Un solo punto ha decidido el duelo. Qué poco hace falta para arruinarle el día a alguien.",
     "Has ganado por un punto. Técnicamente, victoria. Moralmente, dejémoslo en empate.",
     "Un punto de diferencia. Lo suficiente para ganar y demasiado poco para presumir sin hacer el ridículo.",
-    "Victoria por un punto. La gloria es tuya. La dignidad del rival, sorprendentemente, sigue en paradero desconocido."
+    "Victoria por un punto. La gloria es tuya. La dignidad del rival, sorprendentemente, sigue en paradero desconocido.",
+    "Has ganado por un margen que permite al rival conservar algo de dignidad.",
+    "Has ganado. El rival puede atribuirlo a la suerte si eso le ayuda a dormir."
   ],
   victoria_2_3: [
     "Victoria ajustada. Ha faltado poco para perder. Qué detalle tan incómodo.",
@@ -31,7 +33,12 @@
     "Un resultado bastante contundente. Las explicaciones pueden esperar sentadas.",
     "Has ganado con claridad. El rival puede consolarse pensando que, al menos, participó.",
     "La diferencia empieza a ser incómoda. Para el rival, concretamente.",
-    "Victoria convincente. Ya no ha sido cuestión de suerte. Qué mala noticia para quien ha perdido."
+    "Victoria convincente. Ya no ha sido cuestión de suerte. Qué mala noticia para quien ha perdido.",
+    "Has ganado con suficiente margen para que el rival necesite una explicación.",
+    "Una victoria cómoda. Qué poco deportivo de tu parte.",
+    "Has dejado suficiente distancia entre ambos como para cobrar peaje.",
+    "Victoria clara. El marcador parece bastante satisfecho contigo.",
+    "El duelo estuvo cerca de ser interesante. Luego apareciste tú."
   ],
   victoria_aplastante: [
     "Esto no ha sido un duelo. Ha sido una demostración de por qué conviene elegir mejor las batallas.",
@@ -43,7 +50,11 @@
     "Victoria aplastante. Hay derrotas que enseñan algo. Esta, de momento, solo enseña el marcador.",
     "La diferencia es tan grande que hasta presumir empieza a parecer innecesario.",
     "Una paliza intelectual. Elegante, limpia y completamente innecesaria.",
-    "El duelo ha terminado. El orgullo del rival, según parece, necesita unos minutos más."
+    "El duelo ha terminado. El orgullo del rival, según parece, necesita unos minutos más.",
+    "El rival ha aprendido algo importante: elegir mejor a sus oponentes.",
+    "Has ganado con tanta claridad que casi siento lástima. Casi.",
+    "Una victoria tan cómoda que empieza a parecer de mala educación.",
+    "Podríamos llamarlo duelo, pero ambos sabemos que sería generoso."
   ],
   derrota_1: [
     "Un punto. Exactamente lo que ha separado la victoria de una derrota bastante irritante.",
@@ -52,7 +63,9 @@
     "Has perdido por un punto. Enhorabuena: has encontrado la distancia exacta entre ganar y lamentarlo.",
     "Un punto. Nada. Absolutamente nada. Y, sin embargo, suficiente para perder.",
     "Derrota por un punto. La diferencia cabe en una línea. El orgullo, de momento, no.",
-    "Te ha faltado un punto. Qué generosa ha sido la victoria al dejarte tan cerca."
+    "Te ha faltado un punto. Qué generosa ha sido la victoria al dejarte tan cerca.",
+    "Has perdido por un margen incómodamente pequeño. Qué manera tan elegante de sufrir.",
+    "Una derrota estrecha. Lo bastante pequeña para recordarla."
   ],
   derrota_2_3: [
     "Derrota ajustada. Ha faltado muy poco para ganar y exactamente lo suficiente para perder.",
@@ -61,7 +74,10 @@
     "Un resultado muy ajustado. La victoria estuvo cerca, pero decidió no quedarse.",
     "Has estado cerca. Una expresión magnífica para describir a alguien que acaba de perder.",
     "Derrota ajustada. El rival no fue mucho mejor. Solo lo suficiente.",
-    "Casi ganas. Una de las formas más elegantes de decir “perdiste”."
+    "Casi ganas. Una de las formas más elegantes de decir “perdiste”.",
+    "La victoria estuvo cerca. El marcador, por desgracia, sabe contar.",
+    "El rival ha ganado por poco. Lo suficiente para presumir, por desgracia.",
+    "Has estado a un paso. Naturalmente, el paso era exactamente lo necesario."
   ],
   derrota_clara: [
     "Derrota clara. El marcador no parece dispuesto a aceptar negociaciones.",
@@ -81,7 +97,12 @@
     "Empate. Habéis conseguido dedicar el mismo esfuerzo a no ganar.",
     "Empate. Dos mentes enfrentadas y ninguna considerada suficientemente convincente.",
     "Un empate. La solución perfecta cuando ninguno ha hecho méritos suficientes para celebrar.",
-    "Igualdad absoluta. Qué alivio: así nadie tendrá que admitir que perdió."
+    "Igualdad absoluta. Qué alivio: así nadie tendrá que admitir que perdió.",
+    "Empate. Ni siquiera el marcador ha querido tomar partido.",
+    "Nadie ha ganado. Nadie ha perdido. Qué solución tan poco ambiciosa.",
+    "Igualados hasta el final. Qué falta de consideración hacia el suspense.",
+    "Empate. Una forma muy educada de no resolver nada.",
+    "Dos rivales, un mismo resultado y ninguna excusa especialmente convincente."
   ]
 };
 

@@ -138,7 +138,7 @@ test('frases: todas en «tú», sin plurales, con comillas; las de hora concreta
   assert.ok(all.length >= 75);
   all.forEach((t) => {
     assert.ok(t.startsWith('«') && t.endsWith('»'), t);
-    assert.ok(!/\b(vuestr\w*|seguid|preocupéis|tramáis|estáis|os\b|decepcionéis|estropeéis)/i.test(t), 'plural en: ' + t);
+    assert.ok(!/\b(vuestr\w*|seguid\b|preocupéis|tramáis|estáis|os\b|decepcionéis|estropeéis)/i.test(t), 'plural en: ' + t);
   });
   const stripH = [['«Son las siete', 7], ['«Son las tres', 3], ['«03:17', 3]];
   for (let hour = 0; hour < 24; hour++) {

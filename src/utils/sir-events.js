@@ -46,18 +46,23 @@ const SEQSirEvents = (function () {
     '«Continúa. Fingiré que no estoy mirando.»', '«Estoy de paso. Procura no hacer el ridículo.»',
     '«Todo parece estar en orden. De momento.»', '«Interesante. Sigue, sigue.»', '«No te preocupes. Mi libreta es confidencial.»',
     '«Un caballero siempre observa antes de opinar.»', '«Sigue. Tomo notas, por si acaso.»', '«Estoy aquí solo por si necesitas un testigo.»',
-    '«Qué concentración. Casi parece que te importa.»', '«Pasaba por aquí y me quedé por curiosidad.»', '«No me hagas caso. Hazlo bien, sin más.»'
+    '«Qué concentración. Casi parece que te importa.»', '«Pasaba por aquí y me quedé por curiosidad.»', '«No me hagas caso. Hazlo bien, sin más.»',
+    '«Ah. Sigues aquí.»', '«Veo que hoy has decidido intentarlo.»', '«No te distraigas. Sería una lástima.»', '«Una respuesta sensata. Qué agradable sorpresa.»', '«Sigue. Mi opinión sobre ti sigue en revisión.»', '«Todo correcto. No arruines mi informe.»', '«Me alegra comprobar que aún sabes responder.»', '«He visto cosas peores. También mejores.»', '«Continúa. Todavía no me has decepcionado.»', '«Interesante. Por ahora no tengo que intervenir.»'
   ];
   var VISIT_RARE = ['«No tengo nada que añadir. Es preocupante.»', '«Si estás leyendo esto, deberías estar mirando la pregunta.»'];
   var STREAK_PHRASES = {
     10: ['«Hmm... llevas unas cuantas.»', '«Eso empieza a parecer una racha.»', '«Bien. Muy bien.»', '«No parece que quieras fallar hoy.»',
-      '«Diez. Empiezo a tomarte en serio.»', '«Aciertas con una regularidad sospechosa.»'],
+      '«Diez. Empiezo a tomarte en serio.»', '«Aciertas con una regularidad sospechosa.»',
+      '«Diez seguidas. Qué inesperadamente competente.»', '«Diez. Admito que esperaba el primer desastre antes.»', '«Esto ya parece deliberado.»', '«Diez aciertos. Seguiré fingiendo que no estoy impresionado.»'],
     15: ['«Esto empieza a ponerse serio.»', '«¿Piensas parar en algún momento?»', '«Estoy empezando a preocuparme por tus respuestas.»', '«Curiosamente, todavía no has cometido ningún desastre.»',
-      '«Quince. Si fallas ahora, lo recordaré.»', '«Alguien se ha estudiado los apuntes.»'],
+      '«Quince. Si fallas ahora, lo recordaré.»', '«Alguien se ha estudiado los apuntes.»',
+      '«Quince. Esto ya no parece casualidad.»', '«Quince seguidas. Empiezo a revisar mis notas.»', '«Quince. ¿Piensas dejarme sin críticas hoy?»', '«Quince. Muy bien. Ahora intenta no demostrar que fue suerte.»'],
     20: ['«Veinte. Eso ya merece mi atención.»', '«Excelente racha. No la estropees ahora.»', '«Esto empieza a ser digno de un caballero.»', '«No quiero presionarte, pero... veinte.»',
-      '«Veinte sin fallar. Ya no me atrevo ni a pestañear.»', '«Mi libreta necesita una página nueva.»'],
+      '«Veinte sin fallar. Ya no me atrevo ni a pestañear.»', '«Mi libreta necesita una página nueva.»',
+      '«Veinte seguidas. Empiezo a reconsiderar algunas opiniones.»', '«Veinte. No quisiera decir “impresionante”, pero tampoco mentir.»', '«Veinte. Procura disfrutarlo discretamente.»'],
     30: ['«Treinta. Bien. Ahora sí estoy impresionado.»', '«Esto ya no es suerte.»', '«Creo que acabamos de encontrar un problema para tus rivales.»', '«SirEdwards Imparable. Te lo has ganado.»',
-      '«Treinta. Voy a tener que retirar algunas de mis opiniones.»', '«Hay que ser muy valiente para seguir ahora.»']
+      '«Treinta. Voy a tener que retirar algunas de mis opiniones.»', '«Hay que ser muy valiente para seguir ahora.»',
+      '«Treinta. Esto ya no necesita comentarios. Y eso me molesta.»', '«Treinta. Mis felicitaciones. No las malgastes.»', '«Treinta aciertos. Admito que has sido impecable.»']
   };
   var DAY = [
     '«Buenos días. Veamos qué estás tramando.»', '«Una mañana prometedora. No la estropees.»', '«Ya despierto y haciendo preguntas. Admirable.»',
@@ -66,17 +71,20 @@ const SEQSirEvents = (function () {
     '«A estas horas hasta las malas decisiones parecen razonables.»',
     '«Madrugador. Sospechoso, pero encomiable.»', '«Café, luz y preguntas. Una combinación peligrosa para tu ego.»',
     '«El mundo todavía se despereza y tú ya estás en plena faena.»', '«Una mente despierta a primera hora. Qué desconcertante.»',
-    '«Cultura antes del mediodía. Los demás aún buscan las zapatillas.»', '«A estas horas, hasta mi paciencia está recién planchada.»'
+    '«Cultura antes del mediodía. Los demás aún buscan las zapatillas.»', '«A estas horas, hasta mi paciencia está recién planchada.»',
+    '«Buenos días. Qué manera tan innecesaria de empezar el día.»', '«Madrugando para demostrar conocimientos. Cada cual con sus aficiones.»', '«El día apenas empieza y ya estás buscando respuestas.»'
   ];
   var DAY_RARE = [{ t: '«Son las siete de la mañana y ya estoy supervisando tu rendimiento. Qué vida tan plena.»', h: [7] }];
   var NIGHT_EARLY = ['«Buenas noches... supongo.»', '«¿Todavía jugando?»', '«Veo que la noche te ha dado conocimientos.»', '«Una partida nocturna. Excelente decisión cuestionable.»', // 00:00–02:00
     '«Pasada la medianoche, la mente rinde... o eso dicen.»', '«La noche es joven. Tu criterio, quizá menos.»', '«Medianoche y todavía respondiendo. Qué disciplina tan discutible.»',
-    '«Mañana habrá que madrugar, pero tú sabrás.»', '«Otra pregunta antes de dormir. Cómo no.»'];
+    '«Mañana habrá que madrugar, pero tú sabrás.»', '«Otra pregunta antes de dormir. Cómo no.»',
+    '«A estas horas incluso las buenas ideas parecen malas. Veremos las tuyas.»', '«La noche avanza. Tu sentido común, aparentemente, no.»', '«Ya es mañana. Tú sigues aquí. Admirable o preocupante.»'];
   var NIGHT_LATE = [                                                                                                                              // 02:00–04:00
     '«¿Dormir? No. ¿Otra partida? Evidentemente.»', '«A estas horas solo quedan los valientes y los insensatos.»', '«No preguntaré por qué sigues despierto.»',
     '«He venido a comprobar que no soy el único.»', '«A estas horas la cultura general es un acto de rebeldía.»',
     '«Las mejores ideas llegan de madrugada. Las peores, también.»', '«Ya no es tarde, es temprano. Y sigues aquí.»',
-    '«Tu almohada debe de sentirse bastante ofendida.»', '«La madrugada: donde la lucidez y el insomnio se dan la mano.»'
+    '«Tu almohada debe de sentirse bastante ofendida.»', '«La madrugada: donde la lucidez y el insomnio se dan la mano.»',
+    '«Sigues despierto. Empiezo a sospechar que esto es deliberado.»'
   ];
   var NIGHT_RARE = [{ t: '«03:17. La hora exacta en la que normalmente tomo decisiones cuestionables.»', h: [3] },
     { t: '«Son las tres de la mañana. Esto ya es personal.»', h: [3] }];

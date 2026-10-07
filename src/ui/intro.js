@@ -16,6 +16,12 @@
   var WELCOME_KEY = 'siredwards_quiz_v1_1_welcome_seen';
   var UPDATE_KEY = 'siredwards_quiz_v1_3_update_seen';
   var decided = false;
+  // Aviso de quien vuelve con su cuenta en un dispositivo nuevo (una vez por dispositivo: se elige al azar).
+  var RETURN_LINES = ['Vaya, de vuelta. Tu progreso te esperaba. Tus excusas, también.',
+    'Vaya, de vuelta. Qué persistencia tan difícil de justificar.',
+    'Has regresado. Debo admitir que esperaba que al menos fingieras tener otras aficiones.',
+    'Otra vez tú. Al menos eres constante.',
+    'Bienvenido de nuevo. Tus errores estaban empezando a aburrirse sin ti.'];
 
   function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
@@ -29,7 +35,7 @@
       try {
         if (window.SEQOnline && SEQOnline.accountHadProgress && SEQOnline.accountHadProgress()) {
           set(WELCOME_KEY, '1');
-          if (typeof showInfoToast === 'function') showInfoToast('Vaya, de vuelta. Tu progreso te esperaba. Tus excusas, también.', '🎩');
+          if (typeof showInfoToast === 'function') showInfoToast(RETURN_LINES[Math.floor(Math.random() * RETURN_LINES.length)], '🎩');
           return;
         }
       } catch (e) {}

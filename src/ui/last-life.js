@@ -22,6 +22,17 @@
     return isLastQuestion(mode, idx, total) ? 'ÚLTIMA' : (idx + 1) + '/' + total;
   }
 
+  // Subtítulos del aviso (el título es fijo): rotan con bolsa (pickRotatingPhrase), sin repetirse hasta agotarlos.
+  var LASTLIFE_SUBS = ['Ahora sí importa.', 'Procura que esta vez tenga mejor uso.', 'Ya no queda margen para la elegancia.',
+    'Haz que parezca intencionado.', 'No la conviertas en una anécdota.'];
+  var LASTQ_COMMON = ['Sería un momento excelente para pensar.', 'Ahora sí puedes justificar todo lo anterior.',
+    'Después podremos juzgarte con calma.', 'Procura que el final esté a la altura del intento.'];
+  var LASTQ_SUBS = { survival: ['Ya casi. No lo estropees.'].concat(LASTQ_COMMON), sudden_death: ['Aquí se decide todo.'].concat(LASTQ_COMMON) };
+  function sub(pool, list) {
+    try { if (typeof pickRotatingPhrase === 'function') { var t = pickRotatingPhrase(pool, list); if (t) return t; } } catch (e) {}
+    return list[0];
+  }
+
   // ---- Parte con DOM ---------------------------------------------------------------------------
   var armed = false;      // true tras quedar en última vida: el siguiente acierto muestra «Sigues con vida»
   var lastKey = '';       // evita repetir el aviso de última pregunta si se vuelve a pintar la misma
@@ -64,7 +75,7 @@
     if (key === lastKey || reduced()) { lastKey = key; return; }
     lastKey = key;
     if (last) banner('Una vida. Una pregunta.', 'Haz que cuente.', 'is-life');
-    else banner('Última pregunta', game.mode === 'sudden_death' ? 'Aquí se decide todo.' : 'Ya casi. No lo estropees.', 'is-last');
+    else { var qm = game.mode === 'sudden_death' ? 'sudden_death' : 'survival'; banner('Última pregunta', sub('lastq_' + qm, LASTQ_SUBS[qm]), 'is-last'); }
   }
 
   // Tras restar una vida en Supervivencia.
@@ -74,7 +85,7 @@
     var lbl = root.document && root.document.getElementById('game-progress-lbl');
     if (lbl) lbl.classList.add('last-life');
     if (!reduced() && !isLastQuestion(game.mode, game.currentIdx, game.totalQuestionsToPlay)) {
-      banner('❤️ Última vida', 'Ahora sí importa.', 'is-life');
+      banner('❤️ Última vida', sub('lastlife_sub', LASTLIFE_SUBS), 'is-life');
     }
   }
 
