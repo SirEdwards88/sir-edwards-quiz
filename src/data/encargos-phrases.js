@@ -8,7 +8,7 @@ const ENCARGOS_PHRASES = {
     'Cero encargos. Al menos eres constante en algo.',
     'Veo que has decidido contemplar los encargos antes de afrontarlos.',
     'Todavía ninguno. No quisiera presionarte, pero la semana sí lo hará.',
-    'Cuatro encargos te esperan. Naturalmente, tú también puedes esperar.',
+    'Cuatro encargos te esperan. Tú, mientras tanto, esperas que se hagan solos.',
     'La semana avanza. Tus encargos, aparentemente, no.',
     'Los encargos siguen ahí. Son pacientes. Yo no tanto.',
     'Cero de cuatro. Una cifra pequeña, pero muy expresiva.'
@@ -23,16 +23,16 @@ const ENCARGOS_PHRASES = {
     'Uno hecho. Ya podemos hablar de progreso sin sonrojarnos demasiado.',
     'Un encargo menos. Tu expediente empieza a mostrar signos de vida.',
     'Has cumplido una obligación. Procura no convertirlo en un acontecimiento.',
-    'Uno saldado. Empiezo a retirar lentamente mis dudas.'
+    'Uno saldado. Retiro, con lentitud, una de mis muchas dudas.'
   ],
 
   encargos_2: [
     'Dos de cuatro. Ya casi pareces una persona responsable.',
     'La mitad está hecha. Intenta no confundirlo con una victoria.',
-    'Dos encargos saldados. Empiezo a sospechar que puedes hacerlo.',
-    'Vas por la mitad. No te emociones, todavía queda trabajo.',
+    'Dos encargos saldados. Voy a tener que tratarte con cierto respeto. Provisional.',
+    'Vas por la mitad. La otra mitad separa a los constantes de los simpáticos.',
     'Dos de cuatro. Incluso tú deberías reconocer el progreso.',
-    'Dos de cuatro. La mitad ya no admite demasiadas excusas.',
+    'Dos de cuatro. A partir de aquí, las excusas pagan recargo.',
     'La semana está a medio resolver. Igual que tu expediente.',
     'Dos menos. Debo admitir que la situación mejora.'
   ],
@@ -42,7 +42,7 @@ const ENCARGOS_PHRASES = {
     'Solo queda uno. Hasta tú puedes completar una última tarea.',
     'Tres saldados. Admito que esto empieza a resultar incómodamente competente.',
     'Falta uno. Haz el favor de no convertir la recta final en tragedia.',
-    'Tres de cuatro. Ya puedes oler la aprobación. No te acostumbres.',
+    'Tres de cuatro. Ya huele a aprobación. Procura que no sea un espejismo.',
     'Tres. Solo queda una oportunidad de arruinar una buena impresión.',
     'Tres de cuatro. Ahora sería casi elegante terminarlo.',
     'Tres cumplidos. Estoy peligrosamente cerca de felicitarte.'
@@ -50,7 +50,7 @@ const ENCARGOS_PHRASES = {
 
   encargos_4: [
     'Los cuatro. Magnífico. Por fin puedo fingir que estaba orgulloso de ti.',
-    'Semana saldada. No ha sido brillante, pero ha sido suficiente.',
+    'Semana saldada. Suficiente, que en tu caso ya es mucho decir.',
     'Los cuatro completados. Anótalo: hoy has cumplido con tus obligaciones.',
     'Todo hecho. Debo reconocerlo: has sido sorprendentemente útil.',
     'Cuatro de cuatro. Excelente. Ahora intenta no esperar un aplauso.',

@@ -27,7 +27,7 @@
     'Haz que parezca intencionado.', 'No la conviertas en una anécdota.'];
   var LASTQ_COMMON = ['Sería un momento excelente para pensar.', 'Ahora sí puedes justificar todo lo anterior.',
     'Después podremos juzgarte con calma.', 'Procura que el final esté a la altura del intento.'];
-  var LASTQ_SUBS = { survival: ['Ya casi. No lo estropees.'].concat(LASTQ_COMMON), sudden_death: ['Aquí se decide todo.'].concat(LASTQ_COMMON) };
+  var LASTQ_SUBS = { survival: ['Ya casi. Admito que me tienes intrigado.'].concat(LASTQ_COMMON), sudden_death: ['Aquí se decide todo. Yo, desde luego, no pienso apartar la vista.'].concat(LASTQ_COMMON) };
   function sub(pool, list) {
     try { if (typeof pickRotatingPhrase === 'function') { var t = pickRotatingPhrase(pool, list); if (t) return t; } } catch (e) {}
     return list[0];

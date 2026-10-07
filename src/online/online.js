@@ -695,7 +695,7 @@
     sync = newSyncState(account.player.id, 'skipped', baseFromLocal(), seen);
     saveSync();
     var m = $('seq-migrate-modal'); if (m) m.style.display = 'none';
-    toast('Vale: tu progreso local no se ha tocado.');
+    toast('Entendido: tu progreso local sigue intacto.');
     render();
     syncNow('skip');
   }

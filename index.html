@@ -3332,7 +3332,7 @@ function startReviewMode() {
   updateStreakDisplay();
 
   if (store.failedQuestions.length === 0) {
-    showInfoToast('No hay preguntas pendientes para repasar.', 'celebracion');
+    showInfoToast('No tienes fallos que repasar. Qué desagradablemente limpio.', 'celebracion');
     return;
   }
   // Repaso ahora trabaja exclusivamente sobre el banco tipo test: los ids
@@ -3346,7 +3346,7 @@ function startReviewMode() {
 let selectedPendingMode = null;
 function openDifficultyMenu(mode) {
   if (mode === 'survival' && (store.standardGamesCount || 0) < 5) {
-    showInfoToast('El modo Supervivencia está bloqueado. Debes terminar 5 partidas en Modo Estándar.', 'candado');
+    showInfoToast('Supervivencia sigue cerrada. Termina 5 partidas en Estándar y hablamos.', 'candado');
     return;
   }
   selectedPendingMode = mode;

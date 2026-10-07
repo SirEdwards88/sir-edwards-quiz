@@ -24,9 +24,9 @@ const ENCARGOS_INTRO = {
       'Ni lo uno ni lo otro. Una mediocridad con cierto estilo.'
     ],
     mala: [
-      'He tenido la cortesía de tomar nota.',
+      'Prefiero no comentar. Lo cual, viniendo de mí, es un comentario.',
       'Lo he anotado todo. Con detalle. Con mucho detalle.',
-      'No te preocupes: mi libreta tiene páginas de sobra.',
+      'No te preocupes: hay espacio de sobra en tu expediente.',
       'Ha sido memorable, a su manera.',
       'Un debut que conviene no enseñar a nadie.'
     ],
@@ -43,7 +43,7 @@ const ENCARGOS_INTRO = {
     ],
     neutra: [
       'Lo he anotado. Lo anoto todo; no lo tomes como un cumplido.',
-      'He tomado nota. Siempre la tomo, aunque no haya nada digno de ella.'
+      'Sin comentarios. Que no es lo mismo que sin opinión.'
     ]
   },
   // La carta son cuatro líneas: apertura fija («Es lunes.»), VEREDICTO sobre la semana pasada, COMENTARIO de Sir Edwards y CIERRE
@@ -62,17 +62,17 @@ const ENCARGOS_INTRO = {
         'Repasé la semana pasada: los cuatro encargos, saldados.',
         'La semana pasada no me dejaste nada que reprochar. Qué descortesía.',
         'Tres encargos y el Gran Encargo, todos cobrados. Lo he comprobado dos veces.',
-        'Tu semana pasada cierra sin una sola mancha. Estoy decepcionado, a mi manera.',
+        'Tu semana pasada cierra sin una sola mancha. Tendré que buscarlas en otra parte.',
         'Hiciste todo lo que te pedí. Todo. Aún me estoy recuperando.',
         'No quedó ni un encargo pendiente. Busqué con lupa y todo.',
         'Cuatro encargos entregados y ni una excusa. Qué desagradable de presenciar.',
-        'La semana pasada cerró sin deudas. Mi libreta no sabe dónde ponerse.',
+        'La semana pasada cerró sin deudas. Hasta el tintero está desconcertado.',
         'Semana pasada: completa. Anotado con una mueca discreta.'
       ],
       reproche: [
         'He revisado tu expediente.',
         'La semana pasada me debes unos cuantos encargos. Hoy empiezo a llevar la cuenta.',
-        'Tus encargos anteriores siguen sin saldar. Mi libreta no olvida.',
+        'Tus encargos anteriores siguen sin saldar. Han echado raíces.',
         'Tu semana pasada tiene huecos. Muchos, y elegantemente distribuidos.',
         'Algunos encargos de la semana pasada siguen sin cobrar. Yo no pienso cobrarlos por ti.',
         'Tu semana pasada se quedó a medias. O a menos.',
@@ -89,7 +89,7 @@ const ENCARGOS_INTRO = {
       ],
       // Regreso tras varias semanas sin abrir Inicio: no se juzga una semana concreta, se recibe al que vuelve.
       ausencia: [
-        'Vaya. Has vuelto. Mi libreta te daba por desaparecido.',
+        'Vaya. Has vuelto. Te daba por emigrado.',
         'Semanas sin noticias tuyas. Empezaba a acostumbrarme al silencio.',
         'Tu expediente ha acumulado polvo. Es lo único que ha acumulado.',
         'Qué ausencia tan notable. Es lo más notable que has hecho últimamente.',
@@ -100,10 +100,10 @@ const ENCARGOS_INTRO = {
     // 2) Comentario de Sir Edwards.
     comment: {
       aprobacion: [
-        'No te acostumbres. Esta semana volveremos a comprobarlo.',
+        'Esta semana volveré a comprobarlo. Soy un hombre de costumbres inquisitivas.',
         'Impecable. Qué incómodo, tener que respetarte.',
         'Veamos si fue disciplina o simple suerte.',
-        'Sospecho que lo hiciste a propósito. Detesto esa clase de ambición.',
+        'Lo hiciste a propósito, ¿verdad? Detesto esa clase de ambición.',
         'Me cuesta encontrarte defectos. Dame tiempo; suelo lograrlo.',
         'Admito que ha sido competente. Sigo buscando la letra pequeña.',
         'Que no se te suba a la cabeza: hay sombreros que no admiten más volumen.',
@@ -119,7 +119,7 @@ const ENCARGOS_INTRO = {
         'Prefiero pensar que fue falta de tiempo. La alternativa te deja peor.',
         'Podría fingir que lo entiendo, pero entonces ambos estaríamos mintiendo.',
         'No te lo reprocho. Bueno, sí. Es lo que mejor se me da.',
-        'La decepción no es enfado. Es algo más fino, y lo practico con esmero.',
+        'El enfado es vulgar. Lo mío es algo más fino y más duradero, y lo practico con esmero.',
         'Te concedo el beneficio de la duda. Con intereses.',
         'Hay quien aprende de sus errores. Me consta que existen.',
         'Podría ser peor. Siempre puede serlo; esa es la gracia de evaluarte.'
@@ -134,8 +134,8 @@ const ENCARGOS_INTRO = {
         'No te preguntaré dónde estabas. Lo imagino, y no me convence.',
         'Borrón y cuenta nueva. Solo esta vez, y solo porque me aburría.',
         'Considera esto una segunda oportunidad. Las terceras no existen.',
-        'Ni un reproche. Hoy. No te acostumbres.',
-        'Bienvenido de nuevo. Lo digo con la misma sinceridad con que me despedí.'
+        'Ni un reproche. Hoy. Guárdalo como se guarda un eclipse.',
+        'De vuelta, entonces. Lo digo con la misma sinceridad con que me despedí.'
       ]
     },
     // 3) Cierre, común a las tres variantes: la semana que empieza.

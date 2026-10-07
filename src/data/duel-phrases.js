@@ -18,14 +18,14 @@
   victoria_2_3: [
     "Victoria ajustada. Ha faltado poco para perder. Qué detalle tan incómodo.",
     "Victoria por la mínima. No ha sido una obra maestra, pero el marcador no exige tanto.",
-    "Un duelo muy igualado. Durante unos minutos casi pareció que sabíais lo que estabais haciendo.",
+    "Un duelo muy igualado. Durante unos minutos, ambos parecían saber lo que hacían.",
     "Hasta el último punto. Mucha tensión para descubrir, al final, quién se equivocó menos.",
     "Victoria ajustada. El rival estuvo cerca. Tú también estuviste cerca de perderla.",
-    "Has ganado. Por poco. Pero tranquilo: la victoria sigue siendo legal."
+    "Has ganado. Por poco. Pero no temas: la victoria sigue siendo legal."
   ],
   victoria_clara: [
     "Victoria clara. La diferencia ya no permite esconderse detrás de la suerte. Qué lástima.",
-    "Buen duelo. Aunque el marcador parece tener una opinión bastante distinta.",
+    "Dirán que fue un buen duelo. El marcador es menos diplomático.",
     "Victoria con autoridad. La derrota, al menos, ha quedado perfectamente documentada.",
     "Una diferencia considerable. Lo suficiente para convertir el “casi” en una excusa bastante pobre.",
     "Victoria sin demasiadas complicaciones. Qué poco duró la resistencia.",
@@ -90,11 +90,11 @@
     "No ha sido una tragedia. Solo has sido claramente peor. Mucho más fácil de diagnosticar."
   ],
   empate: [
-    "Empate. Ninguno ha conseguido imponerse. Qué decepción tan perfectamente equilibrada.",
+    "Empate. Ninguno ha conseguido imponerse. Qué equilibrio tan poco satisfactorio.",
     "Empate. Dos rivales, cero vencedores y una cantidad preocupante de orgullo intacto.",
     "Mismo resultado para ambos. La mediocridad también puede ser democrática.",
     "Empate. Nadie gana, nadie pierde y nadie puede presumir demasiado. Qué final tan poco satisfactorio.",
-    "Empate. Habéis conseguido dedicar el mismo esfuerzo a no ganar.",
+    "Empate. Has dedicado exactamente el mismo esfuerzo que tu rival a no ganar.",
     "Empate. Dos mentes enfrentadas y ninguna considerada suficientemente convincente.",
     "Un empate. La solución perfecta cuando ninguno ha hecho méritos suficientes para celebrar.",
     "Igualdad absoluta. Qué alivio: así nadie tendrá que admitir que perdió.",

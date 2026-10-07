@@ -21,7 +21,7 @@
     'Vaya, de vuelta. Qué persistencia tan difícil de justificar.',
     'Has regresado. Debo admitir que esperaba que al menos fingieras tener otras aficiones.',
     'Otra vez tú. Al menos eres constante.',
-    'Bienvenido de nuevo. Tus errores estaban empezando a aburrirse sin ti.'];
+    'De vuelta. Tus errores estaban empezando a aburrirse sin ti.'];
 
   function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
