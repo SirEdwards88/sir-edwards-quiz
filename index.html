@@ -1708,7 +1708,7 @@ const RESULT_MOOD_IMAGES = {
   '⚡': 'assets/modes/suelto/contrarreloj.webp', '🧠': 'assets/modes/suelto/repaso.webp', '🔢': 'assets/modes/suelto/calculo.webp',
   '👁️': 'assets/modes/suelto/secreto.webp', '🎯': 'assets/modes/suelto/estandar.webp',
   '❤️': 'assets/modes/suelto/supervivencia.webp', '👑': 'assets/modes/suelto/muerte-subita.webp', '📈': 'assets/ui/libro-vela.webp', '🫏': 'assets/ui/gorro-burro.webp', '🫠': 'assets/ui/reloj-derretido.webp', '⏱️': 'assets/ui/cronometro.webp', '📝': 'assets/ui/pizarra-operaciones.webp', '⚙️': 'assets/ui/cerebro-engranajes.webp',
-  '☠️': 'assets/ui/calavera.webp', '🕸️': 'assets/ui/libro-telaranas.webp', '🔮': 'assets/ui/bola-rota.webp', '💎': 'assets/ui/diamante.webp',
+  '☠️': 'assets/ui/calavera.webp', '🔮': 'assets/ui/bola-rota.webp', '💎': 'assets/ui/diamante.webp',
   '🐌': 'assets/ui/caracol.webp', '🐇': 'assets/ui/liebre.webp', '💨': 'assets/ui/calculadora-humo.webp', '🧮': 'assets/ui/abaco.webp'
 };
 // 2.0: icono del resultado según el desenlace (mal / normal / bien) en los modos por puntuación.
@@ -6009,19 +6009,13 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
       // el "buen/mal resultado" de arriba. El reconocimiento especial de
       // este modo es el récord (ver más abajo), no un sello genérico.
     } else {
-      const reviewFailed = isGameOverDueToFailure || isSurvivalFailure;
-      if (reviewFailed) {
-        document.getElementById('res-category-text').textContent = "Sin vidas";
-        document.getElementById('res-phrase-text').textContent = "Te quedaste sin vidas en el intento.";
-        setResultTone('fail', '🕸️');
-      } else {
-        const reviewKey = accuracy >= 50 ? 'progreso' : 'insuficiente';
-        const reviewData = REVIEW_END_PHRASES[reviewKey];
-        const reviewPhrase = pickRotatingPhrase(`review_${reviewKey}`, reviewData.phrases);
-        document.getElementById('res-category-text').textContent = reviewData.title;
-        document.getElementById('res-phrase-text').textContent = reviewPhrase;
-        setResultTone('review', reviewKey === 'progreso' ? '📈' : '🫏', reviewKey === 'progreso' ? 'victory' : 'defeat');
-      }
+      // Repaso no tiene vidas: nunca termina «sin vidas», solo por progreso o insuficiente.
+      const reviewKey = accuracy >= 50 ? 'progreso' : 'insuficiente';
+      const reviewData = REVIEW_END_PHRASES[reviewKey];
+      const reviewPhrase = pickRotatingPhrase(`review_${reviewKey}`, reviewData.phrases);
+      document.getElementById('res-category-text').textContent = reviewData.title;
+      document.getElementById('res-phrase-text').textContent = reviewPhrase;
+      setResultTone('review', reviewKey === 'progreso' ? '📈' : '🫏', reviewKey === 'progreso' ? 'victory' : 'defeat');
     }
   }
 
