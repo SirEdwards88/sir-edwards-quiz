@@ -277,6 +277,8 @@ const APP_SHELL = [
   './src/utils/duel.js',
   './src/utils/matching.js',
   './src/utils/answer-alias.js',
+  './src/utils/lucidez-select.js',
+  './src/state/lucidez-bag.js',
   './src/utils/sudden-progression.js',
   './src/utils/fresh-first.js',
   './src/utils/mental-calc.js',

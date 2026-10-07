@@ -1061,6 +1061,8 @@ try {
      sin ES Modules todavia). -->
 <script src="src/utils/matching.js?v=134"></script>
 <script src="src/utils/answer-alias.js?v=134"></script>
+<script src="src/utils/lucidez-select.js?v=134"></script>
+<script src="src/state/lucidez-bag.js?v=134"></script>
 <script src="src/utils/sudden-progression.js?v=134"></script>
 <script src="src/utils/fresh-first.js?v=134"></script>
 <script src="src/utils/mental-calc.js?v=134"></script>
@@ -3368,10 +3370,11 @@ function openLucidezMentalModeImpl() {
   // Lucidez Mental utiliza una bolsa propia y compartida entre sus tres fases.
   // Así ninguna pregunta de cultura general puede repetirse entre fases ni
   // hasta agotar el banco específico de Lucidez.
-  const phase1Queue = buildLucidezPhase1Pool();
-  const phase2Queue = buildLucidezPhase2Queue();
-  const phase2Questions = phase2Queue.filter(item => item.type === 'question').map(item => item.q);
-  const phase3Queue = buildLucidezPhase3Queue();
+  const lucidezSel = pickLucidezGame(); // 2.2: selección única (src/utils/lucidez-select.js), la misma que usan los Retos
+  const phase1Queue = lucidezSel.p1;
+  const phase2Queue = buildLucidezPhase2Queue(lucidezSel.p2);
+  const phase2Questions = lucidezSel.p2;
+  const phase3Queue = lucidezSel.p3;
 
   registerRecentQuestions(phase1Queue.concat(phase2Questions).concat(phase3Queue));
 
@@ -3412,106 +3415,7 @@ const LUCIDEZ_PHASE1_MIN = 6;
 const LUCIDEZ_PHASE3_TOTAL = 9;
 const LUCIDEZ_PHASE3_MIN = 5;
 
-// Extrae `count` preguntas de la bolsa compartida de Lucidez Mental
-// (store.questionBags['lucidez_mental']), sin repetir ninguna hasta agotar
-// el banco. La usan las tres fases (buildLucidezPhase1Pool, Fase II dentro
-// de buildLucidezPhase2Queue y buildLucidezPhase3Queue), cada una con su
-// propio subconjunto elegible por dificultad.
-// `strict`: cuando es true (Fase II), nunca se completa con preguntas fuera
-// del subconjunto elegible aunque la bolsa tenga otras pendientes (p. ej.
-// difíciles) — en su lugar se abre una vuelta nueva restringida al propio
-// subconjunto, así se garantiza siempre el nivel de dificultad pedido.
-function pickLucidezFromBag(eligiblePool, count, recentCategories = [], strict = false) {
-  if (!eligiblePool.length || count <= 0) return [];
-  if (!store.questionBags) store.questionBags = {};
-  if (!store.lastQuestionInBag) store.lastQuestionInBag = {};
-
-  const fullPool = QUESTIONS.filter(q => q.dif === 'medio' || q.dif === 'dificil');
-  const poolIds = fullPool.map(q => q.n);
-  const poolIdSet = new Set(poolIds);
-  const byId = {};
-  fullPool.forEach(q => { byId[q.n] = q; });
-  const eligibleIds = new Set(eligiblePool.map(q => q.n));
-  const key = 'lucidez_mental';
-
-  let bag = store.questionBags[key];
-  if (!Array.isArray(bag) || bag.some(id => !poolIdSet.has(id))) bag = [];
-
-  const result = [];
-  const pickedThisCall = new Set();
-  const recent = Array.isArray(recentCategories) ? [...recentCategories] : [];
-
-  while (result.length < count) {
-    // Primero intenta respetar el subconjunto solicitado (p. ej. "medio"),
-    // pero si ese subconjunto ya se ha agotado dentro de la vuelta actual,
-    // permite completar con cualquier pregunta pendiente del banco común
-    // — salvo en modo estricto, donde esa vía queda desactivada (ver abajo).
-    // Así nunca devuelve menos preguntas ni reutiliza una ya consumida.
-    let candidates = bag.filter(id => eligibleIds.has(id) && !pickedThisCall.has(id));
-
-    if (!candidates.length) {
-      const anyPending = bag.filter(id => !pickedThisCall.has(id));
-
-      if (strict) {
-        // Modo estricto: se abre una vuelta nueva restringida solo al
-        // subconjunto elegible (nunca se recurre a "anyPending", que podría
-        // incluir dificultades fuera de lo pedido). Lo pendiente de fuera
-        // del subconjunto se conserva intacto en la bolsa para que Fase I y
-        // Fase III sigan pudiendo disponer de ello más adelante.
-        let refillIds = eligiblePool.map(q => q.n).filter(id => !pickedThisCall.has(id));
-        const last = store.lastQuestionInBag[key];
-        if (refillIds.length > 1 && last != null) {
-          refillIds = refillIds.filter(id => id !== last);
-          refillIds.push(last);
-        }
-        bag = shuffleArray(refillIds).concat(anyPending);
-        candidates = bag.filter(id => eligibleIds.has(id) && !pickedThisCall.has(id));
-      } else if (anyPending.length) {
-        // No quedan preguntas del subconjunto elegible, pero sí preguntas
-        // pendientes en la misma bolsa. Se usan estas para completar la cola
-        // sin romper jamás la garantía de no repetición.
-        candidates = anyPending;
-      } else {
-        // La bolsa se ha agotado: comienza una vuelta nueva con todo el banco,
-        // excluyendo lo elegido en esta misma llamada y evitando que la última
-        // pregunta de la vuelta anterior sea la primera de la nueva.
-        let refillIds = poolIds.filter(id => !pickedThisCall.has(id));
-        const last = store.lastQuestionInBag[key];
-        if (refillIds.length > 1 && last != null) {
-          refillIds = refillIds.filter(id => id !== last);
-          refillIds.push(last);
-        }
-        bag = shuffleArray(refillIds);
-        candidates = bag.filter(id => eligibleIds.has(id) && !pickedThisCall.has(id));
-        if (!candidates.length) candidates = bag.filter(id => !pickedThisCall.has(id));
-      }
-    }
-
-    if (!candidates.length) break;
-
-    // Intenta evitar categorías recientes, sin sacar de la bolsa las
-    // candidatas que no sean elegidas.
-    const fresh = candidates.filter(id => !recent.includes(byId[id]?.cat));
-    const source = fresh.length ? fresh : candidates;
-    const id = source[Math.floor(Math.random() * source.length)];
-    const pos = bag.indexOf(id);
-    if (pos >= 0) bag.splice(pos, 1);
-
-    pickedThisCall.add(id);
-    result.push(byId[id]);
-    recent.push(byId[id]?.cat);
-  }
-
-  if (result.length) store.lastQuestionInBag[key] = result[result.length - 1].n;
-  store.questionBags[key] = bag;
-  return result;
-}
-// Fase I: 10 preguntas de conocimiento general (dificultad media o difícil),
-// tomadas de la bolsa compartida de Lucidez Mental.
-function buildLucidezPhase1Pool() {
-  const pool = QUESTIONS.filter(q => q.dif === 'medio' || q.dif === 'dificil');
-  return pickLucidezFromBag(pool, 10, []);
-}
+// (2.2) Las preguntas de cultura de las tres fases las elige pickLucidezGame() (src/state/lucidez-bag.js).
 
 // Elige, dentro de un rango, un "restador" que garantice un resultado final
 // positivo y razonable para cálculo mental (evita "2 × 3 − 40").
@@ -3561,30 +3465,17 @@ function generateLucidezMentalOp(tier, rng) {
 }
 
 // Construye la cola fija de la Fase II: 5 cálculos mentales (nivel
-// medio-alto, nunca fácil) y 5 preguntas de cultura general de dificultad
-// media, en orden aleatorio. Se genera una sola vez al empezar la
-// partida (igual que las Fases I y III) para que sea estable al reanudar.
-// Las 5 preguntas se piden en modo estricto: se garantiza siempre dificultad
-// media, nunca difícil, aunque la bolsa compartida se quede momentáneamente
-// sin preguntas medias pendientes (ver pickLucidezFromBag).
-function buildLucidezPhase2Queue() {
+// medio-alto, nunca fácil) y las 5 preguntas de cultura general que ya ha
+// elegido pickLucidezGame (siempre de dificultad media), en orden aleatorio.
+// Se genera una sola vez al empezar la partida (igual que las Fases I y III)
+// para que sea estable al reanudar.
+function buildLucidezPhase2Queue(questions) {
   const calcs = [0, 1, 2, 3, 4].map(i => {
     const tier = i % 2 === 0 ? 'medium' : 'hard';
     return { type: 'calc', ...generateLucidezMentalOp(tier) };
   });
 
-  // Las 5 preguntas de cultura general salen de la misma bolsa compartida
-  // con las Fases I y III, pero en modo estricto: nunca se completan con
-  // preguntas difíciles, aunque la parte media de la bolsa esté agotada.
-  const mediumPool = QUESTIONS.filter(q => q.dif === 'medio');
-  const questions = pickLucidezFromBag(mediumPool, 5, [], true).map(q => ({ type: 'question', q }));
-
-  return shuffleArray(calcs.concat(questions));
-}
-
-function buildLucidezPhase3Queue() {
-  const pool = QUESTIONS.filter(q => q.dif === 'medio' || q.dif === 'dificil');
-  return pickLucidezFromBag(pool, 9, []);
+  return shuffleArray(calcs.concat(questions.map(q => ({ type: 'question', q }))));
 }
 
 function getLucidezPhase(idx) {

@@ -55,9 +55,12 @@ test('las retiradas siguen resolviéndose por ID (duelos y retos creados antes d
   assert.ok(!RT.some((q) => T.some((t) => t.n === q.n)));
 });
 
-test('el banco de Lucidez es el de test (medio y difícil) más la #359, y comparte texto y respuesta', () => {
-  assert.equal(Q.length, 242);
-  const expected = T.filter((q) => q.dif !== 'facil' || q.n === 359).map((q) => q.n).sort((a, b) => a - b);
+test('el banco de Lucidez es el de test (medio y difícil) más las 25 fáciles de la criba, y comparte texto y respuesta', () => {
+  assert.equal(Q.length, 266);
+  const faciles = Q.filter((q) => q.dif === 'facil');
+  assert.equal(faciles.length, 25);
+  assert.ok(faciles.every((q) => q.lz === 'B'));
+  const expected = T.filter((q) => q.dif !== 'facil').map((q) => q.n).concat(faciles.map((q) => q.n)).sort((a, b) => a - b);
   assert.deepEqual(Q.map((q) => q.n).sort((a, b) => a - b), expected);
   for (const q of Q) {
     const t = T.find((x) => x.n === q.n);
