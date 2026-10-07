@@ -88,7 +88,7 @@ function getDefaultStore() {
     lucidezEverWon: false,
     lucidezTotalCorrect: 0,
     lucidezEverPerfect: false,
-    // ⚔️ Duelo: reto asíncrono con semilla. Las estadísticas (duelStats)
+    // Duelo: reto asíncrono con semilla. Las estadísticas (duelStats)
     // solo se actualizan al UNIRSE a un reto (momento en que se conocen
     // ambos marcadores); crear un reto solo archiva tu propia partida en
     // duelHistory a la espera de que alguien la supere.
@@ -100,7 +100,7 @@ function getDefaultStore() {
     // 2.2 Encargos semanales: progreso de la semana en curso y claves de recompensa ya cobradas (ver src/state/encargos.js).
     encargos: null,
     encargosClaimed: [],
-    // ⚔️ Duelo: códigos de reto ya jugados como retador (joiner), para que
+    // Duelo: códigos de reto ya jugados como retador (joiner), para que
     // repetir un mismo reto no vuelva a contar en duelStats/logros — solo
     // la primera vez que se juega un código da estadísticas. Independiente
     // de duelHistory (que se recorta a 30 entradas) para no perder el

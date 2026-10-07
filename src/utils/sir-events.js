@@ -4,10 +4,10 @@
 // un evento y CUÁL (y su frase); quien lo llama (src/state/sir-events.js) lo muestra con src/ui/sir-events-ui.js.
 //
 // Cuatro eventos, un único sistema:
-//   · streak (🔥)  hito de racha 10 / 15 / 20 / 30; cada hito una sola vez por partida.
-//   · night  (🌙)  00:00–04:00 hora local.
-//   · day    (☀️)  06:00–10:00 hora local.
-//   · visit  (🎩)  genérico (incluye el antiguo «evaluando»).
+// · streak () hito de racha 10  15  20  30; cada hito una sola vez por partida.
+// · night () 00:00–04:00 hora local.
+// · day () 06:00–10:00 hora local.
+// · visit () genérico (incluye el antiguo «evaluando»).
 // Prioridad: streak > night > day > visit; como máximo UNO por respuesta, y la prioridad nunca se salta el cooldown ni
 // los límites (si el prioritario no puede, se evalúa el siguiente).
 //
@@ -34,7 +34,7 @@ const SEQSirEvents = (function () {
     day: 'assets/character/event_siredwards_day.webp',
     night: 'assets/character/event_siredwards_night.webp'
   };
-  var LABELS = { streak: '🔥 SirEdwards ha detectado una racha' };
+  var LABELS = { streak: 'SirEdwards ha detectado una racha' };
 
   // Frases. `h` (opcional) limita la frase a esas horas locales (para que no mienta con la hora).
   // Los grupos normales no llevan `h`: así se pueden rotar con bolsa (ver `rotate`). Las frases ligadas a una hora exacta

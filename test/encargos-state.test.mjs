@@ -197,7 +197,7 @@ test('avisos: formato, y nada si no hay avance', () => {
   fill(ctx, ms[1]); fill(ctx, ms[2]);
   assert.ok(ctx.toasts.some((t) => t.main === '¡Encargos completados! +250 XP'));
   fill(ctx, great(ctx));
-  assert.ok(ctx.toasts.some((t) => t.main === '👑 ¡Gran Encargo completado! +200 XP'));
+  assert.ok(ctx.toasts.some((t) => t.main === '¡Gran Encargo completado! +200 XP'));
 });
 
 test('aviso «Encargo avanzado» al terminar una partida con avance, un único aviso con título y avance', () => {

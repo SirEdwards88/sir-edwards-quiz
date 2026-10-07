@@ -14,12 +14,12 @@ function load(extra = '') {
 const ids = (c) => c.ALL_MEDALS.map((m) => m.id);
 const J = (x) => JSON.parse(JSON.stringify(x));
 
-test('hay exactamente 60 logros activos, sin IDs ni iconos repetidos', () => {
+test('hay exactamente 60 logros activos, sin IDs repetidos y sin emojis: cada uno con su insignia propia', () => {
   const c = load();
   assert.equal(c.ALL_MEDALS.length, 60);
   assert.equal(new Set(ids(c)).size, 60);
-  const icons = c.ALL_MEDALS.map((m) => m.icon.replace(/\uFE0F/g, ''));
-  assert.equal(new Set(icons).size, 60);
+  assert.equal(c.ALL_MEDALS.some((m) => 'icon' in m), false, 'los logros no llevan emoji: su icono es assets/logros/<id>.webp');
+  for (const m of c.ALL_MEDALS) assert.ok(fs.existsSync(new URL('../assets/logros/' + m.id + '.webp', import.meta.url)), 'falta la insignia de ' + m.id);
 });
 
 test('world_citizen y duel_eso_era_un_duelo ya no son activos (se conservan como históricos)', () => {
@@ -131,7 +131,7 @@ test('Sin Titubear sustituye a La Última Palabra: ID nuevo, pluma reutilizada, 
   assert.equal(by('ultimo_cerebro'), undefined, 'La Última Palabra ya no es activa');
   assert.equal(J(c.RETIRED_MEDAL_IDS).includes('ultimo_cerebro'), true, 'se conserva como histórica');
   assert.equal(by('duel_sin_titubear').desc, 'Gana un duelo acertando todas las preguntas.');
-  assert.equal(by('duel_sin_titubear').icon.replace(/\uFE0F/g, ''), '🖋');
+  assert.ok(fs.existsSync(new URL('../assets/logros/duel_sin_titubear.webp', import.meta.url)), 'tiene su insignia');
   assert.equal(J(c.FRAGMENT_MEDAL_IDS).includes('duel_sin_titubear'), false);
   assert.equal(c.ALL_MEDALS.length, 60);
 });

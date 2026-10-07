@@ -10,12 +10,12 @@
   'use strict';
 
   var CATS = [
-    { key: 'historia', label: 'Historia', icon: '🏛️', img: 'assets/cats/historia.webp' },
-    { key: 'geografia', label: 'Geografía', icon: '🌍', img: 'assets/cats/geografia.webp' },
-    { key: 'ciencia', label: 'Ciencia', icon: '🔬', img: 'assets/cats/ciencia.webp' },
-    { key: 'arte_literatura', label: 'Arte y Lit.', icon: '🎨', img: 'assets/cats/arte.webp' },
-    { key: 'deporte', label: 'Deporte', icon: '⚽', img: 'assets/cats/deporte.webp' },
-    { key: 'cultura_general', label: 'Cultura', icon: '🧠', img: 'assets/cats/cultura.webp' }
+    { key: 'historia', label: 'Historia', img: 'assets/cats/historia.webp' },
+    { key: 'geografia', label: 'Geografía', img: 'assets/cats/geografia.webp' },
+    { key: 'ciencia', label: 'Ciencia', img: 'assets/cats/ciencia.webp' },
+    { key: 'arte_literatura', label: 'Arte y Lit.', img: 'assets/cats/arte.webp' },
+    { key: 'deporte', label: 'Deporte', img: 'assets/cats/deporte.webp' },
+    { key: 'cultura_general', label: 'Cultura', img: 'assets/cats/cultura.webp' }
   ];
 
   function radarSvg(values) {
@@ -58,7 +58,7 @@
       var values = CATS.map(function (c) {
         var x = st[c.key] || { correct: 0, answered: 0 };
         var answered = Number(x.answered) || 0, correct = Number(x.correct) || 0;
-        return { label: c.label, icon: c.icon, img: c.img, answered: answered, pct: answered ? Math.round(correct / answered * 100) : 0 };
+        return { label: c.label, img: c.img, answered: answered, pct: answered ? Math.round(correct / answered * 100) : 0 };
       });
       var box = $id('stats-radar');
       if (!box) {

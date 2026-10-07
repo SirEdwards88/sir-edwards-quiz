@@ -13,16 +13,16 @@
   'use strict';
 
   var GROUPS = [
-    { key: 'prog', name: 'Progresión', icon: '🎮', ids: ['first_game', 'games_5', 'games_10', 'games_20', 'games_50'] },
-    { key: 'racha', name: 'Rachas', icon: '📈', ids: ['streak_5', 'streak_10', 'streak_20', 'streak_30', 'sharp_eye', 'sin_preferencias'] },
-    { key: 'nivel', name: 'Nivel', icon: '⭐', ids: ['level_5', 'level_10', 'level_20', 'level_30'] },
-    { key: 'aciertos', name: 'Aciertos', icon: '✅', ids: ['correct_100', 'correct_400', 'correct_800'] },
-    { key: 'dominio', name: 'Dominio', icon: '🏛️', ids: ['master_10', 'master_50', 'master_100', 'master_200', 'polimata', 'balanced_master'] },
-    { key: 'errores', name: 'Aprender de los errores', icon: '✏️', ids: ['cleaner_5', 'cleaner_25', 'limpieza_general'] },
-    { key: 'modos', name: 'Modos de juego', icon: '🎲', ids: ['surv_ameba', 'surv_humano', 'surv_derrame', 'sd_primer_riesgo', 'tt_15', 'tt_30', 'tt_50', 'sin_frenos', 'mental_calc_15', 'mental_calc_30', 'mental_calc_40'] },
-    { key: 'duelo', name: 'Duelo', icon: '🤺', ids: ['duel_primera_sangre', 'duel_victoria_inaugural', 'duel_por_los_pelos', 'duel_contra_las_cuerdas', 'duel_rey_del_empate', 'duel_cinco_victorias', 'duel_tres_al_hilo', 'duel_revancha', 'duel_otra_vez_tu', 'duel_sin_titubear', 'duel_apuestas_calculada', 'duel_apuestas_ultima_locura'] },
-    { key: 'especial', name: 'Especiales', icon: '🃏', ids: ['noctambulo', 'diurno', 'mente_fracturada', 'medal_collector_10', 'medal_collector_20', 'medal_collector_30'] },
-    { key: 'secretos', name: 'Secretos', icon: '🤫', ids: ['lucidez_mente_despierta', 'lucidez_conexiones_imposibles', 'lucidez_absoluta', 'all_medals_secret'] }
+    { key: 'prog', name: 'Progresión', ids: ['first_game', 'games_5', 'games_10', 'games_20', 'games_50'] },
+    { key: 'racha', name: 'Rachas', ids: ['streak_5', 'streak_10', 'streak_20', 'streak_30', 'sharp_eye', 'sin_preferencias'] },
+    { key: 'nivel', name: 'Nivel', ids: ['level_5', 'level_10', 'level_20', 'level_30'] },
+    { key: 'aciertos', name: 'Aciertos', ids: ['correct_100', 'correct_400', 'correct_800'] },
+    { key: 'dominio', name: 'Dominio', ids: ['master_10', 'master_50', 'master_100', 'master_200', 'polimata', 'balanced_master'] },
+    { key: 'errores', name: 'Aprender de los errores', ids: ['cleaner_5', 'cleaner_25', 'limpieza_general'] },
+    { key: 'modos', name: 'Modos de juego', ids: ['surv_ameba', 'surv_humano', 'surv_derrame', 'sd_primer_riesgo', 'tt_15', 'tt_30', 'tt_50', 'sin_frenos', 'mental_calc_15', 'mental_calc_30', 'mental_calc_40'] },
+    { key: 'duelo', name: 'Duelo', ids: ['duel_primera_sangre', 'duel_victoria_inaugural', 'duel_por_los_pelos', 'duel_contra_las_cuerdas', 'duel_rey_del_empate', 'duel_cinco_victorias', 'duel_tres_al_hilo', 'duel_revancha', 'duel_otra_vez_tu', 'duel_sin_titubear', 'duel_apuestas_calculada', 'duel_apuestas_ultima_locura'] },
+    { key: 'especial', name: 'Especiales', ids: ['noctambulo', 'diurno', 'mente_fracturada', 'medal_collector_10', 'medal_collector_20', 'medal_collector_30'] },
+    { key: 'secretos', name: 'Secretos', ids: ['lucidez_mente_despierta', 'lucidez_conexiones_imposibles', 'lucidez_absoluta', 'all_medals_secret'] }
   ];
 
   // Progreso medible de los logros pendientes: [valor actual, objetivo, unidad]. Mismas fuentes que sus
@@ -88,7 +88,7 @@
   // Escudos de cada familia (assets/familias/<key>.webp); «Otros» conserva su emoji.
   var FAMILY_IMG = { prog: 1, racha: 1, nivel: 1, aciertos: 1, dominio: 1, errores: 1, modos: 1, duelo: 1, especial: 1, secretos: 1 };
   function iconHTML(m) {
-    return '<img class="ach-img" src="assets/logros/' + esc(m.id) + '.webp" alt="" draggable="false" onerror="this.replaceWith(document.createTextNode(\'' + esc(m.icon) + '\'))">';
+    return '<img class="ach-img" src="assets/logros/' + esc(m.id) + '.webp" alt="" draggable="false" onerror="this.remove()">';
   }
   function esc(v) { return String(v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   var openState = {};
@@ -105,7 +105,7 @@
       prog = '<div class="ach-prog"><div class="ach-bar"><span style="width:' + pct + '%"></span></div><span class="ach-num">' + cur + '/' + p[1] + '</span></div>';
     }
     var av = ''; try { av = getMedalAvatar(m.id) || ''; } catch (e) {}
-    var avTag = av ? '<span class="ach-frag ach-avatar' + (unlocked ? ' got' : '') + '" title="' + (unlocked ? 'Avatar desbloqueado' : 'Desbloquea un avatar') + '">🎭</span>' : '';
+    var avTag = av ? '<span class="ach-frag ach-avatar' + (unlocked ? ' got' : '') + '" title="' + (unlocked ? 'Avatar desbloqueado' : 'Desbloquea un avatar') + '"><img src="assets/ui/sombrero-saludo.webp" alt="" draggable="false"></span>' : '';
     var tag = (frag ? '<span class="ach-frag' + (unlocked ? ' got' : '') + '" title="' + (unlocked ? 'Fragmento obtenido' : 'Otorga un Fragmento de Mente') + '"><img src="assets/ui/fragmento.webp" alt="" draggable="false"></span>' : '') + avTag;
     return '<div class="ach-row ' + (unlocked ? 'is-done' : 'is-locked') + '">' +
       '<div class="ach-ico has-img">' + iconHTML(m) + (unlocked ? '<span class="ach-check" aria-hidden="true">✓</span>' : '') + '</div>' +
@@ -119,10 +119,10 @@
     var used = {};
     var groups = GROUPS.map(function (g) {
       var list = g.ids.filter(function (id) { if (byId[id]) { used[id] = true; return true; } return false; }).map(function (id) { return byId[id]; });
-      return { key: g.key, name: g.name, icon: g.icon, list: list };
+      return { key: g.key, name: g.name, list: list };
     });
     var rest = ALL_MEDALS.filter(function (m) { return !used[m.id]; });
-    if (rest.length) groups.splice(groups.length - 1, 0, { key: 'otros', name: 'Otros', icon: '📦', list: rest });
+    if (rest.length) groups.splice(groups.length - 1, 0, { key: 'otros', name: 'Otros', list: rest });
 
     container.classList.add('ach-groups');
     container.innerHTML = groups.filter(function (g) { return g.list.length; }).map(function (g) {
@@ -138,7 +138,7 @@
       var isOpen = openState[g.key] != null ? openState[g.key] : (done > 0 && done < total);
       var complete = done === total;
       return '<details class="ach-group' + (complete ? ' is-complete' : '') + '" data-key="' + g.key + '"' + (isOpen ? ' open' : '') + '>' +
-        '<summary><span class="ach-g-ico' + (FAMILY_IMG[g.key] ? ' has-img' : '') + '" aria-hidden="true">' + (FAMILY_IMG[g.key] ? '<img src="assets/familias/' + g.key + '.webp" alt="" draggable="false">' : g.icon) + '</span><span class="ach-g-name">' + g.name + '</span>' +
+        '<summary><span class="ach-g-ico' + (FAMILY_IMG[g.key] ? ' has-img' : '') + '" aria-hidden="true">' + (FAMILY_IMG[g.key] ? '<img src="assets/familias/' + g.key + '.webp" alt="" draggable="false">' : '') + '</span><span class="ach-g-name">' + g.name + '</span>' +
         '<span class="ach-g-count">' + (complete ? '✓ ' : '') + done + '/' + total + '</span>' +
         '<span class="ach-g-bar"><span style="width:' + Math.round(done / total * 100) + '%"></span></span></summary>' +
         '<div class="ach-list">' + sorted.map(function (m) { return row(m, s, got.indexOf(m.id) !== -1); }).join('') + '</div></details>';

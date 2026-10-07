@@ -26,8 +26,8 @@ const LUCIDEZ_RIDDLES = [
 ];;
 
 const LUCIDEZ_PHASE_COPY = {
-  1: { label: 'FASE I', sub: 'El desafío comienza.', icon: '👁️' },
-  2: { label: 'FASE II', sub: 'La presión aumenta. Mantén la mente fría.', icon: '👁️' },
-  3: { label: 'FASE III', sub: 'Ya no basta con saber. Ahora tendrás que razonar.', icon: '👁️' }
+  1: { label: 'FASE I', sub: 'El desafío comienza.', icon: 'modo-secreto' },
+  2: { label: 'FASE II', sub: 'La presión aumenta. Mantén la mente fría.', icon: 'modo-secreto' },
+  3: { label: 'FASE III', sub: 'Ya no basta con saber. Ahora tendrás que razonar.', icon: 'modo-secreto' }
 };;
 

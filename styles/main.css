@@ -294,10 +294,11 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   border: 1px solid rgba(13,148,136,.18);
 }
 .card.theme-review .mode-header::before {
-  content: "🧠";
+  content: "";
   position: absolute; left: 16px; top: 50%;
   transform: translateY(-50%);
-  font-size: 22px;
+  width: 28px; height: 28px;
+  background: url("../assets/modes/suelto/repaso.webp") center / contain no-repeat;
 }
 .card.theme-standard .mode-header {
   color: #1d4ed8;
@@ -305,10 +306,11 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   border: 1px solid rgba(37,99,235,.16);
 }
 .card.theme-standard .mode-header::before {
-  content: "🎯";
+  content: "";
   position: absolute; left: 16px; top: 50%;
   transform: translateY(-50%);
-  font-size: 22px;
+  width: 28px; height: 28px;
+  background: url("../assets/modes/suelto/estandar.webp") center / contain no-repeat;
 }
 
 .card.theme-survival .mode-header {
@@ -317,10 +319,11 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   border: 1px solid rgba(245,158,11,.28);
 }
 .card.theme-survival .mode-header::before {
-  content: "❤️";
+  content: "";
   position: absolute; left: 15px; top: 50%;
   transform: translateY(-50%);
-  font-size: 22px;
+  width: 28px; height: 28px;
+  background: url("../assets/modes/suelto/supervivencia.webp") center / contain no-repeat;
 }
 
 .card.theme-sudden .mode-header {
@@ -329,10 +332,11 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   border: 1px solid rgba(220,38,38,.25);
 }
 .card.theme-sudden .mode-header::before {
-  content: "☠️";
+  content: "";
   position: absolute; left: 15px; top: 50%;
   transform: translateY(-50%);
-  font-size: 22px;
+  width: 28px; height: 28px;
+  background: url("../assets/modes/suelto/muerte-subita.webp") center / contain no-repeat;
 }
 .card.theme-sudden .mode-header::after {
   content: "UN SOLO FALLO";
@@ -351,10 +355,11 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   font-size: 15px;
 }
 .card.theme-timetrial .mode-header::before {
-  content: "⚡";
+  content: "";
   position: absolute; left: 15px; top: 50%;
   transform: translateY(-50%);
-  font-size: 23px;
+  width: 28px; height: 28px;
+  background: url("../assets/modes/suelto/contrarreloj.webp") center / contain no-repeat;
 }
 .card.theme-timetrial .mode-header::after {
   content: "SPRINT";
@@ -365,7 +370,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   font-weight: 900;
 }
 /* Dentro de la partida, el HUD (.game-hud) reutiliza la clase .mode-header,
-   pero ahí la esquina derecha ya la ocupa el chip de racha (🔥 Racha):
+   pero ahí la esquina derecha ya la ocupa el chip de racha (Racha):
    sin esto, "SPRINT" y el chip quedaban escritos uno encima del otro. */
 .card.theme-timetrial .mode-header.game-hud::after {
   display: none;
@@ -471,7 +476,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
    Solo CSS, sin tocar HTML/JS: la pregunta gana algo más de presencia
    frente al resto de elementos, las 4 respuestas tipo test ganan área
    táctil y un feedback de interacción más claro, y el HUD de progreso
-   ("MODO ESTÁNDAR · 🎯 x/20", ya generado por JS) gana legibilidad. Todo
+   ("MODO ESTÁNDAR · x/20", ya generado por JS) gana legibilidad. Todo
    queda scoped a .card.theme-standard: no afecta a ningún otro modo. */
 .card.theme-standard .q-box {
   box-shadow: 0 2px 10px rgba(37,99,235,.05);
@@ -578,7 +583,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 
 /* DETALLES EXTRA */
  .card.theme-timetrial .actions::before {
-  content: "⚡ Cada acierto añade +3 segundos";
+  content: "Cada acierto añade +3 segundos";
   display: none;
   width: 100%;
   font-size: 11px;
@@ -722,10 +727,11 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   border: 1px solid rgba(21,128,61,.22);
 }
 .card.theme-mentalcalc .mode-header::before {
-  content: "🔢";
+  content: "";
   position: absolute; left: 15px; top: 50%;
   transform: translateY(-50%);
-  font-size: 23px;
+  width: 28px; height: 28px;
+  background: url("../assets/modes/suelto/calculo.webp") center / contain no-repeat;
 }
 .card.theme-mentalcalc .mode-header::after {
   content: "AGILIDAD";
@@ -736,7 +742,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   font-weight: 900;
 }
 /* Dentro de la partida, el HUD (.game-hud) reutiliza la clase .mode-header,
-   pero ahí la esquina derecha ya la ocupa el chip de racha (🔥 Racha):
+   pero ahí la esquina derecha ya la ocupa el chip de racha (Racha):
    sin esto, "AGILIDAD" y el chip quedaban escritos uno encima del otro. */
 .card.theme-mentalcalc .mode-header.game-hud::after {
   display: none;
@@ -767,7 +773,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 .card.theme-mentalcalc input[type="text"]:focus { border-color:#14532d; box-shadow:0 0 0 4px rgba(21,128,61,.13); }
 .card.theme-mentalcalc .btn-primary { background:linear-gradient(90deg,#14532d,#15803d); }
 .card.theme-mentalcalc .actions::before {
-  content: "🔢 La dificultad sube con tu racha de aciertos";
+  content: "La dificultad sube con tu racha de aciertos";
   display: none;
   width: 100%;
   font-size: 11px;
@@ -783,7 +789,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
    (#choice-options), sino una respuesta numérica por texto, así que el
    pulido se centra en dar más presencia a la operación (.q-box) y en la
    legibilidad del HUD combinado de cronómetro + puntuación
-   ("CÁLCULO MENTAL · ⏱️ Xs | ⭐ Y pts", ya generado por JS). No toca el
+   ("CÁLCULO MENTAL · Xs | Y pts", ya generado por JS). No toca el
    cronómetro, el tic-tac de los últimos segundos ni la subida de
    dificultad por racha, que son lógica/JS específicos del modo. Scoped a
    .card.theme-mentalcalc: no afecta a ningún otro modo. */
@@ -796,7 +802,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 }
 
 
-/* ====== TEMA: 👁️ LUCIDEZ MENTAL (violeta, el desafío definitivo) ====== */
+/* ====== TEMA: LUCIDEZ MENTAL (violeta, el desafío definitivo) ====== */
 .card.theme-lucidez {
   border: 3px solid #6d28d9;
   background:
@@ -833,10 +839,11 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   border: 1px solid rgba(109,40,217,.28);
 }
 .card.theme-lucidez .mode-header::before {
-  content: "👁️";
+  content: "";
   position: absolute; left: 15px; top: 50%;
   transform: translateY(-50%);
-  font-size: 23px;
+  width: 28px; height: 28px;
+  background: url("../assets/modes/suelto/secreto.webp") center / contain no-repeat;
 }
 .card.theme-lucidez .mode-header::after {
   content: "DESAFÍO FINAL";
@@ -847,7 +854,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   font-weight: 900;
 }
 /* Dentro de la partida, el HUD (.game-hud) reutiliza la clase .mode-header,
-   pero ahí la esquina derecha ya la ocupa el chip de racha (🔥 Racha):
+   pero ahí la esquina derecha ya la ocupa el chip de racha (Racha):
    sin esto, "DESAFÍO FINAL" y el chip quedaban escritos uno encima del otro. */
 .card.theme-lucidez .mode-header.game-hud::after {
   display: none;
@@ -872,7 +879,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 .card.theme-lucidez input[type="text"]:focus { border-color:#6d28d9; box-shadow:0 0 0 4px rgba(109,40,217,.14); }
 .card.theme-lucidez .btn-primary { background:linear-gradient(90deg,#6d28d9,#7c3aed); }
 .card.theme-lucidez .actions::before {
-  content: "👁️ 30 preguntas. Sin red. Sin vuelta atrás.";
+  content: "30 preguntas. Sin red. Sin vuelta atrás.";
   display: none;
   width: 100%;
   font-size: 11px;
@@ -1101,7 +1108,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 /* Sir Edwards 2.0 (Prompt 1.5, corrección): retrato de fase, remate visual
    DEBAJO del título/frase (título → frase → personaje). Oculto por defecto;
    cuando se muestra (transición de entrada a Fase I/II/III/Enigma), sustituye
-   al emoji 👁️/⏱️ de siempre para no duplicar el mismo papel visual, que sigue
+   al emoji  de siempre para no duplicar el mismo papel visual, que sigue
    intacto para el resto de transiciones (desenlaces). Tres de los cuatro
    assets llegan con un fondo casi blanco muy ceñido al personaje (apenas
    margen); mask-image difumina solo ese borde estrecho hacia el fondo
@@ -1125,6 +1132,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   animation: lucidezOverlayPop .6s ease-out;
 }
 .lucidez-story-overlay .lucidez-story-icon { font-size: 46px; margin-bottom: 10px; animation: lucidezOverlayPop .6s ease-out; }
+.lucidez-story-overlay .lucidez-story-img { display: block; width: 64px; height: 64px; margin: 0 auto; object-fit: contain; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
 .lucidez-story-overlay .lucidez-story-title {
   font-size: 30px;
   font-weight: 900;
@@ -1509,12 +1517,12 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
 }
 /* Prompt 2 — Fase C (sección 17): "botón → estado de procesamiento →
    confirmación" ya existe en JS (shareResultAsText()/copyDuelCode() ya
-   cambian el texto del botón a "✅ ¡Copiado!" y lo revierten solos); aquí
+   cambian el texto del botón a "¡Copiado!" y lo revierten solos); aquí
    solo se anima ese cambio de texto que ya se produce, igual que streak/XP
    en la Fase B. No se toca el pipeline de compartir/generar imagen. */
 .btn-confirm-pulse { animation: valueBump var(--motion-short) var(--ease-emphasized) both; }
 
-/* Identidad del modo: etiqueta pequeña y fija ("⚡ CONTRARRELOJ"). El
+/* Identidad del modo: etiqueta pequeña y fija ("CONTRARRELOJ"). El
    desenlace concreto (victoria, derrota, tiempo agotado...) ya lo cuentan
    la frase y el sello de abajo, así que el título no compite por atención. */
 .results-card h3 { margin: 0 0 10px 0; font-size: 13px; font-weight: 800; letter-spacing: 1.3px; text-transform: uppercase; color: var(--sub); }
@@ -1719,8 +1727,8 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
    distintos (racha, XP, vidas, récords...) para que la pantalla final
    se sienta propia de esa forma de juego y no un resumen genérico.
    Formato compacto a propósito: icono + valor en una píldora, sin
-   caption aparte, para que quepan varios en una sola línea ("🔥 12 ·
-   ⏱️ 43 s · 🏆 Récord") en vez de apilar cajas grandes. La etiqueta
+   caption aparte, para que quepan varios en una sola línea (" 12 ·
+   43 s · Récord") en vez de apilar cajas grandes. La etiqueta
    completa vive en el atributo title, por accesibilidad. */
 .results-mode-chips {
   display: none;
@@ -1905,7 +1913,7 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
   100% { filter: drop-shadow(0 0 0 rgba(124,58,237,0)); }
 }
 
-/* 👁️ Tratamiento especial para el logro maestro de Lucidez Mental: mismo
+/* Tratamiento especial para el logro maestro de Lucidez Mental: mismo
    layout que el resto de logros de sesión, pero con un halo violeta propio
    para que se note que no es un logro cualquiera. */
 .session-medal-item.medal-lucidez-absoluta {
@@ -2077,7 +2085,7 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
 
 /* Modes Grid */
 .modes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 10px; }
-/* 👁️ Lucidez Mental ocupa toda la anchura del menú: 3 columnas en escritorio, 2 en móvil */
+/* Lucidez Mental ocupa toda la anchura del menú: 3 columnas en escritorio, 2 en móvil */
 .modes-grid .mode-lucidez { grid-column: 1 / -1; }
 .mode-card { border: 2px solid var(--border); border-radius: var(--radius-md); padding: 16px; cursor: pointer; transition: all 0.2s; position: relative; }
 .mode-card:hover:not(.locked) { border-color: var(--primary); background: var(--badge-bg); }
@@ -2120,9 +2128,8 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
 .lucidez-phase-line strong{
   font-weight: 800;
 }
-.mode-lock-badge::before{font-size:17px;line-height:1}
-.mode-card.locked .mode-lock-badge::before{content:"🔒"}
-.mode-card:not(.locked) .mode-lock-badge::before{content:"🔓"}
+.mode-lock-badge::before{content:"";display:block;font-size:17px;line-height:1;background-size:contain;background-position:center;background-repeat:no-repeat}
+/* La imagen del candado (cerrado / abierto) se asigna en theme.css. */
 
 /* Submenu Header */
 .submenu-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
@@ -2133,7 +2140,7 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
 .medal-card { opacity: 0.4; }
 .medal-card.secret-locked { border: 1px dashed var(--border); }
 
-/* 🧩 Sistema de Fragmentos de Mente */
+/* Sistema de Fragmentos de Mente */
 .medal-fragment-tag {
   margin-top: 8px; font-size: 10.5px; font-weight: 800; letter-spacing: .2px;
   color: #7c3aed; background: rgba(124,58,237,.1); border: 1px solid rgba(124,58,237,.35);
@@ -2181,7 +2188,7 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
 [data-theme="dark"] .fragments-progress-title { color: #c4b5fd; }
 [data-theme="dark"] .fragments-progress-count { color: #ddd6fe; }
 
-/* 🏅 Progreso general de Logros: cabecera de la pantalla Logros, en dorado
+/* Progreso general de Logros: cabecera de la pantalla Logros, en dorado
    para reforzar el concepto de logro/recompensa. Compacta a propósito. */
 .achievements-progress-box {
   background: linear-gradient(135deg, var(--accent-gold-surface), var(--color-surface-highlight));
@@ -2319,7 +2326,7 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
 .mode-card.mode-sudden{border-color:rgba(220,38,38,.30);background:linear-gradient(145deg,rgba(220,38,38,.10),var(--card) 68%)}
 .mode-card.mode-timetrial{border-color:rgba(219,39,119,.32);background:linear-gradient(145deg,rgba(219,39,119,.11),rgba(244,114,182,.06),var(--card) 72%)}
 .mode-card.mode-mentalcalc{border-color:rgba(21,128,61,.32);background:linear-gradient(145deg,rgba(21,128,61,.11),rgba(34,197,94,.06),var(--card) 72%)}
-/* 👁️ Lucidez Mental: el modo secreto final recibe un tratamiento propio,
+/* Lucidez Mental: el modo secreto final recibe un tratamiento propio,
    más marcado que el resto (borde más grueso + resplandor pulsante), para
    que se note que no es un modo más. */
 .mode-card.mode-lucidez{
@@ -3996,7 +4003,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   background:rgba(245,158,11,.16);
 }
 
-/* ⚔️ Duelo: código de reto y banner de resultado. Usa el ADN visual de
+/* Duelo: código de reto y banner de resultado. Usa el ADN visual de
    Sir Edwards (dorado/púrpura/azul marino) en vez de los verdes/rojos
    genéricos de acierto-fallo del juego: victoria = dorado (prestigio,
    mismo tono que un logro desbloqueado), empate = púrpura (identidad de
@@ -4034,7 +4041,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 }
 .duel-result-score { font-size: 26px; font-weight: 900; }
 .duel-vs { font-size: 14px; font-weight: 600; opacity: .7; margin: 0 6px; }
-/* ⚔️ Duelo: tarjeta "RETO CREADO" (creador). Mismo componente/tono que el
+/* Duelo: tarjeta "RETO CREADO" (creador). Mismo componente/tono que el
    resto del resultado de Duelo; solo añade una etiqueta discreta reutilizable
    (CÓDIGO DEL RETO / Tu puntuación) y una puntuación destacada en solitario,
    ya que aquí no hay marcador "X vs Y" que mostrar todavía. */
@@ -4047,7 +4054,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 .duel-created-card .duel-result-score-solo {
   font-size: 44px; font-weight: 900; color: var(--accent-purple-text); line-height: 1;
 }
-/* ⚔️ Duelo: tarjeta "RETO CREADO" con el mismo lenguaje visual de Home/
+/* Duelo: tarjeta "RETO CREADO" con el mismo lenguaje visual de Home/
    SirEdwards — insignia circular con degradado y sombra propia (igual que
    .duel-action-icon/.home-big-icon), tarjeta con radio y sombra grandes
    (--radius-lg/--shadow-card, los mismos tokens que .stats-hero) y
@@ -4229,7 +4236,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 }
 .duel-mode-name { flex: 1; min-width: 0; font-weight: 700; font-size: 16px; }
 /* Estado a la derecha: solo hay texto cuando el modo está bloqueado
-   ("🔒 BLOQUEADO"); desbloqueado no añade ninguna etiqueta ("Disponible"),
+   ("BLOQUEADO"); desbloqueado no añade ninguna etiqueta ("Disponible"),
    el propio aspecto normal de la fila ya lo dice. Al pulsar un modo
    bloqueado, selectDuelMode() ya muestra el aviso completo en un toast:
    la fila no necesita repetir esa frase. */
@@ -4320,12 +4327,12 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 .mode-card.duel-diff-media:hover, .mode-card.duel-diff-media:focus-visible { border-color: var(--accent-gold-mid); }
 .mode-card.duel-diff-dificil:hover, .mode-card.duel-diff-dificil:focus-visible { border-color: var(--accent-red); }
 
-/* ====== 🏠 NUEVO MENÚ PRINCIPAL (pantalla de inicio) ======
+/* ====== NUEVO MENÚ PRINCIPAL (pantalla de inicio) ======
    Pantalla de entrada rediseñada: sustituye a la barra de pestañas superior
    solo en esta vista (ver body.on-home más abajo); el resto de pantallas
    siguen teniendo la barra de pestañas de siempre para saltar entre
    secciones sin pasar por aquí, más un botón "← Menú" nuevo para volver. */
-/* ====== 🏠 v1.1: Home = marca, interior = contenido ======
+/* ====== v1.1: Home = marca, interior = contenido ======
    La cabecera global (marca + insignias) y la barra de 5 pestañas quedan
    retiradas de TODAS las pantallas: la home ya tiene su propia cabecera
    (sombrero/avatar de Sir Edwards, identidad) y cada pantalla interior
@@ -4354,6 +4361,9 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 .icon-svg { width: 1em; height: 1em; display: block; flex-shrink: 0; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
 /* Símbolos de marca a color (#se-target, #se-swords en index.html): mismos dibujos que las insignias de Home. */
 .se-sym { width: 72%; height: 72%; display: block; flex-shrink: 0; }
+/* Vidas de Supervivencia / Lucidez en la etiqueta de progreso: corazones del sprite (#se-heart), en línea con el texto. */
+.se-lives { display: inline-flex; gap: 1px; vertical-align: -0.3em; }
+.se-life { width: 1.3em; height: 1.3em; display: inline-block; flex-shrink: 0; vertical-align: -0.3em; }
 .home-level-top .icon-svg { color: var(--accent-gold-mid); }
 
 /* ---------- HOME — recreación fiel del mockup de referencia ---------- */
@@ -4424,8 +4434,10 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   background: linear-gradient(150deg, #c2622b, #9a3412 55%, #4a1808);
 }
 .home-big-card.home-card-duelo::after {
-  content: "⚔"; position: absolute; right: 4px; bottom: -18px; z-index: 0;
-  font-size: 130px; line-height: 1; opacity: .14; color: #fff;
+  content: ""; position: absolute; right: 6px; bottom: -14px; z-index: 0;
+  width: 120px; height: 120px; opacity: .14;
+  background: url("../assets/modes/suelto/duelo.webp") center / contain no-repeat;
+  filter: brightness(0) invert(1);
 }
 .home-big-icon {
   width: 64px; height: 64px; border-radius: 50%; flex-shrink: 0; padding: 8px;
@@ -4480,7 +4492,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 .home-small-title { font-family: var(--font-display); font-size: 12.5px; font-weight: 700; letter-spacing: .5px; color: var(--brand-navy); }
 .home-small-divider { width: 26px; height: 1px; background: var(--brand-gold); opacity: .6; margin: 7px auto; position: relative; }
 .home-small-divider::before {
-  content: "◆"; position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+  content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
   font-size: 6px; color: var(--brand-gold); background: var(--brand-cream);
 }
 .home-small-sub { font-size: 10.5px; color: var(--sub); margin: 0 0 10px; line-height: 1.3; }
@@ -4623,7 +4635,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
    Recupera un borde discreto por sección (en vez de la sola línea
    superior del sistema v1.2) para que cada bloque se lea como un
    panel propio y agrupado, sin sombras ni gradientes nuevos. El
-   pequeño rombo ◆ delante de cada título es el mismo motivo ya usado
+   pequeño rombo delante de cada título es el mismo motivo ya usado
    como conector en Home, para que Estadísticas/Ajustes se sientan
    del mismo producto sin añadir decoración nueva.
    ========================================================= */
@@ -4638,7 +4650,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 }
 #view-settings > .settings-section:first-of-type { margin-top: 0; }
 .stats-section h3::before, .settings-section h3::before, .history-container h3::before, #menu-main-modes > h2::before {
-  content: '◆'; display: inline-block; font-size: 7px; color: var(--accent-gold-mid);
+  content: ''; display: inline-block; font-size: 7px; color: var(--accent-gold-mid);
   opacity: .75; margin-right: 8px; position: relative; top: -2px;
 }
 .settings-danger-zone { border-color: var(--danger-txt); border-style: dashed; opacity: .9; }
@@ -4652,7 +4664,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   margin-top: calc(var(--space-xl) + var(--space-md));
   border-color: var(--dz-duel-soft);
 }
-#stats-duel-section h3::before { content: '⚔'; font-size: 10px; color: var(--dz-duel); opacity: .85; top: -1px; }
+#stats-duel-section h3::before { content: ''; display: inline-block; width: 7px; height: 7px; background: var(--dz-duel); transform: rotate(45deg); opacity: .85; top: -1px; }
 
 /* Los números son el protagonista de un dashboard de progreso: alineación
    tabular para que no "bailen" al cambiar de valor. */
@@ -4670,7 +4682,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
    solo se añade el icono de cada modo (.mode-card-icon, componente
    que ya existía y ya usaba "Continuar partida") y una línea de
    estado "✓ DISPONIBLE" (.mode-subtitle, mismo componente que ya
-   usaba "▶ EN CURSO") para los modos bloqueables. El estado
+   usaba "EN CURSO") para los modos bloqueables. El estado
    bloqueado/desbloqueado sigue siendo exactamente el que ya
    gestiona updateBadges() vía la clase .locked que alterna JS. */
 
@@ -4882,7 +4894,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 
 /* --- LOGROS: lo desbloqueado se siente ganado, lo bloqueado queda atrás --- */
 
-/* Candado en SVG (sustituye al emoji 🔒 dentro de medal-status/.icon):
+/* Candado en SVG (sustituye al emoji dentro de medal-status/.icon):
    mismo texto, icono propio del sistema en vez de un carácter suelto. */
 .medal-lock-svg {
   width: 12px; height: 12px; fill: currentColor; vertical-align: -1.5px;
@@ -5273,7 +5285,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 .ach-g-count { font-weight: 800; font-size: 13px; color: var(--accent-gold-strong, #92400e); }
 .ach-g-bar { grid-column: 2 / span 2; height: 6px; border-radius: 99px; background: var(--color-border-subtle, #e5e7eb); overflow: hidden; }
 .ach-g-bar > span { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #c9992e, #e8c874); }
-.ach-group > summary::after { content: '▾'; grid-column: 3; grid-row: 1; justify-self: end; margin-left: 0; display: none; }
+.ach-group > summary::after { content: ''; grid-column: 3; grid-row: 1; justify-self: end; margin-left: 0; display: none; }
 .ach-group[open] > summary { border-bottom: 1px solid var(--color-border-subtle, #e5e7eb); }
 .ach-group.is-complete { background: linear-gradient(135deg, var(--color-surface-highlight, #fdf7ea), var(--card)); }
 .ach-group.is-complete .ach-g-ico { background: linear-gradient(135deg, #e8c874, #c9992e); }
@@ -5338,7 +5350,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 .stats-dossier { position: relative; margin: 4px 0 18px; padding: 16px 16px 14px; border-radius: 18px;
   background: linear-gradient(160deg, var(--color-surface-highlight, #fdf7ea), var(--card) 70%);
   border: 1px solid var(--color-border-accent, rgba(201,153,46,.38)); box-shadow: var(--shadow-soft), inset 0 0 0 4px var(--card), inset 0 0 0 5px rgba(201,153,46,.22); }
-.stats-dossier::before, .stats-dossier::after { content: '◆'; position: absolute; top: 9px; font-size: 8px; color: var(--accent-gold, #c9992e); }
+.stats-dossier::before, .stats-dossier::after { content: ''; position: absolute; top: 9px; font-size: 8px; color: var(--accent-gold, #c9992e); }
 .stats-dossier::before { left: 11px; } .stats-dossier::after { right: 11px; }
 .dossier-head { display: flex; align-items: baseline; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; text-align: center; }
 .dossier-kicker { font: 800 10.5px var(--font-ui); letter-spacing: 2.2px; text-transform: uppercase; color: var(--accent-gold-strong, #92400e); }

@@ -112,7 +112,7 @@ function playCorrectSound(streak) {
   } catch(e) {}
 }
 
-// ====== ⏱️ Tic-tac de urgencia (<10s) ======
+// ====== Tic-tac de urgencia (<10s) ======
 // Componente único y reutilizable para los 4 relojes con cuenta atrás:
 // Contrarreloj, Cálculo Mental, Fase III de Lucidez Mental y el Acertijo
 // Final. No toca la lógica de ninguno de esos temporizadores: cada uno ya
@@ -192,7 +192,7 @@ function playWinFanfare() {
   } catch (e) {}
 }
 
-// ====== 🎻 Música de menús («The Earl's Waiting Room») ======
+// ====== Música de menús («The Earl's Waiting Room») ======
 // Suena solo fuera de la partida (inicio, Jugar, Duelos, Estadísticas, Logros, Ajustes), a volumen bajo y
 // con fundidos; se pausa al entrar en una partida o un duelo en directo y al salir de la app.
 // Preferencia propia por dispositivo («Música» en Ajustes), independiente de los efectos de sonido.

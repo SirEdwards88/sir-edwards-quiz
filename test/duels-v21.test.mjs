@@ -43,19 +43,20 @@ test('nombres EXACTOS de apuestas y modos; nada de los nombres antiguos', () => 
   const { M } = load();
   assert.equal(JSON.stringify(Object.values(M.STAKES).map((s) => s.nombre)), JSON.stringify(['Cuerdo', 'Osado', 'Insensato']));
   assert.deepEqual(Object.values(M.STAKES).map((s) => s.valor), [1, 2, 3]);
-  assert.deepEqual(Object.values(M.STAKES).map((s) => s.emoji), ['🧠', '🎩', '💀']);
+  assert.equal(Object.values(M.STAKES).some((s) => 'emoji' in s), false, 'las apuestas no llevan emoji: solo ilustración');
   assert.equal(M.MODES.classic.nombre, 'Duelo clásico');
   assert.equal(M.MODES.stakes.nombre, 'Duelo por apuestas');
   assert.equal(Object.keys(M.MODES).length, 2, 'exactamente dos modos');
   for (const old of ['Seguro', 'Riesgo', 'Todo']) assert.equal(SRC.includes("nombre: '" + old), false);
 });
 
-test('rangos: solo 5, con su emoji de respaldo; iconos como assets independientes', () => {
+test('rangos: solo 5; iconos como assets independientes y sin emoji de respaldo', () => {
   const { M } = load();
-  assert.deepEqual(Object.values(M.RANK_EMOJI), ['🥉', '🥈', '🥇', '💎', '👑']);
+  assert.deepEqual(Object.keys(M.RANK_IDS), ['plebeyo_ilustrado', 'caballero_del_dato', 'erudito_de_salon', 'lord_sabelotodo', 'sir_edwards']);
   const html = M.rankIcon({ icono: 'sir_edwards' });
   assert.match(html, /assets\/duelos\/rangos\/sir_edwards\.webp/);
-  assert.match(html, /onerror=/, 'si falta el archivo, se muestra el emoji');
+  assert.match(html, /onerror="this\.remove\(\)"/, 'si falta el archivo, no se muestra nada (nunca un emoji)');
+  assert.equal(/\p{Extended_Pictographic}/u.test(html), false);
   assert.match(M.rankIcon({ icono: '<script>' }), /plebeyo_ilustrado/, 'un icono desconocido nunca se incrusta tal cual');
   assert.match(M.modeIcon('stakes'), /assets\/duelos\/modos\/stakes\.webp/);
 });

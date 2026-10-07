@@ -78,7 +78,7 @@ const SEQEncargosUI = (function () {
     var cls = 'enc-card' + (great ? ' is-great' : '') + (m.claimed ? ' is-done' : '');
     return '<div class="' + cls + '">' +
       (great ? '<div class="enc-great-tag">GRAN ENCARGO</div>' : '') +
-      '<div class="enc-card-head"><div class="enc-card-title">' + (great ? '<span aria-hidden="true">👑 </span>' : '') + esc(m.titulo) + '</div>' +
+      '<div class="enc-card-head"><div class="enc-card-title">' + (great ? seqIco('copa') : '') + esc(m.titulo) + '</div>' +
       '<div class="enc-card-xp">' + (m.claimed ? 'Cobrado' : '+' + m.xp + ' XP') + '</div></div>' +
       '<div class="enc-card-desc">' + esc(m.desc) + '</div>' +
       '<div class="enc-bar"><div class="enc-bar-fill" style="width:' + (m.claimed ? 100 : pct(m.r)) + '%"></div></div>' +
@@ -115,7 +115,7 @@ const SEQEncargosUI = (function () {
     showing = true;
     var t = queue.shift(), n = ensureEl();
     n.className = 'encargos-toast is-' + t.kind;
-    n.innerHTML = '<div class="encargos-toast-main">' + (t.kind === 'progress' ? '<span aria-hidden="true">🎩 </span>' : '') + esc(t.main) + '</div>' +
+    n.innerHTML = '<div class="encargos-toast-main">' + (t.kind === 'progress' ? seqIco('sombrero') : '') + esc(t.main) + '</div>' +
       (t.sub ? '<div class="encargos-toast-sub">' + esc(t.sub) + '</div>' : '');
     void n.offsetWidth;
     n.classList.add('show');

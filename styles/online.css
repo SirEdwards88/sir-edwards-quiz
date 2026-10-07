@@ -161,7 +161,7 @@
    «La partida normal + una capa discreta de duelo». Copia, con el morado del
    duelo (tokens --duel-purple / --accent-purple-*), los mismos valores que la
    partida de Estándar: marco de la tarjeta con franja superior, HUD
-   .mode-header.game-hud con el icono del modo a la izquierda (⚔️ en vez de 🎯),
+   .mode-header.game-hud con el icono del modo a la izquierda (el de Duelo en lugar del de Estándar),
    .q-box con borde lateral, .choice-btn con 50px de alto y .feedback. Todo va
    acotado a #seq-duel-root / .seq-d-*; las reglas base no se tocan.
    El marco solo se aplica mientras #seq-duel-root tiene .seq-d-playing (lo pone
@@ -174,7 +174,7 @@
   font-weight: 800; font-size: 14px; letter-spacing: .3px; font-variant-numeric: tabular-nums;
   color: var(--accent-purple-text); background: var(--accent-purple-surface); border: 1px solid var(--accent-purple-soft);
 }
-#seq-duel-root .seq-d-hud::before { content: "⚔️"; position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 22px; }
+#seq-duel-root .seq-d-hud::before { content: ""; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 28px; height: 28px; background: url("../assets/modes/suelto/duelo.webp") center / contain no-repeat; }
 #seq-duel-root .seq-d-hud-lbl { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #seq-duel-root .seq-d-rival-chip { max-width: 48%; overflow: hidden; text-overflow: ellipsis; color: var(--accent-purple-text); background: var(--card); border-color: var(--accent-purple-soft); }
 #seq-duel-root .seq-d-vs-lbl { font-size: 11px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; opacity: .75; }

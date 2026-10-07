@@ -17,22 +17,22 @@
 
   // ---- Catálogo (nombres EXACTOS y definitivos) -------------------------------------------------
   var STAKES = {
-    cuerdo: { nombre: 'Cuerdo', valor: 1, emoji: '🧠' },
-    osado: { nombre: 'Osado', valor: 2, emoji: '🎩' },
-    insensato: { nombre: 'Insensato', valor: 3, emoji: '💀' }
+    cuerdo: { nombre: 'Cuerdo', valor: 1 },
+    osado: { nombre: 'Osado', valor: 2 },
+    insensato: { nombre: 'Insensato', valor: 3 }
   };
   var STAKE_ORDER = ['cuerdo', 'osado', 'insensato'];
   var MODES = {
-    classic: { nombre: 'Duelo clásico', emoji: '⚔️', desc: '20 preguntas · 10 s cada una' },
-    stakes: { nombre: 'Duelo por apuestas', emoji: '🎲', desc: '12 rondas · apuesta en secreto antes de cada pregunta' }
+    classic: { nombre: 'Duelo clásico', desc: '20 preguntas · 10 s cada una' },
+    stakes: { nombre: 'Duelo por apuestas', desc: '12 rondas · apuesta en secreto antes de cada pregunta' }
   };
-  var RANK_EMOJI = { plebeyo_ilustrado: '🥉', caballero_del_dato: '🥈', erudito_de_salon: '🥇', lord_sabelotodo: '💎', sir_edwards: '👑' };
+  var RANK_IDS = { plebeyo_ilustrado: 1, caballero_del_dato: 1, erudito_de_salon: 1, lord_sabelotodo: 1, sir_edwards: 1 };
   // Cada icono es un archivo propio: assets/duelos/<grupo>/<id>.webp
   var ICON_DIR = 'assets/duelos/';
   var BOARDS = {
-    pvp: { nombre: 'PvP', emoji: '⚔️', sub: 'Por ELO' },
-    mental: { nombre: 'Cálculo Mental', emoji: '🧠', sub: 'Mejor puntuación' },
-    timetrial: { nombre: 'Contrarreloj', emoji: '⏱️', sub: 'Mejor puntuación' }
+    pvp: { nombre: 'PvP', sub: 'Por ELO' },
+    mental: { nombre: 'Cálculo Mental', sub: 'Mejor puntuación' },
+    timetrial: { nombre: 'Contrarreloj', sub: 'Mejor puntuación' }
   };
   var BOARD_ORDER = ['pvp', 'mental', 'timetrial'];
   var SCOPES = { friends: 'Amigos', global: 'Global' };
@@ -58,22 +58,21 @@
   function stakeKey(k) { return Object.prototype.hasOwnProperty.call(STAKES, k) ? k : null; }
   function modeKey(m) { return m === 'stakes' ? 'stakes' : 'classic'; }
 
-  // Icono ilustrado con emoji de respaldo si el archivo aún no existe.
-  function icon(group, id, emoji, cls) {
-    var e = String(emoji).replace(/[^\u0000-\uFFFF]|[<>"'&]/g, function (c) { return c; });
+  // Icono ilustrado; si el archivo aún no existe, no se muestra nada (nunca un emoji de respaldo).
+  function icon(group, id, cls) {
     return '<span class="seq-v21-ico ' + (cls || '') + '" aria-hidden="true"><img src="' + ICON_DIR + group + '/' + id + '.webp" alt="" draggable="false" ' +
-      'onerror="this.parentNode.textContent=\'' + e + '\'"></span>';
+      'onerror="this.remove()"></span>';
   }
-  function modeIcon(m) { m = modeKey(m); return icon('modos', m, MODES[m].emoji, 'seq-v21-ico-mode'); }
+  function modeIcon(m) { m = modeKey(m); return icon('modos', m, 'seq-v21-ico-mode'); }
   // Medallón de «estadísticas de duelos» (libro de cuentas con pluma): assets/duelos/estadisticas.webp. Si falta, el del Duelo clásico.
   function statsIcon() {
     return '<span class="seq-v21-ico seq-v21-ico-stats" aria-hidden="true"><img src="' + ICON_DIR + 'estadisticas.webp" alt="" draggable="false" ' +
       'onerror="this.onerror=null;this.src=\'' + ICON_DIR + 'modos/classic.webp\'"></span>';
   }
-  function stakeIcon(k) { k = stakeKey(k); return k ? icon('apuestas', k, STAKES[k].emoji, 'seq-v21-ico-stake') : ''; }
+  function stakeIcon(k) { k = stakeKey(k); return k ? icon('apuestas', k, 'seq-v21-ico-stake') : ''; }
   function rankIcon(r, cls) {
-    var id = r && RANK_EMOJI[r.icono] ? r.icono : 'plebeyo_ilustrado';
-    return icon('rangos', id, RANK_EMOJI[id], 'seq-v21-ico-rank ' + (cls || ''));
+    var id = r && RANK_IDS[r.icono] ? r.icono : 'plebeyo_ilustrado';
+    return icon('rangos', id, 'seq-v21-ico-rank ' + (cls || ''));
   }
   function rankName(r) { return r && typeof r.nombre === 'string' ? r.nombre : 'Plebeyo Ilustrado'; }
   function stakeLabel(k) { k = stakeKey(k); return k ? stakeIcon(k) + '<b>' + STAKES[k].nombre + '</b>' : '<b>—</b>'; }
@@ -84,7 +83,7 @@
   function modeButtons() {
     return '<div class="seq-v21-modes">' + ['classic', 'stakes'].map(function (m) {
       return '<div class="mode-card seq-v21-modecard seq-v21-modecard-' + m + '" role="button" tabindex="0" onclick="SEQDuels.pick(\'duel\',\'' + m + '\')" onkeydown="if(event.key===\'Enter\')SEQDuels.pick(\'duel\',\'' + m + '\')">' +
-        '<div class="mode-card-icon has-img seq-v21-modecard-ico" aria-hidden="true"><img class="mode-img" src="' + ICON_DIR + 'modos/' + m + '.webp" alt="" draggable="false" onerror="this.parentNode.textContent=\'' + MODES[m].emoji + '\'"></div>' +
+        '<div class="mode-card-icon has-img seq-v21-modecard-ico" aria-hidden="true"><img class="mode-img" src="' + ICON_DIR + 'modos/' + m + '.webp" alt="" draggable="false" onerror="this.remove()"></div>' +
         '<div class="seq-v21-modecard-body"><h3>' + MODES[m].nombre + '</h3><p>' + MODES[m].desc + '</p></div></div>';
     }).join('') + '</div>';
   }
@@ -231,9 +230,9 @@
   // assets/duelos/rankings/<id>.webp: se sustituyen soltando un archivo con el mismo nombre) → «Tu posición» →
   // podio con los tres primeros (medallas de oro, plata y bronce) → resto de la clasificación.
   // Solo presentación: el orden, las posiciones y las puntuaciones vienen tal cual del servidor.
-  var RK_ICON = { pvp: { id: 'pvp', emoji: '⚔️' }, mental: { id: 'mental', emoji: '🧠' }, timetrial: { id: 'timetrial', emoji: '⏱️' } };
+  var RK_ICON = { pvp: { id: 'pvp' }, mental: { id: 'mental' }, timetrial: { id: 'timetrial' } };
   var PODIUM_MEDAL = { 1: 'oro', 2: 'plata', 3: 'bronce' };
-  function rkIcon(k, cls) { var r = RK_ICON[k]; return r ? icon('rankings', r.id, r.emoji, 'seq-v21-ico-rk ' + (cls || '')) : ''; }
+  function rkIcon(k, cls) { var r = RK_ICON[k]; return r ? icon('rankings', r.id, 'seq-v21-ico-rk ' + (cls || '')) : ''; }
   function rankKey() { return S21.scope + ':' + S21.board; }
   function loadRankings() {
     var h = H(); if (!h) return Promise.resolve();
@@ -397,7 +396,7 @@
   function invalidate() { S21.stats = null; S21.statsAt = 0; S21.rankings = {}; }
 
   window.SEQDuels21 = {
-    STAKES: STAKES, MODES: MODES, RANK_EMOJI: RANK_EMOJI, BOARDS: BOARDS,
+    STAKES: STAKES, MODES: MODES, RANK_IDS: RANK_IDS, BOARDS: BOARDS,
     modeButtons: modeButtons, modeBadge: modeBadge, scoreboard: scoreboard, modeIcon: modeIcon, rankIcon: rankIcon, eloBlock: eloBlock,
     play: play, tick: tick, stake: stake, answer: answer,
     renderRankings: renderRankings, rkIcon: rkIcon, loadRankings: loadRankings, setScope: setScope, setBoard: setBoard,

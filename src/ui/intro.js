@@ -35,7 +35,7 @@
       try {
         if (window.SEQOnline && SEQOnline.accountHadProgress && SEQOnline.accountHadProgress()) {
           set(WELCOME_KEY, '1');
-          if (typeof showInfoToast === 'function') showInfoToast(RETURN_LINES[Math.floor(Math.random() * RETURN_LINES.length)], '🎩');
+          if (typeof showInfoToast === 'function') showInfoToast(RETURN_LINES[Math.floor(Math.random() * RETURN_LINES.length)], 'sombrero');
           return;
         }
       } catch (e) {}

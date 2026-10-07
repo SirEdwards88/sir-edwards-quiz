@@ -116,7 +116,7 @@ function encargosSettle() {
 function encargosToastText(ev) {
   if (ev.kind === 'm') return '¡Encargo completado! +' + ev.xp + ' XP';
   if (ev.kind === 'b') return '¡Encargos completados! +' + ev.xp + ' XP';
-  return '👑 ¡Gran Encargo completado! +' + ev.xp + ' XP';
+  return '¡Gran Encargo completado! +' + ev.xp + ' XP';
 }
 function encargosToastEvents(events) {
   if (!events.length || typeof SEQEncargosUI === 'undefined') return;

@@ -13,13 +13,6 @@ const SHARE_IMAGE_PALETTE = {
   navy: '#1849b3'
 };;
 
-const RESULT_TIER_STYLE = {
-  bad:     { badge: '💀', pctEmoji: '💀' },
-  medium:  { badge: '👑', pctEmoji: '😐' },
-  good:    { badge: '👑', pctEmoji: '🙂' },
-  perfect: { badge: '🏆', pctEmoji: '🏆' }
-};;
-
 const MODE_IDENTITY = {
   play: 'ESTÁNDAR',
   review: 'REPASO',
@@ -30,11 +23,12 @@ const MODE_IDENTITY = {
   lucidez_mental: 'LUCIDEZ MENTAL'
 };;
 
+// Icono del resultado: NOMBRE de ilustración (ver SEQIcons.src), nunca un emoji.
 const RESULT_MOOD_ICONS = {
-  desastre: '💀', suspenso: '😬', mediocre: '😐', bien: '🙂',
-  casi_perfecto: '😏', perfecto: '🏆',
-  win: '🏆', fail_desastre: '💀', fail_regular: '💔',
-  timetrial: '⚡', review: '🧠', mentalcalc: '🔢'
+  desastre: 'sombrero-aplastado', suspenso: 'suspenso', mediocre: 'sombrero-mediocre', bien: 'sombrero-saludo',
+  casi_perfecto: 'casi', perfecto: 'sombrero-laurel',
+  win: 'sombrero-laurel', fail_desastre: 'sombrero-aplastado', fail_regular: 'derrota',
+  timetrial: 'modo-contrarreloj', review: 'modo-repaso', mentalcalc: 'modo-calculo'
 };;
 
 const SURVIVAL_TIER_RATIOS = {

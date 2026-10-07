@@ -4,7 +4,7 @@
 // index.html (botones de respuesta, contador de racha, tarjeta de resultados) y añade encima:
 //   - Acierto: destello verde en la tarjeta (las chispas se reservan para logros y modos nuevos).
 //   - Fallo: sacudida breve de la tarjeta.
-//   - Racha: la píldora 🔥 se "calienta" (3 / 5 / 10) y los hitos (3, 5, 10, 15, 20…) muestran un aviso.
+// - Racha: la píldora se "calienta" (3  5  10) y los hitos (3, 5, 10, 15, 20…) muestran un aviso.
 //   - Resultados: las cifras cuentan hacia arriba, confeti cuando hay algo que celebrar
 //     (≥70 % de aciertos, récord, logro o modo nuevo) y títulos en singular/plural correctos.
 // Con «reducir movimiento» del sistema no hay animaciones (solo los títulos).

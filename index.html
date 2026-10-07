@@ -344,9 +344,9 @@ try {
       <h1 class="home-title">SIR EDWARDS QUIZ</h1>
       <div class="home-subtitle">
         <span class="home-sub-line"></span>
-        <span class="home-sub-diamond">◆</span>
+        <span class="home-sub-diamond"></span>
         <span id="home-sub-version-text">TEST DE LUCIDEZ MENTAL · v2.2</span>
-        <span class="home-sub-diamond">◆</span>
+        <span class="home-sub-diamond"></span>
         <span class="home-sub-line"></span>
       </div>
 
@@ -433,19 +433,19 @@ try {
         <div class="brand-sub">TEST DE LUCIDEZ MENTAL <span class="brand-dot">·</span> <span id="brand-sub-version">v2.2</span></div>
       </div>
       <div class="stats-badges">
-        <div class="badge streak-live-badge">🔥 Racha <span id="lbl-current-streak">0</span></div>
-        <div class="badge">🏆 Nivel <span id="lbl-level">1</span></div>
-        <div class="badge">⭐ <span id="lbl-xp">0</span> XP</div>
+        <div class="badge streak-live-badge"><img class="seq-ico" src="assets/ui/racha.webp" alt="" draggable="false">Racha <span id="lbl-current-streak">0</span></div>
+        <div class="badge"><img class="seq-ico" src="assets/ui/copa.webp" alt="" draggable="false">Nivel <span id="lbl-level">1</span></div>
+        <div class="badge"><img class="seq-ico" src="assets/ui/xp.webp" alt="" draggable="false"><span id="lbl-xp">0</span> XP</div>
       </div>
     </div>
 
     <div class="nav-wrap">
     <nav class="nav">
-      <button class="tab-btn active" onclick="switchTab('modes')">🎮 Modos</button>
-      <button class="tab-btn" onclick="switchTab('duelo')">⚔️ Duelo</button>
-      <button class="tab-btn" onclick="switchTab('stats')">📊 Estadísticas</button>
-      <button class="tab-btn" onclick="switchTab('medals')">🏅 Logros</button>
-      <button class="tab-btn" onclick="switchTab('settings')">⚙️ Ajustes</button>
+      <button class="tab-btn active" onclick="switchTab('modes')">Modos</button>
+      <button class="tab-btn" onclick="switchTab('duelo')">Duelo</button>
+      <button class="tab-btn" onclick="switchTab('stats')">Estadísticas</button>
+      <button class="tab-btn" onclick="switchTab('medals')">Logros</button>
+      <button class="tab-btn" onclick="switchTab('settings')">Ajustes</button>
     </nav>
     </div>
 
@@ -465,10 +465,10 @@ try {
       </div>
       <div id="menu-main-modes">
         <div id="resume-game-card" class="mode-card" style="display:none;margin-bottom:16px;" onclick="switchTab('game')">
-          <div class="mode-card-icon" id="resume-card-icon">🎯</div>
+          <div class="mode-card-icon" id="resume-card-icon"></div>
           <h3 id="resume-card-title">Continuar partida</h3>
           <p id="resume-card-desc">Retoma tu partida justo donde la dejaste.</p>
-          <div class="mode-subtitle" id="resume-card-subtitle">▶ EN CURSO</div>
+          <div class="mode-subtitle" id="resume-card-subtitle">EN CURSO</div>
         </div>
         <h2>Selecciona un modo de juego</h2>
         <div class="modes-grid">
@@ -594,14 +594,14 @@ try {
       <!-- Overlay narrativo de Lucidez Mental: transición al enigma final y desenlace -->
       <div id="lucidez-story-overlay" class="lucidez-story-overlay">
         <div>
-          <div class="lucidez-story-icon" id="lucidez-story-icon">👁️</div>
+          <div class="lucidez-story-icon" id="lucidez-story-icon"></div>
           <div class="lucidez-story-title" id="lucidez-story-title"></div>
           <div class="lucidez-story-sub" id="lucidez-story-sub"></div>
           <!-- Sir Edwards 2.0 (Prompt 1.5, corrección): retrato como remate
                visual DEBAJO del título/frase (título → frase → personaje),
                nunca antes. Solo en las 4 transiciones de entrada de fase
                (showLucidezStoryOverlay recibe characterKey); en el resto de
-               transiciones (desenlaces) permanece oculto y el icono 👁️/⏱️ de
+               transiciones (desenlaces) permanece oculto y el icono de
                siempre sigue igual. Decorativo: el título narrativo ya
                identifica la fase. -->
           <div class="lucidez-story-character" id="lucidez-story-character" aria-hidden="true">
@@ -641,7 +641,7 @@ try {
         </div>
 
         <div class="results-phrase-container" id="results-phrase-container">
-          <div class="results-mood-icon" id="res-mood-icon">🎯</div>
+          <div class="results-mood-icon" id="res-mood-icon"></div>
           <div class="results-category-title" id="res-category-text">Categoría</div>
           <div class="results-phrase" id="res-phrase-text"></div>
         </div>
@@ -1174,7 +1174,7 @@ function closeWelcomeModal() {
 }
 
 // --- CONFETI --- (el audio vive en src/audio/audio.js)
-// ====== 🖼️ Compartir resultado como imagen ======
+// ====== Compartir resultado como imagen ======
 // Segunda capa por encima del shareResult() de siempre: genera una tarjeta
 // PNG vía <canvas> (sin capturar el DOM, para controlar tamaño/legibilidad
 // en apps de mensajería) y la comparte con navigator.share({files}) si el
@@ -1255,7 +1255,6 @@ function generateResultImage() {
   const { modeName, scoreStr, accuracy, streak } = lastResultShareData;
   const P = SHARE_IMAGE_PALETTE;
   const tier = getResultTier(accuracy);
-  const tierStyle = RESULT_TIER_STYLE[tier];
   const duel = null; // el Duelo por código ya no existe; la tarjeta de duelos online la genera share-card.js
   const duelModeLabel = null;
 
@@ -1307,8 +1306,10 @@ function generateResultImage() {
   ctx.lineWidth = 2;
   ctx.strokeStyle = P.gold;
   ctx.stroke();
-  ctx.font = '38px Inter, system-ui, sans-serif';
-  ctx.fillText(tierStyle.badge, W / 2, 74);
+  ctx.fillStyle = P.gold;
+  ctx.translate(W / 2, 60);
+  ctx.rotate(Math.PI / 4);
+  ctx.fillRect(-9, -9, 18, 18);
   ctx.restore();
 
   // Título — misma tipografía "display" (Playfair Display) que usa el
@@ -1332,10 +1333,10 @@ function generateResultImage() {
   ctx.restore();
 
   // Pastilla con el nombre del modo. En Duelo se sustituye por la
-  // identidad "⚔️ DUELO · <modo>" (misma etiqueta que ya usa el resto de
+  // identidad "DUELO · <modo>" (misma etiqueta que ya usa el resto de
   // la app en #results-duel-box), para que se reconozca de un vistazo.
   ctx.font = '700 26px Inter, system-ui, sans-serif';
-  const modeLabel = duel ? `⚔️ DUELO · ${duelModeLabel}`.toUpperCase() : (modeName || '').toUpperCase();
+  const modeLabel = duel ? `DUELO · ${duelModeLabel}`.toUpperCase() : (modeName || '').toUpperCase();
   const modePillW = ctx.measureText(modeLabel).width + 64;
   const modePillH = 50;
   const modePillY = 198;
@@ -1429,14 +1430,14 @@ function generateResultImage() {
   // secundarios del sistema, junto al morado que ya domina la tarjeta.
   y += 40;
   const statPanels = [{
-    emoji: tierStyle.pctEmoji, value: `${accuracy || 0}%`, label: 'EFECTIVIDAD',
+    value: `${accuracy || 0}%`, label: 'EFECTIVIDAD',
     fill: tier === 'perfect' ? 'rgba(217,119,6,.10)' : 'rgba(24,73,179,.06)',
     border: tier === 'perfect' ? 'rgba(217,119,6,.45)' : 'rgba(24,73,179,.30)',
     color: tier === 'perfect' ? P.gold : P.navy
   }];
   if (hasStreak) {
     statPanels.push({
-      emoji: '🔥', value: String(streak), label: 'RACHA MÁXIMA',
+      value: String(streak), label: 'RACHA MÁXIMA',
       fill: 'rgba(217,119,6,.08)', border: 'rgba(217,119,6,.40)', color: P.gold
     });
   }
@@ -1452,14 +1453,12 @@ function generateResultImage() {
     ctx.strokeStyle = p.border;
     drawRoundedRect(ctx, px, y, panelW, panelH, 18);
     ctx.stroke();
-    ctx.font = '33px Inter, system-ui, sans-serif';
     ctx.fillStyle = p.color;
-    ctx.fillText(p.emoji, px + panelW / 2, y + 44);
     ctx.font = '800 31px Inter, system-ui, sans-serif';
-    ctx.fillText(p.value, px + panelW / 2, y + 80);
+    ctx.fillText(p.value, px + panelW / 2, y + 66);
     ctx.font = '700 15px Inter, system-ui, sans-serif';
     ctx.fillStyle = P.sub;
-    drawLetterSpacedText(ctx, p.label, px + panelW / 2, y + 100, 1.5);
+    drawLetterSpacedText(ctx, p.label, px + panelW / 2, y + 92, 1.5);
     px += panelW + panelGap;
   });
   y += panelH;
@@ -1522,7 +1521,7 @@ function generateResultImage() {
       ctx.fillStyle = P.text;
       ctx.fillText(`${duel.myScore} — ${duel.opponentScore}`, W / 2, dy + 40);
       dy += 68;
-      const resultLabels = { win: '🏆 VICTORIA', loss: 'DERROTA', draw: 'EMPATE' };
+      const resultLabels = { win: 'VICTORIA', loss: 'DERROTA', draw: 'EMPATE' };
       const resultColors = { win: P.gold, loss: P.sub, draw: P.accent };
       ctx.font = '800 26px Inter, system-ui, sans-serif';
       ctx.fillStyle = resultColors[duel.result] || P.accent;
@@ -1595,7 +1594,7 @@ function shareResultImage(custom) {
               // la tarjeta ya hecha y se pide un segundo toque, que la comparte al instante.
               if (e && e.name === 'NotAllowedError') {
                 preparedShare = { file, text: shareText, at: Date.now() };
-                if (typeof showInfoToast === 'function') showInfoToast('Tarjeta lista: pulsa otra vez «Compartir»', '📤');
+                if (typeof showInfoToast === 'function') showInfoToast('Tarjeta lista: pulsa otra vez «Compartir»', 'compartir');
               }
             }
             resolve(true);
@@ -1629,7 +1628,7 @@ function launchConfetti() { const canvas = document.getElementById('confetti-can
 
 
 
-// ====== 👁️ LUCIDEZ MENTAL: acertijos y frases de cierre ======
+// ====== LUCIDEZ MENTAL: acertijos y frases de cierre ======
 
 
 
@@ -1718,21 +1717,11 @@ function getResultData(score, total) {
 // le da variedad real y coherencia con la identidad de color de cada modo.
 let lastResultCharacterState = null; // retrato mostrado en la tarjeta final (lo lee la tarjeta de compartir)
 let lastResultShareTone = null; // Prompt 5: tono que se está mostrando (lo lee la tarjeta de compartir)
-// 2.0: ilustraciones del «ánimo» del resultado en lugar del emoji (mismas claves que RESULT_MOOD_ICONS).
-const RESULT_MOOD_IMAGES = {
-  '💀': 'assets/ui/sombrero-aplastado.webp', '😬': 'assets/ui/suspenso.webp', '😐': 'assets/ui/sombrero-mediocre.webp', '🙂': 'assets/ui/sombrero-saludo.webp',
-  '😏': 'assets/ui/casi.webp', '🏆': 'assets/ui/sombrero-laurel.webp', '💔': 'assets/ui/derrota.webp',
-  '⚡': 'assets/modes/suelto/contrarreloj.webp', '🧠': 'assets/modes/suelto/repaso.webp', '🔢': 'assets/modes/suelto/calculo.webp',
-  '👁️': 'assets/modes/suelto/secreto.webp', '🎯': 'assets/modes/suelto/estandar.webp',
-  '❤️': 'assets/modes/suelto/supervivencia.webp', '👑': 'assets/modes/suelto/muerte-subita.webp', '📈': 'assets/ui/libro-vela.webp', '🫏': 'assets/ui/gorro-burro.webp', '🫠': 'assets/ui/reloj-derretido.webp', '⏱️': 'assets/ui/zorro.webp', '📝': 'assets/ui/pizarra-operaciones.webp', '⚙️': 'assets/ui/cerebro-engranajes.webp',
-  '☠️': 'assets/ui/calavera.webp', '🔮': 'assets/ui/bola-rota.webp', '💎': 'assets/ui/diamante.webp',
-  '🐌': 'assets/ui/caracol.webp', '🐇': 'assets/ui/liebre.webp', '💨': 'assets/ui/calculadora-humo.webp', '🧮': 'assets/ui/abaco.webp',
-  '📝': 'assets/ui/libreta.webp', '⚙️': 'assets/ui/calculadora-laton.webp'
-};
 // 2.0: icono del resultado según el desenlace (mal / normal / bien) en los modos por puntuación.
+// Son NOMBRES de ilustración (ver SEQIcons.src), nunca emojis.
 const RESULT_MOOD_BY_CATEGORY = {
-  timetrial: { mal: '🐌', normal: '⏱️', bien: '🐇' },
-  mentalcalc: { mal: '💨', normal: '📝', bien: '⚙️' }
+  timetrial: { mal: 'caracol', normal: 'zorro', bien: 'liebre' },
+  mentalcalc: { mal: 'calculadora-humo', normal: 'libreta', bien: 'calculadora-laton' }
 };
 // Retrato de Sir Edwards en los modos por puntuación: mal → derrota, bien → victoria, normal → sin retrato.
 // 'neutral' (resultado normal): Sir Edwards aparece con el saludo de siempre, pero la tarjeta de compartir no lo cuenta como victoria.
@@ -1752,10 +1741,8 @@ function setResultTone(toneKey, icon, charState) {
     container.className = 'results-phrase-container' + (toneKey ? ' tone-' + toneKey : '');
   }
   if (iconEl) {
-    const moodImg = RESULT_MOOD_IMAGES[icon || '🎯'];
-    if (moodImg) iconEl.innerHTML = '<img class="mood-img" src="' + moodImg + '" alt="" draggable="false">';
-    else iconEl.textContent = icon || '🎯';
-    iconEl.classList.toggle('has-img', !!moodImg);
+    iconEl.innerHTML = '<img class="mood-img" src="' + SEQIcons.src(icon || 'modo-estandar') + '" alt="" draggable="false">';
+    iconEl.classList.add('has-img');
   }
   setResultCharacter(toneKey, lastResultCharacterState);
 }
@@ -1812,7 +1799,7 @@ function renderModeChips(chips) {
   }
   box.innerHTML = chips.map(c => `
     <span class="result-chip" title="${c.label}">
-      <span class="result-chip-icon">${({'🔥': '<img class="ui-img" src="assets/ui/racha.webp" alt="" draggable="false">', '✨': '<img class="ui-img" src="assets/ui/xp.webp" alt="" draggable="false">', '⏱️': '<img class="ui-img" src="assets/ui/tiempo.webp" alt="" draggable="false">', '🏅': '<img class="ui-img" src="assets/ui/medalla.webp" alt="" draggable="false">', '🎯': '<img class="ui-img" src="assets/modes/suelto/estandar.webp" alt="" draggable="false">'})[c.icon] || c.icon}</span><span class="result-chip-value">${c.value}</span>${c.short ? `<span class="result-chip-label">${c.short}</span>` : ''}
+      <span class="result-chip-icon"><img class="ui-img" src="${SEQIcons.src(c.icon)}" alt="" draggable="false"></span><span class="result-chip-value">${c.value}</span>${c.short ? `<span class="result-chip-label">${c.short}</span>` : ''}
     </span>
   `).join('');
   box.classList.add('show');
@@ -1859,7 +1846,7 @@ function getLevelData(xp) {
   return Math.min(level, 30);
 }
 
-// 🏠 Nuevo menú principal: misma fórmula de nivel que getLevelData(), pero
+// Nuevo menú principal: misma fórmula de nivel que getLevelData(), pero
 // además devuelve cuánta XP le falta para el siguiente nivel (para la barra
 // de progreso de la cabecera). No sustituye a getLevelData(): se añade
 // aparte para no tocar ningún sitio que ya dependa de su valor de retorno.
@@ -1894,11 +1881,11 @@ let store = getDefaultStore();
 // Modos que se desbloquean con el progreso. Se usan para detectar cuándo
 // avisar al jugador (al final de la partida) de que ha desbloqueado uno nuevo.
 const UNLOCKABLE_MODES = [
-  { id: 'survival', icon: '❤️', name: 'Supervivencia', desc: 'Sobrevive 40 preguntas con 3 vidas.', check: s => (s.standardGamesCount || 0) >= 5 },
-  { id: 'sudden_death', icon: '💀', name: 'Muerte Súbita', desc: '25 preguntas, dificultad creciente. Un fallo y pierdes.', check: s => (s.unlockedMedals || []).includes('surv_ameba') },
-  { id: 'mental_calc', icon: '🔢', name: 'Cálculo Mental', desc: 'Resuelve tantas operaciones matemáticas como puedas en 60 segundos.', check: s => (s.unlockedMedals || []).includes('tt_15') },
-  { id: 'timetrial', icon: '⏱️', name: 'Contrarreloj', desc: 'Acierta el máximo posible en 60s.', check: s => getLevelData(s.xp) >= 10 },
-  { id: 'lucidez_mental', icon: '👁️', name: 'Lucidez Mental', desc: 'Tres fases. Un enigma final. Tu mente será puesta a prueba. ¿Estás preparado para llegar hasta el final?', check: s => getFragmentCount(s) >= FRAGMENT_TARGET }
+  { id: 'survival', name: 'Supervivencia', desc: 'Sobrevive 40 preguntas con 3 vidas.', check: s => (s.standardGamesCount || 0) >= 5 },
+  { id: 'sudden_death', name: 'Muerte Súbita', desc: '25 preguntas, dificultad creciente. Un fallo y pierdes.', check: s => (s.unlockedMedals || []).includes('surv_ameba') },
+  { id: 'mental_calc', name: 'Cálculo Mental', desc: 'Resuelve tantas operaciones matemáticas como puedas en 60 segundos.', check: s => (s.unlockedMedals || []).includes('tt_15') },
+  { id: 'timetrial', name: 'Contrarreloj', desc: 'Acierta el máximo posible en 60s.', check: s => getLevelData(s.xp) >= 10 },
+  { id: 'lucidez_mental', name: 'Lucidez Mental', desc: 'Tres fases. Un enigma final. Tu mente será puesta a prueba. ¿Estás preparado para llegar hasta el final?', check: s => getFragmentCount(s) >= FRAGMENT_TARGET }
 ];
 
 
@@ -2049,9 +2036,9 @@ function registerOnlineDuelResult(info) {
   const medals = checkMedalsAndGetNew();
   const reward = checkFragmentRewardsAndGetNew();
   saveStore(false);
-  const parts = medals.map(m => `${m.icon} ${m.title}`);
+  const parts = medals.map(m => m.title);
   if (reward) parts.push(`${reward.fragments} Fragmentos: ${reward.text}`);
-  if (parts.length && typeof showInfoToast === 'function') showInfoToast('Desbloqueado: ' + parts.join(' · '), '🏆');
+  if (parts.length && typeof showInfoToast === 'function') showInfoToast('Desbloqueado: ' + parts.join(' · '), 'copa');
   return { medals, reward };
 }
 
@@ -2286,7 +2273,7 @@ function resolveDiscardSavedGameModal(proceed) {
 }
 
 // Aviso de confirmación genérico con el mismo estilo visual que el de
-// "partida a medias" (icono ⚠️, título "¡Atención!"), pero reutilizable
+// "partida a medias" (icono , título "¡Atención!"), pero reutilizable
 // para cualquier acción que necesite confirmación (restaurar copia de
 // seguridad, etc.) en vez de duplicar el modal para cada caso. Sustituye
 // al confirm() nativo del navegador.
@@ -2341,7 +2328,7 @@ function updateResumeButton() {
     sudden_death: { cls: 'mode-sudden', icon: '<svg class=\"se-sym\" viewBox=\"0 0 64 64\"><use href=\"#se-skull\"/></svg>', name: 'Muerte Súbita' },
     timetrial: { cls: 'mode-timetrial', icon: '<svg class=\"se-sym\" viewBox=\"0 0 64 64\"><use href=\"#se-watch\"/></svg>', name: 'Contrarreloj' },
     mental_calc: { cls: 'mode-mentalcalc', icon: '<svg class=\"se-sym\" viewBox=\"0 0 64 64\"><use href=\"#se-calc\"/></svg>', name: 'Cálculo Mental' },
-    lucidez_mental: { cls: 'mode-lucidez', icon: '👁️', name: 'Lucidez Mental' }
+    lucidez_mental: { cls: 'mode-lucidez', icon: '', name: 'Lucidez Mental' }
   };
   const info = modeInfo[saved.mode] || modeInfo.play;
 
@@ -2357,7 +2344,7 @@ function updateResumeButton() {
     const total = Number(saved.totalQuestionsToPlay) || (Array.isArray(saved.queue) ? saved.queue.length : 0);
     const current = Math.min(Number(saved.currentIdx) || 0, total);
     descParts = [`Pregunta ${current + 1}/${total}`, `${Number(saved.score) || 0} aciertos`];
-    if (saved.mode === 'survival') descParts.push(renderLivesHearts(Number(saved.lives) || 0));
+    if (saved.mode === 'survival') { const lv = Number(saved.lives) || 0; descParts.push(lv + (lv === 1 ? ' vida' : ' vidas')); }
   }
   const descText = descParts.join(' · ') + '.';
 
@@ -2400,7 +2387,7 @@ function restoreSavedGame() {
       revealTimeout: null,
       phase1Correct: Number(saved.phase1Correct) || 0,
       phase3Correct: Number(saved.phase3Correct) || 0,
-      // ⚔️ Duelo: si no se restauran estos campos, un duelo de Lucidez
+      // Duelo: si no se restauran estos campos, un duelo de Lucidez
       // Mental reanudado tras cerrar la app terminaría contabilizándose
       // como una partida normal (sin código ni comparación de marcador),
       // igual que ya se cuida para el resto de modos más abajo.
@@ -2559,7 +2546,7 @@ function restoreSavedGame() {
     currentChoiceOptions: Array.isArray(saved.currentChoiceOptions) ? saved.currentChoiceOptions : null,
     selectedChoiceIdx: Number.isInteger(saved.selectedChoiceIdx) ? saved.selectedChoiceIdx : null,
     suddenDeathFailed: !!saved.suddenDeathFailed,
-    // ⚔️ Duelo: si no se restauran estos campos, una partida de Duelo
+    // Duelo: si no se restauran estos campos, una partida de Duelo
     // reanudada tras cerrar la app terminaría contabilizándose como una
     // partida normal de Modo Estándar (sin código ni comparación de marcador).
   };
@@ -2699,7 +2686,7 @@ function exportProgress() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   } catch (e) {
-    showInfoToast('No se ha podido generar la copia de seguridad.', '⚠️');
+    showInfoToast('No se ha podido generar la copia de seguridad.', 'atencion');
     console.warn('Error exportando el progreso.', e);
   }
 }
@@ -2720,14 +2707,14 @@ function importProgress(event) {
     try {
       parsed = JSON.parse(reader.result);
     } catch (e) {
-      showInfoToast('El archivo no es una copia de seguridad válida (JSON ilegible).', '⚠️');
+      showInfoToast('El archivo no es una copia de seguridad válida (JSON ilegible).', 'atencion');
       return;
     }
     // Aceptamos tanto el formato exportado ({app, data}) como un volcado
     // directo del store, por si el archivo se editó a mano.
     const incoming = parsed && parsed.data && typeof parsed.data === 'object' ? parsed.data : parsed;
     if (!incoming || typeof incoming !== 'object' || typeof incoming.gamesPlayed !== 'number') {
-      showInfoToast('El archivo no parece una copia de seguridad de este juego.', '⚠️');
+      showInfoToast('El archivo no parece una copia de seguridad de este juego.', 'atencion');
       return;
     }
     // Si el backup no trae saveVersion propio (formatos exportados antes de
@@ -2742,7 +2729,7 @@ function importProgress(event) {
       onConfirm: () => applyImportedProgress(incoming, parsed)
     });
   };
-  reader.onerror = () => showInfoToast('No se ha podido leer el archivo seleccionado.', '⚠️');
+  reader.onerror = () => showInfoToast('No se ha podido leer el archivo seleccionado.', 'atencion');
   reader.readAsText(file);
 }
 
@@ -2760,7 +2747,7 @@ function applyImportedProgress(incoming, parsed) {
     try {
       localStorage.setItem('siredwards_quiz_v1_0_data', JSON.stringify(migrated));
     } catch (e) {
-      showInfoToast('No se ha podido guardar el progreso importado en este dispositivo.', '⚠️');
+      showInfoToast('No se ha podido guardar el progreso importado en este dispositivo.', 'atencion');
       console.warn('Error guardando el progreso importado.', e);
       return;
     }
@@ -2860,7 +2847,7 @@ function updateBadges() {
   setTextWithBump(document.getElementById('lbl-xp'), store.xp, 'xp-bump');
   document.getElementById('repaso-count').textContent = store.failedQuestions.length;
 
-  // 🏠 Nuevo menú principal: nivel, XP y barra de progreso de la cabecera.
+  // Nuevo menú principal: nivel, XP y barra de progreso de la cabecera.
   const progress = getLevelProgressData(store.xp);
   const homeLevelEl = document.getElementById('home-lbl-level');
   if (homeLevelEl) homeLevelEl.textContent = progress.level;
@@ -3131,7 +3118,7 @@ function switchTab(tabId) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('view-' + tabId).classList.add('active');
   document.body.classList.toggle('in-game', tabId === 'game');
-  // 🏠 Nuevo menú principal: oculta la cabecera y la barra de pestañas
+  // Nuevo menú principal: oculta la cabecera y la barra de pestañas
   // antiguas SOLO en esta vista (las demás pantallas las conservan tal cual,
   // más el botón "← Menú" nuevo para volver aquí).
   document.body.classList.toggle('on-home', tabId === 'home');
@@ -3208,7 +3195,7 @@ function switchTab(tabId) {
 
 
 // Detecta si la respuesta exige realmente varias partes.
-// IMPORTANTE: "Novak Djokovic" y "El Teide" NO son respuestas múltiples.
+// IMPORTANTE: "Novak Djokovic" y "El Teide"NO son respuestas múltiples.
 // En cambio, "La Pinta, La Niña y La Santa María" sí lo es.
 // La comprobación de coma/punto y coma/"+" se hace sobre el texto SIN
 // normalizar por el mismo motivo que en splitAnswerParts(): normalizeText()
@@ -3269,7 +3256,7 @@ function updateAnswerStreak(isCorrect, q = null) {
 
   store.currentStreak = answerStreak;
 
-  // ⚔️ Duelo: ni el creador ni quien acepta un reto deben alimentar las
+  // Duelo: ni el creador ni quien acepta un reto deben alimentar las
   // rachas/logros generales de JUGAR (bestStreak, standardBestStreak,
   // timeTrialBestStreak, hardBestStreak, noRepeatCatBestStreak). Solo se
   // mantiene sessionBestStreak (propia de esta partida) para que el jugador
@@ -3346,7 +3333,7 @@ function startReviewMode() {
   updateStreakDisplay();
 
   if (store.failedQuestions.length === 0) {
-    showInfoToast('No hay preguntas pendientes para repasar.', '🎉');
+    showInfoToast('No hay preguntas pendientes para repasar.', 'celebracion');
     return;
   }
   // Repaso ahora trabaja exclusivamente sobre el banco tipo test: los ids
@@ -3360,7 +3347,7 @@ function startReviewMode() {
 let selectedPendingMode = null;
 function openDifficultyMenu(mode) {
   if (mode === 'survival' && (store.standardGamesCount || 0) < 5) {
-    showInfoToast('El modo Supervivencia está bloqueado. Debes terminar 5 partidas en Modo Estándar.', '🔒');
+    showInfoToast('El modo Supervivencia está bloqueado. Debes terminar 5 partidas en Modo Estándar.', 'candado');
     return;
   }
   selectedPendingMode = mode;
@@ -3379,13 +3366,13 @@ function openDifficultyMenu(mode) {
 // que el modo se lanza directamente sin pasar por el submenú.
 function startSuddenDeathMode() {
   if (!(store.unlockedMedals || []).includes('surv_ameba')) {
-    showInfoToast('El modo Muerte Súbita está bloqueado. Requiere el logro «Sobreviviente Primordial» (gana Supervivencia en Nivel Ameba).', '🔒');
+    showInfoToast('El modo Muerte Súbita está bloqueado. Requiere el logro «Sobreviviente Primordial» (gana Supervivencia en Nivel Ameba).', 'candado');
     return;
   }
   startMode('sudden_death', 25);
 }
 
-// ====== 👁️ MODO LUCIDEZ MENTAL ======
+// ====== MODO LUCIDEZ MENTAL ======
 // Modo secreto final: 30 preguntas divididas en 3 fases + un acertijo final.
 // Reutiliza el banco de preguntas (QUESTIONS), el motor de comprobación de
 // respuestas (isMatchFlexible), el sistema de racha/XP/logros y la interfaz
@@ -3394,7 +3381,7 @@ function startSuddenDeathMode() {
 
 function openLucidezMentalMode() {
   if (getFragmentCount(store) < FRAGMENT_TARGET) {
-    showInfoToast(`El Modo Secreto está bloqueado. Consigue ${FRAGMENT_TARGET} Fragmentos de Mente (tienes ${getFragmentCount(store)}/${FRAGMENT_TARGET}).`, '🔒');
+    showInfoToast(`El Modo Secreto está bloqueado. Consigue ${FRAGMENT_TARGET} Fragmentos de Mente (tienes ${getFragmentCount(store)}/${FRAGMENT_TARGET}).`, 'candado');
     return;
   }
 
@@ -3545,7 +3532,7 @@ function resetLucidezAnswerUI(preserveAnswered) {
   const fb = document.getElementById('feedback');
   fb.style.display = wasAnswered ? 'block' : 'none';
   fb.className = wasAnswered ? 'feedback ok' : 'feedback';
-  fb.textContent = wasAnswered ? '↩️ Respuesta ya registrada. Pulsa «Siguiente» para continuar.' : '';
+  fb.textContent = wasAnswered ? 'Respuesta ya registrada. Pulsa «Siguiente» para continuar.' : '';
   document.getElementById('btn-check').style.display = wasAnswered ? 'none' : 'inline-block';
   document.getElementById('btn-next').style.display = wasAnswered ? 'inline-block' : 'none';
 }
@@ -3625,7 +3612,7 @@ function showLucidezStoryOverlay(icon, title, sub, toneClass, durationMs, callba
   // programar esta.
   if (lucidezStoryOverlayTimer) { clearTimeout(lucidezStoryOverlayTimer); lucidezStoryOverlayTimer = null; }
   const gameIdAtCall = currentGame.lucidezGameId;
-  document.getElementById('lucidez-story-icon').textContent = icon;
+  document.getElementById('lucidez-story-icon').innerHTML = icon ? '<img class="lucidez-story-img" src="' + SEQIcons.src(icon) + '" alt="" draggable="false">' : '';
   document.getElementById('lucidez-story-title').textContent = title;
   document.getElementById('lucidez-story-sub').textContent = sub || '';
   setLucidezStoryCharacter(characterKey);
@@ -3755,7 +3742,7 @@ function renderLucidezQuestion(preserveAnswered = false, isResume = false) {
     if (isResume) {
       renderFinalScreen();
     } else {
-      showLucidezStoryOverlay('👁️', 'ENIGMA FINAL', 'Has llegado hasta aquí. Ahora demuestra que puedes llegar hasta el final.', '', 2300, renderFinalScreen, 'enigma');
+      showLucidezStoryOverlay('modo-secreto', 'ENIGMA FINAL', 'Has llegado hasta aquí. Ahora demuestra que puedes llegar hasta el final.', '', 2300, renderFinalScreen, 'enigma');
     }
   }
 }
@@ -3771,7 +3758,7 @@ function renderLucidezPhase2Calc(preserveAnswered = false, item, isResume = fals
   const btnNext = document.getElementById('btn-next');
   hideChoiceOptions();
 
-  document.getElementById('game-progress-lbl').textContent = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)} · ${localIdx + 1}/10`;
+  document.getElementById('game-progress-lbl').innerHTML = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)} · ${localIdx + 1}/10`;
   document.getElementById('bar-fill').style.width = ((currentGame.currentIdx / 30) * 100) + '%';
 
   if (currentGame.answered) {
@@ -3780,7 +3767,7 @@ function renderLucidezPhase2Calc(preserveAnswered = false, item, isResume = fals
     input.setAttribute('inputmode', 'numeric');
     fb.style.display = 'block';
     fb.className = 'feedback ok';
-    fb.textContent = '↩️ Respuesta ya registrada. Pulsa «Siguiente» para continuar.';
+    fb.textContent = 'Respuesta ya registrada. Pulsa «Siguiente» para continuar.';
     btnCheck.style.display = 'none';
     btnNext.style.display = 'inline-block';
     return;
@@ -3838,7 +3825,7 @@ function renderLucidezPhase2Question(preserveAnswered = false, item, isResume = 
   const btnNext = document.getElementById('btn-next');
   hideChoiceOptions();
 
-  document.getElementById('game-progress-lbl').textContent = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)} · ${localIdx + 1}/10`;
+  document.getElementById('game-progress-lbl').innerHTML = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)} · ${localIdx + 1}/10`;
   document.getElementById('bar-fill').style.width = ((currentGame.currentIdx / 30) * 100) + '%';
 
   if (currentGame.answered) {
@@ -3847,7 +3834,7 @@ function renderLucidezPhase2Question(preserveAnswered = false, item, isResume = 
     input.removeAttribute('inputmode');
     fb.style.display = 'block';
     fb.className = 'feedback ok';
-    fb.textContent = '↩️ Respuesta ya registrada. Pulsa «Siguiente» para continuar.';
+    fb.textContent = 'Respuesta ya registrada. Pulsa «Siguiente» para continuar.';
     btnCheck.style.display = 'none';
     btnNext.style.display = 'inline-block';
     return;
@@ -4020,7 +4007,7 @@ function checkLucidezAnswer() {
   const correct = isMatchWithAlias(user, q);
   const forgiven = !correct && tryForgiveLucidezError();
 
-  // ⚔️ Duelo: las preguntas de un duelo vienen de una cola con semilla
+  // Duelo: las preguntas de un duelo vienen de una cola con semilla
   // ajena a la bolsa personal, así que no deben tocar las estadísticas
   // (questionStats/questionStreaks/failedQuestions) ni el XP que alimentan
   // la progresión y los logros generales de JUGAR.
@@ -4143,7 +4130,7 @@ function checkLucidezPhase2Answer(item) {
 
   document.getElementById('btn-next').style.display = 'inline-block';
   const localIdx = currentGame.currentIdx - 10;
-  document.getElementById('game-progress-lbl').textContent = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)} · ${localIdx + 1}/10`;
+  document.getElementById('game-progress-lbl').innerHTML = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)} · ${localIdx + 1}/10`;
   saveStore();
 }
 
@@ -4212,7 +4199,7 @@ function checkLucidezPhase2QuestionAnswer(q) {
 
   document.getElementById('btn-next').style.display = 'inline-block';
   const localIdx = currentGame.currentIdx - 10;
-  document.getElementById('game-progress-lbl').textContent = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)} · ${localIdx + 1}/10`;
+  document.getElementById('game-progress-lbl').innerHTML = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)} · ${localIdx + 1}/10`;
   saveStore();
 }
 
@@ -4298,7 +4285,7 @@ function finishLucidezMode(failed, timedOut = false, phaseInsufficient = null) {
   const resBackBtn = document.getElementById('res-back-btn');
   if (resBackBtn) { resBackBtn.textContent = 'Volver al Menú principal'; }
 
-  // ⚔️ Duelo: mismo criterio que finishGame — ni el creador ni quien acepta
+  // Duelo: mismo criterio que finishGame — ni el creador ni quien acepta
   // un reto deben contar como partida jugada, ni alimentar récords,
   // historial o logros secretos generales de Lucidez Mental.
   const isDuelGame = !!currentGame.isDuel;
@@ -4352,7 +4339,7 @@ function finishLucidezMode(failed, timedOut = false, phaseInsufficient = null) {
     pushCapped(store.gameHistory, historyEntry, 5);
   }
 
-  // ⚔️ Duelo: los logros y desbloqueos generales de JUGAR nunca se evalúan
+  // Duelo: los logros y desbloqueos generales de JUGAR nunca se evalúan
   // aquí para una partida de Duelo (mismo criterio que finishGame). Los 6
   // logros exclusivos de Duelo se evalúan aparte, tras handleDuelFinish.
   if (!isDuelGame) markNightCompletionIfApplicable();
@@ -4366,15 +4353,15 @@ function finishLucidezMode(failed, timedOut = false, phaseInsufficient = null) {
   // Antes de mostrar la tarjeta de resultados, un breve desenlace narrativo
   // ("LUCIDEZ ALCANZADA" / "LA MENTE HA CEDIDO") propio del modo secreto.
   if (isPerfect || !failed) {
-    showLucidezStoryOverlay('👁️', 'LUCIDEZ ALCANZADA', 'Has atravesado el umbral.', 'tone-success', 1600, () => revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newModesUnlocked, newMedalsUnlocked, phaseInsufficient));
+    showLucidezStoryOverlay('modo-secreto', 'LUCIDEZ ALCANZADA', 'Has atravesado el umbral.', 'tone-success', 1600, () => revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newModesUnlocked, newMedalsUnlocked, phaseInsufficient));
   } else if (phaseInsufficient) {
     const { achieved, min, total, phase } = phaseInsufficient;
     const phaseGoal = phase === 1 ? 'para pasar a la siguiente fase' : 'para pasar al enigma final';
-    showLucidezStoryOverlay('👁️', 'LUCIDEZ INSUFICIENTE', `Has acertado ${achieved}/${total}. Necesitabas al menos ${min} aciertos ${phaseGoal}.`, 'tone-fail', 2200, () => revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newModesUnlocked, newMedalsUnlocked, phaseInsufficient));
+    showLucidezStoryOverlay('modo-secreto', 'LUCIDEZ INSUFICIENTE', `Has acertado ${achieved}/${total}. Necesitabas al menos ${min} aciertos ${phaseGoal}.`, 'tone-fail', 2200, () => revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newModesUnlocked, newMedalsUnlocked, phaseInsufficient));
   } else if (timedOut) {
-    showLucidezStoryOverlay('⏱️', 'EL TIEMPO SE HA AGOTADO', 'El umbral se cierra cuando el reloj llega a cero.', 'tone-fail', 1600, () => revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newModesUnlocked, newMedalsUnlocked, phaseInsufficient));
+    showLucidezStoryOverlay('tiempo', 'EL TIEMPO SE HA AGOTADO', 'El umbral se cierra cuando el reloj llega a cero.', 'tone-fail', 1600, () => revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newModesUnlocked, newMedalsUnlocked, phaseInsufficient));
   } else {
-    showLucidezStoryOverlay('👁️', 'LA MENTE HA CEDIDO', 'El umbral permanece fuera de tu alcance.', 'tone-fail', 1600, () => revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newModesUnlocked, newMedalsUnlocked, phaseInsufficient));
+    showLucidezStoryOverlay('modo-secreto', 'LA MENTE HA CEDIDO', 'El umbral permanece fuera de tu alcance.', 'tone-fail', 1600, () => revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newModesUnlocked, newMedalsUnlocked, phaseInsufficient));
   }
 }
 
@@ -4408,7 +4395,7 @@ function revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newMod
     ? `Fase ${phaseInsufficient.phase === 1 ? 'I' : 'III'}: ${phaseInsufficient.achieved}/${phaseInsufficient.total} aciertos (mínimo ${phaseInsufficient.min})`
     : '';
   document.getElementById('res-phrase-text').textContent = phrase;
-  setResultTone(tone, tone === 'fail' ? '🔮' : (tone === 'perfecto' ? '💎' : '👁️'));
+  setResultTone(tone, tone === 'fail' ? 'bola-rota' : (tone === 'perfecto' ? 'diamante' : 'modo-secreto'));
 
   if (failed) {
     renderLucidezStamp('ENIGMA SIN RESOLVER', 'fail');
@@ -4424,7 +4411,7 @@ function revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newMod
   modeUnlockList.innerHTML = '';
   if (newModesUnlocked.length > 0) {
     if (typeof showModeUnlockToast === 'function') {
-      showModeUnlockToast(newModesUnlocked.map(mode => ({ icon: mode.icon, name: mode.name })));
+      showModeUnlockToast(newModesUnlocked.map(mode => ({ name: mode.name })));
     }
     launchConfetti();
     playSound('win');
@@ -4439,13 +4426,13 @@ function revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newMod
       const isAbsoluta = m.id === 'lucidez_absoluta';
       return `
       <div class="session-medal-item${isAbsoluta ? ' medal-lucidez-absoluta' : ''}">
-        <div class="session-medal-icon${window.SEQAchievements ? ' has-img' : ''}">${window.SEQAchievements ? SEQAchievements.iconHTML(m) : m.icon}</div>
+        <div class="session-medal-icon${window.SEQAchievements ? ' has-img' : ''}">${window.SEQAchievements ? SEQAchievements.iconHTML(m) : ''}</div>
         <div>
           <div class="session-medal-info">${m.title}</div>
           <div class="session-medal-desc">${m.desc}</div>
-          ${isAbsoluta ? '<div class="session-medal-lucidez-tag">👁️ Has visto lo que pocos llegan a ver.</div>' : ''}
+          ${isAbsoluta ? '<div class="session-medal-lucidez-tag">Has visto lo que pocos llegan a ver.</div>' : ''}
           ${FRAGMENT_MEDAL_IDS.includes(m.id) ? '<div class="session-medal-fragment">' + seqIco('fragmento') + '+1 Fragmento de Mente</div>' : ''}
-          ${getMedalAvatar(m.id) ? '<div class="session-medal-fragment">🎭 Avatar desbloqueado</div>' : ''}
+          ${getMedalAvatar(m.id) ? '<div class="session-medal-fragment">Avatar desbloqueado</div>' : ''}
         </div>
       </div>
     `;
@@ -4914,7 +4901,7 @@ function randInt(min, max, rng) {
 
 function startMentalCalcMode() {
   if (!(store.unlockedMedals || []).includes('tt_15')) {
-    showInfoToast('El Modo Cálculo Mental está bloqueado. Requiere el logro «Velocidad Mental».', '🔒');
+    showInfoToast('El Modo Cálculo Mental está bloqueado. Requiere el logro «Velocidad Mental».', 'candado');
     return;
   }
 
@@ -4986,7 +4973,7 @@ function updateMentalCalcHeader() {
       if (ptsNum) ptsNum.textContent = currentGame.score;
     }
   }
-  // La racha se muestra en la misma píldora "🔥 Racha" que el resto de
+  // La racha se muestra en la misma píldora "Racha" que el resto de
   // modos, en vez de ir embebida en el texto de la cabecera.
   const streakEl = document.getElementById('game-current-streak');
   if (streakEl) setTextWithBump(streakEl, currentGame.streak, 'streak-bump');
@@ -5130,7 +5117,7 @@ function checkMentalCalcAnswer() {
 
 function startMode(mode, count = 30, customPool = null) {
   if (mode === 'timetrial' && getLevelData(store.xp) < 10) {
-    showInfoToast('El Modo Contrarreloj está bloqueado. Necesitas alcanzar el Nivel 10.', '🔒');
+    showInfoToast('El Modo Contrarreloj está bloqueado. Necesitas alcanzar el Nivel 10.', 'candado');
     return;
   }
 
@@ -5319,38 +5306,37 @@ function playLucidezPhase3PenaltyFX() {
   playTimeChangeFX(false, '−2 SEGUNDOS', 'lucidez-p3-timer-num', 'lucidez-loss', 'lucidez-timer-flash-down');
 }
 
-// Representa las vidas de Supervivencia como corazones que desaparecen
-// tras cada fallo (❤️❤️❤️ → ❤️❤️ → ❤️ → 💀).
+// Representa las vidas como corazones ilustrados (sprite #se-heart) que desaparecen tras cada fallo; sin vidas,
+// una calavera (#se-skull). Devuelve HTML con valores fijos (nunca datos del jugador): se asigna con innerHTML.
 function renderLivesHearts(current, max = 3) {
   const safe = Math.max(0, Math.min(max, current));
-  if (safe <= 0) return '💀';
-  return '❤️'.repeat(safe);
+  const sym = (id) => '<svg class="se-life" viewBox="0 0 64 64" aria-hidden="true"><use href="#' + id + '"/></svg>';
+  if (safe <= 0) return sym('se-skull');
+  return '<span class="se-lives" role="img" aria-label="' + safe + (safe === 1 ? ' vida' : ' vidas') + '">' + sym('se-heart').repeat(safe) + '</span>';
 }
 
-// Anima la pérdida de una vida en Supervivencia: el corazón perdido
-// parpadea brevemente (❤️ → 💓 → 💔) y después desaparece, dejando el
-// contador final con las vidas restantes (❤️❤️❤️ → ❤️❤️💓 → ❤️❤️💔 → ❤️❤️).
+// Anima la pérdida de una vida en Supervivencia: el corazón perdido parpadea brevemente y después
+// desaparece, dejando el contador final con las vidas restantes.
 function animateLifeLossHearts(before, after) {
   const lbl = document.getElementById('game-progress-lbl');
   if (!lbl) return;
-  const base = '❤️'.repeat(Math.max(0, after));
   const progress = `${currentGame.currentIdx + 1}/${currentGame.totalQuestionsToPlay}`;
   const frame = (showDoomed) => {
-    const hearts = showDoomed ? (base + '❤️') : base;
-    return hearts ? `SUPERVIVENCIA · ${hearts} · ${progress}` : `SUPERVIVENCIA · ${progress}`;
+    const n = Math.max(0, after) + (showDoomed ? 1 : 0);
+    return n > 0 ? `SUPERVIVENCIA · ${renderLivesHearts(n)} · ${progress}` : `SUPERVIVENCIA · ${progress}`;
   };
   const timers = (animateLifeLossHearts._timers = animateLifeLossHearts._timers || []);
   timers.forEach(clearTimeout);
   timers.length = 0;
   // Parpadeo real (visible/invisible) del corazón perdido, 3 veces, y
   // desaparición definitiva al final.
-  lbl.textContent = frame(true);
+  lbl.innerHTML = frame(true);
   const schedule = [[140, false], [280, true], [420, false], [560, true]];
   schedule.forEach(([delay, showDoomed]) => {
-    timers.push(setTimeout(() => { lbl.textContent = frame(showDoomed); }, delay));
+    timers.push(setTimeout(() => { lbl.innerHTML = frame(showDoomed); }, delay));
   });
   timers.push(setTimeout(() => {
-    lbl.textContent = `SUPERVIVENCIA · ${renderLivesHearts(after)} · ${progress}`;
+    lbl.innerHTML = `SUPERVIVENCIA · ${renderLivesHearts(after)} · ${progress}`;
   }, 700));
 }
 
@@ -5481,7 +5467,7 @@ function renderQuestion(preserveAnswered = false) {
   if (ttTimerNum) ttTimerNum.classList.remove('tt-timer-flash-up', 'tt-timer-flash-down');
   document.getElementById('feedback').style.display = wasAnswered ? 'block' : 'none';
   document.getElementById('feedback').className = wasAnswered ? 'feedback ok' : 'feedback';
-  document.getElementById('feedback').textContent = wasAnswered ? '↩️ Respuesta ya registrada. Pulsa «Siguiente» para continuar.' : '';
+  document.getElementById('feedback').textContent = wasAnswered ? 'Respuesta ya registrada. Pulsa «Siguiente» para continuar.' : '';
   document.getElementById('btn-check').style.display = (wasAnswered || isChoice) ? 'none' : 'inline-block';
   document.getElementById('btn-next').style.display = wasAnswered ? 'inline-block' : 'none';
   
@@ -5489,7 +5475,7 @@ function renderQuestion(preserveAnswered = false) {
     updateTimeTrialHeader();
   } else if (currentGame.mode === 'survival') {
     const totalQ = currentGame.totalQuestionsToPlay;
-    document.getElementById('game-progress-lbl').textContent = `SUPERVIVENCIA · ${renderLivesHearts(currentGame.lives)} · ${SEQLastLife.counter('survival', currentGame.currentIdx, totalQ)}`;
+    document.getElementById('game-progress-lbl').innerHTML = `SUPERVIVENCIA · ${renderLivesHearts(currentGame.lives)} · ${SEQLastLife.counter('survival', currentGame.currentIdx, totalQ)}`;
     document.getElementById('bar-fill').style.width = ((currentGame.currentIdx) / totalQ) * 100 + '%';
   } else if (currentGame.mode === 'review') {
     const totalQ = currentGame.totalQuestionsToPlay;
@@ -5563,7 +5549,7 @@ function checkAnswer() {
   // 4 opciones); las de respuesta escrita siguen usando el comparador
   // flexible existente (tolera tildes, plurales, orden de palabras, etc.).
   const correct = isChoice ? (user === q.a) : isMatchWithAlias(user, q);
-  // ⚔️ Duelo: preguntas de una cola con semilla, ajenas a la bolsa
+  // Duelo: preguntas de una cola con semilla, ajenas a la bolsa
   // personal; no deben alimentar questionStats/XP/logros generales.
   const isDuelGame = !!currentGame.isDuel;
   // 2.0: Repaso solo sirve para dominar preguntas falladas: no alimenta estadísticas, XP, rachas ni logros.
@@ -5811,7 +5797,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   if (timeTrialTimer) { clearInterval(timeTrialTimer); timeTrialTimer = null; }
   timeTrialEndTime = 0;
 
-  // ⚔️ Duelo: se resetea en cada cierre de partida y solo se rellena más
+  // Duelo: se resetea en cada cierre de partida y solo se rellena más
   // abajo si currentGame.isDuel es true, para que una partida normal
   // posterior no arrastre el bloque/código del duelo anterior.
   const resShareBtn = document.getElementById('res-share-btn');
@@ -5819,7 +5805,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   const resBackBtn = document.getElementById('res-back-btn');
   if (resBackBtn) { resBackBtn.textContent = 'Volver al Menú principal'; }
 
-  // ⚔️ Duelo: ni el creador ni quien acepta un reto deben contar como
+  // Duelo: ni el creador ni quien acepta un reto deben contar como
   // partida jugada para la progresión principal, ni alimentar récords
   // personales (Contrarreloj/Cálculo Mental) que disparan logros generales.
   const isDuelGame = !!currentGame.isDuel;
@@ -5874,7 +5860,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     accuracy,
     streak: currentGame.mode === 'mental_calc' ? (currentGame.bestStreak || 0) : (currentGame.sessionBestStreak || 0)
   };
-  // ⚔️ Duelo: no se registra en el historial de partidas normales de JUGAR
+  // Duelo: no se registra en el historial de partidas normales de JUGAR
   // (Duelo ya tiene su propio historial vía saveDuelHistoryEntry), ni en
   // los contadores de victorias de Supervivencia/Muerte Súbita que
   // alimentan logros generales.
@@ -5906,7 +5892,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     }
   }
 
-  // ⚔️ Duelo: los logros y desbloqueos GENERALES de JUGAR nunca se evalúan
+  // Duelo: los logros y desbloqueos GENERALES de JUGAR nunca se evalúan
   // aquí para una partida de Duelo (ni para el creador ni para quien
   // acepta). Los 6 logros exclusivos de Duelo se evalúan aparte, más abajo,
   // solo tras handleDuelFinish() y solo cuando corresponde (ver ese punto).
@@ -5923,7 +5909,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   const resCard = document.getElementById('results-card');
   resCard.style.display = 'block';
 
-  // ⚔️ Duelo: el bloque genérico de resultado de JUGAR (métricas, comillas,
+  // Duelo: el bloque genérico de resultado de JUGAR (métricas, comillas,
   // icono de humor y frase de categoría con tono dramático) es propio del
   // sistema de Jugar y no debe convivir con la tarjeta de Duelo — un duelo
   // usa un único componente de resultado (ver handleDuelFinish), no dos
@@ -5990,7 +5976,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     if (isWin) {
       document.getElementById('res-category-text').textContent = "¡Victoria Épica!";
       customPhrase = pickRotatingPhrase(winPoolKey, winPhrases);
-      setResultTone('win', currentGame.mode === 'survival' ? '❤️' : '👑');
+      setResultTone('win', currentGame.mode === 'survival' ? 'modo-supervivencia' : 'modo-muerte-subita');
       if (currentGame.mode === 'survival') {
         stampText = 'SUPERVIVIENTE'; stampTone = 'amber';
       } else {
@@ -6003,10 +5989,10 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
         : 'Derrota con honor';
       if (accuracy <= 40) {
         customPhrase = pickRotatingPhrase(failDesastrePoolKey, failPhrases.desastre);
-        setResultTone('fail', currentGame.mode === 'sudden_death' ? '☠️' : RESULT_MOOD_ICONS.fail_regular);
+        setResultTone('fail', currentGame.mode === 'sudden_death' ? 'calavera' : RESULT_MOOD_ICONS.fail_regular);
       } else {
         customPhrase = pickRotatingPhrase(failRegularPoolKey, failPhrases.regular);
-        setResultTone('fail', currentGame.mode === 'sudden_death' ? '☠️' : RESULT_MOOD_ICONS.fail_regular);
+        setResultTone('fail', currentGame.mode === 'sudden_death' ? 'calavera' : RESULT_MOOD_ICONS.fail_regular);
       }
       stampText = currentGame.mode === 'survival' ? 'CAÍDO EN COMBATE' : 'ELIMINADO';
       stampTone = 'fail';
@@ -6038,7 +6024,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
       const reviewPhrase = pickRotatingPhrase(`review_${reviewKey}`, reviewData.phrases);
       document.getElementById('res-category-text').textContent = reviewData.title;
       document.getElementById('res-phrase-text').textContent = reviewPhrase;
-      setResultTone('review', reviewKey === 'progreso' ? '📈' : '🫏', reviewKey === 'progreso' ? 'victory' : 'defeat');
+      setResultTone('review', reviewKey === 'progreso' ? 'libro-vela' : 'gorro-burro', reviewKey === 'progreso' ? 'victory' : 'defeat');
     }
   }
 
@@ -6047,30 +6033,30 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   renderLucidezStamp(stampText, stampTone);
 
   if (isDuelGame) {
-    // ⚔️ Duelo: sin XP ni récords personales que mostrar; solo la racha de
+    // Duelo: sin XP ni récords personales que mostrar; solo la racha de
     // esta partida tiene sentido aquí (record/logros van en handleDuelFinish).
     renderModeChips([
-      { icon: '🔥', label: 'Racha máxima', short: 'racha', value: `${currentGame.sessionBestStreak || 0}` }
+      { icon: 'racha', label: 'Racha máxima', short: 'racha', value: `${currentGame.sessionBestStreak || 0}` }
     ]);
   } else if (currentGame.mode === 'review') {
     renderModeChips([]);   // Repaso: sin racha, sin XP, sin récords
   } else if (currentGame.mode === 'play') {
     renderModeChips([
-      { icon: '🔥', label: 'Racha máxima', short: 'racha', value: `${currentGame.sessionBestStreak || 0}`, accent: '#2563eb' },
-      { icon: '✨', label: 'XP ganada', value: `+${currentGame.sessionXpGained || 0} XP`, accent: '#2563eb' }
+      { icon: 'racha', label: 'Racha máxima', short: 'racha', value: `${currentGame.sessionBestStreak || 0}`, accent: '#2563eb' },
+      { icon: 'xp', label: 'XP ganada', value: `+${currentGame.sessionXpGained || 0} XP`, accent: '#2563eb' }
     ]);
   } else if (currentGame.mode === 'survival') {
     renderModeChips([
-      { icon: '🔥', label: 'Racha máxima', short: 'racha', value: `${currentGame.sessionBestStreak || 0}`, accent: '#b45309' }
+      { icon: 'racha', label: 'Racha máxima', short: 'racha', value: `${currentGame.sessionBestStreak || 0}`, accent: '#b45309' }
     ]);
   } else if (currentGame.mode === 'sudden_death') {
     // Una sola píldora: el récord personal de preguntas sobrevividas (la distancia de esta partida ya se ve en el marcador).
     renderModeChips([
-      { icon: '🏅', label: 'Récord personal', value: `Récord ${store.suddenBestSurvived || 0}`, accent: '#dc2626' }
+      { icon: 'medalla', label: 'Récord personal', value: `Récord ${store.suddenBestSurvived || 0}`, accent: '#dc2626' }
     ]);  } else if (currentGame.mode === 'timetrial') {
     renderModeChips([
-      { icon: '🏅', label: 'Récord personal', short: 'récord', value: `${store.maxTimeTrialScore || 0}`, accent: '#db2777' },
-      { icon: '🎯', label: 'Efectividad', short: 'acierto', value: `${accuracy}%`, accent: '#db2777' }
+      { icon: 'medalla', label: 'Récord personal', short: 'récord', value: `${store.maxTimeTrialScore || 0}`, accent: '#db2777' },
+      { icon: 'modo-estandar', label: 'Efectividad', short: 'acierto', value: `${accuracy}%`, accent: '#db2777' }
     ]);
   } else if (currentGame.mode === 'mental_calc') {
     // Solo racha y tiempo medio: la precisión y la puntuación ya se ven
@@ -6078,8 +6064,8 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     // por espacio con las dos métricas que de verdad definen la partida.
     const avgTimeChip = currentGame.total > 0 ? (currentGame.totalTimeMs / currentGame.total / 1000).toFixed(1) : '0.0';
     renderModeChips([
-      { icon: '🔥', label: 'Racha máxima', short: 'racha', value: `${currentGame.bestStreak || 0}` },
-      { icon: '⏱️', label: 'Tiempo medio por operación', value: `${avgTimeChip}s de media` }
+      { icon: 'racha', label: 'Racha máxima', short: 'racha', value: `${currentGame.bestStreak || 0}` },
+      { icon: 'tiempo', label: 'Tiempo medio por operación', value: `${avgTimeChip}s de media` }
     ]);
   } else {
     renderModeChips(null);
@@ -6106,7 +6092,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   modeUnlockList.innerHTML = '';
   if (newModesUnlocked.length > 0) {
     if (typeof showModeUnlockToast === 'function') {
-      showModeUnlockToast(newModesUnlocked.map(mode => ({ icon: mode.icon, name: mode.name })));
+      showModeUnlockToast(newModesUnlocked.map(mode => ({ name: mode.name })));
     }
     launchConfetti();
     playSound('win');
@@ -6119,12 +6105,12 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     medalsBox.style.display = 'block';
     medalsList.innerHTML = newMedalsUnlocked.map(m => `
       <div class="session-medal-item">
-        <div class="session-medal-icon${window.SEQAchievements ? ' has-img' : ''}">${window.SEQAchievements ? SEQAchievements.iconHTML(m) : m.icon}</div>
+        <div class="session-medal-icon${window.SEQAchievements ? ' has-img' : ''}">${window.SEQAchievements ? SEQAchievements.iconHTML(m) : ''}</div>
         <div>
           <div class="session-medal-info">${m.title}</div>
           <div class="session-medal-desc">${m.desc}</div>
           ${FRAGMENT_MEDAL_IDS.includes(m.id) ? '<div class="session-medal-fragment">' + seqIco('fragmento') + '+1 Fragmento de Mente</div>' : ''}
-          ${getMedalAvatar(m.id) ? '<div class="session-medal-fragment">🎭 Avatar desbloqueado</div>' : ''}
+          ${getMedalAvatar(m.id) ? '<div class="session-medal-fragment">Avatar desbloqueado</div>' : ''}
         </div>
       </div>
     `).join('');
@@ -6415,7 +6401,7 @@ function renderStats() {
       const score = Number(getStore().bestLucidezScore || 0);
       const pct = Math.round((score / 30) * 100);
       const streak = Number(getStore().bestLucidezStreak || 0);
-      bestLucidezContext.textContent = `${pct}% · 🔥 Racha máxima ${streak}`;
+      bestLucidezContext.textContent = `${pct}% · Racha máxima ${streak}`;
     }
   }
 
@@ -6530,12 +6516,12 @@ function renderAchievementsProgress() {
 // y cada hito es una recompensa ya definida (10 = modo, 12 y 15 = errores
 // extra en Lucidez; el de 15 es el TOTAL, no se suma al de 12).
 const FRAGMENT_MILESTONES = [
-  { fragments: FRAGMENT_TARGET, icon: '👁️', title: 'Lucidez Mental', text: 'Desbloquea Lucidez Mental', goal: 'desbloquear Lucidez Mental',
+  { fragments: FRAGMENT_TARGET, title: 'Lucidez Mental', text: 'Desbloquea Lucidez Mental', goal: 'desbloquear Lucidez Mental',
     secretText: 'Desbloquea un modo secreto', secretGoal: 'desbloquear un modo secreto' },
-  { fragments: 12, icon: '💫', title: 'Error extra', text: '+1 error extra en Lucidez', goal: 'conseguir +1 error extra',
-    secretIcon: '💫', secretText: 'Una ventaja especial para el modo secreto', secretGoal: 'conseguir una ventaja especial' },
-  { fragments: 15, icon: '🌠', title: 'Errores extra', text: '+2 errores extra en total', goal: 'conseguir +2 errores extra',
-    secretIcon: '🌠', secretText: 'Una ventaja aún mayor para el modo secreto', secretGoal: 'conseguir una ventaja aún mayor' }
+  { fragments: 12, title: 'Error extra', text: '+1 error extra en Lucidez', goal: 'conseguir +1 error extra',
+    secretText: 'Una ventaja especial para el modo secreto', secretGoal: 'conseguir una ventaja especial' },
+  { fragments: 15, title: 'Errores extra', text: '+2 errores extra en total', goal: 'conseguir +2 errores extra',
+    secretText: 'Una ventaja aún mayor para el modo secreto', secretGoal: 'conseguir una ventaja aún mayor' }
 ];
 // 2.0: hasta que el jugador desbloquea el modo secreto (10 Fragmentos), los hitos NO nombran «Lucidez Mental»
 // ni describen su ventaja: se muestran versiones misteriosas. Al desbloquearlo, los textos reales.
@@ -6545,7 +6531,6 @@ function getFragmentMilestoneState(count) {
   const hide = fragmentSecretMode(count);
   const items = FRAGMENT_MILESTONES.map(m => ({
     ...m,
-    icon: hide && m.secretIcon ? m.secretIcon : m.icon,
     text: hide ? m.secretText : m.text,
     goal: hide ? m.secretGoal : m.goal,
     unlocked: count >= m.fragments
@@ -6576,7 +6561,7 @@ function renderFragmentsProgress() {
   const listEl = document.getElementById('fragments-milestones');
   if (listEl) listEl.innerHTML = state.items.map(m => `
     <div class="fragment-milestone${m.unlocked ? ' is-unlocked' : ' is-locked'}">
-      <div class="fragment-milestone-icon">${fragmentMilestoneImg(m) || m.icon}</div>
+      <div class="fragment-milestone-icon">${fragmentMilestoneImg(m)}</div>
       <div class="fragment-milestone-body">
         <div class="fragment-milestone-title">${m.fragments} Fragmentos</div>
         <div class="fragment-milestone-text">${m.text}</div>
@@ -6589,7 +6574,7 @@ function renderFragmentsProgress() {
 }
 
 // Candado en SVG (elemento puramente decorativo/estructural) en vez del
-// emoji 🔒, para que "bloqueado" se lea como un icono del propio sistema
+// emoji , para que "bloqueado" se lea como un icono del propio sistema
 // visual y no como texto suelto. No cambia el texto ("SECRETO"/"BLOQUEADO"),
 // solo el icono que lo acompaña.
 
@@ -6626,10 +6611,10 @@ function renderMedals() {
       </div>`;
     }
     const fragmentTag = givesFragment
-      ? `<div class="medal-fragment-tag ${unlocked ? 'is-unlocked' : ''}">🧩 ${unlocked ? 'FRAGMENTO OBTENIDO' : 'Otorga un Fragmento'}</div>`
+      ? `<div class="medal-fragment-tag ${unlocked ? 'is-unlocked' : ''}">${seqIco('fragmento')}${unlocked ? 'FRAGMENTO OBTENIDO' : 'Otorga un Fragmento'}</div>`
       : '';
     return `<div class="medal-card ${unlocked ? 'unlocked' : 'locked'}${givesFragment ? ' has-fragment' : ''}">
-      <div class="icon">${unlocked ? m.icon : m.icon}</div>
+      <div class="icon"><img class="ach-img" src="assets/logros/${m.id}.webp" alt="" draggable="false"></div>
       <div class="medal-title">${m.title}</div>
       <div class="medal-desc">${m.desc}</div>
       ${unlocked ? '<div class="medal-status">✓ DESBLOQUEADO</div>' : `<div class="medal-status locked-status">${MEDAL_LOCK_SVG} BLOQUEADO</div>`}
@@ -6731,7 +6716,7 @@ function showModeUnlockToast(modes){
   if (modes.length === 1) {
     t.classList.remove('mode-unlock-toast-multi');
     t.innerHTML='<span class="toast-icon"></span><span><span class="toast-small">¡NUEVO MODO DESBLOQUEADO!</span><span class="toast-name"></span></span>';
-    t.querySelector('.toast-icon').textContent = modes[0].icon || '🎮';
+    t.querySelector('.toast-icon').textContent = '';
     t.querySelector('.toast-name').textContent = modes[0].name || 'Nuevo modo';
     // 2.0: la insignia ilustrada del modo en lugar del emoji (src de una tabla fija, nunca datos del jugador).
     const badgeSrc = window.SEQModeBadges ? SEQModeBadges.src(modes[0].name) : '';
@@ -6739,7 +6724,7 @@ function showModeUnlockToast(modes){
   } else {
     t.classList.add('mode-unlock-toast-multi');
     const itemsHtml = modes.map(m =>
-      `<span class="toast-multi-item"><span class="toast-multi-icon">${(window.SEQModeBadges && SEQModeBadges.src(m.name)) ? '<img class="toast-badge" src="' + SEQModeBadges.src(m.name) + '" alt="" draggable="false">' : escapeHtml(String(m.icon || '🎮'))}</span>${escapeHtml(String(m.name || 'Nuevo modo'))}</span>`
+      `<span class="toast-multi-item"><span class="toast-multi-icon">${(window.SEQModeBadges && SEQModeBadges.src(m.name)) ? '<img class="toast-badge" src="' + SEQModeBadges.src(m.name) + '" alt="" draggable="false">' : ''}</span>${escapeHtml(String(m.name || 'Nuevo modo'))}</span>`
     ).join('');
     t.innerHTML = `<span class="toast-small toast-multi-title">¡NUEVOS MODOS DESBLOQUEADOS!</span><span class="toast-multi-list">${itemsHtml}</span>`;
   }
@@ -6764,8 +6749,10 @@ function showInfoToast(message, icon){
     document.body.appendChild(t);
   }
   const toastIcon = t.querySelector('.toast-icon');
-  const toastImg = (typeof SEQIcons !== 'undefined') ? SEQIcons.fromEmoji(icon) : '';
-  if (toastImg) toastIcon.innerHTML = toastImg; else toastIcon.textContent = icon || 'ℹ️';
+  // `icon` es el NOMBRE de una ilustración (SEQIcons); sin nombre o si no existe, el aviso sale sin icono.
+  const toastImg = (typeof SEQIcons !== 'undefined') ? SEQIcons.fromName(icon) : '';
+  toastIcon.innerHTML = toastImg;
+  toastIcon.hidden = !toastImg;
   t.querySelector('.toast-msg').textContent = message;
   t.classList.add('show');
   clearTimeout(window.__infoToastTimer);

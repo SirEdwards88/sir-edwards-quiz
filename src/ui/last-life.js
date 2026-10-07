@@ -85,7 +85,7 @@
     var lbl = root.document && root.document.getElementById('game-progress-lbl');
     if (lbl) lbl.classList.add('last-life');
     if (!reduced() && !isLastQuestion(game.mode, game.currentIdx, game.totalQuestionsToPlay)) {
-      banner('❤️ Última vida', sub('lastlife_sub', LASTLIFE_SUBS), 'is-life');
+      banner('Última vida', sub('lastlife_sub', LASTLIFE_SUBS), 'is-life');
     }
   }
 

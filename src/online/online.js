@@ -486,7 +486,7 @@
       var same = sync && sync.playerId === data.player.id;
       if (same && sync.migration !== 'pending') {
         // Misma cuenta que ya estaba enlazada en este dispositivo: se retoma sin volver a preguntar.
-        toast('Sesión iniciada', '✅');
+        toast('Sesión iniciada', 'correcto');
         render();
         syncNow('login');
       } else {
@@ -499,7 +499,7 @@
         saveSync();
         if (!hasLocal && !hasOnline) {
           sync.migration = 'done'; saveSync();
-          toast('Sesión iniciada', '✅');
+          toast('Sesión iniciada', 'correcto');
         } else {
           openMigration(data.progress);
         }
@@ -534,7 +534,7 @@
     try { if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect(); } catch (e) {}
     account = null; saveAccount(); ui.editing = false; ui.expired = false; ui.error = '';
     clearTimeout(timer); clearTimeout(retryTimer);
-    toast('Sesión cerrada. Tu progreso sigue en este dispositivo.', '👋');
+    toast('Sesión cerrada. Tu progreso sigue en este dispositivo.', 'sombrero');
     render();
   }
 
@@ -547,7 +547,7 @@
       onConfirm: function () {
         api('POST', '/auth/logout-all').then(function () { signOut(); }).catch(function (err) {
           if (authFailure(err)) { render(); return; }
-          toast(err && err.network ? 'Necesitas conexión para cerrar todas las sesiones.' : 'No se pudo completar la operación.', '⚠️');
+          toast(err && err.network ? 'Necesitas conexión para cerrar todas las sesiones.' : 'No se pudo completar la operación.', 'atencion');
         });
       }
     });
@@ -577,7 +577,7 @@
           location.reload();
         }).catch(function (err) {
           if (authFailure(err)) { render(); return; }
-          toast(err && err.network ? 'Necesitas conexión para eliminar la cuenta.' : 'No se pudo eliminar la cuenta.', '⚠️');
+          toast(err && err.network ? 'Necesitas conexión para eliminar la cuenta.' : 'No se pudo eliminar la cuenta.', 'atencion');
         });
       }
     });
@@ -625,7 +625,7 @@
     // Abierto desde Ajustes: pedimos el estado actual de la cuenta.
     api('GET', '/me').then(function (d) { refreshFeatures(d); open(cleanProgress(d && d.progress)); }).catch(function (err) {
       if (authFailure(err)) { render(); return; }
-      toast(err && err.network ? 'Necesitas conexión para migrar.' : 'No se pudo consultar la cuenta.', '⚠️');
+      toast(err && err.network ? 'Necesitas conexión para migrar.' : 'No se pudo consultar la cuenta.', 'atencion');
     });
   }
   function closeMigration() { var m = $('seq-migrate-modal'); if (m) m.style.display = 'none'; render(); }
@@ -657,7 +657,7 @@
         unionMedalsIntoStore(p.medals);
         afterLocalChange(gamesAdded);
         var m = $('seq-migrate-modal'); if (m) m.style.display = 'none';
-        toast(res.adjusted ? 'Progreso combinado (se ajustó algún valor imposible).' : 'Progreso combinado con tu cuenta', '✅');
+        toast(res.adjusted ? 'Progreso combinado (se ajustó algún valor imposible).' : 'Progreso combinado con tu cuenta', 'correcto');
         scheduleSync(1800, 'merge'); // logros derivados que el juego desbloquea localmente al aplicar los totales
       })
       .catch(function (err) {
@@ -670,7 +670,7 @@
           return;
         }
         if (btn) { btn.disabled = false; btn.textContent = 'Reintentar'; }
-        toast(err && err.network ? 'Sin conexión: inténtalo de nuevo cuando vuelva Internet.' : 'No se pudo combinar' + (err && err.message ? ': ' + err.message : '.'), '⚠️');
+        toast(err && err.network ? 'Sin conexión: inténtalo de nuevo cuando vuelva Internet.' : 'No se pudo combinar' + (err && err.message ? ': ' + err.message : '.'), 'atencion');
       })
       .then(function () { ui.busy = false; render(); });
   }
@@ -695,7 +695,7 @@
     sync = newSyncState(account.player.id, 'skipped', baseFromLocal(), seen);
     saveSync();
     var m = $('seq-migrate-modal'); if (m) m.style.display = 'none';
-    toast('Vale: tu progreso local no se ha tocado.', 'ℹ️');
+    toast('Vale: tu progreso local no se ha tocado.');
     render();
     syncNow('skip');
   }
@@ -712,9 +712,9 @@
     try {
       var A = window.SEQAvatars, need = A && A.medalOf(a);
       if (!need || A.isAvailable(a, hasStore() ? store.unlockedMedals : [])) return '';
-      if (A.isSecret && A.isSecret(a)) return '🔒 Se desbloquea al completar un logro secreto.';
+      if (A.isSecret && A.isSecret(a)) return 'Se desbloquea al completar un logro secreto.';
       var mm = typeof ALL_MEDALS !== 'undefined' ? ALL_MEDALS.filter(function (x) { return x.id === need; })[0] : null;
-      return '🔒 Se desbloquea al completar el logro «' + (mm ? mm.title : 'secreto') + '»';
+      return 'Se desbloquea al completar el logro «' + (mm ? mm.title : 'secreto') + '»';
     } catch (e) { return ''; }
   }
   function pickAvatar(a) {
@@ -729,22 +729,22 @@
     if (!account || ui.busy) return;
     var input = $('seq-name-input');
     var name = input ? String(input.value).trim() : account.player.display_name;
-    if (!name) { toast('El nombre no puede estar vacío.', '⚠️'); return; }
+    if (!name) { toast('El nombre no puede estar vacío.', 'atencion'); return; }
     ui.busy = true;
     api('PATCH', '/me', { display_name: name, avatar: ui.editAvatar }).then(function (d) {
       var pl = cleanPlayer(d && d.player); account.player.display_name = pl.display_name; account.player.avatar = pl.avatar; saveAccount();
-      ui.editing = false; toast('Perfil actualizado', '✅');
+      ui.editing = false; toast('Perfil actualizado', 'correcto');
     }).catch(function (err) {
       if (authFailure(err)) return;
-      toast(err && err.network ? 'Necesitas conexión para cambiar el perfil.' : ('No se pudo guardar: ' + (err && err.message ? err.message : 'error')), '⚠️');
+      toast(err && err.network ? 'Necesitas conexión para cambiar el perfil.' : ('No se pudo guardar: ' + (err && err.message ? err.message : 'error')), 'atencion');
     }).then(function () { ui.busy = false; render(); });
   }
   function copyId() {
     if (!account) return;
     var id = account.player.id;
-    var done = function () { toast('ID copiado', '📋'); };
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(id).then(done, function () { toast('ID: ' + id, 'ℹ️'); });
-    else toast('ID: ' + id, 'ℹ️');
+    var done = function () { toast('ID copiado', 'correcto'); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(id).then(done, function () { toast('ID: ' + id); });
+    else toast('ID: ' + id);
   }
 
   // ---- Ranking -------------------------------------------------------------------------------
@@ -842,7 +842,7 @@
           var name = window.SEQAvatars && window.SEQAvatars.shortName ? '<span class="seq-av-name">' + esc(window.SEQAvatars.shortName(a)) + '</span>' : '';
           var hint = avatarHintText(a), locked = !!hint;
           // Bloqueado: se puede tocar (no está «disabled») para ver el requisito; nunca se selecciona.
-          if (locked) return '<button type="button" class="seq-av-btn seq-av-locked' + (ui.avatarHint === a ? ' hint' : '') + '" aria-disabled="true" aria-label="' + esc(window.SEQAvatars.shortName(a) + ' bloqueado. ' + hint.replace('🔒 ', '')) + '" onclick="SEQOnline.showAvatarHint(\'' + a + '\')">' + img + '<span class="seq-av-name">🔒 ' + esc(window.SEQAvatars.shortName(a)) + '</span></button>';
+          if (locked) return '<button type="button" class="seq-av-btn seq-av-locked' + (ui.avatarHint === a ? ' hint' : '') + '" aria-disabled="true" aria-label="' + esc(window.SEQAvatars.shortName(a) + ' bloqueado. ' + hint) + '" onclick="SEQOnline.showAvatarHint(\'' + a + '\')">' + img + '<span class="seq-av-name">' + seqIco('candado') + esc(window.SEQAvatars.shortName(a)) + '</span></button>';
           return '<button type="button" class="seq-av-btn' + (sel ? ' sel' : '') + '" onclick="SEQOnline.pickAvatar(\'' + a + '\')" aria-pressed="' + sel + '">' + img + name + '</button>';
         }).join('') + '</div>' +
         (ui.avatarHint && avatarHintText(ui.avatarHint) ? '<p class="seq-av-hint" role="status" aria-live="polite">' + esc(avatarHintText(ui.avatarHint)) + '</p>' : '') +
