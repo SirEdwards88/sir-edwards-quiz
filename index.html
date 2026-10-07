@@ -1045,6 +1045,7 @@ try {
      el script principal, sin convertir todavia la app a ES Modules. -->
 <script src="src/data/ui-maps.js?v=134"></script>
 <script src="src/data/questions.js?v=134"></script>
+<script src="src/data/questions-retired.js?v=134"></script>
 <script src="src/data/phrases.js?v=134"></script>
 <script src="src/data/duel-phrases.js?v=134"></script>
 <script src="src/data/lucidez.js?v=134"></script>
@@ -1059,6 +1060,7 @@ try {
      src/utils/matching.js, mismo criterio que la Fase 2 (script clasico,
      sin ES Modules todavia). -->
 <script src="src/utils/matching.js?v=134"></script>
+<script src="src/utils/answer-alias.js?v=134"></script>
 <script src="src/utils/sudden-progression.js?v=134"></script>
 <script src="src/utils/fresh-first.js?v=134"></script>
 <script src="src/utils/mental-calc.js?v=134"></script>
@@ -4072,7 +4074,7 @@ function checkLucidezAnswer() {
   const q = phase === 1 ? currentGame.phase1Queue[idx] : currentGame.phase3Queue[idx - 20];
   const statKey = lucidezStatKey(q.n);
   const user = document.getElementById('ans-input').value;
-  const correct = isMatchFlexible(user, q.a, q.q);
+  const correct = isMatchWithAlias(user, q);
   const forgiven = !correct && tryForgiveLucidezError();
 
   // ⚔️ Duelo: las preguntas de un duelo vienen de una cola con semilla
@@ -4210,7 +4212,7 @@ function checkLucidezPhase2QuestionAnswer(q) {
   if (currentGame.answered) return;
   const statKey = lucidezStatKey(q.n);
   const user = document.getElementById('ans-input').value;
-  const correct = isMatchFlexible(user, q.a, q.q);
+  const correct = isMatchWithAlias(user, q);
   const forgiven = !correct && tryForgiveLucidezError();
 
   const isDuelGame = !!currentGame.isDuel;
@@ -5613,7 +5615,7 @@ function checkAnswer() {
   // texto de la opción elegida (ya viene garantizado que existe entre las
   // 4 opciones); las de respuesta escrita siguen usando el comparador
   // flexible existente (tolera tildes, plurales, orden de palabras, etc.).
-  const correct = isChoice ? (user === q.a) : isMatchFlexible(user, q.a, q.q);
+  const correct = isChoice ? (user === q.a) : isMatchWithAlias(user, q);
   // ⚔️ Duelo: preguntas de una cola con semilla, ajenas a la bolsa
   // personal; no deben alimentar questionStats/XP/logros generales.
   const isDuelGame = !!currentGame.isDuel;

@@ -145,6 +145,7 @@
   function questionHtml(d, h) {
     var r = d.ronda, idx = num(r.indice), qn = (d.preguntas || [])[idx];
     var info = qn != null ? h.itemInfo(qn) : null;
+    if (!info && qn != null && h.updateNeeded) return h.updateNeeded();
     if (!info || !info.options) return '<p class="stats-section-sub">Cargando pregunta…</p>';
     var sent = S21.sent[d.id + ':' + idx], answered = !!(r.yo_respondi || sent != null);
     var opts = h.optionsFor(d.id, idx, info);

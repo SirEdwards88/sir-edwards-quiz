@@ -78,7 +78,10 @@
   // servidor solo le dice QUÉ pregunta (por su número) y cuándo.
   var QMAP = null;
   function question(n) {
-    if (!QMAP) { QMAP = {}; try { TEST_QUESTIONS.forEach(function (q) { QMAP[q.n] = q; }); } catch (e) {} }
+    if (!QMAP) { QMAP = {};
+      // Las retiradas (2.2) siguen resolviéndose por ID para terminar los duelos y retos creados antes; el banco vivo manda.
+      try { RETIRED_TEST_QUESTIONS.forEach(function (q) { QMAP[q.n] = q; }); } catch (e) {}
+      try { TEST_QUESTIONS.forEach(function (q) { QMAP[q.n] = q; }); } catch (e) {} }
     return QMAP[num(n)] || null;
   }
   // ---- Retos por modo (2.0) --------------------------------------------------------
@@ -99,7 +102,9 @@
   // Un elemento de la partida (lo que manda el servidor) → texto, solución (si ya se puede ver) y forma de responder.
   var LMAP = null;
   function lucidezQ(n) {
-    if (!LMAP) { LMAP = {}; try { QUESTIONS.forEach(function (q) { LMAP[q.n] = q; }); } catch (e) {} }
+    if (!LMAP) { LMAP = {};
+      try { RETIRED_QUESTIONS.forEach(function (q) { LMAP[q.n] = q; }); } catch (e) {}
+      try { QUESTIONS.forEach(function (q) { LMAP[q.n] = q; }); } catch (e) {} }
     return LMAP[num(n)] || null;
   }
   function itemInfo(it) {
@@ -712,11 +717,18 @@
     h += '<div class="progress-bar"><div id="seq-d-bar" class="bar-fill"></div></div>';
     return h + questionBlock(d.id, idx, qn, mine, kind === 'reto' && d.modo === 'lucidez' && num(est.fase) === 2);
   }
+  function updateNeeded() {
+    return '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Hace falta actualizar</div>'
+      + '<p class="duel-result-hint">Sir Edwards ha traído una pregunta que tu versión todavía no conoce. Cierra y vuelve a abrir la aplicación para ponerte al día.</p>'
+      + '<button type="button" class="btn btn-primary" style="width:100%;" onclick="location.reload()">Actualizar</button></div>';
+  }
   // `it` es lo que manda el servidor: el número de una pregunta tipo test (Duelo y Reto clásico) o, en los Retos
   // por modo, un cálculo, una pregunta de Lucidez o el enigma. `fade`: Fase II de Lucidez (el texto se esconde a los 3 s).
   function questionBlock(scope, idx, it, mine, fade) {
     var info = itemInfo(it);
-    if (!info) { S.shown = null; return '<p class="stats-section-sub">Cargando pregunta…</p>'; }
+    // Con `it` presente pero sin resolver: el servidor mandó una pregunta que esta versión no tiene (Worker ya
+    // desplegado, PWA aún sin actualizar). No se queda «cargando» para siempre: se pide actualizar.
+    if (!info) { S.shown = null; return it == null ? '<p class="stats-section-sub">Cargando pregunta…</p>' : updateNeeded(); }
     if (!S.shown || S.shown.idx !== num(idx) || S.shown.key !== info.key) { S.shownAnswered = false; S.shownAt = Date.now(); }
     S.shown = { idx: num(idx), key: info.key, info: info, qn: info.qn };
     if (mine) S.shownAnswered = true;
@@ -1011,7 +1023,7 @@
   // Para src/online/duels-v21.js: mismos helpers de pintado y cliente HTTP, sin duplicarlos.
   var HELPERS = {
     esc: esc, num: num, player: player, itemInfo: itemInfo, optionsFor: optionsFor, ico: ico, serverNow: serverNow,
-    call: call, say: say, errText: errText, header: header, back: function () { back(); }
+    call: call, say: say, errText: errText, header: header, back: function () { back(); }, updateNeeded: updateNeeded
   };
   window.SEQDuels = {
     shareResult: shareResultCard, leaveDuel: leaveDuel, toggleReview: function () { S.showReview = !S.showReview; render(); }, answerText: answerText, createReto: createReto, pickMode: pickMode,
