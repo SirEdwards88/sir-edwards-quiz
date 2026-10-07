@@ -1,25 +1,26 @@
-/* SirEdwards Quiz 2.2 — Eventos Sorpresa: un único componente (.sir-event). No recibe toques ni foco. */
+/* SirEdwards Quiz — Eventos Sorpresa: un único componente (.sir-event), flotando en el centro de la pantalla. No recibe toques ni foco
+   (los toques lo atraviesan), así que nunca impide contestar. */
 .sir-event {
-  position: fixed; left: 50%; bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 9990;
-  display: flex; align-items: flex-end; gap: 6px;
-  width: max-content; max-width: min(460px, calc(100vw - 24px)); box-sizing: border-box;
-  transform: translate(-50%, 18px); opacity: 0; pointer-events: none;
-  transition: opacity .32s ease, transform .32s ease;
+  position: fixed; left: 50%; top: 50%; z-index: 9990;
+  display: flex; flex-direction: column; align-items: center; gap: 0;
+  width: max-content; max-width: min(340px, calc(100vw - 32px)); box-sizing: border-box;
+  transform: translate(-50%, calc(-50% + 14px)); opacity: 0; pointer-events: none;
+  transition: opacity .4s ease, transform .4s ease;
 }
-.sir-event.show { opacity: 1; transform: translate(-50%, 0); }
-.sir-event-img { width: 96px; height: auto; max-height: 96px; object-fit: contain; flex: 0 0 auto; margin-bottom: -4px; filter: drop-shadow(0 4px 8px rgba(10,16,36,.35)); }
+.sir-event.show { opacity: 1; transform: translate(-50%, -50%); }
+.sir-event-img { width: 132px; height: auto; max-height: 150px; object-fit: contain; flex: 0 0 auto; margin-bottom: -2px; position: relative; z-index: 1; filter: drop-shadow(0 6px 12px rgba(10,16,36,.45)); }
 .sir-event-bubble {
-  padding: 10px 14px; border-radius: 14px 14px 14px 4px; margin-bottom: 8px;
-  background: rgba(250,243,230,.98); color: #16244a; border: 1px solid rgba(201,153,46,.6);
-  box-shadow: 0 10px 26px rgba(10,16,36,.32);
+  padding: 16px 18px 15px; border-radius: 16px; text-align: center;
+  background: rgba(250,243,230,.99); color: #16244a; border: 1px solid rgba(201,153,46,.7);
+  box-shadow: 0 14px 36px rgba(10,16,36,.45), 0 0 0 4px rgba(10,16,36,.12);
 }
-.sir-event-label { font-size: 10.5px; font-weight: 800; letter-spacing: .6px; color: #9a6f12; margin-bottom: 3px; }
-.sir-event-text { font-size: 13.5px; line-height: 1.35; font-style: italic; font-weight: 600; }
+.sir-event-label { font-size: 11px; font-weight: 800; letter-spacing: .8px; color: #9a6f12; margin-bottom: 4px; }
+.sir-event-text { font-size: 16px; line-height: 1.38; font-style: italic; font-weight: 600; }
 .sir-event.is-streak .sir-event-bubble { border-color: #c9992e; }
-.sir-event.is-night .sir-event-bubble { background: rgba(28,35,64,.98); color: #f6e6b8; }
+.sir-event.is-night .sir-event-bubble { background: rgba(28,35,64,.99); color: #f6e6b8; }
 .sir-event.is-night .sir-event-label { color: #e8c874; }
-[data-theme="dark"] .sir-event-bubble { background: rgba(28,35,64,.98); color: #f6e6b8; }
+[data-theme="dark"] .sir-event-bubble { background: rgba(28,35,64,.99); color: #f6e6b8; }
 [data-theme="dark"] .sir-event-label { color: #e8c874; }
 @media (prefers-reduced-motion: reduce) {
-  .sir-event { transition: opacity .2s ease; transform: translate(-50%, 0); }
+  .sir-event { transition: opacity .2s ease; transform: translate(-50%, -50%); }
 }

@@ -147,9 +147,9 @@ const SEQEncargosIntro = (function () {
   // La música de menús se retiene mientras dura la presentación grande y se suelta al cerrarla (audio.js: SEQMusic).
   function menuMusic(hold) { try { if (window.SEQMusic) { if (hold) SEQMusic.hold(); else SEQMusic.release(); } } catch (e) {} }
 
-  function startScene() {
+  function startScene(preview) {
     var C = core(), R = ENCARGOS_INTRO.result;
-    var key = pendingResult || 'neutra';
+    var key = (preview ? 'normal' : pendingResult) || 'neutra';
     var name = playerName();
     var steps = [
       { beat: 1, text: (name ? 'Ah, ' + name + '. Una partida terminada.' : 'Ah. Una partida terminada.'), ms: 2400 },
@@ -170,7 +170,6 @@ const SEQEncargosIntro = (function () {
     el.setAttribute('aria-label', 'Presentación de Sir Edwards');
     el.innerHTML =
       '<div class="enc-intro-spot"></div><div class="enc-intro-vig"></div><div class="enc-intro-dim"></div>' +
-      '<button type="button" class="enc-intro-skip">Saltar</button>' +
       '<div class="enc-intro-stage"><div class="enc-intro-fig" aria-hidden="true">' +
         '<img class="enc-intro-img" alt="" draggable="false" decoding="async">' +
         '<img class="enc-intro-sil" alt="" draggable="false" decoding="async"></div></div>' +
@@ -181,7 +180,8 @@ const SEQEncargosIntro = (function () {
         '<div class="seal" aria-hidden="true"><span>SE</span></div></div>' +
         '<button type="button" class="enc-intro-go">Ver mis encargos</button></div>';
     var img = el.querySelector('.enc-intro-img'), sil = el.querySelector('.enc-intro-sil'), cap = el.querySelector('.enc-intro-caption');
-    var fig = el.querySelector('.enc-intro-fig'), skip = el.querySelector('.enc-intro-skip'), go = el.querySelector('.enc-intro-go');
+    var fig = el.querySelector('.enc-intro-fig'), go = el.querySelector('.enc-intro-go');
+    el.tabIndex = -1;
     var timers = [], idx = -1, ended = false, curBeat = 0;
     function later(fn, ms) { var t = setTimeout(fn, ms); timers.push(t); }
     // Los pasos avanzan solos, pero se pueden pausar: mantener pulsado, Espacio, o salir de la app. Soltar (o Espacio otra vez) reanuda.
@@ -219,8 +219,10 @@ const SEQEncargosIntro = (function () {
         cap.classList.remove('in');
         later(function () { cap.textContent = s.text; void cap.offsetWidth; cap.classList.add('in'); }, 340);
       } else say(s.text);
-      stepper.after(function () { show(i + 1); }, s.ms);
+      stepper.after(function () { show(i + 1); }, holdMs(s));
     }
+    // Tiempo en pantalla: un 30 % más que el guion base y nunca menos de lo que se tarda en leer la frase (≈45 ms por carácter).
+    function holdMs(s) { return Math.max(Math.round(s.ms * 1.3), 1400 + (s.text ? s.text.length * 45 : 0)); }
     function showFinal() {
       el.classList.add('is-final');
       cap.classList.remove('in');
@@ -231,9 +233,7 @@ const SEQEncargosIntro = (function () {
       if (ended) return;
       ended = true; clearAll(); menuMusic(false);
       document.removeEventListener('keydown', onSpace, true); document.removeEventListener('visibilitychange', onHidden);
-      set(K_SEEN, dayKey(new Date()));
-      set(K_CALLBACK, '1');
-      pendingResult = null;
+      if (!preview) { set(K_SEEN, dayKey(new Date())); set(K_CALLBACK, '1'); pendingResult = null; }
       unmount(el, offKeys);
       active = null;
       try {
@@ -258,7 +258,6 @@ const SEQEncargosIntro = (function () {
     }
     el.addEventListener('pointerup', endHold); el.addEventListener('pointercancel', endHold); el.addEventListener('pointerleave', endHold);
     el.addEventListener('click', function (e) {
-      if (e.target === skip) { finish(false); return; }
       if (e.target === go) { finish(true); return; }
       if (ended || el.classList.contains('is-final') || swallow) return;
       if (stepper.isPaused()) { setPaused(false); return; }   // en pausa (Espacio): tocar reanuda en lugar de avanzar
@@ -270,7 +269,7 @@ const SEQEncargosIntro = (function () {
       if (ended) return;
       void el.offsetWidth;
       el.classList.add('is-on');
-      skip.focus({ preventScroll: true });
+      el.focus({ preventScroll: true });
       show(0);
     });
   }
@@ -333,11 +332,25 @@ const SEQEncargosIntro = (function () {
     });
   }
 
-  return { seen: seen, noteGame: noteGame, noteDuel: noteDuel, onHome: onHome, callbackPending: callbackPending, takeCallback: takeCallback,
+  // Vista previa: abrir la app con «?presentacion» en la dirección repite la escena grande sin marcar nada (ni «vista», ni la réplica del
+  // evento): sirve para revisarla las veces que haga falta. Espera a que no haya modales, cuenta ni partida delante.
+  function replay() {
+    var tries = 0;
+    (function wait() {
+      if (!active && !blocked() && !inGameNow()) startScene(true);
+      else if (tries++ < 80) setTimeout(wait, 500);
+    })();
+  }
+
+  return { seen: seen, replay: replay, noteGame: noteGame, noteDuel: noteDuel, onHome: onHome, callbackPending: callbackPending, takeCallback: takeCallback,
     callbackLine: callbackLine, isActive: function () { return !!active; } };
 })();
 
 // Un lunes con la app ya abierta: se comprueba una vez al arrancar (si hay modales o cuenta, se deja para la siguiente visita a Inicio).
 if (typeof document !== 'undefined') {
-  document.addEventListener('DOMContentLoaded', function () { setTimeout(function () { try { SEQEncargosIntro.onHome(); } catch (e) {} }, 3500); });
+  document.addEventListener('DOMContentLoaded', function () {
+    var preview = false;
+    try { preview = /[?&]presentacion(=|&|$)/.test(location.search); } catch (e) {}
+    setTimeout(function () { try { preview ? SEQEncargosIntro.replay() : SEQEncargosIntro.onHome(); } catch (e) {} }, 3500);
+  });
 }

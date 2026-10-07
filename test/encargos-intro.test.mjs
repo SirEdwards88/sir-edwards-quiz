@@ -262,7 +262,7 @@ test('la Presentación se puede pausar: el temporizador de pasos congela lo que 
 test('cableado de la pausa: pulsación larga, Espacio y segundo plano; tocar tras una pausa no avanza de golpe', () => {
   const ui = read('src/ui/encargos-intro.js'), css = read('styles/encargos-intro.css');
   assert.match(ui, /makeStepper\(setTimeout, clearTimeout, Date\.now\)/);
-  assert.match(ui, /stepper\.after\(function \(\) \{ show\(i \+ 1\); \}, s\.ms\)/);
+  assert.match(ui, /stepper\.after\(function \(\) \{ show\(i \+ 1\); \}, holdMs\(s\)\)/);
   assert.match(ui, /e\.key === ' '/);
   assert.match(ui, /visibilitychange/);
   assert.match(ui, /380\)/, 'pulsación larga');
