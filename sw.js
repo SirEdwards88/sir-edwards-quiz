@@ -193,6 +193,7 @@ const APP_SHELL = [
   './assets/duelos/rankings/mental.webp',
   './assets/duelos/rankings/pvp.webp',
   './assets/duelos/rankings/timetrial.webp',
+  './assets/duelos/estadisticas.webp',
   './assets/duelos/modos/classic.webp',
   './assets/duelos/modos/stakes.webp',
   './assets/duelos/apuestas/cuerdo.webp',

@@ -377,6 +377,8 @@ test('iconos de Rankings: existen como archivo y están en el service worker', (
     assert.ok(fs.existsSync(new URL('../assets/duelos/rankings/' + id + '.webp', import.meta.url)), id);
     assert.ok(sw.includes("'./assets/duelos/rankings/" + id + ".webp'"), id);
   }
+  assert.ok(fs.existsSync(new URL('../assets/duelos/estadisticas.webp', import.meta.url)), 'estadisticas.webp');
+  assert.ok(sw.includes("'./assets/duelos/estadisticas.webp'"), 'estadisticas.webp en sw.js');
 });
 
 test('el módulo no guarda nada en el almacenamiento ni decide resultados', () => {

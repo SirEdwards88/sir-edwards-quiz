@@ -65,6 +65,11 @@
       'onerror="this.parentNode.textContent=\'' + e + '\'"></span>';
   }
   function modeIcon(m) { m = modeKey(m); return icon('modos', m, MODES[m].emoji, 'seq-v21-ico-mode'); }
+  // Medallón de «estadísticas de duelos» (libro de cuentas con pluma): assets/duelos/estadisticas.webp. Si falta, el del Duelo clásico.
+  function statsIcon() {
+    return '<span class="seq-v21-ico seq-v21-ico-stats" aria-hidden="true"><img src="' + ICON_DIR + 'estadisticas.webp" alt="" draggable="false" ' +
+      'onerror="this.onerror=null;this.src=\'' + ICON_DIR + 'modos/classic.webp\'"></span>';
+  }
   function stakeIcon(k) { k = stakeKey(k); return k ? icon('apuestas', k, STAKES[k].emoji, 'seq-v21-ico-stake') : ''; }
   function rankIcon(r, cls) {
     var id = r && RANK_EMOJI[r.icono] ? r.icono : 'plebeyo_ilustrado';
@@ -379,7 +384,7 @@
     host.style.display = '';
     var open = !!S21.statsOpen, s = S21.stats;
     var out = '<button type="button" class="seq-v21-statsbtn' + (open ? ' open' : '') + '" onclick="SEQDuels21.toggleStats()" aria-expanded="' + open + '" aria-controls="seq-v21-full">' +
-      modeIcon('classic') + '<span class="seq-v21-statsbtn-txt">' + (open ? 'Ocultar estadísticas' : 'Ver estadísticas de duelos') + '</span><span class="seq-v21-statsbtn-chev" aria-hidden="true">›</span></button>';
+      statsIcon() + '<span class="seq-v21-statsbtn-txt">' + (open ? 'Ocultar estadísticas' : 'Ver estadísticas de duelos') + '</span><span class="seq-v21-statsbtn-chev" aria-hidden="true">›</span></button>';
     if (open) {
       if (!s) out += S21.statsErr ? '<p class="stats-section-sub">' + esc(S21.statsErr) + '</p>' : '<p class="stats-section-sub">Cargando…</p>';
       else out += fullStatsHtml(s);

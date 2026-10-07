@@ -593,8 +593,6 @@
 .seq-v21-ico-stake { width: 34px; height: 34px; font-size: 26px; }
 .seq-v21-ico-rank { width: 30px; height: 30px; font-size: 24px; }
 .seq-v21-badge .seq-v21-ico-mode, .seq-v21-hud .seq-v21-ico-mode, .seq-v21-hrow .seq-v21-ico-mode { width: 20px; height: 20px; font-size: 16px; }
-/* Elección de modo */
-  background: var(--card); border: 1.5px solid var(--border); border-radius: 16px; }
 /* Marcador dinámico */
 .seq-v21-score { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 6px 0 2px; font-family: var(--font-display, inherit); }
 .seq-v21-score b { font-size: 38px; line-height: 1; }
@@ -695,7 +693,7 @@
 /* Tu posición */
 .seq-v21-me { display: flex; align-items: center; gap: 14px; padding: 10px 14px 10px 10px; margin-bottom: 14px; border-radius: 18px; border: 1.5px solid var(--se-gold, var(--primary));
   background: linear-gradient(135deg, color-mix(in srgb, var(--se-gold, var(--primary)) 16%, var(--card)), var(--card) 75%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .05), 0 4px 14px rgba(0, 0, 0, .18); }
-.seq-v21-me-pos { flex: 0 0 auto; min-width: 58px; height: 58px; padding: 0 6px; display: inline-flex; align-items: center; justify-content: center; border-radius: 16px; font-family: var(--font-display, inherit); font-size: 30px; font-weight: 800; color: var(--se-gold-light, var(--se-gold, var(--primary)));
+.seq-v21-me-pos { flex: 0 0 auto; min-width: 58px; height: 58px; padding: 0 6px; display: inline-flex; align-items: center; justify-content: center; border-radius: 16px; font-family: var(--font-display, inherit); font-size: 30px; font-weight: 800; color: var(--accent-gold-strong, #92400e);
   background: color-mix(in srgb, var(--se-gold, var(--primary)) 14%, transparent); border: 1.5px solid var(--se-gold-hair, var(--border)); }
 .seq-v21-me-pos small { font-size: 15px; margin-right: 1px; opacity: .8; align-self: flex-start; margin-top: 11px; }
 .seq-v21-me-pos.none { font-size: 24px; color: var(--sub); }
@@ -723,11 +721,11 @@
 .seq-v21-pod-val small { font-family: inherit; font-size: 9.5px; letter-spacing: 1px; color: var(--sub); font-weight: 800; font-family: var(--font-ui); }
 .seq-v21-pod-step { width: 100%; display: flex; align-items: flex-start; justify-content: center; padding-top: 6px; border-radius: 12px 12px 0 0; border: 1.5px solid var(--se-gold-hair, var(--border)); border-bottom: 0;
   background: linear-gradient(180deg, color-mix(in srgb, var(--se-gold, var(--primary)) 30%, var(--card)), color-mix(in srgb, var(--se-gold, var(--primary)) 6%, var(--card))); }
-.seq-v21-pod-step span { font-family: var(--font-display, inherit); font-size: 22px; font-weight: 800; color: var(--se-gold-light, var(--se-gold, var(--primary))); }
+.seq-v21-pod-step span { font-family: var(--font-display, inherit); font-size: 22px; font-weight: 800; color: var(--accent-gold-strong, #92400e); }
 .seq-v21-pod-1 .seq-v21-pod-step { height: 66px; }
 .seq-v21-pod-2 .seq-v21-pod-step { height: 48px; }
 .seq-v21-pod-3 .seq-v21-pod-step { height: 38px; }
-.seq-v21-pod.me .seq-v21-pod-name { color: var(--se-gold-light, var(--se-gold, var(--primary))); }
+.seq-v21-pod.me .seq-v21-pod-name { color: var(--accent-gold-strong, #92400e); }
 .seq-v21-pod.me .seq-v21-pod-step { border-color: var(--se-gold, var(--primary)); }
 /* Lista (del 4.º en adelante y quienes están en colocación): posición → jugador → insignia → puntuación */
 .seq-v21-rklist { display: grid; gap: 8px; }
@@ -751,7 +749,7 @@
 .seq-v21-statsbtn { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 14px; font: inherit; font-family: var(--font-display, inherit); font-weight: 800; font-size: 15px; text-align: left; cursor: pointer; color: var(--text);
   background: linear-gradient(145deg, color-mix(in srgb, var(--se-gold, var(--primary)) 14%, var(--card)), var(--card)); border: 1.5px solid var(--se-gold, var(--primary)); border-radius: 16px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06), 0 2px 8px rgba(0, 0, 0, .12); }
 .seq-v21-statsbtn:active { transform: scale(.985); }
-.seq-v21-statsbtn .seq-v21-ico-mode { width: 34px; height: 34px; }
+.seq-v21-statsbtn .seq-v21-ico-stats { width: 40px; height: 40px; }
 .seq-v21-statsbtn-txt { flex: 1; white-space: nowrap; }
 .seq-v21-statsbtn-chev { font-size: 24px; line-height: 1; color: var(--se-gold, var(--primary)); transition: transform .2s; }
 .seq-v21-statsbtn.open .seq-v21-statsbtn-chev { transform: rotate(90deg); }
@@ -763,7 +761,7 @@
 .seq-v21-elocard-txt { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
 .seq-v21-elocard-elo { font-size: 14px; color: var(--sub); font-weight: 800; letter-spacing: .6px; }
 .seq-v21-elocard-elo b { font-family: var(--font-display, inherit); font-size: 30px; color: var(--text); letter-spacing: 0; }
-.seq-v21-elocard-rank { font-family: var(--font-display, inherit); font-weight: 700; font-size: 17px; color: var(--se-gold-light, var(--se-gold, var(--primary))); }
+.seq-v21-elocard-rank { font-family: var(--font-display, inherit); font-weight: 700; font-size: 17px; color: var(--accent-gold-strong, #92400e); }
 .seq-v21-elocard-state { font-size: 12px; color: var(--sub); }
 /* Pista de avatar bloqueado */
 .seq-av-btn.seq-av-locked .seq-av-name { white-space: nowrap; font-size: 11px; letter-spacing: -.1px; }
