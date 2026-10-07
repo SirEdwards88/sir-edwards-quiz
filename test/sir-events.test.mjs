@@ -345,7 +345,7 @@ function run(st, n, t0 = 0) { for (let i = 0; i < n; i++) ans(st, t0 + i, 14, i 
 test('racha rota: tras 5 o más aciertos seguidos y un fallo; cita la racha real; usa la imagen de visita', () => {
   const st = S.newState(); run(st, 7);
   const ev = wrong(st, 10);
-  assert.ok(ev); assert.equal(ev.type, 'broken'); assert.equal(ev.label, 'RACHA ROTA');
+  assert.ok(ev); assert.equal(ev.type, 'broken'); assert.equal(ev.label, '');
   assert.equal(ev.asset, S.ASSETS.visit);
   assert.ok(!/\{n\}/.test(ev.message));
   const long = S.newState(); run(long, 23);
@@ -385,6 +385,6 @@ test('racha rota: frases por tramo, con {n}, sin repetidas, sin emojis y con ton
   assert.ok(ev && ev.type === 'broken');
 });
 
-test('etiquetas cortas por evento', () => {
-  assert.deepEqual({ ...S.LABELS }, { streak: 'RACHA', broken: 'RACHA ROTA', night: 'MEDIANOCHE', day: 'MADRUGADOR', visit: 'VISITA' });
+test('los eventos no llevan rótulo, solo Sir Edwards y su frase', () => {
+  assert.deepEqual({ ...S.LABELS }, {});
 });

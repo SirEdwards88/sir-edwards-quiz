@@ -40,7 +40,7 @@ const SEQSirEvents = (function () {
     day: 'assets/character/event_siredwards_day.webp',
     night: 'assets/character/event_siredwards_night.webp'
   };
-  var LABELS = { streak: 'RACHA', broken: 'RACHA ROTA', night: 'MEDIANOCHE', day: 'MADRUGADOR', visit: 'VISITA' };
+  var LABELS = {};                  // sin rótulos: Sir Edwards y su frase bastan
 
   // Frases. `h` (opcional) limita la frase a esas horas locales (para que no mienta con la hora).
   // Los grupos normales no llevan `h`: así se pueden rotar con bolsa (ver `rotate`). Las frases ligadas a una hora exacta
@@ -262,7 +262,7 @@ const SEQSirEvents = (function () {
       var btext = phraseFor('broken', Math.floor(ctx.hour), rng, state.last.broken, run, ctx.rotate);
       if (!btext) return null;
       state.shown.broken++; state.lastAt = ctx.nowMs; state.lastAnswer = state.answers; state.last.broken = btext;
-      return { type: 'broken', asset: ASSETS.broken, label: LABELS.broken, message: btext, durationMs: Math.min(5200, 3200 + btext.length * 25) };
+      return { type: 'broken', asset: ASSETS.broken, label: LABELS.broken || '', message: btext, durationMs: Math.min(5200, 3200 + btext.length * 25) };
     }
     if (state.lastAt !== null && (ctx.nowMs - state.lastAt < COOLDOWN_MS || state.answers - state.lastAnswer < MIN_ANSWERS_BETWEEN)) return null;
 
