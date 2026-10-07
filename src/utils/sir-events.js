@@ -3,15 +3,18 @@
 // Son 100 % cosméticos: no tocan puntuación, vidas, tiempo, rachas, XP ni Fragmentos. Este archivo solo decide SI aparece
 // un evento y CUÁL (y su frase); quien lo llama (src/state/sir-events.js) lo muestra con src/ui/sir-events-ui.js.
 //
-// Cuatro eventos, un único sistema:
+// Cinco eventos, un único sistema:
 // · streak () hito de racha 10  15  20  30; cada hito una sola vez por partida.
+// · broken () racha rota: un FALLO tras 5 o más aciertos seguidos; la frase cita el número real. Una vez por partida.
+//   Es el único que sale tras un fallo; usa la imagen de «visita» (Sir Edwards observando).
 // · night () 00:00–04:00 hora local.
 // · day () 06:00–10:00 hora local.
 // · visit () genérico (incluye el antiguo «evaluando»).
-// Prioridad: streak > night > day > visit; como máximo UNO por respuesta, y la prioridad nunca se salta el cooldown ni
-// los límites (si el prioritario no puede, se evalúa el siguiente).
+// Prioridad (tras un acierto): streak > night > day > visit; como máximo UNO por respuesta, y la prioridad nunca se salta el
+// cooldown ni los límites. «Racha rota» solo tras un fallo y con su propio margen (no espera el cooldown largo, pero nunca sale
+// justo detrás de otro evento).
 //
-// Cuándo se evalúa: solo tras un acierto, a partir de la 3.ª respuesta de la partida, con probabilidad baja, con un
+// Cuándo se evalúa: tras un acierto (o, para «racha rota», tras un fallo), a partir de la 3.ª respuesta de la partida, con probabilidad baja, con un
 // cooldown de tiempo y de respuestas entre eventos, y máx. 1 por partida de visit/day/night.
 //
 // El estado de eventos es de UNA partida (newState al empezar); nada se guarda en el progreso del jugador.
@@ -26,28 +29,31 @@ const SEQSirEvents = (function () {
   var P = { visit: 0.03, day: 0.10, night: 0.15 };        // probabilidad por acierto evaluado (día y noche: horas raras, más probables)
   var STREAK_P = { 10: 0.7, 15: 0.85, 20: 1, 30: 1 };     // 10 «puede», 15 más probable, 20 y 30 especiales
   var MILESTONES = [10, 15, 20, 30];
+  var BROKEN_MIN_RUN = 5;         // racha mínima para que su rotura merezca comentario
+  var BROKEN_P = { low: 0.6, mid: 0.9, high: 1 };         // 5-9 · 10-19 · 20 o más
   var RARE_P = 0.05;              // frase «muy rara»
 
   var ASSETS = {
     visit: 'assets/character/event_siredwards_visit.webp',
+    broken: 'assets/character/event_siredwards_visit.webp',
     streak: 'assets/character/event_siredwards_streak.webp',
     day: 'assets/character/event_siredwards_day.webp',
     night: 'assets/character/event_siredwards_night.webp'
   };
-  var LABELS = { streak: 'SirEdwards ha detectado una racha' };
+  var LABELS = { streak: 'RACHA', broken: 'RACHA ROTA', night: 'MEDIANOCHE', day: 'MADRUGADOR', visit: 'VISITA' };
 
   // Frases. `h` (opcional) limita la frase a esas horas locales (para que no mienta con la hora).
   // Los grupos normales no llevan `h`: así se pueden rotar con bolsa (ver `rotate`). Las frases ligadas a una hora exacta
   // viven en los grupos «raros» y se eligen al azar entre las válidas para la hora.
   var VISIT = [
-    '«Ah, tú por aquí.»', '«Veo que has vuelto.»', '«Continúa, continúa.»', '«No quería interrumpir.»',
-    '«Solo estaba pasando por aquí.»', '«Muy bien. Prosigue.»', '«Me alegra verte por aquí.»',
-    '«He venido a supervisar. No te pongas nervioso.»', '«No hay presión. Bueno... quizá un poco.»',
-    '«Continúa. Fingiré que no estoy mirando.»', '«Estoy de paso. Procura no hacer el ridículo.»',
-    '«Todo parece estar en orden. De momento.»', '«Interesante. Sigue, sigue.»', '«No te preocupes. Mi libreta es confidencial.»',
-    '«Un caballero siempre observa antes de opinar.»', '«Sigue. Tomo notas, por si acaso.»', '«Estoy aquí solo por si necesitas un testigo.»',
-    '«Qué concentración. Casi parece que te importa.»', '«Pasaba por aquí y me quedé por curiosidad.»', '«No me hagas caso. Hazlo bien, sin más.»',
-    '«Ah. Sigues aquí.»', '«Veo que hoy has decidido intentarlo.»', '«No te distraigas. Sería una lástima.»', '«Una respuesta sensata. Qué agradable sorpresa.»', '«Sigue. Mi opinión sobre ti sigue en revisión.»', '«Todo correcto. No arruines mi informe.»', '«Me alegra comprobar que aún sabes responder.»', '«He visto cosas peores. También mejores.»', '«Continúa. Todavía no me has decepcionado.»', '«Interesante. Por ahora no tengo que intervenir.»'
+    '«Ah, tú por aquí. Qué casualidad tan bien planeada.»', '«No me hagas caso. Yo solo supervisaba.»',
+    '«Tomo notas. Tranquilo: la mayoría son favorables. Alguna.»', '«Un caballero siempre observa antes de opinar. Yo ya he opinado.»',
+    '«Estoy aquí solo por si necesitas un testigo.»', '«Sigue, sigue. Fingiré que no estoy mirando.»',
+    '«He visto cosas peores. También mejores. Hoy, de momento, ninguna de las dos.»', '«Qué concentración. Casi parece que te importa.»',
+    '«Pasaba por aquí. Es mentira, pero queda elegante.»', '«No te distraigas por mí. Hazlo por tu dignidad.»',
+    '«Mi libreta y yo seguimos en silencio. Es lo más amable que haremos hoy.»', '«Una respuesta sensata. Lo anoto como anomalía.»',
+    '«Todo en orden. No arruines mi informe.»', '«Sigues aquí. Yo también. Qué pareja tan poco prometedora.»',
+    '«Continúa. Todavía no me has decepcionado. Todavía.»'
   ];
   var VISIT_RARE = ['«No tengo nada que añadir. Es preocupante.»', '«Si estás leyendo esto, deberías estar mirando la pregunta.»'];
   var STREAK_PHRASES = {
@@ -63,6 +69,20 @@ const SEQSirEvents = (function () {
     30: ['«Treinta. Bien. Ahora sí estoy impresionado.»', '«Esto ya no es suerte.»', '«Creo que acabamos de encontrar un problema para tus rivales.»', '«SirEdwards Imparable. Te lo has ganado.»',
       '«Treinta. Voy a tener que retirar algunas de mis opiniones.»', '«Hay que ser muy valiente para seguir ahora.»',
       '«Treinta. Esto ya no necesita comentarios. Y eso me molesta.»', '«Treinta. Mis felicitaciones. No las malgastes.»', '«Treinta aciertos. Admito que has sido impecable.»']
+  };
+  // Racha rota: {n} es la racha real que acaba de perder (la sustituye evaluate; la bolsa rota por tramos guarda la plantilla).
+  var BROKEN_PHRASES = {
+    low: ['«{n} seguidas. Y entonces, esto. Lo he anotado.»', '«Qué racha tan breve. Y qué final tan innecesario.»', '«{n} aciertos y un tropiezo. Muy propio.»',
+      '«Y ahí se acabó. Con {n} no se presume, pero se pierde igual.»', '«Era una buena racha. Para ser tuya.»',
+      '«{n} seguidas, tirado por la borda con elegancia.»', '«Lo estabas haciendo bien. Qué descuido tan puntual.»', '«Un fallo a tiempo. Qué considerado: así no te acostumbras.»'],
+    mid: ['«{n} de racha tirados por una sola pregunta. Elegante, a su manera.»', '«{n}. Y ahora cero. Las matemáticas no perdonan.»',
+      '«Qué lástima. Iba a decir algo agradable, y ya no.»', '«{n} aciertos seguidos y una sola pregunta para destruirlos. Admirable economía.»',
+      '«Lo he visto. Todos lo hemos visto. Yo, sobre todo.»', '«Así termina una racha: sin avisar y con público.»',
+      '«{n}. Hubiera preferido no tener que comentar esto.»', '«Ni siquiera yo esperaba que fallaras justo ahora. Mentira: sí.»'],
+    high: ['«{n}. {n}, y ahora esto. Qué manera tan cuidadosa de arruinarlo.»', '«{n} seguidas. Y una sola respuesta para recordarte que eres humano.»',
+      '«Hubo {n}. Habrá que repasar qué pasó en la siguiente. Aunque creo saberlo.»', '«{n} aciertos y un final de telenovela.»',
+      '«Mi libreta guardará {n} aciertos. Y esta pregunta. Sobre todo esta pregunta.»', '«Una racha de {n} merece un funeral. Estoy pensando en la música.»',
+      '«{n}... y ahora el silencio. Lo siento. No tanto como crees.»', '«Casi pude respetarte. {n} seguidas. Casi.»']
   };
   var DAY = [
     '«Buenos días. Veamos qué estás tramando.»', '«Una mañana prometedora. No la estropees.»', '«Ya despierto y haciendo preguntas. Admirable.»',
@@ -93,7 +113,7 @@ const SEQSirEvents = (function () {
   function isDay(hour) { return hour >= 6 && hour < 10; }
 
   function newState() {
-    return { shown: { visit: 0, day: 0, night: 0 }, milestones: {}, lastAt: null, lastAnswer: null, answers: 0, last: {} };
+    return { shown: { visit: 0, day: 0, night: 0, broken: 0 }, milestones: {}, lastAt: null, lastAnswer: null, answers: 0, run: 0, last: {} };
   }
 
   // Elige una frase del grupo (cadena u objeto {t,h}) válida para la hora, sin repetir la última del mismo evento.
@@ -124,6 +144,11 @@ const SEQSirEvents = (function () {
   function phraseFor(type, hour, rng, avoid, milestone, rotate) {
     var rare = { visit: VISIT_RARE, day: DAY_RARE, night: NIGHT_RARE }[type];
     if (rare && rng() < RARE_P) { var r = chooseRare(type + '_rare', rare, hour, rng, avoid, rotate); if (r) return r; }
+    if (type === 'broken') {
+      var tier = milestone >= 20 ? 'high' : milestone >= 10 ? 'mid' : 'low';
+      var tpl = choose('broken_' + tier, BROKEN_PHRASES[tier], hour, rng, avoid, rotate);
+      return tpl ? tpl.replace(/\{n\}/g, String(milestone)) : null;
+    }
     if (type === 'streak') return choose('streak_' + milestone, STREAK_PHRASES[milestone], hour, rng, avoid, rotate);
     if (type === 'visit') return choose('visit', VISIT, hour, rng, avoid, rotate);
     if (type === 'day') return choose('day', DAY, hour, rng, avoid, rotate);
@@ -145,8 +170,23 @@ const SEQSirEvents = (function () {
   function evaluate(state, ctx, rng) {
     rng = rng || Math.random;
     state.answers++;                                 // respuestas de la partida (acierto o no)
-    if (!ctx || ctx.correct !== true || ctx.blocked || ctx.last) return null;
+    if (!state.shown.broken) state.shown.broken = 0;
+    var run = state.run || 0;                        // aciertos seguidos que llevaba el motor antes de esta respuesta
+    if (ctx && ctx.correct === true) state.run = run + 1; else state.run = 0;
+    if (!ctx || ctx.blocked || ctx.last) return null;
     if (state.answers <= MIN_ANSWERS_START) return null;
+
+    // Racha rota: un fallo tras una buena racha. No en Repaso (allí no hay racha: lo avisa quien llama con noBroken).
+    if (ctx.correct !== true) {
+      if (ctx.noBroken || run < BROKEN_MIN_RUN || state.shown.broken >= 1) return null;
+      if (state.lastAnswer !== null && state.answers - state.lastAnswer < 2) return null;     // nunca pegado a otro evento
+      var tier = run >= 20 ? BROKEN_P.high : run >= 10 ? BROKEN_P.mid : BROKEN_P.low;
+      if (!(rng() < tier)) return null;
+      var btext = phraseFor('broken', Math.floor(ctx.hour), rng, state.last.broken, run, ctx.rotate);
+      if (!btext) return null;
+      state.shown.broken++; state.lastAt = ctx.nowMs; state.lastAnswer = state.answers; state.last.broken = btext;
+      return { type: 'broken', asset: ASSETS.broken, label: LABELS.broken, message: btext, durationMs: Math.min(5200, 3200 + btext.length * 25) };
+    }
     if (state.lastAt !== null && (ctx.nowMs - state.lastAt < COOLDOWN_MS || state.answers - state.lastAnswer < MIN_ANSWERS_BETWEEN)) return null;
 
     var hour = Math.floor(ctx.hour);
@@ -170,8 +210,8 @@ const SEQSirEvents = (function () {
 
   return {
     COOLDOWN_MS: COOLDOWN_MS, MIN_ANSWERS_BETWEEN: MIN_ANSWERS_BETWEEN, MIN_ANSWERS_START: MIN_ANSWERS_START,
-    P: P, STREAK_P: STREAK_P, MILESTONES: MILESTONES, ASSETS: ASSETS, LABELS: LABELS, RARE_P: RARE_P,
-    PHRASES: { visit: VISIT, visitRare: VISIT_RARE, streak: STREAK_PHRASES, day: DAY, dayRare: DAY_RARE, nightEarly: NIGHT_EARLY, nightLate: NIGHT_LATE, nightRare: NIGHT_RARE },
+    P: P, STREAK_P: STREAK_P, BROKEN_MIN_RUN: BROKEN_MIN_RUN, BROKEN_P: BROKEN_P, MILESTONES: MILESTONES, ASSETS: ASSETS, LABELS: LABELS, RARE_P: RARE_P,
+    PHRASES: { visit: VISIT, visitRare: VISIT_RARE, streak: STREAK_PHRASES, broken: BROKEN_PHRASES, day: DAY, dayRare: DAY_RARE, nightEarly: NIGHT_EARLY, nightLate: NIGHT_LATE, nightRare: NIGHT_RARE },
     isNight: isNight, isDay: isDay, newState: newState, evaluate: evaluate
   };
 })();

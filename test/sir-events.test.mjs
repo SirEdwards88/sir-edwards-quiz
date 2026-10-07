@@ -170,7 +170,7 @@ test('el estado es de UNA partida: newState reinicia límites e hitos', () => {
   const a = S.newState(); warm(a); assert.ok(ans(a, 1e6, 14));
   assert.equal(ans(a, 9e6, 14, 1, {}, ALWAYS), null, 'visit ya usado en esa partida');
   const b = S.newState(); warm(b); assert.ok(ans(b, 1e6, 14), 'partida nueva: vuelve a poder salir');
-  assert.deepEqual(JSON.parse(JSON.stringify(S.newState())), { shown: { visit: 0, day: 0, night: 0 }, milestones: {}, lastAt: null, lastAnswer: null, answers: 0, last: {} });
+  assert.deepEqual(JSON.parse(JSON.stringify(S.newState())), { shown: { visit: 0, day: 0, night: 0, broken: 0 }, milestones: {}, lastAt: null, lastAnswer: null, answers: 0, run: 0, last: {} });
 });
 
 // ---- Enganche con la partida: no modifica nada del juego ----
@@ -319,8 +319,8 @@ test('rotación: un evento que no llega a verse devuelve su frase a la bolsa', (
 
 test('catálogos: ningún grupo normal lleva frases ligadas a una hora; las de hora exacta están en los raros', () => {
   const ph = S.PHRASES;
-  for (const list of [ph.visit, ph.day, ph.nightEarly, ph.nightLate, ph.streak[10], ph.streak[15], ph.streak[20], ph.streak[30]]) assert.ok(list.every((x) => typeof x === 'string'));
-  assert.ok(ph.day.length >= 14 && ph.nightEarly.length >= 9 && ph.nightLate.length >= 9 && ph.visit.length >= 20);
+  for (const list of [ph.broken.low, ph.broken.mid, ph.broken.high, ph.visit, ph.day, ph.nightEarly, ph.nightLate, ph.streak[10], ph.streak[15], ph.streak[20], ph.streak[30]]) assert.ok(list.every((x) => typeof x === 'string'));
+  assert.ok(ph.day.length >= 14 && ph.nightEarly.length >= 9 && ph.nightLate.length >= 9 && ph.visit.length >= 12);
   [10, 15, 20, 30].forEach((m) => assert.ok(ph.streak[m].length >= 6));
   assert.ok(S.P.night > S.P.day && S.P.day > S.P.visit, 'noche más probable que día, y ambos más que la visita genérica');
   assert.equal(S.P.night, 0.15); assert.equal(S.P.day, 0.10);
@@ -336,4 +336,55 @@ test('rotación: las frases raras también usan bolsa (una por hora si dependen 
   }
   assert.ok(keys.has('visit_rare') && keys.has('night_rare_3') && keys.has('day_rare_7'));
   assert.ok([...keys.keys()].filter((k) => /_rare_\d+$/.test(k)).every((k) => keys.get(k).size === 1), 'cada bolsa horaria solo se pide a su hora');
+});
+
+// ---- Racha rota ----
+const wrong = (st, t, hour = 14, extra = {}, rng = ALWAYS) => S.evaluate(st, { nowMs: t, hour, streak: 0, correct: false, last: false, blocked: false, ...extra }, rng);
+function run(st, n, t0 = 0) { for (let i = 0; i < n; i++) ans(st, t0 + i, 14, i + 1, {}, NEVER); }
+
+test('racha rota: tras 5 o más aciertos seguidos y un fallo; cita la racha real; usa la imagen de visita', () => {
+  const st = S.newState(); run(st, 7);
+  const ev = wrong(st, 10);
+  assert.ok(ev); assert.equal(ev.type, 'broken'); assert.equal(ev.label, 'RACHA ROTA');
+  assert.equal(ev.asset, S.ASSETS.visit);
+  assert.ok(!/\{n\}/.test(ev.message));
+  const long = S.newState(); run(long, 23);
+  const e2 = wrong(long, 10);
+  assert.equal(e2.type, 'broken');
+});
+
+test('racha rota: no con racha corta, no en Repaso, no en la última pregunta, no oculta, una sola vez por partida', () => {
+  const a = S.newState(); run(a, S.BROKEN_MIN_RUN - 1); assert.equal(wrong(a, 10), null);
+  const b = S.newState(); run(b, 8); assert.equal(wrong(b, 10, 14, { noBroken: true }), null);
+  const c = S.newState(); run(c, 8); assert.equal(wrong(c, 10, 14, { last: true }), null);
+  const d = S.newState(); run(d, 8); assert.equal(wrong(d, 10, 14, { blocked: true }), null);
+  const e = S.newState(); run(e, 8); assert.ok(wrong(e, 10));
+  run(e, 8, 100); assert.equal(wrong(e, 200), null, 'solo una vez por partida');
+  const f = S.newState(); run(f, 8); assert.equal(wrong(f, 10, 14, {}, NEVER), null, 'y la tirada manda');
+});
+
+test('racha rota: el fallo cuenta como respuesta, no se pega a otro evento y los aciertos tras él empiezan de cero', () => {
+  const st = S.newState(); warm(st);
+  const ev = ans(st, 100000, 14, 10, {}, ALWAYS);                  // hito de racha en la 4.ª respuesta
+  assert.equal(ev.type, 'streak');
+  assert.equal(wrong(st, 100001), null, 'justo detrás de otro evento, no');
+  const g = S.newState(); run(g, 6); wrong(g, 10);                   // se rompe la racha
+  assert.equal(g.run, 0);
+});
+
+test('racha rota: frases por tramo, con {n}, sin repetidas, sin emojis y con tono', () => {
+  const B = S.PHRASES.broken;
+  assert.deepEqual(Object.keys(B).sort(), ['high', 'low', 'mid']);
+  const all = [].concat(B.low, B.mid, B.high);
+  assert.equal(new Set(all).size, all.length);
+  assert.ok(all.every((t) => /^«.+»$/.test(t) && t.length < 95 && !/\p{Extended_Pictographic}/u.test(t)));
+  assert.ok(B.low.length >= 6 && B.mid.length >= 6 && B.high.length >= 6);
+  assert.ok(B.mid.some((t) => t.includes('{n}')) && B.high.some((t) => t.includes('{n}')));
+  const st = S.newState(); run(st, 12);
+  const ev = wrong(st, 10, 14, {}, mulberry(3));
+  assert.ok(ev && ev.type === 'broken');
+});
+
+test('etiquetas cortas por evento', () => {
+  assert.deepEqual({ ...S.LABELS }, { streak: 'RACHA', broken: 'RACHA ROTA', night: 'MEDIANOCHE', day: 'MADRUGADOR', visit: 'VISITA' });
 });

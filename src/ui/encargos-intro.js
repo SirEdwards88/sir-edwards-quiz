@@ -5,7 +5,6 @@
 //   · Escena grande: tras terminar una partida (cualquiera salvo Repaso, incluidos Duelo y Reto), al volver a Inicio, si no hay
 //     modal ni partida a la vista. Si algo estorba, no se marca nada y se reintenta en la siguiente visita a Inicio.
 //   · Carta de los lunes: una vez por lunes, la primera vez que se abre Inicio (y nunca el día de la gran presentación).
-//   · Tras la escena queda pendiente UN evento sorpresa con réplica a «Te estaré observando» (ver src/state/sir-events.js).
 // Necesita: encargos-intro-core.js, encargos-intro-phrases.js, encargos-core.js (semana); usa en ejecución switchTab, store y
 // pickRotatingPhrase de index.html. Solo animaciones de opacidad/transformación; con «reducir movimiento» solo fundidos.
 
@@ -14,7 +13,6 @@ const SEQEncargosIntro = (function () {
 
   var K_SEEN = 'siredwards_quiz_encargos_intro_seen';        // valor: día local AAAA-MM-DD en que se vio
   var K_MONDAY = 'siredwards_quiz_encargos_monday_week';      // valor: semana (AAAA-Www) cuya carta ya salió
-  var K_CALLBACK = 'siredwards_quiz_encargos_callback';       // '1' = falta por salir el evento de réplica
   var mem = {};                                                // respaldo si localStorage no está disponible
   var pendingResult = null;                                    // resultado de la última partida terminada (solo en memoria)
   var active = null;                                           // escena o carta en curso
@@ -42,9 +40,6 @@ const SEQEncargosIntro = (function () {
   }
 
   function seen() { return !!get(K_SEEN); }
-  function callbackPending() { return get(K_CALLBACK) === '1'; }
-  function takeCallback() { set(K_CALLBACK, '0'); }
-  function callbackLine() { return (typeof ENCARGOS_INTRO !== 'undefined' && ENCARGOS_INTRO.callback) || ''; }
 
   // ¿Algo que no se debe tapar? Modales, la escena en curso, una partida, otra pantalla distinta de Inicio, o app en segundo plano.
   function blocked() {
@@ -233,7 +228,7 @@ const SEQEncargosIntro = (function () {
       if (ended) return;
       ended = true; clearAll(); menuMusic(false);
       document.removeEventListener('keydown', onSpace, true); document.removeEventListener('visibilitychange', onHidden);
-      if (!preview) { set(K_SEEN, dayKey(new Date())); set(K_CALLBACK, '1'); pendingResult = null; }
+      if (!preview) { set(K_SEEN, dayKey(new Date())); pendingResult = null; }
       unmount(el, offKeys);
       active = null;
       try {
@@ -332,8 +327,7 @@ const SEQEncargosIntro = (function () {
     });
   }
 
-  // Vista previa: abrir la app con «?presentacion» en la dirección repite la escena grande sin marcar nada (ni «vista», ni la réplica del
-  // evento): sirve para revisarla las veces que haga falta. Espera a que no haya modales, cuenta ni partida delante.
+  // Vista previa: abrir la app con «?presentacion» en la dirección repite la escena grande sin marcar nada (ni «vista»): sirve para revisarla las veces que haga falta. Espera a que no haya modales, cuenta ni partida delante.
   function replay() {
     var tries = 0;
     (function wait() {
@@ -342,8 +336,7 @@ const SEQEncargosIntro = (function () {
     })();
   }
 
-  return { seen: seen, replay: replay, noteGame: noteGame, noteDuel: noteDuel, onHome: onHome, callbackPending: callbackPending, takeCallback: takeCallback,
-    callbackLine: callbackLine, isActive: function () { return !!active; } };
+  return { seen: seen, replay: replay, noteGame: noteGame, noteDuel: noteDuel, onHome: onHome, isActive: function () { return !!active; } };
 })();
 
 // Un lunes con la app ya abierta: se comprueba una vez al arrancar (si hay modales o cuenta, se deja para la siguiente visita a Inicio).

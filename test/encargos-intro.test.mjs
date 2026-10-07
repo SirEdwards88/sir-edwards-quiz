@@ -21,7 +21,7 @@ test('frases: sin vacías, sin repetidas, sin emojis, con las claves que clasifi
   Object.values(P.result).forEach((l) => { assert.ok(l.length >= 1); all.push(...l); });
   ['verdict', 'comment'].forEach((g) => Object.values(P.monday[g]).forEach((l) => all.push(...l)));
   all.push(...P.monday.close);
-  all.push(P.monday.open, P.monday.openOther, P.callback);
+  all.push(P.monday.open, P.monday.openOther);
   assert.equal(new Set(all).size, all.length, 'ninguna frase repetida, ni dentro de una bolsa ni entre bolsas');
   assert.ok(all.every((t) => t.length > 5 && t.length < 100 && noEmoji(t)));
   assert.equal(P.monday.open, 'Es lunes.');
@@ -189,13 +189,12 @@ test('historial: sin los dos logros de Duelo en la 2.0, apuestas solo en la 2.1,
   assert.match(html, /<li>Sonidos nuevos y música para los menús\.<\/li>/);
 });
 
-test('el evento de réplica se usa una sola vez y solo en los modos permitidos', () => {
+test('no hay evento de réplica tras la presentación; los eventos solo salen en los modos permitidos', () => {
   const st = read('src/state/sir-events.js');
-  assert.match(st, /SEQEncargosIntro\.callbackPending\(\)/);
-  assert.match(st, /else if \(cb\) SEQEncargosIntro\.takeCallback\(\)/);
+  assert.ok(!/callback/i.test(st) && !/callback/i.test(read('src/ui/encargos-intro.js')));
   assert.match(st, /SIR_EVENT_MODES = \['play', 'survival', 'sudden_death', 'review', 'lucidez_mental'\]/);
-  const { P } = load();
-  assert.match(P.callback, /Solo observaba/);
+  assert.match(st, /noBroken: g\.mode === 'review'/);
+  assert.ok(!('callback' in load().P));
 });
 
 test('ausencia: tres semanas o más sin ver una carta → «has vuelto», sin juzgar ninguna semana concreta', () => {

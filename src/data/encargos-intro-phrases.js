@@ -161,7 +161,5 @@ const ENCARGOS_INTRO = {
       'Los encargos no se completan solos. Lo he intentado, por si acaso.',
       'Cuando quieras. Es decir, cuanto antes.'
     ]
-  },
-  // Primer evento sorpresa tras la presentación (réplica de «Te estaré observando.»).
-  callback: '¿Me echabas de menos? Solo observaba.'
+  }
 };
