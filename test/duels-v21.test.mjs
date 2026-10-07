@@ -155,10 +155,11 @@ test('Rankings: dos ámbitos, tres tableros exactos, sin ranking universal ni em
   assert.match(sinAtributos, /Amigos/); assert.match(sinAtributos, /Global/);
   assert.match(sinAtributos, /PvP/); assert.match(sinAtributos, /Cálculo Mental/); assert.match(sinAtributos, /Contrarreloj/);
   assert.equal(/\p{Extended_Pictographic}/u.test(sinAtributos), false, 'ningún emoji como iconografía visible');
-  for (const id of ['friends', 'global', 'pvp', 'mental', 'timetrial']) assert.match(html, new RegExp('assets/duelos/rankings/' + id + '\\.webp'));
+  for (const id of ['pvp', 'mental', 'timetrial']) assert.match(html, new RegExp('assets/duelos/rankings/' + id + '\\.webp'));
+  assert.equal(/rankings\/(friends|global)\.webp/.test(html), false, 'el ámbito es un selector de texto, sin iconos');
 });
 
-test('Rankings: el seleccionado se reconoce (aria-selected y clase) y los dos ámbitos son botones con icono', () => {
+test('Rankings: el seleccionado se reconoce (aria-selected y clase); el ámbito es un selector de texto', () => {
   const { M, win } = load();
   win.SEQDuels._h.call = () => new Promise(() => {});
   let html = M.renderRankings();
@@ -170,36 +171,60 @@ test('Rankings: el seleccionado se reconoce (aria-selected y clase) y los dos á
   assert.match(html, /seq-v21-scope-btn sel[^>]*>[\s\S]*?Global/);
 });
 
-test('Rankings: filas con la misma estructura en los tres rankings (posición, jugador, insignia, puntuación)', async () => {
+test('Rankings PvP: «Tu posición», podio con medallas, insignia de rango y colocación en la lista', async () => {
   const { M, win } = load();
+  const lord = { nombre: 'Lord Sabelotodo', icono: 'lord_sabelotodo' }, cab = { nombre: 'Caballero del Dato', icono: 'caballero_del_dato' };
   win.SEQDuels._h.call = () => Promise.resolve({
-    scope: 'friends', board: 'pvp', validado: true, me: { elo: 1265, rank: 2, rango: { nombre: 'Lord Sabelotodo', icono: 'lord_sabelotodo' }, en_colocacion: false },
-    ranking: [{ rank: 1, display_name: 'Ana', avatar: 'sombrero', elo: 1300, rango: { nombre: 'Lord Sabelotodo', icono: 'lord_sabelotodo' }, en_colocacion: false, is_me: false },
-      { rank: null, display_name: 'Rita', avatar: 'libro', elo: 1500, rango: { nombre: 'Sir Edwards' }, en_colocacion: true, is_me: false }],
+    scope: 'friends', board: 'pvp', validado: true, me: { elo: 1265, rank: 2, rango: lord, en_colocacion: false },
+    ranking: [{ rank: 1, display_name: 'Ana', avatar: 'sombrero', elo: 1300, rango: lord, en_colocacion: false, is_me: false },
+      { rank: 2, display_name: 'Yo', avatar: 'libro', elo: 1265, rango: lord, en_colocacion: false, is_me: true },
+      { rank: 3, display_name: 'Cris', avatar: 'lupa', elo: 1200, rango: cab, en_colocacion: false, is_me: false },
+      { rank: 4, display_name: 'Dani', avatar: 'pipa', elo: 1100, rango: cab, en_colocacion: false, is_me: false },
+      { rank: null, display_name: 'Rita', avatar: 'reloj', elo: 1500, rango: { nombre: 'Sir Edwards' }, en_colocacion: true, is_me: false }],
   });
   await M.loadRankings();
-  const pvp = M.renderRankings();
-  assert.match(pvp, /seq-v21-pos gold">1</); assert.match(pvp, /En colocación/); assert.match(pvp, /1\.300/); assert.match(pvp, /Lord Sabelotodo/); assert.match(pvp, /#2/);
-  assert.match(pvp, /lord_sabelotodo\.webp/, 'PvP: insignia de rango');
-  assert.equal(/sin verificar/i.test(pvp), false);
-  const rowsOf = (h) => h.split('seq-v21-rk"').length - 1 + h.split('seq-v21-rk me"').length - 1;
-  const score = { validado: false, ranking: [{ rank: 1, display_name: 'Ana', avatar: 'x', score: 4000, is_me: true }, { rank: 2, display_name: 'Bruno', avatar: 'y', score: 3000, is_me: false }, { rank: 3, display_name: 'Carla', avatar: 'z', score: 2500, is_me: false }], me: { score: 4000, rank: 1 } };
+  const h = M.renderRankings();
+  assert.match(h, /seq-v21-podium/); assert.match(h, /seq-v21-pod-1/); assert.match(h, /seq-v21-pod-2/); assert.match(h, /seq-v21-pod-3/);
+  for (const m of ['oro', 'plata', 'bronce']) assert.match(h, new RegExp('assets/ui/' + m + '\\.webp'), 'medalla ' + m);
+  assert.match(h, /seq-v21-me-pos[^>]*><small>#<\/small>2/, '«Tu posición»: puesto 2');
+  assert.match(h, /1\.265 ELO/); assert.match(h, /lord_sabelotodo\.webp/, 'insignia de rango');
+  assert.equal((h.match(/seq-v21-rk-badge/g) || []).length, 1, 'solo Dani (clasificado) lleva insignia en la lista; Rita está en colocación');
+  assert.match(h, /En colocación/); assert.match(h, /seq-v21-pos">4</); assert.match(h, /seq-v21-pos none">—</);
+  assert.equal(/sin verificar/i.test(h), false);
+  assert.match(SRC, /El Salón de la Fama/);
+});
+
+test('Rankings Cálculo Mental y Contrarreloj: misma estructura, sin inventar rangos', async () => {
+  const { M, win } = load();
+  const rows = [['Ana', 4000], ['Bruno', 3000], ['Carla', 2500], ['Dani', 2000], ['Eva', 1500]].map(([n, s], i) => ({ rank: i + 1, display_name: n, avatar: 'x' + i, score: s, is_me: i === 2 }));
   for (const board of ['mental', 'timetrial']) {
-    win.SEQDuels._h.call = () => Promise.resolve(score);
+    win.SEQDuels._h.call = () => Promise.resolve({ validado: false, ranking: rows, me: { score: 2500, rank: 3 } });
     M.setBoard(board); await M.loadRankings();
     const h = M.renderRankings();
-    assert.match(h, /4\.000/); assert.match(h, /seq-v21-pos silver">2</); assert.match(h, /seq-v21-pos bronze">3</);
+    assert.match(h, /seq-v21-podium/); assert.match(h, /4\.000/); assert.match(h, /2\.500 pts/);
+    assert.match(h, /seq-v21-me-pos[^>]*><small>#<\/small>3/);
     assert.equal(/sin verificar/i.test(h), false, 'se eliminó «sin verificar por el servidor»');
-    assert.equal((h.match(/seq-v21-rk-badge/g) || []).length, 3, board + ': cada fila lleva el emblema de su categoría');
-    assert.equal((h.match(/seq-avatar seq-v21-rk-av/g) || []).length, 3, 'avatar dentro del contenedor circular estándar');
-    assert.match(h, new RegExp('assets/duelos/rankings/' + board + '\\.webp'));
+    assert.equal(/seq-v21-rk-badge|rangos\//.test(h), false, board + ': no hay rangos que mostrar ni se inventan');
+    assert.equal((h.match(/seq-avatar seq-v21-rk-av/g) || []).length, 2, 'puestos 4 y 5 en la lista, con avatar en el contenedor estándar');
+    assert.equal((h.match(/seq-avatar seq-v21-pod-ring/g) || []).length, 3, 'tres avatares en el podio');
+    assert.match(h, new RegExp('assets/duelos/rankings/' + board + '\.webp'));
   }
+});
+
+test('Rankings: con menos de tres jugadores no hay podio; los primeros llevan su medalla en la lista', async () => {
+  const { M, win } = load();
+  win.SEQDuels._h.call = () => Promise.resolve({ validado: true, me: { score: 900, rank: 1 }, ranking: [{ rank: 1, display_name: 'Solo', avatar: 'x', score: 900, is_me: true }, { rank: 2, display_name: 'Otro', avatar: 'y', score: 400, is_me: false }] });
+  M.setBoard('mental'); await M.loadRankings();
+  const h = M.renderRankings();
+  assert.equal(h.includes('seq-v21-podium'), false);
+  assert.equal((h.match(/class="seq-v21-rk( me)?"/g) || []).length, 2, 'los dos van en la lista');
+  assert.match(h, /assets\/ui\/oro\.webp/); assert.match(h, /assets\/ui\/plata\.webp/);
 });
 
 test('Rankings: el avatar no se recorta (contenedor estándar con tamaño propio y fila con altura mínima)', () => {
   const css = read('styles/online.css');
   assert.match(css, /\.seq-v21-rk \.seq-avatar\.seq-v21-rk-av \{[^}]*width: 46px; height: 46px/);
-  assert.match(css, /\.seq-v21-rk \{[^}]*min-height: 64px/);
+  assert.match(css, /\.seq-v21-rk \{[^}]*min-height: 62px/);
   assert.equal(/\.seq-v21-rk-av \{ width: 30px/.test(css), false, 'la regla antigua que lo recortaba ya no existe');
   assert.match(SRC, /seq-avatar seq-v21-rk-av/);
 });
@@ -233,18 +258,20 @@ test('Estadísticas: solo un botón «Ver estadísticas de duelos»; al pulsarlo
   assert.match(host.innerHTML, /aria-expanded="false"/);
   assert.equal(host.innerHTML.includes('class="seq-v21-full"'), false, 'cerrado: no hay detalle ni resumen');
   M.toggleStats(); await M.loadStats(true);
-  assert.match(host.innerHTML, /Ocultar estadísticas de duelos/); assert.match(host.innerHTML, /aria-expanded="true"/);
+  assert.match(host.innerHTML, /Ocultar estadísticas/); assert.match(host.innerHTML, /aria-expanded="true"/);
   assert.match(host.innerHTML, /class="seq-v21-full"/); assert.match(host.innerHTML, /1\.284/); assert.match(host.innerHTML, /#84/);
   M.toggleStats();
   assert.equal(host.innerHTML.includes('class="seq-v21-full"'), false);
   assert.match(host.innerHTML, /Ver estadísticas de duelos/);
 });
 
-test('Estadísticas completas: ELO, pico, posición, colocación, rachas, historial de ambos modos y cara a cara (sin duplicar el Historial)', () => {
+test('Estadísticas completas: ELO y rango, pico, posición, últimos duelos de ambos modos y cara a cara (sin duplicar el Historial)', () => {
   const { M } = load();
   const html = M._pure.fullStatsHtml(STATS);
-  for (const t of ['ELO actual', 'Pico de ELO', 'Posición global', 'Colocación', 'Racha actual', 'Mejor racha', 'Historial de duelos', 'Cara a cara']) assert.match(html, new RegExp(t));
-  assert.equal(/Historial competitivo|% victorias|>Derrotas<|>Empates<|>Victorias</.test(html), false, 'partidas/victorias/derrotas/empates ya están en «Historial de duelos»');
+  for (const t of ['Pico de ELO', 'Posición global', 'Duelos con ELO', 'Últimos duelos con ELO', 'Cara a cara', 'Lord Sabelotodo', 'Clasificado']) assert.match(html, new RegExp(t));
+  assert.match(html, /1\.284/); assert.match(html, /lord_sabelotodo\.webp/);
+  assert.equal(/Historial competitivo|% victorias|>Derrotas<|>Empates<|>Victorias<|Mejor racha|Racha actual|ELO actual/.test(html), false,
+    'partidas, victorias, derrotas, empates y rachas ya están en «Historial de duelos»: no se repiten');
   assert.match(html, /Clásico/); assert.match(html, /Apuestas/);
   assert.match(html, /1\.248 → 1\.265/); assert.match(html, /\+17/); assert.match(html, /−9/);
   assert.match(html, /5 partidas · 3V · 1D · 1E/);
@@ -265,16 +292,22 @@ test('Ajustes/Perfil: ya no hay resumen ni acceso a estadísticas de duelos (un 
   assert.equal(/profileSummaryHtml|openStats|Ver estadísticas →/.test(on + SRC), false);
 });
 
-test('Estadísticas: el resumen del detalle indica la colocación', () => {
+test('Estadísticas: el detalle indica la colocación', () => {
   const { M } = load();
   const s = JSON.parse(JSON.stringify(STATS)); s.elo.en_colocacion = true; s.elo.partidas_colocacion = 2;
-  assert.match(M._pure.summaryHtml(s, false), /En colocación · 2\/5 partidas/);
+  assert.match(M._pure.fullStatsHtml(s), /En colocación · 2\/5/);
+});
+
+test('Estadísticas: quien solo juega duelos también ve su sección (no depende de las partidas normales)', () => {
+  const html = read('index.html');
+  const fn = html.slice(html.indexOf('function renderStats()'), html.indexOf('function renderStats()') + 900);
+  assert.match(fn, /dsAny/); assert.match(fn, /wins[\s\S]*losses[\s\S]*draws/);
 });
 
 test('seguridad de pintado: los textos del servidor se escapan', () => {
   const { M } = load();
   const s = JSON.parse(JSON.stringify(STATS)); s.historial[0].rival.display_name = '<img src=x onerror=alert(1)>'; s.elo.rango.nombre = '<b>x</b>';
-  const html = M._pure.fullStatsHtml(s) + M._pure.summaryHtml(s, false);
+  const html = M._pure.fullStatsHtml(s);
   assert.equal(html.includes('<img src=x'), false); assert.equal(html.includes('<b>x</b>'), false);
 });
 

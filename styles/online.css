@@ -639,19 +639,8 @@
 .seq-v21-elo-down .seq-v21-elo-change { color: var(--bad, #c0453a); }
 .seq-v21-elo-rank { display: inline-flex; align-items: center; gap: 8px; font-weight: 800; }
 .seq-v21-place { margin-top: 6px; font-size: 12px; color: var(--sub); }
-/* Rankings */
-  background: var(--card); border: 1.5px solid var(--border); border-radius: 12px; white-space: nowrap; }
-/* Estadísticas y Perfil */
-.seq-v21-sum { display: flex; flex-direction: column; gap: 10px; }
-.seq-v21-sum-head { display: flex; align-items: center; gap: 12px; }
-.seq-v21-sum-head .seq-v21-ico-rank { width: 44px; height: 44px; font-size: 34px; }
-.seq-v21-sum-elo { font-size: 15px; }
-.seq-v21-sum-elo b { font-size: 24px; font-family: var(--font-display, inherit); }
-.seq-v21-sum-line { font-size: 13px; color: var(--sub); }
-.seq-v21-sum-btn { width: 100%; }
-.seq-v21-profile { margin: 10px 0; padding: 12px; border: 1.5px solid var(--border); border-radius: 16px; background: var(--card); }
+/* Estadísticas */
 .seq-v21-h { margin: 14px 0 8px; font-size: 12px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--sub); }
-.seq-v21-profile .seq-v21-h { margin-top: 0; display: flex; align-items: center; gap: 6px; }
 .seq-v21-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .seq-v21-cell { padding: 8px 6px; text-align: center; border: 1.5px solid var(--border); border-radius: 12px; background: var(--card); }
 .seq-v21-cell b { display: block; font-size: 16px; }
@@ -662,7 +651,7 @@
 .seq-v21-hrow-elo { font-size: 15px; }
 .seq-v21-hrow.w .seq-v21-hrow-elo { color: var(--ok, #2e9d5b); }
 .seq-v21-hrow.l .seq-v21-hrow-elo { color: var(--bad, #c0453a); }
-.seq-v21-h2h { display: flex; flex-direction: column; gap: 2px; }
+.seq-v21-h2h { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; }
 .seq-v21-h2h small { color: var(--sub); }
 /* 2.1: avatares que se ganan con un logro, todavía bloqueados */
 .seq-av-btn.seq-av-locked { opacity: .5; filter: grayscale(1); cursor: not-allowed; }
@@ -679,53 +668,105 @@
 .seq-v21-modecard .mode-card-icon .mode-img { width: 100%; height: 100%; object-fit: contain; }
 .seq-v21-modecard-body { flex: 1; min-width: 0; }
 .seq-v21-modecard-body h3 { margin: 0 0 6px; }
-/* Rankings */
+/* Rankings — «el Salón de la Fama»: ámbito en texto, tres medallones, «Tu posición», podio y lista */
 .seq-v21-ico-rk { width: 44px; height: 44px; font-size: 32px; }
-.seq-v21-scope { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 8px 0 10px; }
-.seq-v21-scope-btn { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 8px 10px; font: inherit; font-weight: 800; font-size: 15px; cursor: pointer; color: var(--text);
-  background: var(--card); border: 1.5px solid var(--border); border-radius: 16px; }
-.seq-v21-scope-btn .seq-v21-ico-rk { width: 34px; height: 34px; }
-.seq-v21-scope-btn.sel { border-color: var(--se-gold, var(--primary)); box-shadow: 0 0 0 2px color-mix(in srgb, var(--se-gold, var(--primary)) 40%, transparent), 0 4px 14px rgba(0, 0, 0, .14); background: color-mix(in srgb, var(--se-gold, var(--primary)) 10%, var(--card)); }
-.seq-v21-boards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0 0 12px; }
-.seq-v21-board-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 4px 8px; font: inherit; font-size: 12px; font-weight: 800; line-height: 1.15; text-align: center; cursor: pointer; color: var(--text);
-  background: var(--card); border: 1.5px solid var(--border); border-radius: 16px; }
-.seq-v21-board-btn .seq-v21-ico-rk { width: 46px; height: 46px; }
-.seq-v21-board-btn.sel { border-color: var(--se-gold, var(--primary)); box-shadow: 0 0 0 2px color-mix(in srgb, var(--se-gold, var(--primary)) 40%, transparent), 0 4px 14px rgba(0, 0, 0, .14); background: color-mix(in srgb, var(--se-gold, var(--primary)) 10%, var(--card)); }
-.seq-v21-board-btn:not(.sel) .seq-v21-ico-rk, .seq-v21-scope-btn:not(.sel) .seq-v21-ico-rk { opacity: .78; }
-.seq-v21-rk-sub { margin: 2px 2px 10px; font-size: 12px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; color: var(--sub); text-align: center; }
-.seq-v21-me { display: flex; align-items: center; gap: 12px; padding: 10px 14px; margin-bottom: 12px; border-radius: 16px; border: 1.5px solid var(--se-gold, var(--primary)); background: color-mix(in srgb, var(--se-gold, var(--primary)) 9%, var(--card)); }
-.seq-v21-me .seq-v21-ico-rank { width: 44px; height: 44px; font-size: 34px; }
-.seq-v21-me-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.seq-v21-me-txt b { font-size: 18px; }
+.seq-v21-rkscreen { padding-bottom: 8px; }
+/* Ámbito: selector de dos posiciones, con filete dorado bajo el elegido */
+.seq-v21-scope { display: grid; grid-template-columns: 1fr 1fr; margin: 6px 0 14px; border-bottom: 1.5px solid var(--se-gold-hair, var(--border)); }
+.seq-v21-scope-btn { position: relative; padding: 10px 8px 12px; font: inherit; font-family: var(--font-display, inherit); font-weight: 700; font-size: 18px; letter-spacing: .3px; cursor: pointer; color: var(--sub); background: none; border: 0; }
+.seq-v21-scope-btn::after { content: ''; position: absolute; left: 22%; right: 22%; bottom: -2px; height: 3px; border-radius: 3px; background: transparent; transition: background .2s; }
+.seq-v21-scope-btn.sel { color: var(--text); }
+.seq-v21-scope-btn.sel::after { background: linear-gradient(90deg, transparent, var(--se-gold, var(--primary)) 20%, var(--se-gold-light, var(--se-gold, var(--primary))) 50%, var(--se-gold, var(--primary)) 80%, transparent); }
+/* Los tres rankings: medallones; el elegido, con aro y brillo dorado */
+.seq-v21-boards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 0 0 14px; }
+.seq-v21-board-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px 2px 6px; font: inherit; font-size: 12px; font-weight: 800; line-height: 1.15; text-align: center; cursor: pointer; color: var(--sub); background: none; border: 0; border-radius: 16px; }
+.seq-v21-board-btn .seq-v21-ico-rk { width: 62px; height: 62px; border-radius: 50%; transition: transform .2s, box-shadow .2s, opacity .2s; }
+.seq-v21-board-btn .seq-v21-ico-rk img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.seq-v21-board-btn:not(.sel) .seq-v21-ico-rk { opacity: .62; filter: saturate(.7); transform: scale(.9); }
+.seq-v21-board-btn.sel { color: var(--text); }
+.seq-v21-board-btn.sel .seq-v21-ico-rk { box-shadow: 0 0 0 2.5px var(--se-gold, var(--primary)), 0 0 0 5px color-mix(in srgb, var(--se-gold, var(--primary)) 25%, transparent), 0 6px 16px rgba(0, 0, 0, .35); }
+/* Subtítulo con filetes a los lados */
+.seq-v21-rk-sub { display: flex; align-items: center; gap: 12px; margin: 0 2px 12px; font-size: 11px; font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; color: var(--sub); }
+.seq-v21-rk-sub::before, .seq-v21-rk-sub::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--se-gold-hair, var(--border))); }
+.seq-v21-rk-sub::after { transform: scaleX(-1); }
+.seq-v21-rk-loading { text-align: center; color: var(--sub); margin: 24px 0; }
+.seq-v21-rk-note { margin: 8px 0; padding: 18px 16px; text-align: center; border: 1.5px dashed var(--se-gold-hair, var(--border)); border-radius: 16px; background: color-mix(in srgb, var(--se-gold, var(--primary)) 6%, var(--card)); }
+.seq-v21-rk-note p { margin: 0; font-size: 14px; line-height: 1.45; color: var(--sub); }
+/* Tu posición */
+.seq-v21-me { display: flex; align-items: center; gap: 14px; padding: 10px 14px 10px 10px; margin-bottom: 14px; border-radius: 18px; border: 1.5px solid var(--se-gold, var(--primary));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--se-gold, var(--primary)) 16%, var(--card)), var(--card) 75%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .05), 0 4px 14px rgba(0, 0, 0, .18); }
+.seq-v21-me-pos { flex: 0 0 auto; min-width: 58px; height: 58px; padding: 0 6px; display: inline-flex; align-items: center; justify-content: center; border-radius: 16px; font-family: var(--font-display, inherit); font-size: 30px; font-weight: 800; color: var(--se-gold-light, var(--se-gold, var(--primary)));
+  background: color-mix(in srgb, var(--se-gold, var(--primary)) 14%, transparent); border: 1.5px solid var(--se-gold-hair, var(--border)); }
+.seq-v21-me-pos small { font-size: 15px; margin-right: 1px; opacity: .8; align-self: flex-start; margin-top: 11px; }
+.seq-v21-me-pos.none { font-size: 24px; color: var(--sub); }
+.seq-v21-me-txt { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.25; }
+.seq-v21-me-txt b { font-family: var(--font-display, inherit); font-size: 22px; font-weight: 800; }
 .seq-v21-me-txt small { color: var(--sub); font-size: 12px; }
-.seq-v21-me-lbl { font-size: 10px; font-weight: 900; letter-spacing: 1.2px; text-transform: uppercase; color: var(--sub); }
-.seq-v21-me-pos { font-family: var(--font-display, inherit); font-size: 26px; font-weight: 900; color: var(--se-gold, var(--primary)); }
+.seq-v21-me-lbl { font-size: 10px; font-weight: 900; letter-spacing: 1.4px; text-transform: uppercase; color: var(--sub); }
+.seq-v21-me-badge { flex: 0 0 auto; width: 48px; height: 48px; }
+.seq-v21-me-badge img { width: 100%; height: 100%; object-fit: contain; display: block; }
+/* Podio: 2 · 1 · 3, con peldaños dorados */
+.seq-v21-podium { display: grid; grid-template-columns: 1fr 1.18fr 1fr; align-items: end; gap: 8px; margin: 4px 0 16px; padding: 14px 8px 0; border-radius: 20px;
+  background: radial-gradient(120% 90% at 50% 0%, color-mix(in srgb, var(--se-gold, var(--primary)) 14%, transparent), transparent 70%); }
+.seq-v21-pod { display: flex; flex-direction: column; align-items: center; min-width: 0; text-align: center; }
+.seq-v21-pod-av { position: relative; margin-bottom: 6px; }
+.seq-v21-pod .seq-avatar.seq-v21-pod-ring { width: 62px; height: 62px; font-size: 30px; overflow: visible; border-width: 2.5px; border-color: var(--se-gold, var(--primary)); box-shadow: 0 4px 12px rgba(0, 0, 0, .35); }
+.seq-v21-pod-1 .seq-avatar.seq-v21-pod-ring { width: 78px; height: 78px; border-color: var(--se-gold-light, var(--se-gold)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--se-gold, var(--primary)) 30%, transparent), 0 6px 18px rgba(0, 0, 0, .4); }
+.seq-v21-pod-2 .seq-avatar.seq-v21-pod-ring { border-color: #b9c2d0; }
+.seq-v21-pod-3 .seq-avatar.seq-v21-pod-ring { border-color: #c98a55; }
+.seq-v21-pod-medal { position: absolute; right: -10px; bottom: -8px; width: 30px; height: 30px; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .45)); }
+.seq-v21-pod-1 .seq-v21-pod-medal { width: 36px; height: 36px; right: -12px; bottom: -9px; }
+.seq-v21-pod-name { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; font-weight: 800; margin-top: 6px; }
+.seq-v21-pod-sub { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10.5px; font-weight: 700; color: var(--sub); }
+.seq-v21-pod-val { display: flex; flex-direction: column; align-items: center; margin: 2px 0 8px; font-family: var(--font-display, inherit); font-weight: 800; font-size: 18px; line-height: 1.05; }
+.seq-v21-pod-1 .seq-v21-pod-val { font-size: 21px; }
+.seq-v21-pod-val small { font-family: inherit; font-size: 9.5px; letter-spacing: 1px; color: var(--sub); font-weight: 800; font-family: var(--font-ui); }
+.seq-v21-pod-step { width: 100%; display: flex; align-items: flex-start; justify-content: center; padding-top: 6px; border-radius: 12px 12px 0 0; border: 1.5px solid var(--se-gold-hair, var(--border)); border-bottom: 0;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--se-gold, var(--primary)) 30%, var(--card)), color-mix(in srgb, var(--se-gold, var(--primary)) 6%, var(--card))); }
+.seq-v21-pod-step span { font-family: var(--font-display, inherit); font-size: 22px; font-weight: 800; color: var(--se-gold-light, var(--se-gold, var(--primary))); }
+.seq-v21-pod-1 .seq-v21-pod-step { height: 66px; }
+.seq-v21-pod-2 .seq-v21-pod-step { height: 48px; }
+.seq-v21-pod-3 .seq-v21-pod-step { height: 38px; }
+.seq-v21-pod.me .seq-v21-pod-name { color: var(--se-gold-light, var(--se-gold, var(--primary))); }
+.seq-v21-pod.me .seq-v21-pod-step { border-color: var(--se-gold, var(--primary)); }
+/* Lista (del 4.º en adelante y quienes están en colocación): posición → jugador → insignia → puntuación */
 .seq-v21-rklist { display: grid; gap: 8px; }
-.seq-v21-rk { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 8px 12px; background: var(--card); border: 1.5px solid var(--border); border-radius: 16px; }
-.seq-v21-rk.me { border-color: var(--se-gold, var(--primary)); background: color-mix(in srgb, var(--se-gold, var(--primary)) 9%, var(--card)); }
-.seq-v21-pos { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; color: var(--sub); background: color-mix(in srgb, var(--sub) 12%, transparent); }
-.seq-v21-pos.gold { color: #4a3000; background: radial-gradient(circle at 35% 30%, #ffe08a, #d9a21b 70%); box-shadow: 0 0 0 1.5px #b8860b; }
-.seq-v21-pos.silver { color: #2c3340; background: radial-gradient(circle at 35% 30%, #f1f4f8, #aab3c0 70%); box-shadow: 0 0 0 1.5px #8d97a6; }
-.seq-v21-pos.bronze { color: #3b1f0a; background: radial-gradient(circle at 35% 30%, #f0b886, #b8733a 70%); box-shadow: 0 0 0 1.5px #8c5424; }
-/* El avatar usa el mismo contenedor circular que en el resto de la app (la imagen se escala al 84 %): no se recorta */
+.seq-v21-rk { display: flex; align-items: center; gap: 12px; min-height: 62px; padding: 8px 14px 8px 12px; background: var(--card); border: 1.5px solid var(--border); border-radius: 16px; }
+.seq-v21-rk.me { border-color: var(--se-gold, var(--primary)); background: linear-gradient(135deg, color-mix(in srgb, var(--se-gold, var(--primary)) 14%, var(--card)), var(--card) 80%); }
+.seq-v21-pos { flex: 0 0 auto; width: 30px; text-align: center; font-family: var(--font-display, inherit); font-weight: 800; font-size: 19px; color: var(--sub); }
+.seq-v21-pos.none { opacity: .6; }
+.seq-v21-pos.medal { position: relative; height: 34px; display: inline-flex; align-items: center; justify-content: center; }
+.seq-v21-pos-medal { width: 30px; height: 30px; filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .4)); }
+.seq-v21-pos-n { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .seq-v21-rk .seq-avatar.seq-v21-rk-av { flex: 0 0 auto; width: 46px; height: 46px; font-size: 24px; overflow: visible; }
 .seq-v21-rk-name { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.2; }
 .seq-v21-rk-name b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .seq-v21-rk-name small { font-weight: 700; color: var(--sub); font-size: 11px; }
-.seq-v21-rk-badge { width: 30px; height: 30px; font-size: 24px; }
-.seq-v21-rk-val { flex: 0 0 auto; min-width: 54px; text-align: right; font-weight: 900; font-size: 17px; line-height: 1.05; display: flex; flex-direction: column; align-items: flex-end; }
-.seq-v21-rk-val small { font-size: 10px; letter-spacing: .8px; color: var(--sub); font-weight: 800; }
+.seq-v21-rk-badge { flex: 0 0 auto; width: 34px; height: 34px; }
+.seq-v21-rk-badge img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.seq-v21-rk-val { flex: 0 0 auto; min-width: 54px; text-align: right; font-family: var(--font-display, inherit); font-weight: 800; font-size: 19px; line-height: 1.05; display: flex; flex-direction: column; align-items: flex-end; }
+.seq-v21-rk-val small { font-family: var(--font-ui); font-size: 9.5px; letter-spacing: 1px; color: var(--sub); font-weight: 800; }
 /* Botón «Ver estadísticas de duelos» (dentro de Estadísticas → Historial de duelos) */
 #seq-duel-stats { margin-top: 12px; }
 .seq-v21-statsbtn { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 14px; font: inherit; font-family: var(--font-display, inherit); font-weight: 800; font-size: 15px; text-align: left; cursor: pointer; color: var(--text);
   background: linear-gradient(145deg, color-mix(in srgb, var(--se-gold, var(--primary)) 14%, var(--card)), var(--card)); border: 1.5px solid var(--se-gold, var(--primary)); border-radius: 16px; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .06), 0 2px 8px rgba(0, 0, 0, .12); }
 .seq-v21-statsbtn:active { transform: scale(.985); }
 .seq-v21-statsbtn .seq-v21-ico-mode { width: 34px; height: 34px; }
-.seq-v21-statsbtn-txt { flex: 1; }
+.seq-v21-statsbtn-txt { flex: 1; white-space: nowrap; }
 .seq-v21-statsbtn-chev { font-size: 24px; line-height: 1; color: var(--se-gold, var(--primary)); transition: transform .2s; }
 .seq-v21-statsbtn.open .seq-v21-statsbtn-chev { transform: rotate(90deg); }
-#seq-duel-stats .seq-v21-sum { margin: 12px 0 4px; }
+.seq-v21-full { margin-top: 12px; }
+.seq-v21-elocard { display: flex; align-items: center; gap: 14px; padding: 12px 14px; margin-bottom: 10px; border-radius: 18px; border: 1.5px solid var(--se-gold-hair, var(--border));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--se-gold, var(--primary)) 14%, var(--card)), var(--card) 80%); }
+.seq-v21-elocard-ico { flex: 0 0 auto; width: 64px; height: 64px; }
+.seq-v21-elocard-ico img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.seq-v21-elocard-txt { display: flex; flex-direction: column; min-width: 0; line-height: 1.25; }
+.seq-v21-elocard-elo { font-size: 14px; color: var(--sub); font-weight: 800; letter-spacing: .6px; }
+.seq-v21-elocard-elo b { font-family: var(--font-display, inherit); font-size: 30px; color: var(--text); letter-spacing: 0; }
+.seq-v21-elocard-rank { font-family: var(--font-display, inherit); font-weight: 700; font-size: 17px; color: var(--se-gold-light, var(--se-gold, var(--primary))); }
+.seq-v21-elocard-state { font-size: 12px; color: var(--sub); }
 /* Pista de avatar bloqueado */
+.seq-av-btn.seq-av-locked .seq-av-name { white-space: nowrap; font-size: 11px; letter-spacing: -.1px; }
 .seq-av-btn.seq-av-locked { cursor: pointer; }
 .seq-av-btn.seq-av-locked.hint { opacity: .9; filter: grayscale(.6); outline: 2px dashed var(--se-gold, var(--primary)); outline-offset: 1px; }
 .seq-av-hint { margin: 8px 2px 4px; padding: 8px 12px; font-size: 13px; font-weight: 700; line-height: 1.35; border-radius: 12px; border: 1.5px solid var(--se-gold, var(--border)); background: color-mix(in srgb, var(--se-gold, var(--primary)) 9%, var(--card)); }

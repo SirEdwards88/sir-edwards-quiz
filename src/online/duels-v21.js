@@ -220,13 +220,13 @@
     }).catch(function (e) { st.sending = false; delete S21.sent[k]; h.say(h.errText(e), true); window.SEQDuels.reload(); });
   }
 
-  // ---- Rankings (pantalla propia dentro de Duelos) ----------------------------------------------
-  // Iconos: un medallón circular por ámbito y por ranking (assets/duelos/rankings/<id>.webp). Se pueden sustituir
-  // soltando un archivo con el mismo nombre; no hace falta tocar código.
-  var RK_ICON = {
-    friends: { id: 'friends', emoji: '👥' }, global: { id: 'global', emoji: '🌍' },
-    pvp: { id: 'pvp', emoji: '⚔️' }, mental: { id: 'mental', emoji: '🧠' }, timetrial: { id: 'timetrial', emoji: '⏱️' }
-  };
+  // ---- Rankings (pantalla propia dentro de Duelos): «el Salón de la Fama» ------------------------
+  // Estructura: ámbito (Amigos | Global, selector de texto) → los tres rankings (medallones de una misma colección,
+  // assets/duelos/rankings/<id>.webp: se sustituyen soltando un archivo con el mismo nombre) → «Tu posición» →
+  // podio con los tres primeros (medallas de oro, plata y bronce) → resto de la clasificación.
+  // Solo presentación: el orden, las posiciones y las puntuaciones vienen tal cual del servidor.
+  var RK_ICON = { pvp: { id: 'pvp', emoji: '⚔️' }, mental: { id: 'mental', emoji: '🧠' }, timetrial: { id: 'timetrial', emoji: '⏱️' } };
+  var PODIUM_MEDAL = { 1: 'oro', 2: 'plata', 3: 'bronce' };
   function rkIcon(k, cls) { var r = RK_ICON[k]; return r ? icon('rankings', r.id, r.emoji, 'seq-v21-ico-rk ' + (cls || '')) : ''; }
   function rankKey() { return S21.scope + ':' + S21.board; }
   function loadRankings() {
@@ -242,15 +242,14 @@
   }
   function setScope(s) { if (SCOPES[s]) { S21.scope = s; loadRankings(); window.SEQDuels.rerender(); } }
   function setBoard(b) { if (BOARDS[b]) { S21.board = b; loadRankings(); window.SEQDuels.rerender(); } }
-  // Ámbito: dos botones grandes con icono (Amigos / Global).
+  // Ámbito: selector de dos posiciones, solo texto (los iconos los llevan los rankings; aquí serían ruido).
   function scopeTabs() {
     return '<div class="seq-v21-scope" role="tablist" aria-label="Ámbito">' + ['friends', 'global'].map(function (k) {
       var sel = k === S21.scope;
-      return '<button type="button" role="tab" aria-selected="' + sel + '" class="seq-v21-scope-btn' + (sel ? ' sel' : '') + '" onclick="SEQDuels21.setScope(\'' + k + '\')">' +
-        rkIcon(k) + '<span>' + (k === 'friends' ? 'Amigos' : 'Global') + '</span></button>';
+      return '<button type="button" role="tab" aria-selected="' + sel + '" class="seq-v21-scope-btn' + (sel ? ' sel' : '') + '" onclick="SEQDuels21.setScope(\'' + k + '\')">' + SCOPES[k] + '</button>';
     }).join('') + '</div>';
   }
-  // Tipo de ranking: tres fichas con su icono (PvP / Cálculo Mental / Contrarreloj).
+  // Tipo de ranking: tres medallones (PvP / Cálculo Mental / Contrarreloj).
   function boardTabs() {
     return '<div class="seq-v21-boards" role="tablist" aria-label="Ranking">' + BOARD_ORDER.map(function (k) {
       var sel = k === S21.board;
@@ -258,41 +257,71 @@
         rkIcon(k) + '<span>' + esc(BOARDS[k].nombre) + '</span></button>';
     }).join('') + '</div>';
   }
-  function posBadge(rank) {
-    if (rank == null) return '<span class="seq-v21-pos none">—</span>';
-    var n = num(rank), tone = n === 1 ? ' gold' : n === 2 ? ' silver' : n === 3 ? ' bronze' : '';
-    return '<span class="seq-v21-pos' + tone + '">' + n + '</span>';
+  function isPvp(b) { return b === 'pvp'; }
+  // Posición «oficial» de una fila: en PvP, quien está en colocación todavía no tiene puesto.
+  function placeOf(r, b) { return isPvp(b) && r.en_colocacion ? null : (r.rank != null ? num(r.rank) : null); }
+  function valueHtml(r, b) { return isPvp(b) ? fmt(r.elo) + '<small>ELO</small>' : fmt(r.score) + '<small>pts</small>'; }
+  function subOf(r, b) { return isPvp(b) ? (r.en_colocacion ? 'En colocación' : esc(rankName(r.rango))) : ''; }
+  function avatarOf(r) { return window.SEQAvatars ? window.SEQAvatars.avatarHTML(r.avatar) : ''; }
+  function medalImg(n, cls) {
+    return PODIUM_MEDAL[n] ? '<img class="' + cls + '" src="assets/ui/' + PODIUM_MEDAL[n] + '.webp" alt="" draggable="false" onerror="this.remove()">' : '';
   }
-  function rankRow(r, board) {
-    var av = window.SEQAvatars ? window.SEQAvatars.avatarHTML(r.avatar) : '';
-    var pvp = board === 'pvp';
-    var sub = pvp ? (r.en_colocacion ? 'En colocación' : esc(rankName(r.rango))) : '';
-    return '<div class="seq-v21-rk' + (r.is_me ? ' me' : '') + '">' + posBadge(pvp && r.en_colocacion ? null : r.rank) +
-      '<span class="seq-avatar seq-v21-rk-av">' + av + '</span>' +
+  // Podio: los tres primeros puestos, en el orden visual 2 · 1 · 3.
+  function podium(top, b) {
+    return '<div class="seq-v21-podium" aria-label="Podio">' + [2, 1, 3].map(function (n) {
+      var r = top[n];
+      var sub = subOf(r, b);
+      return '<div class="seq-v21-pod seq-v21-pod-' + n + (r.is_me ? ' me' : '') + '"><div class="seq-v21-pod-av"><span class="seq-avatar seq-v21-pod-ring">' + avatarOf(r) + '</span>' +
+        medalImg(n, 'seq-v21-pod-medal') + '</div><b class="seq-v21-pod-name">' + esc(r.display_name) + '</b>' + (sub ? '<small class="seq-v21-pod-sub">' + sub + '</small>' : '') +
+        '<span class="seq-v21-pod-val">' + valueHtml(r, b) + '</span><div class="seq-v21-pod-step"><span>' + n + '</span></div></div>';
+    }).join('') + '</div>';
+  }
+  // Posición en la lista: los tres primeros llevan su medalla (cuando no hay podio); el resto, el número.
+  function posBadge(place) {
+    if (place == null) return '<span class="seq-v21-pos none">—</span>';
+    if (PODIUM_MEDAL[place]) return '<span class="seq-v21-pos medal">' + medalImg(place, 'seq-v21-pos-medal') + '<i class="seq-v21-pos-n">' + place + '</i></span>';
+    return '<span class="seq-v21-pos">' + place + '</span>';
+  }
+  // Fila (del 4.º puesto en adelante y quienes están en colocación): posición → jugador → insignia → puntuación.
+  // PvP lleva la insignia de su rango; Cálculo Mental y Contrarreloj no tienen rangos y no se inventan.
+  function rankRow(r, b) {
+    var sub = subOf(r, b), ranked = isPvp(b) && !r.en_colocacion;
+    return '<div class="seq-v21-rk' + (r.is_me ? ' me' : '') + '">' + posBadge(placeOf(r, b)) +
+      '<span class="seq-avatar seq-v21-rk-av">' + avatarOf(r) + '</span>' +
       '<span class="seq-v21-rk-name"><b>' + esc(r.display_name) + '</b>' + (sub ? '<small>' + sub + '</small>' : '') + '</span>' +
-      // PvP: insignia de RANGO (si ya está clasificado); Cálculo Mental y Contrarreloj: el emblema de su categoría.
-      (pvp && !r.en_colocacion ? rankIcon(r.rango, 'seq-v21-rk-badge') : rkIcon(board, 'seq-v21-rk-badge')) +
-      '<span class="seq-v21-rk-val">' + (pvp ? fmt(r.elo) + '<small>ELO</small>' : fmt(r.score) + '<small>pts</small>') + '</span></div>';
+      (ranked ? rankIcon(r.rango, 'seq-v21-rk-badge') : '') +
+      '<span class="seq-v21-rk-val">' + valueHtml(r, b) + '</span></div>';
   }
+  // «Tu posición»: puesto grande a la izquierda; valor y detalle en medio; en PvP, la insignia del rango a la derecha.
   function meCard(d, b) {
-    if (!d.me) return '';
-    if (b === 'pvp') {
-      return '<div class="seq-v21-me">' + rankIcon(d.me.rango) + '<div class="seq-v21-me-txt"><span class="seq-v21-me-lbl">Tu posición</span><b>' + fmt(d.me.elo) + ' ELO</b><small>' + esc(rankName(d.me.rango)) +
-        (d.me.en_colocacion ? ' · colocación ' + num(d.me.partidas_colocacion) + '/' + num(d.me.colocacion_total) : '') + '</small></div>' + (d.me.rank ? '<span class="seq-v21-me-pos">#' + num(d.me.rank) + '</span>' : '') + '</div>';
-    }
-    if (d.me.score == null) return '';
-    return '<div class="seq-v21-me">' + rkIcon(b) + '<div class="seq-v21-me-txt"><span class="seq-v21-me-lbl">Tu posición</span><b>' + fmt(d.me.score) + ' pts</b></div>' + (d.me.rank ? '<span class="seq-v21-me-pos">#' + num(d.me.rank) + '</span>' : '') + '</div>';
+    var me = d.me; if (!me) return '';
+    var pvp = isPvp(b);
+    if (!pvp && me.score == null) return '';
+    var place = pvp && me.en_colocacion ? null : (me.rank ? num(me.rank) : null);
+    var detail = pvp
+      ? esc(rankName(me.rango)) + (me.en_colocacion ? ' · colocación ' + num(me.partidas_colocacion) + '/' + (num(me.colocacion_total) || 5) : '')
+      : esc(BOARDS[b].sub);
+    return '<div class="seq-v21-me"><span class="seq-v21-me-pos' + (place ? '' : ' none') + '">' + (place ? '<small>#</small>' + place : '—') + '</span>' +
+      '<div class="seq-v21-me-txt"><span class="seq-v21-me-lbl">Tu posición</span><b>' + (pvp ? fmt(me.elo) + ' ELO' : fmt(me.score) + ' pts') + '</b><small>' + detail + '</small></div>' +
+      (pvp ? rankIcon(me.rango, 'seq-v21-me-badge') : '') + '</div>';
   }
+  function rkNote(text) { return '<div class="seq-v21-rk-note"><p>' + esc(text) + '</p></div>'; }
   function renderRankings() {
     var h = H();
     var d = S21.rankings[rankKey()], b = S21.board;
-    var out = h.header('Rankings', 'Compite y compárate', h.back) + scopeTabs() + boardTabs();
-    if (S21.rankErr) return out + '<p class="stats-section-sub">' + esc(S21.rankErr) + '</p>';
-    if (!d) return out + '<p class="stats-section-sub">Cargando…</p>';
-    out += '<p class="seq-v21-rk-sub">' + esc(BOARDS[b].sub) + '</p>' + meCard(d, b);
+    var out = h.header('Rankings', 'El Salón de la Fama', h.back) + '<div class="seq-v21-rkscreen">' + scopeTabs() + boardTabs();
+    if (S21.rankErr) return out + rkNote(S21.rankErr) + '</div>';
+    if (!d) return out + '<p class="seq-v21-rk-loading">Cargando…</p></div>';
+    out += '<p class="seq-v21-rk-sub"><span>' + esc(BOARDS[b].sub) + '</span></p>' + meCard(d, b);
     var rows = d.ranking || [];
-    if (!rows.length) return out + '<p class="stats-section-sub">' + (b === 'pvp' ? 'Aún no hay duelos puntuados. Juega uno y aparecerás aquí.' : 'Todavía nadie tiene puntuación en este ranking.') + '</p>';
-    return out + '<div class="seq-v21-rklist">' + rows.map(function (r) { return rankRow(r, b); }).join('') + '</div>';
+    if (!rows.length) return out + rkNote(isPvp(b) ? 'Aún no hay duelos puntuados. Juega uno y aparecerás aquí.' : 'Todavía nadie tiene puntuación en este ranking.') + '</div>';
+    // Podio: puestos 1, 2 y 3 tal como los da el servidor; el resto (y quien está en colocación) va en la lista.
+    var top = {}, rest = [];
+    rows.forEach(function (r) { var p = placeOf(r, b); if (p && p <= 3 && !top[p]) top[p] = r; else rest.push(r); });
+    if (top[1] && top[2] && top[3]) out += podium(top, b);   // con menos de tres jugadores no hay podio: solo la lista
+    else rest = rows;
+    if (rest.length) out += '<div class="seq-v21-rklist">' + rest.map(function (r) { return rankRow(r, b); }).join('') + '</div>';
+    return out + '</div>';
   }
 
   // ---- Estadísticas de Duelos (viven en «Estadísticas», no en el hub) ---------------------------
@@ -306,24 +335,21 @@
     }).catch(function (e) { S21.statsLoading = false; S21.statsErr = h.errText(e); refreshViews(); });
   }
   function refreshViews() { renderStats(); try { if (window.SEQOnline && window.SEQOnline.rerenderAccount) window.SEQOnline.rerenderAccount(); } catch (e) {} }
-  function summaryHtml(s, withBtn, btnLabel, btnFn) {
-    var e = s.elo || {}, c = s.competitivo || {};
-    var pos = e.posicion_global ? ' · #' + num(e.posicion_global) : '';
-    var line = e.en_colocacion
-      ? 'En colocación · ' + num(e.partidas_colocacion) + '/' + (num(e.colocacion_total) || 5) + ' partidas'
-      : num(c.partidas) + ' partidas · ' + num(c.victorias) + ' victorias';
-    return '<div class="seq-v21-sum"><div class="seq-v21-sum-head">' + rankIcon(e.rango) + '<div><div class="seq-v21-sum-elo"><b>' + fmt(e.actual) + '</b> ELO' + pos + '</div>' +
-      '<div class="seq-v21-sum-line">' + esc(rankName(e.rango)) + '</div><div class="seq-v21-sum-line">' + line + '</div></div></div>' +
-      (withBtn ? '<button type="button" class="btn btn-secondary seq-v21-sum-btn" onclick="' + btnFn + '">' + btnLabel + '</button>' : '') + '</div>';
-  }
   function statCell(label, value) { return '<div class="seq-v21-cell"><b>' + value + '</b><small>' + label + '</small></div>'; }
+  // Detalle de Duelos (solo datos del SERVIDOR, que no están ya en «Historial de duelos»: las partidas, victorias,
+  // derrotas, empates y la mejor racha de arriba son las del jugador y no se repiten aquí).
+  // Cabecera: insignia de rango + ELO + rango + estado; debajo, tres datos: pico, posición global y duelos con ELO.
   function fullStatsHtml(s) {
     var e = s.elo || {}, c = s.competitivo || {}, out = '<div class="seq-v21-full" id="seq-v21-full">';
-    out += '<h4 class="seq-v21-h">ELO</h4><div class="seq-v21-grid">' +
-      statCell('ELO actual', fmt(e.actual)) + statCell('Rango', esc(rankName(e.rango))) + statCell('Posición global', e.posicion_global ? '#' + num(e.posicion_global) : '—') +
-      statCell('Pico de ELO', fmt(e.peak)) + statCell('Colocación', num(e.partidas_colocacion) + '/' + (num(e.colocacion_total) || 5)) + statCell('Estado', e.en_colocacion ? 'En colocación' : 'Clasificado') + statCell('Racha actual', num(c.racha_actual)) + statCell('Mejor racha', num(c.mejor_racha)) + '</div>';
+    var total = num(e.colocacion_total) || 5;
+    var state = e.en_colocacion ? 'En colocación · ' + Math.min(total, num(e.partidas_colocacion)) + '/' + total : 'Clasificado';
+    out += '<div class="seq-v21-elocard">' + rankIcon(e.rango, 'seq-v21-elocard-ico') + '<div class="seq-v21-elocard-txt">' +
+      '<span class="seq-v21-elocard-elo"><b>' + fmt(e.actual) + '</b> ELO</span><span class="seq-v21-elocard-rank">' + esc(rankName(e.rango)) + '</span>' +
+      '<span class="seq-v21-elocard-state">' + state + '</span></div></div>';
+    out += '<div class="seq-v21-grid">' + statCell('Pico de ELO', fmt(e.peak)) + statCell('Posición global', e.posicion_global ? '#' + num(e.posicion_global) : '—') +
+      statCell('Duelos con ELO', num(c.partidas)) + '</div>';
     var hist = s.historial || [];
-    out += '<h4 class="seq-v21-h">Historial de duelos</h4>' + (hist.length ? '<div class="history-list">' + hist.map(function (x) {
+    out += '<h4 class="seq-v21-h">Últimos duelos con ELO</h4>' + (hist.length ? '<div class="history-list">' + hist.map(function (x) {
       var res = x.resultado === 'win' ? 'Victoria' : x.resultado === 'loss' ? 'Derrota' : 'Empate';
       var date = ''; try { date = new Date(num(x.fecha)).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }); } catch (er) {}
       var rv = x.rival || {};
@@ -353,10 +379,10 @@
     host.style.display = '';
     var open = !!S21.statsOpen, s = S21.stats;
     var out = '<button type="button" class="seq-v21-statsbtn' + (open ? ' open' : '') + '" onclick="SEQDuels21.toggleStats()" aria-expanded="' + open + '" aria-controls="seq-v21-full">' +
-      modeIcon('classic') + '<span class="seq-v21-statsbtn-txt">' + (open ? 'Ocultar estadísticas de duelos' : 'Ver estadísticas de duelos') + '</span><span class="seq-v21-statsbtn-chev" aria-hidden="true">›</span></button>';
+      modeIcon('classic') + '<span class="seq-v21-statsbtn-txt">' + (open ? 'Ocultar estadísticas' : 'Ver estadísticas de duelos') + '</span><span class="seq-v21-statsbtn-chev" aria-hidden="true">›</span></button>';
     if (open) {
       if (!s) out += S21.statsErr ? '<p class="stats-section-sub">' + esc(S21.statsErr) + '</p>' : '<p class="stats-section-sub">Cargando…</p>';
-      else out += summaryHtml(s, false) + fullStatsHtml(s);
+      else out += fullStatsHtml(s);
     }
     host.innerHTML = out;
   }
@@ -371,6 +397,6 @@
     renderRankings: renderRankings, rkIcon: rkIcon, loadRankings: loadRankings, setScope: setScope, setBoard: setBoard,
     renderStats: renderStats, loadStats: loadStats, toggleStats: toggleStats, onStatsShown: onStatsShown,
     invalidate: invalidate,
-    _pure: { signed: signed, fmt: fmt, stakeKey: stakeKey, modeKey: modeKey, scoreboard: scoreboard, eloBlock: eloBlock, summaryHtml: summaryHtml, fullStatsHtml: fullStatsHtml }
+    _pure: { signed: signed, fmt: fmt, stakeKey: stakeKey, modeKey: modeKey, scoreboard: scoreboard, eloBlock: eloBlock, fullStatsHtml: fullStatsHtml }
   };
 })();

@@ -6426,7 +6426,9 @@ function renderStats() {
 
   const emptyState = document.getElementById('stats-empty-state');
   const content = document.getElementById('stats-content');
-  const isEmpty = !getStore().gamesPlayed;
+  // 2.1: los duelos también cuentan como actividad (si no, quien solo juega duelos no llega a sus estadísticas de Duelo).
+  const dsAny = getStore().duelStats || {};
+  const isEmpty = !getStore().gamesPlayed && !((dsAny.wins || 0) + (dsAny.losses || 0) + (dsAny.draws || 0));
   if (emptyState) emptyState.style.display = isEmpty ? 'block' : 'none';
   if (content) content.style.display = isEmpty ? 'none' : 'block';
   if (isEmpty) return;
