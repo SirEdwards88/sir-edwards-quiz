@@ -50,10 +50,19 @@ const SEQEncargosIntroCore = (function () {
     return true;
   }
 
+  // Semanas sin ver a Sir Edwards: distancia entre la semana actual y la última carta vista (o, si no hay ninguna, la de la
+  // presentación). Con ABSENCE_WEEKS o más, la carta es de «has vuelto»: no se juzga una semana concreta, se recibe al que regresa.
+  var ABSENCE_WEEKS = 3;
+  function weeksAway(idx, lastIdx) {
+    if (typeof idx !== 'number' || typeof lastIdx !== 'number' || !isFinite(idx) || !isFinite(lastIdx)) return 0;
+    return Math.max(0, idx - lastIdx);
+  }
+
   // Aprobación = los cuatro encargos de la semana pasada cobrados (3 semanales + Gran Encargo); cualquier otra cosa, reproche.
-  // Si la semana pasada fue la de incorporación no se evalúa: 'incorporacion'.
-  function mondayKind(claimed, lastWeekId, introWeek) {
+  // Si la semana pasada fue la de incorporación no se evalúa: 'incorporacion'. Tras una ausencia larga: 'ausencia'.
+  function mondayKind(claimed, lastWeekId, introWeek, away) {
     if (introWeek && introWeek === lastWeekId) return 'incorporacion';
+    if (away >= ABSENCE_WEEKS) return 'ausencia';
     var list = Array.isArray(claimed) ? claimed : [], m = 0, g = 0;
     for (var i = 0; i < list.length; i++) {
       var k = String(list[i]);
@@ -66,12 +75,20 @@ const SEQEncargosIntroCore = (function () {
   // Líneas de la carta: la apertura fija («Es lunes.» / «Nueva semana.») y tres bolsas rotativas independientes (las elige quien
   // llama con pickRotatingPhrase): veredicto y comentario según la variante, y un cierre común a las tres.
   function mondayOpen(phrases, isMonday) { return isMonday === false ? phrases.openOther : phrases.open; }
-  function variantOf(map, kind) { return kind === 'aprobacion' ? map.aprobacion : kind === 'incorporacion' ? map.incorporacion : map.reproche; }
+  function variantOf(map, kind) { return kind === 'aprobacion' ? map.aprobacion : kind === 'incorporacion' ? map.incorporacion : kind === 'ausencia' ? map.ausencia : map.reproche; }
   function mondayVerdictPool(phrases, kind) { return variantOf(phrases.verdict, kind); }
   function mondayCommentPool(phrases, kind) { return variantOf(phrases.comment, kind); }
   function mondayClosePool(phrases) { return phrases.close; }
 
-  return { cleanName: cleanName, classify: classify, shouldShowIntro: shouldShowIntro, shouldShowMonday: shouldShowMonday,
+  // Cuánto se queda la carta antes de cerrarse sola, una vez mostradas todas las líneas: proporcional a lo que hay que leer
+  // (unos 38 ms por carácter más un margen), entre 6 y 13 s. Quien quiera irse antes, toca fuera o pulsa «Cerrar».
+  function readMs(lines) {
+    var chars = 0, list = Array.isArray(lines) ? lines : [];
+    for (var i = 0; i < list.length; i++) chars += String(list[i] == null ? '' : list[i]).length;
+    return Math.min(13000, Math.max(6000, 2200 + chars * 38));
+  }
+
+  return { cleanName: cleanName, weeksAway: weeksAway, ABSENCE_WEEKS: ABSENCE_WEEKS, readMs: readMs, classify: classify, shouldShowIntro: shouldShowIntro, shouldShowMonday: shouldShowMonday,
     mondayKind: mondayKind, mondayOpen: mondayOpen, mondayVerdictPool: mondayVerdictPool, mondayCommentPool: mondayCommentPool,
     mondayClosePool: mondayClosePool };
 })();

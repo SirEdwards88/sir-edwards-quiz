@@ -26,7 +26,8 @@ const SEQEncargosIntro = (function () {
     mirada: 'assets/character/presentacion-mirada.webp',
     aprobacion: 'assets/character/lunes-aprobacion.webp',
     reproche: 'assets/character/lunes-reproche.webp',
-    incorporacion: 'assets/character/presentacion-expediente.webp'
+    incorporacion: 'assets/character/presentacion-expediente.webp',
+    ausencia: 'assets/character/presentacion-mirada.webp'
   };
 
   function get(k) { try { var v = localStorage.getItem(k); if (v !== null) return v; } catch (e) {} return mem[k] == null ? null : mem[k]; }
@@ -74,6 +75,16 @@ const SEQEncargosIntro = (function () {
     try { return SEQEncargos.weekIdOf(SEQEncargos.weekIndexAt(new Date(+m[1], +m[2] - 1, +m[3], 12).getTime())); } catch (e) { return null; }
   }
 
+  // Semanas desde la última carta vista o, si no hay ninguna, desde la presentación (la más reciente de las dos).
+  function awayWeeks(idx, introWeek) {
+    var last = null;
+    [get(K_MONDAY), introWeek].forEach(function (id) {
+      var i = id ? SEQEncargos.weekIndexOfId(id) : null;
+      if (typeof i === 'number' && (last === null || i > last)) last = i;
+    });
+    return last === null ? 0 : core().weeksAway(idx, last);
+  }
+
   // Al llegar a Inicio (switchTab) y, una vez, al arrancar. Se espera un instante a que Inicio se asiente y se vuelve a comprobar.
   function onHome() {
     if (!core() || typeof ENCARGOS_INTRO === 'undefined') return;
@@ -88,7 +99,7 @@ const SEQEncargosIntro = (function () {
         // Semana de incorporación: la de la gran presentación (sale de su fecha). No se evalúa ni recibe carta.
         var introWeek = introWeekId();
         if (core().shouldShowMonday({ seen: true, introWeek: introWeek, weekId: weekId, lastShown: get(K_MONDAY),
-          onHome: base.onHome, inGame: base.inGame, blocked: base.blocked })) startMonday(weekId, SEQEncargos.weekIdOf(idx - 1), introWeek, now.getDay() === 1);
+          onHome: base.onHome, inGame: base.inGame, blocked: base.blocked })) startMonday(weekId, SEQEncargos.weekIdOf(idx - 1), introWeek, now.getDay() === 1, awayWeeks(idx, introWeek));
       } catch (e) { /* nunca debe impedir jugar */ }
     }, 700);
   }
@@ -250,10 +261,10 @@ const SEQEncargosIntro = (function () {
   }
 
   // ---- carta de los lunes -------------------------------------------------------------------------------------------
-  function startMonday(weekId, lastWeekId, introWeek, isMonday) {
+  function startMonday(weekId, lastWeekId, introWeek, isMonday, away) {
     var C = core(), M = ENCARGOS_INTRO.monday;
     var claimed = (typeof store === 'object' && store && store.encargosClaimed) || [];
-    var kind = C.mondayKind(claimed, lastWeekId, introWeek);
+    var kind = C.mondayKind(claimed, lastWeekId, introWeek, away);
     var lines = [
       C.mondayOpen(M, isMonday),
       pick('lunes_v_' + kind, C.mondayVerdictPool(M, kind)),
@@ -272,8 +283,9 @@ const SEQEncargosIntro = (function () {
       '</div>';
     var ps = el.querySelectorAll('.enc-monday-line'), go = el.querySelector('.enc-monday-go'), close = el.querySelector('.enc-monday-close');
     var offsets = [0, 1100, 2300, 3800], timers = [], all = false, ended = false;
+    var stay = C.readMs(lines);   // tiempo de lectura proporcional al texto; ver SEQEncargosIntroCore.readMs
     function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
-    function revealAll() { all = true; timers.forEach(clearTimeout); timers = []; for (var i = 0; i < ps.length; i++) ps[i].classList.add('in'); later(function () { end(false); }, 4500); }
+    function revealAll() { all = true; timers.forEach(clearTimeout); timers = []; for (var i = 0; i < ps.length; i++) ps[i].classList.add('in'); later(function () { end(false); }, stay); }
     function end(toEncargos) {
       if (ended) return;
       ended = true; timers.forEach(clearTimeout);
@@ -293,7 +305,7 @@ const SEQEncargosIntro = (function () {
       void el.offsetWidth; el.classList.add('is-on');
       go.focus({ preventScroll: true });
       for (var i = 0; i < ps.length; i++) (function (i) { later(function () { ps[i].classList.add('in'); }, offsets[i]); })(i);
-      later(function () { all = true; later(function () { end(false); }, 4500); }, offsets[offsets.length - 1] + 400);
+      later(function () { all = true; later(function () { end(false); }, stay); }, offsets[offsets.length - 1] + 400);
     });
   }
 

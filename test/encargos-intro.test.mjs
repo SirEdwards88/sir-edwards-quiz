@@ -194,3 +194,43 @@ test('el evento de réplica se usa una sola vez y solo en los modos permitidos',
   const { P } = load();
   assert.match(P.callback, /Solo observaba/);
 });
+
+test('ausencia: tres semanas o más sin ver una carta → «has vuelto», sin juzgar ninguna semana concreta', () => {
+  const { C, P } = load();
+  assert.equal(C.ABSENCE_WEEKS, 3);
+  assert.equal(C.weeksAway(100, 98), 2);
+  assert.equal(C.weeksAway(100, 100), 0);
+  assert.equal(C.weeksAway(100, null), 0, 'sin referencia no hay ausencia');
+  assert.equal(C.weeksAway(98, 100), 0, 'nunca negativa');
+  const w = '2026-W41', full = [w + ':m:a', w + ':m:b', w + ':m:c', w + ':g:x'];
+  assert.equal(C.mondayKind(full, w, '2026-W40', 2), 'aprobacion', 'dos semanas fuera todavía se juzgan');
+  assert.equal(C.mondayKind(full, w, '2026-W40', 3), 'ausencia');
+  assert.equal(C.mondayKind([], w, '2026-W30', 11), 'ausencia', 'aunque no cobrara nada: se recibe, no se reprocha');
+  assert.equal(C.mondayKind([], w, w, 9), 'incorporacion', 'la semana de incorporación manda sobre la ausencia');
+  assert.ok(P.monday.verdict.ausencia.length >= 5 && P.monday.comment.ausencia.length >= 5);
+  const lines = [].concat(C.mondayVerdictPool(P.monday, 'ausencia'), C.mondayCommentPool(P.monday, 'ausencia'));
+  assert.ok(!lines.some((t) => /cuatro de cuatro|cumpliste|me debes|sin saldar|a medias|incompleta/i.test(t)), 'no evalúa la semana pasada');
+  assert.ok(C.mondayVerdictPool(P.monday, 'ausencia') !== C.mondayVerdictPool(P.monday, 'reproche'));
+});
+
+test('la carta se cierra sola tras un tiempo de lectura proporcional al texto', () => {
+  const { C, P } = load();
+  assert.equal(C.readMs([]), 6000, 'mínimo');
+  assert.equal(C.readMs(['x'.repeat(2000)]), 13000, 'máximo');
+  const short = C.readMs(['Es lunes.', 'a', 'b', 'c']), long = C.readMs(['Es lunes.', 'x'.repeat(90), 'y'.repeat(90), 'z'.repeat(90)]);
+  assert.ok(long > short, 'más texto, más tiempo');
+  for (const kind of ['aprobacion', 'reproche', 'incorporacion', 'ausencia']) {
+    const worst = C.readMs([P.monday.open, ...C.mondayVerdictPool(P.monday, kind).slice(0, 1), ...C.mondayCommentPool(P.monday, kind).slice(0, 1), P.monday.close[0]]);
+    assert.ok(worst >= 6000 && worst <= 13000);
+  }
+  const ui = fs.readFileSync(new URL('../src/ui/encargos-intro.js', import.meta.url), 'utf8');
+  assert.ok(!/, 4500\)/.test(ui), 'ya no hay un cierre fijo de 4,5 s');
+  assert.match(ui, /C\.readMs\(lines\)/);
+  assert.match(ui, /ausencia: 'assets\/character\//, 'la variante de ausencia tiene su retrato');
+});
+
+test('el campo de respuesta no deja que el móvil capitalice ni «corrija» lo escrito, y tiene etiqueta accesible', () => {
+  const html = read('index.html');
+  const tag = html.match(/<input[^>]*id="ans-input"[^>]*>/)[0];
+  for (const a of ['autocomplete="off"', 'autocapitalize="off"', 'autocorrect="off"', 'spellcheck="false"', 'aria-label="Tu respuesta"']) assert.ok(tag.includes(a), 'falta ' + a);
+});

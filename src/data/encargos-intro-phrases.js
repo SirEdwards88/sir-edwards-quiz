@@ -2,7 +2,8 @@
 // Todas rotan con pickRotatingPhrase (bolsa persistente: no se repite ninguna hasta haberlas visto todas).
 //   · result: la línea que sigue a «Una partida terminada.» según cómo fue la PRIMERA partida (o Duelo/Reto) del jugador.
 //   · monday: la carta semanal (sale la primera vez que se abre Inicio en una semana nueva; abre «Es lunes.» si es lunes, «Nueva semana.» si no;
-//     luego veredicto y comentario según la semana pasada (aprobación / reproche / incorporación) y un cierre común: tres bolsas rotativas
+//     luego veredicto y comentario según la semana pasada (aprobación / reproche / incorporación) o según una ausencia de 3 semanas o más
+//     (ausencia), y un cierre común: tres bolsas rotativas
 //     independientes. «Cuatro de cuatro» solo aparece en el veredicto de aprobación.
 // Sin emojis. Las claves de result coinciden con SEQEncargosIntroCore.classify().
 
@@ -85,6 +86,15 @@ const ENCARGOS_INTRO = {
         'Tu primera semana fue de prueba. No cuenta, de momento.',
         'La semana pasada fue un ensayo. Se perdona; es lo que tiene ser nuevo.',
         'Lo de la semana pasada fue una presentación, no un examen. Disfrútalo mientras dure.'
+      ],
+      // Regreso tras varias semanas sin abrir Inicio: no se juzga una semana concreta, se recibe al que vuelve.
+      ausencia: [
+        'Vaya. Has vuelto. Mi libreta te daba por desaparecido.',
+        'Semanas sin noticias tuyas. Empezaba a acostumbrarme al silencio.',
+        'Tu expediente ha acumulado polvo. Es lo único que ha acumulado.',
+        'Qué ausencia tan notable. Es lo más notable que has hecho últimamente.',
+        'Cuánto tiempo. No he contado las semanas. Bueno, sí las he contado.',
+        'Reaparece quien daba por perdido hasta su propio expediente.'
       ]
     },
     // 2) Comentario de Sir Edwards.
@@ -118,6 +128,14 @@ const ENCARGOS_INTRO = {
         'A partir de hoy, tu expediente cuenta de verdad.',
         'Se acabó el periodo de cortesía. Empieza el de observación.',
         'Desde hoy cada encargo cuenta. Y cada excusa también.'
+      ],
+      ausencia: [
+        'Los encargos de las semanas perdidas han caducado, como las promesas de volver pronto.',
+        'No te preguntaré dónde estabas. Lo imagino, y no me convence.',
+        'Borrón y cuenta nueva. Solo esta vez, y solo porque me aburría.',
+        'Considera esto una segunda oportunidad. Las terceras no existen.',
+        'Ni un reproche. Hoy. No te acostumbres.',
+        'Bienvenido de nuevo. Lo digo con la misma sinceridad con que me despedí.'
       ]
     },
     // 3) Cierre, común a las tres variantes: la semana que empieza.

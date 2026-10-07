@@ -746,7 +746,7 @@
       h += '</div>';
     } else {
       // Respuesta escrita (cálculos, Lucidez y enigma). El valor que se está escribiendo sobrevive a los repintados (render()).
-      h += '<div class="seq-d-write" data-idx="' + num(idx) + '"><input type="text" id="seq-d-ans" class="seq-d-ans" maxlength="120" autocomplete="off" autocapitalize="off" spellcheck="false"' +
+      h += '<div class="seq-d-write" data-idx="' + num(idx) + '"><input type="text" id="seq-d-ans" class="seq-d-ans" maxlength="120" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Tu respuesta"' +
         (info.numeric ? ' inputmode="numeric" pattern="[0-9]*"' : '') + ' placeholder="' + (info.numeric ? 'Resultado' : 'Tu respuesta') + '"' +
         (mine ? ' disabled value="' + esc(String(mine.respuesta || '')) + '"' : ' onkeydown="if(event.key===\'Enter\')SEQDuels.answerText()"') + '>' +
         '<button type="button" class="btn btn-primary" id="seq-d-send"' + (mine ? ' disabled' : '') + ' onclick="SEQDuels.answerText()">Responder</button></div>';
