@@ -186,13 +186,13 @@
      (ver UPDATE_SEEN_KEY más abajo), separada de siredwards_quiz_v1_0_data
      y de las claves de bienvenida/ayuda de duelo. Oculto por defecto;
      maybeShowUpdateModal() decide si debe mostrarse. -->
-<div id="update-modal" class="modal-overlay" style="display:none;">
+<div id="update-modal" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="update-modal-title" data-modal-esc>
   <div class="modal-card">
-    <h2><span aria-hidden="true"><img class="ui-img ui-title-img" src="assets/avatars/sombrero.png" alt="" draggable="false"></span>Novedades de la <span id="update-modal-version"></span></h2>
+    <h2 id="update-modal-title"><span aria-hidden="true"><img class="ui-img ui-title-img" src="assets/avatars/sombrero.png" alt="" draggable="false"></span>Novedades de la <span id="update-modal-version"></span></h2>
     <p class="update-modal-lead">Mientras no mirabas, Sir Edwards ha estado ocupado:</p>
     <ul id="update-modal-list" class="settings-changelog-list"></ul>
     <div class="modal-warning-actions">
-      <button class="btn btn-primary" onclick="closeUpdateModal()">Muy bien, veamos</button>
+      <button class="btn btn-primary" data-autofocus onclick="closeUpdateModal()">Muy bien, veamos</button>
     </div>
   </div>
 </div>
@@ -207,12 +207,12 @@
 </div>
 
 <!-- v1.4: ranking global por XP online (datos del servidor). -->
-<div id="seq-ranking-modal" class="modal-overlay" style="display:none;">
+<div id="seq-ranking-modal" class="modal-overlay" style="display:none;" data-modal-esc>
   <div class="modal-card seq-modal-card" role="dialog" aria-modal="true" aria-labelledby="seq-ranking-title">
     <h2 id="seq-ranking-title"><img class="seq-ico seq-ico-h" src="assets/ui/copa.webp" alt="" draggable="false">Ranking global</h2>
     <div id="seq-ranking-body"></div>
     <div class="modal-warning-actions">
-      <button class="btn btn-primary" onclick="SEQOnline.closeRanking()">Cerrar</button>
+      <button class="btn btn-primary" data-autofocus onclick="SEQOnline.closeRanking()">Cerrar</button>
     </div>
   </div>
 </div>
@@ -278,10 +278,10 @@ try {
 <!-- Aviso de partida a medias: se muestra al intentar arrancar un modo
      nuevo (desde startMode, Cálculo Mental o Lucidez Mental) mientras
      queda una partida sin terminar. Ver confirmDiscardSavedGame(). -->
-<div id="discard-game-modal" class="modal-overlay" style="display:none;">
+<div id="discard-game-modal" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="discard-game-title" data-modal-esc>
   <div class="modal-card modal-card-warning">
     <div class="modal-warning-icon"><img class="seq-ico seq-ico-xl" src="assets/ui/atencion.webp" alt="" draggable="false"></div>
-    <h2>¡Atención!</h2>
+    <h2 id="discard-game-title">¡Atención!</h2>
     <p>Tienes una <strong>partida a medias</strong> sin terminar. Si empiezas esta partida nueva, perderás su progreso.</p>
     <p>¿Quieres continuar con la partida nueva de todas formas?</p>
     <div class="modal-warning-actions">
@@ -294,7 +294,7 @@ try {
 <!-- Aviso de confirmación genérico (mismo estilo que discard-game-modal),
      usado por ejemplo al restaurar una copia de seguridad. Ver
      showAppConfirm() / resolveAppConfirmModal(). -->
-<div id="app-confirm-modal" class="modal-overlay" style="display:none;">
+<div id="app-confirm-modal" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="app-confirm-title" aria-describedby="app-confirm-message" data-modal-esc>
   <div class="modal-card modal-card-warning">
     <div class="modal-warning-icon"><img class="seq-ico seq-ico-xl" src="assets/ui/atencion.webp" alt="" draggable="false"></div>
     <h2 id="app-confirm-title">¡Atención!</h2>
@@ -412,9 +412,9 @@ try {
          Duelo (ver showDuelHelpIfNeeded/switchTab) y también se puede
          reabrir a mano con el icono (?) del propio menú de Duelo. Mismo
          componente modal-overlay/modal-card que el resto de la app. -->
-    <div id="duel-help-modal" class="modal-overlay" style="display:none;">
+    <div id="duel-help-modal" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="duel-help-title" data-modal-esc>
       <div class="modal-card">
-        <h2><span aria-hidden="true"><img class="ui-img ui-title-img ui-title-loose" src="assets/modes/suelto/duelo.webp" alt="" draggable="false"></span>¿Cómo funciona un Duelo?</h2>
+        <h2 id="duel-help-title"><span aria-hidden="true"><img class="ui-img ui-title-img ui-title-loose" src="assets/modes/suelto/duelo.webp" alt="" draggable="false"></span>¿Cómo funciona un Duelo?</h2>
         <p><strong>1. Añade a un amigo</strong><br>Los duelos y los retos se juegan con amigos de tu lista. Sí, hace falta tener amigos.</p>
         <p><strong>2. Duelo online</strong><br>Veinte preguntas a la vez, en directo. Nadie espera a nadie.</p>
         <p><strong>3. Retos</strong><br>Eliges el modo, le envías el reto y lo juega cuando quiera, dentro del plazo. Los dos jugáis la misma partida. La paciencia también es una estrategia.</p>
@@ -422,7 +422,7 @@ try {
         <p><strong>5. Lo que cuenta</strong><br>Los Duelos online y los Retos jugados hasta el final suman para tus estadísticas y logros de Duelo. Las victorias por abandono, no: la gloria fácil no computa. Abandonar, en cambio, cuenta como derrota.</p>
         <p><strong>6. No te vayas a mitad</strong><br>Durante un Duelo online no salgas de la app ni bloquees el móvil: a los 60 s sin conexión pierdes por abandono.</p>
         <div class="modal-warning-actions">
-          <button class="btn btn-primary" onclick="closeDuelHelpModal()">Entendido</button>
+          <button class="btn btn-primary" data-autofocus onclick="closeDuelHelpModal()">Entendido</button>
         </div>
       </div>
     </div>

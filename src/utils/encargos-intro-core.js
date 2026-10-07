@@ -88,7 +88,21 @@ const SEQEncargosIntroCore = (function () {
     return Math.min(13000, Math.max(6000, 2200 + chars * 38));
   }
 
-  return { cleanName: cleanName, weeksAway: weeksAway, ABSENCE_WEEKS: ABSENCE_WEEKS, readMs: readMs, classify: classify, shouldShowIntro: shouldShowIntro, shouldShowMonday: shouldShowMonday,
+  // Temporizador de pasos de la Presentación, con pausa: after(fn, ms) programa el paso siguiente; pause() congela lo que queda
+  // y resume() lo retoma. Los temporizadores se inyectan (setT/clearT/now) para poder probarlo sin navegador.
+  function makeStepper(setT, clearT, now) {
+    var timer = null, fn = null, left = 0, started = 0, paused = false;
+    function fire() { timer = null; var f = fn; fn = null; if (f) f(); }
+    return {
+      after: function (f, ms) { if (timer) clearT(timer); timer = null; fn = f; left = ms; started = now(); if (!paused) timer = setT(fire, ms); },
+      clear: function () { if (timer) clearT(timer); timer = null; fn = null; },
+      pause: function () { if (paused) return; paused = true; if (timer) { clearT(timer); timer = null; left = Math.max(0, left - (now() - started)); } },
+      resume: function () { if (!paused) return; paused = false; if (fn) { started = now(); timer = setT(fire, left); } },
+      isPaused: function () { return paused; }
+    };
+  }
+
+  return { cleanName: cleanName, makeStepper: makeStepper, weeksAway: weeksAway, ABSENCE_WEEKS: ABSENCE_WEEKS, readMs: readMs, classify: classify, shouldShowIntro: shouldShowIntro, shouldShowMonday: shouldShowMonday,
     mondayKind: mondayKind, mondayOpen: mondayOpen, mondayVerdictPool: mondayVerdictPool, mondayCommentPool: mondayCommentPool,
     mondayClosePool: mondayClosePool };
 })();

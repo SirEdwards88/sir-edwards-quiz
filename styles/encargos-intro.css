@@ -131,3 +131,6 @@
   .enc-intro.do-paper .enc-intro-paper { animation: none; }
   .home-encargos.is-reveal::after { animation: none; }
 }
+
+/* En pausa (pulsación larga, Espacio o app en segundo plano): también se congelan las animaciones de la escena. */
+.enc-intro.is-paused, .enc-intro.is-paused * { animation-play-state: paused !important; }

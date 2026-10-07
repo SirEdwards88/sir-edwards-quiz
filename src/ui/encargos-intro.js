@@ -184,7 +184,10 @@ const SEQEncargosIntro = (function () {
     var fig = el.querySelector('.enc-intro-fig'), skip = el.querySelector('.enc-intro-skip'), go = el.querySelector('.enc-intro-go');
     var timers = [], idx = -1, ended = false, curBeat = 0;
     function later(fn, ms) { var t = setTimeout(fn, ms); timers.push(t); }
-    function clearAll() { timers.forEach(clearTimeout); timers = []; }
+    // Los pasos avanzan solos, pero se pueden pausar: mantener pulsado, Espacio, o salir de la app. Soltar (o Espacio otra vez) reanuda.
+    var stepper = C.makeStepper(setTimeout, clearTimeout, Date.now), holdTimer = null, held = false, swallow = false;
+    function clearAll() { timers.forEach(clearTimeout); timers = []; stepper.clear(); }
+    function setPaused(p) { if (ended) return; if (p) stepper.pause(); else stepper.resume(); el.classList.toggle('is-paused', stepper.isPaused()); }
 
     function setBeat(b) {
       if (b === curBeat) return;
@@ -216,17 +219,18 @@ const SEQEncargosIntro = (function () {
         cap.classList.remove('in');
         later(function () { cap.textContent = s.text; void cap.offsetWidth; cap.classList.add('in'); }, 340);
       } else say(s.text);
-      later(function () { show(i + 1); }, s.ms);
+      stepper.after(function () { show(i + 1); }, s.ms);
     }
     function showFinal() {
       el.classList.add('is-final');
       cap.classList.remove('in');
       later(function () { try { if (!reduced() && navigator.vibrate) navigator.vibrate(35); } catch (e) {} }, 900);
-      later(function () { finish(false); }, steps[idx].ms);
+      stepper.after(function () { finish(false); }, steps[idx].ms);
     }
     function finish(toEncargos) {
       if (ended) return;
       ended = true; clearAll(); menuMusic(false);
+      document.removeEventListener('keydown', onSpace, true); document.removeEventListener('visibilitychange', onHidden);
       set(K_SEEN, dayKey(new Date()));
       set(K_CALLBACK, '1');
       pendingResult = null;
@@ -238,10 +242,26 @@ const SEQEncargosIntro = (function () {
       } catch (e) {}
     }
     var offKeys = trapKeys(el, function () { finish(false); });
+    function onSpace(e) { if (e.key === ' ' && !(e.target && e.target.tagName === 'BUTTON')) { e.preventDefault(); setPaused(!stepper.isPaused()); } }
+    function onHidden() { setPaused(document.visibilityState === 'hidden'); }
+    document.addEventListener('keydown', onSpace, true);
+    document.addEventListener('visibilitychange', onHidden);
+    el.addEventListener('pointerdown', function (e) {
+      if (e.target.closest && e.target.closest('button')) return;
+      clearTimeout(holdTimer);
+      holdTimer = setTimeout(function () { held = true; swallow = true; setPaused(true); }, 380);   // pulsación larga = pausa
+    });
+    function endHold() {
+      clearTimeout(holdTimer);
+      if (held) { held = false; setPaused(false); }
+      setTimeout(function () { swallow = false; }, 80);   // el «click» que sigue a una pulsación larga no avanza
+    }
+    el.addEventListener('pointerup', endHold); el.addEventListener('pointercancel', endHold); el.addEventListener('pointerleave', endHold);
     el.addEventListener('click', function (e) {
       if (e.target === skip) { finish(false); return; }
       if (e.target === go) { finish(true); return; }
-      if (ended || el.classList.contains('is-final')) return;
+      if (ended || el.classList.contains('is-final') || swallow) return;
+      if (stepper.isPaused()) { setPaused(false); return; }   // en pausa (Espacio): tocar reanuda en lugar de avanzar
       show(idx + 1);     // toque = siguiente
     });
     active = { el: el };

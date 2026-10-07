@@ -205,6 +205,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 
   .modal-card { padding: 20px; max-height: 80vh; }
     }
+.modal-card:focus { outline: none; }   /* la tarjeta recibe el foco al abrir el modal (a11y.js) solo para anunciarse */
 .modal-card h2 { margin-top: 0; font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--brand-navy); display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
 .modal-card p { line-height: 1.5; font-size: 14px; color: var(--text); margin: 0 0 12px 0; }
 .modal-card ul { padding-left: 20px; margin: 12px 0; color: var(--text); font-size: 14px; line-height: 1.5; }

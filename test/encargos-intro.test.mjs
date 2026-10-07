@@ -234,3 +234,35 @@ test('el campo de respuesta no deja que el móvil capitalice ni «corrija» lo e
   const tag = html.match(/<input[^>]*id="ans-input"[^>]*>/)[0];
   for (const a of ['autocomplete="off"', 'autocapitalize="off"', 'autocorrect="off"', 'spellcheck="false"', 'aria-label="Tu respuesta"']) assert.ok(tag.includes(a), 'falta ' + a);
 });
+
+test('la Presentación se puede pausar: el temporizador de pasos congela lo que queda y lo retoma al reanudar', () => {
+  const { C } = load();
+  let t = 0; const q = []; let id = 0;
+  const setT = (fn, ms) => { const h = ++id; q.push({ h, fn, at: t + ms }); return h; };
+  const clearT = (h) => { const i = q.findIndex((x) => x.h === h); if (i >= 0) q.splice(i, 1); };
+  const advance = (ms) => { t += ms; for (;;) { const due = q.filter((x) => x.at <= t).sort((a, b) => a.at - b.at)[0]; if (!due) break; q.splice(q.indexOf(due), 1); due.fn(); } };
+  const s = C.makeStepper(setT, clearT, () => t);
+  let fired = 0;
+  s.after(() => { fired++; }, 2000);
+  advance(1500); assert.equal(fired, 0);
+  s.pause(); assert.equal(s.isPaused(), true);
+  advance(60000); assert.equal(fired, 0, 'en pausa no avanza, pase lo que pase');
+  s.resume(); advance(499); assert.equal(fired, 0, 'le quedaban 500 ms');
+  advance(1); assert.equal(fired, 1);
+  // programar un paso estando en pausa: espera a reanudar
+  s.pause(); s.after(() => { fired++; }, 1000); advance(5000); assert.equal(fired, 1);
+  s.resume(); advance(1000); assert.equal(fired, 2);
+  // clear cancela
+  s.after(() => { fired++; }, 100); s.clear(); advance(1000); assert.equal(fired, 2);
+});
+
+test('cableado de la pausa: pulsación larga, Espacio y segundo plano; tocar tras una pausa no avanza de golpe', () => {
+  const ui = read('src/ui/encargos-intro.js'), css = read('styles/encargos-intro.css');
+  assert.match(ui, /makeStepper\(setTimeout, clearTimeout, Date\.now\)/);
+  assert.match(ui, /stepper\.after\(function \(\) \{ show\(i \+ 1\); \}, s\.ms\)/);
+  assert.match(ui, /e\.key === ' '/);
+  assert.match(ui, /visibilitychange/);
+  assert.match(ui, /380\)/, 'pulsación larga');
+  assert.match(ui, /removeEventListener\('keydown', onSpace, true\)/, 'se limpia al terminar');
+  assert.match(css, /\.enc-intro\.is-paused[^{]*\{ animation-play-state: paused !important; \}/);
+});
