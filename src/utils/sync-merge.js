@@ -15,6 +15,8 @@
 //   max   -> número: gana el mayor (récords, contadores de modo). Nunca suma dos veces.
 //   or    -> booleano: true si algún dispositivo lo tiene (banderas de logros).
 //   set   -> lista: unión sin duplicados (preguntas vistas, avisos ya mostrados, códigos de reto jugados).
+//   newset -> lista de claves de texto que se ordenan y, si pasan del tope, se pierden las MÁS ANTIGUAS (claves de
+//            recompensa de los Encargos semanales, que empiezan por la semana: «2026-W41:m:…»).
 //   hist  -> lista de objetos: unión por contenido, orden por `ts` desc, con tope (historiales).
 //   kmax  -> objeto clave -> {campo: número}: máximo por clave y por campo (estadísticas por pregunta, rivales).
 //   grupo LWW (settings / learning) -> gana el grupo modificado más recientemente (`t`), empate
@@ -43,6 +45,7 @@ const SEQSyncMerge = (function () {
     'hasCompletedMorningGame', 'duelStats.comebackWon', 'duelStats.perfectWon', 'duelStats.stakesLastMadness', 'duelStats.stakesAllThree'
   ];
   const SET_FIELDS = { seenQuestionIds: 2000, notifiedModeUnlocks: 50, notifiedFragmentRewards: 10, duelPlayedCodes: 400 };
+  const NEWSET_FIELDS = { encargosClaimed: { max: 120, re: /^\d{4}-W\d{2}(:b|:[mg]:[a-z_]{1,24})$/ } };
   const HIST_FIELDS = { gameHistory: 5, duelHistory: 30 };
   // campo -> {claves permitidas de cada entrada, patrón de la clave}
   const KMAX_FIELDS = {
@@ -150,6 +153,16 @@ const SEQSyncMerge = (function () {
       list.sort(cmpAny);
       out.f[k] = list.slice(0, SET_FIELDS[k]);
     });
+    Object.keys(NEWSET_FIELDS).forEach(function (k) {
+      if (!Array.isArray(f[k])) return;
+      const spec = NEWSET_FIELDS[k], seen = {}, list = [];
+      f[k].forEach(function (x) {
+        if (typeof x !== 'string' || x.length > 40 || !spec.re.test(x) || seen[x]) return;
+        seen[x] = true; list.push(x);
+      });
+      list.sort(cmpAny);
+      out.f[k] = list.slice(-spec.max);
+    });
     Object.keys(HIST_FIELDS).forEach(function (k) {
       if (!Array.isArray(f[k])) return;
       const seen = {}, list = [];
@@ -195,6 +208,7 @@ const SEQSyncMerge = (function () {
       if (MAX_FIELDS.indexOf(k) !== -1) raw.f[k] = Math.max(x, y);
       else if (OR_FIELDS.indexOf(k) !== -1) raw.f[k] = x || y;
       else if (k in SET_FIELDS) raw.f[k] = x.concat(y);
+      else if (k in NEWSET_FIELDS) raw.f[k] = x.concat(y);
       else if (k in HIST_FIELDS) raw.f[k] = x.concat(y);
       else if (k in KMAX_FIELDS) {
         const o = {}, spec = KMAX_FIELDS[k];
@@ -247,7 +261,7 @@ const SEQSyncMerge = (function () {
   function extractDoc(store, meta) {
     const raw = { v: DOC_VERSION, f: {}, g: {} };
     MAX_FIELDS.concat(OR_FIELDS).forEach(function (k) { const v = getPath(store, k); if (v !== undefined) raw.f[k] = v; });
-    Object.keys(SET_FIELDS).concat(Object.keys(HIST_FIELDS)).concat(Object.keys(KMAX_FIELDS)).forEach(function (k) {
+    Object.keys(SET_FIELDS).concat(Object.keys(NEWSET_FIELDS)).concat(Object.keys(HIST_FIELDS)).concat(Object.keys(KMAX_FIELDS)).forEach(function (k) {
       const v = getPath(store, k); if (v !== undefined) raw.f[k] = v;
     });
     Object.keys(GROUPS).forEach(function (name) {
@@ -277,6 +291,17 @@ const SEQSyncMerge = (function () {
         const have = {};
         cur.forEach(function (x) { have[typeof x + ':' + x] = true; });
         v.forEach(function (x) { if (!have[typeof x + ':' + x]) { cur.push(x); changed = true; } });
+        return;
+      }
+      if (k in NEWSET_FIELDS) {
+        const base = Array.isArray(cur) ? cur : [];
+        const have = {};
+        base.forEach(function (x) { have[x] = true; });
+        const fresh = v.filter(function (x) { return !have[x]; });
+        if (!fresh.length && Array.isArray(cur)) return;
+        const merged = sanitizeDoc({ f: { [k]: base.concat(fresh) } }).f[k] || [];
+        setPath(store, k, merged);
+        changed = true;
         return;
       }
       if (k in HIST_FIELDS) {
@@ -318,7 +343,7 @@ const SEQSyncMerge = (function () {
 
   return {
     DOC_VERSION: DOC_VERSION, MAX_FIELDS: MAX_FIELDS, OR_FIELDS: OR_FIELDS, SET_FIELDS: SET_FIELDS,
-    HIST_FIELDS: HIST_FIELDS, KMAX_FIELDS: KMAX_FIELDS, GROUPS: GROUPS,
+    NEWSET_FIELDS: NEWSET_FIELDS, HIST_FIELDS: HIST_FIELDS, KMAX_FIELDS: KMAX_FIELDS, GROUPS: GROUPS,
     sanitizeDoc: sanitizeDoc, mergeDocs: mergeDocs, docsEqual: docsEqual, stableStringify: stableStringify,
     extractDoc: extractDoc, applyDoc: applyDoc, groupHash: groupHash
   };

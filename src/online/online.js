@@ -152,17 +152,34 @@
     if (sync) { // tipos coherentes aunque el JSON guardado haya sido editado
       ['xp', 'games', 'correct', 'wrong'].forEach(function (k) { sync.base[k] = n(sync.base[k]); sync.seen[k] = n(sync.seen[k]); });
       sync.seen.best = n(sync.seen.best);
+      sync.wk = Array.isArray(sync.wk) ? sync.wk.filter(isWeeklyKey).slice(-200) : [];
+      if (sync.pending && sync.pending.weekly !== undefined) sync.pending.weekly = Array.isArray(sync.pending.weekly) ? sync.pending.weekly.filter(isWeeklyKey).slice(0, 40) : [];
       sync.seen.medals = Array.isArray(sync.seen.medals) ? sync.seen.medals.filter(function (id) { return typeof id === 'string'; }) : [];
     }
   }
   function saveAccount() { if (account) lsSet(ACCOUNT_KEY, account); else lsDel(ACCOUNT_KEY); }
+  // 2.2 Encargos: claves de recompensa («2026-W41:m:mano_firme»…) cobradas aquí y aún no confirmadas por el servidor.
+  // Viajan en el MISMO lote que el XP (el Worker amplía el tope de XP solo por claves válidas y no cobradas).
+  function isWeeklyKey(k) { return typeof k === 'string' && k.length <= 40 && /^\d{4}-W\d{2}:/.test(k); }
+  function unconfirmedWeekly() {
+    var all = (typeof store !== 'undefined' && store && Array.isArray(store.encargosClaimed)) ? store.encargosClaimed : [];
+    var done = {}; ((sync && sync.wk) || []).forEach(function (k) { done[k] = true; });
+    return all.filter(function (k) { return isWeeklyKey(k) && !done[k]; }).slice(-40);
+  }
+  function confirmWeekly(keys) {
+    if (!sync || !keys || !keys.length) return;
+    var have = {}; (sync.wk || []).forEach(function (k) { have[k] = true; });
+    keys.forEach(function (k) { if (isWeeklyKey(k) && !have[k]) { have[k] = true; (sync.wk = sync.wk || []).push(k); } });
+    sync.wk = (sync.wk || []).slice(-200);
+  }
   function saveSync() { if (sync) lsSet(SYNC_KEY, sync); }
   function newSyncState(playerId, migration, base, seen) {
     return {
       v: 1, playerId: playerId, migration: migration,
       base: base, // totales locales ya contabilizados online
       seen: seen, // totales del servidor en la última respuesta
-      pending: null, lastSyncAt: 0
+      pending: null, lastSyncAt: 0,
+      wk: [] // 2.2: claves de Encargos ya confirmadas por el servidor
     };
   }
   function emptySeen() { return { xp: 0, games: 0, correct: 0, wrong: 0, best: 0, medals: [] }; }
@@ -252,8 +269,9 @@
     });
     var medalsNew = t.medals.some(function (id) { return sync.seen.medals.indexOf(id) === -1; });
     var bestNew = t.best_streak > sync.seen.best;
-    var any = delta.xp > 0 || delta.games > 0 || delta.correct > 0 || delta.wrong > 0 || medalsNew || bestNew;
-    return { totals: t, delta: delta, any: any };
+    var weekly = unconfirmedWeekly();
+    var any = delta.xp > 0 || delta.games > 0 || delta.correct > 0 || delta.wrong > 0 || medalsNew || bestNew || weekly.length > 0;
+    return { totals: t, delta: delta, any: any, weekly: weekly };
   }
   function hasUnsynced() {
     if (!account || !sync || sync.migration === 'pending') return false;
@@ -315,12 +333,14 @@
           // aportado (arranque, volver a la app, recuperar conexión, botón manual).
           return reason !== 'auto' ? pull() : Promise.resolve('idle');
         }
-        pending = sync.pending = { matchId: newMatchId(), delta: d.delta, best_streak: d.totals.best_streak, medals: d.totals.medals };
+        pending = sync.pending = { matchId: newMatchId(), delta: d.delta, best_streak: d.totals.best_streak, medals: d.totals.medals, weekly: d.weekly };
         saveSync();
       }
       var body = { match_id: pending.matchId, delta: pending.delta, best_streak: pending.best_streak, medals: pending.medals };
+      if (pending.weekly && pending.weekly.length) body.weekly = pending.weekly;
       return api('POST', '/progress/sync', body).then(function (res) {
         var r = applySyncResult(pending, cleanProgress(res && res.progress));
+        confirmWeekly(pending.weekly);
         sync.pending = null;
         sync.lastSyncAt = Date.now();
         saveSync();
@@ -614,8 +634,8 @@
     if (!account || !sync || ui.busy) return;
     ui.busy = true;
     var btn = $('seq-mig-primary'); if (btn) { btn.disabled = true; btn.textContent = 'Combinando…'; }
-    var t = localTotals();
-    api('POST', '/progress/merge', { match_id: 'mig-' + newMatchId().slice(2), local: { xp: t.xp, games: t.games, correct: t.correct, wrong: t.wrong, best_streak: t.best_streak, medals: t.medals } })
+    var t = localTotals(), sentWeekly = unconfirmedWeekly();
+    api('POST', '/progress/merge', { match_id: 'mig-' + newMatchId().slice(2), local: { xp: t.xp, games: t.games, correct: t.correct, wrong: t.wrong, best_streak: t.best_streak, medals: t.medals }, weekly: sentWeekly })
       .then(function (res) {
         var p = cleanProgress(res && res.progress), gamesAdded = 0, target = {};
         COUNTERS.forEach(function (c) {
@@ -629,6 +649,7 @@
         // se puede repetir la combinación. El orden inverso enviaría lo recién traído como si fuera
         // progreso nuevo y lo contaría dos veces en el servidor.
         sync = newSyncState(account.player.id, 'done', { xp: target.xp, games: target.games, correct: target.correct, wrong: target.wrong }, seenFrom(p));
+        confirmWeekly(sentWeekly);
         sync.lastSyncAt = Date.now();
         saveSync();
         COUNTERS.forEach(function (c) { store[c[1]] = target[c[0]]; });

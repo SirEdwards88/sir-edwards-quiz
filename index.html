@@ -50,6 +50,7 @@
 <link rel="stylesheet" href="styles/main.css?v=134">
 <!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
 <link rel="stylesheet" href="styles/online.css?v=134">
+<link rel="stylesheet" href="styles/encargos.css?v=134">
 <link rel="stylesheet" href="styles/theme.css?v=134">
 
 </head>
@@ -393,6 +394,9 @@ try {
           <div class="home-small-arrow">›</div>
         </div>
       </div>
+
+      <!-- 2.2: tira editorial de los Encargos (no es una cuarta tarjeta) -->
+      <div id="home-encargos" class="home-encargos" role="button" tabindex="0" onclick="switchTab('encargos')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchTab('encargos');}" hidden></div>
 
       <div class="home-footer">
         <div class="home-footer-line"></div>
@@ -864,6 +868,18 @@ try {
       <div class="medals-grid" id="medals-container"></div>
     </div>
 
+    <!-- TAB: ENCARGOS (2.2) -->
+    <div id="view-encargos" class="view">
+      <div class="section-topbar">
+        <button type="button" class="section-back-btn" onclick="switchTab('home')" aria-label="Volver al menú principal">←</button>
+        <div class="section-topbar-text">
+          <h2>Encargos</h2>
+          <p class="section-topbar-sub">Los encargos de Sir Edwards</p>
+        </div>
+      </div>
+      <div id="encargos-body"></div>
+    </div>
+
     <!-- TAB: SETTINGS -->
     <div id="view-settings" class="view">
       <div class="section-topbar">
@@ -1063,6 +1079,10 @@ try {
 <script src="src/utils/answer-alias.js?v=134"></script>
 <script src="src/utils/lucidez-select.js?v=134"></script>
 <script src="src/state/lucidez-bag.js?v=134"></script>
+<script src="src/utils/encargos-core.js?v=134"></script>
+<script src="src/utils/encargos-progress.js?v=134"></script>
+<script src="src/state/encargos.js?v=134"></script>
+<script src="src/ui/encargos-ui.js?v=134"></script>
 <script src="src/utils/sudden-progression.js?v=134"></script>
 <script src="src/utils/fresh-first.js?v=134"></script>
 <script src="src/utils/mental-calc.js?v=134"></script>
@@ -2001,6 +2021,7 @@ function registerOnlineDuelResult(info) {
 
   if (info.hitos && info.hitos.stakes_all_three === true) ds.stakesAllThree = true;
 
+  try { encargosOnDuel(info.result === 'win', info.stakes === true); } catch (e) {}
   const medals = checkMedalsAndGetNew();
   const reward = checkFragmentRewardsAndGetNew();
   saveStore(false);
@@ -3094,7 +3115,9 @@ function switchTab(tabId) {
     updateBadges();
     updateResumeButton();
     try { maybeShowPwaHint(); } catch (e) {}
+    try { SEQEncargosUI.renderHome(); } catch (e) {}
   }
+  if (tabId === 'encargos') { try { SEQEncargosUI.renderScreen(); } catch (e) {} }
   if (tabId === 'modes') {
     closeDifficultyMenu();
     clearCardThemeClasses();
@@ -3265,6 +3288,7 @@ function updateAnswerStreak(isCorrect, q = null) {
     }
   }
 
+  try { encargosOnAnswer(isCorrect, q); } catch (e) {}
   updateStreakDisplay();
   saveStore();
 }
@@ -4304,6 +4328,7 @@ function finishLucidezMode(failed, timedOut = false, phaseInsufficient = null) {
   // aquí para una partida de Duelo (mismo criterio que finishGame). Los 6
   // logros exclusivos de Duelo se evalúan aparte, tras handleDuelFinish.
   if (!isDuelGame) markNightCompletionIfApplicable();
+  if (!isDuelGame) { try { encargosOnGameEnd('lucidez_mental', score, totalQ); } catch (e) {} }
   const newMedalsUnlocked = isDuelGame ? [] : checkMedalsAndGetNew();
   const newModesUnlocked = isDuelGame ? [] : checkModeUnlocksAndGetNew();
   clearSavedGame();
@@ -5855,6 +5880,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   // acepta). Los 6 logros exclusivos de Duelo se evalúan aparte, más abajo,
   // solo tras handleDuelFinish() y solo cuando corresponde (ver ese punto).
   if (!isDuelGame) markNightCompletionIfApplicable();
+  if (!isDuelGame && currentGame.mode !== 'review') { try { encargosOnGameEnd(currentGame.mode, currentGame.mode === 'mental_calc' ? currentGame.correct : currentGame.score, totalQ); } catch (e) {} }
   const newMedalsUnlocked = isDuelGame ? [] : checkMedalsAndGetNew();
   const newModesUnlocked = isDuelGame ? [] : checkModeUnlocksAndGetNew();
   clearSavedGame();

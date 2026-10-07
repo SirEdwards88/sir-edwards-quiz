@@ -97,6 +97,9 @@ function getDefaultStore() {
     // el ID estable del rival) viven dentro de duelStats, igual que el resto.
     duelStats: { played: 0, wins: 0, losses: 0, draws: 0, currentWinStreak: 0, bestWinStreak: 0, wonByOnePoint: false, wonByTenPlus: false, revengeWon: false, comebackWon: false, perfectWon: false, stakesLastMadness: false, stakesAllThree: false, bestWinsVsRival: 0, rivals: {} },
     duelHistory: [],
+    // 2.2 Encargos semanales: progreso de la semana en curso y claves de recompensa ya cobradas (ver src/state/encargos.js).
+    encargos: null,
+    encargosClaimed: [],
     // ⚔️ Duelo: códigos de reto ya jugados como retador (joiner), para que
     // repetir un mismo reto no vuelva a contar en duelStats/logros — solo
     // la primera vez que se juega un código da estadísticas. Independiente
@@ -192,6 +195,10 @@ function sanitizeStore(s) {
   s.questionStreaks = asPlainObject(s.questionStreaks);
   s.questionBags = asPlainObject(s.questionBags);
   s.lastQuestionInBag = asPlainObject(s.lastQuestionInBag);
+  // 2.2 Encargos: formato mínimo aquí (el contenido se valida al usarlo, en src/state/encargos.js).
+  s.encargosClaimed = asArray(s.encargosClaimed).filter(k => typeof k === 'string' && k.length <= 40).slice(-120);
+  s.encargos = (s.encargos && typeof s.encargos === 'object' && !Array.isArray(s.encargos) && typeof s.encargos.w === 'string')
+    ? { w: s.encargos.w.slice(0, 10), p: asPlainObject(s.encargos.p) } : null;
 
   s.xp = asFiniteNonNegNumber(s.xp);
   s.gamesPlayed = asFiniteNonNegNumber(s.gamesPlayed);

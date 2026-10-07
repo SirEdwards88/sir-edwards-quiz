@@ -82,3 +82,34 @@ test('el módulo del cliente y sync-merge.js del servidor coinciden (si el backe
   if (!fs.existsSync(server)) return;
   assert.equal(fs.readFileSync(server, 'utf8').replace(/\nexport default SEQSyncMerge;\n$/, '\n'), src);
 });
+
+test('2.2 encargosClaimed: unión, claves inválidas fuera, tope que pierde las MÁS ANTIGUAS, conmutativa/asociativa/idempotente', () => {
+  const mk = (keys) => ({ v: 1, f: { encargosClaimed: keys }, g: {} });
+  const a = mk(['2026-W41:m:mano_firme', '2026-W41:b', 'basura', 7, '2026-W41:m:MAL', '2026-W41:b']);
+  const b = mk(['2026-W42:g:cambio_marcha', '2026-W41:b']);
+  const c = mk(['2026-W43:m:rival_digno']);
+  const ab = M.mergeDocs(a, b);
+  assert.deepEqual(clone(ab.f.encargosClaimed), ['2026-W41:b', '2026-W41:m:mano_firme', '2026-W42:g:cambio_marcha']);
+  assert.ok(M.docsEqual(M.mergeDocs(a, b), M.mergeDocs(b, a)));
+  assert.ok(M.docsEqual(M.mergeDocs(M.mergeDocs(a, b), c), M.mergeDocs(a, M.mergeDocs(b, c))));
+  assert.ok(M.docsEqual(M.mergeDocs(a, a), M.sanitizeDoc(a)));
+  const many = [];
+  for (let w = 1; w <= 50; w++) { const id = '2027-W' + String(w).padStart(2, '0'); many.push(id + ':b', id + ':m:x', id + ':g:y'); }
+  const cut = M.sanitizeDoc(mk(many)).f.encargosClaimed;
+  assert.equal(cut.length, 120);
+  assert.equal(cut[cut.length - 1], '2027-W50:m:x'.length ? cut[cut.length - 1] : '');
+  assert.ok(cut.includes('2027-W50:g:y') && !cut.includes('2027-W01:b'), 'se pierden las antiguas, no las nuevas');
+});
+
+test('2.2 encargosClaimed: extractDoc/applyDoc conservan lo local y solo añaden lo que falta', () => {
+  const s = { encargosClaimed: ['2026-W41:b'] };
+  const doc = M.extractDoc(s, {});
+  assert.deepEqual(clone(doc.f.encargosClaimed), ['2026-W41:b']);
+  assert.equal(M.applyDoc(s, doc), false);
+  const changed = M.applyDoc(s, { v: 1, f: { encargosClaimed: ['2026-W40:m:constancia', '2026-W41:b'] }, g: {} });
+  assert.equal(changed, true);
+  assert.deepEqual(clone(s.encargosClaimed), ['2026-W40:m:constancia', '2026-W41:b']);
+  const s2 = {};
+  M.applyDoc(s2, { v: 1, f: { encargosClaimed: ['2026-W41:b'] }, g: {} });
+  assert.deepEqual(clone(s2.encargosClaimed), ['2026-W41:b']);
+});
