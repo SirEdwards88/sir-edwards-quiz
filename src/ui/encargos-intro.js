@@ -208,7 +208,7 @@ const SEQEncargosIntro = (function () {
       if (s.final) { showFinal(); return; }
       setBeat(s.beat);
       el.classList.toggle('show-title', !!s.title);
-      if (s.title) later(function () { el.classList.remove('show-title'); }, 2000);
+      if (s.title) later(function () { el.classList.remove('show-title'); }, holdMs(s) - 700);   // el título dura casi todo el paso
       if (s.blink) {
         el.classList.remove('do-blink'); void el.offsetWidth; el.classList.add('do-blink');
         cap.classList.remove('in');
@@ -216,8 +216,12 @@ const SEQEncargosIntro = (function () {
       } else say(s.text);
       stepper.after(function () { show(i + 1); }, holdMs(s));
     }
-    // Tiempo en pantalla: un 30 % más que el guion base y nunca menos de lo que se tarda en leer la frase (≈45 ms por carácter).
-    function holdMs(s) { return Math.max(Math.round(s.ms * 1.3), 1400 + (s.text ? s.text.length * 45 : 0)); }
+    // Tiempo en pantalla: un 30 % más que el guion base y nunca menos de lo que se tarda en leer la frase (≈45 ms por carácter);
+    // medio segundo más en los trozos de texto largo (40 caracteres o más) y 2 s más en el del título, para poder verlo y leerlo.
+    function holdMs(s) {
+      var len = s.text ? s.text.length : 0;
+      return Math.max(Math.round(s.ms * 1.3), 1400 + len * 45) + (len >= 40 ? 500 : 0) + (s.title ? 2000 : 0);
+    }
     function showFinal() {
       el.classList.add('is-final');
       cap.classList.remove('in');
