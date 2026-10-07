@@ -686,7 +686,8 @@
       : '<button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.open(\'retos\')">← Retos</button>') + '</div>';
     h += '<div id="seq-d-msg" class="feedback" style="display:none;"></div>';
     var lbl, extra = '', est = (d.yo && d.yo.estado) || {};
-    if (kind === 'duel') lbl = 'DUELO<span class="seq-d-long"> ONLINE</span> · ' + (num(idx) + 1) + '/20';
+    // El icono del modo hace de título (como en los Retos y en los modos normales): sin espadas ni texto.
+    if (kind === 'duel') lbl = '<span class="seq-d-hud-mode" title="Duelo clásico"><img class="seq-ico seq-d-mode-ico" src="assets/duelos/modos/classic.webp" alt="" draggable="false"></span>' + (num(idx) + 1) + '/20';
     else {
       var m = retoMode(d), clock = d.modo === 'contrarreloj' || d.modo === 'calculo_mental';
       // Cabecera: el modo y, según el modo, por qué pregunta vas (x/total), la fase (Lucidez) o los aciertos (modos con reloj).
@@ -702,7 +703,7 @@
       }
     }
     // Izquierda: los datos de la partida (progreso, segundos y vidas). Derecha: el rival.
-    h += '<div class="mode-header game-hud seq-d-hud' + (kind === 'reto' ? ' seq-d-hud-reto' : '') + '"><span class="seq-d-hud-lbl">' + lbl + ' · </span>' +
+    h += '<div class="mode-header game-hud seq-d-hud seq-d-hud-reto"><span class="seq-d-hud-lbl">' + lbl + ' · </span>' +
       '<span class="seq-d-hud-right"><span class="seq-d-hud-time">' + ico('tiempo') + '<span id="seq-d-time"></span>s</span>' + extra + '</span>' +
       // El rival, en la misma línea: con el icono del modo en lugar de su nombre, cabe todo (progreso, segundos y rival).
       '<span class="seq-d-vs-chip" title="Tu rival">' + p.avatar + '<span class="seq-d-rival-name">' + p.name + '</span></span></div>';

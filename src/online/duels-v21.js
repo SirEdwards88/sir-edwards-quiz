@@ -162,7 +162,7 @@
     var p = h.player(d.rival), r = d.ronda || null, fase = r ? r.fase : 'cuenta_atras';
     var out = '<div class="seq-d-toprow"><button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.leaveDuel()">← Duelo online</button></div>';
     out += '<div id="seq-d-msg" class="feedback" style="display:none;"></div>';
-    out += '<div class="mode-header game-hud seq-d-hud seq-v21-hud"><span class="seq-d-hud-lbl">' + modeIcon('stakes') + 'APUESTAS</span>' +
+    out += '<div class="mode-header game-hud seq-d-hud seq-d-hud-reto seq-v21-hud"><span class="seq-d-hud-lbl"><span class="seq-d-hud-mode" title="Duelo por apuestas">' + modeIcon('stakes') + '</span></span>' +
       '<span class="seq-d-hud-right"><span class="seq-d-hud-time">' + h.ico('tiempo') + '<span id="seq-v21-time"></span>s</span></span>' +
       '<span class="seq-d-vs-chip" title="Tu rival">' + p.avatar + '<span class="seq-d-rival-name">' + p.name + '</span></span></div>';
     out += scoreboard(d);
