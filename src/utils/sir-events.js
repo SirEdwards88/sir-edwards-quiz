@@ -3,8 +3,11 @@
 // Son 100 % cosméticos: no tocan puntuación, vidas, tiempo, rachas, XP ni Fragmentos. Este archivo solo decide SI aparece
 // un evento y CUÁL (y su frase); quien lo llama (src/state/sir-events.js) lo muestra con src/ui/sir-events-ui.js.
 //
-// Cinco eventos, un único sistema:
+// Ocho eventos, un único sistema:
 // · streak () hito de racha 10  15  20  30; cada hito una sola vez por partida.
+// · record () nueva mejor racha personal (≥5): lo avisa quien llama con ctx.record = n. Una vez por partida.
+// · comeback () vuelta tras 4-20 días sin jugar: ctx.comeback; sale tras la 1.ª respuesta (acierto o no). Una vez por partida.
+// · weak () un acierto en la categoría más floja del jugador: ctx.weakCat = nombre. Una vez por partida y como mucho 1 al día.
 // · broken () racha rota: un FALLO tras 5 o más aciertos seguidos; la frase cita el número real. Una vez por partida.
 //   Es el único que sale tras un fallo; usa la imagen de «visita» (Sir Edwards observando).
 // · night () 00:00–04:00 hora local.
@@ -30,12 +33,19 @@ const SEQSirEvents = (function () {
   var STREAK_P = { 10: 0.7, 15: 0.85, 20: 1, 30: 1 };     // 10 «puede», 15 más probable, 20 y 30 especiales
   var MILESTONES = [10, 15, 20, 30];
   var BROKEN_MIN_RUN = 5;         // racha mínima para que su rotura merezca comentario
-  var BROKEN_P = { low: 0.6, mid: 0.9, high: 1 };         // 5-9 · 10-19 · 20 o más
+  var BROKEN_P = { low: 0.35, mid: 0.7, high: 1 };        // 5-9 · 10-19 · 20 o más
+  var MAX_PER_GAME = 2;           // como mucho dos eventos por partida (salvo un hito de racha de 20 o más)
+  var RECENT_MS = 3 * 3600 * 1000;        // día, noche y visita: como mucho uno cada 3 h (lo recuerda quien llama, entre partidas)
+  var WEAK_MS = 24 * 3600 * 1000;         // categoría débil: como mucho uno al día
+  var RECORD_P = 0.85, WEAK_P = 0.5;
   var RARE_P = 0.05;              // frase «muy rara»
 
   var ASSETS = {
     visit: 'assets/character/event_siredwards_visit.webp',
     broken: 'assets/character/event_siredwards_visit.webp',
+    comeback: 'assets/character/event_siredwards_visit.webp',
+    weak: 'assets/character/event_siredwards_visit.webp',
+    record: 'assets/character/event_siredwards_streak.webp',
     streak: 'assets/character/event_siredwards_streak.webp',
     day: 'assets/character/event_siredwards_day.webp',
     night: 'assets/character/event_siredwards_night.webp'
@@ -137,6 +147,22 @@ const SEQSirEvents = (function () {
       '«Casi pude respetarte. {n} seguidas. Casi.»']
   };
 
+  // Récord personal ({n} = la racha nueva), regreso tras días y categoría débil ({cat} = su nombre): siempre en positivo o en tono de reproche suave.
+  var RECORD = [
+    '«{n} seguidas. Tu mejor marca. Qué inoportuna mejora.»', '«Récord personal: {n}. Lo anoto en tinta discreta.»',
+    '«{n}. Mejor que nunca. Hasta hoy eras otra persona.»', '«Tu mejor racha hasta ahora: {n}. Procura que no sea el techo.»',
+    '«Récord. {n} seguidas. Detesto tener que felicitarte.»', '«{n}. Superas tu marca anterior. Y mis expectativas, de paso.»'
+  ];
+  var COMEBACK = [
+    '«Vaya. El aspirante regresa. Había empezado a archivar tu expediente.»', '«Así que sigues por aquí. Qué detalle avisar.»',
+    '«Ha pasado tiempo. Tu expediente ha criado polvo; tú, con suerte, conocimiento.»', '«Regresas sin avisar. No preguntaré dónde estabas. Lo adivino.»',
+    '«Mi silla favorita cogía polvo. Qué oportuno tu regreso.»', '«Días sin verte. Los he empleado en dudar de ti. Con método.»'
+  ];
+  var WEAK = [
+    '«{cat}. Tu talón de Aquiles. Y has acertado. Lo anoto, con reservas.»', '«{cat}, de todas las categorías. Casi parece que has estudiado.»',
+    '«{cat} suele ser tu punto flaco. Hoy se ha portado. Interesante.»', '«Has acertado en {cat}. La vigilaré con más respeto.»',
+    '«{cat}: tu categoría más débil. Acabas de darle una oportunidad. Aprovéchala.»'
+  ];
   var DAY = [
     '«Buenos días. Veamos qué estás tramando.»',
     '«Una mañana prometedora. Procura no estropearla.»',
@@ -190,7 +216,7 @@ const SEQSirEvents = (function () {
   function isDay(hour) { return hour >= 6 && hour < 10; }
 
   function newState() {
-    return { shown: { visit: 0, day: 0, night: 0, broken: 0 }, milestones: {}, lastAt: null, lastAnswer: null, answers: 0, run: 0, last: {} };
+    return { shown: { visit: 0, day: 0, night: 0, broken: 0, record: 0, comeback: 0, weak: 0 }, milestones: {}, lastAt: null, lastAnswer: null, answers: 0, run: 0, count: 0, last: {} };
   }
 
   // Elige una frase del grupo (cadena u objeto {t,h}) válida para la hora, sin repetir la última del mismo evento.
@@ -218,9 +244,14 @@ const SEQSirEvents = (function () {
     if (typeof rotate === 'function') { var t = rotate(timed ? key + '_' + hour : key, ok); if (typeof t === 'string' && t) return t; }
     return pick(list, hour, rng, avoid);
   }
-  function phraseFor(type, hour, rng, avoid, milestone, rotate) {
+  function phraseFor(type, hour, rng, avoid, milestone, rotate, cat) {
     var rare = { visit: VISIT_RARE, day: DAY_RARE, night: NIGHT_RARE }[type];
     if (rare && rng() < RARE_P) { var r = chooseRare(type + '_rare', rare, hour, rng, avoid, rotate); if (r) return r; }
+    if (type === 'record' || type === 'comeback' || type === 'weak') {
+      var lst = type === 'record' ? RECORD : type === 'comeback' ? COMEBACK : WEAK;
+      var tp = choose(type, lst, hour, rng, avoid, rotate);
+      return tp ? tp.replace(/\{n\}/g, String(milestone)).replace(/\{cat\}/g, String(cat || 'Esta categoría')) : null;
+    }
     if (type === 'broken') {
       var tier = milestone >= 20 ? 'high' : milestone >= 10 ? 'mid' : 'low';
       var tpl = choose('broken_' + tier, BROKEN_PHRASES[tier], hour, rng, avoid, rotate);
@@ -244,51 +275,71 @@ const SEQSirEvents = (function () {
   // ctx = { nowMs, hour (0-23, hora LOCAL), streak, correct, last (¿última pregunta?), blocked (¿no interrumpir?),
 //         rotate (opcional: función (clave, lista) → frase, con bolsa persistente) }
   // Devuelve null o { type, asset, label, message, durationMs } y anota el evento en `state`.
+  function recentOk(ctx, type, nowMs) {
+    var t = ctx && ctx.recent && ctx.recent[type];
+    return !(typeof t === 'number' && nowMs - t < (type === 'weak' ? WEAK_MS : RECENT_MS));
+  }
+  function done(state, ctx, type, text, nowMs) {
+    if (type !== 'streak') state.shown[type] = (state.shown[type] || 0) + 1;   // el hito de racha se cuenta en state.milestones
+    state.count++;
+    state.lastAt = nowMs; state.lastAnswer = state.answers; state.last[type] = text;
+    return { type: type, asset: ASSETS[type], label: LABELS[type] || '', message: text, durationMs: Math.min(5200, 3200 + text.length * 25) };
+  }
+
   function evaluate(state, ctx, rng) {
     rng = rng || Math.random;
     state.answers++;                                 // respuestas de la partida (acierto o no)
-    if (!state.shown.broken) state.shown.broken = 0;
+    ['broken', 'record', 'comeback', 'weak'].forEach(function (k) { if (!state.shown[k]) state.shown[k] = 0; });
+    if (!state.count) state.count = 0;
     var run = state.run || 0;                        // aciertos seguidos que llevaba el motor antes de esta respuesta
     if (ctx && ctx.correct === true) state.run = run + 1; else state.run = 0;
     if (!ctx || ctx.blocked || ctx.last) return null;
+
+    // Regreso tras días sin jugar: tras la 1.ª respuesta, acierto o no.
+    if (state.answers === 1 && ctx.comeback === true && !state.shown.comeback) {
+      var ct = phraseFor('comeback', Math.floor(ctx.hour), rng, state.last.comeback, 0, ctx.rotate);
+      if (ct) return done(state, ctx, 'comeback', ct, ctx.nowMs);
+    }
     if (state.answers <= MIN_ANSWERS_START) return null;
 
-    // Racha rota: un fallo tras una buena racha. No en Repaso (allí no hay racha: lo avisa quien llama con noBroken).
+    // Racha rota: un fallo tras una buena racha. No en Repaso ni en Muerte Súbita (lo avisa quien llama con noBroken).
     if (ctx.correct !== true) {
       if (ctx.noBroken || run < BROKEN_MIN_RUN || state.shown.broken >= 1) return null;
+      if (state.count >= MAX_PER_GAME && run < 20) return null;
       if (state.lastAnswer !== null && state.answers - state.lastAnswer < 2) return null;     // nunca pegado a otro evento
       var tier = run >= 20 ? BROKEN_P.high : run >= 10 ? BROKEN_P.mid : BROKEN_P.low;
       if (!(rng() < tier)) return null;
       var btext = phraseFor('broken', Math.floor(ctx.hour), rng, state.last.broken, run, ctx.rotate);
       if (!btext) return null;
-      state.shown.broken++; state.lastAt = ctx.nowMs; state.lastAnswer = state.answers; state.last.broken = btext;
-      return { type: 'broken', asset: ASSETS.broken, label: LABELS.broken || '', message: btext, durationMs: Math.min(5200, 3200 + btext.length * 25) };
+      return done(state, ctx, 'broken', btext, ctx.nowMs);
     }
     if (state.lastAt !== null && (ctx.nowMs - state.lastAt < COOLDOWN_MS || state.answers - state.lastAnswer < MIN_ANSWERS_BETWEEN)) return null;
 
     var hour = Math.floor(ctx.hour);
     var chosen = null, milestone = null;
+    var capped = state.count >= MAX_PER_GAME;
 
     var m = milestoneFor(state, Number(ctx.streak) || 0);
-    if (m !== null && rng() < STREAK_P[m]) { chosen = 'streak'; milestone = m; }
-    if (!chosen && isNight(hour) && state.shown.night < 1 && rng() < P.night) chosen = 'night';
-    if (!chosen && isDay(hour) && state.shown.day < 1 && rng() < P.day) chosen = 'day';
-    if (!chosen && state.shown.visit < 1 && rng() < P.visit) chosen = 'visit';
+    if (m !== null && (!capped || m >= 20) && rng() < STREAK_P[m]) { chosen = 'streak'; milestone = m; }
+    if (!chosen && capped) return null;
+    if (!chosen && Number(ctx.record) >= 5 && !state.shown.record && rng() < RECORD_P) { chosen = 'record'; milestone = Number(ctx.record); }
+    if (!chosen && isNight(hour) && state.shown.night < 1 && recentOk(ctx, 'night', ctx.nowMs) && rng() < P.night) chosen = 'night';
+    if (!chosen && isDay(hour) && state.shown.day < 1 && recentOk(ctx, 'day', ctx.nowMs) && rng() < P.day) chosen = 'day';
+    if (!chosen && ctx.weakCat && !state.shown.weak && recentOk(ctx, 'weak', ctx.nowMs) && rng() < WEAK_P) chosen = 'weak';
+    if (!chosen && state.shown.visit < 1 && recentOk(ctx, 'visit', ctx.nowMs) && rng() < P.visit) chosen = 'visit';
 
     if (!chosen) return null;
-    var text = phraseFor(chosen, hour, rng, state.last[chosen], milestone, ctx.rotate);
+    var text = phraseFor(chosen, hour, rng, state.last[chosen], milestone, ctx.rotate, ctx.weakCat);
     if (!text) return null;
-    if (chosen === 'streak') state.milestones[milestone] = true; else state.shown[chosen]++;
     // Un hito superado sin evento queda cerrado para no disparar tarde: los inferiores se consideran vistos.
-    if (chosen === 'streak') MILESTONES.forEach(function (x) { if (x < milestone) state.milestones[x] = true; });
-    state.lastAt = ctx.nowMs; state.lastAnswer = state.answers; state.last[chosen] = text;
-    return { type: chosen, asset: ASSETS[chosen], label: LABELS[chosen] || '', message: text, durationMs: Math.min(5200, 3200 + text.length * 25) };
+    if (chosen === 'streak') { state.milestones[milestone] = true; MILESTONES.forEach(function (x) { if (x < milestone) state.milestones[x] = true; }); }
+    return done(state, ctx, chosen, text, ctx.nowMs);
   }
 
   return {
     COOLDOWN_MS: COOLDOWN_MS, MIN_ANSWERS_BETWEEN: MIN_ANSWERS_BETWEEN, MIN_ANSWERS_START: MIN_ANSWERS_START,
-    P: P, STREAK_P: STREAK_P, BROKEN_MIN_RUN: BROKEN_MIN_RUN, BROKEN_P: BROKEN_P, MILESTONES: MILESTONES, ASSETS: ASSETS, LABELS: LABELS, RARE_P: RARE_P,
-    PHRASES: { visit: VISIT, visitRare: VISIT_RARE, streak: STREAK_PHRASES, broken: BROKEN_PHRASES, day: DAY, dayRare: DAY_RARE, nightEarly: NIGHT_EARLY, nightLate: NIGHT_LATE, nightRare: NIGHT_RARE },
+    P: P, STREAK_P: STREAK_P, BROKEN_MIN_RUN: BROKEN_MIN_RUN, BROKEN_P: BROKEN_P, MAX_PER_GAME: MAX_PER_GAME, RECENT_MS: RECENT_MS, WEAK_MS: WEAK_MS, MILESTONES: MILESTONES, ASSETS: ASSETS, LABELS: LABELS, RARE_P: RARE_P,
+    PHRASES: { visit: VISIT, visitRare: VISIT_RARE, streak: STREAK_PHRASES, broken: BROKEN_PHRASES, record: RECORD, comeback: COMEBACK, weak: WEAK, day: DAY, dayRare: DAY_RARE, nightEarly: NIGHT_EARLY, nightLate: NIGHT_LATE, nightRare: NIGHT_RARE },
     isNight: isNight, isDay: isDay, newState: newState, evaluate: evaluate
   };
 })();

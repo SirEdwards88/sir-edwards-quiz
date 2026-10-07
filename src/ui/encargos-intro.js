@@ -142,7 +142,9 @@ const SEQEncargosIntro = (function () {
   // La música de menús se retiene mientras dura la presentación grande y se suelta al cerrarla (audio.js: SEQMusic).
   function menuMusic(hold) { try { if (window.SEQMusic) { if (hold) SEQMusic.hold(); else SEQMusic.release(); } } catch (e) {} }
 
+  var sessionShown = false;     // ¿se ha enseñado la presentación o la carta semanal en esta sesión? (los eventos de partida lo consultan)
   function startScene(preview) {
+    sessionShown = true;
     var C = core(), R = ENCARGOS_INTRO.result;
     var key = (preview ? 'normal' : pendingResult) || 'neutra';
     var name = playerName();
@@ -284,6 +286,7 @@ const SEQEncargosIntro = (function () {
 
   // ---- carta de los lunes -------------------------------------------------------------------------------------------
   function startMonday(weekId, lastWeekId, introWeek, isMonday, away) {
+    sessionShown = true;
     var C = core(), M = ENCARGOS_INTRO.monday;
     var claimed = (typeof store === 'object' && store && store.encargosClaimed) || [];
     var kind = C.mondayKind(claimed, lastWeekId, introWeek, away);
@@ -340,7 +343,7 @@ const SEQEncargosIntro = (function () {
     })();
   }
 
-  return { seen: seen, replay: replay, noteGame: noteGame, noteDuel: noteDuel, onHome: onHome, isActive: function () { return !!active; } };
+  return { seen: seen, replay: replay, noteGame: noteGame, noteDuel: noteDuel, onHome: onHome, shownThisSession: function () { return sessionShown; }, isActive: function () { return !!active; } };
 })();
 
 // Un lunes con la app ya abierta: se comprueba una vez al arrancar (si hay modales o cuenta, se deja para la siguiente visita a Inicio).

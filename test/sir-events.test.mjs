@@ -67,8 +67,9 @@ test('streak: no antes de 10; sale en 10/15/20/30; cada hito una sola vez; frase
     if (ev && ev.type === 'streak') fired.push([streak, ev.message]);
     if (streak < 10) assert.ok(!ev || ev.type !== 'streak', 'antes de 10 no hay streak');
   }
-  assert.deepEqual(fired.map((f) => f[0]), [10, 15, 20, 30]);
-  [10, 15, 20, 30].forEach((m, i) => assert.ok(S.PHRASES.streak[m].includes(fired[i][1])));
+  // Con ALWAYS sale también la visita antes del 10: con el tope de 2 eventos por partida, el 15 cede y los de 20 y 30 pasan siempre.
+  assert.deepEqual(fired.map((f) => f[0]), [10, 20, 30]);
+  [10, 20, 30].forEach((m, i) => assert.ok(S.PHRASES.streak[m].includes(fired[i][1])));
 });
 
 test('streak: un mismo hito no se repite; el hito no «se pierde» al instante pero tampoco llega tarde', () => {
@@ -170,7 +171,7 @@ test('el estado es de UNA partida: newState reinicia límites e hitos', () => {
   const a = S.newState(); warm(a); assert.ok(ans(a, 1e6, 14));
   assert.equal(ans(a, 9e6, 14, 1, {}, ALWAYS), null, 'visit ya usado en esa partida');
   const b = S.newState(); warm(b); assert.ok(ans(b, 1e6, 14), 'partida nueva: vuelve a poder salir');
-  assert.deepEqual(JSON.parse(JSON.stringify(S.newState())), { shown: { visit: 0, day: 0, night: 0, broken: 0 }, milestones: {}, lastAt: null, lastAnswer: null, answers: 0, run: 0, last: {} });
+  assert.deepEqual(JSON.parse(JSON.stringify(S.newState())), { shown: { visit: 0, day: 0, night: 0, broken: 0, record: 0, comeback: 0, weak: 0 }, milestones: {}, lastAt: null, lastAnswer: null, answers: 0, run: 0, count: 0, last: {} });
 });
 
 // ---- Enganche con la partida: no modifica nada del juego ----
@@ -219,6 +220,7 @@ test('enganche: una partida nueva (objeto nuevo) reinicia el estado de eventos',
   const c = makeGameEnv(g1); vm.runInContext('Math.random = () => 0', c);
   let n1 = 0; for (let i = 0; i < 40; i++) { if (vm.runInContext('sirEventsOnAnswer(true)', c)) n1++; c.flush(); }
   const g2 = { mode: 'play', currentIdx: 3, totalQuestionsToPlay: 30 };
+  vm.runInContext('sevRecentMem = {}', c);       // el límite de 3 h entre partidas se prueba aparte
   c.currentGame = g2; vm.runInContext('currentGame = this.currentGame', c);
   let n2 = 0; for (let i = 0; i < 40; i++) { if (vm.runInContext('sirEventsOnAnswer(true)', c)) n2++; c.flush(); }
   assert.ok(n1 >= 1 && n2 >= 1);
@@ -381,10 +383,108 @@ test('racha rota: frases por tramo, con {n}, sin repetidas, sin emojis y con ton
   assert.ok(B.low.length >= 6 && B.mid.length >= 6 && B.high.length >= 6);
   assert.ok(B.mid.some((t) => t.includes('{n}')) && B.high.some((t) => t.includes('{n}')));
   const st = S.newState(); run(st, 12);
-  const ev = wrong(st, 10, 14, {}, mulberry(3));
+  const ev = wrong(st, 10, 14, {}, ALWAYS);
   assert.ok(ev && ev.type === 'broken');
 });
 
 test('los eventos no llevan rótulo, solo Sir Edwards y su frase', () => {
   assert.deepEqual({ ...S.LABELS }, {});
+});
+
+
+// ---- 2.2: coordinación con otros avisos, tope por partida y eventos nuevos ----
+const drive = (c, n, correct = true) => { let k = 0; for (let i = 0; i < n; i++) { if (vm.runInContext('sirEventsOnAnswer(' + correct + ')', c)) k++; c.flush(); } return k; };
+
+test('coordinación: el evento cede ante un hito, «Última vida», un aviso de Encargo, el fin de partida y los relojes de Lucidez', () => {
+  const doc = (sel) => ({ hidden: false, getElementById: () => null, querySelector: () => sel });
+  const run = (game, extra = {}) => { const c = makeGameEnv(game, extra); vm.runInContext('Math.random = () => 0', c); return drive(c, 12) ? c.shown.length : 0; };
+  const base = { mode: 'survival', currentIdx: 3, totalQuestionsToPlay: 40, lives: 3 };
+  assert.ok(run({ ...base }) >= 1, 'despejado: sale');
+  assert.equal(run({ ...base }, { document: doc({}) }), 0, 'aviso a la vista (Última vida, hito o Encargo): cede');
+  assert.equal(run({ ...base, currentIdx: 8 }, { SEQHitos: { hitoFor: (m, i) => (i === 9 ? {} : null) } }), 0, 'la pregunta siguiente es un hito: cede');
+  assert.equal(run({ ...base, lives: 0 }), 0, 'sin vidas termina la partida: cede');
+  assert.equal(run({ mode: 'lucidez_mental', currentIdx: 12, totalQuestionsToPlay: 30 }), 0, 'Lucidez fases II y III (con reloj): cede');
+  assert.ok(run({ mode: 'lucidez_mental', currentIdx: 3, totalQuestionsToPlay: 30 }) >= 1, 'Lucidez fase I: sale');
+  const src = read('src/state/sir-events.js');
+  assert.match(src, /fx-lastlife-banner, \.sir-hito, \.encargos-toast\.show/);
+});
+
+test('tope: como mucho dos eventos por partida; un hito de racha de 20 o más lo salta', () => {
+  assert.equal(S.MAX_PER_GAME, 2);
+  const st = S.newState(); warm(st);
+  let n = 0, t = 1e6;
+  for (let i = 0; i < 40; i++) { t += 70000; for (let k = 0; k < S.MIN_ANSWERS_BETWEEN; k++) S.evaluate(st, { nowMs: t - 1, hour: 12, streak: 1, correct: false, last: false, blocked: false, noBroken: true }, ALWAYS); if (ans(st, t, 12, 1, {}, ALWAYS)) n++; }
+  assert.ok(n <= 2, 'eventos en la partida: ' + n);
+  const g = S.newState(); warm(g); g.count = 2;
+  assert.equal(ans(g, 9e6, 12, 10), null, 'con el cupo lleno no sale el hito de 10');
+  const e = ans(g, 9e6 + 1e5, 12, 20);
+  assert.ok(e && e.type === 'streak', 'el de 20 sí');
+});
+
+test('día, noche y visita: como mucho uno cada 3 h; la categoría débil, uno al día (lo anota quien llama)', () => {
+  const st = S.newState(); warm(st);
+  const now = 5e8;
+  const blocked = ans(st, now, 14, 1, { recent: { visit: now - S.RECENT_MS + 1000 } }, ALWAYS);
+  assert.equal(blocked, null, 'visita reciente: no');
+  const fresh = S.newState(); warm(fresh, 1e3);
+  const ok = ans(fresh, now, 14, 1, { recent: { visit: now - S.RECENT_MS - 1000 } }, ALWAYS);
+  assert.ok(ok && ok.type === 'visit', 'visita antigua (más de 3 h): sí');
+  const st2 = S.newState(); warm(st2, 1e3);
+  const w = ans(st2, now, 14, 1, { weakCat: 'Historia', recent: { weak: now - S.WEAK_MS + 1000, visit: now } }, ALWAYS);
+  assert.equal(w, null, 'categoría débil reciente: no (y visita también reciente)');
+});
+
+test('récord personal: sale con ctx.record, una vez por partida, con la racha en la frase', () => {
+  const st = S.newState(); warm(st);
+  const ev = ans(st, 7e6, 14, 6, { record: 6, recent: { visit: 7e6 } }, ALWAYS);
+  assert.ok(ev && ev.type === 'record' && ev.asset === S.ASSETS.streak && ev.message.includes('6') && !/\{n\}/.test(ev.message));
+  for (let k = 0; k < S.MIN_ANSWERS_BETWEEN; k++) S.evaluate(st, { nowMs: 9e6 - 1, hour: 14, streak: 7, correct: false, last: false, blocked: false, noBroken: true }, ALWAYS);
+  assert.equal(ans(st, 9e6, 14, 8, { record: 8, recent: { visit: 9e6 } }, ALWAYS), null, 'un solo récord por partida');
+});
+
+test('regreso: tras la 1.ª respuesta (acierto o no), una vez, con la imagen de visita', () => {
+  for (const correct of [true, false]) {
+    const st = S.newState();
+    const ev = S.evaluate(st, { nowMs: 1e6, hour: 14, streak: 0, correct, last: false, blocked: false, comeback: true }, ALWAYS);
+    assert.ok(ev && ev.type === 'comeback' && ev.asset === S.ASSETS.visit, String(correct));
+    assert.equal(S.evaluate(st, { nowMs: 2e6, hour: 14, streak: 0, correct, last: false, blocked: false, comeback: true }, ALWAYS), null);
+  }
+  const no = S.evaluate(S.newState(), { nowMs: 1e6, hour: 14, streak: 0, correct: true, last: false, blocked: false }, ALWAYS);
+  assert.equal(no, null, 'sin regreso, nada en la 1.ª respuesta');
+});
+
+test('regreso en el controlador: entre 4 y 20 días sin jugar, y no si ya hubo presentación o carta en esta sesión', () => {
+  const day = 86400000;
+  const go = (daysAgo, extra = {}) => {
+    const g = { mode: 'play', currentIdx: 0, totalQuestionsToPlay: 30 };
+    const c = makeGameEnv(g, extra); vm.runInContext('Math.random = () => 0', c);
+    vm.runInContext('sevRecentMem = { lastplay: ' + (Date.now() - daysAgo * day) + ' }', c);
+    vm.runInContext('sirEventsOnAnswer(true)', c); c.flush();
+    return c.shown[0] && c.shown[0].type;
+  };
+  assert.equal(go(5), 'comeback');
+  assert.notEqual(go(2), 'comeback');
+  assert.notEqual(go(25), 'comeback');
+  assert.notEqual(go(5, { SEQEncargosIntro: { shownThisSession: () => true } }), 'comeback');
+  assert.match(read('src/ui/encargos-intro.js'), /shownThisSession: function \(\) \{ return sessionShown; \}/);
+});
+
+test('Muerte Súbita y Repaso: nunca «racha rota» (el fallo ya termina la partida / no hay racha)', () => {
+  ['sudden_death', 'review'].forEach((m) => {
+    const g = { mode: m, currentIdx: 8, totalQuestionsToPlay: 25 };
+    const c = makeGameEnv(g, { answerStreak: 9 }); vm.runInContext('Math.random = () => 0', c);
+    for (let i = 0; i < 8; i++) { g.currentIdx = 3 + i; vm.runInContext('sirEventsOnAnswer(true)', c); c.flush(); }
+    c.shown.length = 0;
+    vm.runInContext('sirEventsOnAnswer(false)', c); c.flush();
+    assert.ok(!c.shown.some((e) => e.type === 'broken'), m);
+  });
+});
+
+test('frases nuevas: récord, regreso y categoría débil, con sus marcas y en voz de Sir Edwards', () => {
+  const ph = S.PHRASES;
+  assert.ok(ph.record.length >= 6 && ph.comeback.length >= 6 && ph.weak.length >= 5);
+  assert.ok(ph.record.every((t) => t.includes('{n}')) || ph.record.some((t) => t.includes('{n}')));
+  assert.ok(ph.weak.every((t) => t.includes('{cat}')));
+  [...ph.record, ...ph.comeback, ...ph.weak].forEach((t) => assert.ok(/^«.+»$/.test(t) && t.length < 100 && !/\p{Extended_Pictographic}/u.test(t) && !/\b(habéis|sabemos|queremos)\b/i.test(t), t));
+  const all = [...ph.record, ...ph.comeback, ...ph.weak]; assert.equal(new Set(all).size, all.length);
 });

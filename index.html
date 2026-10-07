@@ -3242,7 +3242,7 @@ function updateAnswerStreak(isCorrect, q = null) {
   if (currentGame && currentGame.mode === 'review') {
     answerStreak = 0;
     store.currentStreak = 0;
-    try { sirEventsOnAnswer(isCorrect); } catch (e) {}
+    try { sirEventsOnAnswer(isCorrect, q); } catch (e) {}
     updateStreakDisplay();
     saveStore();
     return;
@@ -3302,7 +3302,7 @@ function updateAnswerStreak(isCorrect, q = null) {
   }
 
   try { encargosOnAnswer(isCorrect, q); } catch (e) {}
-  try { sirEventsOnAnswer(isCorrect); } catch (e) {}
+  try { sirEventsOnAnswer(isCorrect, q); } catch (e) {}
   updateStreakDisplay();
   saveStore();
 }
