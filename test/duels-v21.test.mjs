@@ -60,14 +60,19 @@ test('rangos: solo 5, con su emoji de respaldo; iconos como assets independiente
   assert.match(M.modeIcon('stakes'), /assets\/duelos\/modos\/stakes\.webp/);
 });
 
-test('el hub de Duelo online ofrece exactamente dos modos', () => {
+test('Duelo online: los dos modos son tarjetas grandes como los modos normales, con el medallón protagonista', () => {
   const { M } = load();
   const html = M.modeButtons();
-  assert.equal((html.match(/seq-v21-mode seq-v21-mode-/g) || []).length, 2);
-  assert.match(html, /SEQDuels\.pick\('duel','classic'\)/);
-  assert.match(html, /SEQDuels\.pick\('duel','stakes'\)/);
+  assert.equal((html.match(/mode-card seq-v21-modecard seq-v21-modecard-/g) || []).length, 2, 'exactamente dos modos');
+  assert.match(html, /SEQDuels\.pick\('duel','classic'\)/); assert.match(html, /SEQDuels\.pick\('duel','stakes'\)/);
   assert.match(html, /Duelo clásico/); assert.match(html, /Duelo por apuestas/);
   assert.match(html, /20 preguntas/); assert.match(html, /12 rondas/);
+  assert.match(html, /<div class="mode-card-icon has-img/, 'misma estructura que las tarjetas de los modos normales');
+  assert.match(html, /<h3>Duelo clásico<\/h3><p>/);
+  assert.match(html, /assets\/duelos\/modos\/classic\.webp/); assert.match(html, /assets\/duelos\/modos\/stakes\.webp/);
+  assert.equal(/seq-v21-mode-go|seq-v21-mode-desc/.test(html), false, 'ya no son botones pequeños');
+  const css = read('styles/online.css');
+  assert.match(css, /\.seq-v21-modecard \.mode-card-icon[^{]*\{[^}]*width: 92px !important/, 'el medallón es grande');
 });
 
 test('marcador dinámico: «TÚ 8 — 7 RIVAL» y «Ronda 7 / 12» (apuestas) / «Pregunta 9 / 20» (clásico)', () => {
@@ -139,28 +144,72 @@ test('apuesta y respuesta: solo se envían claves/opciones (nunca resultados) y 
   assert.equal(JSON.stringify(calls).includes('es_correcta'), false);
 });
 
-test('Rankings: dos ámbitos, tres tableros exactos, sin ranking universal', () => {
-  const { M } = load();
+test('Rankings: dos ámbitos, tres tableros exactos, sin ranking universal ni emojis como iconografía', () => {
+  const { M, win } = load();
   assert.deepEqual(Object.keys(M.BOARDS), ['pvp', 'mental', 'timetrial']);
   assert.deepEqual(Object.values(M.BOARDS).map((b) => b.nombre), ['PvP', 'Cálculo Mental', 'Contrarreloj']);
-  assert.match(SRC, /friends: '👥 Amigos', global: '🌍 Global'/);
   assert.equal(/universal|todos los rankings/i.test(SRC), false);
+  win.SEQDuels._h.call = () => new Promise(() => {});
+  const html = M.renderRankings();
+  const sinAtributos = html.replace(/<[^>]*>/g, '');           // texto visible
+  assert.match(sinAtributos, /Amigos/); assert.match(sinAtributos, /Global/);
+  assert.match(sinAtributos, /PvP/); assert.match(sinAtributos, /Cálculo Mental/); assert.match(sinAtributos, /Contrarreloj/);
+  assert.equal(/\p{Extended_Pictographic}/u.test(sinAtributos), false, 'ningún emoji como iconografía visible');
+  for (const id of ['friends', 'global', 'pvp', 'mental', 'timetrial']) assert.match(html, new RegExp('assets/duelos/rankings/' + id + '\\.webp'));
 });
 
-test('Rankings: pantalla con filas, colocación sin posición y aviso «sin verificar»', async () => {
+test('Rankings: el seleccionado se reconoce (aria-selected y clase) y los dos ámbitos son botones con icono', () => {
+  const { M, win } = load();
+  win.SEQDuels._h.call = () => new Promise(() => {});
+  let html = M.renderRankings();
+  assert.match(html, /seq-v21-scope-btn sel[^>]*>[\s\S]*?Amigos/);
+  assert.equal((html.match(/aria-selected="true"/g) || []).length, 2, 'un ámbito y un ranking seleccionados');
+  M.setBoard('timetrial'); html = M.renderRankings();
+  assert.match(html, /seq-v21-board-btn sel[^>]*>[\s\S]*?Contrarreloj/);
+  M.setScope('global'); html = M.renderRankings();
+  assert.match(html, /seq-v21-scope-btn sel[^>]*>[\s\S]*?Global/);
+});
+
+test('Rankings: filas con la misma estructura en los tres rankings (posición, jugador, insignia, puntuación)', async () => {
   const { M, win } = load();
   win.SEQDuels._h.call = () => Promise.resolve({
     scope: 'friends', board: 'pvp', validado: true, me: { elo: 1265, rank: 2, rango: { nombre: 'Lord Sabelotodo', icono: 'lord_sabelotodo' }, en_colocacion: false },
-    ranking: [{ rank: 1, display_name: 'Ana', avatar: 'sombrero', elo: 1300, rango: { nombre: 'Lord Sabelotodo' }, en_colocacion: false, is_me: false },
+    ranking: [{ rank: 1, display_name: 'Ana', avatar: 'sombrero', elo: 1300, rango: { nombre: 'Lord Sabelotodo', icono: 'lord_sabelotodo' }, en_colocacion: false, is_me: false },
       { rank: null, display_name: 'Rita', avatar: 'libro', elo: 1500, rango: { nombre: 'Sir Edwards' }, en_colocacion: true, is_me: false }],
   });
   await M.loadRankings();
-  const html = M.renderRankings();
-  assert.match(html, /#1/); assert.match(html, /En colocación/); assert.match(html, /1\.300/);
-  assert.match(html, /Lord Sabelotodo/); assert.match(html, /#2/);
-  win.SEQDuels._h.call = () => Promise.resolve({ validado: false, ranking: [{ rank: 1, display_name: 'Ana', avatar: 'x', score: 4000, is_me: true }], me: { score: 4000, rank: 1 } });
-  M.setBoard('mental'); await M.loadRankings();
-  assert.match(M.renderRankings(), /sin verificar/); assert.match(M.renderRankings(), /4\.000/);
+  const pvp = M.renderRankings();
+  assert.match(pvp, /seq-v21-pos gold">1</); assert.match(pvp, /En colocación/); assert.match(pvp, /1\.300/); assert.match(pvp, /Lord Sabelotodo/); assert.match(pvp, /#2/);
+  assert.match(pvp, /lord_sabelotodo\.webp/, 'PvP: insignia de rango');
+  assert.equal(/sin verificar/i.test(pvp), false);
+  const rowsOf = (h) => h.split('seq-v21-rk"').length - 1 + h.split('seq-v21-rk me"').length - 1;
+  const score = { validado: false, ranking: [{ rank: 1, display_name: 'Ana', avatar: 'x', score: 4000, is_me: true }, { rank: 2, display_name: 'Bruno', avatar: 'y', score: 3000, is_me: false }, { rank: 3, display_name: 'Carla', avatar: 'z', score: 2500, is_me: false }], me: { score: 4000, rank: 1 } };
+  for (const board of ['mental', 'timetrial']) {
+    win.SEQDuels._h.call = () => Promise.resolve(score);
+    M.setBoard(board); await M.loadRankings();
+    const h = M.renderRankings();
+    assert.match(h, /4\.000/); assert.match(h, /seq-v21-pos silver">2</); assert.match(h, /seq-v21-pos bronze">3</);
+    assert.equal(/sin verificar/i.test(h), false, 'se eliminó «sin verificar por el servidor»');
+    assert.equal((h.match(/seq-v21-rk-badge/g) || []).length, 3, board + ': cada fila lleva el emblema de su categoría');
+    assert.equal((h.match(/seq-avatar seq-v21-rk-av/g) || []).length, 3, 'avatar dentro del contenedor circular estándar');
+    assert.match(h, new RegExp('assets/duelos/rankings/' + board + '\\.webp'));
+  }
+});
+
+test('Rankings: el avatar no se recorta (contenedor estándar con tamaño propio y fila con altura mínima)', () => {
+  const css = read('styles/online.css');
+  assert.match(css, /\.seq-v21-rk \.seq-avatar\.seq-v21-rk-av \{[^}]*width: 46px; height: 46px/);
+  assert.match(css, /\.seq-v21-rk \{[^}]*min-height: 64px/);
+  assert.equal(/\.seq-v21-rk-av \{ width: 30px/.test(css), false, 'la regla antigua que lo recortaba ya no existe');
+  assert.match(SRC, /seq-avatar seq-v21-rk-av/);
+});
+
+test('Rankings: si el servidor tiene el ranking global desactivado se explica sin romper la pantalla', async () => {
+  const { M, win } = load();
+  win.SEQDuels._h.call = () => Promise.reject({ status: 404 });
+  M.setScope('global'); await M.loadRankings();
+  const h = M.renderRankings();
+  assert.match(h, /todavía no está/i); assert.match(h, /Amigos/);
 });
 
 const STATS = {
@@ -174,26 +223,29 @@ const STATS = {
   elo_serie: [{ fecha: 1, elo: 1000 }],
 };
 
-test('Estadísticas: resumen visible y botón que muestra/oculta el detalle completo', async () => {
+test('Estadísticas: solo un botón «Ver estadísticas de duelos»; al pulsarlo se muestra/oculta el detalle completo', async () => {
   const { M, win, el } = load();
   const host = el('seq-duel-stats');
   win.SEQDuels._h.call = () => Promise.resolve(STATS);
-  await M.loadStats(true);
-  const resumen = host.innerHTML;
-  assert.match(resumen, /1\.284/); assert.match(resumen, /#84/); assert.match(resumen, /24 partidas · 15 victorias/);
-  assert.match(resumen, /Ver estadísticas completas →/);
-  assert.equal(resumen.includes('seq-v21-full'), false, 'por defecto solo el resumen');
+  M.renderStats();
+  assert.match(host.innerHTML, /Ver estadísticas de duelos/);
+  assert.match(host.innerHTML, /seq-v21-statsbtn/);
+  assert.match(host.innerHTML, /aria-expanded="false"/);
+  assert.equal(host.innerHTML.includes('class="seq-v21-full"'), false, 'cerrado: no hay detalle ni resumen');
+  M.toggleStats(); await M.loadStats(true);
+  assert.match(host.innerHTML, /Ocultar estadísticas de duelos/); assert.match(host.innerHTML, /aria-expanded="true"/);
+  assert.match(host.innerHTML, /class="seq-v21-full"/); assert.match(host.innerHTML, /1\.284/); assert.match(host.innerHTML, /#84/);
   M.toggleStats();
-  assert.match(host.innerHTML, /seq-v21-full/); assert.match(host.innerHTML, /Ocultar estadísticas completas/);
-  M.toggleStats();
-  assert.equal(host.innerHTML.includes('seq-v21-full'), false);
+  assert.equal(host.innerHTML.includes('class="seq-v21-full"'), false);
+  assert.match(host.innerHTML, /Ver estadísticas de duelos/);
 });
 
-test('Estadísticas completas: ELO, pico, posición, W/L/D, %, rachas, historial de ambos modos y head-to-head', () => {
+test('Estadísticas completas: ELO, pico, posición, colocación, rachas, historial de ambos modos y cara a cara (sin duplicar el Historial)', () => {
   const { M } = load();
   const html = M._pure.fullStatsHtml(STATS);
-  for (const t of ['ELO actual', 'Pico de ELO', 'Posición global', 'Colocación', 'Victorias', 'Derrotas', 'Empates', '% victorias', 'Racha actual', 'Mejor racha', 'Cara a cara']) assert.match(html, new RegExp(t));
-  assert.match(html, /62,5%/); assert.match(html, /Clásico/); assert.match(html, /Apuestas/);
+  for (const t of ['ELO actual', 'Pico de ELO', 'Posición global', 'Colocación', 'Racha actual', 'Mejor racha', 'Historial de duelos', 'Cara a cara']) assert.match(html, new RegExp(t));
+  assert.equal(/Historial competitivo|% victorias|>Derrotas<|>Empates<|>Victorias</.test(html), false, 'partidas/victorias/derrotas/empates ya están en «Historial de duelos»');
+  assert.match(html, /Clásico/); assert.match(html, /Apuestas/);
   assert.match(html, /1\.248 → 1\.265/); assert.match(html, /\+17/); assert.match(html, /−9/);
   assert.match(html, /5 partidas · 3V · 1D · 1E/);
   assert.match(html, /assets\/duelos\/modos\/classic\.webp/); assert.match(html, /assets\/duelos\/modos\/stakes\.webp/);
@@ -206,18 +258,14 @@ test('Estadísticas sin cuenta o con la función apagada: el bloque no se muestr
   assert.equal(host.innerHTML, ''); assert.equal(host.style.display, 'none');
 });
 
-test('Perfil: solo un resumen compacto con «Ver estadísticas →» (sin el detalle)', async () => {
-  const { M, win } = load();
-  win.SEQDuels._h.call = () => Promise.resolve(STATS);
-  assert.equal(M.profileSummaryHtml(), '', 'sin datos todavía los pide, no pinta nada');
-  await M.loadStats(true);
-  const html = M.profileSummaryHtml();
-  assert.match(html, /1\.284/); assert.match(html, /#84/); assert.match(html, /24 partidas · 15 victorias/);
-  assert.match(html, /Ver estadísticas →/); assert.match(html, /SEQDuels21\.openStats\(\)/);
-  assert.equal(/seq-v21-full|Historial|Cara a cara/.test(html), false);
+test('Ajustes/Perfil: ya no hay resumen ni acceso a estadísticas de duelos (un solo punto de entrada)', () => {
+  const { M } = load();
+  assert.equal(M.profileSummaryHtml, undefined); assert.equal(M.openStats, undefined);
+  const on = read('src/online/online.js');
+  assert.equal(/profileSummaryHtml|openStats|Ver estadísticas →/.test(on + SRC), false);
 });
 
-test('Perfil: en colocación el resumen lo dice', () => {
+test('Estadísticas: el resumen del detalle indica la colocación', () => {
   const { M } = load();
   const s = JSON.parse(JSON.stringify(STATS)); s.elo.en_colocacion = true; s.elo.partidas_colocacion = 2;
   assert.match(M._pure.summaryHtml(s, false), /En colocación · 2\/5 partidas/);
@@ -250,13 +298,52 @@ test('el hub de Duelos NO tiene una tarjeta de estadísticas', () => {
   assert.equal((hub.match(/hubCard\('/g) || []).length, 4, 'Duelo online, Retos, Amigos y Rankings');
 });
 
-test('Estadísticas y Perfil: bloque, llamada y script enganchados; módulo en el service worker', () => {
-  const html = read('index.html'), sw = read('sw.js'), on = read('src/online/online.js');
-  assert.match(html, /id="seq-duel-stats"/);
+test('Estadísticas: el botón vive DENTRO de «Historial de duelos»; no hay bloque arriba; módulo en el service worker', () => {
+  const html = read('index.html'), sw = read('sw.js');
+  const sec = html.slice(html.indexOf('id="stats-duel-section"'), html.indexOf('id="stats-duel-section"') + 3000);
+  assert.match(sec, /Historial de duelos/); assert.match(sec, /id="seq-duel-stats"/);
+  assert.equal((html.match(/id="seq-duel-stats"/g) || []).length, 1);
+  assert.ok(html.indexOf('id="seq-duel-stats"') > html.indexOf('id="stats-duel-section"'), 'no está encima de las estadísticas generales');
   assert.match(html, /SEQDuels21\.onStatsShown\(\)/);
   assert.match(html, /<script src="src\/online\/duels-v21\.js\?v=\d+"><\/script>/);
   assert.match(sw, /'\.\/src\/online\/duels-v21\.js'/);
-  assert.match(on, /SEQDuels21\.profileSummaryHtml\(\)/);
+});
+
+test('Avatares: bloqueado → muestra el logro; Supremo → «logro secreto» sin revelar cuál; desbloqueado → normal', () => {
+  const ctx = vm.createContext({ window: {}, document: {}, console });
+  vm.runInContext(read('src/data/avatars.js'), ctx);
+  const A = ctx.window.SEQAvatars;
+  assert.equal(A.medalOf('avatar_siredwards_vengador'), 'duel_revancha');
+  assert.equal(A.isAvailable('avatar_siredwards_vengador', []), false);
+  assert.equal(A.isAvailable('avatar_siredwards_vengador', ['duel_revancha']), true);
+  assert.equal(A.isAvailable('sombrero', []), true, 'los base siempre');
+  assert.equal(A.isSecret('avatar_siredwards_supremo'), true);
+  assert.equal(A.isSecret('avatar_siredwards_vengador'), false);
+  const on = read('src/online/online.js');
+  assert.match(on, /Se desbloquea al completar el logro «/);
+  assert.match(on, /Se desbloquea al completar un logro secreto\./);
+  assert.match(on, /showAvatarHint/);
+  assert.equal(/disabled title="'/.test(on), false, 'ya no es un botón muerto: se puede tocar para ver el requisito');
+  const sup = on.slice(on.indexOf('function avatarHintText'), on.indexOf('function pickAvatar'));
+  assert.ok(sup.indexOf('isSecret') < sup.indexOf('ALL_MEDALS'), 'el secreto se comprueba ANTES de buscar el nombre del logro');
+});
+
+test('Novedades de la 2.1: resumen corto de cinco líneas', () => {
+  const html = read('index.html');
+  const i = html.lastIndexOf('settings-changelog-entry-version">v2.1<');
+  const entry = html.slice(i, html.indexOf('</ul>', i));
+  const lis = [...entry.matchAll(/<li>([^<]*)<\/li>/g)].map((m) => m[1]);
+  assert.equal(lis.length, 5);
+  assert.ok(lis.every((l) => l.length <= 45), 'frases de una línea: ' + lis.join(' | '));
+  assert.equal(lis.some((l) => /\p{Extended_Pictographic}/u.test(l)), false, 'el historial no lleva emojis: tono de Sir Edwards');
+});
+
+test('iconos de Rankings: existen como archivo y están en el service worker', () => {
+  const sw = read('sw.js');
+  for (const id of ['friends', 'global', 'pvp', 'mental', 'timetrial']) {
+    assert.ok(fs.existsSync(new URL('../assets/duelos/rankings/' + id + '.webp', import.meta.url)), id);
+    assert.ok(sw.includes("'./assets/duelos/rankings/" + id + ".webp'"), id);
+  }
 });
 
 test('el módulo no guarda nada en el almacenamiento ni decide resultados', () => {

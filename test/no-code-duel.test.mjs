@@ -70,7 +70,7 @@ test('los logros de Duelo son alcanzables con los datos que produce el Duelo onl
   play(c, 'l0', 'R2', 'loss', 1, 5); play(c, 'l1', 'R2', 'loss', 1, 5); play(c, 'r', 'R2', 'win', 8, 7);
   for (let i = 0; i < 3; i++) play(c, 'd' + i, 'R3', 'draw', 5, 5);
   // 2.1: remontada, apuesta final y apuesta calculada las decide el SERVIDOR (resultado.hitos de cada duelo).
-  play(c, 'h0', 'R4', 'win', 9, 8, { hitos: { comeback: true, last_word: true, stakes_last_madness: true, stakes_all_three: true } });
+  play(c, 'h0', 'R4', 'win', 9, 8, { hitos: { comeback: true, perfect: true, stakes_last_madness: true, stakes_all_three: true } });
   const earned = duelMedals.filter((m) => m.check(c.store)).map((m) => m.id);
   assert.equal(earned.length, duelMedals.length, 'faltan: ' + duelMedals.filter((m) => !earned.includes(m.id)).map((m) => m.id).join(', '));
 });

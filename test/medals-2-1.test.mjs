@@ -52,7 +52,7 @@ test('nombres de los logros nuevos, exactos', () => {
   const c = load();
   const t = (id) => c.ALL_MEDALS.find((m) => m.id === id).title;
   assert.equal(t('streak_20'), 'Racha de Élite'); assert.equal(t('streak_30'), 'SirEdwards Imparable');
-  assert.equal(t('diurno'), 'Primera Luz'); assert.equal(t('ultimo_cerebro'), 'La Última Palabra');
+  assert.equal(t('diurno'), 'Primera Luz'); assert.equal(t('duel_sin_titubear'), 'Sin Titubear');
   assert.equal(t('duel_apuestas_ultima_locura'), 'La Última Locura'); assert.equal(t('duel_apuestas_calculada'), 'Apuesta Calculada');
   assert.equal(t('duel_tres_al_hilo'), 'Caballero Invicto');
 });
@@ -62,8 +62,8 @@ test('Fragmentos: exactamente 15, todos activos, con las altas y bajas pedidas',
   const f = J(c.FRAGMENT_MEDAL_IDS);
   assert.equal(f.length, 15); assert.equal(new Set(f).size, 15);
   for (const id of f) assert.ok(ids(c).includes(id), 'no activo: ' + id);
-  for (const id of ['streak_20', 'ultimo_cerebro', 'duel_contra_las_cuerdas', 'diurno', 'games_50', 'level_20', 'master_100', 'cleaner_25', 'sd_primer_riesgo', 'tt_30', 'mental_calc_30', 'correct_800', 'medal_collector_30', 'sharp_eye', 'duel_cinco_victorias']) assert.ok(f.includes(id), id);
-  for (const id of ['sin_frenos', 'surv_derrame', 'world_citizen', 'duel_revancha', 'streak_30', 'duel_apuestas_ultima_locura', 'duel_apuestas_calculada', 'duel_tres_al_hilo']) assert.equal(f.includes(id), false, id);
+  for (const id of ['streak_20', 'duel_contra_las_cuerdas', 'diurno', 'games_50', 'level_20', 'master_100', 'cleaner_25', 'sd_primer_riesgo', 'tt_30', 'mental_calc_30', 'correct_800', 'sharp_eye', 'duel_cinco_victorias', 'surv_humano', 'duel_apuestas_calculada']) assert.ok(f.includes(id), id);
+  for (const id of ['medal_collector_30', 'ultimo_cerebro', 'duel_sin_titubear', 'sin_frenos', 'surv_derrame', 'world_citizen', 'duel_revancha', 'streak_30', 'duel_apuestas_ultima_locura', 'duel_tres_al_hilo']) assert.equal(f.includes(id), false, id);
 });
 
 test('avatares: cada uno ligado a su logro, sin Fragmento donde no toca', () => {
@@ -78,7 +78,8 @@ test('avatares: cada uno ligado a su logro, sin Fragmento donde no toca', () => 
   const f = J(c.FRAGMENT_MEDAL_IDS);
   assert.equal(f.includes('duel_revancha'), false, 'Vengador: avatar SIN Fragmento');
   assert.equal(f.includes('streak_30'), false, 'Imparable: avatar SIN Fragmento');
-  assert.equal(f.includes('medal_collector_30'), true, 'Coleccionista conserva Fragmento y suma avatar');
+  assert.equal(f.includes('medal_collector_30'), false, 'Maestro de los Logros: ya sin Fragmento, conserva su avatar');
+  assert.equal(c.getMedalAvatar('medal_collector_30'), 'avatar_siredwards_coleccionista');
 });
 
 test('rachas: solo Modo Estándar, 20 y 30 seguidas', () => {
@@ -113,16 +114,34 @@ function duelEnv() {
 }
 const play = (c, id, result, hitos) => c.registerOnlineDuelResult({ duelId: id, rivalId: 'R1', result, myScore: 9, opponentScore: 8, hitos });
 
-test('Contra las Cuerdas y La Última Palabra: solo con el hito del servidor y solo si se GANA', () => {
+test('Contra las Cuerdas y Sin Titubear: solo con el hito del servidor y solo si se GANA', () => {
   const c = duelEnv(); const m = (id) => load().ALL_MEDALS.find((x) => x.id === id);
-  play(c, 'a', 'loss', { comeback: true, last_word: true });
-  assert.equal(!!c.store.duelStats.comebackWon, false); assert.equal(!!c.store.duelStats.lastWordWon, false);
+  play(c, 'a', 'loss', { comeback: true, perfect: true });
+  assert.equal(!!c.store.duelStats.comebackWon, false); assert.equal(!!c.store.duelStats.perfectWon, false);
   play(c, 'b', 'win', null);
   assert.equal(!!c.store.duelStats.comebackWon, false, 'sin hito del servidor no se concede');
   play(c, 'c', 'win', { comeback: true });
   assert.equal(c.store.duelStats.comebackWon, true); assert.equal(m('duel_contra_las_cuerdas').check(c.store), true);
-  play(c, 'd', 'win', { last_word: true });
-  assert.equal(m('ultimo_cerebro').check(c.store), true);
+  play(c, 'd', 'win', { perfect: true });
+  assert.equal(m('duel_sin_titubear').check(c.store), true);
+});
+
+test('Sin Titubear sustituye a La Última Palabra: ID nuevo, pluma reutilizada, la antigua queda retirada', () => {
+  const c = load(); const by = (id) => c.ALL_MEDALS.find((x) => x.id === id);
+  assert.equal(by('ultimo_cerebro'), undefined, 'La Última Palabra ya no es activa');
+  assert.equal(J(c.RETIRED_MEDAL_IDS).includes('ultimo_cerebro'), true, 'se conserva como histórica');
+  assert.equal(by('duel_sin_titubear').desc, 'Gana un duelo acertando todas las preguntas.');
+  assert.equal(by('duel_sin_titubear').icon.replace(/\uFE0F/g, ''), '🖋');
+  assert.equal(J(c.FRAGMENT_MEDAL_IDS).includes('duel_sin_titubear'), false);
+  assert.equal(c.ALL_MEDALS.length, 60);
+});
+
+test('Fragmentos reasignados: Evolución Confirmada y Apuesta Calculada dan; Maestro y Sin Titubear no', () => {
+  const c = load(); const f = J(c.FRAGMENT_MEDAL_IDS);
+  assert.equal(c.ALL_MEDALS.find((x) => x.id === 'surv_humano').title, 'Evolución Confirmada');
+  assert.ok(f.includes('surv_humano')); assert.ok(f.includes('duel_apuestas_calculada'));
+  assert.equal(f.includes('medal_collector_30'), false); assert.equal(f.includes('ultimo_cerebro'), false);
+  assert.equal(f.length, 15); assert.equal(new Set(f).size, 15);
 });
 
 test('logros de apuestas: Última Locura exige victoria; Apuesta Calculada se registra aunque se pierda', () => {

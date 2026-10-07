@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 132;
+const CACHE_VERSION = 133;
 const CACHE_NAME = `sedq-shell-v${CACHE_VERSION}`;
 
 // Rutas relativas al propio sw.js (que vive en la raíz de la app, tanto en
@@ -182,12 +182,17 @@ const APP_SHELL = [
   './assets/logros/duel_tres_al_hilo.webp',
   './assets/logros/streak_20.webp',
   './assets/logros/streak_30.webp',
-  './assets/logros/ultimo_cerebro.webp',
+  './assets/logros/duel_sin_titubear.webp',
   './assets/duelos/rangos/plebeyo_ilustrado.webp',
   './assets/duelos/rangos/caballero_del_dato.webp',
   './assets/duelos/rangos/erudito_de_salon.webp',
   './assets/duelos/rangos/lord_sabelotodo.webp',
   './assets/duelos/rangos/sir_edwards.webp',
+  './assets/duelos/rankings/friends.webp',
+  './assets/duelos/rankings/global.webp',
+  './assets/duelos/rankings/mental.webp',
+  './assets/duelos/rankings/pvp.webp',
+  './assets/duelos/rankings/timetrial.webp',
   './assets/duelos/modos/classic.webp',
   './assets/duelos/modos/stakes.webp',
   './assets/duelos/apuestas/cuerdo.webp',

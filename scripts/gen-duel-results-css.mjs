@@ -6,7 +6,8 @@
 import fs from 'node:fs';
 
 const root = new URL('../', import.meta.url);
-const read = (p) => fs.readFileSync(new URL(p, root), 'utf8');
+// Normaliza los saltos de línea (Windows/CRLF o Linux/LF): el bloque generado y su comprobación dan lo mismo en cualquier sistema.
+const read = (p) => fs.readFileSync(new URL(p, root), 'utf8').replace(/\r\n/g, '\n');
 const START = '/* ===== GENERADO: tarjeta final de Duelo/Reto (scripts/gen-duel-results-css.mjs) ===== */';
 const END = '/* ===== FIN DEL BLOQUE GENERADO ===== */';
 
@@ -35,7 +36,7 @@ const out = [];
 for (const f of ['styles/main.css', 'styles/theme.css']) collect(read(f), null, out);
 const block = [START, ...out, END].join('\n');
 const onlinePath = new URL('styles/online.css', root);
-const online = fs.readFileSync(onlinePath, 'utf8');
+const online = fs.readFileSync(onlinePath, 'utf8').replace(/\r\n/g, '\n');
 const a = online.indexOf(START), b = online.indexOf(END);
 const next = a >= 0 && b > a ? online.slice(0, a) + block + online.slice(b + END.length) : online.replace(/\s*$/, '\n\n') + block + '\n';
 

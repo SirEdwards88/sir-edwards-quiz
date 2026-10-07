@@ -47,10 +47,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles/main.css?v=132">
+<link rel="stylesheet" href="styles/main.css?v=133">
 <!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
-<link rel="stylesheet" href="styles/online.css?v=132">
-<link rel="stylesheet" href="styles/theme.css?v=132">
+<link rel="stylesheet" href="styles/online.css?v=133">
+<link rel="stylesheet" href="styles/theme.css?v=133">
 
 </head>
 <body class="on-home">
@@ -706,9 +706,6 @@ try {
         </div>
       </div>
 
-      <!-- 2.1: resumen de Duelos (ELO, rango, partidas) con «Ver estadísticas completas». Lo pinta src/online/duels-v21.js; vacío sin cuenta. -->
-      <div id="seq-duel-stats" style="display:none;"></div>
-
       <!-- 2.0 polish: «ficha» del jugador (expediente de Sir Edwards). Nivel, XP y progreso arriba; debajo los
            tres datos principales. Mismos ids de siempre: renderStats() los rellena igual. El nombre y la ocultación
            de los datos cuando aún no hay partidas los pone src/ui/stats-extra.js. -->
@@ -788,6 +785,8 @@ try {
             <div class="stats-mini"><div class="stats-mini-value" id="duel-winrate">—</div><div class="stats-mini-label">% Victorias</div></div>
             <div class="stats-mini"><div class="stats-mini-value" id="duel-best-streak">0</div><div class="stats-mini-label">Mejor racha</div></div>
           </div>
+          <!-- 2.1: acceso a las estadísticas completas de Duelos (ELO, rango, historial, cara a cara). Lo pinta src/online/duels-v21.js; vacío sin cuenta. -->
+          <div id="seq-duel-stats" style="display:none;"></div>
         </div>
 
         <div class="stats-section">
@@ -1015,18 +1014,17 @@ try {
               <li>Tu cuenta ya lo recuerda todo. La copia de seguridad se jubila.</li>
             </ul>
           </div>
-          <div class="settings-changelog-entry" data-recap="Duelo por apuestas, ELO y rangos, rankings y avatares que se ganan.">
+          <div class="settings-changelog-entry" data-recap="Apuestas, rangos y rankings. Tu mediocridad, por fin documentada.">
             <div class="settings-changelog-entry-header">
               <span class="settings-changelog-entry-version">v2.1</span>
               <span class="settings-changelog-entry-date">06/10/2026</span>
             </div>
             <ul class="settings-changelog-list">
-              <li>Duelo por apuestas: 12 rondas y, antes de cada pregunta, eliges en secreto cuánto te la juegas. Cuerdo, Osado o Insensato. Con las apuestas, ni la prudencia es gratis.</li>
-              <li>ELO y cinco rangos, de Plebeyo Ilustrado a Sir Edwards. Tras cinco duelos de colocación, tu sitio queda por escrito.</li>
-              <li>Rankings de Duelos: PvP, Cálculo Mental y Contrarreloj, entre amigos o global.</li>
-              <li>Marcador en vivo en cada duelo, para sufrir con más detalle.</li>
-              <li>Tus estadísticas de Duelos viven ahora en Estadísticas, con un resumen en tu perfil.</li>
-              <li>Siete logros nuevos y seis avatares de Sir Edwards que se ganan, no se regalan. Los Fragmentos de Mente, además, escasean más.</li>
+              <li>Duelos y apuestas: perder con más estilo.</li>
+              <li>ELO y rangos: tu mediocridad, cuantificada.</li>
+              <li>Rankings: tu posición, sin consuelo.</li>
+              <li>Logros nuevos. Se ganan, no se regalan.</li>
+              <li>Avatares nuevos, solo para los dignos.</li>
             </ul>
           </div>
         </div>
@@ -1045,32 +1043,32 @@ try {
 <!-- Fase 2: datos y constantes extraidos a modulos, cargados como scripts
      clasicos (no ES Modules) para conservar el scope global compartido con
      el script principal, sin convertir todavia la app a ES Modules. -->
-<script src="src/data/ui-maps.js?v=132"></script>
-<script src="src/data/questions.js?v=132"></script>
-<script src="src/data/phrases.js?v=132"></script>
-<script src="src/data/duel-phrases.js?v=132"></script>
-<script src="src/data/lucidez.js?v=132"></script>
-<script src="src/data/medals.js?v=132"></script>
+<script src="src/data/ui-maps.js?v=133"></script>
+<script src="src/data/questions.js?v=133"></script>
+<script src="src/data/phrases.js?v=133"></script>
+<script src="src/data/duel-phrases.js?v=133"></script>
+<script src="src/data/lucidez.js?v=133"></script>
+<script src="src/data/medals.js?v=133"></script>
 <!-- Prompt 3 — Fase C: sistema de avatares compartido (window.SEQAvatars). Debe
      cargarse antes de src/online/online.js y src/online/duels.js: ambos lo
      consumen en vez de mantener cada uno su propia copia de la lista. -->
-<script src="src/data/avatars.js?v=132"></script>
-<script src="src/share/share-card.js?v=132"></script>
+<script src="src/data/avatars.js?v=133"></script>
+<script src="src/share/share-card.js?v=133"></script>
 
 <!-- Fase 3 (Lote 3A): motor de coincidencia de respuestas extraido a
      src/utils/matching.js, mismo criterio que la Fase 2 (script clasico,
      sin ES Modules todavia). -->
-<script src="src/utils/matching.js?v=132"></script>
-<script src="src/utils/sudden-progression.js?v=132"></script>
-<script src="src/utils/fresh-first.js?v=132"></script>
-<script src="src/utils/mental-calc.js?v=132"></script>
+<script src="src/utils/matching.js?v=133"></script>
+<script src="src/utils/sudden-progression.js?v=133"></script>
+<script src="src/utils/fresh-first.js?v=133"></script>
+<script src="src/utils/mental-calc.js?v=133"></script>
 
 <!-- Fase 3 (Lote 3B): nucleo algoritmico de Duelo extraido a
      src/utils/duel.js, mismo criterio que el resto (script clasico, sin
      ES Modules todavia). Las dependencias compartidas con otros modos
      (arrangeStandardBlock, generateLucidezMentalOp)
      permanecen en este script principal, sin moverse en este lote. -->
-<script src="src/utils/duel.js?v=132"></script>
+<script src="src/utils/duel.js?v=133"></script>
 
 <!-- Fase 3 (Lote 3C): defaults, migracion y saneamiento del Store
      extraidos a src/utils/store.js, mismo criterio que el resto (script
@@ -1082,46 +1080,46 @@ try {
      getLevelData) y las 8 funciones de persistencia real (loadStore,
      saveStore, exportProgress...) permanecen en este script principal,
      sin moverse en este lote. -->
-<script src="src/utils/store.js?v=132"></script>
+<script src="src/utils/store.js?v=133"></script>
 
 <!-- Fase 4B: fachada de estado de solo lectura (getStore/getCurrentGame),
      mismo criterio que el resto (script clasico, sin ES Modules todavia).
      No copia, no transforma, no cachea. Ver src/state/read-facade.js. -->
-<script src="src/state/read-facade.js?v=132"></script>
+<script src="src/state/read-facade.js?v=133"></script>
 
-<script src="src/utils/streak-xp.js?v=132"></script>
+<script src="src/utils/streak-xp.js?v=133"></script>
 <!-- Fase 4C: helpers minimos de escritura (pushCapped, resetStreak) para
      eliminar 2 duplicaciones reales concretas -- no un sistema de
      mutaciones. Ver src/state/write-helpers.js y CHANGELOG_FASE4C.md. -->
-<script src="src/state/write-helpers.js?v=132"></script>
+<script src="src/state/write-helpers.js?v=133"></script>
 
 <!-- v1.4: capa online (cuenta Google, sincronización, migración, ranking).
      config.js es PÚBLICO (URL del Worker + Client ID de Google); si está
      vacío, la capa online queda desactivada y la app es idéntica a la v1.3.
      online.js solo usa el store/funciones del juego en tiempo de ejecución. -->
-<script src="src/ui/install-app.js?v=132"></script>
-<script src="src/ui/a11y.js?v=132"></script>
-<script src="src/ui/game-fx.js?v=132"></script>
-<script src="src/ui/last-life.js?v=132"></script>
-<script src="src/ui/hitos.js?v=132"></script>
-<script src="src/ui/achievements.js?v=132"></script>
-<script src="src/ui/stats-extra.js?v=132"></script>
-<script src="src/ui/intro.js?v=132"></script>
-<script src="src/ui/mode-badges.js?v=132"></script>
-<script src="src/ui/lucidez-ui.js?v=132"></script>
-<script src="src/ui/sabias.js?v=132"></script>
-<script src="src/ui/icons.js?v=132"></script>
-<script src="src/online/config.js?v=132"></script>
+<script src="src/ui/install-app.js?v=133"></script>
+<script src="src/ui/a11y.js?v=133"></script>
+<script src="src/ui/game-fx.js?v=133"></script>
+<script src="src/ui/last-life.js?v=133"></script>
+<script src="src/ui/hitos.js?v=133"></script>
+<script src="src/ui/achievements.js?v=133"></script>
+<script src="src/ui/stats-extra.js?v=133"></script>
+<script src="src/ui/intro.js?v=133"></script>
+<script src="src/ui/mode-badges.js?v=133"></script>
+<script src="src/ui/lucidez-ui.js?v=133"></script>
+<script src="src/ui/sabias.js?v=133"></script>
+<script src="src/ui/icons.js?v=133"></script>
+<script src="src/online/config.js?v=133"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
-<script src="src/utils/sync-merge.js?v=132"></script>
-<script src="src/online/data-sync.js?v=132"></script>
-<script src="src/online/online.js?v=132"></script>
+<script src="src/utils/sync-merge.js?v=133"></script>
+<script src="src/online/data-sync.js?v=133"></script>
+<script src="src/online/online.js?v=133"></script>
 <!-- v1.5: Amigos, Duelo online y Retos. El servidor decide preguntas, tiempo, aciertos y ganador. -->
-<script src="src/online/duels.js?v=132"></script>
+<script src="src/online/duels.js?v=133"></script>
 <!-- 2.1: Duelo por apuestas, ELO PvP, Rankings y estadísticas de Duelos (solo presentación; decide el servidor) -->
-<script src="src/online/duels-v21.js?v=132"></script>
+<script src="src/online/duels-v21.js?v=133"></script>
 <!-- Audio: sonidos del juego (src/audio/audio.js) -->
-<script src="src/audio/audio.js?v=132"></script>
+<script src="src/audio/audio.js?v=133"></script>
 
 <script>
 function closeWelcomeModal() {
@@ -1938,7 +1936,7 @@ function appendFragmentRewardToResults() {
 // ganados por abandono o por no jugar no cuentan (evita farmeo); la derrota de quien abandona sí. De aquí salen todas
 // las estadísticas de Duelo y, con ellas, todos los logros de Duelo.
 // info: { duelId, rivalId, result: 'win'|'loss'|'draw', myScore, opponentScore, forfeit, abandoned, hitos }
-// `hitos` (2.1) los calcula el SERVIDOR al cerrar el duelo online (Contra las Cuerdas, La Última Palabra, apuestas).
+// `hitos` (2.1) los calcula el SERVIDOR al cerrar el duelo online (Contra las Cuerdas, Sin Titubear, apuestas).
 // Duelos online que este dispositivo vio «en juego» (clave local pequeña, no se sincroniza): así un duelo
 // terminado cuenta aunque el jugador saliera antes que el rival y no lo volviera a abrir (ver duels.js).
 const ONLINE_DUELS_PLAYING_KEY = 'siredwards_quiz_v2_0_duels_playing';
@@ -1983,7 +1981,7 @@ function registerOnlineDuelResult(info) {
       if (margin >= 10) ds.wonByTenPlus = true;
       if (rec.losses > 0) ds.revengeWon = true;
       if (info.hitos && info.hitos.comeback === true) ds.comebackWon = true;
-      if (info.hitos && info.hitos.last_word === true) ds.lastWordWon = true;
+      if (info.hitos && info.hitos.perfect === true) ds.perfectWon = true;
       if (info.hitos && info.hitos.stakes_last_madness === true) ds.stakesLastMadness = true;
       rec.wins++;
       ds.bestWinsVsRival = Math.max(ds.bestWinsVsRival || 0, rec.wins);

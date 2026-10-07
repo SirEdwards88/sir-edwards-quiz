@@ -20,7 +20,7 @@
     { key: 'dominio', name: 'Dominio', icon: '🏛️', ids: ['master_10', 'master_50', 'master_100', 'master_200', 'polimata', 'balanced_master'] },
     { key: 'errores', name: 'Aprender de los errores', icon: '✏️', ids: ['cleaner_5', 'cleaner_25', 'limpieza_general'] },
     { key: 'modos', name: 'Modos de juego', icon: '🎲', ids: ['surv_ameba', 'surv_humano', 'surv_derrame', 'sd_primer_riesgo', 'tt_15', 'tt_30', 'tt_50', 'sin_frenos', 'mental_calc_15', 'mental_calc_30', 'mental_calc_40'] },
-    { key: 'duelo', name: 'Duelo', icon: '🤺', ids: ['duel_primera_sangre', 'duel_victoria_inaugural', 'duel_por_los_pelos', 'duel_contra_las_cuerdas', 'duel_rey_del_empate', 'duel_cinco_victorias', 'duel_tres_al_hilo', 'duel_revancha', 'duel_otra_vez_tu', 'ultimo_cerebro', 'duel_apuestas_calculada', 'duel_apuestas_ultima_locura'] },
+    { key: 'duelo', name: 'Duelo', icon: '🤺', ids: ['duel_primera_sangre', 'duel_victoria_inaugural', 'duel_por_los_pelos', 'duel_contra_las_cuerdas', 'duel_rey_del_empate', 'duel_cinco_victorias', 'duel_tres_al_hilo', 'duel_revancha', 'duel_otra_vez_tu', 'duel_sin_titubear', 'duel_apuestas_calculada', 'duel_apuestas_ultima_locura'] },
     { key: 'especial', name: 'Especiales', icon: '🃏', ids: ['noctambulo', 'diurno', 'mente_fracturada', 'medal_collector_10', 'medal_collector_20', 'medal_collector_30'] },
     { key: 'secretos', name: 'Secretos', icon: '🤫', ids: ['lucidez_mente_despierta', 'lucidez_conexiones_imposibles', 'lucidez_absoluta', 'all_medals_secret'] }
   ];

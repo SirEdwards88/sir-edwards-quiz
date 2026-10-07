@@ -40,7 +40,7 @@ const SEQSyncMerge = (function () {
   const OR_FIELDS = [
     'hasCompletedNightGame', 'lucidezPlayed', 'lucidezEverWon', 'lucidezEverPerfect',
     'duelStats.wonByOnePoint', 'duelStats.wonByTenPlus', 'duelStats.revengeWon',
-    'hasCompletedMorningGame', 'duelStats.comebackWon', 'duelStats.lastWordWon', 'duelStats.stakesLastMadness', 'duelStats.stakesAllThree'
+    'hasCompletedMorningGame', 'duelStats.comebackWon', 'duelStats.perfectWon', 'duelStats.stakesLastMadness', 'duelStats.stakesAllThree'
   ];
   const SET_FIELDS = { seenQuestionIds: 2000, notifiedModeUnlocks: 50, notifiedFragmentRewards: 10, duelPlayedCodes: 400 };
   const HIST_FIELDS = { gameHistory: 5, duelHistory: 30 };

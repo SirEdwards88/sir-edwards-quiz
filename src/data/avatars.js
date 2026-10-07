@@ -59,7 +59,7 @@
     { id: 'avatar_siredwards_imparable', value: 'avatar_siredwards_imparable', short: 'Imparable', src: ASSET_DIR + 'avatar_siredwards_imparable.png', label: 'SirEdwards Imparable', base: false, medal: 'streak_30' },
     { id: 'avatar_siredwards_insensato', value: 'avatar_siredwards_insensato', short: 'Insensato', src: ASSET_DIR + 'avatar_siredwards_insensato.png', label: 'SirEdwards Insensato', base: false, medal: 'duel_apuestas_ultima_locura' },
     { id: 'avatar_siredwards_medianoche', value: 'avatar_siredwards_medianoche', short: 'Medianoche', src: ASSET_DIR + 'avatar_siredwards_medianoche.png', label: 'SirEdwards de Medianoche', base: false, medal: 'noctambulo' },
-    { id: 'avatar_siredwards_supremo', value: 'avatar_siredwards_supremo', short: 'Supremo', src: ASSET_DIR + 'avatar_siredwards_supremo.png', label: 'SirEdwards Supremo', base: false, medal: 'all_medals_secret' }
+    { id: 'avatar_siredwards_supremo', value: 'avatar_siredwards_supremo', short: 'Supremo', src: ASSET_DIR + 'avatar_siredwards_supremo.png', label: 'SirEdwards Supremo', base: false, medal: 'all_medals_secret', secret: true }
   ];
 
   // GLYPHS/DEFAULT_GLYPH conservan su nombre histórico de Fase C (para no
@@ -109,11 +109,14 @@
     if (!e.medal) return true;
     return Array.isArray(unlockedMedals) && unlockedMedals.indexOf(e.medal) !== -1;
   }
+  // Un avatar «secreto» no dice qué logro lo desbloquea (solo que es secreto).
+  function isSecret(stored) { var e = entryForGlyph(stored); return !!(e && e.secret); }
   function medalOf(stored) { var e = entryForGlyph(stored); return e && e.medal ? e.medal : null; }
 
   window.SEQAvatars = {
     isAvailable: isAvailable,
     medalOf: medalOf,
+    isSecret: isSecret,
     shortName: shortName,
     CATALOG: CATALOG,
     GLYPHS: GLYPHS,

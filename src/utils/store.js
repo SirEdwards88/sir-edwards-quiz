@@ -95,7 +95,7 @@ function getDefaultStore() {
     // Prompt 4: revengeWon (logro «Revancha»), bestWinsVsRival (logro «¿Otra
     // vez tú?») y rivals ({[idRival]: {wins, losses}}, solo Duelo online, con
     // el ID estable del rival) viven dentro de duelStats, igual que el resto.
-    duelStats: { played: 0, wins: 0, losses: 0, draws: 0, currentWinStreak: 0, bestWinStreak: 0, wonByOnePoint: false, wonByTenPlus: false, revengeWon: false, comebackWon: false, lastWordWon: false, stakesLastMadness: false, stakesAllThree: false, bestWinsVsRival: 0, rivals: {} },
+    duelStats: { played: 0, wins: 0, losses: 0, draws: 0, currentWinStreak: 0, bestWinStreak: 0, wonByOnePoint: false, wonByTenPlus: false, revengeWon: false, comebackWon: false, perfectWon: false, stakesLastMadness: false, stakesAllThree: false, bestWinsVsRival: 0, rivals: {} },
     duelHistory: [],
     // ⚔️ Duelo: códigos de reto ya jugados como retador (joiner), para que
     // repetir un mismo reto no vuelva a contar en duelStats/logros — solo
@@ -245,7 +245,7 @@ function sanitizeStore(s) {
   s.duelStats.wonByTenPlus = asBoolean(s.duelStats.wonByTenPlus);
   s.duelStats.revengeWon = asBoolean(s.duelStats.revengeWon);
   s.duelStats.comebackWon = asBoolean(s.duelStats.comebackWon);
-  s.duelStats.lastWordWon = asBoolean(s.duelStats.lastWordWon);
+  s.duelStats.perfectWon = asBoolean(s.duelStats.perfectWon);
   s.duelStats.stakesLastMadness = asBoolean(s.duelStats.stakesLastMadness);
   s.duelStats.stakesAllThree = asBoolean(s.duelStats.stakesAllThree);
   s.duelStats.bestWinsVsRival = asFiniteNonNegNumber(s.duelStats.bestWinsVsRival);

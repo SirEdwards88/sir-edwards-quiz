@@ -680,11 +680,27 @@
   }
 
   // ---- Perfil ---------------------------------------------------------------------------
-  function toggleEdit() { ui.editing = !ui.editing; ui.editName = null; ui.editAvatar = account ? account.player.avatar : null; render(); }
+  function toggleEdit() {
+    ui.avatarHint = null; ui.editing = !ui.editing; ui.editName = null; ui.editAvatar = account ? account.player.avatar : null; render(); }
+  // 2.1: al tocar un avatar bloqueado se muestra, dentro del propio selector, cómo se desbloquea.
+  function showAvatarHint(a) {
+    var cur = $('seq-name-input'); if (cur) ui.editName = cur.value;
+    ui.avatarHint = a; render();
+  }
+  function avatarHintText(a) {
+    try {
+      var A = window.SEQAvatars, need = A && A.medalOf(a);
+      if (!need || A.isAvailable(a, hasStore() ? store.unlockedMedals : [])) return '';
+      if (A.isSecret && A.isSecret(a)) return '🔒 Se desbloquea al completar un logro secreto.';
+      var mm = typeof ALL_MEDALS !== 'undefined' ? ALL_MEDALS.filter(function (x) { return x.id === need; })[0] : null;
+      return '🔒 Se desbloquea al completar el logro «' + (mm ? mm.title : 'secreto') + '»';
+    } catch (e) { return ''; }
+  }
   function pickAvatar(a) {
     // 2.1: un avatar de logro no se puede elegir sin el logro (el servidor también lo rechaza).
     try { if (a && window.SEQAvatars && !window.SEQAvatars.isAvailable(a, hasStore() ? store.unlockedMedals : [])) return; } catch (e) {}
     var cur = $('seq-name-input'); if (cur) ui.editName = cur.value; // no perder lo ya escrito al re-pintar
+    ui.avatarHint = null;
     ui.editAvatar = a === '' ? null : a; render();
     // 2.0: sin enfocar el campo de nombre: en móvil abriría el teclado en cada toque.
   }
@@ -803,18 +819,12 @@
           var sel = (ui.editAvatar === a) || (ui.editAvatar == null && a === av);
           var img = window.SEQAvatars ? window.SEQAvatars.avatarHTML(a) : a;
           var name = window.SEQAvatars && window.SEQAvatars.shortName ? '<span class="seq-av-name">' + esc(window.SEQAvatars.shortName(a)) + '</span>' : '';
-          var locked = false, hint = '';
-          try {
-            var need = window.SEQAvatars && window.SEQAvatars.medalOf(a);
-            if (need && !window.SEQAvatars.isAvailable(a, hasStore() ? store.unlockedMedals : [])) {
-              locked = true;
-              var mm = typeof ALL_MEDALS !== 'undefined' ? ALL_MEDALS.filter(function (x) { return x.id === need; })[0] : null;
-              hint = mm ? 'Se desbloquea con el logro «' + mm.title + '»' : 'Se desbloquea con un logro';
-            }
-          } catch (e) {}
-          if (locked) return '<button type="button" class="seq-av-btn seq-av-locked" disabled title="' + esc(hint) + '" aria-label="' + esc(hint) + '">' + img + '<span class="seq-av-name">🔒 ' + esc(window.SEQAvatars.shortName(a)) + '</span></button>';
+          var hint = avatarHintText(a), locked = !!hint;
+          // Bloqueado: se puede tocar (no está «disabled») para ver el requisito; nunca se selecciona.
+          if (locked) return '<button type="button" class="seq-av-btn seq-av-locked' + (ui.avatarHint === a ? ' hint' : '') + '" aria-disabled="true" aria-label="' + esc(window.SEQAvatars.shortName(a) + ' bloqueado. ' + hint.replace('🔒 ', '')) + '" onclick="SEQOnline.showAvatarHint(\'' + a + '\')">' + img + '<span class="seq-av-name">🔒 ' + esc(window.SEQAvatars.shortName(a)) + '</span></button>';
           return '<button type="button" class="seq-av-btn' + (sel ? ' sel' : '') + '" onclick="SEQOnline.pickAvatar(\'' + a + '\')" aria-pressed="' + sel + '">' + img + name + '</button>';
         }).join('') + '</div>' +
+        (ui.avatarHint && avatarHintText(ui.avatarHint) ? '<p class="seq-av-hint" role="status" aria-live="polite">' + esc(avatarHintText(ui.avatarHint)) + '</p>' : '') +
         '<div class="seq-btnrow seq-btnrow-2"><button class="btn btn-secondary" onclick="SEQOnline.toggleEdit()">Cancelar</button><button class="btn btn-primary" onclick="SEQOnline.saveProfile()"' + (ui.busy ? ' disabled' : '') + '>Guardar</button></div></div>';
       host.innerHTML = html;
       return;
@@ -824,8 +834,6 @@
       '<span class="seq-profile-info"><span class="seq-name">' + esc(p.display_name) + '</span>' +
       '<span class="seq-profile-level">Nivel ' + levelOf(xp) + ' · ' + xp + ' XP</span></span>' +
       '<span class="seq-profile-edit" aria-hidden="true"><span class="ui-line ui-line-pencil" aria-hidden="true"></span></span></button>';
-    // 2.1: el perfil es identidad/resumen: solo un resumen compacto de Duelos (el detalle vive en Estadísticas).
-    try { if (window.SEQDuels21) html += SEQDuels21.profileSummaryHtml(); } catch (e) {}
     if (st) {
       if (quiet) html += '<p class="seq-sync-line seq-sync-' + st.cls + '" id="seq-status"><span class="seq-sync-dot" aria-hidden="true"></span>' + esc(st.text) + '</p>';
       else html += '<p class="seq-status seq-' + st.cls + '" id="seq-status">' + esc(st.text) + '</p>';
@@ -919,7 +927,7 @@
     openRanking: openRanking, closeRanking: closeRanking, loadRanking: loadRanking, goToAccount: goToAccount,
     openMigration: function () { openMigration(); }, prepareLocalReset: prepareLocalReset, accountHadProgress: function () { return loginHadProgress; }, hasAccount: function () { return !!(ENABLED && account); }, closeMigration: closeMigration, doMerge: doMerge, skipMigration: skipMigration,
     rerenderAccount: function () { try { renderAccount(); } catch (e) {} },
-    toggleEdit: toggleEdit, pickAvatar: pickAvatar, saveProfile: saveProfile, copyId: copyId,
+    toggleEdit: toggleEdit, pickAvatar: pickAvatar, showAvatarHint: showAvatarHint, saveProfile: saveProfile, copyId: copyId,
     // v1.5 — para src/online/duels.js: mismo cliente HTTP (sesión, timeouts, errores) sin duplicarlo.
     api: function (method, path, body) { if (!ENABLED || !account) return Promise.reject(Object.assign(new Error('Inicia sesión para usar esta función.'), { code: 'no_session' })); return api(method, path, body); },
     session: function () { return ENABLED && account ? { id: account.player.id, display_name: account.player.display_name, avatar: account.player.avatar, features: account.features || normFeatures() } : null; },

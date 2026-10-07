@@ -87,7 +87,7 @@ const ALL_MEDALS = [
   { id: 'duel_otra_vez_tu', icon: '👀', title: '¿Otra vez tú?', desc: 'Gana al mismo rival 3 veces.', check: s => (s.duelStats && s.duelStats.bestWinsVsRival || 0) >= 3 },
   { id: 'duel_tres_al_hilo', icon: '🛡️', title: 'Caballero Invicto', desc: 'Gana 3 duelos consecutivos.', check: s => (s.duelStats && s.duelStats.bestWinStreak || 0) >= 3 },
   // Los cuatro siguientes los decide el SERVIDOR (resultado.hitos de cada duelo online): el cliente solo los registra.
-  { id: 'ultimo_cerebro', icon: '🖋️', title: 'La Última Palabra', desc: 'Remonta en la pregunta final: ve por detrás, acierta la última y gana el duelo por ello.', check: s => !!(s.duelStats && s.duelStats.lastWordWon) },
+  { id: 'duel_sin_titubear', icon: '🖋️', title: 'Sin Titubear', desc: 'Gana un duelo acertando todas las preguntas.', check: s => !!(s.duelStats && s.duelStats.perfectWon) },
   { id: 'duel_apuestas_ultima_locura', icon: '🎰', title: 'La Última Locura', desc: 'En un Duelo por Apuestas, elige Insensato en la ronda final, acierta y gana.', check: s => !!(s.duelStats && s.duelStats.stakesLastMadness) },
   { id: 'duel_apuestas_calculada', icon: '📐', title: 'Apuesta Calculada', desc: 'En un mismo Duelo por Apuestas, usa Cuerdo, Osado e Insensato.', check: s => !!(s.duelStats && s.duelStats.stakesAllThree) },
 
@@ -116,7 +116,7 @@ const ALL_MEDALS = [
 // RECOMPENSAS (única fuente): Fragmento de Mente = hitos importantes de progreso, habilidad o hazañas
 // excepcionales (15 en total, FRAGMENT_TOTAL); Avatar = logros con identidad. Se derivan de aquí.
 const MEDAL_REWARDS = {
-  fragment: ["games_50", "level_20", "master_100", "cleaner_25", "sd_primer_riesgo", "tt_30", "mental_calc_30", "correct_800", "medal_collector_30", "sharp_eye", "diurno", "duel_cinco_victorias", "streak_20", "ultimo_cerebro", "duel_contra_las_cuerdas"],
+  fragment: ["games_50", "level_20", "master_100", "cleaner_25", "sd_primer_riesgo", "tt_30", "mental_calc_30", "correct_800", "sharp_eye", "diurno", "duel_cinco_victorias", "streak_20", "duel_contra_las_cuerdas", "surv_humano", "duel_apuestas_calculada"],
   avatar: {
     medal_collector_30: 'avatar_siredwards_coleccionista',
     duel_revancha: 'avatar_siredwards_vengador',
@@ -130,7 +130,7 @@ const FRAGMENT_MEDAL_IDS = MEDAL_REWARDS.fragment.slice();
 
 // IDs que ya no son logros activos pero se CONSERVAN: no se vuelven a conceder ni cuentan para la colección,
 // y un desbloqueo antiguo no se pierde. MEDAL_ALIASES: ID histórico → ID actual.
-const RETIRED_MEDAL_IDS = ['world_citizen', 'duel_eso_era_un_duelo'];
+const RETIRED_MEDAL_IDS = ['world_citizen', 'duel_eso_era_un_duelo', 'ultimo_cerebro'];
 const MEDAL_ALIASES = { master_150: 'master_100', master_250: 'master_200', correct_300: 'correct_400', correct_600: 'correct_800' };
 function isActiveMedalId(id) { return ALL_MEDALS.some(m => m.id === id); }
 function resolveMedalId(id) { return Object.prototype.hasOwnProperty.call(MEDAL_ALIASES, id) ? MEDAL_ALIASES[id] : id; }
