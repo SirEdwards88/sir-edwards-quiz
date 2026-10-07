@@ -361,9 +361,9 @@
 #seq-duel-root .seq-d-results { position: relative; isolation: isolate; }
 #seq-duel-root .seq-d-results::before {
   content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit;
-  background: url(../assets/ui/marca-duelo.webp) center / min(74%, 300px) auto no-repeat; opacity: .09;
+  background: url(../assets/ui/marca-duelo.webp) center / min(74%, 300px) auto no-repeat; opacity: .2;
 }
-[data-theme="dark"] #seq-duel-root .seq-d-results::before { opacity: .12; }
+[data-theme="dark"] #seq-duel-root .seq-d-results::before { opacity: .16; }
 
 /* ===== GENERADO: tarjeta final de Duelo/Reto (scripts/gen-duel-results-css.mjs) ===== */
 [data-theme="dark"] #seq-duel-root .seq-d-results.results-card {background: linear-gradient(135deg, var(--card) 0%, var(--badge-bg) 100%);
