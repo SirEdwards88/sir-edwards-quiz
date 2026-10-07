@@ -51,6 +51,7 @@
 <!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
 <link rel="stylesheet" href="styles/online.css?v=136">
 <link rel="stylesheet" href="styles/encargos.css?v=136">
+<link rel="stylesheet" href="styles/encargos-intro.css?v=136">
 <link rel="stylesheet" href="styles/sir-events.css?v=136">
 <link rel="stylesheet" href="styles/theme.css?v=136">
 
@@ -875,7 +876,7 @@ try {
         <button type="button" class="section-back-btn" onclick="switchTab('home')" aria-label="Volver al menú principal">←</button>
         <div class="section-topbar-text">
           <h2>Encargos</h2>
-          <p class="section-topbar-sub">Los encargos de Sir Edwards</p>
+          <p class="section-topbar-sub">Tu expediente semanal</p>
         </div>
       </div>
       <div id="encargos-body"></div>
@@ -1027,7 +1028,7 @@ try {
               <li>Duelos online y retos a la carta: en los retos eliges el modo y los dos jugáis la misma partida. Que gane el que menos se equivoque.</li>
               <li>Supervivencia y Muerte Súbita, con más tensión. Sir Edwards en persona para opinar de tu progreso. Nadie se lo pidió.</li>
               <li>Una tarjeta para presumir de resultado, con discreción.</li>
-              <li>Sonidos nuevos, música para los menús y dos logros de Duelo.</li>
+              <li>Sonidos nuevos y música para los menús.</li>
               <li>Tu cuenta ya lo recuerda todo. La copia de seguridad se jubila.</li>
             </ul>
           </div>
@@ -1097,6 +1098,9 @@ try {
 <script src="src/state/encargos.js?v=136"></script>
 <script src="src/data/encargos-phrases.js?v=136"></script>
 <script src="src/ui/encargos-ui.js?v=136"></script>
+<script src="src/utils/encargos-intro-core.js?v=136"></script>
+<script src="src/data/encargos-intro-phrases.js?v=136"></script>
+<script src="src/ui/encargos-intro.js?v=136"></script>
 <script src="src/utils/sir-events.js?v=136"></script>
 <script src="src/ui/sir-events-ui.js?v=136"></script>
 <script src="src/state/sir-events.js?v=136"></script>
@@ -2040,6 +2044,7 @@ function registerOnlineDuelResult(info) {
   if (info.hitos && info.hitos.stakes_all_three === true) ds.stakesAllThree = true;
 
   try { encargosOnDuel(info.result === 'win', info.stakes === true); } catch (e) {}
+  try { SEQEncargosIntro.noteDuel(info.result); } catch (e) {}
   const medals = checkMedalsAndGetNew();
   const reward = checkFragmentRewardsAndGetNew();
   saveStore(false);
@@ -3134,9 +3139,11 @@ function switchTab(tabId) {
     updateResumeButton();
     try { maybeShowPwaHint(); } catch (e) {}
     try { SEQEncargosUI.renderHome(); } catch (e) {}
+    try { SEQEncargosIntro.onHome(); } catch (e) {}
   }
   if (tabId === 'encargos') { try { SEQEncargosUI.renderScreen(true); } catch (e) {} }
   if (tabId === 'modes') {
+    try { SEQEncargosIntro.onHome(); } catch (e) {}
     closeDifficultyMenu();
     clearCardThemeClasses();
   }
@@ -4349,6 +4356,7 @@ function finishLucidezMode(failed, timedOut = false, phaseInsufficient = null) {
   // logros exclusivos de Duelo se evalúan aparte, tras handleDuelFinish.
   if (!isDuelGame) markNightCompletionIfApplicable();
   if (!isDuelGame) { try { encargosOnGameEnd('lucidez_mental', score, totalQ); } catch (e) {} }
+  if (!isDuelGame) { try { SEQEncargosIntro.noteGame({ mode: 'lucidez_mental', failed: !!failed }); } catch (e) {} }
   const newMedalsUnlocked = isDuelGame ? [] : checkMedalsAndGetNew();
   const newModesUnlocked = isDuelGame ? [] : checkModeUnlocksAndGetNew();
   clearSavedGame();
@@ -5903,6 +5911,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   // solo tras handleDuelFinish() y solo cuando corresponde (ver ese punto).
   if (!isDuelGame) markNightCompletionIfApplicable();
   if (!isDuelGame && currentGame.mode !== 'review') { try { encargosOnGameEnd(currentGame.mode, currentGame.mode === 'mental_calc' ? currentGame.correct : currentGame.score, totalQ); } catch (e) {} }
+  if (!isDuelGame && currentGame.mode !== 'review') { try { SEQEncargosIntro.noteGame({ mode: currentGame.mode, score: currentGame.mode === 'mental_calc' ? currentGame.correct : currentGame.score, total: totalQ, failed: !!(isGameOverDueToFailure || isSurvivalFailure) }); } catch (e) {} }
   const newMedalsUnlocked = isDuelGame ? [] : checkMedalsAndGetNew();
   const newModesUnlocked = isDuelGame ? [] : checkModeUnlocksAndGetNew();
   clearSavedGame();

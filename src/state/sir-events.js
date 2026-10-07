@@ -61,7 +61,11 @@ function sirEventsOnAnswer(correct) {
     setTimeout(function () {
       try {
         const done = typeof document !== 'undefined' && (document.getElementById('results-card') || {}).style && document.getElementById('results-card').style.display === 'block';
-        if (typeof currentGame === 'undefined' || currentGame !== g || done || !SEQSirEventsUI.show(ev)) sirEventsRollback(st, snap, undo);
+        // El primer evento tras la presentación de los Encargos es la réplica a «Te estaré observando» (una sola vez).
+        const cb = typeof SEQEncargosIntro !== 'undefined' && SEQEncargosIntro.callbackPending() && SEQEncargosIntro.callbackLine();
+        const shown = typeof currentGame !== 'undefined' && currentGame === g && !done && SEQSirEventsUI.show(cb ? Object.assign({}, ev, { message: cb }) : ev);
+        if (!shown) sirEventsRollback(st, snap, undo);
+        else if (cb) SEQEncargosIntro.takeCallback();
       } catch (e) { sirEventsRollback(st, snap, undo); }
     }, SIR_EVENT_DELAY_MS);
     return ev;

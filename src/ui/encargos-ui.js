@@ -49,15 +49,18 @@ const SEQEncargosUI = (function () {
     if (!el || typeof encargosView !== 'function') return;
     var v;
     try { v = encargosView(); } catch (e) { el.hidden = true; return; }
+    // La tira no existe hasta que Sir Edwards se ha presentado (src/ui/encargos-intro.js): el progreso se cuenta igualmente.
+    try { if (typeof SEQEncargosIntro !== 'undefined' && !SEQEncargosIntro.seen()) { el.hidden = true; return; } } catch (e) {}
     el.hidden = false;
-    var title, line, tail, frac;
+    var title = 'ENCARGOS DE SIR EDWARDS', line, tail, frac, n = stateOf(v);
+    // n/4: los tres semanales y el Gran Encargo.
     if (v.allDone) {
-      title = 'ENCARGOS DE SIR EDWARDS'; line = 'Semana saldada: los tres y el Gran Encargo'; tail = 'Hasta el lunes'; frac = 1;
+      line = 'Semana saldada: los tres y el Gran Encargo'; tail = 'Hasta el lunes'; frac = 1;
     } else if (v.doneCount === 3) {
-      title = 'ENCARGOS DE SIR EDWARDS'; line = '3/3 encargos semanales · falta el Gran Encargo'; tail = '+' + v.great.xp + ' XP disponibles'; frac = v.great.r.frac;
+      line = '3/4 encargos completados · falta el Gran Encargo'; tail = '+' + v.great.xp + ' XP disponibles'; frac = n / 4;
     } else {
-      title = 'ENCARGOS DE SIR EDWARDS'; line = v.doneCount + '/3 encargos semanales completados'; tail = '+' + v.xpAvailable + ' XP disponibles';
-      frac = v.doneCount / 3;
+      line = n + '/4 encargos completados'; tail = '+' + v.xpAvailable + ' XP disponibles';
+      frac = n / 4;
     }
     el.className = 'home-encargos' + (v.allDone ? ' is-done' : '');
     el.innerHTML =
@@ -121,6 +124,8 @@ const SEQEncargosUI = (function () {
   }
   // kind: 'progress' | 'done' | 'great'
   function toast(main, kind, sub) {
+    // Hasta la presentación los Encargos no existen para el jugador: el progreso se cuenta, pero sin avisos.
+    try { if (typeof SEQEncargosIntro !== 'undefined' && !SEQEncargosIntro.seen()) return; } catch (e) {}
     queue.push({ main: main, kind: kind || 'progress', sub: sub || '' });
     if (queue.length > 4) queue.splice(0, queue.length - 4);
     if (!showing) next();

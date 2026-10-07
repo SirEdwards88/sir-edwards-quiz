@@ -1,0 +1,133 @@
+/* SirEdwards Quiz — Presentación de Sir Edwards (Encargos): escena grande y carta de los lunes.
+   Solo animaciones de opacidad y transformación. Con prefers-reduced-motion / .is-reduced: solo fundidos (sin zoom, caída ni destello). */
+
+.enc-intro {
+  position: fixed; inset: 0; z-index: 9500;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+  background: #06060a; color: #f3ead4; overflow: hidden;
+  opacity: 0; transition: opacity .45s ease;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none; -webkit-user-select: none;
+}
+.enc-intro.is-on { opacity: 1; }
+.enc-intro.is-out { opacity: 0; pointer-events: none; }
+.enc-intro > * { position: relative; }
+
+/* Foco dorado y viñeta (capas estáticas: solo se anima su opacidad) */
+.enc-intro-spot, .enc-intro-vig, .enc-intro-dim, .enc-intro-paper, .enc-intro-blink { position: absolute !important; inset: 0; pointer-events: none; }
+.enc-intro-spot { background: radial-gradient(ellipse 70% 46% at 50% 38%, rgba(232,200,116,.30), rgba(201,153,46,.10) 45%, transparent 72%); opacity: 0; transition: opacity 1.4s ease .2s; }
+.is-on .enc-intro-spot { opacity: 1; }
+.enc-intro-vig { background: radial-gradient(ellipse at 50% 42%, transparent 38%, rgba(0,0,0,.78) 100%); }
+.enc-intro-dim { background: #000; opacity: 0; transition: opacity 11s linear; }
+.enc-intro[data-beat="3"] .enc-intro-dim { opacity: .38; }
+.enc-intro.is-final .enc-intro-dim { opacity: .55; transition: opacity .8s ease; }
+.enc-intro-paper { background: #f1e6c9; opacity: 0; }
+.enc-intro.do-paper .enc-intro-paper { animation: encPaper .5s ease-out; }
+.enc-intro-blink { background: #000; opacity: 0; z-index: 3; }
+.enc-intro.do-blink .enc-intro-blink { animation: encBlink .55s ease-in-out; }
+@keyframes encPaper { 0% { opacity: .55; } 100% { opacity: 0; } }
+@keyframes encBlink { 0% { opacity: 0; } 35% { opacity: 1; } 65% { opacity: 1; } 100% { opacity: 0; } }
+
+/* Saltar (siempre disponible) */
+.enc-intro-skip {
+  position: absolute !important; top: max(14px, env(safe-area-inset-top)); right: 14px; z-index: 5;
+  min-height: 40px; padding: 8px 16px; border-radius: 999px; cursor: pointer;
+  border: 1px solid rgba(232,200,116,.5); background: rgba(10,10,16,.55); color: #f3ead4;
+  font: inherit; font-size: 13px; font-weight: 600; letter-spacing: .4px;
+}
+.enc-intro-skip:focus-visible, .enc-intro-go:focus-visible, .enc-monday-go:focus-visible, .enc-monday-close:focus-visible { outline: 2px solid var(--se-gold-light, #e8c874); outline-offset: 2px; }
+
+/* Figura */
+.enc-intro-stage { flex: 1 1 auto; width: 100%; min-height: 0; display: flex; align-items: flex-end; justify-content: center; padding: max(56px, env(safe-area-inset-top)) 16px 0; box-sizing: border-box; z-index: 1; }
+.enc-intro-fig { position: relative; width: min(100vw, 560px); height: min(60vh, 560px); transform-origin: 50% 70%; opacity: 0; }
+.enc-intro-fig img { position: absolute; left: 0; top: 0; width: 100%; height: 100%; object-fit: contain; object-position: 50% 100%; pointer-events: none; }
+.enc-intro-sil { filter: brightness(0); opacity: 0; }
+.enc-intro-fig.is-b1 { opacity: 1; animation: encFigIn 1.2s ease-out both; }
+.enc-intro-fig.is-b1 .enc-intro-sil { animation: encSil 2.4s ease-in-out both; }
+.enc-intro-fig.is-b2 { opacity: 1; animation: encCut .55s cubic-bezier(.2,.8,.3,1) both; }
+.enc-intro-fig.is-b3 { opacity: 1; animation: encCut .55s ease-out both, encPush 12s linear .3s both; }
+.enc-intro.is-final .enc-intro-fig { opacity: 0 !important; transition: opacity .7s ease; animation: none !important; }
+@keyframes encFigIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes encSil { 0% { opacity: 1; } 35% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes encCut { 0% { opacity: 0; transform: translateX(10px) rotate(.8deg); } 100% { opacity: 1; transform: none; } }
+@keyframes encPush { 0% { transform: scale(1); } 100% { transform: scale(1.14); } }
+
+/* Subtítulo de Sir Edwards */
+.enc-intro-caption {
+  position: relative; z-index: 2; width: 100%; box-sizing: border-box; margin: 0;
+  padding: 26px 22px max(34px, env(safe-area-inset-bottom)); min-height: 120px; text-align: center;
+  font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: clamp(19px, 5.4vw, 24px); line-height: 1.38; color: #f6efdb;
+  text-shadow: 0 2px 10px rgba(0,0,0,.9);
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,.72) 40%);
+  opacity: 0; transform: translateY(6px); transition: opacity .45s ease, transform .45s ease;
+}
+.enc-intro-caption.in { opacity: 1; transform: none; }
+.enc-intro.is-final .enc-intro-caption { opacity: 0 !important; }
+
+/* Tarjeta de título: SIR EDWARDS · Evaluador oficial de tu lucidez */
+.enc-intro-title { position: absolute !important; left: 0; right: 0; top: 26%; z-index: 2; text-align: center; pointer-events: none; opacity: 0; transition: opacity .6s ease; }
+.enc-intro.show-title .enc-intro-title { opacity: 1; }
+.enc-intro-title .t1 { font-family: Georgia, 'Times New Roman', serif; font-size: clamp(30px, 9vw, 44px); font-weight: 700; letter-spacing: 6px; color: var(--se-gold-light, #e8c874); text-shadow: 0 2px 14px rgba(0,0,0,.95), 0 0 24px rgba(201,153,46,.45); }
+.enc-intro-title .t2 { margin-top: 6px; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: #f3ead4; text-shadow: 0 2px 8px rgba(0,0,0,.95); }
+
+/* Cierre: expediente abierto, sello de lacre y botón */
+.enc-intro-final { position: absolute !important; inset: 0; z-index: 4; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; padding: 24px; opacity: 0; pointer-events: none; transition: opacity .7s ease .3s; }
+.enc-intro.is-final .enc-intro-final { opacity: 1; pointer-events: auto; }
+.enc-intro-dossier {
+  position: relative; width: min(86vw, 340px); box-sizing: border-box; padding: 30px 24px 38px; text-align: center;
+  background: linear-gradient(180deg, #3b2a1b, #2a1d12); border: 1px solid var(--se-gold, #c9992e); border-radius: 12px;
+  box-shadow: 0 10px 34px rgba(0,0,0,.6), inset 0 0 0 4px rgba(0,0,0,.18);
+}
+.enc-intro-dossier .k { font-size: 12px; font-weight: 800; letter-spacing: 3.4px; color: var(--se-gold-light, #e8c874); }
+.enc-intro-dossier .m { margin-top: 10px; font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: 20px; line-height: 1.3; color: #f6efdb; }
+.enc-intro-dossier .seal {
+  position: absolute; right: 22px; bottom: -26px; width: 58px; height: 58px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; opacity: 0;
+  background: radial-gradient(circle at 35% 30%, #d8483c, #a3211b 60%, #6e1511);
+  box-shadow: 0 4px 10px rgba(0,0,0,.55), inset 0 0 0 3px rgba(255,255,255,.08), inset 0 -3px 6px rgba(0,0,0,.35);
+}
+.enc-intro-dossier .seal span { font-family: Georgia, 'Times New Roman', serif; font-weight: 700; font-size: 20px; letter-spacing: 1px; color: rgba(255,225,200,.88); text-shadow: 0 1px 2px rgba(0,0,0,.5); }
+.enc-intro.is-final .seal { animation: encSeal .5s cubic-bezier(.5,0,.9,.4) .9s both; }
+@keyframes encSeal { 0% { opacity: 0; transform: translateY(-70px) scale(1.7); } 70% { opacity: 1; transform: none; } 82% { transform: scale(1.12); } 100% { opacity: 1; transform: none; } }
+.enc-intro-go {
+  min-height: 46px; padding: 12px 26px; border-radius: 999px; cursor: pointer; font: inherit; font-size: 15px; font-weight: 700; letter-spacing: .3px;
+  border: 1px solid var(--se-gold-light, #e8c874); background: var(--se-gold, #c9992e); color: #1c1408;
+}
+
+/* Destello dorado cuando la tira de Encargos aparece en Inicio */
+.home-encargos.is-reveal { position: relative; }
+.home-encargos.is-reveal::after { content: ''; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none; background: radial-gradient(ellipse at 50% 50%, rgba(232,200,116,.85), rgba(201,153,46,.35) 55%, transparent 80%); opacity: 0; animation: encFlash 1.2s ease-out; }
+@keyframes encFlash { 0% { opacity: 0; } 18% { opacity: .75; } 100% { opacity: 0; } }
+
+/* ---- Carta de los lunes ---- */
+.enc-intro--monday { justify-content: center; background: rgba(6,6,10,.94); }
+.enc-intro--monday.is-on { opacity: 1; }
+.enc-monday-card {
+  position: relative; z-index: 2; width: min(90vw, 360px); box-sizing: border-box; padding: 0 20px 18px; text-align: center; cursor: pointer;
+  background: linear-gradient(180deg, #2a3560, #1c2340); border: 1px solid var(--se-gold, #c9992e); border-radius: 16px;
+  box-shadow: 0 14px 40px rgba(0,0,0,.65); transform: translateY(14px); opacity: 0; transition: transform .5s ease, opacity .5s ease;
+}
+.enc-intro--monday.is-on .enc-monday-card { transform: none; opacity: 1; }
+.enc-monday-img { display: block; margin: -46px auto 4px; height: 190px; width: auto; max-width: 70%; object-fit: contain; pointer-events: none; }
+.enc-monday-lines { min-height: 132px; display: flex; flex-direction: column; gap: 8px; }
+.enc-monday-line { margin: 0; font-family: Georgia, 'Times New Roman', serif; font-style: italic; font-size: 16.5px; line-height: 1.32; color: #f6e6b8; opacity: 0; transform: translateY(5px); transition: opacity .55s ease, transform .55s ease; }
+.enc-monday-line.is-open { font-style: normal; font-weight: 700; font-size: 22px; letter-spacing: .5px; color: var(--se-gold-light, #e8c874); }
+.enc-monday-line.in { opacity: 1; transform: none; }
+.enc-monday-actions { display: flex; gap: 10px; justify-content: center; margin-top: 14px; }
+.enc-monday-go { min-height: 42px; padding: 10px 18px; border-radius: 999px; cursor: pointer; font: inherit; font-size: 14px; font-weight: 700; border: 1px solid var(--se-gold-light, #e8c874); background: var(--se-gold, #c9992e); color: #1c1408; }
+.enc-monday-close { min-height: 42px; padding: 10px 16px; border-radius: 999px; cursor: pointer; font: inherit; font-size: 14px; border: 1px solid rgba(232,200,116,.45); background: transparent; color: #f6e6b8; }
+
+/* Reducir movimiento: solo fundidos */
+.enc-intro.is-reduced .enc-intro-fig, .enc-intro.is-reduced .enc-intro-fig *, .enc-intro.is-reduced .enc-intro-dossier .seal,
+.enc-intro.is-reduced .enc-monday-card, .enc-intro.is-reduced .enc-monday-line, .enc-intro.is-reduced .enc-intro-caption { transform: none !important; }
+.enc-intro.is-reduced .enc-intro-fig.is-b1, .enc-intro.is-reduced .enc-intro-fig.is-b2, .enc-intro.is-reduced .enc-intro-fig.is-b3 { animation: encFigIn .6s ease-out both !important; }
+.enc-intro.is-reduced .enc-intro-fig.is-b1 .enc-intro-sil { animation: encSil 1.2s ease-in-out both !important; }
+.enc-intro.is-reduced.is-final .seal { animation: encFigIn .6s ease-out .9s both !important; }
+.enc-intro.is-reduced.do-paper .enc-intro-paper { animation: none; }
+.enc-intro.is-reduced .enc-intro-dim { transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  .enc-intro-fig.is-b1, .enc-intro-fig.is-b2, .enc-intro-fig.is-b3 { animation: encFigIn .6s ease-out both !important; }
+  .enc-intro-fig, .enc-intro-fig *, .enc-intro-dossier .seal, .enc-monday-card, .enc-monday-line, .enc-intro-caption { transform: none !important; }
+  .enc-intro.is-final .seal { animation: encFigIn .6s ease-out .9s both !important; }
+  .enc-intro.do-paper .enc-intro-paper { animation: none; }
+  .home-encargos.is-reveal::after { animation: none; }
+}
