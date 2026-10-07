@@ -51,6 +51,7 @@
 <!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
 <link rel="stylesheet" href="styles/online.css?v=134">
 <link rel="stylesheet" href="styles/encargos.css?v=134">
+<link rel="stylesheet" href="styles/sir-events.css?v=134">
 <link rel="stylesheet" href="styles/theme.css?v=134">
 
 </head>
@@ -1083,6 +1084,9 @@ try {
 <script src="src/utils/encargos-progress.js?v=134"></script>
 <script src="src/state/encargos.js?v=134"></script>
 <script src="src/ui/encargos-ui.js?v=134"></script>
+<script src="src/utils/sir-events.js?v=134"></script>
+<script src="src/ui/sir-events-ui.js?v=134"></script>
+<script src="src/state/sir-events.js?v=134"></script>
 <script src="src/utils/sudden-progression.js?v=134"></script>
 <script src="src/utils/fresh-first.js?v=134"></script>
 <script src="src/utils/mental-calc.js?v=134"></script>
@@ -3230,6 +3234,7 @@ function updateAnswerStreak(isCorrect, q = null) {
   if (currentGame && currentGame.mode === 'review') {
     answerStreak = 0;
     store.currentStreak = 0;
+    try { sirEventsOnAnswer(isCorrect); } catch (e) {}
     updateStreakDisplay();
     saveStore();
     return;
@@ -3289,6 +3294,7 @@ function updateAnswerStreak(isCorrect, q = null) {
   }
 
   try { encargosOnAnswer(isCorrect, q); } catch (e) {}
+  try { sirEventsOnAnswer(isCorrect); } catch (e) {}
   updateStreakDisplay();
   saveStore();
 }
