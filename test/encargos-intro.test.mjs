@@ -19,8 +19,8 @@ test('frases: sin vacías, sin repetidas, sin emojis, con las claves que clasifi
   assert.deepEqual(Object.keys(P.result).sort(), ['buena', 'derrota', 'empate', 'mala', 'neutra', 'normal', 'victoria']);
   const all = [];
   Object.values(P.result).forEach((l) => { assert.ok(l.length >= 1); all.push(...l); });
-  ['base', 'aprobacion', 'reproche', 'extraAprobacion', 'extraReproche'].forEach((k) => all.push(...P.monday[k]));
-  all.push(P.monday.open, P.callback);
+  ['base', 'aprobacion', 'reproche', 'incorporacion', 'extraAprobacion', 'extraReproche'].forEach((k) => all.push(...P.monday[k]));
+  all.push(P.monday.open, P.monday.openOther, P.callback);
   assert.equal(new Set(all).size, all.length);
   assert.ok(all.every((t) => t.length > 5 && t.length < 100 && noEmoji(t)));
   assert.equal(P.monday.open, 'Es lunes.');
@@ -33,7 +33,7 @@ test('«Cuatro de cuatro» solo en la variante de aprobación; el reproche nunca
   const apr = C.mondayFixed(P.monday, 'aprobacion').concat(C.mondayPool(P.monday, 'aprobacion'));
   assert.ok(!rep.some((t) => /cuatro de cuatro/i.test(t)));
   assert.ok(apr.some((t) => /cuatro de cuatro/i.test(t)));
-  assert.ok(!P.monday.base.some((t) => /cuatro de cuatro|^es lunes|^lunes/i.test(t)), 'la bolsa común no repite la apertura ni nombra el resultado');
+  assert.ok(!P.monday.base.some((t) => /cuatro de cuatro|^es lunes|^lunes|^nueva semana|lunes/i.test(t)), 'la bolsa común no repite la apertura, no nombra el lunes ni el resultado');
   assert.deepEqual(C.mondayFixed(P.monday, 'aprobacion')[0], 'Es lunes.');
   assert.deepEqual(C.mondayFixed(P.monday, 'reproche')[0], 'Es lunes.');
 });
@@ -85,18 +85,31 @@ test('la presentación grande: solo en Inicio, con una partida terminada, sin pa
   assert.equal(C.shouldShowIntro(null), false);
 });
 
-test('carta de los lunes: solo lunes, una vez por semana, tras la presentación y nunca el mismo día', () => {
+test('carta semanal: primera visita a Inicio de cada semana nueva (no solo lunes), nunca en la semana de incorporación', () => {
   const { C } = load();
-  const ok = { seen: true, introDay: '2026-10-05', today: '2026-10-12', dow: 1, weekId: '2026-W42', lastShown: '2026-W41', onHome: true, inGame: false, blocked: false };
-  assert.equal(C.shouldShowMonday(ok), true);
+  const ok = { seen: true, introWeek: '2026-W41', weekId: '2026-W42', lastShown: '2026-W41', onHome: true, inGame: false, blocked: false };
+  assert.equal(C.shouldShowMonday(ok), true, 'también si abre el miércoles de la semana nueva');
   assert.equal(C.shouldShowMonday({ ...ok, seen: false }), false, 'sin presentación no hay carta');
-  assert.equal(C.shouldShowMonday({ ...ok, dow: 2 }), false, 'solo los lunes («Es lunes.»)');
-  assert.equal(C.shouldShowMonday({ ...ok, dow: 0 }), false);
-  assert.equal(C.shouldShowMonday({ ...ok, lastShown: '2026-W42' }), false, 'una vez por lunes');
-  assert.equal(C.shouldShowMonday({ ...ok, introDay: '2026-10-12' }), false, 'nunca el día de la gran presentación');
+  assert.equal(C.shouldShowMonday({ ...ok, lastShown: '2026-W42' }), false, 'una vez por semana');
+  assert.equal(C.shouldShowMonday({ ...ok, weekId: '2026-W41', lastShown: null }), false, 'semana de incorporación: ni carta ni reproche');
+  assert.equal(C.shouldShowMonday({ ...ok, introWeek: null }), true);
   assert.equal(C.shouldShowMonday({ ...ok, blocked: true }), false);
   assert.equal(C.shouldShowMonday({ ...ok, inGame: true }), false);
   assert.equal(C.shouldShowMonday({ ...ok, onHome: false }), false);
+});
+
+test('la semana de incorporación no se evalúa: la primera carta es neutra; después, aprobación/reproche', () => {
+  const { C, P } = load();
+  const w = '2026-W41';
+  const full = [w + ':m:a', w + ':m:b', w + ':m:c', w + ':b', w + ':g:x'];
+  assert.equal(C.mondayKind([], w, w), 'incorporacion', 'aunque no haya cobrado nada, sin reproche');
+  assert.equal(C.mondayKind(full, w, w), 'incorporacion');
+  assert.equal(C.mondayKind(full, w, '2026-W40'), 'aprobacion');
+  assert.equal(C.mondayKind([], w, '2026-W40'), 'reproche');
+  const lines = C.mondayFixed(P.monday, 'incorporacion', false).concat(C.mondayPool(P.monday, 'incorporacion'));
+  assert.ok(!lines.some((t) => /cuatro de cuatro|debes|no cumpliste|cumpliste|reproche|expediente impecable/i.test(t)), 'sin juicio sobre una semana que no vivió');
+  assert.equal(C.mondayFixed(P.monday, 'incorporacion', false)[0], 'Nueva semana.');
+  assert.equal(C.mondayFixed(P.monday, 'incorporacion', true)[0], 'Es lunes.');
 });
 
 test('aprobación = los cuatro de la semana pasada cobrados (3 semanales + Gran Encargo); lo demás, reproche', () => {
@@ -151,8 +164,9 @@ test('la presentación no usa nada fuera de opacidad/transformación y respeta r
   assert.match(js, /!reduced\(\) && navigator\.vibrate/);
 });
 
-test('historial 2.0: sin los dos logros de Duelo', () => {
+test('historial 2.0: sin los dos logros de Duelo y con el Duelo online explicado (clásico y apuestas, con amigos)', () => {
   const html = read('index.html');
+  assert.match(html, /<li>Duelo online con amigos, en dos modos: clásico y apuestas\.<\/li>/);
   assert.ok(!/dos logros de Duelo/.test(html));
   assert.match(html, /<li>Sonidos nuevos y música para los menús\.<\/li>/);
 });

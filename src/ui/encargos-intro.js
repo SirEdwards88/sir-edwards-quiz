@@ -25,7 +25,8 @@ const SEQEncargosIntro = (function () {
     expediente: 'assets/character/presentacion-expediente.webp',
     mirada: 'assets/character/presentacion-mirada.webp',
     aprobacion: 'assets/character/lunes-aprobacion.webp',
-    reproche: 'assets/character/lunes-reproche.webp'
+    reproche: 'assets/character/lunes-reproche.webp',
+    incorporacion: 'assets/character/presentacion-expediente.webp'
   };
 
   function get(k) { try { var v = localStorage.getItem(k); if (v !== null) return v; } catch (e) {} return mem[k] == null ? null : mem[k]; }
@@ -67,6 +68,12 @@ const SEQEncargosIntro = (function () {
     try { var s = window.SEQOnline && SEQOnline.session && SEQOnline.session(); return core().cleanName(s && s.display_name); } catch (e) { return null; }
   }
 
+  function introWeekId() {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(get(K_SEEN) || '');
+    if (!m) return null;
+    try { return SEQEncargos.weekIdOf(SEQEncargos.weekIndexAt(new Date(+m[1], +m[2] - 1, +m[3], 12).getTime())); } catch (e) { return null; }
+  }
+
   // Al llegar a Inicio (switchTab) y, una vez, al arrancar. Se espera un instante a que Inicio se asiente y se vuelve a comprobar.
   function onHome() {
     if (!core() || typeof ENCARGOS_INTRO === 'undefined') return;
@@ -78,8 +85,10 @@ const SEQEncargosIntro = (function () {
           return;
         }
         var now = new Date(), idx = SEQEncargos.weekIndexAt(now.getTime()), weekId = SEQEncargos.weekIdOf(idx);
-        if (core().shouldShowMonday({ seen: true, introDay: get(K_SEEN), today: dayKey(now), dow: now.getDay(), weekId: weekId,
-          lastShown: get(K_MONDAY), onHome: base.onHome, inGame: base.inGame, blocked: base.blocked })) startMonday(weekId, SEQEncargos.weekIdOf(idx - 1));
+        // Semana de incorporación: la de la gran presentación (sale de su fecha). No se evalúa ni recibe carta.
+        var introWeek = introWeekId();
+        if (core().shouldShowMonday({ seen: true, introWeek: introWeek, weekId: weekId, lastShown: get(K_MONDAY),
+          onHome: base.onHome, inGame: base.inGame, blocked: base.blocked })) startMonday(weekId, SEQEncargos.weekIdOf(idx - 1), introWeek, now.getDay() === 1);
       } catch (e) { /* nunca debe impedir jugar */ }
     }, 700);
   }
@@ -129,19 +138,20 @@ const SEQEncargosIntro = (function () {
     var key = pendingResult || 'neutra';
     var name = playerName();
     var steps = [
-      { beat: 1, text: (name ? 'Ah, ' + name + '. Una partida terminada.' : 'Ah. Una partida terminada.'), ms: 3300 },
-      { beat: 1, text: pick('encintro_' + key, R[key] && R[key].length ? R[key] : R.neutra), ms: 3600 },
-      { beat: 1, text: 'Permíteme presentarme: Sir Edwards. Evaluador oficial de tu lucidez.', ms: 4000, title: true },
-      { beat: 1, text: 'Nadie me lo pidió. Me nombré yo mismo.', ms: 3300 },
-      { beat: 2, text: 'Y como todo talento necesita supervisión…', ms: 3300 },
-      { beat: 2, text: 'Cada semana tendrás tres encargos.', ms: 3000 },
-      { beat: 2, text: 'Y un Gran Encargo… para quien tenga ambición.', ms: 3500 },
-      { beat: 3, text: 'Cumplirlos mejorará tu expediente.', ms: 3300 },
-      { beat: 3, text: 'Ignorarlos…', ms: 2600 },
-      { beat: 3, text: 'me dará material.', ms: 2800 },
-      { beat: 3, text: 'Te estaré observando.', ms: 3300, blink: true },
-      { beat: 4, final: true, ms: 6500 }
+      { beat: 1, text: (name ? 'Ah, ' + name + '. Una partida terminada.' : 'Ah. Una partida terminada.'), ms: 2400 },
+      { beat: 1, text: pick('encintro_' + key, R[key] && R[key].length ? R[key] : R.neutra), ms: 2900 },
+      { beat: 1, text: 'Permíteme presentarme: Sir Edwards. Evaluador oficial de tu lucidez.', ms: 3300, title: true },
+      { beat: 1, text: 'Nadie me lo pidió. Me nombré yo mismo.', ms: 2600 },
+      { beat: 2, text: 'Y como todo talento necesita supervisión…', ms: 2600 },
+      { beat: 2, text: 'Cada semana tendrás tres encargos.', ms: 2300 },
+      { beat: 2, text: 'Y un Gran Encargo… para quien tenga ambición.', ms: 2900 },
+      { beat: 3, text: 'Cumplirlos mejorará tu expediente.', ms: 2600 },
+      { beat: 3, text: 'Ignorarlos…', ms: 1900 },
+      { beat: 3, text: 'me dará material.', ms: 2100 },
+      { beat: 3, text: 'Te estaré observando.', ms: 2700, blink: true },
+      { beat: 4, final: true, ms: 5000 }
     ];
+
     var el = mount('enc-intro--scene');
     el.setAttribute('aria-label', 'Presentación de Sir Edwards');
     el.innerHTML =
@@ -186,7 +196,7 @@ const SEQEncargosIntro = (function () {
       if (s.final) { showFinal(); return; }
       setBeat(s.beat);
       el.classList.toggle('show-title', !!s.title);
-      if (s.title) later(function () { el.classList.remove('show-title'); }, 2400);
+      if (s.title) later(function () { el.classList.remove('show-title'); }, 2000);
       if (s.blink) {
         el.classList.remove('do-blink'); void el.offsetWidth; el.classList.add('do-blink');
         cap.classList.remove('in');
@@ -240,14 +250,14 @@ const SEQEncargosIntro = (function () {
   }
 
   // ---- carta de los lunes -------------------------------------------------------------------------------------------
-  function startMonday(weekId, lastWeekId) {
+  function startMonday(weekId, lastWeekId, introWeek, isMonday) {
     var C = core(), M = ENCARGOS_INTRO.monday;
     var claimed = (typeof store === 'object' && store && store.encargosClaimed) || [];
-    var kind = C.mondayKind(claimed, lastWeekId);
-    var lines = C.mondayFixed(M, kind).concat([pick('lunes_' + kind, C.mondayPool(M, kind))]);
+    var kind = C.mondayKind(claimed, lastWeekId, introWeek);
+    var lines = C.mondayFixed(M, kind, isMonday).concat([pick('lunes_' + kind, C.mondayPool(M, kind))]);
     set(K_MONDAY, weekId);
     var el = mount('enc-intro--monday is-' + kind);
-    el.setAttribute('aria-label', 'Sir Edwards, lunes');
+    el.setAttribute('aria-label', 'Sir Edwards, nueva semana');
     el.innerHTML =
       '<div class="enc-intro-vig"></div>' +
       '<div class="enc-monday-card">' +
@@ -256,9 +266,9 @@ const SEQEncargosIntro = (function () {
         '<div class="enc-monday-actions"><button type="button" class="enc-monday-go">Ver mis encargos</button><button type="button" class="enc-monday-close">Cerrar</button></div>' +
       '</div>';
     var ps = el.querySelectorAll('.enc-monday-line'), go = el.querySelector('.enc-monday-go'), close = el.querySelector('.enc-monday-close');
-    var offsets = [0, 1500, 3000, 4900], timers = [], all = false, ended = false;
+    var offsets = [0, 1100, 2300, 3800], timers = [], all = false, ended = false;
     function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
-    function revealAll() { all = true; timers.forEach(clearTimeout); timers = []; for (var i = 0; i < ps.length; i++) ps[i].classList.add('in'); later(function () { end(false); }, 5500); }
+    function revealAll() { all = true; timers.forEach(clearTimeout); timers = []; for (var i = 0; i < ps.length; i++) ps[i].classList.add('in'); later(function () { end(false); }, 4500); }
     function end(toEncargos) {
       if (ended) return;
       ended = true; timers.forEach(clearTimeout);
@@ -278,7 +288,7 @@ const SEQEncargosIntro = (function () {
       void el.offsetWidth; el.classList.add('is-on');
       go.focus({ preventScroll: true });
       for (var i = 0; i < ps.length; i++) (function (i) { later(function () { ps[i].classList.add('in'); }, offsets[i]); })(i);
-      later(function () { all = true; later(function () { end(false); }, 5500); }, offsets[offsets.length - 1] + 400);
+      later(function () { all = true; later(function () { end(false); }, 4500); }, offsets[offsets.length - 1] + 400);
     });
   }
 

@@ -40,18 +40,20 @@ const SEQEncargosIntroCore = (function () {
     return !!ctx && !ctx.seen && !!ctx.hasResult && !!ctx.onHome && !ctx.inGame && !ctx.blocked;
   }
 
-  // Carta de los lunes: una vez por lunes (primera vez que se abre Inicio), nunca el día de la gran presentación.
-  //   ctx: { seen, introDay, today, dow, weekId, lastShown, onHome, inGame, blocked }   (dow: 1 = lunes)
+  // Carta semanal: una vez por semana nueva, la primera vez que se abre Inicio (no hace falta que sea lunes). Nunca en la semana de
+  // incorporación (la de la gran presentación): quien llega un miércoles no recibe carta ni reproche por una semana que no vivió.
+  //   ctx: { seen, introWeek, weekId, lastShown, onHome, inGame, blocked }
   function shouldShowMonday(ctx) {
     if (!ctx || !ctx.seen || !ctx.onHome || ctx.inGame || ctx.blocked) return false;
-    if (ctx.dow !== 1) return false;
     if (ctx.lastShown === ctx.weekId) return false;
-    if (ctx.introDay && ctx.introDay === ctx.today) return false;
+    if (ctx.introWeek && ctx.introWeek === ctx.weekId) return false;
     return true;
   }
 
   // Aprobación = los cuatro encargos de la semana pasada cobrados (3 semanales + Gran Encargo); cualquier otra cosa, reproche.
-  function mondayKind(claimed, lastWeekId) {
+  // Si la semana pasada fue la de incorporación no se evalúa: 'incorporacion'.
+  function mondayKind(claimed, lastWeekId, introWeek) {
+    if (introWeek && introWeek === lastWeekId) return 'incorporacion';
     var list = Array.isArray(claimed) ? claimed : [], m = 0, g = 0;
     for (var i = 0; i < list.length; i++) {
       var k = String(list[i]);
@@ -62,8 +64,11 @@ const SEQEncargosIntroCore = (function () {
   }
 
   // Líneas de la carta: «Es lunes.», las dos fijas de la variante y la rotativa (la elige quien llama de mondayPool).
-  function mondayFixed(phrases, kind) { return [phrases.open].concat(kind === 'aprobacion' ? phrases.aprobacion : phrases.reproche); }
-  function mondayPool(phrases, kind) { return phrases.base.concat(kind === 'aprobacion' ? phrases.extraAprobacion : phrases.extraReproche); }
+  function mondayFixed(phrases, kind, isMonday) {
+    var open = isMonday === false ? phrases.openOther : phrases.open;
+    return [open].concat(kind === 'aprobacion' ? phrases.aprobacion : kind === 'incorporacion' ? phrases.incorporacion : phrases.reproche);
+  }
+  function mondayPool(phrases, kind) { return phrases.base.concat(kind === 'aprobacion' ? phrases.extraAprobacion : kind === 'incorporacion' ? [] : phrases.extraReproche); }
 
   return { cleanName: cleanName, classify: classify, shouldShowIntro: shouldShowIntro, shouldShowMonday: shouldShowMonday,
     mondayKind: mondayKind, mondayFixed: mondayFixed, mondayPool: mondayPool };

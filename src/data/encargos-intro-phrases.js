@@ -1,7 +1,7 @@
 // SirEdwards Quiz — Presentación de los Encargos: frases de Sir Edwards. Script clásico (global ENCARGOS_INTRO).
 // Todas rotan con pickRotatingPhrase (bolsa persistente: no se repite ninguna hasta haberlas visto todas).
 //   · result: la línea que sigue a «Una partida terminada.» según cómo fue la PRIMERA partida (o Duelo/Reto) del jugador.
-//   · monday: la carta de los lunes. Siempre abre «Es lunes.»; luego dos líneas fijas según la semana pasada y una tercera
+//   · monday: la carta semanal (sale la primera vez que se abre Inicio en una semana nueva; abre «Es lunes.» si es lunes, «Nueva semana.» si no; luego dos líneas fijas según la semana pasada y una tercera
 //     rotativa (comunes + las propias de cada variante). «Cuatro de cuatro» solo aparece en la variante de aprobación.
 // Sin emojis. Las claves de result coinciden con SEQEncargosIntroCore.classify().
 
@@ -45,14 +45,17 @@ const ENCARGOS_INTRO = {
     ]
   },
   monday: {
-    open: 'Es lunes.',
+    open: 'Es lunes.',          // si la carta sale otro día de la semana: openOther
+    openOther: 'Nueva semana.',
     aprobacion: ['Cuatro de cuatro la semana pasada.', 'No te acostumbres. Esta semana volveremos a comprobarlo.'],
+    // Primera carta tras la semana de incorporación (que no se evalúa): ni aprobación ni reproche.
+    incorporacion: ['Tu primera semana fue de prueba. No cuenta, de momento.', 'A partir de hoy, tu expediente cuenta de verdad.'],
     reproche: ['He revisado tu expediente.', 'Digamos que esta semana tendrás ocasión de mejorar mi opinión.'],
     // Tercera línea rotativa: comunes (cualquier variante)…
     base: [
       'El expediente de esta semana está listo. Caduca el domingo; mi paciencia, antes.',
-      'Nueva semana, nuevos encargos. Procura no estrenarla con excusas.',
-      'El día en que todos prometen ser mejores. Veamos cuánto dura contigo.',
+      'Nuevos encargos. Procura no estrenarlos con excusas.',
+      'Cada semana, todos prometen ser mejores. Veamos cuánto dura contigo.',
       'Tres encargos y un Gran Encargo. Ya sabes cómo funciona esto.',
       'Ha llegado tu nueva tanda de obligaciones. De nada.',
       'Tengo trabajo para ti, y tú, por desgracia, tiempo libre.'
