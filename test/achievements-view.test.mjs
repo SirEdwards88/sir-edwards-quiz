@@ -34,6 +34,7 @@ test('el objetivo de cada barra es exactamente el umbral de su logro', () => {
       if (m.id.startsWith('level_')) { let xp = 0; while (c.getLevelData(xp) < v) xp += 10; s.xp = xp; }
       else if (m.id.startsWith('master_')) s._mastered = v;
       else if (m.id.startsWith('medal_collector')) s.unlockedMedals = c.ALL_MEDALS.filter((x) => !x.id.startsWith('medal_collector') && x.id !== 'all_medals_secret').slice(0, v).map((x) => x.id); // solo cuentan logros ACTIVOS
+      else if (m.id === 'streak_30') s.bestStreak = v;
       else if (m.id === 'sharp_eye') s.hardBestStreak = v;
       else if (m.id === 'sin_preferencias') s.noRepeatCatBestStreak = v;
       else if (m.id === 'sin_frenos') s.timeTrialBestStreak = v;

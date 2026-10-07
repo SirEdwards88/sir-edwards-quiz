@@ -7,7 +7,7 @@ const ALL_MEDALS = [
   {id:'streak_10', title:'Corriente Imparable', desc:'10 respuestas correctas consecutivas en Modo Estándar.', streak:10, check:s => (s.standardBestStreak || 0) >= 10},
 
   {id:'streak_20', title:'Racha de Élite', desc:'20 respuestas correctas consecutivas en Modo Estándar.', streak:20, check:s => (s.standardBestStreak || 0) >= 20},
-  {id:'streak_30', title:'SirEdwards Imparable', desc:'30 respuestas correctas consecutivas en Modo Estándar.', streak:30, check:s => (s.standardBestStreak || 0) >= 30},
+  {id:'streak_30', title:'SirEdwards Imparable', desc:'30 respuestas correctas consecutivas.', streak:30, check:s => (s.bestStreak || 0) >= 30},
 
   // PROGRESIÓN
   { id: 'first_game', title: 'Primeros Pasos', desc: 'Termina tu primera partida.', check: s => s.gamesPlayed >= 1 },

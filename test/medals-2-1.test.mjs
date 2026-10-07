@@ -82,10 +82,12 @@ test('avatares: cada uno ligado a su logro, sin Fragmento donde no toca', () => 
   assert.equal(c.getMedalAvatar('medal_collector_30'), 'avatar_siredwards_coleccionista');
 });
 
-test('rachas: solo Modo Estándar, 20 y 30 seguidas', () => {
+test('rachas: 20 solo en Modo Estándar; 30 («Imparable») en cualquier modo', () => {
   const c = load(); const m = (id) => c.ALL_MEDALS.find((x) => x.id === id);
   assert.equal(m('streak_20').check({ standardBestStreak: 19 }), false); assert.equal(m('streak_20').check({ standardBestStreak: 20 }), true);
-  assert.equal(m('streak_30').check({ standardBestStreak: 29 }), false); assert.equal(m('streak_30').check({ standardBestStreak: 30 }), true);
+  assert.equal(m('streak_30').check({ bestStreak: 29 }), false); assert.equal(m('streak_30').check({ bestStreak: 30 }), true);
+  assert.equal(m('streak_30').check({ standardBestStreak: 30 }), false, 'la de 30 mide la racha global (bestStreak)');
+  assert.equal(m('streak_30').desc, '30 respuestas correctas consecutivas.');
   assert.equal(m('streak_20').check({ timeTrialBestStreak: 99, hardBestStreak: 99 }), false, 'otras rachas no cuentan');
 });
 

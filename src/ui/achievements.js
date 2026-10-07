@@ -41,7 +41,7 @@
     streak_5: function (s) { return [n(s.standardBestStreak), 5, 'seguidas']; },
     streak_10: function (s) { return [n(s.standardBestStreak), 10, 'seguidas']; },
     streak_20: function (s) { return [n(s.standardBestStreak), 20, 'seguidas']; },
-    streak_30: function (s) { return [n(s.standardBestStreak), 30, 'seguidas']; },
+    streak_30: function (s) { return [n(s.bestStreak), 30, 'seguidas']; },
     sharp_eye: function (s) { return [n(s.hardBestStreak), 5, 'seguidas']; },
     sin_preferencias: function (s) { return [n(s.noRepeatCatBestStreak), 10, 'seguidas']; },
     level_5: function (s) { return [safe(function () { return getLevelData(s.xp); }), 5, 'nivel']; },
