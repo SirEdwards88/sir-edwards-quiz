@@ -26,5 +26,5 @@ test('el historial va en orden, la 2.0 incluye mejoras visuales y 40 preguntas n
   assert.match(v2, /Mejoras visuales/); assert.match(v2, /40 preguntas nuevas/);
   const v14 = changelog.slice(changelog.indexOf('v1.4'), changelog.indexOf('v1.5'));
   assert.ok(!/ranking/i.test(v14), 'la 1.4 no menciona el ranking por XP');
-  assert.match(changelog.slice(changelog.lastIndexOf('v2.1')), /[Dd]uelos y apuestas/);
+  assert.match(changelog.slice(changelog.lastIndexOf('v2.1')), /[Dd]uelo por apuestas/);
 });

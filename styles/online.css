@@ -662,7 +662,8 @@
 .seq-v21-h2h small { color: var(--sub); }
 /* 2.1: avatares que se ganan con un logro, todavía bloqueados */
 .seq-av-btn.seq-av-locked { opacity: .5; filter: grayscale(1); cursor: not-allowed; }
-.ach-avatar { font-size: 13px; line-height: 1; }
+.ach-avatar { font-size: 11px; font-weight: 700; letter-spacing: .3px; line-height: 1.5; text-transform: uppercase; white-space: nowrap; opacity: .75; }
+.ach-avatar.got { opacity: 1; }
 
 /* ===== 2.1 pulido: elección de modo, Rankings, botón de estadísticas y pista de avatar bloqueado ===== */
 /* Elección de modo: mismas tarjetas que los modos normales, con el medallón grande */

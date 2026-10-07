@@ -179,9 +179,12 @@ test('la presentación no usa nada fuera de opacidad/transformación y respeta r
   assert.match(js, /!reduced\(\) && navigator\.vibrate/);
 });
 
-test('historial 2.0: sin los dos logros de Duelo y con el Duelo online explicado (clásico y apuestas, con amigos)', () => {
+test('historial: sin los dos logros de Duelo en la 2.0, apuestas solo en la 2.1, 60 preguntas en la 2.2 y ayuda del Duelo resumida', () => {
   const html = read('index.html');
-  assert.match(html, /<li>Duelo online con amigos, en dos modos: clásico y apuestas\.<\/li>/);
+  assert.ok(!/en dos modos: clásico y apuestas/.test(html), 'la 2.0 ya no habla de apuestas (son de la 2.1)');
+  assert.match(html, /<li>Duelo por apuestas: cuánto te fías de ti\.<\/li>/);
+  assert.match(html, /<li>60 preguntas nuevas\. Más formas de fallar\.<\/li>/);
+  assert.match(html, /En directo, contra un amigo\. Clásico, con veinte preguntas; o por apuestas/);
   assert.ok(!/dos logros de Duelo/.test(html));
   assert.match(html, /<li>Sonidos nuevos y música para los menús\.<\/li>/);
 });
