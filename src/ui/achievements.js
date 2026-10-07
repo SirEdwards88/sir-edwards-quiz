@@ -105,7 +105,7 @@
       prog = '<div class="ach-prog"><div class="ach-bar"><span style="width:' + pct + '%"></span></div><span class="ach-num">' + cur + '/' + p[1] + '</span></div>';
     }
     var av = ''; try { av = getMedalAvatar(m.id) || ''; } catch (e) {}
-    var avTag = av ? '<span class="ach-frag ach-avatar' + (unlocked ? ' got' : '') + '" title="' + (unlocked ? 'Avatar desbloqueado' : 'Desbloquea un avatar') + '"><img src="assets/ui/sombrero-saludo.webp" alt="" draggable="false"></span>' : '';
+    var avTag = av ? '<span class="ach-frag ach-avatar' + (unlocked ? ' got' : '') + '" title="' + (unlocked ? 'Avatar desbloqueado' : 'Desbloquea un avatar') + '"><img src="assets/ui/avatar-desbloqueado.webp" alt="" draggable="false"></span>' : '';
     var tag = (frag ? '<span class="ach-frag' + (unlocked ? ' got' : '') + '" title="' + (unlocked ? 'Fragmento obtenido' : 'Otorga un Fragmento de Mente') + '"><img src="assets/ui/fragmento.webp" alt="" draggable="false"></span>' : '') + avTag;
     return '<div class="ach-row ' + (unlocked ? 'is-done' : 'is-locked') + '">' +
       '<div class="ach-ico has-img">' + iconHTML(m) + (unlocked ? '<span class="ach-check" aria-hidden="true">✓</span>' : '') + '</div>' +

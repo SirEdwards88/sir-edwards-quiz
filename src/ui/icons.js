@@ -31,7 +31,7 @@
   // Nombres de assets/ui/ que se piden con fromName() (avisos, toasts…). Los demás se piden con seqIco()/src() directamente.
   var UI_NAMES = [
     'correcto', 'incorrecto', 'atencion', 'tiempo', 'escudo', 'celebracion', 'copa', 'oro', 'plata', 'bronce',
-    'revancha', 'compartir', 'progreso', 'escoba', 'cerebro', 'nube', 'movil', 'mediocre', 'derrota', 'xp', 'fragmento', 'racha'
+    'revancha', 'compartir', 'progreso', 'escoba', 'cerebro', 'nube', 'movil', 'mediocre', 'derrota', 'xp', 'fragmento', 'racha', 'guante', 'insignia', 'avatar-desbloqueado', 'marca-duelo'
   ];
   function src(name) { return PATHS[name] || (UI + name + '.webp'); }
   function known(name) { return Object.prototype.hasOwnProperty.call(PATHS, name) || UI_NAMES.indexOf(name) !== -1; }

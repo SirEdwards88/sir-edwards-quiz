@@ -404,10 +404,11 @@
     }
   }
 
-  function drawFooter(ctx, theme) {
+  function drawFooter(ctx, theme, badge) {
     ctx.textAlign = 'center'; ctx.fillStyle = BRAND.gold;
-    // 2.0: sin lema al pie (el nombre del juego ya va arriba); solo el rombo decorativo.
-    diamond(ctx, CX, H - 90, 9, theme.ring);
+    // Sin lema al pie (el nombre del juego ya va arriba); solo la insignia (o, si no carga, el rombo).
+    if (badge) drawContain(ctx, badge, CX - 24, H - 116, 48, 48);
+    else diamond(ctx, CX, H - 90, 9, theme.ring);
   }
 
   // Compone la tarjeta. Devuelve Promise<canvas>. Nunca lanza por un asset o
@@ -421,7 +422,8 @@
       model.character === 'hat' ? null : characterImage(model.character),
       model.player ? avatarImage(model.player.avatar) : null,
       model.versus && model.versus.rival ? avatarImage(model.versus.rival.avatar) : null,
-      modeIcon ? loadImage([MODE_ICON_DIR + modeIcon + '.webp']) : null
+      modeIcon ? loadImage([MODE_ICON_DIR + modeIcon + '.webp']) : null,
+      loadImage(['assets/ui/insignia.webp'])
     ];
     return Promise.all(loads).then(function (r) {
       var hat = r[1], charImg = r[2] || (model.character === 'hat' ? hat : null), meImg = r[3], rivalImg = r[4];
@@ -474,7 +476,7 @@
           ctx.fillStyle = BRAND.cream; ctx.fillText(model.code, CX, 1194);
         }
       }
-      drawFooter(ctx, theme);
+      drawFooter(ctx, theme, r[6] || null);
       return canvas;
     });
   }

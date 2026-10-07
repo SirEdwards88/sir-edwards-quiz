@@ -357,6 +357,14 @@
 .card:has(#view-duelo.active #seq-duel-root.seq-d-final-on.seq-d-k-reto) { border-color: var(--dz-reto); box-shadow: 0 14px 42px rgba(8,145,178,.16); }
 .card:has(#view-duelo.active #seq-duel-root.seq-d-final-on.seq-d-k-reto)::before { background: linear-gradient(90deg, var(--dz-reto-dark), var(--dz-reto), var(--dz-reto-dark)); }
 
+/* Marca de agua propia de la tarjeta final de Duelo/Reto: laurel con sombrero y espadas, detrás del contenido. */
+#seq-duel-root .seq-d-results { position: relative; isolation: isolate; }
+#seq-duel-root .seq-d-results::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit;
+  background: url(../assets/ui/marca-duelo.webp) center / min(74%, 300px) auto no-repeat; opacity: .09;
+}
+[data-theme="dark"] #seq-duel-root .seq-d-results::before { opacity: .12; }
+
 /* ===== GENERADO: tarjeta final de Duelo/Reto (scripts/gen-duel-results-css.mjs) ===== */
 [data-theme="dark"] #seq-duel-root .seq-d-results.results-card {background: linear-gradient(135deg, var(--card) 0%, var(--badge-bg) 100%);
   border-color: var(--primary);}
