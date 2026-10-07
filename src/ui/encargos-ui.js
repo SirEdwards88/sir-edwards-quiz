@@ -94,7 +94,7 @@ const SEQEncargosUI = (function () {
         '<img class="enc-scene-img" src="' + (v.allDone ? IMG_DONE : IMG_SCENE) + '" alt="Sir Edwards" decoding="async" draggable="false">' +
         '<div class="enc-bubble">' + esc(phrase(v, fresh === true)) + '</div>' +
       '</div>' +
-      '<div class="enc-meta"><span>' + v.doneCount + '/3 encargos' + (v.bonusClaimed ? ' · bonus cobrado' : '') + '</span><span>Quedan ' + esc(timeLeftText(v.msLeft)) + '</span></div>' +
+      '<div class="enc-meta"><span>' + stateOf(v) + '/4 encargos' + (v.bonusClaimed ? ' · bonus cobrado' : '') + '</span><span>Quedan ' + esc(timeLeftText(v.msLeft)) + '</span></div>' +
       '<div class="enc-list">' + v.missions.map(function (m) { return missionCard(m, false); }).join('') + '</div>' +
       missionCard(v.great, true);
   }

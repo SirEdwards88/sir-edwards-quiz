@@ -10,17 +10,14 @@
 .sir-event.show { opacity: 1; transform: translate(-50%, -50%); }
 .sir-event-img { width: 132px; height: auto; max-height: 150px; object-fit: contain; flex: 0 0 auto; margin-bottom: -2px; position: relative; z-index: 1; filter: drop-shadow(0 6px 12px rgba(10,16,36,.45)); }
 .sir-event-bubble {
-  padding: 16px 18px 15px; border-radius: 16px; text-align: center;
-  background: rgba(250,243,230,.99); color: #16244a; border: 1px solid rgba(201,153,46,.7);
-  box-shadow: 0 14px 36px rgba(10,16,36,.45), 0 0 0 4px rgba(10,16,36,.12);
+  padding: 16px 20px 17px; border-radius: 18px; text-align: center;
+  background: linear-gradient(135deg, #16244a, #3b2466); color: #fdf7ea; border: 1.5px solid rgba(232,200,116,.8);
+  box-shadow: 0 18px 40px rgba(0,0,0,.5), 0 0 0 4px rgba(10,16,36,.18);
 }
-.sir-event-label { font-size: 11px; font-weight: 800; letter-spacing: .8px; color: #9a6f12; margin-bottom: 4px; }
-.sir-event-text { font-size: 16px; line-height: 1.38; font-style: italic; font-weight: 600; }
-.sir-event.is-streak .sir-event-bubble { border-color: #c9992e; }
-.sir-event.is-night .sir-event-bubble { background: rgba(28,35,64,.99); color: #f6e6b8; }
-.sir-event.is-night .sir-event-label { color: #e8c874; }
-[data-theme="dark"] .sir-event-bubble { background: rgba(28,35,64,.99); color: #f6e6b8; }
-[data-theme="dark"] .sir-event-label { color: #e8c874; }
+.sir-event-label { font-size: 11px; font-weight: 800; letter-spacing: 1.2px; color: #e8c874; margin-bottom: 5px; }
+.sir-event-text { font-size: 16px; line-height: 1.38; font-style: italic; font-weight: 700; }
+/* Mismo lenguaje que los hitos de Supervivencia: fondo azul-violeta con filo dorado; la noche, más oscura. */
+.sir-event.is-night .sir-event-bubble { background: linear-gradient(135deg, #0d1330, #261a4d); }
 @media (prefers-reduced-motion: reduce) {
   .sir-event { transition: opacity .2s ease; transform: translate(-50%, -50%); }
 }
