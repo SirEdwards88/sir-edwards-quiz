@@ -63,13 +63,15 @@ const SEQEncargosIntroCore = (function () {
     return m >= 3 && g >= 1 ? 'aprobacion' : 'reproche';
   }
 
-  // Líneas de la carta: «Es lunes.», las dos fijas de la variante y la rotativa (la elige quien llama de mondayPool).
-  function mondayFixed(phrases, kind, isMonday) {
-    var open = isMonday === false ? phrases.openOther : phrases.open;
-    return [open].concat(kind === 'aprobacion' ? phrases.aprobacion : kind === 'incorporacion' ? phrases.incorporacion : phrases.reproche);
-  }
-  function mondayPool(phrases, kind) { return phrases.base.concat(kind === 'aprobacion' ? phrases.extraAprobacion : kind === 'incorporacion' ? [] : phrases.extraReproche); }
+  // Líneas de la carta: la apertura fija («Es lunes.» / «Nueva semana.») y tres bolsas rotativas independientes (las elige quien
+  // llama con pickRotatingPhrase): veredicto y comentario según la variante, y un cierre común a las tres.
+  function mondayOpen(phrases, isMonday) { return isMonday === false ? phrases.openOther : phrases.open; }
+  function variantOf(map, kind) { return kind === 'aprobacion' ? map.aprobacion : kind === 'incorporacion' ? map.incorporacion : map.reproche; }
+  function mondayVerdictPool(phrases, kind) { return variantOf(phrases.verdict, kind); }
+  function mondayCommentPool(phrases, kind) { return variantOf(phrases.comment, kind); }
+  function mondayClosePool(phrases) { return phrases.close; }
 
   return { cleanName: cleanName, classify: classify, shouldShowIntro: shouldShowIntro, shouldShowMonday: shouldShowMonday,
-    mondayKind: mondayKind, mondayFixed: mondayFixed, mondayPool: mondayPool };
+    mondayKind: mondayKind, mondayOpen: mondayOpen, mondayVerdictPool: mondayVerdictPool, mondayCommentPool: mondayCommentPool,
+    mondayClosePool: mondayClosePool };
 })();

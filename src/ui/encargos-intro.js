@@ -254,7 +254,12 @@ const SEQEncargosIntro = (function () {
     var C = core(), M = ENCARGOS_INTRO.monday;
     var claimed = (typeof store === 'object' && store && store.encargosClaimed) || [];
     var kind = C.mondayKind(claimed, lastWeekId, introWeek);
-    var lines = C.mondayFixed(M, kind, isMonday).concat([pick('lunes_' + kind, C.mondayPool(M, kind))]);
+    var lines = [
+      C.mondayOpen(M, isMonday),
+      pick('lunes_v_' + kind, C.mondayVerdictPool(M, kind)),
+      pick('lunes_c_' + kind, C.mondayCommentPool(M, kind)),
+      pick('lunes_z', C.mondayClosePool(M))
+    ];
     set(K_MONDAY, weekId);
     var el = mount('enc-intro--monday is-' + kind);
     el.setAttribute('aria-label', 'Sir Edwards, nueva semana');

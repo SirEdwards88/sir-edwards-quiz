@@ -19,23 +19,38 @@ test('frases: sin vacías, sin repetidas, sin emojis, con las claves que clasifi
   assert.deepEqual(Object.keys(P.result).sort(), ['buena', 'derrota', 'empate', 'mala', 'neutra', 'normal', 'victoria']);
   const all = [];
   Object.values(P.result).forEach((l) => { assert.ok(l.length >= 1); all.push(...l); });
-  ['base', 'aprobacion', 'reproche', 'incorporacion', 'extraAprobacion', 'extraReproche'].forEach((k) => all.push(...P.monday[k]));
+  ['verdict', 'comment'].forEach((g) => Object.values(P.monday[g]).forEach((l) => all.push(...l)));
+  all.push(...P.monday.close);
   all.push(P.monday.open, P.monday.openOther, P.callback);
-  assert.equal(new Set(all).size, all.length);
+  assert.equal(new Set(all).size, all.length, 'ninguna frase repetida, ni dentro de una bolsa ni entre bolsas');
   assert.ok(all.every((t) => t.length > 5 && t.length < 100 && noEmoji(t)));
   assert.equal(P.monday.open, 'Es lunes.');
   assert.ok(P.result.buena.length >= 5 && P.result.normal.length >= 5 && P.result.mala.length >= 5);
 });
 
-test('«Cuatro de cuatro» solo en la variante de aprobación; el reproche nunca lo dice', () => {
+test('carta semanal: bolsas amplias, para que no se repita semana tras semana', () => {
+  const { P } = load();
+  ['aprobacion', 'reproche'].forEach((k) => {
+    assert.ok(P.monday.verdict[k].length >= 10, 'veredicto ' + k);
+    assert.ok(P.monday.comment[k].length >= 10, 'comentario ' + k);
+  });
+  assert.ok(P.monday.close.length >= 20, 'cierre común');
+  assert.ok(P.monday.verdict.incorporacion.length >= 3 && P.monday.comment.incorporacion.length >= 3);
+});
+
+test('«Cuatro de cuatro» solo en el veredicto de aprobación; el resto de líneas nunca lo dice ni se pisan entre sí', () => {
   const { P, C } = load();
-  const rep = C.mondayFixed(P.monday, 'reproche').concat(C.mondayPool(P.monday, 'reproche'));
-  const apr = C.mondayFixed(P.monday, 'aprobacion').concat(C.mondayPool(P.monday, 'aprobacion'));
-  assert.ok(!rep.some((t) => /cuatro de cuatro/i.test(t)));
-  assert.ok(apr.some((t) => /cuatro de cuatro/i.test(t)));
-  assert.ok(!P.monday.base.some((t) => /cuatro de cuatro|^es lunes|^lunes|^nueva semana|lunes/i.test(t)), 'la bolsa común no repite la apertura, no nombra el lunes ni el resultado');
-  assert.deepEqual(C.mondayFixed(P.monday, 'aprobacion')[0], 'Es lunes.');
-  assert.deepEqual(C.mondayFixed(P.monday, 'reproche')[0], 'Es lunes.');
+  const lines = (kind) => [].concat(C.mondayVerdictPool(P.monday, kind), C.mondayCommentPool(P.monday, kind), C.mondayClosePool(P.monday));
+  assert.ok(!lines('reproche').some((t) => /cuatro de cuatro/i.test(t)));
+  assert.ok(C.mondayVerdictPool(P.monday, 'aprobacion').some((t) => /cuatro de cuatro/i.test(t)));
+  assert.ok(![].concat(C.mondayCommentPool(P.monday, 'aprobacion'), C.mondayClosePool(P.monday)).some((t) => /cuatro de cuatro|cumpliste/i.test(t)), 'solo el veredicto habla del resultado');
+  assert.ok(!P.monday.close.some((t) => /cuatro de cuatro|^es lunes|^lunes|^nueva semana|lunes/i.test(t)), 'el cierre común no repite la apertura, no nombra el lunes ni el resultado');
+  assert.equal(C.mondayOpen(P.monday, true), 'Es lunes.');
+  assert.equal(C.mondayOpen(P.monday, undefined), 'Es lunes.');
+  assert.equal(C.mondayOpen(P.monday, false), 'Nueva semana.');
+  // Veredicto y comentario de reproche no hablan de aprobación, y los de aprobación no hablan de deudas.
+  assert.ok(!C.mondayCommentPool(P.monday, 'reproche').some((t) => /impecable|sin una sola mancha|cuatro/i.test(t)));
+  assert.ok(![].concat(C.mondayVerdictPool(P.monday, 'aprobacion'), C.mondayCommentPool(P.monday, 'aprobacion')).some((t) => /me debes|sin saldar|a medias|incompleta/i.test(t)));
 });
 
 test('clasificación de la primera partida por modo, con los umbrales existentes', () => {
@@ -106,10 +121,10 @@ test('la semana de incorporación no se evalúa: la primera carta es neutra; des
   assert.equal(C.mondayKind(full, w, w), 'incorporacion');
   assert.equal(C.mondayKind(full, w, '2026-W40'), 'aprobacion');
   assert.equal(C.mondayKind([], w, '2026-W40'), 'reproche');
-  const lines = C.mondayFixed(P.monday, 'incorporacion', false).concat(C.mondayPool(P.monday, 'incorporacion'));
-  assert.ok(!lines.some((t) => /cuatro de cuatro|debes|no cumpliste|cumpliste|reproche|expediente impecable/i.test(t)), 'sin juicio sobre una semana que no vivió');
-  assert.equal(C.mondayFixed(P.monday, 'incorporacion', false)[0], 'Nueva semana.');
-  assert.equal(C.mondayFixed(P.monday, 'incorporacion', true)[0], 'Es lunes.');
+  const lines = [].concat(C.mondayVerdictPool(P.monday, 'incorporacion'), C.mondayCommentPool(P.monday, 'incorporacion'), C.mondayClosePool(P.monday));
+  assert.ok(!lines.some((t) => /cuatro de cuatro|debes|no cumpliste|cumpliste|reproche|expediente impecable|sin saldar|a medias|incompleta/i.test(t)), 'sin juicio sobre una semana que no vivió');
+  assert.equal(C.mondayOpen(P.monday, false), 'Nueva semana.');
+  assert.equal(C.mondayOpen(P.monday, true), 'Es lunes.');
 });
 
 test('aprobación = los cuatro de la semana pasada cobrados (3 semanales + Gran Encargo); lo demás, reproche', () => {
