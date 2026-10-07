@@ -662,8 +662,12 @@
 .seq-v21-h2h small { color: var(--sub); }
 /* 2.1: avatares que se ganan con un logro, todavía bloqueados */
 .seq-av-btn.seq-av-locked { opacity: .5; filter: grayscale(1); cursor: not-allowed; }
-.ach-avatar { font-size: 11px; font-weight: 700; letter-spacing: .3px; line-height: 1.5; text-transform: uppercase; white-space: nowrap; opacity: .75; }
-.ach-avatar.got { opacity: 1; }
+/* La pastilla «Avatar» ha de destacar tanto como la del Fragmento: dorada, con relieve (los Fragmentos son morados). */
+.ach-frag.ach-avatar { font-size: 11.5px; font-weight: 800; letter-spacing: .6px; line-height: 1.5; text-transform: uppercase; white-space: nowrap; padding: 2px 10px;
+  color: #8a5a00; background: rgba(232,200,116,.22); border: 1.5px solid #d9a93a; }
+.ach-frag.ach-avatar.got { color: #2a1a00; background: linear-gradient(135deg, #f3d77a, #d9a93a); border-color: #b98a1f; box-shadow: 0 1px 6px rgba(217,169,58,.45), inset 0 1px 0 rgba(255,255,255,.55); }
+[data-theme="dark"] .ach-frag.ach-avatar { color: #f3d77a; background: rgba(217,169,58,.16); border-color: #d9a93a; }
+[data-theme="dark"] .ach-frag.ach-avatar.got { color: #2a1a00; background: linear-gradient(135deg, #f3d77a, #d9a93a); }
 
 /* ===== 2.1 pulido: elección de modo, Rankings, botón de estadísticas y pista de avatar bloqueado ===== */
 /* Elección de modo: mismas tarjetas que los modos normales, con el medallón grande */
