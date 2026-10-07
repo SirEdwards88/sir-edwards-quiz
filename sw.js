@@ -39,7 +39,13 @@
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
 const CACHE_VERSION = 137;
+// Dos cachés (ver install/fetch más abajo):
+//  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
+//    versión nueva no se instala y se queda la anterior.
+//  · ASSET_CACHE (estable): las imágenes de assets/. Cada una se guarda con su huella (ASSET_REVS) y solo se vuelve a descargar
+//    si cambia el archivo, no en cada publicación. Es tolerante: una imagen que falla no impide instalar; se pide al usarla.
 const CACHE_NAME = `sedq-shell-v${CACHE_VERSION}`;
+const ASSET_CACHE = 'sedq-assets';
 
 // Rutas relativas al propio sw.js (que vive en la raíz de la app, tanto en
 // local como bajo /sir-edwards-quiz/ en GitHub Pages). Ninguna es absoluta,
@@ -350,16 +356,288 @@ const APP_SHELL = [
   './assets/character/hito-manos.webp',
 ];
 
+// Huellas de las imágenes de APP_SHELL que viven en assets/. GENERADO por scripts/bump-version.mjs: no se edita a mano.
+// <asset-revs>
+const ASSET_REVS = {
+  './assets/audio/correct.mp3': 'ada74251',
+  './assets/audio/wrong.mp3': '738c1d1c',
+  './assets/avatars/avatar_siredwards_coleccionista.png': 'e673dc90',
+  './assets/avatars/avatar_siredwards_imparable.png': 'fa0e4d0e',
+  './assets/avatars/avatar_siredwards_insensato.png': 'e93833f7',
+  './assets/avatars/avatar_siredwards_medianoche.png': '22ff76ca',
+  './assets/avatars/avatar_siredwards_supremo.png': '28ec36fd',
+  './assets/avatars/avatar_siredwards_vengador.png': 'bcde96ef',
+  './assets/avatars/caballo.png': 'c9c2b6e6',
+  './assets/avatars/cuervo.png': 'e349d11e',
+  './assets/avatars/gato.png': '2197648d',
+  './assets/avatars/globo.png': '3a25e9c2',
+  './assets/avatars/libro.png': 'e10102e6',
+  './assets/avatars/lupa.png': '8455a10c',
+  './assets/avatars/mascara.png': 'd1b2daef',
+  './assets/avatars/paraguas.png': 'fa9d7838',
+  './assets/avatars/pipa.png': 'b218d2cf',
+  './assets/avatars/pluma.png': 'c3384287',
+  './assets/avatars/reloj.png': '090c2ea8',
+  './assets/avatars/sombrero.png': 'f0e31e52',
+  './assets/cats/arte.webp': '74fe26f8',
+  './assets/cats/candado-abierto.webp': 'd1046594',
+  './assets/cats/candado.webp': 'd6264547',
+  './assets/cats/ciencia.webp': '279f6ccf',
+  './assets/cats/cultura.webp': '913ac61b',
+  './assets/cats/deporte.webp': 'c3fd0d86',
+  './assets/cats/geografia.webp': '8e534e2b',
+  './assets/cats/historia.webp': '255dac0e',
+  './assets/character/defeat.webp': 'd4895852',
+  './assets/character/event_siredwards_day.webp': '8cacefd5',
+  './assets/character/event_siredwards_night.webp': '9780ad2a',
+  './assets/character/event_siredwards_streak.webp': 'f43c5ebd',
+  './assets/character/event_siredwards_visit.webp': '6e6d5168',
+  './assets/character/hat.webp': '89336d1f',
+  './assets/character/hito-barbilla.webp': '10eabc42',
+  './assets/character/hito-manos.webp': '3f46e800',
+  './assets/character/hito-monoculo.webp': 'd87d04a2',
+  './assets/character/lucidez-enigma.webp': '2fd9eba2',
+  './assets/character/lucidez-fase1.webp': '0737e99a',
+  './assets/character/lucidez-fase2.webp': '4f89375b',
+  './assets/character/lucidez-fase3.webp': 'c3c18eac',
+  './assets/character/lunes-aprobacion.webp': '78ac9458',
+  './assets/character/lunes-reproche.webp': '7e3a9052',
+  './assets/character/presentacion-evaluador.webp': 'ceaa2779',
+  './assets/character/presentacion-expediente.webp': '2644648c',
+  './assets/character/presentacion-mirada.webp': '261e874d',
+  './assets/character/siredwards_encargos.webp': '390cd810',
+  './assets/character/siredwards_encargos_completados.webp': '2a545d18',
+  './assets/character/victory.webp': '2fdab0ea',
+  './assets/duelos/apuestas/cuerdo.webp': '5aa358e0',
+  './assets/duelos/apuestas/insensato.webp': '3ec93c42',
+  './assets/duelos/apuestas/osado.webp': 'ef050fa5',
+  './assets/duelos/estadisticas.webp': '30ffe7da',
+  './assets/duelos/modos/classic.webp': '497d660f',
+  './assets/duelos/modos/stakes.webp': '0d2e08f2',
+  './assets/duelos/rangos/caballero_del_dato.webp': '68b82e99',
+  './assets/duelos/rangos/erudito_de_salon.webp': 'd979ca49',
+  './assets/duelos/rangos/lord_sabelotodo.webp': 'fe5a008f',
+  './assets/duelos/rangos/plebeyo_ilustrado.webp': '50ff37db',
+  './assets/duelos/rangos/sir_edwards.webp': '84d052b1',
+  './assets/duelos/rankings/friends.webp': '32fca8fc',
+  './assets/duelos/rankings/global.webp': '00f86aa8',
+  './assets/duelos/rankings/mental.webp': '4397e9b4',
+  './assets/duelos/rankings/pvp.webp': '87a2d360',
+  './assets/duelos/rankings/timetrial.webp': 'fbd11a25',
+  './assets/familias/aciertos.webp': 'b0a3ed70',
+  './assets/familias/dominio.webp': 'a210b7ad',
+  './assets/familias/duelo.webp': '67ae6bb2',
+  './assets/familias/errores.webp': '6a61de7f',
+  './assets/familias/especial.webp': '2b651777',
+  './assets/familias/modos.webp': '9067a56b',
+  './assets/familias/nivel.webp': 'dd01c4ef',
+  './assets/familias/prog.webp': 'fbb99c0a',
+  './assets/familias/racha.webp': 'e880c0e5',
+  './assets/familias/secretos.webp': '0bef212c',
+  './assets/logros/all_medals_secret.webp': 'e09114d4',
+  './assets/logros/balanced_master.webp': '5a3d960a',
+  './assets/logros/cleaner_25.webp': 'ec2d635e',
+  './assets/logros/cleaner_5.webp': '621f6e81',
+  './assets/logros/correct_100.webp': '29e36f64',
+  './assets/logros/correct_400.webp': '7b355a59',
+  './assets/logros/correct_800.webp': '4d4f88a5',
+  './assets/logros/diurno.webp': 'ff49e8fd',
+  './assets/logros/duel_apuestas_calculada.webp': 'd9d4bb60',
+  './assets/logros/duel_apuestas_ultima_locura.webp': '7238c5c4',
+  './assets/logros/duel_cinco_victorias.webp': '9ebbdb3e',
+  './assets/logros/duel_contra_las_cuerdas.webp': '9f14ecec',
+  './assets/logros/duel_otra_vez_tu.webp': '87ee87a8',
+  './assets/logros/duel_por_los_pelos.webp': '0dcfa874',
+  './assets/logros/duel_primera_sangre.webp': 'fc80f30b',
+  './assets/logros/duel_revancha.webp': '776d03cd',
+  './assets/logros/duel_rey_del_empate.webp': '12605ca8',
+  './assets/logros/duel_sin_titubear.webp': '5ef937d7',
+  './assets/logros/duel_tres_al_hilo.webp': 'e72dea28',
+  './assets/logros/duel_victoria_inaugural.webp': '4631ac2b',
+  './assets/logros/first_game.webp': 'a2683615',
+  './assets/logros/games_10.webp': '2d46cbf3',
+  './assets/logros/games_20.webp': '063fb0df',
+  './assets/logros/games_5.webp': '4a63d648',
+  './assets/logros/games_50.webp': '3d814361',
+  './assets/logros/level_10.webp': '17920c98',
+  './assets/logros/level_20.webp': '45d96e36',
+  './assets/logros/level_30.webp': 'def8975f',
+  './assets/logros/level_5.webp': '1aceebe6',
+  './assets/logros/limpieza_general.webp': '9a07fb0b',
+  './assets/logros/lucidez_absoluta.webp': 'ef7dd571',
+  './assets/logros/lucidez_conexiones_imposibles.webp': '7dfd7cd9',
+  './assets/logros/lucidez_mente_despierta.webp': '29699286',
+  './assets/logros/master_10.webp': '814d59de',
+  './assets/logros/master_100.webp': '7ead293e',
+  './assets/logros/master_200.webp': '2b206860',
+  './assets/logros/master_50.webp': '10d6bac0',
+  './assets/logros/medal_collector_10.webp': 'bfc168b8',
+  './assets/logros/medal_collector_20.webp': '4444330e',
+  './assets/logros/medal_collector_30.webp': '2fc93251',
+  './assets/logros/mental_calc_15.webp': 'e883aa30',
+  './assets/logros/mental_calc_30.webp': '2534cf5c',
+  './assets/logros/mental_calc_40.webp': '66643d10',
+  './assets/logros/mente_fracturada.webp': '2cd26704',
+  './assets/logros/noctambulo.webp': 'fe71c00c',
+  './assets/logros/polimata.webp': '9b77ca28',
+  './assets/logros/sd_primer_riesgo.webp': 'c4ddf427',
+  './assets/logros/sharp_eye.webp': 'c29c4452',
+  './assets/logros/sin_frenos.webp': '0ea44242',
+  './assets/logros/sin_preferencias.webp': '1f4fe452',
+  './assets/logros/streak_10.webp': '19fbed81',
+  './assets/logros/streak_20.webp': 'f0321cac',
+  './assets/logros/streak_30.webp': 'cebebeba',
+  './assets/logros/streak_5.webp': 'f0539224',
+  './assets/logros/surv_ameba.webp': '93fe03b2',
+  './assets/logros/surv_derrame.webp': '854a8422',
+  './assets/logros/surv_humano.webp': '5c4c474f',
+  './assets/logros/tt_15.webp': '19b311d2',
+  './assets/logros/tt_30.webp': 'dec53159',
+  './assets/logros/tt_50.webp': '67d7ad22',
+  './assets/modes/ajustes.webp': 'efc30bb4',
+  './assets/modes/ameba.webp': '4fe92f52',
+  './assets/modes/amigos.webp': '79bca382',
+  './assets/modes/calculo.webp': '005a5053',
+  './assets/modes/contrarreloj.webp': 'e7891d2b',
+  './assets/modes/derrame.webp': '6c358668',
+  './assets/modes/duelo.webp': 'd47818b5',
+  './assets/modes/estadisticas.webp': 'a0e2a9cb',
+  './assets/modes/estandar.webp': 'c4e818ff',
+  './assets/modes/humano.webp': 'ff7ed687',
+  './assets/modes/logros.webp': 'f2be8383',
+  './assets/modes/mini/ameba.webp': '271a4cd4',
+  './assets/modes/mini/calculo.webp': '13e2994d',
+  './assets/modes/mini/contrarreloj.webp': '886ed165',
+  './assets/modes/mini/derrame.webp': 'dcfb454f',
+  './assets/modes/mini/duelo.webp': 'eaca26f5',
+  './assets/modes/mini/estandar.webp': '57783124',
+  './assets/modes/mini/humano.webp': '431e98c2',
+  './assets/modes/mini/logros.webp': '9343eadb',
+  './assets/modes/mini/muerte-subita.webp': '9523835c',
+  './assets/modes/mini/ranking.webp': 'ac68383e',
+  './assets/modes/mini/repaso.webp': '278f6431',
+  './assets/modes/mini/secreto.webp': '33d0ec27',
+  './assets/modes/mini/supervivencia.webp': '23361043',
+  './assets/modes/muerte-subita.webp': '58d22b90',
+  './assets/modes/ranking.webp': '648f2258',
+  './assets/modes/repaso.webp': '6779dde6',
+  './assets/modes/retos.webp': '1c5e7209',
+  './assets/modes/secreto.webp': '93656d07',
+  './assets/modes/suelto/ameba.webp': '36d2644e',
+  './assets/modes/suelto/calculo.webp': '8bcd1f43',
+  './assets/modes/suelto/contrarreloj.webp': '72d54956',
+  './assets/modes/suelto/derrame.webp': 'f9612197',
+  './assets/modes/suelto/duelo.webp': 'b929357f',
+  './assets/modes/suelto/estandar.webp': 'cf74b615',
+  './assets/modes/suelto/humano.webp': 'c94a5071',
+  './assets/modes/suelto/muerte-subita.webp': 'a78150d7',
+  './assets/modes/suelto/repaso.webp': '29b0cdfa',
+  './assets/modes/suelto/retos.webp': 'b28aabca',
+  './assets/modes/suelto/secreto.webp': 'f0fb994d',
+  './assets/modes/suelto/supervivencia.webp': '0edf213a',
+  './assets/modes/supervivencia.webp': '0252d2ac',
+  './assets/ui/abaco.webp': '8df7f337',
+  './assets/ui/atencion.webp': '0d989e0c',
+  './assets/ui/bandera-blanca.webp': '3ce4aa4a',
+  './assets/ui/bien.webp': '80ea2d08',
+  './assets/ui/bola-rota.webp': 'dcbcfa95',
+  './assets/ui/bombilla.webp': '38c00fe5',
+  './assets/ui/bronce.webp': '5a68a9d9',
+  './assets/ui/calavera.webp': '19d4f16e',
+  './assets/ui/calculadora-humo.webp': 'd62bbef4',
+  './assets/ui/calculadora-laton.webp': '7912ca3d',
+  './assets/ui/caracol.webp': 'a97b0113',
+  './assets/ui/cartel-peligro.webp': '97d54d81',
+  './assets/ui/casi.webp': '6bfb6d21',
+  './assets/ui/celebracion.webp': '87e6433a',
+  './assets/ui/cerebro-engranajes.webp': 'b446d97a',
+  './assets/ui/cerebro.webp': '416f0417',
+  './assets/ui/cofre-medallas.webp': '3600dee0',
+  './assets/ui/compartir.webp': '2b2e6a06',
+  './assets/ui/copa.webp': '0c2c5067',
+  './assets/ui/correcto.webp': '924ae99a',
+  './assets/ui/derrota.webp': '8ccd87f3',
+  './assets/ui/desastre.webp': '2b34b57a',
+  './assets/ui/diamante.webp': '79ba4678',
+  './assets/ui/escoba.webp': '173febbe',
+  './assets/ui/escudo.webp': '53e5ae4f',
+  './assets/ui/fragmento.webp': '4a6cbc9e',
+  './assets/ui/gorro-burro.webp': 'fa3c4688',
+  './assets/ui/hito12.webp': '8fd60e1f',
+  './assets/ui/hito15.webp': '957fbb83',
+  './assets/ui/incorrecto.webp': 'fb744d60',
+  './assets/ui/insignia-nivel.webp': '04b26e8e',
+  './assets/ui/instalar-app.webp': '4b10f2c0',
+  './assets/ui/libreta.webp': '3734c844',
+  './assets/ui/libro-vela.webp': 'e2da705b',
+  './assets/ui/libro.webp': 'fab53d16',
+  './assets/ui/liebre.webp': 'c77382c1',
+  './assets/ui/medalla.webp': 'fecfd017',
+  './assets/ui/mediocre.webp': 'aed5e07c',
+  './assets/ui/movil.webp': '6b806f36',
+  './assets/ui/nube.webp': 'f7c1dccf',
+  './assets/ui/oro.webp': '289c3aed',
+  './assets/ui/perfecto.webp': 'fa3bd5a2',
+  './assets/ui/pergamino.webp': '2a0bf488',
+  './assets/ui/pizarra-operaciones.webp': '2d698757',
+  './assets/ui/plata.webp': 'c0ce8742',
+  './assets/ui/progreso.webp': 'b7e701c5',
+  './assets/ui/racha.webp': '3ee4565d',
+  './assets/ui/regla-calculo.webp': '74673993',
+  './assets/ui/reloj-derretido.webp': '2789b018',
+  './assets/ui/revancha.webp': 'ad4f0bf4',
+  './assets/ui/sombrero-aplastado.webp': 'ce481fbc',
+  './assets/ui/sombrero-laurel.webp': '18b65104',
+  './assets/ui/sombrero-mediocre.webp': '3531e6f5',
+  './assets/ui/sombrero-saludo.webp': '23366762',
+  './assets/ui/suspenso.webp': '7489b62c',
+  './assets/ui/tiempo.webp': 'ee46f823',
+  './assets/ui/xp.webp': 'b4465a36',
+  './assets/ui/zorro.webp': '462a7e7a'
+};
+// </asset-revs>
+
 // JS y CSS se piden desde index.html con ?v=<CACHE_VERSION> (ver scripts/bump-version.mjs): se precargan
 // con la misma URL exacta para que la caché los encuentre.
 // Los retratos PNG que tienen versión WebP no se precargan (los navegadores actuales usan el WebP; un
 // navegador antiguo los pide a la red). La música tampoco: suena solo con conexión.
-const SHELL_URLS = APP_SHELL.map((u) => (/^\.\/(src|styles)\/.+\.(js|css)$/.test(u) ? u + '?v=' + CACHE_VERSION : u));
+const isAsset = (u) => /^\.\/assets\//.test(u);
+const withVersion = (u) => (/^\.\/(src|styles)\/.+\.(js|css)$/.test(u) ? u + '?v=' + CACHE_VERSION : u);
+const SHELL_URLS = APP_SHELL.map(withVersion).filter((u) => !isAsset(u));   // código: caché versionada
+const ASSET_URLS = APP_SHELL.filter(isAsset);                              // imágenes: caché estable
+
+// Clave de una imagen en ASSET_CACHE: su URL + su huella. Si el archivo cambia, cambia la clave y se vuelve a descargar.
+const assetRequest = (u) => new Request(u + '?r=' + ASSET_REVS[u]);
+
+// Guarda las imágenes que falten (con 6 descargas a la vez) y retira las que ya no tocan. Nunca lanza error: devuelve cuántas fallaron.
+async function cacheAssets() {
+  const cache = await caches.open(ASSET_CACHE);
+  const wanted = ASSET_URLS.filter((u) => ASSET_REVS[u]).map((u) => [u, assetRequest(u)]);
+  const queue = [];
+  for (const [u, req] of wanted) { if (!(await cache.match(req))) queue.push([u, req]); }
+  let failed = 0;
+  const worker = async () => {
+    while (queue.length) {
+      const [u, req] = queue.shift();
+      try {
+        const res = await fetch(u, { cache: 'reload' });   // 'reload': nunca una copia vieja de la caché HTTP
+        if (res && res.ok) await cache.put(req, res); else failed++;
+      } catch (e) { failed++; }
+    }
+  };
+  await Promise.all([worker(), worker(), worker(), worker(), worker(), worker()]);
+  const keep = new Set(wanted.map(([, req]) => req.url));
+  for (const k of await cache.keys()) { if (/\?r=/.test(k.url) && !keep.has(k.url)) await cache.delete(k); }
+  return failed;
+}
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL_URLS))
-  );
+  event.waitUntil((async () => {
+    const code = await caches.open(CACHE_NAME);
+    await code.addAll(SHELL_URLS);
+    // Imágenes: tolerante y con tope de tiempo. Lo que no llegue se descarga la primera vez que se use.
+    try { await Promise.race([cacheAssets(), new Promise((resolve) => setTimeout(resolve, 30000))]); } catch (e) { /* no bloquea la instalación */ }
+  })());
   // Deliberadamente NO se llama a self.skipWaiting() aquí: si alguien está
   // a mitad de una partida cuando se publica una versión nueva, no queremos
   // que el service worker tome el control de golpe y le cambie el shell
@@ -382,6 +660,8 @@ self.addEventListener('activate', (event) => {
     ).then(() => self.clients.claim())
   );
 });
+
+const SCOPE_PATH = new URL('./', self.location).pathname;
 
 self.addEventListener('fetch', (event) => {
   const req = event.request;
@@ -406,6 +686,22 @@ self.addEventListener('fetch', (event) => {
           return res;
         })
         .catch(() => caches.match(req).then((res) => res || caches.match('./index.html')))
+    );
+    return;
+  }
+
+  // Imágenes de assets/ con huella: se sirven de la caché estable; si no están (instalación incompleta), de la red, y se guardan.
+  const rel = './' + url.pathname.slice(SCOPE_PATH.length);
+  if (Object.prototype.hasOwnProperty.call(ASSET_REVS, rel)) {
+    const key = new Request(url.origin + url.pathname + '?r=' + ASSET_REVS[rel]);
+    event.respondWith(
+      caches.open(ASSET_CACHE).then(async (cache) => {
+        const hit = await cache.match(key);
+        if (hit) return hit;
+        const res = await fetch(req);
+        if (res && res.ok && res.status !== 206) cache.put(key, res.clone());
+        return res;
+      }).catch(() => caches.match(req))
     );
     return;
   }
