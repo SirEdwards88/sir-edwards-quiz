@@ -40,11 +40,11 @@ const SEQEncargosUI = (function () {
     el.hidden = false;
     var title, line, tail, frac;
     if (v.allDone) {
-      title = 'SEMANA SALDADA'; line = 'Los tres encargos y el Gran Encargo, cumplidos'; tail = 'Hasta el lunes'; frac = 1;
+      title = 'ENCARGOS DE SIR EDWARDS'; line = 'Semana saldada: los tres y el Gran Encargo'; tail = 'Hasta el lunes'; frac = 1;
     } else if (v.doneCount === 3) {
-      title = 'ENCARGO DE SIR EDWARDS'; line = '3/3 encargos semanales · falta el Gran Encargo'; tail = '+' + v.great.xp + ' XP disponibles'; frac = v.great.r.frac;
+      title = 'ENCARGOS DE SIR EDWARDS'; line = '3/3 encargos semanales · falta el Gran Encargo'; tail = '+' + v.great.xp + ' XP disponibles'; frac = v.great.r.frac;
     } else {
-      title = 'ENCARGO DE SIR EDWARDS'; line = v.doneCount + '/3 encargos semanales completados'; tail = '+' + v.xpAvailable + ' XP disponibles';
+      title = 'ENCARGOS DE SIR EDWARDS'; line = v.doneCount + '/3 encargos semanales completados'; tail = '+' + v.xpAvailable + ' XP disponibles';
       frac = v.doneCount / 3;
     }
     el.className = 'home-encargos' + (v.allDone ? ' is-done' : '');
@@ -74,7 +74,6 @@ const SEQEncargosUI = (function () {
     var el = document.getElementById('encargos-body');
     if (!el || typeof encargosView !== 'function') return;
     var v = encargosView();
-    var rewards = '3 encargos · 100 XP cada uno' + ' &nbsp;·&nbsp; los tres juntos: +' + v.bonusXp + ' XP' + ' &nbsp;·&nbsp; Gran Encargo: +' + v.great.xp + ' XP';
     el.innerHTML =
       '<div class="enc-scene">' +
         '<img class="enc-scene-img" src="' + (v.allDone ? IMG_DONE : IMG_SCENE) + '" alt="Sir Edwards" decoding="async" draggable="false">' +
@@ -82,8 +81,7 @@ const SEQEncargosUI = (function () {
       '</div>' +
       '<div class="enc-meta"><span>' + v.doneCount + '/3 encargos' + (v.bonusClaimed ? ' · bonus cobrado' : '') + '</span><span>Quedan ' + esc(timeLeftText(v.msLeft)) + '</span></div>' +
       '<div class="enc-list">' + v.missions.map(function (m) { return missionCard(m, false); }).join('') + '</div>' +
-      missionCard(v.great, true) +
-      '<p class="enc-rewards">' + rewards + '</p>';
+      missionCard(v.great, true);
   }
 
   // ---- aviso flotante en cola ---------------------------------------------------------------------------

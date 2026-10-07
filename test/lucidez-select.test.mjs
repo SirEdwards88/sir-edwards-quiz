@@ -46,7 +46,8 @@ test('alias: las respuestas naturales que fallaban ahora se aceptan', () => {
     305: 'dilatación del tiempo', 147: 'Hz', 36: 'crac del 29', 198: 'Raphael', 218: 'film noir', 320: 'BCE', 410: 'programa espía',
     142: '300000', 35: 'Revolución americana', 359: 'Clavicémbalo',
     23: 'batalla de Waterloo', 93: 'monte Kilimanjaro', 374: 'río Mekong', 376: 'cordillera de los Andes', 196: 'Alhambra de Granada',
-    147: 'Hertz', 266: 'telégrafo eléctrico', 205: 'dinastía nazarí', 399: 'chita', 405: 'fenómeno de El Niño', 411: 'rey Hammurabi', 192: 'estilo gótico' };
+    147: 'Hertz', 266: 'telégrafo eléctrico', 205: 'dinastía nazarí', 399: 'chita', 405: 'fenómeno de El Niño', 411: 'rey Hammurabi', 192: 'estilo gótico',
+    98: 'río Bravo del Norte', 242: 'EEUU', 325: 'USA', 349: 'Altiplano del Tíbet' };
   for (const [n, u] of Object.entries(casos)) assert.ok(M(u, por(+n)), '#' + n + ' «' + u + '»');
   assert.ok(!M('rocas sedimentarias', por(389)));
 });
@@ -68,7 +69,7 @@ function check(sel, seed, loose) {
   if (!loose) for (const c of S.CATS) { const k = count(all, (q) => q.cat === c); assert.ok(k >= 2 && k <= 6, 'categoría ' + c + '=' + k + ' ' + seed); }
   const ids = new Set(all.map((q) => q.n));
   for (const q of all) for (const p of (q.par || [])) assert.ok(!ids.has(p), 'par ' + q.n + '-' + p + ' ' + seed);
-  for (const ph of [sel.p1, sel.p2, sel.p3]) for (let i = 2; i < ph.length; i++) assert.ok(!(ph[i].cat === ph[i - 1].cat && ph[i].cat === ph[i - 2].cat), 'tres seguidas ' + seed);
+  if (!loose) for (const ph of [sel.p1, sel.p2, sel.p3]) for (let i = 2; i < ph.length; i++) assert.ok(!(ph[i].cat === ph[i - 1].cat && ph[i].cat === ph[i - 2].cat), 'tres seguidas ' + seed);
 }
 
 test('500 partidas con semilla cumplen curva, categorías, pares y orden', () => {
@@ -87,15 +88,25 @@ test('ignora las preguntas sin lz aunque sean medias o difíciles', () => {
   for (let s = 1; s <= 200; s++) { const sel = S.select(BANK, mulberry32(s)); for (const q of sel.p1.concat(sel.p2, sel.p3)) assert.ok(!sinLz.includes(q.n)); }
 });
 
-test('memoria (avoid): se evita lo visto; solo se repite alguna difícil tarde, por la variedad', () => {
-  const seen = new Set();
-  const rng = mulberry32(99);
-  let dup = 0;
-  for (let g = 0; g < 6; g++) {
-    const sel = S.select(BANK, rng, seen);
-    for (const q of sel.p1.concat(sel.p2, sel.p3)) { if (q.dif === 'dificil' && seen.has(q.n)) dup++; seen.add(q.n); }
+const NEED = { facil: 1, medio: 16, dificil: 7 };
+const lvlOf = (sel) => sel.p1.concat(sel.p2, sel.p3);
+
+test('memoria (avoid) MANDA sobre la variedad: nunca repite si queda una alternativa no vista de ese nivel', () => {
+  let rotos = 0, juegos = 0;
+  for (let run = 0; run < 60; run++) {
+    const seen = new Set(), rng = mulberry32(1000 + run);
+    for (let g = 0; g < 9; g++) {
+      const unseen = (lv) => BANK.filter((q) => q.lz && q.dif === lv && !seen.has(q.n)).length;
+      const can = { facil: unseen('facil') >= NEED.facil, medio: unseen('medio') >= NEED.medio, dificil: unseen('dificil') >= NEED.dificil };
+      const sel = S.select(BANK, rng, seen);
+      check(sel, 'mem' + run + '-' + g, true);          // curva, pares y orden siempre; los límites de categoría ceden ante la memoria
+      for (const q of lvlOf(sel)) { if (can[q.dif]) assert.ok(!seen.has(q.n), 'repetida #' + q.n + ' con alternativa (' + q.dif + ') run ' + run + ' juego ' + g); seen.add(q.n); }
+      for (const ph of [sel.p1, sel.p2, sel.p3]) for (let i = 2; i < ph.length; i++) if (ph[i].cat === ph[i - 1].cat && ph[i].cat === ph[i - 2].cat) rotos++;
+      juegos++;
+    }
   }
-  assert.ok(dup <= 3, 'difíciles repetidas en 6 partidas: ' + dup);
+  assert.equal(juegos, 540);
+  assert.ok(rotos / juegos < 0.1, 'tandas de 3 seguidas por partida: ' + rotos / juegos); // la variedad cede, pero rara vez
 });
 
 test('con la memoria llena no falla: relaja la memoria, nunca la curva', () => {
@@ -118,24 +129,40 @@ function bagCtx(initialSeen) {
   return c;
 }
 
-test('pickLucidezGame: guarda las vistas y apenas repite difíciles en 6 partidas seguidas', () => {
+test('pickLucidezGame: guarda las vistas y NO repite mientras quede una no vista de ese nivel (aunque ceda la variedad)', () => {
   const c = bagCtx();
-  const vistas = new Set();
-  let dup = 0;
-  for (let g = 0; g < 6; g++) {
+  const elig = c.QS || null;
+  const bank = BANK.filter((q) => q.lz);
+  for (let g = 0; g < 14; g++) {
+    const before = new Set(c.store.questionBags.lucidez_vistas || []);
+    const unseen = (lv) => bank.filter((q) => q.dif === lv && !before.has(q.n)).length;
+    const can = { facil: unseen('facil') >= NEED.facil, medio: unseen('medio') >= NEED.medio, dificil: unseen('dificil') >= NEED.dificil };
     const sel = c.P();
-    check(sel, 'cliente' + g);
-    for (const q of sel.p1.concat(sel.p2, sel.p3)) { if (q.dif === 'dificil' && vistas.has(q.n)) dup++; vistas.add(q.n); }
+    check(sel, 'cliente' + g, true);
+    for (const q of lvlOf(sel)) if (can[q.dif]) assert.ok(!before.has(q.n), 'repetida #' + q.n + ' en la partida ' + g);
   }
-  assert.ok(dup <= 5, 'difíciles repetidas en 6 partidas: ' + dup);
   assert.ok(c.store.questionBags.lucidez_vistas.length >= 40);
 });
 
-test('pickLucidezGame: en 12 partidas seguidas la variedad y la curva nunca se rompen', () => {
+test('pickLucidezGame: en 12 partidas seguidas la curva, los pares y el orden nunca se rompen', () => {
   const c = bagCtx();
-  for (let g = 0; g < 12; g++) check(c.P(), 'ciclo' + g);
+  for (let g = 0; g < 12; g++) check(c.P(), 'ciclo' + g, true);
   const vistas = c.store.questionBags.lucidez_vistas;
   assert.ok(vistas.length <= 244);
+});
+
+test('memoria vs variedad: con casi todo visto, sale la no vista aunque rompa el límite de categoría', () => {
+  // Se marcan como vistas todas las medias salvo 20 de una sola categoría: hay que usarlas aunque sobrepasen los límites.
+  const medias = BANK.filter((q) => q.lz && q.dif === 'medio');
+  const cat = 'historia';
+  const libres = medias.filter((q) => q.cat === cat).slice(0, 20);
+  const libresIds = new Set(libres.map((q) => q.n));
+  const seen = new Set(medias.filter((q) => !libresIds.has(q.n)).map((q) => q.n));
+  const sel = S.select(BANK, mulberry32(5), seen);
+  const med = lvlOf(sel).filter((q) => q.dif === 'medio');
+  assert.equal(med.length, 16);
+  assert.ok(med.filter((q) => libresIds.has(q.n)).length === 16, 'todas las medias son las 20 no vistas');
+  assert.ok(Math.max(count(sel.p1, (q) => q.cat === cat), count(sel.p3, (q) => q.cat === cat)) > 3 || count(lvlOf(sel), (q) => q.cat === cat) > 6, 'se rompió el límite de categoría');
 });
 
 test('pickLucidezGame: ids desconocidos o corruptos en la memoria se descartan', () => {

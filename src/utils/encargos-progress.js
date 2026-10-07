@@ -40,17 +40,20 @@ const SEQEncargosProgress = (function () {
   }
 
   // Un acierto o un fallo. `cat` puede ser null (cálculo mental, enigmas…): solo suma al total de aciertos.
+  // `run` es la racha EN CURSO de aciertos seguidos de una misma categoría (como mucho una categoría con valor > 0):
+  // cualquier respuesta de otra categoría, sin categoría o fallada la corta. `best[cat]` guarda la mejor racha lograda
+  // (El Sexto Sentido: 3 seguidas de la misma categoría en cada una de las 6; la racha sigue entre partidas).
   function recordAnswer(p, cat, correct) {
     var known = CATS.indexOf(cat) !== -1;
+    var prev = known ? p.run[cat] : 0;
+    CATS.forEach(function (c) { p.run[c] = 0; });
     if (correct) {
       p.ok = Math.min(p.ok + 1, CAP);
       if (known) {
         p.cat[cat] = Math.min(p.cat[cat] + 1, CAP);
-        p.run[cat] = Math.min(p.run[cat] + 1, CAP);
+        p.run[cat] = Math.min(prev + 1, CAP);
         if (p.run[cat] > p.best[cat]) p.best[cat] = p.run[cat];
       }
-    } else if (known) {
-      p.run[cat] = 0;
     }
   }
 

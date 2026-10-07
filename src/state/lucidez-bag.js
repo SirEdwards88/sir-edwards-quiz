@@ -3,7 +3,7 @@
 // La selección en sí (curva 10+5+9, variedad, pares) vive en src/utils/lucidez-select.js y es la MISMA que usa el
 // Worker para los Retos. Aquí solo se recuerda, en store.questionBags['lucidez_vistas'], qué preguntas han salido ya
 // en esta vuelta del banco, para no repetir hasta agotarlo. La memoria se lleva por nivel (fácil / medio / difícil):
-// cuando de un nivel quedan menos sin ver de las que pide una partida, se olvida solo ese nivel.
+// cuando de un nivel no queda ninguna sin ver, se olvida solo ese nivel y empieza otra vuelta.
 // Script clásico: usa los globales store, QUESTIONS y SEQLucidezSelect.
 
 const LUCIDEZ_SEEN_KEY = 'lucidez_vistas';
@@ -20,7 +20,9 @@ function pickLucidezGame() {
   Object.keys(need).forEach(level => {
     const seenSet = new Set(seen);
     const unseen = eligible.filter(q => q.dif === level && !seenSet.has(q.n)).length;
-    if (unseen < need[level]) seen = seen.filter(id => byId.get(id).dif !== level);
+    // Solo se «da la vuelta» a un nivel cuando no queda NINGUNA sin ver. Si quedan menos de las que pide la partida, salen
+    // primero todas las no vistas y solo el resto se repite (la selección prefiere siempre lo no visto).
+    if (unseen === 0) seen = seen.filter(id => byId.get(id).dif !== level);
   });
 
   const sel = SEQLucidezSelect.select(QUESTIONS, Math.random, seen);

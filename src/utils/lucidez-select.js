@@ -12,7 +12,8 @@
 // cada una de las seis categorías; nunca 3 seguidas iguales. Pares (`par`): dos preguntas cuyo enunciado destapa la
 // respuesta de la otra no coinciden en la misma partida. Dentro de cada nivel las A pesan 3 y las B pesan 1.
 // `avoid` (opcional, Set o array de ids): preguntas a evitar si hay alternativa (la memoria del cliente).
-// Si las restricciones no se pueden cumplir, se relajan en este orden: memoria, variedad; la curva nunca (la variedad manda sobre la memoria).
+// La MEMORIA manda sobre la variedad: nunca se repite una pregunta si queda una alternativa válida no vista, aunque haya
+// que romper un límite de categoría. Solo se repite cuando no queda ninguna no vista de ese nivel. La curva nunca se rompe.
 //
 // Script clásico (scope global), sin dependencias.
 // IMPORTANTE: el Worker (backend) tiene una COPIA LITERAL de este archivo en src/lucidez-select.js (con un `export` al final);
@@ -123,15 +124,17 @@ const SEQLucidezSelect = (function () {
         var nivel = tramo[0], cuantas = tramo[1];
         for (var n = 0; n < cuantas; n++) {
           var base = pool.filter(function (q) { return q.dif === nivel && !blocked(q); });
-          // Intentos de más estricto a más laxo. La variedad manda sobre la memoria (los límites de categoría no se
-          // rompen): variedad completa y memoria → variedad completa sin memoria → solo límite de fase con memoria →
-          // solo límite de fase → lo que haya (último recurso, banco casi vacío).
+          // Intentos de más estricto a más laxo. La memoria manda: primero todas las no vistas (con variedad completa,
+          // luego solo con el límite de fase, luego sin límites de categoría); solo si no queda ninguna no vista de
+          // este nivel se admite una ya vista (otra vez de más estricta a más laxa en variedad).
           var full = function (q) { return (catPhase[q.cat] || 0) < CAT_LIMIT_PHASE[fase] && (catGame[q.cat] || 0) < CAT_LIMIT_GAME; };
+          var phaseOk = function (q) { return (catPhase[q.cat] || 0) < CAT_LIMIT_PHASE[fase]; };
           var tiers = [
             function (q) { return !avoidSet[q.n] && full(q); },
+            function (q) { return !avoidSet[q.n] && phaseOk(q); },
+            function (q) { return !avoidSet[q.n]; },
             full,
-            function (q) { return !avoidSet[q.n] && (catPhase[q.cat] || 0) < CAT_LIMIT_PHASE[fase]; },
-            function (q) { return (catPhase[q.cat] || 0) < CAT_LIMIT_PHASE[fase]; },
+            phaseOk,
             function () { return true; }
           ];
           var cand = [];
@@ -150,8 +153,8 @@ const SEQLucidezSelect = (function () {
       for (var m = 0; m < missing.length && !done; m++) {
         var c = missing[m];
         var repl = pool.filter(function (q) { return q.cat === c && !blocked(q); });
-        var order = repl.filter(function (q) { return !avoidSet[q.n]; });
-        if (order.length) repl = order;
+        // La memoria manda también aquí: el cambio por mínimo de categoría nunca mete una pregunta ya vista.
+        repl = repl.filter(function (q) { return !avoidSet[q.n]; });
         // Mezcla simple para no favorecer siempre al mismo reemplazo.
         repl = repl.map(function (q) { return { q: q, k: rnd(rng) }; }).sort(function (a, b) { return a.k - b.k; }).map(function (x) { return x.q; });
         for (var r = 0; r < repl.length && !done; r++) {

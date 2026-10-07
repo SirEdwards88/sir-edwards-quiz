@@ -125,14 +125,34 @@ test('partidas: mínimo de respuestas, Repaso no cuenta, precisión y Trabajo Li
   assert.equal(run(ctx2, 'store.encargos.p.clean'), 0); // partida de 5: no vale para precisión
 });
 
-test('El Sexto Sentido: la racha se cuenta dentro de cada categoría y un fallo en ella la reinicia', () => {
+test('El Sexto Sentido: 3 aciertos CONSECUTIVOS de la misma categoría; otra categoría, un fallo o una respuesta sin categoría la cortan', () => {
   const ctx = makeEnv();
   const ans = (cat, ok) => run(ctx, `encargosOnAnswer(${ok}, {cat:${JSON.stringify(cat)}})`);
-  ans('historia', true); ans('historia', true); ans('ciencia', false); ans('historia', true); // 3 en historia pese a otra categoría
-  assert.equal(run(ctx, 'store.encargos.p.best.historia'), 3);
-  ans('deporte', true); ans('deporte', false); ans('deporte', true); ans('deporte', true);
-  assert.equal(run(ctx, 'store.encargos.p.best.deporte'), 2);
-  assert.equal(run(ctx, 'store.encargos.p.ok'), 6);
+  const best = (c) => run(ctx, `store.encargos.p.best.${c}`);
+  ans('historia', true); ans('historia', true); ans('ciencia', true); ans('historia', true); // otra categoría en medio: corta
+  assert.equal(best('historia'), 2);
+  ans('historia', true); ans('historia', true); // 1.ª + 2.ª + 3.ª seguidas tras la interrupción
+  ans('deporte', true); ans('deporte', false); ans('deporte', true); ans('deporte', true); // un fallo corta
+  assert.equal(best('historia'), 3);
+  assert.equal(best('deporte'), 2);
+  ans('geografia', true); ans('geografia', true); ans(null, true); ans('geografia', true); // sin categoría corta
+  assert.equal(best('geografia'), 2);
+  ans('ciencia', false); ans('ciencia', true); ans('ciencia', true); ans('ciencia', true);
+  assert.equal(best('ciencia'), 3);
+  assert.equal(run(ctx, 'store.encargos.p.ok'), 16);
+});
+
+test('El Sexto Sentido: la racha continúa entre partidas y un solo valor de `run` queda activo', () => {
+  const ctx = makeEnv();
+  const ans = (cat, ok) => run(ctx, `encargosOnAnswer(${ok}, {cat:${JSON.stringify(cat)}})`);
+  ans('arte_literatura', true); ans('arte_literatura', true);
+  run(ctx, `SEQEncargosProgress.recordGame(store.encargos.p, {mode:'play',correct:5,total:5,day:'2026-10-07'})`); // fin de partida: no la reinicia
+  ans('arte_literatura', true);
+  assert.equal(run(ctx, 'store.encargos.p.best.arte_literatura'), 3);
+  assert.equal(run(ctx, 'Object.values(store.encargos.p.run).filter(Boolean).length'), 1);
+  ans('historia', true);
+  assert.equal(run(ctx, 'store.encargos.p.run.arte_literatura'), 0);
+  assert.equal(run(ctx, 'store.encargos.p.run.historia'), 1);
 });
 
 test('Repaso no cuenta aciertos', () => {
@@ -327,4 +347,50 @@ test('sincronización: las claves viajan en el mismo lote que el XP y se confirm
   assert.ok(on.includes('confirmWeekly(pending.weekly)'));
   assert.ok(on.includes('weekly: sentWeekly') && on.includes('confirmWeekly(sentWeekly)'), 'la migración también las envía y las confirma');
   assert.ok(/weekly\.length > 0/.test(on), 'unas claves sin confirmar bastan para sincronizar');
+});
+
+test('claves por SEMANA: la misma misión y el mismo Gran Encargo se cobran una vez esta semana y otra vez en una semana nueva', () => {
+  const ctx = makeEnv();
+  const E0 = run(ctx, 'E.EPOCH_IDX');
+  // semana (relativa) en la que se repite una misión normal / el Gran Encargo de la semana 0 (T0 cae en la semana 0 de la rotación)
+  const normals0 = missions(ctx), great0 = great(ctx);
+  let wN = -1, wG = -1;
+  for (let r = 1; r < 40 && (wN < 0 || wG < 0); r++) {
+    if (wN < 0 && run(ctx, `Array.from(E.missionsForWeek(${E0 + r}))`).includes(normals0[0])) wN = r;
+    if (wG < 0 && run(ctx, `E.greatForWeek(${E0 + r})`) === great0) wG = r;
+  }
+  assert.ok(wN > 0 && wG > 0, 'la rotación vuelve a ofrecer la misma misión y el mismo Gran Encargo');
+  const w1 = weekId(ctx);
+  fill(ctx, normals0[0]); fill(ctx, great0);
+  assert.equal(ctx.store.xp, 100 + 200);
+  fill(ctx, normals0[0]); fill(ctx, great0);
+  assert.equal(ctx.store.xp, 300, 'repetir en la misma semana no paga');
+  // El reloj nunca retrocede de semana: se visitan las semanas de reaparición en orden cronológico.
+  let w2 = null;
+  [['n', wN], ['g', wG]].sort((x, y) => x[1] - y[1]).forEach(([kind, wk]) => {
+    ctx.T = T0 + wk * 7 * 86400000;
+    const w = weekId(ctx);
+    assert.notEqual(w, w1);
+    const before = ctx.store.xp;
+    if (kind === 'n') {
+      w2 = w;
+      assert.ok(missions(ctx).includes(normals0[0]));
+      assert.equal(run(ctx, 'encargosView().missions.every(m => !m.claimed)'), true, 'semana nueva: nada cobrado');
+      fill(ctx, normals0[0]);
+      assert.equal(ctx.store.xp, before + 100, 'la misma misión paga otra vez en la semana nueva');
+      fill(ctx, normals0[0]);
+      assert.equal(ctx.store.xp, before + 100, 'y solo una vez');
+    } else {
+      assert.equal(great(ctx), great0);
+      fill(ctx, great0); // (el progreso que completa el Gran Encargo puede completar de paso otra misión de esa semana)
+      const gained = ctx.store.xp - before;
+      assert.ok(gained >= 200, 'el mismo Gran Encargo paga otra vez en otra semana');
+      assert.ok(Array.from(ctx.store.encargosClaimed).includes(w + ':g:' + great0));
+      fill(ctx, great0);
+      assert.equal(ctx.store.xp, before + gained, 'y solo una vez');
+    }
+  });
+  const keys = Array.from(ctx.store.encargosClaimed);
+  assert.ok(keys.includes(w1 + ':m:' + normals0[0]) && keys.includes(w2 + ':m:' + normals0[0]), 'claves distintas por semana');
+  assert.ok(keys.every((k) => /^\d{4}-W\d{2}:/.test(k)), 'toda clave lleva su semana');
 });
