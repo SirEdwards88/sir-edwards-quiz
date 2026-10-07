@@ -172,12 +172,12 @@
     }
     if (fase === 'apuesta') {
       var locked = !!r.mi_apuesta;
-      out += '<div class="seq-v21-prompt">' + (locked ? 'Apuesta bloqueada' : 'Elige tu apuesta en secreto') + '</div>' + stakeButtons(d, locked);
-      out += locked ? '<p class="stats-section-sub seq-v21-wait">' + (r.rival_bloqueada ? 'Tu rival ya ha apostado. Revelando…' : 'Esperando la apuesta de tu rival…') + '</p>' + (r.mi_apuesta_auto ? '<p class="stats-section-sub">Se acabó el tiempo: Cuerdo, por prudencia.</p>' : '') : '';
+      out += '<div class="seq-v21-prompt">' + (locked ? 'Apuesta bloqueada' : 'Elige tu apuesta. En secreto, claro: la vergüenza viene después.') + '</div>' + stakeButtons(d, locked);
+      out += locked ? '<p class="stats-section-sub seq-v21-wait">' + (r.rival_bloqueada ? 'Tu rival ya ha apostado. Qué decisión tan firme, o tan imprudente.' : 'Tu rival sigue eligiendo. La indecisión también es una apuesta.') + '</p>' + (r.mi_apuesta_auto ? '<p class="stats-section-sub">Se acabó el tiempo: Cuerdo, por prudencia.</p>' : '') : '';
       return out;
     }
     if (fase === 'revelando') {
-      return out + '<div class="seq-v21-prompt">Las apuestas, sobre la mesa</div>' + vsStakes(d) + '<p class="stats-section-sub seq-v21-wait">La pregunta llega en <span id="seq-v21-count"></span>…</p>';
+      return out + '<div class="seq-v21-prompt">Las apuestas, sobre la mesa</div>' + vsStakes(d) + '<p class="stats-section-sub seq-v21-wait">Veamos quién ha sido prudente y quién, simplemente, optimista. La pregunta llega en <span id="seq-v21-count"></span>…</p>';
     }
     if (fase === 'pregunta') return out + vsStakes(d) + questionHtml(d, h);
     // resolución entre rondas: se revela quién acertó y con qué apuesta

@@ -21,7 +21,13 @@
     "Un duelo muy igualado. Durante unos minutos, ambos parecían saber lo que hacían.",
     "Hasta el último punto. Mucha tensión para descubrir, al final, quién se equivocó menos.",
     "Victoria ajustada. El rival estuvo cerca. Tú también estuviste cerca de perderla.",
-    "Has ganado. Por poco. Pero no temas: la victoria sigue siendo legal."
+    "Has ganado. Por poco. Pero no temas: la victoria sigue siendo legal.",
+    "Victoria por la mínima. Presume con moderación; tu rival aún respira.",
+    "Has ganado por muy poco. Es la victoria que más se parece a una prórroga de la derrota.",
+    "Por dos o tres puntos. No es una paliza: es una advertencia amistosa.",
+    "Ganar por tan poco tiene su mérito. Lástima que perder por tan poco también lo tenga.",
+    "Una victoria raspada. Aun así, el trofeo no pregunta cómo llegó.",
+    "Has ganado con un pie en el abismo. Se agradece el espectáculo."
   ],
   victoria_clara: [
     "Victoria clara. La diferencia ya no permite esconderse detrás de la suerte. Qué lástima.",
@@ -54,7 +60,7 @@
     "El rival ha aprendido algo importante: elegir mejor a sus oponentes.",
     "Has ganado con tanta claridad que casi siento lástima. Casi.",
     "Una victoria tan cómoda que empieza a parecer de mala educación.",
-    "Podríamos llamarlo duelo, pero ambos sabemos que sería generoso."
+    "Podría llamarlo duelo, pero sería generoso."
   ],
   derrota_1: [
     "Un punto. Exactamente lo que ha separado la victoria de una derrota bastante irritante.",
@@ -78,6 +84,16 @@
     "La victoria estuvo cerca. El marcador, por desgracia, sabe contar.",
     "El rival ha ganado por poco. Lo suficiente para presumir, por desgracia.",
     "Has estado a un paso. Naturalmente, el paso era exactamente lo necesario."
+  ],
+  derrota_aplastante: [
+    "Esto no ha sido un duelo. Ha sido un malentendido con consecuencias.",
+    "La derrota ha sido tan amplia que tiene código postal propio.",
+    "El marcador ha dejado de ser una cifra y se ha convertido en un comentario.",
+    "Te han ganado con tal holgura que el rival ha podido merendar durante la partida.",
+    "Una diferencia de este tamaño no se llora: se enmarca, para no repetirla.",
+    "Has perdido con una claridad pedagógica. Alguien debería tomar apuntes.",
+    "Te consuela saber que el próximo duelo no puede salir peor. Estadísticamente.",
+    "El rival ha ganado con tanta ventaja que ni siquiera necesita presumir. Qué aburrimiento para todos."
   ],
   derrota_clara: [
     "Derrota clara. El marcador no parece dispuesto a aceptar negociaciones.",
@@ -118,7 +134,8 @@
     }
     if (margin <= 1) return 'derrota_1';
     if (margin <= 3) return 'derrota_2_3';
-    return 'derrota_clara';
+    if (margin <= 7) return 'derrota_clara';
+    return 'derrota_aplastante';      // desde 8 puntos de diferencia, igual que el título «Derrota sin paliativos»
   }
 
   // Frase estable para una misma partida: se elige por hash del id (no cambia al repintar la pantalla ni al reabrir el
@@ -135,23 +152,53 @@
   // haberlas dicho todas (también entre partidas). La frase de cada partida se recuerda (store.duelPhraseByGame, las últimas 40)
   // para que no cambie al repintar la pantalla ni al reabrir el resultado, y para que repintar no gaste frases de la bolsa.
   var KEEP_GAMES = 40;
-  function pickRotating(result, margin, seedId) {
-    var key = poolKey(result, Math.abs(Number(margin) || 0)), list = PHRASES[key];
-    if (!list || !list.length) return '';
+  function memoPick(key, list, seedId, fallback) {
     var ok = typeof pickRotatingPhrase === 'function' && typeof store === 'object' && store && seedId != null && seedId !== '';
-    if (!ok) return pick(result, margin, seedId);
+    if (!ok) return fallback();
     var id = String(seedId), memo = store.duelPhraseByGame;
     if (!memo || typeof memo !== 'object' || Array.isArray(memo)) memo = store.duelPhraseByGame = {};
     var m = memo[id];
     if (m && m.k === key && typeof m.i === 'number' && list[m.i]) return list[m.i];
     var text = pickRotatingPhrase('duel_' + key, list), i = list.indexOf(text);
-    if (i < 0) return pick(result, margin, seedId);
+    if (i < 0) return fallback();
     memo[id] = { k: key, i: i };
     var ids = Object.keys(memo);
     for (var j = 0; j < ids.length - KEEP_GAMES; j++) delete memo[ids[j]];
     try { if (typeof saveStore === 'function') saveStore(); } catch (e) {}
     return text;
   }
+  function pickRotating(result, margin, seedId) {
+    var key = poolKey(result, Math.abs(Number(margin) || 0)), list = PHRASES[key];
+    if (!list || !list.length) return '';
+    return memoPick(key, list, seedId, function () { return pick(result, margin, seedId); });
+  }
 
-  window.SEQDuelPhrases = { PHRASES: PHRASES, pick: pick, pickRotating: pickRotating, poolKey: poolKey };
+  // Duelos que terminan sin jugarse hasta el final (abandono o plazo vencido): una bolsa por situación. {nombre} es el del rival.
+  var FORFEIT = {
+    yo_abandono: ['Retirarse a tiempo también es una estrategia; esta no lo fue.', 'Abandonaste, y el duelo siguió sin ti. Qué humillante lo poco que se te echó de menos.', 'Sir Edwards no concede prórrogas.'],
+    rival_abandono: ['Victoria por incomparecencia: la más cómoda y la menos épica.', '{nombre} ha desaparecido en pleno duelo. No te lo tomes como un cumplido.', '{nombre} se ha ido a medias. Tú has terminado. Anótate la diferencia.'],
+    yo_no_jugue: ['El reto caducó contigo dentro, lo que tiene su mérito.', 'La puntualidad no es negociable, aunque tú lo hayas intentado.', 'El reloj no esperó, y yo tampoco.'],
+    rival_no_jugo: ['Ganas por incomparecencia, que cuenta, pero no se presume.', '{nombre} dejó caducar el reto. Victoria de oficio, sin aplausos.', 'Hay rivales que se rinden antes de empezar; este no cumplió ni eso.']
+  };
+  function forfeitFallback(list, seedId) {
+    var s = String(seedId == null ? '' : seedId), h = 2166136261;
+    for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return list[(h >>> 0) % list.length];
+  }
+  function pickForfeit(situation, name, seedId) {
+    var list = FORFEIT[situation];
+    if (!list) return '';
+    var t = memoPick('forfeit_' + situation, list, seedId, function () { return forfeitFallback(list, seedId); });
+    return String(t || '').replace(/\{nombre\}/g, name || 'Tu rival');
+  }
+
+  // Veredicto de cada pregunta del Duelo (se lee unas 20 veces por duelo): estable por pregunta (mismo texto al repintar).
+  var VERDICT_OK = ['Punto para ti.', 'Anotado. Sin aspavientos.', 'Otro para ti. El rival, tomando nota.', 'Correcto. Procura que no se te suba.', 'Acierto. Así sí.', 'Este te lo concedo.'];
+  var VERDICT_BAD = ['Esta se te escapa. Era: ', 'Fallo. Era: ', 'Esa no. Era: ', 'Lástima. Era: ', 'Casi. Y «casi» no puntúa. Era: ', 'Un clásico tuyo. Era: '];
+  function verdict(ok, seed) {
+    var list = ok ? VERDICT_OK : VERDICT_BAD;
+    return forfeitFallback(list, String(seed == null ? '' : seed) + (ok ? '+' : '-'));
+  }
+
+  window.SEQDuelPhrases = { PHRASES: PHRASES, FORFEIT: FORFEIT, VERDICT_OK: VERDICT_OK, VERDICT_BAD: VERDICT_BAD, pick: pick, pickRotating: pickRotating, pickForfeit: pickForfeit, verdict: verdict, poolKey: poolKey };
 })();

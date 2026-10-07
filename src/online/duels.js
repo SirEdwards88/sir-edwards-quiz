@@ -492,14 +492,16 @@
   }
   // Acierto / fallo con el mismo componente que la partida normal (.feedback.ok /
   // .feedback.bad), con texto propio de duelo. Se construye con textContent.
-  var VERDICT_OK = '¡Punto para ti!';
+  // 2.2: el texto lo rota SEQDuelPhrases.verdict (estable por pregunta); estos son los de reserva.
+  var VERDICT_OK = 'Punto para ti.';
   var VERDICT_BAD = 'Esta se te escapa. Era: ';
+  function verdictText(ok, seed) { try { return window.SEQDuelPhrases ? SEQDuelPhrases.verdict(ok, seed) : (ok ? VERDICT_OK : VERDICT_BAD); } catch (e) { return ok ? VERDICT_OK : VERDICT_BAD; } }
   // 2.0: ilustración (HTML fijo, sin datos del servidor) delante del texto.
   function ico(n) { return window.seqIco ? window.seqIco(n) : ''; }
   function setVerdict(ok, correct) {
     var el = $('seq-d-verdict'); if (!el) return;
     el.className = 'feedback seq-d-feedback ' + (ok ? 'ok' : 'bad');
-    el.textContent = ok ? VERDICT_OK : VERDICT_BAD;
+    el.textContent = verdictText(ok, (S.id || '') + ':' + String(correct));
     if (window.SEQIcons) {
       var im = document.createElement('img'); im.className = 'seq-ico'; im.alt = ''; im.draggable = false;
       im.src = window.SEQIcons.src(ok ? 'correcto' : 'incorrecto'); el.insertBefore(im, el.firstChild);
@@ -755,15 +757,19 @@
     // .feedback que la partida normal, sin volver a sonar.
     var sol = info.a != null ? info.a : (mine && mine.pregunta && mine.pregunta.respuesta);
     if (mine) h += '<div id="seq-d-verdict" class="feedback seq-d-feedback ' + (mine.es_correcta ? 'ok' : 'bad') + '" aria-live="polite" style="display:block;">' +
-      (mine.es_correcta ? ico('correcto') + esc(VERDICT_OK) : ico('incorrecto') + esc(VERDICT_BAD) + (sol != null ? '<b>' + esc(String(sol)) + '</b>' : '')) + '</div>';
+      (mine.es_correcta ? ico('correcto') + esc(verdictText(true, (S.id || '') + ':' + String(sol))) : ico('incorrecto') + esc(verdictText(false, (S.id || '') + ':' + String(sol))) + (sol != null ? '<b>' + esc(String(sol)) + '</b>' : '')) + '</div>';
     else h += '<div id="seq-d-verdict" class="feedback seq-d-feedback" aria-live="polite" style="display:none;"></div>';
     return h;
   }
   // Frase de Sir Edwards para el final de la partida (solo si se jugó entera: no en abandonos ni «no jugado»).
   // Rota con bolsa (no repite ninguna hasta agotar el grupo) y es estable para la misma partida: no cambia al repintar.
   function resultPhrase(d, r) {
-    if (!r || (d.motivo_fin && d.motivo_fin !== 'normal') || !window.SEQDuelPhrases) return '';
+    if (!r || !window.SEQDuelPhrases) return '';
     var res = r.ganador === 'yo' ? 'win' : r.ganador === 'rival' ? 'loss' : 'draw';
+    // 2.2: los duelos que no se jugaron hasta el final también llevan su frase (una bolsa por situación).
+    if (d.motivo_fin === 'abandono') return SEQDuelPhrases.pickForfeit(d.yo && d.yo.abandonado ? 'yo_abandono' : 'rival_abandono', player(d.rival).name, S.id || d.id);
+    if (d.motivo_fin === 'no_jugado') return SEQDuelPhrases.pickForfeit(res === 'win' ? 'rival_no_jugo' : 'yo_no_jugue', player(d.rival).name, S.id || d.id);
+    if (d.motivo_fin && d.motivo_fin !== 'normal') return '';
     return SEQDuelPhrases.pickRotating(res, num(r.mi_puntuacion) - num(r.puntuacion_rival), S.id || d.id);
   }
   // Marca de cada respuesta en el repaso del duelo: acierto, fallo o sin responder (iconos ilustrados).
@@ -792,7 +798,7 @@
   function resultBlock(d, kind) {
     var r = d.resultado, p = player(d.rival);
     if (!r) {
-      var why = { rechazado: 'Tu amigo rechazó el reto.', expirado: 'Se acabó el plazo sin que se jugara.', cancelado: d.motivo_fin === 'sin_listos' ? 'No os marcasteis «Listo» a tiempo.' : 'Se canceló.' }[d.estado] || '';
+      var why = { rechazado: p.name + ' ha rechazado el reto. Prudencia, lo llamará.', expirado: 'Se acabó el plazo y nadie jugó. Un duelo muy pacífico.', cancelado: d.motivo_fin === 'sin_listos' ? 'Ninguno marcó «Listo» a tiempo. Dos valientes, cero iniciativa.' : 'Duelo cancelado. Aquí no ha pasado nada.' }[d.estado] || '';
       return '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">' + esc(ESTADO[d.estado] || '') + '</div><p class="duel-result-hint">' + esc(why) + '</p></div>';
     }
     var res = r.ganador === 'yo' ? 'win' : r.ganador === 'rival' ? 'loss' : 'draw';
@@ -880,7 +886,7 @@
       if (now < t0 && d.modo !== 'stakes') { S.shown = null; return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Empieza en <span id="seq-d-count"></span>…</div></div>'; }
       if (d.modo === 'stakes' && window.SEQDuels21) { S.shown = null; return SEQDuels21.play(d, HELPERS); }
       var k = Math.min(19, Math.floor((now - t0) / dur)); S.lastIdx = k;
-      if (d.yo.completado && d.modo !== 'stakes') { S.shown = null; return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">¡Has terminado!</div><p class="duel-result-hint">Esperando a que acabe ' + p.name + '…</p></div>'; }
+      if (d.yo.completado && d.modo !== 'stakes') { S.shown = null; return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Has terminado. Nadie ha aplaudido.</div><p class="duel-result-hint">Esperando a que acabe ' + p.name + '…</p></div>'; }
       // Si el servidor aún no ha revelado la pregunta k (los datos son de
       // antes de que se abriera), no se pinta nada respondible: se espera.
       if (!d.preguntas || d.preguntas.length <= k) { S.shown = null; return h + '<p class="stats-section-sub">Cargando pregunta…</p>'; }
@@ -907,7 +913,7 @@
       var y = d.yo, rv = d.rival_estado;
       var rs = '<p class="history-item-sub seq-d-rival">' + p.avatar + ' ' + p.name + ': ' + (rv.terminado ? 'ya ha jugado (verás su marca al terminar tú)' : rv.empezado ? 'jugando…' : 'aún no ha jugado') + '</p>';
       if (y.terminado) { syncXpOnce('reto', d, xpFor('reto', d, y.aciertos)); return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Tu parte está hecha: ' + num(y.aciertos) + (d.modo && d.modo !== 'estandar' ? (num(y.aciertos) === 1 ? ' acierto' : ' aciertos') : '/' + num(d.n_preguntas || 20)) + '</div><p class="duel-result-hint">' + (xpFor('reto', d, y.aciertos) ? '+' + xpFor('reto', d, y.aciertos) + ' XP ya en tu cuenta. ' : '') + 'Cuando ' + p.name + ' juegue verás el resultado. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.reload()">Actualizar</button></div>' }
-      if (!y.empezado) return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">¿Preparado?</div><p class="duel-result-hint">Una vez empieces el reloj no se detiene. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.retoAction(\'start\')">Jugar mi parte</button></div>';
+      if (!y.empezado) return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Cuando quieras. El reloj, no.</div><p class="duel-result-hint">Una vez empieces el reloj no se detiene. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.retoAction(\'start\')">Jugar mi parte</button></div>';
       if (!y.actual) return h + '<p class="stats-section-sub">Cargando…</p>';
       return playScreen('reto', d, y.actual.indice, y.actual.pregunta, null);
     }

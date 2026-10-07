@@ -36,7 +36,15 @@ const END_PHRASES = {
       "No ha sido brillante. Tampoco ha sido una catástrofe. Qué territorio tan gris has elegido.",
       "Has respondido lo suficiente para conservar tu dignidad. Por poco.",
       "La mediocridad te sienta sorprendentemente bien.",
-      "Un resultado correcto. Tu mayor logro ha sido no estropearlo más."
+      "Un resultado correcto. Tu mayor logro ha sido no estropearlo más.",
+      "Ni un desastre ni un éxito. Has encontrado el único sitio donde nadie te mira.",
+      "Lo justo para aprobar y lo justo para olvidarlo. Una economía admirable.",
+      "Hay quien aspira a la excelencia. Tú has apuntado al centro, y con puntería.",
+      "Un resultado de esos que se cuentan con la palabra «bueno» y los ojos bajos.",
+      "Has acertado lo bastante para defenderte y fallado lo bastante para que yo disfrute.",
+      "Ni una cosa ni la otra. Tu resultado es una respuesta de «depende».",
+      "Un resultado que sirve tanto para presumir como para disculparse. Tú sabrás cuál toca.",
+      "No has hecho nada que merezca una crítica seria. Tampoco nada que la evite."
     ] 
   },
   bien: { 

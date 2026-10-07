@@ -1689,8 +1689,8 @@ function getResultData(score, total) {
   // 0-10 desastre · 11-14 mediocre · 15-17 bien · 18-19 casi perfecto · 20 perfecto.
   if (percentage < 55) { categoryData = END_PHRASES.desastre; key = 'desastre'; }
   else if (percentage < 75) {
-    // «Mediocre» se alcanza mucho más que «desastre»: comparte también las frases de desastre, para más variedad.
-    categoryData = { title: END_PHRASES.mediocre.title, phrases: END_PHRASES.mediocre.phrases.concat(END_PHRASES.desastre.phrases) };
+    // «Mediocre» se alcanza mucho más que «desastre» y tiene ya su propia bolsa amplia: un 14/20 no oye frases de un 5/20.
+    categoryData = END_PHRASES.mediocre;
     key = 'mediocre';
   }
   else if (percentage < 90) { categoryData = END_PHRASES.bien; key = 'bien'; }

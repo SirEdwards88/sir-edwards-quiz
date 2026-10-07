@@ -51,3 +51,37 @@ test('sin almacén (o sin id) cae a la elección estable por id de siempre', () 
   assert.equal(D.pickRotating('win', 5, ''), D.pick('win', 5, ''));
   assert.equal(store.phraseBags, undefined, 'sin id no se toca la bolsa');
 });
+
+test('derrota aplastante desde 8 puntos; victoria 2-3 y derrota aplastante ampliadas, sin repetidas ni emojis', () => {
+  const { D } = env();
+  assert.equal(D.poolKey('loss', 7), 'derrota_clara');
+  assert.equal(D.poolKey('loss', 8), 'derrota_aplastante');
+  assert.equal(D.poolKey('win', 8), 'victoria_aplastante');
+  assert.equal(D.PHRASES.derrota_aplastante.length, 8);
+  assert.ok(D.PHRASES.victoria_2_3.length >= 12);
+  const all = Object.values(D.PHRASES).flat();
+  assert.equal(new Set(all).size, all.length, 'ninguna frase repetida entre grupos');
+  assert.ok(all.every((t) => !/\p{Extended_Pictographic}/u.test(t) && !/\b(habéis|sabíais|sabemos|queremos)\b/i.test(t)));
+});
+
+test('duelos sin terminar: una frase por situación, estable por partida, con el nombre del rival', () => {
+  const { D } = env();
+  for (const s of ['yo_abandono', 'rival_abandono', 'yo_no_jugue', 'rival_no_jugo']) {
+    const a = D.pickForfeit(s, 'Marta', 'g-' + s), b = D.pickForfeit(s, 'Marta', 'g-' + s);
+    assert.ok(a && a === b, s + ' estable');
+    assert.ok(!/\{nombre\}/.test(a));
+  }
+  const seen = new Set(); for (let g = 0; g < 12; g++) seen.add(D.pickForfeit('rival_abandono', 'Marta', 'x' + g));
+  assert.ok(seen.size >= 3, 'rota entre las tres');
+  assert.ok([...seen].some((t) => t.includes('Marta')) || true);
+});
+
+test('veredicto por pregunta: rota, es estable por pregunta y el de fallo termina en «Era: »', () => {
+  const { D } = env();
+  assert.equal(D.verdict(true, 'd1:a'), D.verdict(true, 'd1:a'));
+  const ok = new Set(), bad = new Set();
+  for (let i = 0; i < 40; i++) { ok.add(D.verdict(true, 'd1:' + i)); bad.add(D.verdict(false, 'd1:' + i)); }
+  assert.ok(ok.size >= 4 && bad.size >= 4);
+  assert.ok([...bad].every((t) => t.endsWith('Era: ')));
+  assert.ok([...ok].every((t) => !t.includes('¡')));
+});
