@@ -144,6 +144,9 @@ const SEQEncargosIntro = (function () {
   }
 
   // ---- escena grande ------------------------------------------------------------------------------------------------
+  // La música de menús se retiene mientras dura la presentación grande y se suelta al cerrarla (audio.js: SEQMusic).
+  function menuMusic(hold) { try { if (window.SEQMusic) { if (hold) SEQMusic.hold(); else SEQMusic.release(); } } catch (e) {} }
+
   function startScene() {
     var C = core(), R = ENCARGOS_INTRO.result;
     var key = pendingResult || 'neutra';
@@ -223,7 +226,7 @@ const SEQEncargosIntro = (function () {
     }
     function finish(toEncargos) {
       if (ended) return;
-      ended = true; clearAll();
+      ended = true; clearAll(); menuMusic(false);
       set(K_SEEN, dayKey(new Date()));
       set(K_CALLBACK, '1');
       pendingResult = null;
@@ -242,6 +245,7 @@ const SEQEncargosIntro = (function () {
       show(idx + 1);     // toque = siguiente
     });
     active = { el: el };
+    menuMusic(true);
     preload([IMG.evaluador, IMG.expediente, IMG.mirada], function () {
       if (ended) return;
       void el.offsetWidth;

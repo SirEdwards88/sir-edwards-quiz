@@ -206,6 +206,11 @@ const MUSIC_SRC = 'assets/audio/menu-theme.mp3';
 const MUSIC_KEY = 'siredwards_quiz_v2_0_music';
 const MUSIC_VOLUME = 0.55;
 let music = null, musicUnlocked = false, musicFade = null;
+// Estado propio de la música (no depende de la vista en que estés):
+let musicHeld = false;     // retenida por una escena que pide silencio (la Presentación): pausa con fundido y, al soltarla, reanuda
+let musicFailed = false;   // el archivo no ha podido cargarse (sin conexión): no se reintenta en cada cambio de vista, solo al volver la red
+// iPhone/iPad no dejan cambiar el volumen de un <audio> desde la página (siempre vale 1): allí no hay fundidos, solo pausar y reproducir.
+const musicCanFade = (() => { try { const a = new Audio(); a.volume = 0.5; return a.volume === 0.5; } catch (e) { return false; } })();
 
 function musicEnabled() { try { return localStorage.getItem(MUSIC_KEY) !== 'off'; } catch (e) { return true; } }
 function musicInMenus() {
@@ -218,7 +223,8 @@ function musicInMenus() {
 }
 function musicFadeTo(target, ms, done) {
   if (!music) return;
-  clearInterval(musicFade);
+  clearInterval(musicFade); musicFade = null;
+  if (!musicCanFade) { if (done) done(); return; }   // sin control de volumen: el cambio es inmediato
   const from = music.volume, steps = Math.max(1, Math.round(ms / 50));
   let i = 0;
   musicFade = setInterval(() => {
@@ -228,25 +234,40 @@ function musicFadeTo(target, ms, done) {
   }, 50);
 }
 function syncMusic() {
-  const want = musicUnlocked && musicEnabled() && musicInMenus();
+  const want = musicUnlocked && musicEnabled() && musicInMenus() && !musicHeld;
   if (!want) {
     if (music && !music.paused) musicFadeTo(0, 450, () => { try { music.pause(); } catch (e) {} });
     return;
   }
+  if (musicFailed) return;   // sin archivo no se insiste: se reintenta cuando vuelve la conexión
   if (!music) {
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) { musicFailed = true; return; }   // la música no se guarda sin conexión
     music = new Audio(MUSIC_SRC);
     music.loop = true;
     music.preload = 'auto';
+    music.addEventListener('error', () => { musicFailed = true; });
     try { music.volume = 0; } catch (e) {}
   }
   if (music.paused) {
     const p = music.play();
-    if (p && p.then) p.then(() => musicFadeTo(MUSIC_VOLUME, 1400)).catch(() => {});
+    if (p && p.then) p.then(() => musicFadeTo(MUSIC_VOLUME, 1400)).catch((e) => { if (e && e.name === 'NotSupportedError') musicFailed = true; });
     else musicFadeTo(MUSIC_VOLUME, 1400);
   } else if (music.volume < MUSIC_VOLUME) {
     musicFadeTo(MUSIC_VOLUME, 600);
   }
 }
+// Al volver la conexión, si el archivo no pudo cargarse, se vuelve a intentar con un reproductor nuevo.
+if (typeof window !== 'undefined' && window.addEventListener) window.addEventListener('online', () => {
+  if (!musicFailed) return;
+  musicFailed = false;
+  if (music) { try { music.pause(); } catch (e) {} music = null; }
+  syncMusic();
+});
+// Escenas que piden silencio (la Presentación de Sir Edwards): retener = la música se pausa con fundido y se queda así, aunque cambie
+// la vista; soltar = vuelve a sonar con fundido (si el jugador la tiene activada). Pares retener/soltar, nunca uno solo.
+function holdMusic() { musicHeld = true; syncMusic(); }
+function releaseMusic() { musicHeld = false; syncMusic(); }
+if (typeof window !== 'undefined') window.SEQMusic = { hold: holdMusic, release: releaseMusic, isHeld: () => musicHeld, canFade: musicCanFade };
 function updateMusicButtons() {
   const control = document.getElementById('music-control');
   if (!control) return;
