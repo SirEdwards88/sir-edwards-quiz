@@ -225,7 +225,7 @@
     var l = S.lists.duels || [], d = l.filter(function (x) { return x.estado === 'en_curso'; })[0];
     if (!d || (S.screen === 'duel' && S.id === safeId(d.id)) || S.liveWarned === d.id) return;
     S.liveWarned = d.id;
-    if (typeof showInfoToast === 'function') showInfoToast('Tienes un duelo en marcha: vuelve antes de 60 s o pierdes.', 'guante');
+    if (typeof showInfoToast === 'function') showInfoToast('Tienes un duelo en marcha: vuelve antes de 60 s o pierdes.', 'duelo');
   }
   function refreshSummary() {
     if (!active()) { renderCards(); return Promise.resolve(); }
