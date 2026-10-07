@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 138;
+const CACHE_VERSION = 139;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -96,6 +96,10 @@ const APP_SHELL = [
   './src/ui/sabias.js',
   './src/ui/icons.js',
   './assets/ui/bien.webp',
+  './assets/ui/avatar-desbloqueado.webp',
+  './assets/ui/guante.webp',
+  './assets/ui/insignia.webp',
+  './assets/ui/marca-duelo.webp',
   './assets/ui/casi.webp',
   './assets/ui/derrota.webp',
   './assets/ui/cofre-medallas.webp',
@@ -538,6 +542,7 @@ const ASSET_REVS = {
   './assets/modes/supervivencia.webp': '0252d2ac',
   './assets/ui/abaco.webp': '8df7f337',
   './assets/ui/atencion.webp': '0d989e0c',
+  './assets/ui/avatar-desbloqueado.webp': '3435d8f2',
   './assets/ui/bandera-blanca.webp': '3ce4aa4a',
   './assets/ui/bien.webp': '80ea2d08',
   './assets/ui/bola-rota.webp': 'dcbcfa95',
@@ -563,15 +568,18 @@ const ASSET_REVS = {
   './assets/ui/escudo.webp': '53e5ae4f',
   './assets/ui/fragmento.webp': '4a6cbc9e',
   './assets/ui/gorro-burro.webp': 'fa3c4688',
+  './assets/ui/guante.webp': '82d30bd8',
   './assets/ui/hito12.webp': '8fd60e1f',
   './assets/ui/hito15.webp': '957fbb83',
   './assets/ui/incorrecto.webp': 'fb744d60',
   './assets/ui/insignia-nivel.webp': '04b26e8e',
+  './assets/ui/insignia.webp': 'c6704d09',
   './assets/ui/instalar-app.webp': '4b10f2c0',
   './assets/ui/libreta.webp': '3734c844',
   './assets/ui/libro-vela.webp': 'e2da705b',
   './assets/ui/libro.webp': 'fab53d16',
   './assets/ui/liebre.webp': 'c77382c1',
+  './assets/ui/marca-duelo.webp': '4ed6e4f5',
   './assets/ui/medalla.webp': 'fecfd017',
   './assets/ui/mediocre.webp': 'aed5e07c',
   './assets/ui/movil.webp': '6b806f36',
