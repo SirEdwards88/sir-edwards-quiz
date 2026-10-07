@@ -149,8 +149,8 @@ test('frases: todas en «tú», sin plurales, con comillas; las de hora concreta
       stripH.forEach(([pref, h]) => { if (ev.message.includes(pref.slice(1))) assert.equal(hour, h, ev.message + ' a las ' + hour); });
     }
   }
-  assert.ok(S.PHRASES.streak[30].includes('«SirEdwards Imparable. Te lo has ganado.»'));
-  S.MILESTONES.filter((m) => m !== 30).forEach((m) => assert.ok(!S.PHRASES.streak[m].some((p) => p.includes('Imparable'))));
+  assert.ok(S.PHRASES.streak[30].includes('«Treinta. Qué inconveniente. Estaba disfrutando de subestimarte.»'));
+  assert.ok(![].concat(...Object.values(S.PHRASES.streak)).some((p) => p.includes('Imparable')), 'sin «Imparable»: suena a logro');
 });
 
 test('frase muy rara: mucho menos frecuente que las normales', () => {

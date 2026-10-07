@@ -46,65 +46,142 @@ const SEQSirEvents = (function () {
   // Los grupos normales no llevan `h`: así se pueden rotar con bolsa (ver `rotate`). Las frases ligadas a una hora exacta
   // viven en los grupos «raros» y se eligen al azar entre las válidas para la hora.
   var VISIT = [
-    '«Ah, tú por aquí. Qué casualidad tan bien planeada.»', '«No me hagas caso. Yo solo supervisaba.»',
-    '«Tomo notas. Tranquilo: la mayoría son favorables. Alguna.»', '«Un caballero siempre observa antes de opinar. Yo ya he opinado.»',
-    '«Estoy aquí solo por si necesitas un testigo.»', '«Sigue, sigue. Fingiré que no estoy mirando.»',
-    '«He visto cosas peores. También mejores. Hoy, de momento, ninguna de las dos.»', '«Qué concentración. Casi parece que te importa.»',
-    '«Pasaba por aquí. Es mentira, pero queda elegante.»', '«No te distraigas por mí. Hazlo por tu dignidad.»',
-    '«Mi libreta y yo seguimos en silencio. Es lo más amable que haremos hoy.»', '«Una respuesta sensata. Lo anoto como anomalía.»',
-    '«Todo en orden. No arruines mi informe.»', '«Sigues aquí. Yo también. Qué pareja tan poco prometedora.»',
-    '«Continúa. Todavía no me has decepcionado. Todavía.»'
+    '«Ah, tú por aquí. Qué casualidad tan convenientemente calculada.»',
+    '«No me hagas caso. Yo solo superviso.»',
+    '«Tomo notas. Tranquilo: algunas son incluso favorables.»',
+    '«Un caballero observa antes de opinar. Yo ya he opinado.»',
+    '«Estoy aquí por si necesitas un testigo.»',
+    '«Sigue, sigue. Fingiré que no estoy mirando.»',
+    '«He visto cosas peores. También mejores. Hoy aún no me decido.»',
+    '«Qué concentración. Casi parece que te importa.»',
+    '«Pasaba por aquí. Es mentira, pero queda elegante.»',
+    '«No te distraigas por mí. Hazlo por tu dignidad.»',
+    '«Mi libreta y yo guardamos silencio. Es lo más amable que sabemos ofrecerte.»',
+    '«Una respuesta sensata. Anotaremos la fecha.»',
+    '«Todo en orden. Intenta no estropear mi informe.»',
+    '«Sigues aquí. Yo también. Esto empieza a parecer una costumbre.»',
+    '«Continúa. Todavía no me has decepcionado. No arruinemos el momento.»'
   ];
-  var VISIT_RARE = ['«No tengo nada que añadir. Es preocupante.»', '«Si estás leyendo esto, deberías estar mirando la pregunta.»'];
+  var VISIT_RARE = [
+    '«No tengo nada que añadir. Francamente, me preocupa.»',
+    '«Si estás leyendo esto, deberías estar mirando la pregunta.»'
+  ];
   var STREAK_PHRASES = {
-    10: ['«Hmm... llevas unas cuantas.»', '«Eso empieza a parecer una racha.»', '«Bien. Muy bien.»', '«No parece que quieras fallar hoy.»',
-      '«Diez. Empiezo a tomarte en serio.»', '«Aciertas con una regularidad sospechosa.»',
-      '«Diez seguidas. Qué inesperadamente competente.»', '«Diez. Admito que esperaba el primer desastre antes.»', '«Esto ya parece deliberado.»', '«Diez aciertos. Seguiré fingiendo que no estoy impresionado.»'],
-    15: ['«Esto empieza a ponerse serio.»', '«¿Piensas parar en algún momento?»', '«Estoy empezando a preocuparme por tus respuestas.»', '«Curiosamente, todavía no has cometido ningún desastre.»',
-      '«Quince. Si fallas ahora, lo recordaré.»', '«Alguien se ha estudiado los apuntes.»',
-      '«Quince. Esto ya no parece casualidad.»', '«Quince seguidas. Empiezo a revisar mis notas.»', '«Quince. ¿Piensas dejarme sin críticas hoy?»', '«Quince. Muy bien. Ahora intenta no demostrar que fue suerte.»'],
-    20: ['«Veinte. Eso ya merece mi atención.»', '«Excelente racha. No la estropees ahora.»', '«Esto empieza a ser digno de un caballero.»', '«No quiero presionarte, pero... veinte.»',
-      '«Veinte sin fallar. Ya no me atrevo ni a pestañear.»', '«Mi libreta necesita una página nueva.»',
-      '«Veinte seguidas. Empiezo a reconsiderar algunas opiniones.»', '«Veinte. No quisiera decir “impresionante”, pero tampoco mentir.»', '«Veinte. Procura disfrutarlo discretamente.»'],
-    30: ['«Treinta. Bien. Ahora sí estoy impresionado.»', '«Esto ya no es suerte.»', '«Creo que acabamos de encontrar un problema para tus rivales.»', '«SirEdwards Imparable. Te lo has ganado.»',
-      '«Treinta. Voy a tener que retirar algunas de mis opiniones.»', '«Hay que ser muy valiente para seguir ahora.»',
-      '«Treinta. Esto ya no necesita comentarios. Y eso me molesta.»', '«Treinta. Mis felicitaciones. No las malgastes.»', '«Treinta aciertos. Admito que has sido impecable.»']
+    10: ['«Hmm... llevas unas cuantas.»',
+      '«Eso empieza a parecer una racha.»',
+      '«Bien. Muy bien. Me incomoda decirlo.»',
+      '«No parece que quieras fallar hoy.»',
+      '«Diez. Empiezo a tomarte en serio.»',
+      '«Qué regularidad. Casi parece un método.»',
+      '«Diez seguidas. Qué inesperadamente competente.»',
+      '«Diez. Admito que esperaba el primer desastre antes.»',
+      '«Esto empieza a ser incómodo para mis teorías.»',
+      '«Diez aciertos. Seguiré fingiendo que no estoy impresionado.»'],
+    15: ['«Esto empieza a ponerse serio.»',
+      '«¿Piensas parar en algún momento?»',
+      '«Estoy empezando a preocuparme por mis propias estadísticas.»',
+      '«Curiosamente, todavía no has cometido ningún desastre.»',
+      '«Quince. Si fallas ahora, lo recordaré.»',
+      '«Alguien se ha estudiado los apuntes.»',
+      '«Quince. Esto ya requiere cierta explicación.»',
+      '«Quince seguidas. Voy a revisar mis notas.»',
+      '«Quince. ¿Piensas dejarme sin críticas hoy?»',
+      '«Quince. Muy bien. Ahora intenta no convertirlo en una casualidad.»'],
+    20: ['«Veinte. Eso ya merece mi atención.»',
+      '«Excelente racha. No la estropees ahora.»',
+      '«Esto empieza a ser digno de un caballero.»',
+      '«No quiero presionarte, pero... veinte.»',
+      '«Veinte sin fallar. Ya casi me da miedo hablar.»',
+      '«Mi libreta necesita una página nueva.»',
+      '«Veinte seguidas. Empiezo a reconsiderar algunas opiniones.»',
+      '«Veinte. No quisiera decir “impresionante”. Pero sería mentira.»',
+      '«Veinte. Procura disfrutarlo discretamente.»',
+      '«Veinte. Esto empieza a ser personalmente incómodo.»'],
+    30: ['«Treinta. Bien. Ahora sí estoy impresionado.»',
+      '«Esto ya no es suerte.»',
+      '«Creo que acabamos de encontrar un problema para tus rivales.»',
+      '«Treinta. Voy a tener que retirar algunas de mis opiniones.»',
+      '«Hay que ser muy valiente para seguir ahora.»',
+      '«Treinta. Esto ya no necesita comentarios. Y eso me molesta.»',
+      '«Treinta. Mis felicitaciones. No las malgastes.»',
+      '«Treinta aciertos. Admito que has sido impecable.»',
+      '«Treinta. Empiezo a sospechar que sabes lo que haces.»',
+      '«Treinta. Qué inconveniente. Estaba disfrutando de subestimarte.»']
   };
+
   // Racha rota: {n} es la racha real que acaba de perder (la sustituye evaluate; la bolsa rota por tramos guarda la plantilla).
   var BROKEN_PHRASES = {
-    low: ['«{n} seguidas. Y entonces, esto. Lo he anotado.»', '«Qué racha tan breve. Y qué final tan innecesario.»', '«{n} aciertos y un tropiezo. Muy propio.»',
-      '«Y ahí se acabó. Con {n} no se presume, pero se pierde igual.»', '«Era una buena racha. Para ser tuya.»',
-      '«{n} seguidas, tirado por la borda con elegancia.»', '«Lo estabas haciendo bien. Qué descuido tan puntual.»', '«Un fallo a tiempo. Qué considerado: así no te acostumbras.»'],
-    mid: ['«{n} de racha tirados por una sola pregunta. Elegante, a su manera.»', '«{n}. Y ahora cero. Las matemáticas no perdonan.»',
-      '«Qué lástima. Iba a decir algo agradable, y ya no.»', '«{n} aciertos seguidos y una sola pregunta para destruirlos. Admirable economía.»',
-      '«Lo he visto. Todos lo hemos visto. Yo, sobre todo.»', '«Así termina una racha: sin avisar y con público.»',
-      '«{n}. Hubiera preferido no tener que comentar esto.»', '«Ni siquiera yo esperaba que fallaras justo ahora. Mentira: sí.»'],
-    high: ['«{n}. {n}, y ahora esto. Qué manera tan cuidadosa de arruinarlo.»', '«{n} seguidas. Y una sola respuesta para recordarte que eres humano.»',
-      '«Hubo {n}. Habrá que repasar qué pasó en la siguiente. Aunque creo saberlo.»', '«{n} aciertos y un final de telenovela.»',
-      '«Mi libreta guardará {n} aciertos. Y esta pregunta. Sobre todo esta pregunta.»', '«Una racha de {n} merece un funeral. Estoy pensando en la música.»',
-      '«{n}... y ahora el silencio. Lo siento. No tanto como crees.»', '«Casi pude respetarte. {n} seguidas. Casi.»']
+    low: ['«{n} seguidas. Y entonces ocurrió esto. Qué oportuno.»',
+      '«Qué racha tan prometedora. Qué final tan innecesario.»',
+      '«{n} aciertos y un tropiezo. Siempre hay una primera decepción.»',
+      '«Y ahí terminó. {n} no está nada mal. Este final sí.»',
+      '«Era una buena racha. Para ser tuya.»',
+      '«{n} seguidas, sacrificadas por una sola pregunta. Admirable.»',
+      '«Lo estabas haciendo bien. Qué descuido tan puntual.»',
+      '«Un fallo a tiempo. Qué considerado: así no te creces.»'],
+    mid: ['«{n} seguidas. Todo eso, derrotado por una sola pregunta.»',
+      '«{n}. Y ahora cero. Las matemáticas tienen un sentido del humor peculiar.»',
+      '«Qué lástima. Iba a felicitarte.»',
+      '«{n} aciertos seguidos y una pregunta para echarlo todo a perder. Eficiencia admirable.»',
+      '«Lo he visto. Tú también. Podemos fingir que no ha pasado.»',
+      '«Así termina una racha: sin avisar y con público.»',
+      '«{n}. Hubiera preferido no tener que escribir esto.»',
+      '«Ni siquiera yo esperaba ese fallo. Bueno... quizá un poco.»'],
+    high: ['«{n} seguidas. Qué manera tan meticulosa de arruinarlo.»',
+      '«{n} seguidas. Y una sola respuesta para recordarte que eres humano.»',
+      '«Hubo {n}. Habrá que estudiar este inesperado desenlace.»',
+      '«{n} aciertos y un final para el archivo. Sección: tragedias.»',
+      '«Mi expediente conservará esos {n} aciertos. Y esta pregunta. Especialmente esta pregunta.»',
+      '«Una racha de {n} merece un pequeño funeral. Sin flores, por supuesto.»',
+      '«{n}... y ahora el silencio. Un momento precioso.»',
+      '«Casi pude respetarte. {n} seguidas. Casi.»']
   };
+
   var DAY = [
-    '«Buenos días. Veamos qué estás tramando.»', '«Una mañana prometedora. No la estropees.»', '«Ya despierto y haciendo preguntas. Admirable.»',
-    '«El día acaba de empezar. Procura no decepcionarme demasiado pronto.»', '«Un poco de cultura antes del desayuno. Excelente decisión.»',
-    '«He decidido madrugar. Tú también, aparentemente.»', '«Buenos días. Espero que tu cerebro haya llegado antes que tú.»',
+    '«Buenos días. Veamos qué estás tramando.»',
+    '«Una mañana prometedora. Procura no estropearla.»',
+    '«Ya despierto y haciendo preguntas. Admirable.»',
+    '«El día acaba de empezar. No me decepciones tan pronto.»',
+    '«Cultura antes del desayuno. Una decisión respetable.»',
+    '«He decidido madrugar. Tú también, aparentemente.»',
+    '«Buenos días. Espero que tu cerebro haya llegado antes que tú.»',
     '«A estas horas hasta las malas decisiones parecen razonables.»',
-    '«Madrugador. Sospechoso, pero encomiable.»', '«Café, luz y preguntas. Una combinación peligrosa para tu ego.»',
-    '«El mundo todavía se despereza y tú ya estás en plena faena.»', '«Una mente despierta a primera hora. Qué desconcertante.»',
-    '«Cultura antes del mediodía. Los demás aún buscan las zapatillas.»', '«A estas horas, hasta mi paciencia está recién planchada.»',
-    '«Buenos días. Qué manera tan innecesaria de empezar el día.»', '«Madrugando para demostrar conocimientos. Cada cual con sus aficiones.»', '«El día apenas empieza y ya estás buscando respuestas.»'
+    '«Madrugador. Inquietante, pero encomiable.»',
+    '«Café, luz y preguntas. Una combinación peligrosa para tu ego.»',
+    '«El mundo todavía se despereza y tú ya estás aquí.»',
+    '«Una mente despierta a primera hora. Qué desconcertante.»',
+    '«Mientras los demás buscan las zapatillas, tú buscas respuestas.»',
+    '«A estas horas, hasta mi paciencia está recién planchada.»',
+    '«Buenos días. Qué manera tan innecesariamente productiva de empezar el día.»',
+    '«Madrugando para demostrar conocimientos. Cada cual con sus aficiones.»',
+    '«El día apenas empieza y ya aspiras a tener razón. Ambicioso.»'
   ];
   var DAY_RARE = [{ t: '«Son las siete de la mañana y ya estoy supervisando tu rendimiento. Qué vida tan plena.»', h: [7] }];
-  var NIGHT_EARLY = ['«Buenas noches... supongo.»', '«¿Todavía jugando?»', '«Veo que la noche te ha dado conocimientos.»', '«Una partida nocturna. Excelente decisión cuestionable.»', // 00:00–02:00
-    '«Pasada la medianoche, la mente rinde... o eso dicen.»', '«La noche es joven. Tu criterio, quizá menos.»', '«Medianoche y todavía respondiendo. Qué disciplina tan discutible.»',
-    '«Mañana habrá que madrugar, pero tú sabrás.»', '«Otra pregunta antes de dormir. Cómo no.»',
-    '«A estas horas incluso las buenas ideas parecen malas. Veremos las tuyas.»', '«La noche avanza. Tu sentido común, aparentemente, no.»', '«Ya es mañana. Tú sigues aquí. Admirable o preocupante.»'];
-  var NIGHT_LATE = [                                                                                                                              // 02:00–04:00
-    '«¿Dormir? No. ¿Otra partida? Evidentemente.»', '«A estas horas solo quedan los valientes y los insensatos.»', '«No preguntaré por qué sigues despierto.»',
-    '«He venido a comprobar que no soy el único.»', '«A estas horas la cultura general es un acto de rebeldía.»',
-    '«Las mejores ideas llegan de madrugada. Las peores, también.»', '«Ya no es tarde, es temprano. Y sigues aquí.»',
-    '«Tu almohada debe de sentirse bastante ofendida.»', '«La madrugada: donde la lucidez y el insomnio se dan la mano.»',
-    '«Sigues despierto. Empiezo a sospechar que esto es deliberado.»'
+  var NIGHT_EARLY = [
+    '«Buenas noches... supongo.»',
+    '«¿Todavía jugando? Admirable falta de prudencia.»',
+    '«Veo que la noche te ha dado conocimientos. O confianza.»',
+    '«Una partida nocturna. Excelente decisión cuestionable.»',
+    '«Pasada la medianoche, la mente rinde... o eso dicen.»',
+    '«La noche es joven. Tu criterio, quizá menos.»',
+    '«Medianoche y todavía respondiendo. Qué disciplina tan discutible.»',
+    '«Mañana habrá que madrugar. Pero eso será problema de tu yo futuro.»',
+    '«Otra pregunta antes de dormir. Naturalmente.»',
+    '«A estas horas incluso las buenas ideas parecen malas. Veremos las tuyas.»',
+    '«La noche avanza. Tu sentido común, aparentemente, no.»',
+    '«Ya es mañana. Tú sigues aquí. Admirable o preocupante.»'
+  ];
+  var NIGHT_LATE = [
+    '«¿Dormir? No. ¿Otra partida? Evidentemente.»',
+    '«A estas horas solo quedan los valientes y los insensatos.»',
+    '«No preguntaré por qué sigues despierto. Tengo cierta dignidad.»',
+    '«He venido a comprobar que no soy el único.»',
+    '«A estas horas, la cultura general es un acto de rebeldía.»',
+    '«Las mejores ideas llegan de madrugada. Las peores también.»',
+    '«Ya no es tarde. Es temprano. Y sigues aquí.»',
+    '«Tu almohada debe de sentirse bastante ofendida.»',
+    '«La madrugada: donde la lucidez y el insomnio se dan la mano.»',
+    '«Sigues despierto. Ya no sé quién vigila a quién.»'
   ];
   var NIGHT_RARE = [{ t: '«03:17. La hora exacta en la que normalmente tomo decisiones cuestionables.»', h: [3] },
     { t: '«Son las tres de la mañana. Esto ya es personal.»', h: [3] }];
