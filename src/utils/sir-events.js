@@ -29,15 +29,15 @@ const SEQSirEvents = (function () {
   var COOLDOWN_MS = 40000;        // mínimo entre dos eventos
   var MIN_ANSWERS_BETWEEN = 4;    // y al menos 4 respuestas de por medio
   var MIN_ANSWERS_START = 3;      // nunca en las primeras respuestas de la partida
-  var P = { visit: 0.03, day: 0.10, night: 0.15 };        // probabilidad por acierto evaluado (día y noche: horas raras, más probables)
-  var STREAK_P = { 10: 0.7, 15: 0.85, 20: 1, 30: 1 };     // 10 «puede», 15 más probable, 20 y 30 especiales
+  var P = { visit: 0.006, day: 0.012, night: 0.018 };    // probabilidad por acierto evaluado: pocas partidas llevan evento (día y noche, algo más probables)
+  var STREAK_P = { 10: 0.5, 15: 0.7, 20: 1, 30: 1 };     // 10 «puede», 15 más probable, 20 y 30 especiales
   var MILESTONES = [10, 15, 20, 30];
   var BROKEN_MIN_RUN = 5;         // racha mínima para que su rotura merezca comentario
   var BROKEN_P = { low: 0.35, mid: 0.7, high: 1 };        // 5-9 · 10-19 · 20 o más
-  var MAX_PER_GAME = 2;           // como mucho dos eventos por partida (salvo un hito de racha de 20 o más)
-  var RECENT_MS = 3 * 3600 * 1000;        // día, noche y visita: como mucho uno cada 3 h (lo recuerda quien llama, entre partidas)
+  var MAX_PER_GAME = 1;           // como mucho un evento por partida (salvo un hito de racha de 20 o más)
+  var RECENT_MS = 6 * 3600 * 1000;        // día, noche y visita: como mucho uno cada 6 h (lo recuerda quien llama, entre partidas)
   var WEAK_MS = 24 * 3600 * 1000;         // categoría débil: como mucho uno al día
-  var RECORD_P = 0.85, WEAK_P = 0.5;
+  var RECORD_P = 0.5, WEAK_P = 0.5;
   var RARE_P = 0.05;              // frase «muy rara»
 
   var ASSETS = {

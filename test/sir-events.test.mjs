@@ -29,7 +29,7 @@ test('visit: como mucho una por partida, no en todas las partidas y puede no apa
     games++; if (visits) withVisit++;
   }
   const f = withVisit / games;
-  assert.ok(f > 0.15 && f < 0.6, 'fracción de partidas con visit: ' + f);
+  assert.ok(f > 0.03 && f < 0.25, 'fracción de partidas con visit: ' + f);
 });
 
 test('nada en las primeras respuestas, ni tras un fallo, ni en la última pregunta, ni con la pestaña oculta', () => {
@@ -67,9 +67,9 @@ test('streak: no antes de 10; sale en 10/15/20/30; cada hito una sola vez; frase
     if (ev && ev.type === 'streak') fired.push([streak, ev.message]);
     if (streak < 10) assert.ok(!ev || ev.type !== 'streak', 'antes de 10 no hay streak');
   }
-  // Con ALWAYS sale también la visita antes del 10: con el tope de 2 eventos por partida, el 15 cede y los de 20 y 30 pasan siempre.
-  assert.deepEqual(fired.map((f) => f[0]), [10, 20, 30]);
-  [10, 20, 30].forEach((m, i) => assert.ok(S.PHRASES.streak[m].includes(fired[i][1])));
+  // Con ALWAYS sale antes la visita: con el tope de 1 evento por partida, el 10 y el 15 ceden y los hitos de 20 y 30 pasan siempre.
+  assert.deepEqual(fired.map((f) => f[0]), [20, 30]);
+  [20, 30].forEach((m, i) => assert.ok(S.PHRASES.streak[m].includes(fired[i][1])));
 });
 
 test('streak: un mismo hito no se repite; el hito no «se pierde» al instante pero tampoco llega tarde', () => {
@@ -112,8 +112,8 @@ test('day y night: máx. 1 por partida, frecuentes (horas raras) pero no en toda
       for (let i = 0; i < 20; i++) { const ev = ans(s, i * 60000, hour, 1, {}, rng); if (ev && ev.type === type) n++; }
       assert.ok(n <= 1); games++; if (n) withEv++;
     }
-    // 15 % de noche y 10 % de día por acierto evaluado: sale en la mayoría de partidas de 20 preguntas, pero nunca en todas.
-    const lo = type === 'night' ? 0.8 : 0.65, hi = type === 'night' ? 0.99 : 0.95;
+    // 1,8 % de noche y 1,2 % de día por acierto evaluado: sale en una de cada cuatro o cinco partidas de esas horas, nunca en todas.
+    const lo = type === 'night' ? 0.12 : 0.08, hi = type === 'night' ? 0.5 : 0.4;
     assert.ok(withEv / games > lo && withEv / games < hi, type + ' aparece en ' + withEv / games);
   }
 });
@@ -125,11 +125,11 @@ test('prioridad: streak > night > day > visit, un solo evento por respuesta, y l
   const st2 = S.newState(); warm(st2);
   const order = [];
   for (let i = 0; i < 8; i++) { const ev = ans(st2, 1e6 + i * 100000, 2, 1, {}, ALWAYS); if (ev) order.push(ev.type); }
-  assert.deepEqual(order, ['night', 'visit'], 'night antes que visit; después ya no queda nada');
+  assert.deepEqual(order, ['night'], 'night antes que visit; con el tope de 1 por partida no queda nada más');
   const st3 = S.newState(); warm(st3);
   const order3 = [];
   for (let i = 0; i < 8; i++) { const ev = ans(st3, 1e6 + i * 100000, 8, 1, {}, ALWAYS); if (ev) order3.push(ev.type); }
-  assert.deepEqual(order3, ['day', 'visit'], 'day antes que visit');
+  assert.deepEqual(order3, ['day'], 'day antes que visit');
 });
 
 test('frases: todas en «tú», sin plurales, con comillas; las de hora concreta solo salen a su hora', () => {
@@ -156,7 +156,7 @@ test('frases: todas en «tú», sin plurales, con comillas; las de hora concreta
 
 test('frase muy rara: mucho menos frecuente que las normales', () => {
   let rare = 0, n = 0;
-  for (let g = 0; g < 20000; g++) { const st = S.newState(); warm(st); const ev = ans(st, 1e6, 14, 1, {}, mulberry(g + 77777)); if (ev) { n++; if (S.PHRASES.visitRare.includes(ev.message)) rare++; } }
+  for (let g = 0; g < 80000; g++) { const st = S.newState(); warm(st); const ev = ans(st, 1e6, 14, 1, {}, mulberry(g + 77777)); if (ev) { n++; if (S.PHRASES.visitRare.includes(ev.message)) rare++; } }
   assert.ok(n > 300);
   const f = rare / n;
   assert.ok(f > 0.01 && f < 0.1, 'rara: ' + f);
@@ -325,7 +325,7 @@ test('catálogos: ningún grupo normal lleva frases ligadas a una hora; las de h
   assert.ok(ph.day.length >= 14 && ph.nightEarly.length >= 9 && ph.nightLate.length >= 9 && ph.visit.length >= 12);
   [10, 15, 20, 30].forEach((m) => assert.ok(ph.streak[m].length >= 6));
   assert.ok(S.P.night > S.P.day && S.P.day > S.P.visit, 'noche más probable que día, y ambos más que la visita genérica');
-  assert.equal(S.P.night, 0.15); assert.equal(S.P.day, 0.10);
+  assert.equal(S.P.night, 0.018); assert.equal(S.P.day, 0.012); assert.equal(S.P.visit, 0.006);
 });
 
 test('rotación: las frases raras también usan bolsa (una por hora si dependen de la hora) y solo salen a su hora', () => {
@@ -409,19 +409,19 @@ test('coordinación: el evento cede ante un hito, «Última vida», un aviso de 
   assert.match(src, /fx-lastlife-banner, \.sir-hito, \.encargos-toast\.show/);
 });
 
-test('tope: como mucho dos eventos por partida; un hito de racha de 20 o más lo salta', () => {
-  assert.equal(S.MAX_PER_GAME, 2);
+test('tope: como mucho un evento por partida; un hito de racha de 20 o más lo salta', () => {
+  assert.equal(S.MAX_PER_GAME, 1);
   const st = S.newState(); warm(st);
   let n = 0, t = 1e6;
   for (let i = 0; i < 40; i++) { t += 70000; for (let k = 0; k < S.MIN_ANSWERS_BETWEEN; k++) S.evaluate(st, { nowMs: t - 1, hour: 12, streak: 1, correct: false, last: false, blocked: false, noBroken: true }, ALWAYS); if (ans(st, t, 12, 1, {}, ALWAYS)) n++; }
-  assert.ok(n <= 2, 'eventos en la partida: ' + n);
-  const g = S.newState(); warm(g); g.count = 2;
+  assert.ok(n <= 1, 'eventos en la partida: ' + n);
+  const g = S.newState(); warm(g); g.count = 1;
   assert.equal(ans(g, 9e6, 12, 10), null, 'con el cupo lleno no sale el hito de 10');
   const e = ans(g, 9e6 + 1e5, 12, 20);
   assert.ok(e && e.type === 'streak', 'el de 20 sí');
 });
 
-test('día, noche y visita: como mucho uno cada 3 h; la categoría débil, uno al día (lo anota quien llama)', () => {
+test('día, noche y visita: como mucho uno cada 6 h; la categoría débil, uno al día (lo anota quien llama)', () => {
   const st = S.newState(); warm(st);
   const now = 5e8;
   const blocked = ans(st, now, 14, 1, { recent: { visit: now - S.RECENT_MS + 1000 } }, ALWAYS);
