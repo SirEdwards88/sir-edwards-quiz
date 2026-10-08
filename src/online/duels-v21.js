@@ -317,7 +317,10 @@
     var out = h.header('Rankings', 'El Salón de la Fama', h.back) + '<div class="seq-v21-rkscreen">' + scopeTabs() + boardTabs();
     if (S21.rankErr) return out + rkNote(S21.rankErr) + '</div>';
     if (!d) return out + '<p class="seq-v21-rk-loading">Cargando…</p></div>';
-    out += '<p class="seq-v21-rk-sub"><span>' + esc(BOARDS[b].sub) + '</span></p>' + meCard(d, b);
+    out += '<p class="seq-v21-rk-sub"><span>' + esc(BOARDS[b].sub) + '</span></p>';
+    // Ranking global fuera del PvP: las puntuaciones las declara cada dispositivo (solo el ELO de los duelos lo verifica el servidor).
+    if (S21.scope === 'global' && !isPvp(b)) out += '<p class="seq-v21-rk-sub"><span>Puntos declarados por cada jugador, sin verificar. Sir Edwards confía; tú, con moderación.</span></p>';
+    out += meCard(d, b);
     var rows = d.ranking || [];
     if (!rows.length) return out + rkNote(isPvp(b) ? 'Aún no hay duelos puntuados. Juega uno y aparecerás aquí.' : 'Todavía nadie tiene puntuación en este ranking.') + '</div>';
     // Podio: puestos 1, 2 y 3 tal como los da el servidor; el resto (y quien está en colocación) va en la lista.
