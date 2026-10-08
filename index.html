@@ -47,13 +47,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles/main.css?v=153">
+<link rel="stylesheet" href="styles/main.css?v=154">
 <!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
-<link rel="stylesheet" href="styles/online.css?v=153">
-<link rel="stylesheet" href="styles/encargos.css?v=153">
-<link rel="stylesheet" href="styles/encargos-intro.css?v=153">
-<link rel="stylesheet" href="styles/sir-events.css?v=153">
-<link rel="stylesheet" href="styles/theme.css?v=153">
+<link rel="stylesheet" href="styles/online.css?v=154">
+<link rel="stylesheet" href="styles/encargos.css?v=154">
+<link rel="stylesheet" href="styles/encargos-intro.css?v=154">
+<link rel="stylesheet" href="styles/sir-events.css?v=154">
+<link rel="stylesheet" href="styles/theme.css?v=154">
 
 </head>
 <body class="on-home">
@@ -1109,49 +1109,49 @@ try {
 <!-- Fase 2: datos y constantes extraidos a modulos, cargados como scripts
      clasicos (no ES Modules) para conservar el scope global compartido con
      el script principal, sin convertir todavia la app a ES Modules. -->
-<script src="src/data/ui-maps.js?v=153"></script>
-<script src="src/data/questions.js?v=153"></script>
-<script src="src/data/questions-retired.js?v=153"></script>
-<script src="src/data/phrases.js?v=153"></script>
-<script src="src/data/duel-phrases.js?v=153"></script>
-<script src="src/data/lucidez.js?v=153"></script>
-<script src="src/data/medals.js?v=153"></script>
+<script src="src/data/ui-maps.js?v=154"></script>
+<script src="src/data/questions.js?v=154"></script>
+<script src="src/data/questions-retired.js?v=154"></script>
+<script src="src/data/phrases.js?v=154"></script>
+<script src="src/data/duel-phrases.js?v=154"></script>
+<script src="src/data/lucidez.js?v=154"></script>
+<script src="src/data/medals.js?v=154"></script>
 <!-- Prompt 3 — Fase C: sistema de avatares compartido (window.SEQAvatars). Debe
      cargarse antes de src/online/online.js y src/online/duels.js: ambos lo
      consumen en vez de mantener cada uno su propia copia de la lista. -->
-<script src="src/data/avatars.js?v=153"></script>
-<script src="src/share/share-card.js?v=153"></script>
+<script src="src/data/avatars.js?v=154"></script>
+<script src="src/share/share-card.js?v=154"></script>
 
 <!-- Fase 3 (Lote 3A): motor de coincidencia de respuestas extraido a
      src/utils/matching.js, mismo criterio que la Fase 2 (script clasico,
      sin ES Modules todavia). -->
-<script src="src/utils/matching.js?v=153"></script>
-<script src="src/utils/answer-alias.js?v=153"></script>
-<script src="src/utils/lucidez-select.js?v=153"></script>
-<script src="src/state/lucidez-bag.js?v=153"></script>
-<script src="src/utils/encargos-core.js?v=153"></script>
-<script src="src/utils/encargos-progress.js?v=153"></script>
-<script src="src/state/encargos.js?v=153"></script>
-<script src="src/data/encargos-phrases.js?v=153"></script>
-<script src="src/ui/encargos-ui.js?v=153"></script>
-<script src="src/data/named-phrases.js?v=153"></script>
-<script src="src/utils/named-phrases.js?v=153"></script>
-<script src="src/utils/encargos-intro-core.js?v=153"></script>
-<script src="src/data/encargos-intro-phrases.js?v=153"></script>
-<script src="src/ui/encargos-intro.js?v=153"></script>
-<script src="src/utils/sir-events.js?v=153"></script>
-<script src="src/ui/sir-events-ui.js?v=153"></script>
-<script src="src/state/sir-events.js?v=153"></script>
-<script src="src/utils/sudden-progression.js?v=153"></script>
-<script src="src/utils/fresh-first.js?v=153"></script>
-<script src="src/utils/mental-calc.js?v=153"></script>
+<script src="src/utils/matching.js?v=154"></script>
+<script src="src/utils/answer-alias.js?v=154"></script>
+<script src="src/utils/lucidez-select.js?v=154"></script>
+<script src="src/state/lucidez-bag.js?v=154"></script>
+<script src="src/utils/encargos-core.js?v=154"></script>
+<script src="src/utils/encargos-progress.js?v=154"></script>
+<script src="src/state/encargos.js?v=154"></script>
+<script src="src/data/encargos-phrases.js?v=154"></script>
+<script src="src/ui/encargos-ui.js?v=154"></script>
+<script src="src/data/named-phrases.js?v=154"></script>
+<script src="src/utils/named-phrases.js?v=154"></script>
+<script src="src/utils/encargos-intro-core.js?v=154"></script>
+<script src="src/data/encargos-intro-phrases.js?v=154"></script>
+<script src="src/ui/encargos-intro.js?v=154"></script>
+<script src="src/utils/sir-events.js?v=154"></script>
+<script src="src/ui/sir-events-ui.js?v=154"></script>
+<script src="src/state/sir-events.js?v=154"></script>
+<script src="src/utils/sudden-progression.js?v=154"></script>
+<script src="src/utils/fresh-first.js?v=154"></script>
+<script src="src/utils/mental-calc.js?v=154"></script>
 
 <!-- Fase 3 (Lote 3B): nucleo algoritmico de Duelo extraido a
      src/utils/duel.js, mismo criterio que el resto (script clasico, sin
      ES Modules todavia). Las dependencias compartidas con otros modos
      (arrangeStandardBlock, generateLucidezMentalOp)
      permanecen en este script principal, sin moverse en este lote. -->
-<script src="src/utils/duel.js?v=153"></script>
+<script src="src/utils/duel.js?v=154"></script>
 
 <!-- Fase 3 (Lote 3C): defaults, migracion y saneamiento del Store
      extraidos a src/utils/store.js, mismo criterio que el resto (script
@@ -1163,47 +1163,47 @@ try {
      getLevelData) y las 8 funciones de persistencia real (loadStore,
      saveStore, exportProgress...) permanecen en este script principal,
      sin moverse en este lote. -->
-<script src="src/utils/store.js?v=153"></script>
+<script src="src/utils/store.js?v=154"></script>
 
 <!-- Fase 4B: fachada de estado de solo lectura (getStore/getCurrentGame),
      mismo criterio que el resto (script clasico, sin ES Modules todavia).
      No copia, no transforma, no cachea. Ver src/state/read-facade.js. -->
-<script src="src/state/read-facade.js?v=153"></script>
+<script src="src/state/read-facade.js?v=154"></script>
 
-<script src="src/utils/streak-xp.js?v=153"></script>
+<script src="src/utils/streak-xp.js?v=154"></script>
 <!-- Fase 4C: helpers minimos de escritura (pushCapped, resetStreak) para
      eliminar 2 duplicaciones reales concretas -- no un sistema de
      mutaciones. Ver src/state/write-helpers.js y CHANGELOG_FASE4C.md. -->
-<script src="src/state/write-helpers.js?v=153"></script>
+<script src="src/state/write-helpers.js?v=154"></script>
 
 <!-- v1.4: capa online (cuenta Google, sincronización, migración, ranking).
      config.js es PÚBLICO (URL del Worker + Client ID de Google); si está
      vacío, la capa online queda desactivada y la app es idéntica a la v1.3.
      online.js solo usa el store/funciones del juego en tiempo de ejecución. -->
-<script src="src/ui/install-app.js?v=153"></script>
-<script src="src/ui/a11y.js?v=153"></script>
-<script src="src/ui/game-fx.js?v=153"></script>
-<script src="src/ui/last-life.js?v=153"></script>
-<script src="src/ui/hitos.js?v=153"></script>
-<script src="src/ui/achievements.js?v=153"></script>
-<script src="src/ui/stats-extra.js?v=153"></script>
-<script src="src/ui/name-prompt.js?v=153"></script>
-<script src="src/ui/intro.js?v=153"></script>
-<script src="src/ui/mode-badges.js?v=153"></script>
-<script src="src/ui/lucidez-ui.js?v=153"></script>
-<script src="src/ui/sabias.js?v=153"></script>
-<script src="src/ui/icons.js?v=153"></script>
-<script src="src/online/config.js?v=153"></script>
+<script src="src/ui/install-app.js?v=154"></script>
+<script src="src/ui/a11y.js?v=154"></script>
+<script src="src/ui/game-fx.js?v=154"></script>
+<script src="src/ui/last-life.js?v=154"></script>
+<script src="src/ui/hitos.js?v=154"></script>
+<script src="src/ui/achievements.js?v=154"></script>
+<script src="src/ui/stats-extra.js?v=154"></script>
+<script src="src/ui/name-prompt.js?v=154"></script>
+<script src="src/ui/intro.js?v=154"></script>
+<script src="src/ui/mode-badges.js?v=154"></script>
+<script src="src/ui/lucidez-ui.js?v=154"></script>
+<script src="src/ui/sabias.js?v=154"></script>
+<script src="src/ui/icons.js?v=154"></script>
+<script src="src/online/config.js?v=154"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
-<script src="src/utils/sync-merge.js?v=153"></script>
-<script src="src/online/data-sync.js?v=153"></script>
-<script src="src/online/online.js?v=153"></script>
+<script src="src/utils/sync-merge.js?v=154"></script>
+<script src="src/online/data-sync.js?v=154"></script>
+<script src="src/online/online.js?v=154"></script>
 <!-- v1.5: Amigos, Duelo online y Retos. El servidor decide preguntas, tiempo, aciertos y ganador. -->
-<script src="src/online/duels.js?v=153"></script>
+<script src="src/online/duels.js?v=154"></script>
 <!-- 2.1: Duelo por apuestas, ELO PvP, Rankings y estadísticas de Duelos (solo presentación; decide el servidor) -->
-<script src="src/online/duels-v21.js?v=153"></script>
+<script src="src/online/duels-v21.js?v=154"></script>
 <!-- Audio: sonidos del juego (src/audio/audio.js) -->
-<script src="src/audio/audio.js?v=153"></script>
+<script src="src/audio/audio.js?v=154"></script>
 
 <script>
 function closeWelcomeModal() {

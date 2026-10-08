@@ -110,9 +110,9 @@ const END_PHRASES = {
 
 const SURVIVAL_FAIL_PHRASES = {
   desastre: [
-    "Tienes el nivel cultural justo para cruzar la calle sin ayuda. Y hoy lo he dudado.",
+    "Con este resultado, hasta cruzar la calle sin ayuda parece un objetivo ambicioso.",
     "Si hicieran un documental de tu capacidad intelectual, iría directo al género de comedia de terror.",
-    "Tu cerebro está tan vacío que, al pensar, se oye el eco.",
+    "Tus respuestas de hoy sonaban a habitación vacía. Con eco incluido.",
     "Has demostrado que la evolución a veces da marcha atrás.",
     "Tu cerebro decidió hacer huelga general justo en el peor momento posible.",
     "La caída ha sido tan estrepitosa que hasta las neuronas supervivientes han pedido el traslado.",
@@ -129,9 +129,9 @@ const SURVIVAL_FAIL_PHRASES = {
   ],
   regular: [
     "Fin del juego. Has dado lo mejor de ti; lamento que fuera esto.",
-    "Tan cerca de la gloria y tan lejos del sentido común. Vuelve a intentarlo cuando evoluciones un poco.",
+    "Tan cerca de la gloria y tan lejos del acierto. Vuelve a intentarlo; aquí seguiré, mirando.",
     "Fin del trayecto. Breve, trágico y, lamentablemente, presenciado por mí.",
-    "Un esfuerzo encomiable para un intelecto tan tristemente modesto.",
+    "Un esfuerzo encomiable para un resultado tan tristemente modesto.",
     "Te has estampado contra el muro de la incompetencia. Y lo peor es que ibas sin casco.",
     "Te has acercado a la victoria por pura estadística, como un chimpancé tecleando al azar.",
     "Has rozado la victoria con la misma delicadeza con que rozas el entendimiento humano.",
@@ -151,11 +151,11 @@ const SURVIVAL_FAIL_PHRASES = {
 const SUDDEN_FAIL_PHRASES = {
   desastre: [
     "Una oportunidad era todo lo que tenías. Decidiste desperdiciarla.",
-    "Has sido eliminado antes de que tu cerebro pudiera presentar alegaciones.",
+    "La eliminación ha llegado antes de que tu cerebro pudiera presentar alegaciones.",
     "No ha sido una derrota. Ha sido una ejecución académica.",
     "La muerte fue súbita. El fracaso, bastante más lento.",
     "Una sola oportunidad. Y conseguiste hacerla parecer demasiadas.",
-    "Eliminado. Ni siquiera el juego ha considerado necesario pedir una segunda opinión.",
+    "Eliminación inmediata. Ni siquiera el juego ha pedido una segunda opinión.",
     "La muerte súbita ha hecho exactamente lo que prometía. Tú, en cambio, no.",
     "Una sola oportunidad era suficiente. Para alguien, al menos.",
     "El margen de error era cero. Tu resultado ha sido extraordinariamente fiel al concepto.",
@@ -168,9 +168,9 @@ const SUDDEN_FAIL_PHRASES = {
     "Varias opciones, una correcta. Has demostrado un olfato admirable para evitarla.",
     "No te faltó mucho. Te sobró una respuesta equivocada.",
     "Una pregunta más y quizá habría sido distinto. Qué pena que no haya una.",
-    "Eliminado por una sola respuesta. Con tantas disponibles, hay que tener criterio para escoger esa.",
+    "Una sola respuesta te ha eliminado. Entre tantas, hay que tener criterio para escoger esa.",
     "Has gastado tu única vida en una respuesta que claramente no la merecía.",
-    "Has sido eliminado. La muerte súbita no suele aceptar reclamaciones.",
+    "La eliminación es firme. La muerte súbita no suele aceptar reclamaciones.",
     "La partida terminó en cuanto decidiste confiar en esa respuesta."
   ]
 };;
@@ -375,7 +375,7 @@ const LUCIDEZ_PERFECT_PHRASES = [
 ];;
 
 const SURVIVAL_WIN_PHRASES = [
-  "Has ganado. Felicidades: ahora tienes oficialmente el mejor cerebro entre los desocupados. ¿Y ahora qué?",
+  "Has ganado. Eres oficialmente el mejor cerebro entre quienes juegan a esto. ¿Y ahora qué?",
   "Victoria magistral. Un despliegue de intelecto que, con suerte, nunca tendrás que usar en la vida real.",
   "Victoria total. En algún lugar, un trofeo se pregunta si de verdad quiere que lo tengas tú.",
   "Lo has conseguido. Ahora toca decidir a quién le vas a aburrir contándoselo.",
@@ -386,9 +386,9 @@ const SURVIVAL_WIN_PHRASES = [
   "Has llegado al final con vida. Las respuestas correctas, en cambio, han sido bastante más escasas.",
   "El combate ha terminado. Descansa; mañana volverás a creerte infalible.",
   "Has sobrevivido. Contra todo pronóstico, incluido el mío.",
-  "Cuarenta preguntas. Has sobrevivido. Habrá que revisar tu utilidad al alza. Ligeramente.",
+  "Sigues en pie al final de la lista. Un golpe duro para mis predicciones.",
   "Has llegado al final. Qué inesperada demostración de resistencia intelectual.",
-  "Victoria. Después de todo, quizá no seas completamente inútil.",
+  "Victoria. Voy a tener que retirar un par de comentarios.",
   "Has sobrevivido. No necesariamente con elegancia, pero sí con resultados.",
   "Una victoria merecida. Procura no convertirla en una leyenda personal.",
   "Has aguantado hasta el final. Admito que esperaba menos.",
@@ -398,7 +398,7 @@ const SURVIVAL_WIN_PHRASES = [
 const SUDDEN_WIN_PHRASES = [
   "Un logro impecable, construido sobre cientos de horas que nunca vas a recuperar.",
   "Has completado el modo extremo. Añádelo al currículum: nadie te lo preguntará, pero constará.",
-  "Has completado la prueba más dura. Impresionante despliegue de talento inútil; ya puedes ir a presumir ante nadie.",
+  "Prueba superada. Un talento sin utilidad práctica, pero impecable.",
   "Una oportunidad. Cero errores. Así es como se sobrevive a la muerte súbita.",
   "No había margen para fallar. Por algún motivo, tampoco lo necesitaste.",
   "La siguiente pregunta podía eliminarte. Decidiste eliminarla tú primero.",

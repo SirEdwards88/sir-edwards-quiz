@@ -20,20 +20,20 @@
           'Diez preguntas y ni una ambulancia. Seguiré mirando.',
           'Diez. Una hazaña modesta, pero no pienso arruinártela. Todavía.',
           'Diez. El primer cuarto, y todavía conservas la dignidad.',
-          'Diez. Esto va mejor de lo que apostaba.'
+          'Diez. Quedan treinta, y estos primeros solo sirven para que te confíes.'
         ] },
         20: { img: 'monoculo', phrases: [
           'La mitad. Si llegas a cuarenta, fingiré que siempre confié en ti.',
           'Veinte. Esto empieza a parecer talento. O una casualidad extraordinaria.',
-          'La mitad del camino. Ahora llega la parte en la que empiezas a dudar de todo.',
+          'La mitad del camino. Ahora llega la parte en la que dudas de todo.',
           'Veinte. A partir de aquí, cada fallo duele con más elegancia.',
-          'La mitad. Si lo estropeas ahora, lo haré constar en acta.'
+          'Sin cronómetro y sin excusas: veinte preguntas más. Respira, si te sirve.'
         ] },
         30: { img: 'manos', phrases: [
           'Treinta. Si vas a cometer un error, te agradecería que esperases diez preguntas.',
-          'Treinta. Ya casi eres digno de celebrarlo. Casi.',
+          'Treinta. Mereces una celebración. Aplazada, eso sí, hasta que termines.',
           'Treinta. La meta está a la vista. Procura no tropezar con ella.',
-          'Treinta. Diez más y te perdonaré varios defectos.',
+          'Treinta. Cuando termines, te perdonaré varios defectos. Los más llevaderos.',
           'Treinta. Casi puedo oler el final. Tú también, supongo.'
         ] }
       }
@@ -45,7 +45,7 @@
           'Trece. Sigues con vida. Qué detalle por tu parte.',
           'La mitad. Ahora empieza la parte divertida. Para mí.',
           'Trece y ningún error. Un comportamiento muy poco humano.',
-          'Trece. Mala fama, buen comienzo.',
+          'Trece. Quedan doce, y ninguna admite un fallo.',
           'Trece sin caer. La superstición se queda sin argumentos.'
         ] },
         20: { img: 'manos', phrases: [
@@ -53,7 +53,7 @@
           'Cinco preguntas. Has llegado demasiado lejos para morir de forma tan vulgar.',
           'Veinte. No arruines mi apuesta.',
           'Veinte. Un solo error y todo esto habrá sido un precioso ensayo.',
-          'Veinte. Cinco más y podrás presumir. Un poco.'
+          'Veinte. Llega hasta el final y podrás presumir. Con moderación.'
         ] }
       }
     }
