@@ -5,7 +5,7 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const read = (p) => fs.readFileSync(new URL('../' + p, import.meta.url), 'utf8');
-const ctx = {}; vm.createContext(ctx);
+const ctx = {}; ctx.window = ctx; vm.createContext(ctx);
 vm.runInContext(read('src/ui/name-prompt.js').replace(/^const /m, 'var ') + ';\n' + read('src/data/encargos-intro-phrases.js').replace(/^const /m, 'var ') + '\n' + read('src/utils/encargos-intro-core.js').replace(/^const /m, 'var '), ctx);
 const NP = ctx.SEQNamePrompt, CORE = ctx.SEQEncargosIntroCore;
 
