@@ -58,6 +58,24 @@ const SEQNamePrompt = (function () {
     if (typeof next === 'function') next();
   }
 
+  var greeted = null;
+  function greet(name) {
+    var modal = el('name-modal'); var t = el('name-title'); var form = modal && modal.querySelector('form');
+    var lead = modal && modal.querySelector('.welcome-lead');
+    if (!modal || !t || !form || !lead) { close(); return; }
+    greeted = { t: t.textContent, l: lead.textContent };
+    t.textContent = 'Encantado, ' + name + '.';
+    lead.textContent = 'Intentaré recordarlo.';
+    form.hidden = true;
+    setTimeout(function () { restore(); close(); }, 1800);
+  }
+  function restore() {
+    var modal = el('name-modal'); if (!modal || !greeted) return;
+    var t = el('name-title'), form = modal.querySelector('form'), lead = modal.querySelector('.welcome-lead');
+    if (t) t.textContent = greeted.t; if (lead) lead.textContent = greeted.l; if (form) form.hidden = false;
+    greeted = null;
+  }
+
   function submit() {
     if (busy) return;
     var input = el('name-input');
@@ -69,8 +87,8 @@ const SEQNamePrompt = (function () {
     try { p = SEQOnline.setDisplayName(v.name); } catch (e) { p = Promise.reject(e); }
     Promise.resolve(p).then(function () {
       busy = false; if (btn) btn.disabled = false;
-      // Sin aviso aparte: la bienvenida (intro.js) ya le llama por su nombre, y un toast se perdería debajo.
-      close();
+      // Confirmación en la propia tarjeta (un toast se perdería bajo la bienvenida): se lee y se cierra sola.
+      greet(v.name);
     }).catch(function (err) {
       busy = false; if (btn) btn.disabled = false;
       var offline = err && (err.network || err.code === 'network');
