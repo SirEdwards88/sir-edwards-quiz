@@ -904,9 +904,7 @@
       '<button class="seq-id" onclick="SEQOnline.copyId()" title="Copiar ID">Tu ID de jugador: <b>' + esc(p.id) + '</b> <span class="ui-line ui-line-copy" aria-hidden="true"></span></button>' +
       '<div class="seq-btnrow">' +
       '<button class="btn btn-secondary" onclick="SEQOnline.syncNowUi()"' + (ui.syncing ? ' disabled' : '') + '>↻ Sincronizar ahora</button>' +
-      (sync && (sync.migration === 'pending' || sync.needsMerge) ? '' : '<button class="btn btn-secondary" onclick="SEQOnline.openMigration()"><span class="ui-line ui-line-swap" aria-hidden="true"></span>Restaurar / combinar progreso</button>') +
       '<button class="btn btn-secondary" onclick="SEQOnline.signOut()">Cerrar sesión</button>' +
-      '<button class="btn btn-secondary" onclick="SEQOnline.logoutAll()">Cerrar sesión en todos los dispositivos</button>' +
       '<button class="btn btn-danger" onclick="SEQOnline.deleteAccount()">Eliminar mi cuenta online</button></div>' +
       '<p class="settings-note">Cerrar sesión no borra nada: puedes volver a entrar cuando quieras. Eliminar la cuenta borra tu perfil y tu progreso del servidor, y también el progreso de este dispositivo.</p>' +
       '<p class="settings-note">Tu progreso lo informa tu dispositivo: no sirve como prueba de resultados.</p></details>';
