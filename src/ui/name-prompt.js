@@ -69,7 +69,7 @@ const SEQNamePrompt = (function () {
     try { p = SEQOnline.setDisplayName(v.name); } catch (e) { p = Promise.reject(e); }
     Promise.resolve(p).then(function () {
       busy = false; if (btn) btn.disabled = false;
-      try { if (typeof showInfoToast === 'function') showInfoToast('Encantado, ' + v.name + '. Intentaré recordarlo.', 'sombrero'); } catch (e) {}
+      // Sin aviso aparte: la bienvenida (intro.js) ya le llama por su nombre, y un toast se perdería debajo.
       close();
     }).catch(function (err) {
       busy = false; if (btn) btn.disabled = false;
