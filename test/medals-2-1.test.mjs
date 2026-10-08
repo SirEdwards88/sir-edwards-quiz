@@ -91,18 +91,15 @@ test('rachas: 20 solo en Modo Estándar; 30 («Imparable») en cualquier modo', 
   assert.equal(m('streak_20').check({ timeTrialBestStreak: 99, hardBestStreak: 99 }), false, 'otras rachas no cuentan');
 });
 
-test('Primera Luz: marca de la franja 06:00 (incl.) – 08:00 (excl.) y condición', () => {
-  const html = read('index.html');
-  const fn = html.slice(html.indexOf('function markNightCompletionIfApplicable'), html.indexOf('function checkModeUnlocksAndGetNew'));
-  const run = (hour) => {
-    const store = {};
-    const ctx = { store, Date: class { getHours() { return hour; } } };
-    vm.createContext(ctx); vm.runInContext(fn + ';markNightCompletionIfApplicable();', ctx);
-    return !!store.hasCompletedMorningGame;
-  };
-  assert.equal(run(5), false); assert.equal(run(6), true); assert.equal(run(7), true); assert.equal(run(8), false); assert.equal(run(12), false);
-  const c = load(); assert.equal(c.ALL_MEDALS.find((x) => x.id === 'diurno').check({ hasCompletedMorningGame: true }), true);
-  assert.equal(c.ALL_MEDALS.find((x) => x.id === 'diurno').check({}), false);
+test('Noctámbulo y Primera Luz: se logran encontrando a Sir Edwards nocturno / diurno', () => {
+  const c = load();
+  const night = c.ALL_MEDALS.find((x) => x.id === 'noctambulo'), day = c.ALL_MEDALS.find((x) => x.id === 'diurno');
+  assert.match(night.desc, /Sir Edwards nocturno.*00:00 a 04:00/); assert.match(day.desc, /Sir Edwards diurno.*06:00 a 10:00/);
+  assert.equal(night.check({ hasCompletedNightGame: true }), true); assert.equal(night.check({}), false);
+  assert.equal(day.check({ hasCompletedMorningGame: true }), true); assert.equal(day.check({}), false);
+  const ctl = read('src/state/sir-events.js');
+  assert.ok(/ev\.type === 'night'\) store\.hasCompletedNightGame = true/.test(ctl) && /ev\.type === 'day'\) store\.hasCompletedMorningGame = true/.test(ctl));
+  assert.ok(!/markNightCompletionIfApplicable/.test(read('index.html')), 'ya no se marca al terminar partida');
 });
 
 // ---- registro de duelos: los hitos los pone el servidor

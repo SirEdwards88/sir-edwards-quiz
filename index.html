@@ -2924,14 +2924,8 @@ function checkMedalsAndGetNew() {
   return newlyUnlocked;
 }
 
-// Logro "Noctámbulo": se marca en el momento exacto en que se completa
-// una partida (cualquier modo) si cae dentro de la franja 00:00-03:59.
-function markNightCompletionIfApplicable() {
-  const hour = new Date().getHours();
-  if (hour >= 0 && hour < 4) store.hasCompletedNightGame = true;
-  // 2.1 «Primera Luz»: franja 06:00 (incluida) – 08:00 (excluida), misma hora local que Noctámbulo.
-  if (hour >= 6 && hour < 8) store.hasCompletedMorningGame = true;
-}
+// Logros «Noctámbulo» y «Primera Luz»: ya no se marcan al terminar una partida; los marca el evento de Sir Edwards
+// nocturno (00:00–04:00) o diurno (06:00–10:00) cuando aparece (src/state/sir-events.js).
 
 function checkModeUnlocksAndGetNew() {
   if (!Array.isArray(store.notifiedModeUnlocks)) store.notifiedModeUnlocks = [];
@@ -4341,7 +4335,6 @@ function finishLucidezMode(failed, timedOut = false, phaseInsufficient = null) {
   // Duelo: los logros y desbloqueos generales de JUGAR nunca se evalúan
   // aquí para una partida de Duelo (mismo criterio que finishGame). Los 6
   // logros exclusivos de Duelo se evalúan aparte, tras handleDuelFinish.
-  if (!isDuelGame) markNightCompletionIfApplicable();
   if (!isDuelGame) { try { encargosOnGameEnd('lucidez_mental', score, totalQ); } catch (e) {} }
   if (!isDuelGame) { try { SEQEncargosIntro.noteGame({ mode: 'lucidez_mental', failed: !!failed }); } catch (e) {} }
   const newMedalsUnlocked = isDuelGame ? [] : checkMedalsAndGetNew();
@@ -5895,7 +5888,6 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   // aquí para una partida de Duelo (ni para el creador ni para quien
   // acepta). Los 6 logros exclusivos de Duelo se evalúan aparte, más abajo,
   // solo tras handleDuelFinish() y solo cuando corresponde (ver ese punto).
-  if (!isDuelGame) markNightCompletionIfApplicable();
   if (!isDuelGame && currentGame.mode !== 'review') { try { encargosOnGameEnd(currentGame.mode, currentGame.mode === 'mental_calc' ? currentGame.correct : currentGame.score, totalQ); } catch (e) {} }
   if (!isDuelGame && currentGame.mode !== 'review') { try { SEQEncargosIntro.noteGame({ mode: currentGame.mode, score: currentGame.mode === 'mental_calc' ? currentGame.correct : currentGame.score, total: totalQ, failed: !!(isGameOverDueToFailure || isSurvivalFailure) }); } catch (e) {} }
   const newMedalsUnlocked = isDuelGame ? [] : checkMedalsAndGetNew();

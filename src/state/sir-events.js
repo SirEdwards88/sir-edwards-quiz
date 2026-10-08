@@ -130,6 +130,8 @@ function sirEventsOnAnswer(correct, q) {
         const done = typeof document !== 'undefined' && (document.getElementById('results-card') || {}).style && document.getElementById('results-card').style.display === 'block';
         const shown = typeof currentGame !== 'undefined' && currentGame === g && !done && !sirEventsShouldYield(g) && SEQSirEventsUI.show(ev);
         if (!shown) { sirEventsRollback(st, snap, undo); return; }
+        // Logros «Noctámbulo» / «Primera Luz»: haber encontrado a Sir Edwards nocturno / diurno (se evalúan al acabar la partida).
+        try { if (ev.type === 'night') store.hasCompletedNightGame = true; else if (ev.type === 'day') store.hasCompletedMorningGame = true; } catch (e) {}
         if (ev.type === 'day' || ev.type === 'night' || ev.type === 'visit' || ev.type === 'weak') { const r = sevRecentRead(); r[ev.type] = Date.now(); sevRecentWrite(r); }
       } catch (e) { sirEventsRollback(st, snap, undo); }
     }, SIR_EVENT_DELAY_MS);

@@ -58,8 +58,8 @@ function getDefaultStore() {
     // Racha máxima de aciertos consecutivos sin repetir la categoría de la
     // pregunta inmediatamente anterior (logro "Sin Preferencias").
     noRepeatCatBestStreak: 0,
-    // Se pone a true la primera vez que se completa una partida entre las
-    // 00:00 y las 04:00 (logro "Noctámbulo").
+    // Se ponen a true la primera vez que aparece el evento de Sir Edwards nocturno (00:00–04:00)
+    // o diurno (06:00–10:00): logros "Noctámbulo" y "Primera Luz".
     hasCompletedNightGame: false,
     hasCompletedMorningGame: false,
     // IDs de las preguntas mostradas recientemente. Se usan para evitar

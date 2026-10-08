@@ -69,8 +69,8 @@ const ALL_MEDALS = [
   { id: 'sin_preferencias', title: 'Sin Preferencias', desc: 'Consigue 10 aciertos consecutivos sin repetir categoría.', check: s => (s.noRepeatCatBestStreak || 0) >= 10 },
   { id: 'polimata', title: 'Polímata', desc: 'Domina al menos el 40% de las preguntas de cada categoría.', check: s => getCategoryMastery(s).every(x => x.total > 0 && x.mastered / x.total >= 0.4) },
   { id: 'balanced_master', title: 'Sin Puntos Débiles', desc: 'Alcanza al menos un 60% de dominio en todas las categorías.', check: s => getCategoryMastery(s).every(x => x.total > 0 && x.mastered / x.total >= 0.6) },
-  { id: 'noctambulo', title: 'Noctámbulo', desc: 'Completa una partida entre las 00:00 y las 04:00.', check: s => !!s.hasCompletedNightGame },
-  { id: 'diurno', title: 'Primera Luz', desc: 'Completa una partida entre las 06:00 y las 08:00.', check: s => !!s.hasCompletedMorningGame },
+  { id: 'noctambulo', title: 'Noctámbulo', desc: 'Encuentra a Sir Edwards nocturno. Solo se deja ver de 00:00 a 04:00, y no siempre.', check: s => !!s.hasCompletedNightGame },
+  { id: 'diurno', title: 'Primera Luz', desc: 'Encuentra a Sir Edwards diurno. Solo se deja ver de 06:00 a 10:00, y no siempre.', check: s => !!s.hasCompletedMorningGame },
   { id: 'mente_fracturada', title: 'Mente Fracturada', desc: 'Consigue tu primer Fragmento de Mente.', check: s => getFragmentCount(s) >= 1 },
 
   // DUELO
