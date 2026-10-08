@@ -5464,6 +5464,7 @@ h3.stats-h::before { display: none !important; content: none !important; }
 #name-modal .welcome-kicker { font: 800 11px var(--font-ui); letter-spacing: 2.6px; text-transform: uppercase; color: var(--accent-gold-strong, #92400e); }
 #name-modal .welcome-rule { width: 56px; height: 1px; margin: 12px auto 12px; background: linear-gradient(90deg, transparent, #c9992e, transparent); }
 #name-modal .name-hero { display: block; width: 64px; height: 64px; margin: 0 auto 8px; }
+#name-modal .name-hero.name-hero-greet { width: 88px; height: 88px; object-fit: contain; }
 #name-modal .welcome-title { display: block; font: 700 clamp(24px, 6.6vw, 28px)/1.15 var(--font-display); color: var(--brand-navy, #16244a); margin: 0 0 10px; }
 [data-theme="dark"] #name-modal .welcome-title { color: #f3ead6; }
 #name-modal .welcome-lead { font-size: 15px; line-height: 1.5; font-style: italic; color: var(--sub); margin: 0 auto 16px; max-width: 34ch; }

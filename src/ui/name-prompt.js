@@ -63,7 +63,9 @@ const SEQNamePrompt = (function () {
     var modal = el('name-modal'); var t = el('name-title'); var form = modal && modal.querySelector('form');
     var lead = modal && modal.querySelector('.welcome-lead');
     if (!modal || !t || !form || !lead) { close(); return; }
-    greeted = { t: t.textContent, l: lead.textContent };
+    var hero = modal.querySelector('.name-hero');
+    greeted = { t: t.textContent, l: lead.textContent, h: hero ? hero.getAttribute('src') : null };
+    if (hero) { hero.setAttribute('src', 'assets/ui/sombrero-saludo.webp'); hero.classList.add('name-hero-greet'); }
     t.textContent = 'Encantado, ' + name + '.';
     lead.textContent = 'Intentaré recordarlo.';
     form.hidden = true;
@@ -73,6 +75,8 @@ const SEQNamePrompt = (function () {
     var modal = el('name-modal'); if (!modal || !greeted) return;
     var t = el('name-title'), form = modal.querySelector('form'), lead = modal.querySelector('.welcome-lead');
     if (t) t.textContent = greeted.t; if (lead) lead.textContent = greeted.l; if (form) form.hidden = false;
+    var hero = modal.querySelector('.name-hero');
+    if (hero && greeted.h) { hero.setAttribute('src', greeted.h); hero.classList.remove('name-hero-greet'); }
     greeted = null;
   }
 
