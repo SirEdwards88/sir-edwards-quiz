@@ -51,8 +51,8 @@ const ALL_MEDALS = [
 
   // CÁLCULO MENTAL
   { id: 'mental_calc_15', title: 'Cálculo Relámpago', desc: 'Consigue 15 aciertos de Cálculo Mental en una misma partida.', check: s => (s.bestMentalCalcCorrect || 0) >= 15 },
-  { id: 'mental_calc_30', title: 'Calculadora Humana', desc: 'Consigue 30 aciertos de Cálculo Mental en una misma partida.', check: s => (s.bestMentalCalcCorrect || 0) >= 30 },
-  { id: 'mental_calc_40', title: 'Genio Numérico', desc: 'Consigue 40 o más aciertos de Cálculo Mental en una misma partida.', check: s => (s.bestMentalCalcCorrect || 0) >= 40 },
+  { id: 'mental_calc_30', title: 'Calculadora Humana', desc: 'Consigue 25 aciertos de Cálculo Mental en una misma partida.', check: s => (s.bestMentalCalcCorrect || 0) >= 25 },
+  { id: 'mental_calc_40', title: 'Genio Numérico', desc: 'Consigue 35 o más aciertos de Cálculo Mental en una misma partida.', check: s => (s.bestMentalCalcCorrect || 0) >= 35 },
 
   // PRECISIÓN / HABILIDAD
   { id: 'correct_100', title: 'Cerebro de Precisión', desc: 'Acierta 100 preguntas en total.', check: s => s.totalCorrect >= 100 },

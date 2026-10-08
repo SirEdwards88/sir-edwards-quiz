@@ -70,7 +70,7 @@ test('el banco de Lucidez es el de test (medio y difícil) más las 25 fáciles 
 
 test('reescrituras aprobadas: 397, 400, 413, 421 y 422', () => {
   const g = (n) => T.find((q) => q.n === n);
-  assert.ok(!/sucesor/i.test(g(397).q) && /Agencia Espacial Canadiense/.test(g(397).q));
+  assert.ok(!/sucesor/i.test(g(397).q) && /diciembre de 2021/.test(g(397).q) && /infrarrojo/.test(g(397).q));
   assert.ok(!/psiquiatra/.test(g(400).q));
   assert.match(g(413).q, /emperador de los franceses/);
   assert.ok(!/acceso aleatorio/i.test(g(421).q), 'el enunciado de 421 delataba la respuesta');
