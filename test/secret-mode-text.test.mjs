@@ -28,3 +28,11 @@ test('el historial va en orden, la 2.0 incluye mejoras visuales y 40 preguntas n
   assert.ok(!/ranking/i.test(v14), 'la 1.4 no menciona el ranking por XP');
   assert.match(changelog.slice(changelog.lastIndexOf('v2.1')), /[Dd]uelo por apuestas/);
 });
+
+test('bienvenida en dos viñetas: la segunda avisa de que no habrá tutorial y sigue sin nombrar el modo secreto', () => {
+  const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const w = html.slice(html.indexOf('id="welcome-modal"'), html.indexOf('id="update-modal"'));
+  assert.match(w, /id="welcome-step-1"/); assert.match(w, /id="welcome-step-2"/);
+  assert.match(w, /No habrá tutorial/); assert.match(w, /onclick="welcomeNext\(\)"/);
+  assert.ok(!/lucidez/i.test(w));
+});

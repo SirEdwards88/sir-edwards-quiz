@@ -26,6 +26,17 @@
   function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 
+  // Bienvenida en dos viñetas: 1) saludo y qué te espera; 2) «no habrá tutorial». Se marca como vista solo al terminar la 2.
+  function welcomeStep(n) {
+    var s1 = document.getElementById('welcome-step-1'), s2 = document.getElementById('welcome-step-2'), m = document.getElementById('welcome-modal');
+    if (!s1 || !s2) return;
+    s1.hidden = n !== 1; s2.hidden = n !== 2;
+    if (m) m.setAttribute('aria-labelledby', n === 1 ? 'welcome-title' : 'welcome-title-2');
+    var card = m && m.querySelector('.welcome-card'); if (card) card.scrollTop = 0;
+    var btn = (n === 1 ? s1 : s2).querySelector('.welcome-btn'); if (btn && n === 2) { try { btn.focus(); } catch (e) {} }
+  }
+  window.welcomeNext = function () { welcomeStep(2); };
+
   function decide() {
     var version = typeof APP_VERSION === 'string' ? APP_VERSION : '';
     if (window.__seqFirstVisit === true) {
@@ -42,6 +53,7 @@
       // El número de preguntas sale del banco real (nunca se queda viejo al añadir preguntas).
       var qc = document.getElementById('welcome-q-count');
       try { if (qc && typeof TEST_QUESTIONS !== 'undefined' && TEST_QUESTIONS.length) qc.textContent = TEST_QUESTIONS.length; } catch (e) {}
+      welcomeStep(1);
       var modal = document.getElementById('welcome-modal');
       if (modal) modal.style.display = 'flex';
       return;
