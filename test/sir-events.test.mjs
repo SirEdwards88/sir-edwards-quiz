@@ -488,3 +488,16 @@ test('frases nuevas: récord, regreso y categoría débil, con sus marcas y en v
   [...ph.record, ...ph.comeback, ...ph.weak].forEach((t) => assert.ok(/^«.+»$/.test(t) && t.length < 100 && !/\p{Extended_Pictographic}/u.test(t) && !/\b(habéis|sabemos|queremos)\b/i.test(t), t));
   const all = [...ph.record, ...ph.comeback, ...ph.weak]; assert.equal(new Set(all).size, all.length);
 });
+
+test('mañana y noche: como mucho uno al día (20 h entre ellos); la visita sigue con sus 6 h', () => {
+  const now = 5e8;
+  for (const [hour, type] of [[7, 'day'], [2, 'night']]) {
+    const a = S.newState(); warm(a, 1e3);
+    assert.equal(ans(a, now, hour, 1, { recent: { [type]: now - 5 * 3600 * 1000, visit: now } }, ALWAYS), null, type + ' hace 5 h: no');
+    const b = S.newState(); warm(b, 1e3);
+    assert.equal(ans(b, now, hour, 1, { recent: { [type]: now - S.DAYNIGHT_MS + 1000, visit: now } }, ALWAYS), null, type + ' hace casi 20 h: no');
+    const c = S.newState(); warm(c, 1e3);
+    const ev = ans(c, now, hour, 1, { recent: { [type]: now - S.DAYNIGHT_MS - 1000, visit: now } }, ALWAYS);
+    assert.ok(ev && ev.type === type, type + ' hace más de 20 h: sí');
+  }
+});

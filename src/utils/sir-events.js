@@ -37,6 +37,7 @@ const SEQSirEvents = (function () {
   var MAX_PER_GAME = 1;           // como mucho un evento por partida (salvo un hito de racha de 20 o más)
   var RECENT_MS = 6 * 3600 * 1000;        // día, noche y visita: como mucho uno cada 6 h (lo recuerda quien llama, entre partidas)
   var WEAK_MS = 24 * 3600 * 1000;         // categoría débil: como mucho uno al día
+  var DAYNIGHT_MS = 20 * 3600 * 1000;     // evento de mañana y de noche (solo caben en una franja de 4 h): como mucho uno al día
   var RECORD_P = 1, WEAK_P = 0.5;
   var RARE_P = 0.05;              // frase «muy rara»
 
@@ -277,7 +278,7 @@ const SEQSirEvents = (function () {
   // Devuelve null o { type, asset, label, message, durationMs } y anota el evento en `state`.
   function recentOk(ctx, type, nowMs) {
     var t = ctx && ctx.recent && ctx.recent[type];
-    return !(typeof t === 'number' && nowMs - t < (type === 'weak' ? WEAK_MS : RECENT_MS));
+    return !(typeof t === 'number' && nowMs - t < (type === 'weak' ? WEAK_MS : (type === 'day' || type === 'night') ? DAYNIGHT_MS : RECENT_MS));
   }
   function done(state, ctx, type, text, nowMs) {
     if (type !== 'streak') state.shown[type] = (state.shown[type] || 0) + 1;   // el hito de racha se cuenta en state.milestones
@@ -338,7 +339,7 @@ const SEQSirEvents = (function () {
 
   return {
     COOLDOWN_MS: COOLDOWN_MS, MIN_ANSWERS_BETWEEN: MIN_ANSWERS_BETWEEN, MIN_ANSWERS_START: MIN_ANSWERS_START,
-    P: P, STREAK_P: STREAK_P, BROKEN_MIN_RUN: BROKEN_MIN_RUN, BROKEN_P: BROKEN_P, MAX_PER_GAME: MAX_PER_GAME, RECENT_MS: RECENT_MS, WEAK_MS: WEAK_MS, MILESTONES: MILESTONES, ASSETS: ASSETS, LABELS: LABELS, RARE_P: RARE_P,
+    P: P, STREAK_P: STREAK_P, BROKEN_MIN_RUN: BROKEN_MIN_RUN, BROKEN_P: BROKEN_P, MAX_PER_GAME: MAX_PER_GAME, RECENT_MS: RECENT_MS, WEAK_MS: WEAK_MS, DAYNIGHT_MS: DAYNIGHT_MS, MILESTONES: MILESTONES, ASSETS: ASSETS, LABELS: LABELS, RARE_P: RARE_P,
     PHRASES: { visit: VISIT, visitRare: VISIT_RARE, streak: STREAK_PHRASES, broken: BROKEN_PHRASES, record: RECORD, comeback: COMEBACK, weak: WEAK, day: DAY, dayRare: DAY_RARE, nightEarly: NIGHT_EARLY, nightLate: NIGHT_LATE, nightRare: NIGHT_RARE },
     isNight: isNight, isDay: isDay, newState: newState, evaluate: evaluate
   };
