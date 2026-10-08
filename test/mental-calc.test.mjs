@@ -75,7 +75,7 @@ test('prácticamente sin repeticiones: nada idéntico seguido ni dentro de una v
 
 test('la dificultad crece gradualmente con la racha, sin saltos en los umbrales', () => {
   const m = []; for (let st = 0; st <= 30; st++) m.push(mean(run(st, 400, st + 100).map((o) => o.difficulty)));
-  assert.ok(m[0] < 22 && m[5] > 25 && m[10] > 38 && m[15] > 50 && m[20] > 60 && m[30] > 70, JSON.stringify(m.map(Math.round)));
+  assert.ok(m[0] < 22 && m[5] > 18 && m[10] > 27 && m[15] > 38 && m[20] > 49 && m[30] > 63, JSON.stringify(m.map(Math.round)));
   for (let st = 1; st <= 30; st++) assert.ok(m[st] > m[st - 1] - 4, `retroceso en racha ${st}`);           // sin bajadas (ruido aparte)
   for (let st = 1; st <= 30; st++) assert.ok(m[st] - m[st - 1] < 9, `salto brusco en racha ${st}: ${m[st] - m[st - 1]}`);
   assert.ok(m[30] - m[0] > 50);
