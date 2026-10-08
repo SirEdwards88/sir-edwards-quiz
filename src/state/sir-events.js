@@ -102,10 +102,11 @@ function sirEventsOnAnswer(correct, q) {
       return pickRotatingPhrase(k, list);
     } : undefined;
     const streak = typeof answerStreak === 'number' ? answerStreak : 0;
-    // Récord personal: la racha supera la mejor marca que había (≥4) y ya llega a 5. `bestBefore` se arrastra por partida.
+    // Récord personal: solo con una marca ya decente (la anterior ≥ 8) y con unas cuantas partidas jugadas (≥ 15); no en los primeros días,
+    // cuando casi cada partida mejora la marca. `bestBefore` se arrastra por partida.
     const best = typeof store === 'object' && store ? Number(store.bestStreak) || 0 : 0;
     if (st.bestBefore === undefined) st.bestBefore = best;
-    const record = correct === true && g.mode !== 'review' && streak >= 5 && streak === best && best > st.bestBefore && st.bestBefore >= 4 ? streak : 0;
+    const record = correct === true && g.mode !== 'review' && streak >= 9 && streak === best && best > st.bestBefore && st.bestBefore >= 8 && (Number(store.gamesPlayed) || 0) >= 15 ? streak : 0;
     st.bestBefore = Math.max(st.bestBefore, best);
     const recent = sevRecentRead();
     const ev = SEQSirEvents.evaluate(st, {

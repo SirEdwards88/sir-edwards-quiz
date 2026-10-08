@@ -37,7 +37,7 @@ const SEQSirEvents = (function () {
   var MAX_PER_GAME = 1;           // como mucho un evento por partida (salvo un hito de racha de 20 o más)
   var RECENT_MS = 6 * 3600 * 1000;        // día, noche y visita: como mucho uno cada 6 h (lo recuerda quien llama, entre partidas)
   var WEAK_MS = 24 * 3600 * 1000;         // categoría débil: como mucho uno al día
-  var RECORD_P = 0.5, WEAK_P = 0.5;
+  var RECORD_P = 1, WEAK_P = 0.5;
   var RARE_P = 0.05;              // frase «muy rara»
 
   var ASSETS = {
