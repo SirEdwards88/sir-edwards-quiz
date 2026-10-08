@@ -665,11 +665,11 @@
 /* Fragmento todavía por conseguir: lila apagado (icono desaturado y pastilla tenue); conseguido, el morado vivo de siempre. */
 .ach-frag:not(.got):not(.ach-avatar) { background: rgba(124,58,237,.07); border-color: rgba(124,58,237,.2); }
 .ach-frag:not(.got):not(.ach-avatar) img { filter: saturate(.35) brightness(.9); opacity: .6; }
-/* La pastilla «Avatar» ha de destacar tanto como la del Fragmento: dorada, con relieve (los Fragmentos son morados). */
+/* Pastilla «Avatar»: dorada con relieve al conseguirla; mientras no, dorado apagado (como el lila apagado de los Fragmentos por conseguir). */
 .ach-frag.ach-avatar { font-size: 11.5px; font-weight: 800; letter-spacing: .6px; line-height: 1.5; text-transform: uppercase; white-space: nowrap; padding: 2px 10px;
-  color: #8a5a00; background: rgba(232,200,116,.22); border: 1.5px solid #d9a93a; }
-.ach-frag.ach-avatar.got { color: #2a1a00; background: linear-gradient(135deg, #f3d77a, #d9a93a); border-color: #b98a1f; box-shadow: 0 1px 6px rgba(217,169,58,.45), inset 0 1px 0 rgba(255,255,255,.55); }
-[data-theme="dark"] .ach-frag.ach-avatar { color: #f3d77a; background: rgba(217,169,58,.16); border-color: #d9a93a; }
+  color: #8a5a00; background: rgba(217,169,58,.08); border: 1.5px solid rgba(185,138,31,.32); opacity: .8; }
+.ach-frag.ach-avatar.got { opacity: 1; color: #2a1a00; background: linear-gradient(135deg, #f3d77a, #d9a93a); border-color: #b98a1f; box-shadow: 0 1px 6px rgba(217,169,58,.45), inset 0 1px 0 rgba(255,255,255,.55); }
+[data-theme="dark"] .ach-frag.ach-avatar { color: rgba(243,215,122,.55); background: rgba(217,169,58,.06); border-color: rgba(217,169,58,.28); }
 [data-theme="dark"] .ach-frag.ach-avatar.got { color: #2a1a00; background: linear-gradient(135deg, #f3d77a, #d9a93a); }
 
 /* ===== 2.1 pulido: elección de modo, Rankings, botón de estadísticas y pista de avatar bloqueado ===== */
