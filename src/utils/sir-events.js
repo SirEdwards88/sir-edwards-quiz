@@ -172,7 +172,7 @@ const SEQSirEvents = (function () {
     '«He decidido madrugar. Tú también, aparentemente.»',
     '«Buenos días. Espero que tu cerebro haya llegado antes que tú.»',
     '«A estas horas hasta las malas decisiones parecen razonables.»',
-    '«Madrugando. Inquietante, pero encomiable.»',
+    '«A estas horas. Inquietante, pero encomiable.»',
     '«Café, luz y preguntas. Una combinación peligrosa para tu ego.»',
     '«El mundo todavía se despereza y tú ya estás aquí.»',
     '«Una mente despierta a primera hora. Qué desconcertante.»',
