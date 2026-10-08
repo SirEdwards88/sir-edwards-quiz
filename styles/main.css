@@ -5454,6 +5454,7 @@ h3.stats-h::before { display: none !important; content: none !important; }
 #welcome-modal .welcome-note { font-size: 13px; line-height: 1.45; color: var(--sub); margin: 0 0 16px; }
 #welcome-modal .welcome-btn { width: 100%; min-height: 52px; font-size: 17px; margin-top: 0 !important; padding: 12px; }
 [data-theme="dark"] #welcome-modal .welcome-title { color: #f3ead6; }
+#welcome-modal { z-index: 1100; } /* por encima de la pantalla de cuenta */
 #welcome-modal [hidden] { display: none !important; }
 #welcome-modal .welcome-hero { display: block; width: 132px; height: auto; margin: 0 auto 8px; filter: drop-shadow(0 6px 10px rgba(0,0,0,.22)); }
 #welcome-modal .welcome-list-plain li { padding: 9px 14px; font-style: italic; }

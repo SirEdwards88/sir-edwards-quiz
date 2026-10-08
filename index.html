@@ -162,7 +162,7 @@
   </symbol>
 </svg>
 
-<!-- Bienvenida (2.0): solo la primera vez, DESPUÉS de la pantalla de cuenta. La muestra src/ui/intro.js. -->
+<!-- Bienvenida (2.2): solo la primera vez, nada más abrir y ANTES de la pantalla de cuenta. La muestra src/ui/intro.js. -->
 <div id="welcome-modal" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
   <div class="modal-card welcome-card">
     <div id="welcome-step-1">
@@ -282,8 +282,7 @@ const APP_VERSION = "2.2";
 // ciertos ajustes de privacidad en iOS) esta línea podía lanzar una
 // excepción y dejar toda la app sin cargar antes incluso de llegar a
 // loadStore(), que ya está protegido.
-// 2.0: la bienvenida ya no sale aquí (iría encima de la pantalla de cuenta); src/ui/intro.js la muestra
-// después. Solo se anota, antes de que nada escriba el progreso, si es la primera visita en este navegador.
+// 2.2: la bienvenida sale al abrir, antes de la pantalla de cuenta (la muestra src/ui/intro.js). Solo se anota, antes de que nada escriba el progreso, si es la primera visita en este navegador.
 try {
   window.__seqFirstVisit = localStorage.getItem('siredwards_quiz_v1_0_data') === null;
 } catch (e) {
@@ -3046,6 +3045,7 @@ function authGateFocusables() {
 // cerrarse saltándose el requisito de cuenta.
 function authGateKeydown(e) {
   if (e.key !== 'Tab') return;
+  const wm = document.getElementById('welcome-modal'); if (wm && wm.style.display === 'flex') return; // la bienvenida va encima de la pantalla de cuenta
   const gate = document.getElementById('auth-gate');
   if (!gate) return;
   const focusables = authGateFocusables();

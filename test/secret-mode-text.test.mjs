@@ -36,3 +36,10 @@ test('bienvenida en dos viñetas: la segunda avisa de que no habrá tutorial y s
   assert.match(w, /No habrá tutorial/); assert.match(w, /onclick="welcomeNext\(\)"/);
   assert.ok(!/lucidez/i.test(w));
 });
+
+test('la bienvenida sale al abrir por primera vez, antes de la pantalla de cuenta', () => {
+  const intro = fs.readFileSync(new URL('../src/ui/intro.js', import.meta.url), 'utf8');
+  assert.match(intro, /function showWelcomeFirst/); assert.match(intro, /DOMContentLoaded', showWelcomeFirst/);
+  const css = fs.readFileSync(new URL('../styles/main.css', import.meta.url), 'utf8');
+  assert.match(css, /#welcome-modal \{ z-index: 1100;/);
+});

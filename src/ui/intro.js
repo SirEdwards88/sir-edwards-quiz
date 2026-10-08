@@ -1,4 +1,4 @@
-// SirEdwards Quiz v2.0 — orden de entrada: cuenta → bienvenida (solo la primera vez) o novedades (al actualizar).
+// SirEdwards Quiz v2.2 — orden de entrada: bienvenida (solo la primera vez, nada más abrir) → cuenta; o novedades (al actualizar, tras la cuenta).
 //
 // Antes la bienvenida salía nada más cargar, encima de la pantalla de cuenta. Ahora index.html avisa aquí
 // (SEQIntro.afterGate) cuando la pantalla de cuenta se cierra o no hace falta, y se decide UNA vez por carga:
@@ -37,25 +37,33 @@
   }
   window.welcomeNext = function () { welcomeStep(2); };
 
+  // Primera visita en este navegador: Sir Edwards se presenta nada más abrir, ANTES de la pantalla de cuenta
+  // (y avisa de que no habrá tutorial). Se marca como vista al terminar la segunda viñeta.
+  function showWelcomeFirst() {
+    try {
+      if (window.__seqFirstVisit !== true || get(WELCOME_KEY) === '1') return;
+      var qc = document.getElementById('welcome-q-count');
+      try { if (qc && typeof TEST_QUESTIONS !== 'undefined' && TEST_QUESTIONS.length) qc.textContent = TEST_QUESTIONS.length; } catch (e) {}
+      var modal = document.getElementById('welcome-modal');
+      if (!modal) return;
+      welcomeStep(1);
+      modal.style.display = 'flex';
+    } catch (e) { /* nunca debe impedir jugar */ }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', showWelcomeFirst); else showWelcomeFirst();
+
   function decide() {
     var version = typeof APP_VERSION === 'string' ? APP_VERSION : '';
     if (window.__seqFirstVisit === true) {
       if (version) set(UPDATE_KEY, version);
-      if (get(WELCOME_KEY) === '1') return;
-      // Jugador con progreso en su cuenta que estrena dispositivo: no es un «nuevo aspirante».
+      // La bienvenida ya salió al abrir (antes de la cuenta). Jugador con progreso en su cuenta que estrena
+      // dispositivo: no es un «nuevo aspirante», así que además de la bienvenida se le saluda de vuelta.
       try {
         if (window.SEQOnline && SEQOnline.accountHadProgress && SEQOnline.accountHadProgress()) {
           set(WELCOME_KEY, '1');
           if (typeof showInfoToast === 'function') showInfoToast(RETURN_LINES[Math.floor(Math.random() * RETURN_LINES.length)], 'sombrero');
-          return;
         }
       } catch (e) {}
-      // El número de preguntas sale del banco real (nunca se queda viejo al añadir preguntas).
-      var qc = document.getElementById('welcome-q-count');
-      try { if (qc && typeof TEST_QUESTIONS !== 'undefined' && TEST_QUESTIONS.length) qc.textContent = TEST_QUESTIONS.length; } catch (e) {}
-      welcomeStep(1);
-      var modal = document.getElementById('welcome-modal');
-      if (modal) modal.style.display = 'flex';
       return;
     }
     var seenBefore = get(UPDATE_KEY);
