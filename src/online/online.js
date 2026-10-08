@@ -470,6 +470,7 @@
   }
   var nonceTimer = null;
   var loginHadProgress = false;
+  var lastMigOnline = null; // progreso online mostrado en el último aviso de migración (lo usa skipMigration)
 
   function onCredential(resp) {
     if (!resp || !resp.credential) { setMsg('No se recibió la credencial de Google.'); return; }
@@ -598,7 +599,7 @@
       var title, text, primary;
       if (hasLocal && !hasOnline) {
         title = 'Guardar tu progreso en la cuenta';
-        text = 'Tienes progreso en este dispositivo. Puedes asociarlo a tu cuenta para no perderlo y llevarlo a cualquier dispositivo. <b>No se borra nada de este dispositivo.</b>';
+        text = 'Tienes progreso en este dispositivo. Puedes asociarlo a tu cuenta para no perderlo y llevarlo a cualquier dispositivo. Si prefieres no hacerlo, este dispositivo empezará de cero.';
         primary = 'Asociar mi progreso a la cuenta';
       } else if (!hasLocal && hasOnline) {
         title = 'Recuperar el progreso de tu cuenta';
@@ -610,6 +611,7 @@
         primary = 'Combinar progreso';
       }
       var warn = (sync && sync.otherAccountBefore) ? '<p class="seq-warn">' + ico('atencion') + 'Este dispositivo estuvo enlazado a otra cuenta. Combina solo si el progreso de aquí es tuyo.</p>' : '';
+      lastMigOnline = online;
       var host = $('seq-migrate-body');
       host.innerHTML =
         '<p>' + text + '</p>' +
@@ -617,8 +619,7 @@
         '<p class="seq-note">Esta operación es segura y se puede repetir: nunca suma dos veces ni reduce nada.</p>' +
         '<div class="modal-warning-actions seq-actions">' +
         '<button class="btn btn-primary" id="seq-mig-primary" onclick="SEQOnline.doMerge()">' + primary + '</button>' +
-        '<button class="btn btn-secondary" onclick="SEQOnline.skipMigration()">Ahora no (la cuenta empieza desde hoy)</button>' +
-        '<button class="seq-link" onclick="SEQOnline.closeMigration()">Decidir más tarde</button></div>';
+        '<button class="btn btn-secondary" onclick="SEQOnline.skipMigration()">Ahora no</button></div>';
       $('seq-migrate-modal').style.display = 'flex';
     };
     if (onlineProgress) return open(onlineProgress);
@@ -629,6 +630,7 @@
     });
   }
   function closeMigration() { var m = $('seq-migrate-modal'); if (m) m.style.display = 'none'; render(); }
+
 
   function doMerge(retried) {
     if (!account || !sync || ui.busy) return;
@@ -688,16 +690,43 @@
     return true;
   }
 
+  // «Ahora no»: al entrar con una cuenta, este dispositivo empieza de cero (el progreso local se borra, previa
+  // confirmación). La cuenta no se toca y «Restaurar / combinar progreso» (Ajustes) sigue disponible para recuperarla.
+  // Abierto desde Ajustes con la cuenta ya enlazada no hay decisión pendiente ni nada que borrar: solo cierra el aviso.
   function skipMigration() {
     if (!account || !sync) return;
-    // La cuenta empieza a contar desde ahora; el progreso local queda intacto.
-    var seen = sync.seen || emptySeen();
-    sync = newSyncState(account.player.id, 'skipped', baseFromLocal(), seen);
-    saveSync();
-    var m = $('seq-migrate-modal'); if (m) m.style.display = 'none';
-    toast('Entendido: tu progreso local sigue intacto.');
-    render();
-    syncNow('skip');
+    var m = $('seq-migrate-modal');
+    if (sync.migration !== 'pending') { if (m) m.style.display = 'none'; render(); return; }
+    var hasOnline = progressHasData(lastMigOnline);
+    if (!hasLocalProgress()) {
+      sync = newSyncState(account.player.id, 'skipped', baseFromLocal(), sync.seen || emptySeen());
+      saveSync();
+      if (m) m.style.display = 'none';
+      render();
+      syncNow('skip');
+      return;
+    }
+    showAppConfirm({
+      title: 'Empezar de cero',
+      message: 'Se borrará el progreso de este dispositivo (nivel, XP, logros, estadísticas y partidas guardadas).' +
+        (hasOnline ? ' Tu cuenta conserva el suyo: podrás recuperarlo desde Ajustes.' : ' Esta cuenta empezará limpia.') +
+        ' Esta acción no se puede deshacer.',
+      confirmLabel: 'Sí, empezar de cero',
+      onConfirm: function () {
+        try {
+          // Se vacía la partida en memoria para que 'pagehide' no vuelva a guardar el progreso al recargar.
+          if (typeof currentGame !== 'undefined') currentGame = { mode: 'play', queue: [], currentIdx: 0, score: 0, answered: false, totalQuestionsToPlay: 30, lives: 3 };
+          if (typeof store !== 'undefined' && store) store.savedGame = null;
+          localStorage.removeItem('siredwards_quiz_v1_0_data');
+          if (window.SEQDataSync) window.SEQDataSync.reset();
+          sync = newSyncState(account.player.id, 'skipped', { xp: 0, games: 0, correct: 0, wrong: 0 }, sync.seen || emptySeen());
+          saveSync();
+          // Cuenta sin progreso: la bienvenida vuelve a salir como a un jugador nuevo.
+          if (!hasOnline) localStorage.removeItem('siredwards_quiz_v1_1_welcome_seen');
+        } catch (e) {}
+        location.reload();
+      }
+    });
   }
 
   // ---- Perfil ---------------------------------------------------------------------------
@@ -865,7 +894,6 @@
     } else if (st && !quiet && navigator.onLine !== false) {
       html += '<div class="seq-btnrow"><button class="btn btn-primary" onclick="SEQOnline.syncNowUi()"' + (ui.syncing ? ' disabled' : '') + '>↻ Reintentar</button></div>';
     }
-    if (rankingOn()) html += '<div class="seq-btnrow"><button class="btn btn-secondary" onclick="SEQOnline.openRanking()"><img class="ui-img ui-btn-img" src="assets/modes/mini/ranking.webp" alt="" draggable="false">Ranking global</button></div>';
     html += '<details class="seq-manage"><summary>Cuenta</summary>' +
       '<button class="seq-id" onclick="SEQOnline.copyId()" title="Copiar ID">Tu ID de jugador: <b>' + esc(p.id) + '</b> <span class="ui-line ui-line-copy" aria-hidden="true"></span></button>' +
       '<div class="seq-btnrow">' +

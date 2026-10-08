@@ -318,8 +318,6 @@
     if (S21.rankErr) return out + rkNote(S21.rankErr) + '</div>';
     if (!d) return out + '<p class="seq-v21-rk-loading">Cargando…</p></div>';
     out += '<p class="seq-v21-rk-sub"><span>' + esc(BOARDS[b].sub) + '</span></p>';
-    // Ranking global fuera del PvP: las puntuaciones las declara cada dispositivo (solo el ELO de los duelos lo verifica el servidor).
-    if (S21.scope === 'global' && !isPvp(b)) out += '<p class="seq-v21-rk-sub"><span>Puntos declarados por cada jugador, sin verificar. Sir Edwards confía; tú, con moderación.</span></p>';
     out += meCard(d, b);
     var rows = d.ranking || [];
     if (!rows.length) return out + rkNote(isPvp(b) ? 'Aún no hay duelos puntuados. Juega uno y aparecerás aquí.' : 'Todavía nadie tiene puntuación en este ranking.') + '</div>';
