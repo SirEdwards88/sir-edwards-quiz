@@ -268,3 +268,12 @@ test('cableado de la pausa: pulsación larga, Espacio y segundo plano; tocar tra
   assert.match(ui, /removeEventListener\('keydown', onSpace, true\)/, 'se limpia al terminar');
   assert.match(css, /\.enc-intro\.is-paused[^{]*\{ animation-play-state: paused !important; \}/);
 });
+
+test('la tira de Encargos se pinta al abrir la app y tras sincronizar (no solo tras una partida)', async () => {
+  const { readFileSync } = await import('node:fs');
+  const intro = readFileSync(new URL('../src/ui/encargos-intro.js', import.meta.url), 'utf8');
+  const arranque = intro.slice(intro.indexOf("addEventListener('DOMContentLoaded'"));
+  assert.match(arranque, /SEQEncargosUI\.renderHome\(\)/);
+  const sync = readFileSync(new URL('../src/online/data-sync.js', import.meta.url), 'utf8');
+  assert.match(sync, /encargosRefreshUi/);
+});

@@ -351,6 +351,8 @@ if (typeof document !== 'undefined') {
   document.addEventListener('DOMContentLoaded', function () {
     var preview = false;
     try { preview = /[?&]presentacion(=|&|$)/.test(location.search); } catch (e) {}
+    // La tira de Inicio se pinta ya al abrir la app (Inicio es la vista activa sin pasar por switchTab).
+    try { SEQEncargosUI.renderHome(); } catch (e) {}
     setTimeout(function () { try { preview ? SEQEncargosIntro.replay() : SEQEncargosIntro.onHome(); } catch (e) {} }, 3500);
   });
 }

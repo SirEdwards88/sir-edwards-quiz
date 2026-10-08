@@ -80,6 +80,7 @@
     try { if (typeof updateThemeButtons === 'function') updateThemeButtons(store.theme); } catch (e) {}
     try { if (typeof updateSoundButtons === 'function') updateSoundButtons(store.sound); } catch (e) {}
     try { if (typeof updateBadges === 'function') updateBadges(); } catch (e) {}
+    try { if (typeof encargosRefreshUi === 'function') encargosRefreshUi(); } catch (e) {}
   }
   function wrapErr(err) { if (err && typeof err === 'object') err.dataSync = true; return err; }
 
