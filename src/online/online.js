@@ -574,6 +574,8 @@
             localStorage.removeItem('siredwards_quiz_v1_0_data');
             localStorage.removeItem('siredwards_quiz_v1_1_welcome_seen');
             localStorage.removeItem('siredwards_quiz_v2_0_datasync');
+            localStorage.removeItem('siredwards_quiz_encargos_intro_seen');
+            localStorage.removeItem('siredwards_quiz_encargos_monday_week');
           } catch (e) {}
           location.reload();
         }).catch(function (err) {
@@ -718,6 +720,8 @@
           if (typeof currentGame !== 'undefined') currentGame = { mode: 'play', queue: [], currentIdx: 0, score: 0, answered: false, totalQuestionsToPlay: 30, lives: 3 };
           if (typeof store !== 'undefined' && store) store.savedGame = null;
           localStorage.removeItem('siredwards_quiz_v1_0_data');
+          localStorage.removeItem('siredwards_quiz_encargos_intro_seen');
+          localStorage.removeItem('siredwards_quiz_encargos_monday_week');
           if (window.SEQDataSync) window.SEQDataSync.reset();
           sync = newSyncState(account.player.id, 'skipped', { xp: 0, games: 0, correct: 0, wrong: 0 }, sync.seen || emptySeen());
           saveSync();

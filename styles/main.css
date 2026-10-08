@@ -5458,6 +5458,8 @@ h3.stats-h::before { display: none !important; content: none !important; }
 #welcome-modal [hidden] { display: none !important; }
 /* Pregunta del nombre (2.2): reutiliza la tarjeta de bienvenida */
 #name-modal { z-index: 1100; }
+/* En móvil la tarjeta se ancla arriba en vez de centrarse: con el teclado abierto el campo del nombre queda a la vista. */
+@media (max-width: 600px) { #name-modal { align-items: flex-start; padding-top: max(20px, 5vh); } }
 #name-modal [hidden] { display: none !important; }
 #name-modal .welcome-card { max-width: 440px; width: calc(100% - 32px); padding: 26px 22px 22px; max-height: 92vh; overflow-y: auto;
   border: 1px solid rgba(201,153,46,.55); box-shadow: 0 0 0 4px var(--card), 0 0 0 5px rgba(201,153,46,.35), 0 18px 40px rgba(0,0,0,.28); text-align: center; }

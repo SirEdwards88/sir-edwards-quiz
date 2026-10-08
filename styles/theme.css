@@ -110,9 +110,9 @@ body.in-game .actions .btn-primary {
 .mode-unlock-toast .toast-multi-icon .toast-badge { width: 26px; height: 26px; display: inline-block; vertical-align: middle; }
 .mode-unlock-toast { border-color: var(--se-gold) !important; }
 
-/* Bienvenida: franja superior en oro; la lista usa las insignias mini. */
+/* Bienvenida: franja superior en oro; la lista usa iconos sueltos, sin marco circular. */
 .welcome-card::before { background: linear-gradient(90deg, #b8862a, var(--se-gold-light), #b8862a) !important; }
-#welcome-modal .welcome-list li > span:first-child .mode-img-mini { width: 26px; height: 26px; display: block; margin-top: 1px; }
+#welcome-modal .welcome-list li > span:first-child .welcome-ico { width: 30px; height: 30px; display: block; margin-top: -1px; }
 /* Récords personales con la insignia mini del modo. */
 .stat-extra-icon.has-img { background: none !important; border: 0 !important; box-shadow: none !important; }
 .stat-extra-icon.has-img .mode-img-mini { width: 34px; height: 34px; display: block; }
