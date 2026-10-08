@@ -64,6 +64,8 @@
   // Tarjeta de jugador (amigos, rival, listas): avatar grande con marco dorado + nombre + detalle opcional.
   // `sub` ya llega escapado por quien llama. Estilos: .seq-pl* en styles/online.css.
   function who(p, sub) { return '<div class="seq-pl"><span class="seq-pl-av">' + p.avatar + '</span><div class="seq-pl-body"><div class="seq-pl-name">' + p.name + '</div>' + (sub ? '<div class="seq-pl-sub">' + sub + '</div>' : '') + '</div></div>'; }
+  // Presencia: `online` lo informa el servidor (true/false). Sin dato (servidor sin la columna) no se bloquea a nadie.
+  function isOnline(f) { return !(f && f.online === false); }
   function secs(ms) { return Math.max(0, Math.ceil(ms / 1000)); }
   function left(ms) {
     if (ms <= 0) return 'ya';
@@ -243,7 +245,7 @@
   }
 
   // ---- Navegación ------------------------------------------------------------
-  function stopTimers() { clearTimeout(S.pollT); S.pollT = null; clearInterval(S.tickT); S.tickT = null; urgencyStop(); }
+  function stopTimers() { clearTimeout(S.presT); S.presT = null; clearTimeout(S.pollT); S.pollT = null; clearInterval(S.tickT); S.tickT = null; urgencyStop(); }
   function open(screen, id) {
     if (!active()) return;
     stopTimers();
@@ -450,7 +452,18 @@
     act('POST', '/challenges', { rival: rivalId, modo: modo, nivel: NIVEL_UI[nivel] ? nivel : undefined }, function (d) { open('reto', d.id); });
   }
   // 2.1: en Duelo online se elige antes el modo (clásico o apuestas); el servidor lo valida.
-  function pick(kind, modo) { S.pickKind = kind === 'duel' ? 'duel' : 'reto'; S.pickModo = modo === 'stakes' ? 'stakes' : 'classic'; S.screen = 'pick'; render(); refreshSummary(); }
+  function pick(kind, modo) { S.pickKind = kind === 'duel' ? 'duel' : 'reto'; S.pickModo = modo === 'stakes' ? 'stakes' : 'classic'; S.screen = 'pick'; render(); refreshSummary(); watchPresence(); }
+  // En la lista de a quién retar a un duelo en directo, la presencia se refresca cada 15 s (solo mientras esa pantalla está abierta y visible).
+  var PRESENCE_MS = 15000;
+  function watchPresence() {
+    clearTimeout(S.presT); S.presT = null;
+    if (S.screen !== 'pick' || S.pickKind !== 'duel') return;
+    S.presT = setTimeout(function () {
+      if (S.screen !== 'pick' || S.pickKind !== 'duel') return;
+      var go = document.visibilityState === 'hidden' ? Promise.resolve() : call('GET', '/friends').then(function (d) { S.lists.friends = d; if (S.screen === 'pick') render(); }).catch(function () {});
+      go.then(watchPresence);
+    }, PRESENCE_MS);
+  }
 
   // Respuesta: se envía el TEXTO de la opción elegida, contra la pregunta que
   // está PINTADA (S.shown), no contra la que "debería" tocar según el reloj.
@@ -606,6 +619,19 @@
     else h += '<p class="stats-section-sub">Tu amigo tiene 3 días para aceptar y jugar. Cada uno juega cuando pueda. Después eliges el modo.</p>';
     if (!fl) return h + '<p class="stats-section-sub">Cargando…</p>';
     if (!fl.friends.length) return h + '<p class="stats-section-sub">Aún no tienes amigos.</p><button class="btn btn-secondary" onclick="SEQDuels.open(\'friends\')">' + ico('amigos') + 'Añadir amigos</button>';
+    if (S.pickKind === 'duel') {
+      // Duelo en directo: los dos tienen que estar a la vez. Solo se puede retar a quien está en línea ahora mismo.
+      var on = fl.friends.filter(isOnline), off = fl.friends.filter(function (f) { return !isOnline(f); });
+      h += '<h3 class="seq-d-h3">En línea (' + num(on.length) + ')</h3>';
+      h += on.length ? '<div class="history-list">' + on.map(function (f) {
+        var p = player(f.player);
+        return '<div class="history-item seq-d-row seq-pl-row" onclick="SEQDuels.create(\'' + p.id + '\')">' + who(p, '<span class="seq-d-on">● En línea</span>') + '<div class="history-item-score">Retar ›</div></div>';
+      }).join('') + '</div>' : '<p class="stats-section-sub">Nadie está en línea ahora mismo. Un duelo en directo necesita a los dos a la vez. Prueba con un Reto: cada uno juega cuando pueda.</p><button class="btn btn-secondary" onclick="SEQDuels.open(\'retos\')">' + ico('retos') + 'Ir a Retos</button>';
+      if (off.length) h += '<h3 class="seq-d-h3">Sin conexión (' + num(off.length) + ')</h3><div class="history-list">' + off.map(function (f) {
+        return '<div class="history-item seq-d-row seq-pl-row seq-d-off" aria-disabled="true">' + who(player(f.player), 'Sin conexión') + '</div>';
+      }).join('') + '</div>';
+      return h;
+    }
     return h + '<div class="history-list">' + fl.friends.map(function (f) {
       var p = player(f.player);
       return '<div class="history-item seq-d-row seq-pl-row" onclick="SEQDuels.create(\'' + p.id + '\')">' + who(p) + '<div class="history-item-score">Retar ›</div></div>';
@@ -638,10 +664,11 @@
     h += '<h3 class="seq-d-h3">Mis amigos</h3>';
     if (!fl.friends.length) return h + '<p class="stats-section-sub">Busca a un amigo por su nombre o su ID para empezar.</p>';
     return h + '<div class="history-list">' + fl.friends.map(function (x) {
-      var p = player(x.player), b = '';
-      if (f.classic_duel) b += '<button class="btn btn-primary seq-d-sm" title="Duelo online" aria-label="Duelo online" onclick="SEQDuels.quick(\'duel\',\'' + p.id + '\')">' + ico('duelo') + '</button> ';
+      var p = player(x.player), b = '', on = isOnline(x);
+      if (f.classic_duel) b += on ? '<button class="btn btn-primary seq-d-sm" title="Duelo online" aria-label="Duelo online" onclick="SEQDuels.quick(\'duel\',\'' + p.id + '\')">' + ico('duelo') + '</button> '
+        : '<button class="btn btn-primary seq-d-sm" disabled title="Sin conexión: solo puedes retar a duelo a quien esté en línea" aria-label="Duelo online (sin conexión)">' + ico('duelo') + '</button> ';
       if (f.async_challenges) b += '<button class="btn btn-secondary seq-d-sm" title="Reto" aria-label="Reto" onclick="SEQDuels.quick(\'reto\',\'' + p.id + '\')">' + ico('retos') + '</button>';
-      return '<div class="history-item seq-pl-row">' + who(p) + '<div class="seq-pl-act">' + b + '</div></div>';
+      return '<div class="history-item seq-pl-row">' + who(p, x.online === true ? '<span class="seq-d-on">● En línea</span>' : '') + '<div class="seq-pl-act">' + b + '</div></div>';
     }).join('') + '</div>';
   }
   function renderLogros() {

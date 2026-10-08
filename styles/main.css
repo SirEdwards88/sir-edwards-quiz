@@ -5582,3 +5582,22 @@ h3.stats-h::before { display: none !important; content: none !important; }
 /* XP extra de una racha: pastilla dorada dentro del aviso de racha (src/ui/game-fx.js). */
 .fx-streak-xp { align-self: center; margin-left: 2px; padding: 3px 9px; border-radius: 999px; font-size: 13px; font-weight: 900; letter-spacing: .4px;
   color: #1c1405; background: linear-gradient(135deg, #f0d99a, #e8c874); box-shadow: 0 0 0 1px rgba(255,255,255,.35) inset; white-space: nowrap; }
+
+/* --- AJUSTES 2.3: Preferencias en tarjetas separadas (Apariencia, Sonido, Avisos, Aplicación) --- */
+.settings-cards .settings-group {
+  background: rgba(255,255,255,.025); border: 1px solid rgba(201,162,75,.22); border-radius: 14px;
+  padding: 16px 16px 14px; margin: 0 0 14px;
+}
+.settings-cards .settings-group:last-child { margin-bottom: 0; }
+.settings-cards .settings-group + .settings-group { margin-top: 0; }
+.settings-cards .settings-kicker {
+  color: #c9a24b; opacity: 1; letter-spacing: .14em; margin: 0 0 12px; padding-bottom: 8px;
+  border-bottom: 1px solid rgba(201,162,75,.25);
+}
+.settings-cards .settings-field { margin-bottom: 14px; }
+.settings-cards .settings-field:last-child { margin-bottom: 0; }
+.settings-cards .settings-field-label { font-weight: 600; }
+.settings-cards .settings-note { margin: 10px 0 0; font-style: italic; opacity: .8; }
+:root:not([data-theme="dark"]) .settings-cards .settings-group { background: rgba(0,0,0,.02); border-color: rgba(138,106,28,.3); }
+:root:not([data-theme="dark"]) .settings-cards .settings-kicker { color: #8a6a1c; border-bottom-color: rgba(138,106,28,.3); }
+#push-note:empty { display: none; }

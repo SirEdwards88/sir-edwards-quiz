@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 157;
+const CACHE_VERSION = 158;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -286,6 +286,8 @@ const APP_SHELL = [
   './src/share/share-card.js',
   './src/online/duels.js',
   './src/online/duels-v21.js',
+  './src/online/inbox.js',
+  './src/online/push.js',
   './src/utils/duel.js',
   './src/utils/matching.js',
   './src/utils/answer-alias.js',
@@ -737,6 +739,42 @@ self.addEventListener('fetch', (event) => {
       return cached || network;
     })
   );
+});
+
+// 2.3 — Avisos push de Retos. El servidor manda {t, b, url, tag}; aquí solo se enseña la notificación y, al tocarla,
+// se abre o enfoca la app llevando al reto (#reto=ID). Si la app ya está a la vista, no se duplica: la avisa el aviso interno.
+self.addEventListener('push', (event) => {
+  let d = {};
+  try { d = event.data ? event.data.json() : {}; } catch (e) { d = {}; }
+  const title = String(d.t || 'Sir Edwards').slice(0, 80);
+  const m = /reto=([0-9A-Z]{10})/.exec(String(d.url || ''));
+  event.waitUntil((async () => {
+    const wins = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    if (wins.some((c) => c.visibilityState === 'visible')) {
+      wins.forEach((c) => c.postMessage({ type: 'seq-push', id: m ? m[1] : null }));
+      return;
+    }
+    await self.registration.showNotification(title, {
+      body: String(d.b || '').slice(0, 160),
+      icon: './icons/icon-192.png', badge: './icons/icon-192.png',
+      tag: String(d.tag || 'seq'), renotify: false, data: { id: m ? m[1] : null },
+    });
+  })());
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const id = event.notification.data && event.notification.data.id;
+  event.waitUntil((async () => {
+    const wins = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const win = wins[0];
+    if (win) {
+      try { await win.focus(); } catch (e) {}
+      win.postMessage({ type: 'seq-push', id: id || null, open: true });
+      return;
+    }
+    await self.clients.openWindow('./' + (id ? '#reto=' + id : ''));
+  })());
 });
 
 // Este service worker no toca localStorage en ningún punto (de hecho no

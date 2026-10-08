@@ -785,3 +785,43 @@
 .seq-av-btn.seq-av-locked { cursor: pointer; }
 .seq-av-btn.seq-av-locked.hint { opacity: .9; filter: grayscale(.6); outline: 2px dashed var(--se-gold, var(--primary)); outline-offset: 1px; }
 .seq-av-hint { margin: 8px 2px 4px; padding: 8px 12px; font-size: 13px; font-weight: 700; line-height: 1.35; border-radius: 12px; border: 1.5px solid var(--se-gold, var(--border)); background: color-mix(in srgb, var(--se-gold, var(--primary)) 9%, var(--card)); }
+
+/* 2.2 — Aviso flotante de Duelos y Retos (src/online/inbox.js) y punto en el menú Duelo. */
+.inbox-banner {
+  position: fixed; left: 50%; top: calc(10px + env(safe-area-inset-top, 0px));
+  width: min(92vw, 420px); z-index: 1250;
+  display: flex; align-items: stretch;
+  background: linear-gradient(180deg, #1f2748, #141a33); color: #f4ecd0;
+  border: 1px solid rgba(232, 200, 116, .6); border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .45);
+  transform: translate(-50%, -140%); opacity: 0; pointer-events: none;
+  transition: transform .3s ease, opacity .25s ease;
+}
+.inbox-banner.show { transform: translate(-50%, 0); opacity: 1; pointer-events: auto; }
+.inbox-body { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; padding: 12px 6px 12px 14px; background: none; border: 0; color: inherit; text-align: left; font: inherit; cursor: pointer; }
+.inbox-av { flex: 0 0 auto; width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+.inbox-av[hidden] { display: none; }
+.inbox-av img { width: 100%; height: 100%; object-fit: contain; }
+.inbox-text { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.inbox-title { font-size: 15px; font-weight: 800; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.inbox-sub { font-size: 12.5px; font-style: italic; opacity: .85; line-height: 1.3; }
+.inbox-x { flex: 0 0 auto; width: 40px; background: none; border: 0; color: rgba(244, 236, 208, .7); font-size: 22px; cursor: pointer; border-radius: 0 14px 14px 0; }
+.inbox-banner.compact .inbox-body { padding: 7px 4px 7px 12px; gap: 9px; }
+.inbox-banner.compact .inbox-av { width: 30px; height: 30px; }
+.inbox-banner.compact .inbox-title { font-size: 13.5px; }
+.inbox-banner.compact .inbox-sub { display: none; }
+.inbox-dot {
+  position: absolute; top: 8px; right: 8px; min-width: 20px; height: 20px; padding: 0 5px; box-sizing: border-box;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 999px; background: #d94a3a; color: #fff; font-size: 11px; font-weight: 800; line-height: 1;
+  box-shadow: 0 0 0 2px rgba(20, 26, 51, .9); pointer-events: none;
+}
+.tab-btn { position: relative; }
+.tab-btn .inbox-dot { top: 2px; right: 2px; }
+.home-big-card.home-card-duelo { position: relative; }
+@media (prefers-reduced-motion: reduce) { .inbox-banner { transition: opacity .2s ease; } }
+
+/* 2.2 — Presencia en Duelo online: solo se puede retar a quien está en línea. */
+.seq-d-on { color: #5fd08b; font-weight: 700; }
+.seq-d-off { opacity: .5; cursor: default; filter: grayscale(.6); }
+.seq-d-off .seq-pl-sub { font-style: italic; }
