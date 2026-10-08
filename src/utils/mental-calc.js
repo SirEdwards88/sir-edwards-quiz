@@ -250,7 +250,8 @@ const SEQMentalCalc = (function () {
     }
     return [a, b];
   }
-  function bigX(t, rng, maxD) { return numDigits(pickDigits(t, rng, maxD || 3), rng); }
+  // Multiplicar por 2, 4, 5 o 10 un número de 3 cifras (985 × 5) parece fácil para la métrica, pero no al principio: hasta un objetivo de 30, máximo 2 cifras.
+  function bigX(t, rng, maxD) { return numDigits(pickDigits(t, rng, t < 30 ? Math.min(2, maxD || 3) : (maxD || 3)), rng); }
 
   var FAMILIES = {
     '+': [
@@ -281,7 +282,7 @@ const SEQMentalCalc = (function () {
       { id: 'cerca20', gen: function (t, rng) { return [bigX(t, rng, 2), pick([18, 19, 21, 22], rng)]; } },
       { id: 'factorizacion', gen: function (t, rng) { return [bigX(t, rng, 2), pick([12, 14, 15, 16, 18, 24, 36], rng)]; } },
       { id: 'distributiva', gen: function (t, rng) { return [numDigits(2, rng), randInt(3, 9, rng)]; } },
-      { id: 'distributiva', gen: function (t, rng) { return [numDigits(3, rng), randInt(3, 9, rng)]; } },
+      { id: 'distributiva', gen: function (t, rng) { return [numDigits(t < 30 ? 2 : 3, rng), randInt(3, 9, rng)]; } },
       { id: 'distributiva', gen: function (t, rng) { return [numDigits(2, rng), randInt(12, 29, rng)]; } },
       { id: 'distributiva', gen: function (t, rng) { return [randInt(12, 99, rng), randInt(13, 99, rng)]; } }
     ],
