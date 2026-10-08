@@ -906,8 +906,7 @@
       '<button class="btn btn-secondary" onclick="SEQOnline.syncNowUi()"' + (ui.syncing ? ' disabled' : '') + '>↻ Sincronizar ahora</button>' +
       '<button class="btn btn-secondary" onclick="SEQOnline.signOut()">Cerrar sesión</button>' +
       '<button class="btn btn-danger" onclick="SEQOnline.deleteAccount()">Eliminar mi cuenta online</button></div>' +
-      '<p class="settings-note">Cerrar sesión no borra nada: puedes volver a entrar cuando quieras. Eliminar la cuenta borra tu perfil y tu progreso del servidor, y también el progreso de este dispositivo.</p>' +
-      '<p class="settings-note">Tu progreso lo informa tu dispositivo: no sirve como prueba de resultados.</p></details>';
+      '<p class="settings-note">Cerrar sesión no borra nada: puedes volver a entrar cuando quieras. Eliminar la cuenta borra tu perfil y tu progreso del servidor, y también el progreso de este dispositivo.</p></details>';
     host.innerHTML = html;
   }
 
