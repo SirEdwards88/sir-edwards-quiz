@@ -948,6 +948,13 @@
     openRanking: openRanking, closeRanking: closeRanking, loadRanking: loadRanking, goToAccount: goToAccount,
     openMigration: function () { openMigration(); }, prepareLocalReset: prepareLocalReset, accountHadProgress: function () { return loginHadProgress; }, hasAccount: function () { return !!(ENABLED && account); }, closeMigration: closeMigration, doMerge: doMerge, skipMigration: skipMigration,
     rerenderAccount: function () { try { renderAccount(); } catch (e) {} },
+    // 2.2: poner el nombre desde la pregunta de bienvenida (src/ui/name-prompt.js); no toca el avatar.
+    setDisplayName: function (name) {
+      if (!ENABLED || !account) return Promise.reject(Object.assign(new Error('Inicia sesión para usar esta función.'), { code: 'no_session' }));
+      return api('PATCH', '/me', { display_name: String(name) }).then(function (d) {
+        var pl = cleanPlayer(d && d.player); account.player.display_name = pl.display_name; saveAccount(); render(); return pl;
+      });
+    },
     toggleEdit: toggleEdit, pickAvatar: pickAvatar, showAvatarHint: showAvatarHint, saveProfile: saveProfile, copyId: copyId,
     // v1.5 — para src/online/duels.js: mismo cliente HTTP (sesión, timeouts, errores) sin duplicarlo.
     api: function (method, path, body) { if (!ENABLED || !account) return Promise.reject(Object.assign(new Error('Inicia sesión para usar esta función.'), { code: 'no_session' })); return api(method, path, body); },

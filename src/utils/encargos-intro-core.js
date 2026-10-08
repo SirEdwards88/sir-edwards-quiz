@@ -8,7 +8,7 @@ const SEQEncargosIntroCore = (function () {
   function cleanName(raw) {
     if (typeof raw !== 'string') return null;
     var s = raw.replace(/\s+/g, ' ').trim();
-    if (!s || /^jugador$/i.test(s)) return null;
+    if (!s || /^jugador(-[0-9a-z]{3,8})?$/i.test(s)) return null;   // «Jugador» y el nombre genérico del servidor («Jugador-ab12») no son un nombre
     if (/https?:|www\.|@|\.(com|es|net|org)\b|[<>{}\[\]\\\/]/i.test(s)) return null;
     if (s.length > 16) { s = s.split(' ')[0]; if (s.length > 16) return null; }
     if (!/[\p{L}]/u.test(s)) return null;

@@ -64,12 +64,22 @@
           if (typeof showInfoToast === 'function') showInfoToast(RETURN_LINES[Math.floor(Math.random() * RETURN_LINES.length)], 'sombrero');
         }
       } catch (e) {}
+      askName(null);
       return;
     }
-    var seenBefore = get(UPDATE_KEY);
-    if (typeof maybeShowUpdateModal === 'function') maybeShowUpdateModal();
-    var upd = document.getElementById('update-modal');
-    if (upd && upd.style.display === 'flex') addRecap(seenBefore, version);
+    // Novedades (al actualizar), pero antes, si sigue con el nombre genérico, se le pregunta cómo llamarle.
+    askName(function () {
+      var seenBefore = get(UPDATE_KEY);
+      if (typeof maybeShowUpdateModal === 'function') maybeShowUpdateModal();
+      var upd = document.getElementById('update-modal');
+      if (upd && upd.style.display === 'flex') addRecap(seenBefore, version);
+    });
+  }
+
+  // Pregunta del nombre (src/ui/name-prompt.js): solo si hay cuenta y el nombre es el genérico. Siempre continúa con `next`.
+  function askName(next) {
+    try { if (window.SEQNamePrompt) { SEQNamePrompt.maybeAsk(next); return; } } catch (e) {}
+    if (typeof next === 'function') next();
   }
 
   // Quien se salta varias versiones (p. ej. jugó en la 1.1 y vuelve en la 2.0) ve, además de las novedades de la

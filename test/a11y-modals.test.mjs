@@ -7,9 +7,9 @@ const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const a11y = fs.readFileSync(new URL('../src/ui/a11y.js', import.meta.url), 'utf8');
 const overlays = [...html.matchAll(/<div id="([^"]+)" class="modal-overlay[^"]*"([^>]*)>([\s\S]*?)(?=<div id="|<!--|\n\n)/g)];
 
-test('hay ocho modales y cada uno es un diálogo (en el propio overlay o en su tarjeta) con nombre', () => {
+test('hay nueve modales y cada uno es un diálogo (en el propio overlay o en su tarjeta) con nombre', () => {
   const ids = [...html.matchAll(/<div id="([^"]+)" class="modal-overlay/g)].map((m) => m[1]);
-  assert.equal(ids.length, 8, ids.join(', '));
+  assert.equal(ids.length, 9, ids.join(', '));
   for (const id of ids) {
     const open = html.slice(html.indexOf(`<div id="${id}"`));
     const head = open.slice(0, open.indexOf('>') + 1);

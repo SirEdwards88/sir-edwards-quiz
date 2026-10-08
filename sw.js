@@ -73,6 +73,7 @@ const APP_SHELL = [
   './src/ui/hitos.js',
   './src/ui/achievements.js',
   './src/ui/stats-extra.js',
+  './src/ui/name-prompt.js',
   './src/ui/intro.js',
   './assets/modes/estandar.webp',
   './assets/modes/duelo.webp',
