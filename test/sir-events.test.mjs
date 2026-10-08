@@ -501,3 +501,10 @@ test('mañana y noche: como mucho uno al día (20 h entre ellos); la visita sigu
     assert.ok(ev && ev.type === type, type + ' hace más de 20 h: sí');
   }
 });
+
+test('noStreak (Supervivencia y Muerte Súbita): ni hito de racha ni récord', () => {
+  const st = S.newState();
+  for (let i = 0; i < 12; i++) S.evaluate(st, { nowMs: 1e6 * (i + 1), hour: 12, streak: i + 1, correct: true, last: false, blocked: false, noStreak: true, record: i + 1 }, () => 0);
+  assert.equal(st.shown.record, 0);
+  assert.ok(!st.milestones[10]);
+});

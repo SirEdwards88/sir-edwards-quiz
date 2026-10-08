@@ -325,9 +325,9 @@ const SEQSirEvents = (function () {
     var capped = state.count >= MAX_PER_GAME;
 
     var m = milestoneFor(state, Number(ctx.streak) || 0);
-    if (m !== null && (!capped || m >= 20) && rng() < STREAK_P[m]) { chosen = 'streak'; milestone = m; }
+    if (!ctx.noStreak && m !== null && (!capped || m >= 20) && rng() < STREAK_P[m]) { chosen = 'streak'; milestone = m; }
     if (!chosen && capped) return null;
-    if (!chosen && Number(ctx.record) >= 5 && !state.shown.record && rng() < RECORD_P) { chosen = 'record'; milestone = Number(ctx.record); }
+    if (!chosen && !ctx.noStreak && Number(ctx.record) >= 5 && !state.shown.record && rng() < RECORD_P) { chosen = 'record'; milestone = Number(ctx.record); }
     if (!chosen && isNight(hour) && state.shown.night < 1 && recentOk(ctx, 'night', ctx.nowMs) && rng() < P.night) chosen = 'night';
     if (!chosen && isDay(hour) && state.shown.day < 1 && recentOk(ctx, 'day', ctx.nowMs) && rng() < P.day) chosen = 'day';
     if (!chosen && ctx.weakCat && !state.shown.weak && recentOk(ctx, 'weak', ctx.nowMs) && rng() < WEAK_P) chosen = 'weak';

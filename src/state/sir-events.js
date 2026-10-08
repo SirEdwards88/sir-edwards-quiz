@@ -116,6 +116,7 @@ function sirEventsOnAnswer(correct, q) {
       correct: correct === true,
       last: sirEventsIsLast(g),
       blocked: typeof document !== 'undefined' && document.hidden === true,
+      noStreak: g.mode === 'survival' || g.mode === 'sudden_death',    // ahí ya salen los hitos de Sir Edwards (10/20/30 y 13/20): los avisos de racha y de récord se solapan
       noBroken: g.mode === 'review' || g.mode === 'sudden_death',   // en Repaso no hay racha; en Muerte Súbita el fallo ya termina la partida
       record: record,
       comeback: g._sevCome === true,
