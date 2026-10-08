@@ -442,11 +442,11 @@ test('récord personal: sale con ctx.record, una vez por partida, con la racha e
   assert.equal(ans(st, 9e6, 14, 8, { record: 8, recent: { visit: 9e6 } }, ALWAYS), null, 'un solo récord por partida');
 });
 
-test('regreso: tras la 1.ª respuesta (acierto o no), una vez, con la imagen de visita', () => {
+test('regreso: tras la 1.ª respuesta (acierto o no), una vez, con su imagen propia', () => {
   for (const correct of [true, false]) {
     const st = S.newState();
     const ev = S.evaluate(st, { nowMs: 1e6, hour: 14, streak: 0, correct, last: false, blocked: false, comeback: true }, ALWAYS);
-    assert.ok(ev && ev.type === 'comeback' && ev.asset === S.ASSETS.visit, String(correct));
+    assert.ok(ev && ev.type === 'comeback' && ev.asset === S.ASSETS.comeback, String(correct));
     assert.equal(S.evaluate(st, { nowMs: 2e6, hour: 14, streak: 0, correct, last: false, blocked: false, comeback: true }, ALWAYS), null);
   }
   const no = S.evaluate(S.newState(), { nowMs: 1e6, hour: 14, streak: 0, correct: true, last: false, blocked: false }, ALWAYS);
