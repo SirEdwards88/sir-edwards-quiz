@@ -36,7 +36,7 @@ test('datos: los pares son simétricos y ambos extremos están en la criba', () 
     for (const p of q.par) { assert.ok(by.get(p) && by.get(p).lz, 'par #' + p); assert.ok(Array.from(by.get(p).par).includes(q.n), 'simetría ' + q.n + '-' + p); }
   }
   const ids = BANK.filter((q) => q.par).map((q) => q.n).sort((a, b) => a - b);
-  assert.deepEqual(ids, [32, 48, 87, 196, 205, 295, 297, 383]);
+  assert.deepEqual(ids, [32, 44, 45, 48, 51, 87, 196, 205, 295, 297, 337, 383]);
 });
 
 test('alias: las respuestas naturales que fallaban ahora se aceptan', () => {
