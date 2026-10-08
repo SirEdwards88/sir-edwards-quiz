@@ -83,3 +83,5 @@ const SEQNamePrompt = (function () {
 
   return { validate: validate, isDefaultName: isDefaultName, maybeAsk: maybeAsk, submit: submit, skip: skip, MIN: MIN, MAX: MAX };
 })();
+
+window.SEQNamePrompt = SEQNamePrompt;

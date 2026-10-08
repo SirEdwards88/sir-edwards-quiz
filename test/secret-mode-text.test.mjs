@@ -37,9 +37,10 @@ test('bienvenida en dos viñetas: la segunda avisa de que no habrá tutorial y s
   assert.ok(!/lucidez/i.test(w));
 });
 
-test('la bienvenida sale al abrir por primera vez, antes de la pantalla de cuenta', () => {
+test('la bienvenida sale tras la cuenta y solo a cuentas nuevas; quien ya tenía progreso se salta la presentación', () => {
   const intro = fs.readFileSync(new URL('../src/ui/intro.js', import.meta.url), 'utf8');
-  assert.match(intro, /function showWelcomeFirst/); assert.match(intro, /DOMContentLoaded', showWelcomeFirst/);
-  const css = fs.readFileSync(new URL('../styles/main.css', import.meta.url), 'utf8');
-  assert.match(css, /#welcome-modal \{ z-index: 1100;/);
+  assert.ok(!/showWelcomeFirst/.test(intro), 'ya no sale antes de la cuenta');
+  assert.match(intro, /accountHadProgress/); assert.match(intro, /function afterWelcome/);
+  const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  assert.match(html, /SEQIntro\.afterWelcome/);
 });

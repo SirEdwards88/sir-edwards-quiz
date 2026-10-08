@@ -1,4 +1,4 @@
-// SirEdwards Quiz v2.2 — orden de entrada: bienvenida (solo la primera vez, nada más abrir) → cuenta; o novedades (al actualizar, tras la cuenta).
+// SirEdwards Quiz v2.2 — orden de entrada: cuenta → bienvenida (solo cuenta nueva) → nombre; o novedades (al actualizar).
 //
 // Antes la bienvenida salía nada más cargar, encima de la pantalla de cuenta. Ahora index.html avisa aquí
 // (SEQIntro.afterGate) cuando la pantalla de cuenta se cierra o no hace falta, y se decide UNA vez por carga:
@@ -37,34 +37,25 @@
   }
   window.welcomeNext = function () { welcomeStep(2); };
 
-  // Primera visita en este navegador: Sir Edwards se presenta nada más abrir, ANTES de la pantalla de cuenta
-  // (y avisa de que no habrá tutorial). Se marca como vista al terminar la segunda viñeta.
-  function showWelcomeFirst() {
-    try {
-      if (window.__seqFirstVisit !== true || get(WELCOME_KEY) === '1') return;
-      var qc = document.getElementById('welcome-q-count');
-      try { if (qc && typeof TEST_QUESTIONS !== 'undefined' && TEST_QUESTIONS.length) qc.textContent = TEST_QUESTIONS.length; } catch (e) {}
-      var modal = document.getElementById('welcome-modal');
-      if (!modal) return;
-      welcomeStep(1);
-      modal.style.display = 'flex';
-    } catch (e) { /* nunca debe impedir jugar */ }
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', showWelcomeFirst); else showWelcomeFirst();
-
   function decide() {
     var version = typeof APP_VERSION === 'string' ? APP_VERSION : '';
     if (window.__seqFirstVisit === true) {
       if (version) set(UPDATE_KEY, version);
-      // La bienvenida ya salió al abrir (antes de la cuenta). Jugador con progreso en su cuenta que estrena
-      // dispositivo: no es un «nuevo aspirante», así que además de la bienvenida se le saluda de vuelta.
+      if (get(WELCOME_KEY) === '1') { askName(null); return; }
+      // Jugador con progreso en su cuenta que estrena dispositivo: no es un «nuevo aspirante». Sin bienvenida; se le saluda de vuelta.
       try {
         if (window.SEQOnline && SEQOnline.accountHadProgress && SEQOnline.accountHadProgress()) {
           set(WELCOME_KEY, '1');
           if (typeof showInfoToast === 'function') showInfoToast(RETURN_LINES[Math.floor(Math.random() * RETURN_LINES.length)], 'sombrero');
+          askName(null);
+          return;
         }
       } catch (e) {}
-      askName(null);
+      // Cuenta nueva: Sir Edwards se presenta (dos viñetas) y, al cerrarlas, pregunta el nombre (afterWelcome).
+      var qc = document.getElementById('welcome-q-count');
+      try { if (qc && typeof TEST_QUESTIONS !== 'undefined' && TEST_QUESTIONS.length) qc.textContent = TEST_QUESTIONS.length; } catch (e) {}
+      var modal = document.getElementById('welcome-modal');
+      if (modal) { welcomeStep(1); modal.style.display = 'flex'; } else askName(null);
       return;
     }
     // Novedades (al actualizar), pero antes, si sigue con el nombre genérico, se le pregunta cómo llamarle.
@@ -132,5 +123,8 @@
     setTimeout(function () { try { decide(); } catch (e) { /* nunca debe impedir jugar */ } }, 350);
   }
 
-  window.SEQIntro = { afterGate: afterGate };
+  // Al cerrar la bienvenida (closeWelcomeModal en index.html): lo siguiente es preguntar el nombre.
+  function afterWelcome() { askName(null); }
+
+  window.SEQIntro = { afterGate: afterGate, afterWelcome: afterWelcome };
 })();
