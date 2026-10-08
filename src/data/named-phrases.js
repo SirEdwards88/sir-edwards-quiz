@@ -12,12 +12,12 @@ const NAMED_PHRASES = {
   ],
   survival_win: [
     'Cuarenta preguntas, {nombre}. Has llegado al final y el expediente lo agradece.',
-    'Has llegado al final, {nombre}. Admito que la resistencia ha sido notable.',
-    'Victoria, {nombre}. Hoy el marcador me deja poco margen para discutir.'
+    'Has llegado al final, {nombre}. La resistencia ha sido notable.',
+    'Victoria, {nombre}. Hoy el resultado me deja poco margen para discutir.'
   ],
   sudden_win: [
     'Modo extremo, {nombre}. Una sola oportunidad y ninguna necesidad de repetirla.',
-    'Sin red y sin tropiezos, {nombre}. Me veo obligado a tomarte en serio. Brevemente.'
+    'Sin red y sin tropiezos, {nombre}. Por un momento, resulta razonable tomarte en serio.'
   ],
   lucidez_perfecto: [
     '30/30, {nombre}. Hoy la mente no ha dejado ni una rendija.',
@@ -41,13 +41,39 @@ const NAMED_PHRASES = {
   ],
   streak_20: [
     '«Veinte seguidas, {nombre}. Ahora sí puedo llamarlo racha sin reservas.»',
-    '«Veinte, {nombre}. Me veo obligado a anotarlo en tinta fuerte.»'
+    '«Veinte, {nombre}. Esto merece tinta más seria.»'
   ],
   night_early: ['«Medianoche, {nombre}. Veamos qué clase de lucidez trae esta hora.»'],
   night_late: ['«Madrugada, {nombre}. A estas horas, hasta acertar tiene cierto mérito.»'],
   streak_30: [
     '«Treinta, {nombre}. Ya no puedo fingir que esto es casualidad.»',
     '«Treinta seguidas, {nombre}. Me incomoda decirlo, pero estoy impresionado.»'
+  ],
+  // Hitos más altos (src/ui/hitos.js). Aquí van SIN «»: el bocadillo ya las pone.
+  hito_survival_30: [
+    'Treinta, {nombre}. Diez preguntas más y podremos llamar a esto una hazaña.',
+    'Treinta, {nombre}. Quedan diez. Distraerse ahora sería de mal gusto.'
+  ],
+  hito_sudden_death_20: [
+    'Veinte, {nombre}. Quedan cinco. A estas alturas, hasta respirar parece una decisión estratégica.',
+    'Veinte, {nombre}. Quedan cinco. Sería una lástima que el destino pidiera ahora la palabra.'
+  ],
+  // Resultado de Duelo/Reto: {nombre} es el del RIVAL (como en las de abandono). Sir Edwards habla al jugador y nombra al rival en tercera persona.
+  duel_victoria_ajustada: [
+    '{nombre} ha estado a punto. Disfruta de la victoria antes de que lo intente otra vez.'
+  ],
+  duel_victoria_clara: [
+    '{nombre} ha visto el resultado y ha preferido no hacer comentarios. Prudente.',
+    'La victoria ha sido amplia. {nombre} necesitará un tiempo antes de hablar del tema.'
+  ],
+  duel_derrota_ajustada: [
+    'Por poco. {nombre} presumirá, pero con la boca pequeña.'
+  ],
+  duel_derrota_clara: [
+    '{nombre} ha ganado con claridad. Lo elegante es felicitarle antes de que lo exija.'
+  ],
+  duel_empate: [
+    'Empate con {nombre}. Por una vez, nadie tendrá que fingir sorpresa.'
   ]
 };
 
@@ -64,5 +90,12 @@ const NAMED_RULES = {
   streak_20:        { p: 1 / 2 },
   streak_30:        { p: 1 / 2 },
   night_early:      { p: 1 / 3, cap: 'dia' },
-  night_late:       { p: 1 / 3, cap: 'dia' }
+  night_late:       { p: 1 / 3, cap: 'dia' },
+  hito_survival_30:     { p: 1 / 2 },
+  hito_sudden_death_20: { p: 1 / 2 },
+  duel_victoria_ajustada: { p: 1 / 3 },
+  duel_victoria_clara:    { p: 1 / 3 },
+  duel_derrota_ajustada:  { p: 1 / 3 },
+  duel_derrota_clara:     { p: 1 / 3 },
+  duel_empate:            { p: 1 / 3 }
 };

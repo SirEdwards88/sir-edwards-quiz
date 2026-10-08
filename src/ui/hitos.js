@@ -26,7 +26,7 @@
           'La mitad. Si llegas a cuarenta, fingiré que siempre confié en ti.',
           'Veinte. Esto empieza a parecer talento. O una casualidad extraordinaria.',
           'La mitad del camino. Ahora llega la parte en la que dudas de todo.',
-          'Veinte. A partir de aquí, cada fallo duele con más elegancia.',
+          'Veinte. A partir de aquí, cada fallo duele más. La elegancia es opcional.',
           'Sin cronómetro y sin excusas: veinte preguntas más. Respira, si te sirve.'
         ] },
         30: { img: 'manos', phrases: [
@@ -128,8 +128,16 @@
     if (!doc || !doc.body) return;
     if (openEl) close();
     var memo = readLast(), key = h.mode + ':' + h.n;
-    var nx = nextPhrase(h.phrases, memo[key]), pi = nx.i;
-    memo[key] = nx.memo; writeLast(memo);
+    // 2.3: en los hitos más altos, a veces la frase lleva el nombre (bolsas aparte; sin nombre, rotación de siempre).
+    var named = null;
+    try { named = (root.SEQNamed && root.SEQNamed.tryPick) ? root.SEQNamed.tryPick('hito_' + h.mode + '_' + h.n) : null; } catch (e) { named = null; }
+    var text;
+    if (named) text = named;
+    else {
+      var nx = nextPhrase(h.phrases, memo[key]), pi = nx.i;
+      memo[key] = nx.memo; writeLast(memo);
+      text = h.phrases[pi];
+    }
 
     var el = doc.createElement('div');
     el.className = 'sir-hito' + (h.mode === 'sudden_death' ? ' is-sudden' : '');
@@ -142,7 +150,7 @@
         '<div class="sir-hito-bubble"><p class="sir-hito-text"></p><span class="sir-hito-sign">— Sir Edwards</span>' +
           '<span class="sir-hito-timer" aria-hidden="true"></span></div>' +
       '</div>';
-    el.querySelector('.sir-hito-text').textContent = '«' + h.phrases[pi] + '»';
+    el.querySelector('.sir-hito-text').textContent = '«' + text + '»';
     var img = el.querySelector('.sir-hito-img');
     img.src = h.img;
     el.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); close(); });

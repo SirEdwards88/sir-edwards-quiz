@@ -797,7 +797,7 @@
     if (d.motivo_fin === 'abandono') return SEQDuelPhrases.pickForfeit(d.yo && d.yo.abandonado ? 'yo_abandono' : 'rival_abandono', player(d.rival).name, S.id || d.id);
     if (d.motivo_fin === 'no_jugado') return SEQDuelPhrases.pickForfeit(res === 'win' ? 'rival_no_jugo' : 'yo_no_jugue', player(d.rival).name, S.id || d.id);
     if (d.motivo_fin && d.motivo_fin !== 'normal') return '';
-    return SEQDuelPhrases.pickRotating(res, num(r.mi_puntuacion) - num(r.puntuacion_rival), S.id || d.id);
+    return SEQDuelPhrases.pickRotating(res, num(r.mi_puntuacion) - num(r.puntuacion_rival), S.id || d.id, player(d.rival).name);
   }
   // Marca de cada respuesta en el repaso del duelo: acierto, fallo o sin responder (iconos ilustrados).
   // Segundos por pregunta del propio reto (los creados antes de la 2.0 tienen 15 s).

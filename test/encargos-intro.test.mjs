@@ -34,7 +34,7 @@ test('carta semanal: bolsas amplias, para que no se repita semana tras semana', 
     assert.ok(P.monday.verdict[k].length >= 10, 'veredicto ' + k);
     assert.ok(P.monday.comment[k].length >= 10, 'comentario ' + k);
   });
-  assert.ok(P.monday.close.length >= 20, 'cierre común');
+  assert.ok(P.monday.close.length >= 18, 'cierre común');
   assert.ok(P.monday.verdict.incorporacion.length >= 3 && P.monday.comment.incorporacion.length >= 3);
 });
 

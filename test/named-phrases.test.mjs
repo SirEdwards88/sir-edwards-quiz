@@ -26,7 +26,7 @@ test('las bolsas con nombre: claves con regla, {nombre} presente, sin emojis, la
     assert.ok(!/\{nombre\}[.»]*$/.test(t), 'el nombre no va al final: ' + t);
     if (/^«/.test(t)) assert.ok(/»$/.test(t), t);
   }
-  assert.ok(Object.values(PH).flat().length <= 30, 'son pocas a propósito');
+  assert.ok(Object.values(PH).flat().length <= 45, 'son pocas a propósito');
 });
 test('las frases con nombre no contienen masculinos genéricos sobre el jugador', () => {
   const bad = /\b(tranquilo|bienvenido|preparado|listo|cansado|seguro|solo|orgulloso de ti)\b/i;
@@ -73,4 +73,37 @@ test('ninguna frase con nombre es copia literal de una normal (quitado el nombre
   const norm = (t) => t.replace(/[«»'"]/g, '').replace(/\s*,?\s*\{nombre\}\s*,?/g, ' ').replace(/\s+/g, ' ').replace(/ \./g, '.').trim().toLowerCase();
   const corpus = norm(['src/data/phrases.js', 'src/data/encargos-phrases.js', 'src/utils/sir-events.js'].map(read).join('\n'));
   const dup = Object.values(PH).flat().filter((t) => corpus.includes(norm(t))); assert.deepEqual(dup, []);
+});
+
+test('hitos más altos: frases con nombre en bolsas aparte, sin «» (las pone el bocadillo) y enganchadas en hitos.js', () => {
+  for (const k of ['hito_survival_30', 'hito_sudden_death_20']) {
+    assert.ok(Array.from(PH[k]).length >= 2, k);
+    for (const t of PH[k]) assert.ok(!/[«»]/.test(t) && t.length <= 110, k + ': ' + t);
+  }
+  const src = fs.readFileSync(new URL('../src/ui/hitos.js', import.meta.url), 'utf8');
+  assert.match(src, /tryPick\('hito_' \+ h\.mode \+ '_' \+ h\.n\)/);
+});
+
+test('resultado de Duelo: a veces nombra al RIVAL, estable al repintar; sin nombre válido o sin suerte sale la normal', () => {
+  const c = { store: {}, saveStore() {}, Math: Object.create(Math) };
+  c.window = c; vm.createContext(c);
+  vm.runInContext(read('src/data/named-phrases.js').replace(/^const /gm, 'var ') + ';\n' + read('src/utils/named-phrases.js').replace(/^const /m, 'var '), c);
+  vm.runInContext('function pickRotatingPhrase(k, l) { return l[0]; }', c);
+  vm.runInContext(read('src/data/duel-phrases.js'), c);
+  const P = c.SEQDuelPhrases;
+  // Forzamos que la bolsa con nombre salga siempre (p = 1) y sin tope de sesión.
+  for (const k of Object.keys(c.NAMED_RULES)) c.NAMED_RULES[k] = { p: 1 };
+  const first = P.pickRotating('win', 5, 'G1', 'Marta');
+  assert.ok(/Marta/.test(first), 'nombra al rival: ' + first);
+  assert.equal(P.pickRotating('win', 5, 'G1', 'Marta'), first, 'estable al repintar');
+  assert.equal(P.pickRotating('win', 5, 'G1', 'Marta'), first);
+  c.SEQNamed.resetSession();
+  // Nombre no válido → frase normal (de la lista de siempre).
+  const normal = P.pickRotating('win', 5, 'G2', 'x');
+  assert.ok(Array.from(P.PHRASES.victoria_clara).includes(normal), 'normal: ' + normal);
+  // Todos los resultados tienen su grupo con nombre.
+  for (const [res, m] of [['win', 1], ['win', 2], ['win', 5], ['win', 9], ['loss', 1], ['loss', 3], ['loss', 5], ['loss', 9], ['draw', 0]]) {
+    c.SEQNamed.resetSession();
+    assert.ok(/Ana/.test(P.pickRotating(res, m, 'H' + res + m, 'Ana')), res + m);
+  }
 });
