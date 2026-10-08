@@ -69,7 +69,7 @@
   // v1.5: flags del servidor. Fail-closed: solo `true` exacto activa algo.
   function normFeatures(f) {
     f = f || {};
-    return { ranking: f.ranking === true, classic_duel: f.classic_duel === true, async_challenges: f.async_challenges === true };
+    return { ranking: f.ranking === true, classic_duel: f.classic_duel === true, async_challenges: f.async_challenges === true, push: f.push === true };
   }
   // v1.5: avisa a la capa de Duelos (src/online/duels.js). Nunca rompe nada.
   function notifyDuels() { try { if (window.SEQDuels && typeof window.SEQDuels.onAccountChange === 'function') window.SEQDuels.onAccountChange(); } catch (e) {} }

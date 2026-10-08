@@ -40,3 +40,14 @@ test('cableado: script en index.html con la versión vigente, grupo en Ajustes o
   assert.ok(!/SEQPush\.offer/.test(read('src/online/duels.js')) && !/push-offer/.test(read('src/online/push.js')));
   assert.ok(!/siredwards_quiz_v1_0_data/.test(read('src/online/push.js')), 'no toca la clave de datos');
 });
+
+test('la capa online conserva el flag push del servidor (si lo descarta, la tarjeta de Avisos nunca aparece)', () => {
+  const src = read('src/online/online.js');
+  const m = /function normFeatures\(f\) \{([\s\S]*?)\n  \}/.exec(src);
+  assert.ok(m, 'normFeatures existe');
+  const normFeatures = new Function('f', m[1]);
+  assert.equal(normFeatures({ push: true }).push, true);
+  assert.equal(normFeatures({ push: 'true' }).push, false);   // fail-closed: solo `true` exacto
+  assert.equal(normFeatures().push, false);
+  assert.equal(normFeatures({ ranking: true }).ranking, true);
+});
