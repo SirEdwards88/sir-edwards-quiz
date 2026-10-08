@@ -51,11 +51,13 @@
           return;
         }
       } catch (e) {}
-      // Cuenta nueva: Sir Edwards se presenta (dos viñetas) y, al cerrarlas, pregunta el nombre (afterWelcome).
-      var qc = document.getElementById('welcome-q-count');
-      try { if (qc && typeof TEST_QUESTIONS !== 'undefined' && TEST_QUESTIONS.length) qc.textContent = TEST_QUESTIONS.length; } catch (e) {}
-      var modal = document.getElementById('welcome-modal');
-      if (modal) { welcomeStep(1); modal.style.display = 'flex'; } else askName(null);
+      // Cuenta nueva: primero el nombre y después Sir Edwards se presenta (dos viñetas).
+      askName(function () {
+        var qc = document.getElementById('welcome-q-count');
+        try { if (qc && typeof TEST_QUESTIONS !== 'undefined' && TEST_QUESTIONS.length) qc.textContent = TEST_QUESTIONS.length; } catch (e) {}
+        var modal = document.getElementById('welcome-modal');
+        if (modal) { welcomeStep(1); modal.style.display = 'flex'; }
+      });
       return;
     }
     // Novedades (al actualizar), pero antes, si sigue con el nombre genérico, se le pregunta cómo llamarle.
@@ -123,8 +125,8 @@
     setTimeout(function () { try { decide(); } catch (e) { /* nunca debe impedir jugar */ } }, 350);
   }
 
-  // Al cerrar la bienvenida (closeWelcomeModal en index.html): lo siguiente es preguntar el nombre.
-  function afterWelcome() { askName(null); }
+  // Al cerrar la bienvenida (closeWelcomeModal en index.html): el nombre ya se preguntó antes; no queda nada pendiente.
+  function afterWelcome() {}
 
   window.SEQIntro = { afterGate: afterGate, afterWelcome: afterWelcome };
 })();
