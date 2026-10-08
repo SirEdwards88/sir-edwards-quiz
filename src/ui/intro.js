@@ -55,15 +55,6 @@
       askName(function () {
         var qc = document.getElementById('welcome-q-count');
         try { if (qc && typeof TEST_QUESTIONS !== 'undefined' && TEST_QUESTIONS.length) qc.textContent = TEST_QUESTIONS.length; } catch (e) {}
-        // Sir Edwards ya sabe cómo se llama: se lo dice en la propia presentación (en vez de un aviso que se perdería).
-        try {
-          var ses = window.SEQOnline && SEQOnline.session && SEQOnline.session();
-          var lead = document.querySelector('#welcome-step-1 .welcome-lead');
-          var nm = ses && ses.display_name;
-          if (lead && nm && !(window.SEQNamePrompt && SEQNamePrompt.isDefaultName(nm))) {
-            lead.textContent = 'Soy Sir Edwards, ' + nm + '. Llevo tiempo esperando a alguien capaz de acertar algo. Sin presión.';
-          }
-        } catch (e) {}
         var modal = document.getElementById('welcome-modal');
         if (modal) { welcomeStep(1); modal.style.display = 'flex'; }
       });
