@@ -99,7 +99,7 @@ const SEQSirEvents = (function () {
       '«Quince. Muy bien. Ahora intenta no convertirlo en una casualidad.»'],
     20: ['«Veinte. Eso ya merece mi atención.»',
       '«Excelente racha. No la estropees ahora.»',
-      '«Esto empieza a ser digno de un caballero.»',
+      '«Esto empieza a ser digno de cierta distinción.»',
       '«No quiero presionarte, pero... veinte.»',
       '«Veinte sin fallar. Ya casi me da miedo hablar.»',
       '«Voy a necesitar una página nueva.»',
@@ -138,7 +138,7 @@ const SEQSirEvents = (function () {
       '«{n}. Hubiera preferido no tener que escribir esto.»',
       '«Ni siquiera yo esperaba ese fallo. Bueno... quizá un poco.»'],
     high: ['«{n} seguidas. Qué manera tan meticulosa de arruinarlo.»',
-      '«{n} seguidas. Y una sola respuesta para recordarte que eres humano.»',
+      '«{n} seguidas. Y una sola respuesta para recordarte que nadie es infalible.»',
       '«Hubo {n}. Habrá que estudiar este inesperado desenlace.»',
       '«{n} aciertos y un final para el archivo. Sección: tragedias.»',
       '«Mi expediente conservará esos {n} aciertos. Y esta pregunta. Especialmente esta pregunta.»',
@@ -154,7 +154,7 @@ const SEQSirEvents = (function () {
     '«Récord. {n} seguidas. Detesto tener que felicitarte.»', '«{n}. Superas tu marca anterior. Y mis expectativas, de paso.»'
   ];
   var COMEBACK = [
-    '«Vaya. El aspirante regresa. Había empezado a archivar tu expediente.»', '«Así que sigues por aquí. Qué detalle avisar.»',
+    '«Vaya. De vuelta. Había empezado a archivar tu expediente.»', '«Así que sigues por aquí. Qué detalle avisar.»',
     '«Ha pasado tiempo. Tu expediente ha criado polvo; tú, con suerte, conocimiento.»', '«Regresas sin avisar. No preguntaré dónde estabas. Lo adivino.»',
     '«Mi silla favorita cogía polvo. Qué oportuno tu regreso.»', '«Días sin verte. Los he empleado en dudar de ti. Con método.»'
   ];
@@ -172,7 +172,7 @@ const SEQSirEvents = (function () {
     '«He decidido madrugar. Tú también, aparentemente.»',
     '«Buenos días. Espero que tu cerebro haya llegado antes que tú.»',
     '«A estas horas hasta las malas decisiones parecen razonables.»',
-    '«Madrugador. Inquietante, pero encomiable.»',
+    '«Madrugando. Inquietante, pero encomiable.»',
     '«Café, luz y preguntas. Una combinación peligrosa para tu ego.»',
     '«El mundo todavía se despereza y tú ya estás aquí.»',
     '«Una mente despierta a primera hora. Qué desconcertante.»',
@@ -199,7 +199,7 @@ const SEQSirEvents = (function () {
   ];
   var NIGHT_LATE = [
     '«¿Dormir? No. ¿Otra partida? Evidentemente.»',
-    '«A estas horas solo quedan los valientes y los insensatos.»',
+    '«A estas horas solo queda quien sigue despierto por convicción o por imprudencia.»',
     '«No preguntaré por qué sigues en pie. Tengo cierta dignidad.»',
     '«He venido a comprobar que no soy el único.»',
     '«A estas horas, la cultura general es un acto de rebeldía.»',

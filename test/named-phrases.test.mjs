@@ -68,3 +68,9 @@ test('integración: pickRotatingPhrase consulta SEQNamed y las claves coinciden 
   assert.match(html, /end_\$\{key\}/); assert.match(read('src/ui/encargos-ui.js'), /'encargos_' \+ st/);
   for (const k of ["'comeback'", "'day'", "'streak_' + milestone"]) assert.ok(ev.includes(k), k);
 });
+
+test('ninguna frase con nombre es copia literal de una normal (quitado el nombre)', () => {
+  const norm = (t) => t.replace(/[«»'"]/g, '').replace(/\s*,?\s*\{nombre\}\s*,?/g, ' ').replace(/\s+/g, ' ').replace(/ \./g, '.').trim().toLowerCase();
+  const corpus = norm(['src/data/phrases.js', 'src/data/encargos-phrases.js', 'src/utils/sir-events.js'].map(read).join('\n'));
+  const dup = Object.values(PH).flat().filter((t) => corpus.includes(norm(t))); assert.deepEqual(dup, []);
+});

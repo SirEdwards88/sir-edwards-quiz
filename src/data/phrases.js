@@ -94,7 +94,7 @@ const END_PHRASES = {
     phrases: [
       "Un pleno absoluto. La parte mala es que has malgastado lo mejor de tu vida acumulando datos inútiles.",
       "Felicidades por el 100%. Ahora sal a la calle a ver si encuentras a alguien a quien le importe.",
-      "Victoria absoluta. Eres el rey indiscutible de un castillo hecho de datos totalmente inservibles.",
+      "Victoria absoluta. Eres la autoridad indiscutible de un castillo hecho de datos totalmente inservibles.",
       "Felicidades. Ahora mismo eres la persona más informada de una habitación vacía.",
       "Pleno. Exijo que revisen las preguntas: algo tan limpio no puede ser trabajo honrado.",
       "20 de 20. Magnífico. Me has dejado sin argumentos y detesto esa sensación.",
@@ -162,8 +162,8 @@ const SUDDEN_FAIL_PHRASES = {
     "Una vida. Un error. Una conclusión bastante previsible."
   ],
   regular: [
-    "Estabas a una buena respuesta de seguir vivo. Elegiste la otra.",
-    "Has muerto en la orilla. Técnicamente, seguías nadando.",
+    "Estabas a una buena respuesta de seguir en pie. Elegiste la otra.",
+    "Has caído en la orilla. Técnicamente, seguías nadando.",
     "La eliminación estaba cerca. Tú te acercaste voluntariamente.",
     "Varias opciones, una correcta. Has demostrado un olfato admirable para evitarla.",
     "No te faltó mucho. Te sobró una respuesta equivocada.",
@@ -184,7 +184,7 @@ const TIMETRIAL_END_PHRASES = {
     "Mucho tiempo al principio. Muy poco conocimiento al final.",
     "El reloj no te ha ganado. Tú simplemente le has dado demasiado tiempo.",
     "60 segundos. Suficientes para demostrar que pensar rápido no era tu especialidad.",
-    "El tiempo corría. Tú estabas ocupado intentando recordar.",
+    "El tiempo corría. Tú estabas intentando recordar.",
     "Has perdido contra un instrumento diseñado para medir segundos. Reflexiona sobre eso.",
     "El cronómetro ha terminado su trabajo. Tú no llegaste a empezar el tuyo.",
     "El tiempo se agotó. Tu inspiración, por lo visto, tenía otro compromiso.",
@@ -247,7 +247,7 @@ const MENTAL_CALC_END_PHRASES = {
     "La cuenta daba un resultado. Tú has preferido otro, por originalidad.",
     "La aritmética ha ganado por una diferencia preocupante.",
     "Tu relación con los números necesita intervención profesional.",
-    "Has visto una operación matemática y has decidido confiar en la intuición. Valiente.",
+    "Has visto una operación matemática y has decidido confiar en la intuición. Qué audacia.",
     "Eran números pequeños. El desastre, en cambio, ha sido de talla grande.",
     "La operación tenía una respuesta. Tú encontraste otra.",
     "La suma ha pedido explicaciones. Te recomiendo no dárselas.",
@@ -375,7 +375,7 @@ const LUCIDEZ_PERFECT_PHRASES = [
 ];;
 
 const SURVIVAL_WIN_PHRASES = [
-  "Has ganado. Felicidades: ahora eres oficialmente el más listo de los desocupados. ¿Y ahora qué?",
+  "Has ganado. Felicidades: ahora tienes oficialmente el mejor cerebro entre los desocupados. ¿Y ahora qué?",
   "Victoria magistral. Un despliegue de intelecto que, con suerte, nunca tendrás que usar en la vida real.",
   "Victoria total. En algún lugar, un trofeo se pregunta si de verdad quiere que lo tengas tú.",
   "Lo has conseguido. Ahora toca decidir a quién le vas a aburrir contándoselo.",

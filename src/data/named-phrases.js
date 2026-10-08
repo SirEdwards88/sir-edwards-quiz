@@ -6,41 +6,47 @@
 const NAMED_PHRASES = {
   end_perfecto: [
     '20 de 20, {nombre}. Me has dejado sin argumentos y detesto esa sensación.',
-    'Impecable, {nombre}. Guardaré este momento para cuando vuelvas a ser tú.',
-    'Pleno. Enhorabuena, {nombre}. Algo tan limpio casi parece trabajo honrado.',
+    'Impecable, {nombre}. Qué inconveniente tener que darte la razón.',
+    'Pleno. Enhorabuena, {nombre}. Cuesta encontrar algo que objetar.',
     'Perfecto, {nombre}. Debo reconocerlo: has sido irritantemente competente.'
   ],
   survival_win: [
-    'Cuarenta preguntas. Has sobrevivido, {nombre}. Habrá que revisar tu utilidad al alza. Ligeramente.',
-    'Has llegado al final, {nombre}. Qué inesperada demostración de resistencia intelectual.',
-    'Victoria, {nombre}. Después de todo, quizá no seas completamente inútil.'
+    'Cuarenta preguntas, {nombre}. Has llegado al final y el expediente lo agradece.',
+    'Has llegado al final, {nombre}. Admito que la resistencia ha sido notable.',
+    'Victoria, {nombre}. Hoy el marcador me deja poco margen para discutir.'
   ],
   sudden_win: [
-    'Has completado el modo extremo, {nombre}. Añádelo al currículum: nadie te lo preguntará, pero constará.',
+    'Modo extremo, {nombre}. Una sola oportunidad y ninguna necesidad de repetirla.',
     'Sin red y sin tropiezos, {nombre}. Me veo obligado a tomarte en serio. Brevemente.'
   ],
   lucidez_perfecto: [
-    '30/30, {nombre}. Ninguna duda, ningún tropiezo y, por desgracia, ningún pretexto para criticarte.',
-    '30/30, {nombre}. La mente ha hablado. Y esta vez tenía razón.',
-    'Perfecto, {nombre}. Empiezo a echar de menos tus errores.'
+    '30/30, {nombre}. Hoy la mente no ha dejado ni una rendija.',
+    '30/30, {nombre}. Tendré que concederte una victoria sin matices.',
+    'Perfecto, {nombre}. Hoy no queda ni un «casi» al que agarrarme.'
   ],
   encargos_4: [
-    'Los cuatro, {nombre}. Por fin puedo fingir que estaba orgulloso de ti.',
-    'Semana saldada, {nombre}. Suficiente, que en tu caso ya es mucho decir.',
-    'Cuatro de cuatro, {nombre}. Mi opinión sobre ti acaba de subir un peldaño. Uno.'
+    'Los cuatro, {nombre}. Debo admitir que el expediente luce mejor.',
+    'Semana saldada, {nombre}. El expediente puede descansar hasta el lunes.',
+    'Cuatro de cuatro, {nombre}. Una línea en tinta discreta debería bastar.'
   ],
   comeback: [
     '«Vaya, {nombre}. Había empezado a archivar tu expediente.»',
     '«{nombre}. Ha pasado tiempo. No preguntaré dónde estabas. Lo adivino.»',
-    '«Así que sigues por aquí, {nombre}. Qué detalle avisar.»'
+    '«Así que sigues por aquí, {nombre}. Mi libreta no te esperaba.»'
   ],
   day: [
-    '«Buenos días, {nombre}. Veamos qué estás tramando.»',
+    '«Buenos días, {nombre}. Hoy tu cerebro ha llegado a tiempo.»',
     '«Madrugando, {nombre}. Inquietante, pero encomiable.»',
-    '«Una mañana prometedora, {nombre}. Procura no estropearla.»'
+    '«Una mañana prometedora, {nombre}. Veamos qué haces con ella.»'
   ],
+  streak_20: [
+    '«Veinte seguidas, {nombre}. Ahora sí puedo llamarlo racha sin reservas.»',
+    '«Veinte, {nombre}. Me veo obligado a anotarlo en tinta fuerte.»'
+  ],
+  night_early: ['«Medianoche, {nombre}. Veamos qué clase de lucidez trae esta hora.»'],
+  night_late: ['«Madrugada, {nombre}. A estas horas, hasta acertar tiene cierto mérito.»'],
   streak_30: [
-    '«Treinta, {nombre}. Empiezo a sospechar que sabes lo que haces.»',
+    '«Treinta, {nombre}. Ya no puedo fingir que esto es casualidad.»',
     '«Treinta seguidas, {nombre}. Me incomoda decirlo, pero estoy impresionado.»'
   ]
 };
@@ -55,5 +61,8 @@ const NAMED_RULES = {
   encargos_4:       { p: 1 / 2, cap: 'semana' },
   comeback:         { p: 1 / 2 },
   day:              { p: 1 / 3, cap: 'dia' },
-  streak_30:        { p: 1 / 2 }
+  streak_20:        { p: 1 / 2 },
+  streak_30:        { p: 1 / 2 },
+  night_early:      { p: 1 / 3, cap: 'dia' },
+  night_late:       { p: 1 / 3, cap: 'dia' }
 };

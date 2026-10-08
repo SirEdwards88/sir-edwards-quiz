@@ -84,7 +84,7 @@ const ENCARGOS_INTRO = {
       // Primera carta tras la semana de incorporación (que no se evalúa): ni aprobación ni reproche.
       incorporacion: [
         'Tu primera semana fue de prueba. No cuenta, de momento.',
-        'La semana pasada fue un ensayo. Se perdona; es lo que tiene ser nuevo.',
+        'La semana pasada fue un ensayo. Se perdona; es lo que tiene empezar.',
         'Lo de la semana pasada fue una presentación, no un examen. Disfrútalo mientras dure.'
       ],
       // Regreso tras varias semanas sin abrir Inicio: no se juzga una semana concreta, se recibe al que vuelve.
