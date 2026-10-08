@@ -40,6 +40,8 @@ const SEQEncargosIntro = (function () {
   }
 
   function seen() { return !!get(K_SEEN); }
+  // Quien recupera el progreso de su cuenta (con partidas jugadas) no es nuevo: se da la presentación por vista en este dispositivo.
+  function markSeen() { if (!seen()) set(K_SEEN, dayKey(new Date())); }
 
   // ¿Algo que no se debe tapar? Modales, la escena en curso, una partida, otra pantalla distinta de Inicio, o app en segundo plano.
   function blocked() {
@@ -343,7 +345,7 @@ const SEQEncargosIntro = (function () {
     })();
   }
 
-  return { seen: seen, replay: replay, noteGame: noteGame, noteDuel: noteDuel, onHome: onHome, shownThisSession: function () { return sessionShown; }, isActive: function () { return !!active; } };
+  return { seen: seen, markSeen: markSeen, replay: replay, noteGame: noteGame, noteDuel: noteDuel, onHome: onHome, shownThisSession: function () { return sessionShown; }, isActive: function () { return !!active; } };
 })();
 
 // Un lunes con la app ya abierta: se comprueba una vez al arrancar (si hay modales o cuenta, se deja para la siguiente visita a Inicio).

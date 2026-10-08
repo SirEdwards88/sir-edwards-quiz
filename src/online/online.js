@@ -660,6 +660,8 @@
         store.bestStreak = Math.max(n(store.bestStreak), n(p.best_streak));
         unionMedalsIntoStore(p.medals);
         afterLocalChange(gamesAdded);
+        // Quien recupera una cuenta con partidas no es nuevo: sin presentación de los Encargos y con la tira de Inicio ya visible.
+        if (target.games > 0) { try { SEQEncargosIntro.markSeen(); SEQEncargosUI.renderHome(); } catch (e) {} }
         var m = $('seq-migrate-modal'); if (m) m.style.display = 'none';
         toast(res.adjusted ? 'Progreso combinado (se ajustó algún valor imposible).' : 'Progreso combinado con tu cuenta', 'correcto');
         scheduleSync(1800, 'merge'); // logros derivados que el juego desbloquea localmente al aplicar los totales
