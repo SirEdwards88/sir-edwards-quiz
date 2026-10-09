@@ -187,7 +187,9 @@ const SEQMentalCalc = (function () {
         }
       }
     }
-    c.push({ load: 0.9 + 0.75 * mulAnalysis(b, q, true).load + 0.35 * Math.max(0, dg(a) - 2), strategy: (b === 3 || b === 6 || b === 9) ? 'divisibilidad' : 'inversa' });
+    // Con divisor de 2 cifras (>12) no basta con «multiplicar para comprobar»: hay que dar con el cociente a base de tanteo.
+    var guess = (b > 12 && !(q >= 10 && q === pow10(dg(q) - 1))) ? 1.3 + (q >= 20 ? 0.3 : 0) : 0;   // salvo cociente 10, 100…
+    c.push({ load: 0.9 + 0.75 * mulAnalysis(b, q, true).load + 0.35 * Math.max(0, dg(a) - 2) + guess, strategy: (b === 3 || b === 6 || b === 9) ? 'divisibilidad' : 'inversa' });
     return best(c);
   }
 

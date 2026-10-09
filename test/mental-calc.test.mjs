@@ -190,3 +190,16 @@ test('reparto más justo: tras una operación difícil no sale un pico; sin ella
   for (let i = 0; i < 300; i++) { const st = 20, base = M.curve(st); const op = M.nextOperation(s, { streak: st }); const peak = op.target > Math.round(base) && op.difficulty >= 55; if (prevPeak && op.target > Math.round(Math.max(base, 0.4 * M.curve(s.n - 1)))) bad++; prevPeak = op.difficulty >= 55; }
   assert.equal(bad, 0);
 });
+
+test('divisiones con divisor de 2 cifras: pesan más que por «comprobar multiplicando» (2520 ÷ 63 ya no es una operación de racha 5)', () => {
+  const d = (a, b) => M.calculateOperationDifficulty({ sign: '÷', a, b });
+  assert.ok(d(2520, 63) >= 45, '2520 ÷ 63: ' + d(2520, 63));
+  assert.ok(d(1350, 45) >= 45 && d(3120, 26) >= 60);
+  assert.ok(d(770, 5) <= 30 && d(2850, 50) <= 30 && d(840, 12) <= 30 && d(7600, 100) <= 15, 'las fáciles siguen fáciles');
+  assert.ok(d(1700, 17) <= 25, 'cociente 100: sigue siendo fácil');
+  // a rachas bajas casi no salen divisiones con divisor de 2 cifras
+  let n = 0, hi = 0;
+  for (let g = 0; g < 300; g++) { const s = M.createSession(mulberry32(g)); for (let i = 0; i < 8; i++) { const o = M.nextOperation(s, { streak: Math.min(i, 5) }); if (i >= 3 && o.type === '÷') { n++; if (o.b > 12 && o.b % 10 !== 0 && o.difficulty >= 45) hi++; } } }
+  assert.ok(n > 100);
+  assert.ok(hi / n < 0.03, 'a racha ≤ 5 casi no salen divisiones de divisor de 2 cifras tan duras: ' + hi + '/' + n);
+});
