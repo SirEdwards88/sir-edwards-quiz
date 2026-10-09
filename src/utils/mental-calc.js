@@ -356,6 +356,8 @@ const SEQMentalCalc = (function () {
 
   // ----------------------------------------------------- progresión y adaptación ---
   // Dificultad base según la racha: curva suave (sin saltos en los umbrales de antes). Casi igual hasta ~8 seguidas; a partir de ahí sube más despacio.
+  var FLOOR_RATIO = 0.4;
+  var HARD_D = 55;                 // «difícil» a efectos del reparto: una operación así no va seguida de un pico
   var CURVE = [[0, 14], [5, 22], [10, 30], [15, 37], [20, 45], [30, 60], [45, 76]];
   function curve(streak) {
     if (streak <= 0) return CURVE[0][1];
@@ -400,12 +402,17 @@ const SEQMentalCalc = (function () {
   function targetForStreak(streak, s) {
     var rng = s ? s.rng : null;
     var base = curve(streak);
+    // Suelo por progreso: fallar a propósito no devuelve a las operaciones fáciles (ya jugadas n, nunca menos del 40 % de la curva de n).
+    if (s && s.n > 0) base = Math.max(base, FLOOR_RATIO * curve(s.n));
     if (s && s.carry > 0 && streak < 8) base = Math.max(base, s.carry * (1 - streak / 8)); // tras un fallo, no se cae de golpe
     var jitter = (rnd(rng) + rnd(rng) - 1) * 9;          // variabilidad (triangular ±9)
     var r = rnd(rng);
     if (r < 0.10) jitter -= 12; else if (r > 0.92) jitter += 8; // un respiro o un pico de vez en cuando
     var adj = (s && !s.noAdapt) ? performanceAdjust(s.perf) : 0;
-    return clamp(Math.round(base + jitter + adj), 8, s && s.cap ? s.cap : 92);
+    var raw = base + jitter + adj;
+    // Reparto más justo: tras una operación difícil, la siguiente no puede ser un pico (queda como mucho en la dificultad base).
+    if (s && s.lastD >= HARD_D && raw > base) raw = base;
+    return clamp(Math.round(raw), 8, s && s.cap ? s.cap : 92);
   }
   var WARMUP_OPS = 3, WARMUP_MAX = 14;
   function nextOperation(s, opts) {
@@ -414,6 +421,7 @@ const SEQMentalCalc = (function () {
     if (s.n < WARMUP_OPS) target = Math.min(target, WARMUP_MAX); // calentamiento: las primeras operaciones de una partida, suaves
     s.n++;
     var op = generateOperation(target, type, s.rng, { recent: s.recent });
+    s.lastD = op.difficulty;
     s.recent.push({ text: op.text, a: op.a, b: op.b, family: op.family });
     if (s.recent.length > 40) s.recent.shift();
     return op;

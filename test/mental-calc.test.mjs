@@ -74,7 +74,9 @@ test('prácticamente sin repeticiones: nada idéntico seguido ni dentro de una v
 });
 
 test('la dificultad crece gradualmente con la racha, sin saltos en los umbrales', () => {
-  const m = []; for (let st = 0; st <= 30; st++) m.push(mean(run(st, 400, st + 100).map((o) => o.difficulty)));
+  // partidas cortas y muchas (con una sola sesión de 400 operaciones entraría el suelo por progreso, que es lo que se pide en otra prueba)
+  const short = (st, seed) => { const out = []; for (let k = 0; k < 60; k++) { const s = M.createSession(mulberry32(seed + k)); for (let i = 0; i < 10; i++) { const o = M.nextOperation(s, { streak: st }); if (i >= 3) out.push(o.difficulty); } } return out; };
+  const m = []; for (let st = 0; st <= 30; st++) m.push(mean(short(st, st * 1000 + 100)));
   assert.ok(m[0] < 22 && m[5] > 18 && m[10] > 27 && m[15] > 33 && m[20] > 41 && m[30] > 54, JSON.stringify(m.map(Math.round)));
   for (let st = 1; st <= 30; st++) assert.ok(m[st] > m[st - 1] - 4, `retroceso en racha ${st}`);           // sin bajadas (ruido aparte)
   for (let st = 1; st <= 30; st++) assert.ok(m[st] - m[st - 1] < 9, `salto brusco en racha ${st}: ${m[st] - m[st - 1]}`);
@@ -161,4 +163,30 @@ test('puntuación existente: puntos base 10/20/35, bonus de velocidad y de racha
 test('mental-calc.js está en index.html y en la caché sin conexión', () => {
   assert.match(html, /src\/utils\/mental-calc\.js\?v=\d+/);
   assert.ok(read('sw.js').includes("'./src/utils/mental-calc.js'"));
+});
+
+test('suelo por progreso: fallar a propósito no devuelve a las operaciones fáciles', () => {
+  const s = M.createSession(mulberry32(7)); s.noAdapt = true;
+  for (let i = 0; i < 30; i++) M.nextOperation(s, { streak: 30 });   // 30 operaciones jugadas con racha
+  const t = []; for (let i = 0; i < 400; i++) t.push(M.targetForStreak(0, s));   // racha a 0 tras fallar
+  assert.ok(mean(t) > 0.4 * M.curve(30) - 6, 'el suelo sigue el 40 % de la curva de la partida');
+  assert.ok(mean(t) > M.curve(0) + 6, 'ya no vuelve a las fáciles');
+  // sin sesión de partida larga (inicio) no cambia nada
+  const fresh = M.createSession(mulberry32(7)); const u = []; for (let i = 0; i < 300; i++) u.push(M.targetForStreak(0, fresh));
+  assert.ok(Math.abs(mean(u) - M.curve(0)) < 3);
+  // los Retos (posición = racha) no cambian: el suelo queda siempre por debajo de la curva
+  for (let n = 1; n <= 60; n++) assert.ok(0.4 * M.curve(n) <= M.curve(n));
+});
+
+test('reparto más justo: tras una operación difícil no sale un pico; sin ella sí puede', () => {
+  const hard = M.createSession(mulberry32(3)); hard.lastD = 70;
+  const free = M.createSession(mulberry32(3)); free.lastD = 20;
+  let maxHard = -1, maxFree = -1;
+  for (let i = 0; i < 600; i++) { maxHard = Math.max(maxHard, M.targetForStreak(20, hard)); maxFree = Math.max(maxFree, M.targetForStreak(20, free)); }
+  assert.ok(maxHard <= Math.round(M.curve(20)), 'tras una difícil, como mucho la base: ' + maxHard);
+  assert.ok(maxFree > Math.round(M.curve(20)) + 4, 'sin una difícil previa los picos siguen existiendo: ' + maxFree);
+  // en una partida entera nunca hay dos picos seguidos por encima de la base
+  const s = M.createSession(mulberry32(11)); s.noAdapt = true; let prevPeak = false, bad = 0;
+  for (let i = 0; i < 300; i++) { const st = 20, base = M.curve(st); const op = M.nextOperation(s, { streak: st }); const peak = op.target > Math.round(base) && op.difficulty >= 55; if (prevPeak && op.target > Math.round(Math.max(base, 0.4 * M.curve(s.n - 1)))) bad++; prevPeak = op.difficulty >= 55; }
+  assert.equal(bad, 0);
 });
