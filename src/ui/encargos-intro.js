@@ -175,33 +175,43 @@ const SEQEncargosIntro = (function () {
       '<div class="enc-intro-paper"></div><div class="enc-intro-blink"></div>' +
       '<div class="enc-intro-title" aria-hidden="true"><div class="t1">SIR EDWARDS</div><div class="t2">Evaluador oficial de tu lucidez</div></div>' +
       '<p class="enc-intro-caption" aria-live="polite"></p>' +
+      '<div class="enc-intro-hint" aria-hidden="true">Toca para continuar</div>' +
       '<div class="enc-intro-final"><div class="enc-intro-dossier"><div class="k">ENCARGOS</div><div class="m">Tu expediente ha sido abierto.</div>' +
         '<div class="seal" aria-hidden="true"><span>SE</span></div></div>' +
         '<button type="button" class="enc-intro-go">Ver mis encargos</button></div>';
     var img = el.querySelector('.enc-intro-img'), sil = el.querySelector('.enc-intro-sil'), cap = el.querySelector('.enc-intro-caption');
     var fig = el.querySelector('.enc-intro-fig'), go = el.querySelector('.enc-intro-go');
     el.tabIndex = -1;
-    var timers = [], idx = -1, ended = false, curBeat = 0;
+    var timers = [], idx = -1, ended = false, curBeat = 0, lastTap = 0;
     function later(fn, ms) { var t = setTimeout(fn, ms); timers.push(t); }
-    // Los pasos avanzan solos, pero se pueden pausar: mantener pulsado, Espacio, o salir de la app. Soltar (o Espacio otra vez) reanuda.
-    var stepper = C.makeStepper(setTimeout, clearTimeout, Date.now), holdTimer = null, held = false, swallow = false;
-    function clearAll() { timers.forEach(clearTimeout); timers = []; stepper.clear(); }
-    function setPaused(p) { if (ended) return; if (p) stepper.pause(); else stepper.resume(); el.classList.toggle('is-paused', stepper.isPaused()); }
+    function clearAll() { timers.forEach(clearTimeout); timers = []; }
 
+    // Cambio de pose: fundido cruzado (la imagen nueva aparece sobre la anterior, que se retira cuando termina; nunca un corte).
     function setBeat(b) {
       if (b === curBeat) return;
+      var first = !curBeat;
       curBeat = b;
       var src = b === 1 ? IMG.evaluador : b === 2 ? IMG.expediente : IMG.mirada;
       el.setAttribute('data-beat', String(b));
-      img.src = src; sil.src = src;
+      sil.src = src;
+      if (first) img.src = src;
+      else {
+        var old = img, nw = old.cloneNode(false);
+        nw.className = 'enc-intro-img is-fade-in'; nw.src = src;
+        old.classList.add('is-fade-out');
+        old.parentNode.insertBefore(nw, old.nextSibling);
+        img = nw;
+        setTimeout(function () { if (old.parentNode) old.parentNode.removeChild(old); }, reduced() ? 700 : 1500);
+      }
       fig.classList.remove('is-b1', 'is-b2', 'is-b3', 'is-restart');
       void fig.offsetWidth;
       fig.classList.add('is-b' + b);
       if (b === 2) { el.classList.remove('do-paper'); void el.offsetWidth; el.classList.add('do-paper'); }
     }
     function say(text) {
-      cap.classList.remove('in');
+      cap.classList.remove('in'); el.classList.remove('show-hint');
       later(function () { cap.textContent = text; void cap.offsetWidth; cap.classList.add('in'); }, cap.textContent ? 180 : 0);
+      later(function () { el.classList.add('show-hint'); }, 1600);   // pista de «toca», sin prisa
     }
     function show(i) {
       if (ended) return;
@@ -214,28 +224,22 @@ const SEQEncargosIntro = (function () {
       el.classList.toggle('show-title', !!s.title);
       if (s.blink) {
         el.classList.remove('do-blink'); void el.offsetWidth; el.classList.add('do-blink');
-        cap.classList.remove('in');
+        cap.classList.remove('in'); el.classList.remove('show-hint');
         later(function () { cap.textContent = s.text; void cap.offsetWidth; cap.classList.add('in'); }, 340);
+        later(function () { el.classList.add('show-hint'); }, 2000);
       } else say(s.text);
-      stepper.after(function () { show(i + 1); }, holdMs(s));
-    }
-    // Tiempo en pantalla: un 30 % más que el guion base y nunca menos de lo que se tarda en leer la frase (≈45 ms por carácter);
-    // medio segundo más en los trozos de texto largo (40 caracteres o más) y 2 s más en el que presenta el título, para poder verlo y
-    // leerlo. El título se queda en pantalla durante «Permíteme presentarme…» y «Nadie me lo pidió…» y se va al terminar esta última.
-    function holdMs(s) {
-      var len = s.text ? s.text.length : 0;
-      return Math.max(Math.round(s.ms * 1.3), 1400 + len * 45) + (len >= 40 ? 500 : 0) + (s.title && len >= 40 ? 2000 : 0);
+      // Nada avanza solo: cada paso espera al toque del jugador, que lee a su ritmo.
     }
     function showFinal() {
-      el.classList.add('is-final');
+      el.classList.add('is-final'); el.classList.remove('show-hint');
       cap.classList.remove('in');
       later(function () { try { if (!reduced() && navigator.vibrate) navigator.vibrate(35); } catch (e) {} }, 900);
-      stepper.after(function () { finish(false); }, steps[idx].ms);
+      // El cierre se queda hasta que el jugador pulse «Ver mis encargos» .
     }
     function finish(toEncargos) {
       if (ended) return;
       ended = true; clearAll(); menuMusic(false);
-      document.removeEventListener('keydown', onSpace, true); document.removeEventListener('visibilitychange', onHidden);
+      document.removeEventListener('keydown', onKey, true);
       if (!preview) { set(K_SEEN, dayKey(new Date())); pendingResult = null; }
       unmount(el, offKeys);
       active = null;
@@ -245,26 +249,19 @@ const SEQEncargosIntro = (function () {
       } catch (e) {}
     }
     var offKeys = trapKeys(el, function () { finish(false); });
-    function onSpace(e) { if (e.key === ' ' && !(e.target && e.target.tagName === 'BUTTON')) { e.preventDefault(); setPaused(!stepper.isPaused()); } }
-    function onHidden() { setPaused(document.visibilityState === 'hidden'); }
-    document.addEventListener('keydown', onSpace, true);
-    document.addEventListener('visibilitychange', onHidden);
-    el.addEventListener('pointerdown', function (e) {
-      if (e.target.closest && e.target.closest('button')) return;
-      clearTimeout(holdTimer);
-      holdTimer = setTimeout(function () { held = true; swallow = true; setPaused(true); }, 380);   // pulsación larga = pausa
-    });
-    function endHold() {
-      clearTimeout(holdTimer);
-      if (held) { held = false; setPaused(false); }
-      setTimeout(function () { swallow = false; }, 80);   // el «click» que sigue a una pulsación larga no avanza
+    function next() {
+      if (ended || el.classList.contains('is-final')) return;
+      var now = Date.now(); if (now - lastTap < 350) return;   // un doble toque sin querer no se come una frase
+      lastTap = now; show(idx + 1);
     }
-    el.addEventListener('pointerup', endHold); el.addEventListener('pointercancel', endHold); el.addEventListener('pointerleave', endHold);
+    function onKey(e) {
+      if (e.target && e.target.tagName === 'BUTTON') return;
+      if (e.key === ' ' || e.key === 'Enter' || e.key === 'ArrowRight') { e.preventDefault(); next(); }
+    }
+    document.addEventListener('keydown', onKey, true);
     el.addEventListener('click', function (e) {
       if (e.target === go) { finish(true); return; }
-      if (ended || el.classList.contains('is-final') || swallow) return;
-      if (stepper.isPaused()) { setPaused(false); return; }   // en pausa (Espacio): tocar reanuda en lugar de avanzar
-      show(idx + 1);     // toque = siguiente
+      next();    // toque = siguiente
     });
     active = { el: el };
     menuMusic(true);

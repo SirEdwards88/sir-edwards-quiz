@@ -258,15 +258,16 @@ test('la Presentación se puede pausar: el temporizador de pasos congela lo que 
   s.after(() => { fired++; }, 100); s.clear(); advance(1000); assert.equal(fired, 2);
 });
 
-test('cableado de la pausa: pulsación larga, Espacio y segundo plano; tocar tras una pausa no avanza de golpe', () => {
+test('la Presentación avanza solo al tocar: sin temporizador entre pasos, con pista «Toca para continuar» y fundido cruzado', () => {
   const ui = read('src/ui/encargos-intro.js'), css = read('styles/encargos-intro.css');
-  assert.match(ui, /makeStepper\(setTimeout, clearTimeout, Date\.now\)/);
-  assert.match(ui, /stepper\.after\(function \(\) \{ show\(i \+ 1\); \}, holdMs\(s\)\)/);
-  assert.match(ui, /e\.key === ' '/);
-  assert.match(ui, /visibilitychange/);
-  assert.match(ui, /380\)/, 'pulsación larga');
-  assert.match(ui, /removeEventListener\('keydown', onSpace, true\)/, 'se limpia al terminar');
-  assert.match(css, /\.enc-intro\.is-paused[^{]*\{ animation-play-state: paused !important; \}/);
+  assert.doesNotMatch(ui, /stepper|holdMs/, 'ningún paso avanza solo');
+  assert.doesNotMatch(ui, /enc-intro-skip/, 'sin botón Saltar: la pista de toque basta');
+  assert.match(ui, /Toca para continuar/);
+  assert.match(ui, /show\(idx \+ 1\)/, 'el toque avanza');
+  assert.match(ui, /removeEventListener\('keydown', onKey, true\)/, 'se limpia al terminar');
+  assert.match(ui, /is-fade-in/);
+  assert.match(css, /img\.is-fade-in \{[^}]*encXIn/);
+  assert.doesNotMatch(css, /encCut/, 'sin corte con desplazamiento entre poses');
 });
 
 test('la tira de Encargos se pinta al abrir la app y tras sincronizar (no solo tras una partida)', async () => {
