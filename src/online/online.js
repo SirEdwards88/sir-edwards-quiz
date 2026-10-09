@@ -909,11 +909,10 @@
     host.innerHTML = html;
   }
 
+  // El botón «Ranking global» ya no aparece en Estadísticas (decisión del propietario): el hueco se queda vacío.
   function renderStatsSlot() {
     var slot = $('seq-stats-slot');
-    if (!slot) return;
-    if (!rankingOn()) { slot.innerHTML = ''; return; }
-    slot.innerHTML = '<button class="btn btn-secondary seq-stats-rank-btn" onclick="SEQOnline.openRanking()"><img class="ui-img ui-btn-img" src="assets/modes/mini/ranking.webp" alt="" draggable="false">Ranking global</button>';
+    if (slot) slot.innerHTML = '';
   }
 
   function render() {
