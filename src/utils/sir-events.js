@@ -46,7 +46,7 @@ const SEQSirEvents = (function () {
     broken: 'assets/character/event_siredwards_visit.webp',
     comeback: 'assets/character/event_siredwards_comeback.webp',
     weak: 'assets/character/event_siredwards_visit.webp',
-    record: 'assets/character/event_siredwards_streak.webp',
+    record: 'assets/character/event_siredwards_record.webp',
     streak: 'assets/character/event_siredwards_streak.webp',
     day: 'assets/character/event_siredwards_day.webp',
     night: 'assets/character/event_siredwards_night.webp'

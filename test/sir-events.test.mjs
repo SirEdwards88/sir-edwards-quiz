@@ -437,7 +437,7 @@ test('día, noche y visita: como mucho uno cada 6 h; la categoría débil, uno a
 test('récord personal: sale con ctx.record, una vez por partida, con la racha en la frase', () => {
   const st = S.newState(); warm(st);
   const ev = ans(st, 7e6, 14, 6, { record: 6, recent: { visit: 7e6 } }, ALWAYS);
-  assert.ok(ev && ev.type === 'record' && ev.asset === S.ASSETS.streak && ev.message.includes('6') && !/\{n\}/.test(ev.message));
+  assert.ok(ev && ev.type === 'record' && ev.asset === S.ASSETS.record && ev.message.includes('6') && !/\{n\}/.test(ev.message));
   for (let k = 0; k < S.MIN_ANSWERS_BETWEEN; k++) S.evaluate(st, { nowMs: 9e6 - 1, hour: 14, streak: 7, correct: false, last: false, blocked: false, noBroken: true }, ALWAYS);
   assert.equal(ans(st, 9e6, 14, 8, { record: 8, recent: { visit: 9e6 } }, ALWAYS), null, 'un solo récord por partida');
 });
