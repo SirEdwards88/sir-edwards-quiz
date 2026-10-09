@@ -44,7 +44,7 @@ function fill(ctx, id) {
       case 'constancia': p.days = ['2026-10-05','2026-10-06','2026-10-07']; break;
       case 'mente_curiosa': C.forEach(function (c) { p.cat[c] = 10; }); break;
       case 'sin_terreno_comodo': C.forEach(function (c) { p.cat[c] = 15; }); break;
-      case 'sexto_sentido': C.forEach(function (c) { p.best[c] = 3; }); break;
+      case 'sexto_sentido': p.sb = 10; break;
       case 'mano_firme': p.g80 = 3; break;
       case 'no_era_suerte': p.g80 = 5; break;
       case 'rival_digno': p.wins = 3; break;
@@ -79,8 +79,8 @@ test('evaluadores: umbrales exactos de las 12 normales y las 4 grandes', () => {
   assert.equal(ev('sin_terreno_comodo', cats(15, 15)).done, true);
   assert.equal(ev('semana_completa', cats(25, 24)).done, false);
   assert.equal(ev('semana_completa', cats(25, 25)).done, true);
-  assert.equal(ev('sexto_sentido', 'p => { P.CATS.forEach(c => { p.best[c] = 3; }); p.best.ciencia = 2; }').done, false);
-  assert.equal(ev('sexto_sentido', 'p => { P.CATS.forEach(c => { p.best[c] = 3; }); }').done, true);
+  assert.equal(ev('sexto_sentido', 'p => { p.sb = 9; }').done, false);
+  assert.equal(ev('sexto_sentido', 'p => { p.sb = 10; }').done, true);
 });
 
 test('Juego de Apuestas cuenta SOLO duelos por apuestas; Retos y duelos normales cuentan como duelos', () => {
@@ -125,34 +125,28 @@ test('partidas: mínimo de respuestas, Repaso no cuenta, precisión y Trabajo Li
   assert.equal(run(ctx2, 'store.encargos.p.clean'), 0); // partida de 5: no vale para precisión
 });
 
-test('El Sexto Sentido: 3 aciertos CONSECUTIVOS de la misma categoría; otra categoría, un fallo o una respuesta sin categoría la cortan', () => {
+test('Sin Titubeos: 10 aciertos seguidos; un fallo corta la racha y las respuestas sin categoría no la cortan', () => {
   const ctx = makeEnv();
   const ans = (cat, ok) => run(ctx, `encargosOnAnswer(${ok}, {cat:${JSON.stringify(cat)}})`);
-  const best = (c) => run(ctx, `store.encargos.p.best.${c}`);
-  ans('historia', true); ans('historia', true); ans('ciencia', true); ans('historia', true); // otra categoría en medio: corta
-  assert.equal(best('historia'), 2);
-  ans('historia', true); ans('historia', true); // 1.ª + 2.ª + 3.ª seguidas tras la interrupción
-  ans('deporte', true); ans('deporte', false); ans('deporte', true); ans('deporte', true); // un fallo corta
-  assert.equal(best('historia'), 3);
-  assert.equal(best('deporte'), 2);
-  ans('geografia', true); ans('geografia', true); ans(null, true); ans('geografia', true); // sin categoría corta
-  assert.equal(best('geografia'), 2);
-  ans('ciencia', false); ans('ciencia', true); ans('ciencia', true); ans('ciencia', true);
-  assert.equal(best('ciencia'), 3);
-  assert.equal(run(ctx, 'store.encargos.p.ok'), 16);
+  const st = () => run(ctx, 'store.encargos.p.st'), sb = () => run(ctx, 'store.encargos.p.sb');
+  for (let i = 0; i < 4; i++) ans('historia', true);
+  ans('ciencia', true); ans(null, true); // otra categoría o sin categoría: la racha sigue
+  assert.equal(st(), 6); assert.equal(sb(), 6);
+  ans('deporte', false);
+  assert.equal(st(), 0); assert.equal(sb(), 6); // el fallo corta, la mejor se conserva
+  for (let i = 0; i < 3; i++) ans('geografia', true);
+  assert.equal(st(), 3); assert.equal(sb(), 6);
+  assert.equal(run(ctx, 'store.encargos.p.ok'), 9);
 });
 
-test('El Sexto Sentido: la racha continúa entre partidas y un solo valor de `run` queda activo', () => {
+test('Sin Titubeos: la racha continúa entre partidas y se completa a los 10', () => {
   const ctx = makeEnv();
-  const ans = (cat, ok) => run(ctx, `encargosOnAnswer(${ok}, {cat:${JSON.stringify(cat)}})`);
-  ans('arte_literatura', true); ans('arte_literatura', true);
-  run(ctx, `SEQEncargosProgress.recordGame(store.encargos.p, {mode:'play',correct:5,total:5,day:'2026-10-07'})`); // fin de partida: no la reinicia
-  ans('arte_literatura', true);
-  assert.equal(run(ctx, 'store.encargos.p.best.arte_literatura'), 3);
-  assert.equal(run(ctx, 'Object.values(store.encargos.p.run).filter(Boolean).length'), 1);
-  ans('historia', true);
-  assert.equal(run(ctx, 'store.encargos.p.run.arte_literatura'), 0);
-  assert.equal(run(ctx, 'store.encargos.p.run.historia'), 1);
+  const ans = (ok) => run(ctx, `encargosOnAnswer(${ok}, {cat:'arte_literatura'})`);
+  for (let i = 0; i < 6; i++) ans(true);
+  run(ctx, `SEQEncargosProgress.recordGame(store.encargos.p, {mode:'play',correct:6,total:6,day:'2026-10-07'})`); // fin de partida: no la reinicia
+  for (let i = 0; i < 4; i++) ans(true);
+  assert.equal(run(ctx, 'store.encargos.p.sb'), 10);
+  assert.equal(run(ctx, `SEQEncargosProgress.evaluate('sexto_sentido', store.encargos.p).done`), true);
 });
 
 test('Repaso no cuenta aciertos', () => {

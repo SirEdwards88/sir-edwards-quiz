@@ -5380,7 +5380,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   background: radial-gradient(circle at 50% 35%, #fff7d6, #f0d99a) !important; border: 2px solid #c9992e !important; box-shadow: 0 4px 10px rgba(201,153,46,.3); }
 .dossier-seal .se-sym { width: 70%; height: 70%; }
 .stats-dossier .stats-level-widget-top { font: 800 15px var(--font-ui); letter-spacing: .6px; color: var(--brand-navy, #16244a); }
-.dossier-tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px dashed rgba(201,153,46,.45); }
+.dossier-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px dashed rgba(201,153,46,.45); }
 .dossier-tile { text-align: center; min-width: 0; }
 .dossier-tile-label { font: 800 9.5px var(--font-ui); letter-spacing: 1.2px; text-transform: uppercase; color: var(--sub); }
 .dossier-tile-value { font: 900 24px var(--font-ui); color: var(--brand-navy, #16244a); font-variant-numeric: tabular-nums; margin: 3px 0 2px; }

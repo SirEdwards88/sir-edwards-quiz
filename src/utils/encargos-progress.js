@@ -9,8 +9,8 @@
 //   · Precisión (80 %, 90 %, Trabajo Limpio): partida con al menos MIN_PRECISION_ANSWERS respuestas, para que no valga
 //     una partida de 2 preguntas.
 //   · Duelo: Duelo online, Duelo por Apuestas y Reto (las tres cosas). «Juego de Apuestas» cuenta SOLO los de apuestas.
-//   · El Sexto Sentido: racha de 3 aciertos seguidos DENTRO de cada categoría (se cuentan las respuestas de esa
-//     categoría; un fallo en ella la reinicia), aunque sea en partidas distintas.
+//   · Sin Titubeos: racha de aciertos seguidos (cualquier categoría, y también respuestas sin categoría); un fallo la
+//     reinicia. Sigue entre partidas durante la semana.
 //
 // Script clásico (scope global). Necesita SEQEncargos (encargos-core.js) cargado antes.
 
@@ -23,7 +23,7 @@ const SEQEncargosProgress = (function () {
 
   function zeroCats() { var o = {}; CATS.forEach(function (c) { o[c] = 0; }); return o; }
   function emptyProgress() {
-    return { ok: 0, cat: zeroCats(), run: zeroCats(), best: zeroCats(), games: 0, days: [], g80: 0, g90: 0, clean: 0,
+    return { ok: 0, cat: zeroCats(), st: 0, sb: 0, games: 0, days: [], g80: 0, g90: 0, clean: 0,
       modes: {}, std: 0, other: 0, duels: 0, wins: 0, stakes: 0 };
   }
   function num(v) { v = Number(v); return isFinite(v) && v > 0 ? Math.min(Math.floor(v), CAP) : 0; }
@@ -32,28 +32,24 @@ const SEQEncargosProgress = (function () {
     var o = emptyProgress();
     if (!p || typeof p !== 'object') return o;
     o.ok = num(p.ok); o.games = num(p.games); o.g80 = num(p.g80); o.g90 = num(p.g90); o.clean = p.clean ? 1 : 0;
-    o.std = num(p.std); o.other = num(p.other); o.duels = num(p.duels); o.wins = num(p.wins); o.stakes = num(p.stakes);
-    ['cat', 'run', 'best'].forEach(function (k) { CATS.forEach(function (c) { o[k][c] = num(p[k] && p[k][c]); }); });
+    o.st = num(p.st); o.sb = num(p.sb); o.std = num(p.std); o.other = num(p.other); o.duels = num(p.duels); o.wins = num(p.wins); o.stakes = num(p.stakes);
+    CATS.forEach(function (c) { o.cat[c] = num(p.cat && p.cat[c]); });
     if (Array.isArray(p.days)) p.days.forEach(function (d) { if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d) && o.days.indexOf(d) === -1 && o.days.length < 7) o.days.push(d); });
     if (p.modes && typeof p.modes === 'object') Object.keys(p.modes).slice(0, 12).forEach(function (m) { if (/^[a-z_]{1,24}$/.test(m)) o.modes[m] = num(p.modes[m]); });
     return o;
   }
 
-  // Un acierto o un fallo. `cat` puede ser null (cálculo mental, enigmas…): solo suma al total de aciertos.
-  // `run` es la racha EN CURSO de aciertos seguidos de una misma categoría (como mucho una categoría con valor > 0):
-  // cualquier respuesta de otra categoría, sin categoría o fallada la corta. `best[cat]` guarda la mejor racha lograda
-  // (El Sexto Sentido: 3 seguidas de la misma categoría en cada una de las 6; la racha sigue entre partidas).
+  // Un acierto o un fallo. `cat` puede ser null (cálculo mental, enigmas…): suma al total de aciertos y a la racha,
+  // pero no a ninguna categoría. `st` es la racha EN CURSO de aciertos seguidos (un fallo la pone a 0) y `sb` la mejor
+  // de la semana (Sin Titubeos: 10 seguidas; la racha sigue entre partidas).
   function recordAnswer(p, cat, correct) {
-    var known = CATS.indexOf(cat) !== -1;
-    var prev = known ? p.run[cat] : 0;
-    CATS.forEach(function (c) { p.run[c] = 0; });
     if (correct) {
       p.ok = Math.min(p.ok + 1, CAP);
-      if (known) {
-        p.cat[cat] = Math.min(p.cat[cat] + 1, CAP);
-        p.run[cat] = Math.min(prev + 1, CAP);
-        if (p.run[cat] > p.best[cat]) p.best[cat] = p.run[cat];
-      }
+      if (CATS.indexOf(cat) !== -1) p.cat[cat] = Math.min(p.cat[cat] + 1, CAP);
+      p.st = Math.min(p.st + 1, CAP);
+      if (p.st > p.sb) p.sb = p.st;
+    } else {
+      p.st = 0;
     }
   }
 
@@ -82,12 +78,12 @@ const SEQEncargosProgress = (function () {
   }
 
   // Combina dos progresos de la MISMA semana (dos pestañas del mismo dispositivo): máximo por contador, unión de días.
-  // Conmutativa, asociativa e idempotente. `run` (racha en curso) se queda con la mayor, que solo afecta a `best`.
+  // Conmutativa, asociativa e idempotente. `st` (racha en curso) se queda con la mayor, que solo afecta a `sb`.
   function merge(a, b) {
     a = normalize(a); b = normalize(b);
     var o = emptyProgress();
-    ['ok', 'games', 'g80', 'g90', 'clean', 'std', 'other', 'duels', 'wins', 'stakes'].forEach(function (k) { o[k] = Math.max(a[k], b[k]); });
-    ['cat', 'run', 'best'].forEach(function (k) { CATS.forEach(function (c) { o[k][c] = Math.max(a[k][c], b[k][c]); }); });
+    ['ok', 'st', 'sb', 'games', 'g80', 'g90', 'clean', 'std', 'other', 'duels', 'wins', 'stakes'].forEach(function (k) { o[k] = Math.max(a[k], b[k]); });
+    CATS.forEach(function (c) { o.cat[c] = Math.max(a.cat[c], b.cat[c]); });
     a.days.concat(b.days).sort().forEach(function (d) { if (o.days.indexOf(d) === -1 && o.days.length < 7) o.days.push(d); });
     Object.keys(a.modes).concat(Object.keys(b.modes)).forEach(function (m) { o.modes[m] = Math.max(a.modes[m] || 0, b.modes[m] || 0); });
     return o;
@@ -97,9 +93,10 @@ const SEQEncargosProgress = (function () {
   function catsReached(p, key, n) { return CATS.filter(function (c) { return p[key][c] >= n; }).length; }
   function modeCount(p) { return Object.keys(p.modes).filter(function (m) { return p.modes[m] > 0; }).length; }
   function mk(cur, max, label) { cur = Math.min(cur, max); return { cur: cur, max: max, frac: max ? cur / max : 0, done: cur >= max, label: label || (cur + '/' + max) }; }
+  // El texto cuenta lo mismo que la barra (aciertos válidos sobre el total) y añade cuántas categorías están completas.
   function perCat(p, key, n) {
-    var k = catsReached(p, key, n);
-    return { cur: sumCap(p, key, n), max: 6 * n, frac: sumCap(p, key, n) / (6 * n), done: k === 6, label: k + '/6 categorías' };
+    var k = catsReached(p, key, n), cur = sumCap(p, key, n);
+    return { cur: cur, max: 6 * n, frac: cur / (6 * n), done: k === 6, label: cur + '/' + (6 * n) + ' aciertos · ' + k + '/6 categorías' };
   }
 
   // Evalúa una misión (normal o grande) con el progreso `p`. Devuelve {cur, max, frac, done, label}.
@@ -111,7 +108,7 @@ const SEQEncargosProgress = (function () {
       case 'constancia': return mk(p.days.length, 3, Math.min(p.days.length, 3) + '/3 días');
       case 'mente_curiosa': return perCat(p, 'cat', 10);
       case 'sin_terreno_comodo': return perCat(p, 'cat', 15);
-      case 'sexto_sentido': return perCat(p, 'best', 3);
+      case 'sexto_sentido': return mk(p.sb, 10, Math.min(p.sb, 10) + '/10 seguidos');
       case 'mano_firme': return mk(p.g80, 3);
       case 'no_era_suerte': return mk(p.g80, 5);
       case 'rival_digno': return mk(p.wins, 3);
