@@ -24,8 +24,8 @@ const SEQNamePrompt = (function () {
     if (s.length < MIN) return { ok: false, msg: 'Eso es una inicial, no un nombre.' };
     if (s.length > MAX) return { ok: false, msg: 'Máximo ' + MAX + ' caracteres. Sir Edwards tiene memoria, no paciencia.' };
     if (!/[\p{L}]/u.test(s)) return { ok: false, msg: 'Incluye alguna letra, que esto no es una matrícula.' };
-    if (/https?:|www\.|@|\.(com|es|net|org)\b|[<>{}\[\]\\\/]/i.test(s)) return { ok: false, msg: 'Un nombre sin direcciones ni símbolos raros, gracias.' };
-    if (isDefaultName(s)) return { ok: false, msg: 'Ese es el nombre que te dieron por defecto. Algo más personal.' };
+    if (/https?:|www\.|@|\.(com|es|net|org)\b|[<>{}\[\]\\\/]/i.test(s)) return { ok: false, msg: 'Eso no es un nombre, es un código. Prueba con algo que pueda pronunciar sin reírme.' };
+    if (isDefaultName(s)) return { ok: false, msg: 'Ese nombre lo ha puesto el sistema, no tú. Prueba con uno que te represente, o al menos inventado con ganas.' };
     return { ok: true, name: s };
   }
 

@@ -14,13 +14,13 @@ test('instalar la app no silencia el aviso para siempre y Ajustes ofrece instala
   assert.match(html, /<script src="src\/ui\/install-app\.js(\?v=\d+)?"><\/script>/);
 });
 test('los avatares y su catálogo están en la caché sin conexión', () => {
-  for (const f of ['src/data/avatars.js', 'src/ui/install-app.js', ...['sombrero', 'libro', 'reloj', 'lupa', 'mascara', 'pluma'].map((n) => `assets/avatars/${n}.png`)]) {
+  for (const f of ['src/data/avatars.js', 'src/ui/install-app.js', ...['sombrero', 'libro', 'reloj', 'lupa', 'mascara', 'gato', 'reloj_arena', 'sello', 'gramofono'].map((n) => `assets/avatars/${n}.png`)]) {
     assert.ok(sw.includes(`'./${f}'`), f);
     assert.ok(fs.existsSync(new URL('../' + f, import.meta.url)), 'existe ' + f);
   }
 });
 test('las imágenes de avatar son ligeras (recortadas a 256 px)', () => {
-  for (const n of ['sombrero', 'libro', 'reloj', 'lupa', 'mascara', 'pluma']) {
+  for (const n of ['sombrero', 'libro', 'reloj', 'lupa', 'mascara', 'gato', 'reloj_arena', 'sello', 'gramofono']) {
     const size = fs.statSync(new URL(`../assets/avatars/${n}.png`, import.meta.url)).size;
     assert.ok(size < 150000, `${n}.png pesa ${size} bytes`);
   }

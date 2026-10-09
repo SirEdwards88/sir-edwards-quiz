@@ -36,18 +36,18 @@ test('datos: los pares son simétricos y ambos extremos están en la criba', () 
     for (const p of q.par) { assert.ok(by.get(p) && by.get(p).lz, 'par #' + p); assert.ok(Array.from(by.get(p).par).includes(q.n), 'simetría ' + q.n + '-' + p); }
   }
   const ids = BANK.filter((q) => q.par).map((q) => q.n).sort((a, b) => a - b);
-  assert.deepEqual(ids, [32, 44, 45, 48, 51, 87, 196, 205, 295, 297, 337, 383]);
+  assert.deepEqual(ids, [23, 32, 44, 45, 48, 51, 87, 101, 102, 196, 205, 295, 296, 297, 337, 338, 339, 381, 382, 383, 413]);
 });
 
 test('alias: las respuestas naturales que fallaban ahora se aceptan', () => {
   const por = (n) => BANK.find((q) => q.n === n);
   const casos = { 389: 'rocas ígneas', 421: 'memoria RAM', 226: 'The Matrix', 227: 'Citizen Kane', 289: 'Naciones Unidas',
-    292: 'Producto Interno Bruto', 274: 'Sputnik', 271: 'Apolo XI', 160: 'C-14', 245: 'once', 379: 'Ulaanbaatar', 351: 'ARNt',
+    292: 'Producto Interno Bruto', 274: 'Sputnik', 271: 'Apolo XI', 160: 'C-14', 245: 'Pacquiao', 379: 'Ulaanbaatar', 351: 'ARNt',
     305: 'dilatación del tiempo', 147: 'Hz', 36: 'crac del 29', 198: 'Raphael', 218: 'film noir', 320: 'BCE', 410: 'programa espía',
     142: '300000', 35: 'Revolución americana', 359: 'Clavicémbalo',
     23: 'batalla de Waterloo', 93: 'monte Kilimanjaro', 374: 'río Mekong', 376: 'cordillera de los Andes', 196: 'Alhambra de Granada',
     147: 'Hertz', 266: 'telégrafo eléctrico', 205: 'dinastía nazarí', 399: 'chita', 405: 'fenómeno de El Niño', 411: 'rey Hammurabi', 192: 'estilo gótico',
-    98: 'río Bravo del Norte', 242: 'EEUU', 325: 'USA', 349: 'Altiplano del Tíbet' };
+    98: 'río Bravo del Norte', 242: 'Rio de Janeiro', 325: 'USA', 349: 'Altiplano del Tíbet' };
   for (const [n, u] of Object.entries(casos)) assert.ok(M(u, por(+n)), '#' + n + ' «' + u + '»');
   assert.ok(!M('rocas sedimentarias', por(389)));
 });

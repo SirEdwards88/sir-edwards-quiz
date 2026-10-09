@@ -26,7 +26,7 @@ test('las bolsas con nombre: claves con regla, {nombre} presente, sin emojis, la
     assert.ok(!/\{nombre\}[.»]*$/.test(t), 'el nombre no va al final: ' + t);
     if (/^«/.test(t)) assert.ok(/»$/.test(t), t);
   }
-  assert.ok(Object.values(PH).flat().length <= 45, 'son pocas a propósito');
+  assert.ok(Object.values(PH).flat().length <= 55, 'son pocas a propósito');
 });
 test('las frases con nombre no contienen masculinos genéricos sobre el jugador', () => {
   const bad = /\b(tranquilo|bienvenido|preparado|listo|cansado|seguro|solo|orgulloso de ti)\b/i;

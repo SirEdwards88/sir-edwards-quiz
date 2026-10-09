@@ -19,7 +19,8 @@
           'Diez. Esto podría acabar bien. La perspectiva me inquieta.',
           'Diez preguntas y ni una ambulancia. Seguiré mirando.',
           'Diez. Una hazaña modesta, pero no pienso arruinártela. Todavía.',
-          'Diez. El primer cuarto, y todavía conservas la dignidad.',
+          'Diez. Aún no hay nada que reprocharte. El tiempo es paciente.',
+          'Diez. Has superado la introducción. Ahora empieza el interrogatorio.',
           'Diez. Quedan treinta, y estos primeros solo sirven para que te confíes.'
         ] },
         20: { img: 'monoculo', phrases: [
@@ -27,13 +28,15 @@
           'Veinte. Esto empieza a parecer talento. O una casualidad extraordinaria.',
           'La mitad del camino. Ahora llega la parte en la que dudas de todo.',
           'Veinte. A partir de aquí, cada fallo duele más. La elegancia es opcional.',
-          'Sin cronómetro y sin excusas: veinte preguntas más. Respira, si te sirve.'
+          'Veinte. La confianza está bien; la memoria sería preferible.',
+          'Sin cronómetro y sin excusas: veinte preguntas más. Respira, aunque no te vaya a servir.'
         ] },
         30: { img: 'manos', phrases: [
           'Treinta. Si vas a cometer un error, te agradecería que esperases diez preguntas.',
-          'Treinta. Mereces una celebración. Aplazada, eso sí, hasta que termines.',
+          'Treinta. No descorches nada: aún puedes convertir el mérito en anécdota.',
           'Treinta. La meta está a la vista. Procura no tropezar con ella.',
           'Treinta. Cuando termines, te perdonaré varios defectos. Los más llevaderos.',
+          'Treinta. Ya puedes empezar a sentirte competente. Yo esperaré al final.',
           'Treinta. Casi puedo oler el final. Tú también, supongo.'
         ] }
       }
@@ -45,7 +48,8 @@
           'Trece. Sigues con vida. Qué detalle por tu parte.',
           'La mitad. Ahora empieza la parte divertida. Para mí.',
           'Trece y ningún error. Un comportamiento muy poco humano.',
-          'Trece. Quedan doce, y ninguna admite un fallo.',
+          'Trece. Quedan doce, y ninguna admite un fallo. Admiro tu optimismo.',
+          'Trece. No pienso felicitarte todavía; tengo una reputación que mantener.',
           'Trece sin caer. La superstición se queda sin argumentos.'
         ] },
         20: { img: 'manos', phrases: [

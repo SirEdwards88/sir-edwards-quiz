@@ -13,14 +13,16 @@ const ENCARGOS_INTRO = {
       'Sorprendentemente decente.',
       'Mejor de lo que cabía esperar. Y yo esperaba poco.',
       'No ha estado mal. Detesto decirlo, pero ahí queda.',
-      'Una actuación digna de mención. Procura que no sea casualidad.',
-      'Interesante. Empieza a parecer que sabes lo que haces.'
+      'Una buena actuación. No arruines la estadística intentando repetirla.',
+      'Un resultado respetable. Lo pronuncio con cautela y sin testigos.',
+      'Interesante. Casi creo que sabes lo que haces. Casi.'
     ],
     normal: [
       'Digamos que ha sido… instructiva.',
       'Correcta. Que es, a veces, el insulto más educado.',
-      'Un comienzo. Queda mucho margen, y es un margen generoso.',
+      'Un comienzo. Hay tanto que corregir que elegir por dónde será tu primer acierto.',
       'Ha tenido sus momentos. Pocos, pero ha tenido.',
+      'Has cumplido. No es una ovación, pero tampoco una llamada al servicio técnico.',
       'Ni lo uno ni lo otro. Una mediocridad con cierto estilo.'
     ],
     mala: [
@@ -28,6 +30,7 @@ const ENCARGOS_INTRO = {
       'Lo he anotado todo. Con detalle. Con mucho detalle.',
       'No te preocupes: hay espacio de sobra en tu expediente.',
       'Ha sido memorable, a su manera.',
+      'He visto comienzos peores. No muchos, y ninguno que recuerde con agrado.',
       'Un debut que conviene no enseñar a nadie.'
     ],
     victoria: [
@@ -40,11 +43,11 @@ const ENCARGOS_INTRO = {
     ],
     derrota: [
       'Has perdido. Lo he anotado, con la discreción debida.',
-      'Derrota. Hay quien nace para aprender; tú vas por buen camino.',
-      'Has perdido. Un estreno así siempre deja algo que estudiar.',
-      'Derrota. Empezar con margen de mejora es empezar con futuro.',
-      'Has perdido. La experiencia acaba de ganar una entrada.',
-      'Has perdido. Sucede en las mejores familias y en los peores momentos.'
+      'Derrota. Hay quien nace para aprender y quien, para servir de ejemplo. Tú vas por lo segundo.',
+      'Has perdido. Un estreno así deja material para meses. Qué generoso por tu parte.',
+      'Derrota. Empezar con margen de mejora es empezar con futuro. O con deudas.',
+      'Has perdido. Sucede en las mejores familias y en los peores momentos.',
+      'Has perdido. Y yo que esperaba una sorpresa.'
     ],
     empate: [
       'Un empate. Dos personas igual de convincentes. Es decir, nada.',
@@ -133,7 +136,7 @@ const ENCARGOS_INTRO = {
         'Esta semana subo el listón, por si acaso te lo habías creído.'
       ],
       reproche: [
-        'Digamos que esta semana tendrás ocasión de mejorar mi opinión.',
+        'Digamos que esta semana tendrás ocasión de mejorar mi opinión. Más abajo ya no puede estar.',
         'Yo no olvido nada. Es mi principal defecto y mi única virtud.',
         'No me sorprende. Tampoco me ha hecho gracia.',
         'Otra semana, otra oportunidad. Intenta que esta no quede en el mismo cajón.',

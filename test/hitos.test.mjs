@@ -19,12 +19,12 @@ test('hitos solo en Supervivencia 10/20/30 y Muerte Súbita 13/20', () => {
   for (const m of ['play', 'timetrial', 'mental_calc', 'review', 'lucidez']) assert.deepEqual(at(m), []);
 });
 
-test('cada hito tiene 5 frases distintas, tuteo y su imagen existe', () => {
+test('cada hito tiene al menos 5 frases distintas, tuteo y su imagen existe', () => {
   for (const mode of ['survival', 'sudden_death']) {
     for (const n of Object.keys(H.HITOS[mode].at)) {
       const h = H.hitoFor(mode, Number(n));
-      assert.equal(h.phrases.length, 5);
-      assert.equal(new Set(h.phrases).size, 5);
+      assert.ok(h.phrases.length >= 5);
+      assert.equal(new Set(h.phrases).size, h.phrases.length);
       for (const p of h.phrases) assert.ok(!/\b(vos|vosotros|seguís|vuestr[oa]s?|habéis)\b/i.test(p), `sin «vos»: ${p}`);
       assert.ok(fs.existsSync(path.join(root, h.img)), h.img);
     }

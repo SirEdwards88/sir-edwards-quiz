@@ -23,7 +23,7 @@
   }
 
   // Subtítulos del aviso (el título es fijo): rotan con bolsa (pickRotatingPhrase), sin repetirse hasta agotarlos.
-  var LASTLIFE_SUBS = ['Ahora sí importa.', 'Procura que esta vez tenga mejor uso.', 'Ya no queda margen para la elegancia.',
+  var LASTLIFE_SUBS = ['Ahora sí importa. Qué lástima que no importaran las anteriores.', 'Procura que esta vez tenga mejor uso.', 'Ya no queda margen para la elegancia.',
     'Haz que parezca intencionado.', 'No la conviertas en una anécdota.'];
   var LASTQ_COMMON = ['Sería un momento excelente para pensar.', 'Ahora sí puedes justificar todo lo anterior.',
     'Después podremos juzgarte con calma.', 'Procura que el final esté a la altura del intento.'];
@@ -74,7 +74,7 @@
     var key = game.mode + ':' + game.currentIdx;
     if (key === lastKey || reduced()) { lastKey = key; return; }
     lastKey = key;
-    if (last) banner('Una vida. Una pregunta.', 'Haz que cuente.', 'is-life');
+    if (last) banner('Una vida. Una pregunta.', 'No la desperdicies como las anteriores.', 'is-life');
     else { var qm = game.mode === 'sudden_death' ? 'sudden_death' : 'survival'; banner('Última pregunta', sub('lastq_' + qm, LASTQ_SUBS[qm]), 'is-last'); }
   }
 

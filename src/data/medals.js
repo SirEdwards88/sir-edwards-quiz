@@ -122,7 +122,8 @@ const MEDAL_REWARDS = {
     streak_30: 'avatar_siredwards_imparable',
     noctambulo: 'avatar_siredwards_medianoche',
     all_medals_secret: 'avatar_siredwards_supremo',
-    duel_apuestas_ultima_locura: 'avatar_siredwards_insensato'
+    duel_apuestas_ultima_locura: 'avatar_siredwards_insensato',
+    polimata: 'buho'
   }
 };
 const FRAGMENT_MEDAL_IDS = MEDAL_REWARDS.fragment.slice();

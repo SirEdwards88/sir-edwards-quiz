@@ -57,7 +57,7 @@ test('derrota aplastante desde 8 puntos; victoria 2-3 y derrota aplastante ampli
   assert.equal(D.poolKey('loss', 7), 'derrota_clara');
   assert.equal(D.poolKey('loss', 8), 'derrota_aplastante');
   assert.equal(D.poolKey('win', 8), 'victoria_aplastante');
-  assert.equal(D.PHRASES.derrota_aplastante.length, 8);
+  assert.equal(D.PHRASES.derrota_aplastante.length, 9);
   assert.ok(D.PHRASES.victoria_2_3.length >= 10);
   const all = Object.values(D.PHRASES).flat();
   assert.equal(new Set(all).size, all.length, 'ninguna frase repetida entre grupos');

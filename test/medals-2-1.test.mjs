@@ -71,7 +71,7 @@ test('avatares: cada uno ligado a su logro, sin Fragmento donde no toca', () => 
   assert.deepEqual(J(c.MEDAL_REWARDS.avatar), {
     medal_collector_30: 'avatar_siredwards_coleccionista', duel_revancha: 'avatar_siredwards_vengador',
     streak_30: 'avatar_siredwards_imparable', duel_apuestas_ultima_locura: 'avatar_siredwards_insensato',
-    noctambulo: 'avatar_siredwards_medianoche', all_medals_secret: 'avatar_siredwards_supremo',
+    noctambulo: 'avatar_siredwards_medianoche', all_medals_secret: 'avatar_siredwards_supremo', polimata: 'buho',
   });
   assert.equal(c.getMedalAvatar('duel_revancha'), 'avatar_siredwards_vengador');
   assert.equal(c.getMedalAvatar('games_50'), null);

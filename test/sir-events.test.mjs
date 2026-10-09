@@ -187,8 +187,10 @@ function makeGameEnv(game, extra = {}) {
   c.flush = () => timers.splice(0).forEach((f) => f());
   return c;
 }
+// Date falso con la hora LOCAL fija (para probar los eventos de mañana y de noche)
+const fakeDateAt = (hour) => { const D = class extends Date { getHours() { return hour; } }; D.now = () => Date.now(); return D; };
 test('enganche: no escribe en la partida (puntuación, tiempo, vidas…) ni en el store; el estado no es enumerable', () => {
-  const game = { mode: 'survival', currentIdx: 5, totalQuestionsToPlay: 30, score: 5, lives: 3, answered: true, sessionXpGained: 40, sessionBestStreak: 12 };
+  const game = { mode: 'play', currentIdx: 5, totalQuestionsToPlay: 30, score: 5, lives: 3, answered: true, sessionXpGained: 40, sessionBestStreak: 12 };
   const store = Object.freeze({ xp: 100, fragments: 2, currentStreak: 12 });
   const c = makeGameEnv(game, { store });
   const before = JSON.stringify(game), sb = JSON.stringify(store);
@@ -212,6 +214,7 @@ test('enganche: Duelo y modos desconocidos, fallos, última pregunta, Contrarrel
   // Contrarreloj y Cálculo Mental: nunca eventos, por mucho que dure la partida ni cuántos aciertos lleve (racha incluida).
   ['timetrial', 'mental_calc'].forEach((m) => assert.equal(run({ mode: m, currentIdx: 3, totalQuestionsToPlay: 20 }, true, { timeTrialEndTime: Date.now() + 60000 }), 0, m));
   ['play', 'survival', 'sudden_death', 'review', 'lucidez_mental'].forEach((m) => assert.ok(run({ mode: m, currentIdx: 3, totalQuestionsToPlay: 30 }, true, { timeTrialEndTime: Date.now() + 99999 }) >= 1, m));
+
   assert.equal(run({ mode: 'play', currentIdx: 3, totalQuestionsToPlay: 30 }, true, { document: { hidden: true } }), 0);
 });
 
@@ -398,11 +401,11 @@ const drive = (c, n, correct = true) => { let k = 0; for (let i = 0; i < n; i++)
 test('coordinación: el evento cede ante un hito, «Última vida», un aviso de Encargo, el fin de partida y los relojes de Lucidez', () => {
   const doc = (sel) => ({ hidden: false, getElementById: () => null, querySelector: () => sel });
   const run = (game, extra = {}) => { const c = makeGameEnv(game, extra); vm.runInContext('Math.random = () => 0', c); return drive(c, 12) ? c.shown.length : 0; };
-  const base = { mode: 'survival', currentIdx: 3, totalQuestionsToPlay: 40, lives: 3 };
+  const base = { mode: 'play', currentIdx: 3, totalQuestionsToPlay: 40, lives: 3 };
   assert.ok(run({ ...base }) >= 1, 'despejado: sale');
   assert.equal(run({ ...base }, { document: doc({}) }), 0, 'aviso a la vista (Última vida, hito o Encargo): cede');
   assert.equal(run({ ...base, currentIdx: 8 }, { SEQHitos: { hitoFor: (m, i) => (i === 9 ? {} : null) } }), 0, 'la pregunta siguiente es un hito: cede');
-  assert.equal(run({ ...base, lives: 0 }), 0, 'sin vidas termina la partida: cede');
+  assert.equal(run({ ...base, mode: 'survival', lives: 0 }, { Date: fakeDateAt(2) }), 0, 'sin vidas termina la partida: cede');
   assert.equal(run({ mode: 'lucidez_mental', currentIdx: 12, totalQuestionsToPlay: 30 }), 0, 'Lucidez fases II y III (con reloj): cede');
   assert.ok(run({ mode: 'lucidez_mental', currentIdx: 3, totalQuestionsToPlay: 30 }) >= 1, 'Lucidez fase I: sale');
   const src = read('src/state/sir-events.js');
@@ -502,9 +505,21 @@ test('mañana y noche: como mucho uno al día (20 h entre ellos); la visita sigu
   }
 });
 
-test('noStreak (Supervivencia y Muerte Súbita): ni hito de racha ni récord', () => {
+test('noStreak (Supervivencia y Muerte Súbita): sin hito de racha, pero el récord sí sale', () => {
   const st = S.newState();
-  for (let i = 0; i < 12; i++) S.evaluate(st, { nowMs: 1e6 * (i + 1), hour: 12, streak: i + 1, correct: true, last: false, blocked: false, noStreak: true, record: i + 1 }, () => 0);
-  assert.equal(st.shown.record, 0);
+  for (let i = 0; i < 12; i++) S.evaluate(st, { nowMs: 1e6 * (i + 1), hour: 12, streak: i + 1, correct: true, last: false, blocked: false, noStreak: true, record: 12 }, () => 0);
+  assert.equal(st.shown.record, 1);
   assert.ok(!st.milestones[10]);
+});
+
+test('Supervivencia y Muerte Súbita: nunca racha ni racha rota en el enganche', () => {
+  assert.match(read('src/state/sir-events.js'), /noStreak: g\.mode === 'survival' \|\| g\.mode === 'sudden_death'/);
+  assert.match(read('src/state/sir-events.js'), /noBroken: g\.mode === 'review' \|\| g\.mode === 'survival' \|\| g\.mode === 'sudden_death'/);
+  ['survival', 'sudden_death'].forEach((m) => {
+    const g = { mode: m, currentIdx: 8, totalQuestionsToPlay: 25 };
+    const c = makeGameEnv(g, { answerStreak: 12 }); vm.runInContext('Math.random = () => 0', c);
+    for (let i = 0; i < 12; i++) { g.currentIdx = 3 + i; vm.runInContext('sirEventsOnAnswer(true)', c); c.flush(); }
+    vm.runInContext('sirEventsOnAnswer(false)', c); c.flush();
+    assert.ok(!c.shown.some((e) => e.type === 'streak' || e.type === 'broken'), m);
+  });
 });

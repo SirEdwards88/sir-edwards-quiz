@@ -12,13 +12,13 @@
     "Has ganado por un punto. Técnicamente, victoria. Moralmente, dejémoslo en empate.",
     "Un punto de diferencia. Suficiente para ganar y demasiado poco para relajarse.",
     "Victoria por un punto. La gloria es tuya; la dignidad del rival sigue en paradero desconocido.",
-    "Has ganado por un margen que todavía deja espacio para una revancha.",
+    "Has ganado por un margen que invita al rival a pedir revancha. Y a ti, a rechazarla.",
     "Has ganado. El rival puede atribuirlo a la suerte si eso le ayuda a dormir."
   ],
   victoria_2_3: [
     "Victoria ajustada. Ha faltado poco para perder. Qué detalle tan incómodo.",
     "Victoria por la mínima. No ha sido una obra maestra, pero cumple su función.",
-    "Un duelo muy igualado. Durante unos minutos, todo parecía bajo control.",
+    "Duelo igualado. Ambos han mostrado el mismo talento para dudar.",
     "Hasta el último punto. Mucha tensión para descubrir, al final, quién se equivocó menos.",
     "Has ganado. Por poco. Pero no temas: la victoria sigue siendo legal.",
     "Victoria corta. Presume con moderación; tu rival aún respira.",
@@ -32,11 +32,11 @@
     "Victoria clara. La diferencia ya no permite esconderse detrás de la suerte. Qué lástima.",
     "Dirán que fue un buen duelo. El resultado es bastante menos diplomático.",
     "Victoria con autoridad. La derrota, al menos, ha quedado perfectamente documentada.",
-    "Una diferencia considerable. Lo suficiente para cerrar cualquier debate con bastante comodidad.",
+    "Diferencia considerable. El debate ha terminado y el rival aún no ha encontrado la salida.",
     "Victoria sin demasiadas complicaciones. Qué poco duró la resistencia.",
     "El duelo parecía prometedor. El marcador decidió contar otra historia.",
     "Un resultado bastante contundente. Las explicaciones pueden esperar sentadas.",
-    "Has ganado con claridad. El duelo deja poco espacio para interpretaciones.",
+    "Has ganado con claridad. Cualquier excusa llegará tarde y mal vestida.",
     "La diferencia empieza a ser incómoda. Para el rival, concretamente.",
     "Victoria convincente. Ya no parece cuestión de suerte.",
     "Has ganado con suficiente margen para que el rival necesite una explicación.",
@@ -53,7 +53,7 @@
     "Esto ha sido menos duelo y más exhibición. La entrada era gratuita.",
     "Victoria aplastante. Hay derrotas que enseñan algo. Esta, de momento, solo enseña el marcador.",
     "La diferencia es tan grande que hasta presumir empieza a parecer innecesario.",
-    "Una diferencia intelectual considerable. Elegante, limpia y bastante definitiva.",
+    "Una diferencia intelectual enorme. Elegante, limpia y, por qué negarlo, cruel.",
     "El duelo ha terminado. El orgullo del rival, según parece, necesita unos minutos más.",
     "El rival ha aprendido algo importante: elegir mejor a sus oponentes.",
     "Has ganado con tanta claridad que casi siento lástima. Casi.",
@@ -69,7 +69,7 @@
     "Derrota por un punto. La diferencia cabe en una línea. El orgullo, de momento, no.",
     "Te ha faltado un punto. Qué generosa ha sido la victoria al dejarte tan cerca.",
     "Has perdido por un margen incómodamente pequeño. Qué manera tan elegante de sufrir.",
-    "Una derrota estrecha. De las que se recuerdan por lo poco que faltó."
+    "Perdiste por tan poco que el rival no sabe si celebrar o disculparse. Yo sí lo sé."
   ],
   derrota_2_3: [
     "Derrota ajustada. Ha faltado muy poco para ganar y exactamente lo suficiente para perder.",
@@ -89,18 +89,21 @@
     "Te han ganado con tal holgura que el rival ha podido merendar durante la partida.",
     "Una diferencia de este tamaño no se llora: se enmarca, para no repetirla.",
     "Has perdido con una claridad pedagógica. Alguien debería tomar apuntes.",
-    "Consuélate: estadísticamente, el próximo duelo tiene bastantes posibilidades de salir mejor.",
-    "El rival ha ganado con tanta ventaja que ni siquiera necesita presumir. Qué aburrimiento para todos."
+    "Piensa en positivo: peor que esto ya no hay manera de jugar. Aunque tú siempre encuentras la forma.",
+    "El rival ha ganado con tanta ventaja que ni siquiera necesita presumir. Qué aburrimiento para todos.",
+    "Tu rival no ha ganado; tú has colaborado con entusiasmo."
   ],
   derrota_clara: [
     "Derrota clara. El resultado no parece dispuesto a aceptar negociaciones.",
-    "No ha habido mucho que discutir. Simplemente se ha jugado peor.",
+    "Se ha jugado peor. Concretamente, tú.",
     "La diferencia es demasiado grande para culpar a la suerte. Qué inconveniente.",
     "Has perdido con claridad. El rival ni siquiera necesita añadir comentarios.",
-    "Derrota contundente. Siempre queda la revancha, si llega a hacer falta.",
+    "Derrota contundente. Siempre queda la revancha, si tu orgullo lo soporta.",
     "El duelo ha hablado con claridad. Y no precisamente a tu favor.",
     "Una diferencia considerable. Al menos ahora sabes exactamente cuánto te faltaba.",
-    "No ha sido una tragedia. Solo una diferencia clara, que es lo más fácil de diagnosticar."
+    "No ha sido una tragedia. Solo una diferencia clara, que es lo más fácil de diagnosticar.",
+    "Has perdido con testigos, que es lo más cruel.",
+    "Derrota. Si necesitas una excusa, tienes preguntas de sobra entre las que elegir."
   ],
   empate: [
     "Empate. Ninguno ha conseguido imponerse. Qué equilibrio tan poco satisfactorio.",
@@ -193,10 +196,10 @@
 
   // Duelos que terminan sin jugarse hasta el final (abandono o plazo vencido): una bolsa por situación. {nombre} es el del rival.
   var FORFEIT = {
-    yo_abandono: ['Retirarse a tiempo también es una estrategia; esta no lo fue.', 'Abandonaste, y el duelo siguió sin ti. Con una naturalidad sospechosa.', 'Sir Edwards no concede prórrogas.'],
+    yo_abandono: ['Retirarse a tiempo también es una estrategia; esta no lo fue.', 'Abandonaste, y el duelo siguió sin ti. Con una naturalidad sospechosa.', 'Retirada aceptada. La dignidad, en cambio, queda pendiente de revisión.', 'Sir Edwards no concede prórrogas.'],
     rival_abandono: ['Victoria por incomparecencia: la más cómoda y la menos épica.', '{nombre} ha desaparecido en pleno duelo. No te lo tomes como un cumplido.', '{nombre} se ha ido a medias. Tú has terminado. Anótate la diferencia.'],
-    yo_no_jugue: ['El reto caducó contigo dentro, lo que tiene su mérito.', 'La puntualidad no es negociable, aunque tú lo hayas intentado.', 'El reloj no esperó, y yo tampoco.'],
-    rival_no_jugo: ['Ganas por incomparecencia. Cuenta, aunque la épica haya tomado el día libre.', '{nombre} dejó caducar el reto. Victoria de oficio, sin aplausos.', 'Hay duelos que terminan antes de empezar. Este ha sido uno de ellos.']
+    yo_no_jugue: ['El reto caducó contigo dentro, lo que tiene su mérito.', 'La puntualidad no es negociable, aunque tú lo hayas intentado.', 'El reto ha caducado. Tu puntualidad sigue siendo una obra de ficción.', 'El reloj no esperó, y yo tampoco.'],
+    rival_no_jugo: ['Ganas por incomparecencia. Cuenta, aunque la épica haya tomado el día libre.', '{nombre} dejó caducar el reto. Victoria de oficio, sin aplausos.', 'El rival no se ha presentado. Celebra con discreción: has vencido a una ausencia.', 'Hay duelos que terminan antes de empezar. Este ha sido uno de ellos.']
   };
   function forfeitFallback(list, seedId) {
     var s = String(seedId == null ? '' : seedId), h = 2166136261;
@@ -211,8 +214,8 @@
   }
 
   // Veredicto de cada pregunta del Duelo (se lee unas 20 veces por duelo): estable por pregunta (mismo texto al repintar).
-  var VERDICT_OK = ['Punto para ti.', 'Anotado. Sin aspavientos.', 'Para ti. El rival, tomando nota.', 'Correcto. Procura que no se te suba.', 'Acierto. Así sí.', 'Este te lo concedo.'];
-  var VERDICT_BAD = ['Esta se te escapa. Era: ', 'Fallo. Era: ', 'Esa no. Era: ', 'Lástima. Era: ', 'Eso no puntúa. Era: ', 'Otro más para el archivo. Era: '];
+  var VERDICT_OK = ['Punto para ti. Anótalo en un sitio visible: no abundan.', 'Anotado. Sin aspavientos.', 'Para ti. El rival, tomando nota.', 'Correcto. Procura que no se te suba.', 'Acierto. Aprovecha, que no se repetirá a menudo.', 'Este te lo concedo.'];
+  var VERDICT_BAD = ['Esta se te escapa, qué sorpresa. Era: ', 'Fallo, como cabía esperar. Era: ', 'Esa no. Era: ', 'Una lástima, aunque no para mí. Era: ', 'Eso no puntúa. Era: ', 'Otro más para el archivo. Era: '];
   function verdict(ok, seed) {
     var list = ok ? VERDICT_OK : VERDICT_BAD;
     return forfeitFallback(list, String(seed == null ? '' : seed) + (ok ? '+' : '-'));
