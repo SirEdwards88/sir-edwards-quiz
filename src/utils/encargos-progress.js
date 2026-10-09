@@ -41,7 +41,7 @@ const SEQEncargosProgress = (function () {
 
   // Un acierto o un fallo. `cat` puede ser null (cálculo mental, enigmas…): suma al total de aciertos y a la racha,
   // pero no a ninguna categoría. `st` es la racha EN CURSO de aciertos seguidos (un fallo la pone a 0) y `sb` la mejor
-  // de la semana (Sin Titubeos: 10 seguidas; la racha sigue entre partidas).
+  // de la semana (Sin Titubeos: 12 seguidas; la racha sigue entre partidas).
   function recordAnswer(p, cat, correct) {
     if (correct) {
       p.ok = Math.min(p.ok + 1, CAP);
@@ -108,7 +108,7 @@ const SEQEncargosProgress = (function () {
       case 'constancia': return mk(p.days.length, 3, Math.min(p.days.length, 3) + '/3 días');
       case 'mente_curiosa': return perCat(p, 'cat', 10);
       case 'sin_terreno_comodo': return perCat(p, 'cat', 15);
-      case 'sexto_sentido': return mk(p.sb, 10, Math.min(p.sb, 10) + '/10 seguidos');
+      case 'sexto_sentido': return mk(p.sb, 12, Math.min(p.sb, 12) + '/12 seguidos');
       case 'mano_firme': return mk(p.g80, 3);
       case 'no_era_suerte': return mk(p.g80, 5);
       case 'rival_digno': return mk(p.wins, 3);

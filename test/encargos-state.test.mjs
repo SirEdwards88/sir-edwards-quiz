@@ -44,7 +44,7 @@ function fill(ctx, id) {
       case 'constancia': p.days = ['2026-10-05','2026-10-06','2026-10-07']; break;
       case 'mente_curiosa': C.forEach(function (c) { p.cat[c] = 10; }); break;
       case 'sin_terreno_comodo': C.forEach(function (c) { p.cat[c] = 15; }); break;
-      case 'sexto_sentido': p.sb = 10; break;
+      case 'sexto_sentido': p.sb = 12; break;
       case 'mano_firme': p.g80 = 3; break;
       case 'no_era_suerte': p.g80 = 5; break;
       case 'rival_digno': p.wins = 3; break;
@@ -79,8 +79,8 @@ test('evaluadores: umbrales exactos de las 12 normales y las 4 grandes', () => {
   assert.equal(ev('sin_terreno_comodo', cats(15, 15)).done, true);
   assert.equal(ev('semana_completa', cats(25, 24)).done, false);
   assert.equal(ev('semana_completa', cats(25, 25)).done, true);
-  assert.equal(ev('sexto_sentido', 'p => { p.sb = 9; }').done, false);
-  assert.equal(ev('sexto_sentido', 'p => { p.sb = 10; }').done, true);
+  assert.equal(ev('sexto_sentido', 'p => { p.sb = 11; }').done, false);
+  assert.equal(ev('sexto_sentido', 'p => { p.sb = 12; }').done, true);
 });
 
 test('Juego de Apuestas cuenta SOLO duelos por apuestas; Retos y duelos normales cuentan como duelos', () => {
@@ -125,7 +125,7 @@ test('partidas: mínimo de respuestas, Repaso no cuenta, precisión y Trabajo Li
   assert.equal(run(ctx2, 'store.encargos.p.clean'), 0); // partida de 5: no vale para precisión
 });
 
-test('Sin Titubeos: 10 aciertos seguidos; un fallo corta la racha y las respuestas sin categoría no la cortan', () => {
+test('Sin Titubeos: 12 aciertos seguidos; un fallo corta la racha y las respuestas sin categoría no la cortan', () => {
   const ctx = makeEnv();
   const ans = (cat, ok) => run(ctx, `encargosOnAnswer(${ok}, {cat:${JSON.stringify(cat)}})`);
   const st = () => run(ctx, 'store.encargos.p.st'), sb = () => run(ctx, 'store.encargos.p.sb');
@@ -139,13 +139,13 @@ test('Sin Titubeos: 10 aciertos seguidos; un fallo corta la racha y las respuest
   assert.equal(run(ctx, 'store.encargos.p.ok'), 9);
 });
 
-test('Sin Titubeos: la racha continúa entre partidas y se completa a los 10', () => {
+test('Sin Titubeos: la racha continúa entre partidas y se completa a los 12', () => {
   const ctx = makeEnv();
   const ans = (ok) => run(ctx, `encargosOnAnswer(${ok}, {cat:'arte_literatura'})`);
   for (let i = 0; i < 6; i++) ans(true);
   run(ctx, `SEQEncargosProgress.recordGame(store.encargos.p, {mode:'play',correct:6,total:6,day:'2026-10-07'})`); // fin de partida: no la reinicia
-  for (let i = 0; i < 4; i++) ans(true);
-  assert.equal(run(ctx, 'store.encargos.p.sb'), 10);
+  for (let i = 0; i < 6; i++) ans(true);
+  assert.equal(run(ctx, 'store.encargos.p.sb'), 12);
   assert.equal(run(ctx, `SEQEncargosProgress.evaluate('sexto_sentido', store.encargos.p).done`), true);
 });
 

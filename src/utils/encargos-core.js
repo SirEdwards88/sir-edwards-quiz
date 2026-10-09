@@ -31,7 +31,7 @@ const SEQEncargos = (function () {
     { id: 'constancia', cat: 'constancia', titulo: 'Constancia', desc: 'Juega al menos una partida en 3 días distintos de la semana.' },
     { id: 'mente_curiosa', cat: 'variedad', titulo: 'Mente Curiosa', desc: 'Consigue 10 aciertos en cada una de las 6 categorías.' },
     { id: 'sin_terreno_comodo', cat: 'variedad', titulo: 'Sin Terreno Cómodo', desc: 'Consigue 15 aciertos en cada una de las 6 categorías.' },
-    { id: 'sexto_sentido', cat: 'rachas', titulo: 'Sin Titubeos', desc: 'Encadena 10 aciertos seguidos. Vale entre partidas durante la semana; un fallo corta la racha.' },
+    { id: 'sexto_sentido', cat: 'rachas', titulo: 'Sin Titubeos', desc: 'Encadena 12 aciertos seguidos, aunque sea entre partidas.' },
     { id: 'mano_firme', cat: 'precision', titulo: 'Mano Firme', desc: 'Termina 3 partidas con al menos un 80 % de aciertos.' },
     { id: 'no_era_suerte', cat: 'precision', titulo: 'No Era Suerte', desc: 'Termina 5 partidas con al menos un 80 % de aciertos.' },
     { id: 'rival_digno', cat: 'duelos', titulo: 'Rival Digno', desc: 'Gana 3 duelos, del modo que sea.' },
