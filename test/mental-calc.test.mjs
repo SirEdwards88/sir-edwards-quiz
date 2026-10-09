@@ -203,3 +203,10 @@ test('divisiones con divisor de 2 cifras: pesan más que por «comprobar multipl
   assert.ok(n > 100);
   assert.ok(hi / n < 0.03, 'a racha ≤ 5 casi no salen divisiones de divisor de 2 cifras tan duras: ' + hi + '/' + n);
 });
+
+test('el aviso flotante de Cálculo Mental muestra el bonus real (no un +3 fijo)', () => {
+  const i = html.indexOf('function playMentalCalcChangeFX');
+  const body = html.slice(i, html.indexOf('\n}', i));
+  assert.match(body, /MENTALCALC_BONUS_MS/);
+  assert.ok(!/\+3 SEGUNDOS/.test(body));
+});
