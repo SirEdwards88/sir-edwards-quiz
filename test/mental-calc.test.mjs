@@ -75,10 +75,10 @@ test('prácticamente sin repeticiones: nada idéntico seguido ni dentro de una v
 
 test('la dificultad crece gradualmente con la racha, sin saltos en los umbrales', () => {
   const m = []; for (let st = 0; st <= 30; st++) m.push(mean(run(st, 400, st + 100).map((o) => o.difficulty)));
-  assert.ok(m[0] < 22 && m[5] > 18 && m[10] > 27 && m[15] > 38 && m[20] > 49 && m[30] > 63, JSON.stringify(m.map(Math.round)));
+  assert.ok(m[0] < 22 && m[5] > 18 && m[10] > 27 && m[15] > 33 && m[20] > 41 && m[30] > 54, JSON.stringify(m.map(Math.round)));
   for (let st = 1; st <= 30; st++) assert.ok(m[st] > m[st - 1] - 4, `retroceso en racha ${st}`);           // sin bajadas (ruido aparte)
   for (let st = 1; st <= 30; st++) assert.ok(m[st] - m[st - 1] < 9, `salto brusco en racha ${st}: ${m[st] - m[st - 1]}`);
-  assert.ok(m[30] - m[0] > 50);
+  assert.ok(m[30] - m[0] > 40);
 });
 
 test('en niveles altos casi no salen operaciones triviales', () => {
@@ -112,8 +112,8 @@ test('adaptación: suave y según la regla pedida', () => {
 });
 
 test('un fallo suaviza la caída de dificultad pero la racha vuelve a 0 como siempre', () => {
-  const s = M.createSession(mulberry32(1)); for (let i = 0; i < 3; i++) M.nextOperation(s, { streak: 20 }); // pasado el calentamiento
-  const op = M.nextOperation(s, { streak: 20 });
+  const s = M.createSession(mulberry32(1)); for (let i = 0; i < 3; i++) M.nextOperation(s, { streak: 30 }); // pasado el calentamiento
+  const op = M.nextOperation(s, { streak: 30 });
   M.recordResult(s, op, false, 5000);
   const t = []; for (let i = 0; i < 300; i++) t.push(M.targetForStreak(0, s));
   assert.ok(mean(t) > M.curve(0) + 5, 'tras fallar no se cae al suelo de golpe');
@@ -155,7 +155,7 @@ test('puntuación existente: puntos base 10/20/35, bonus de velocidad y de racha
   assert.match(html, /const speedBonus = Math\.max\(0, Math\.round\(\(6000 - Math\.min\(elapsedMs, 6000\)\) \* 3 \/ 1000\)\);/);
   assert.match(html, /const streakBonus = Math\.min\(currentGame\.streak, 20\) \* 2;/);
   assert.match(html, /MENTALCALC_START_MS = 60000/); assert.match(html, /MENTALCALC_MAX_MS = 90000/);
-  assert.match(html, /MENTALCALC_BONUS_MS = 3000/); assert.match(html, /mentalCalcEndTime \+ MENTALCALC_BONUS_MS/); assert.ok(!/mentalCalcEndTime \+ 2000/.test(html), 'ya no es +2 s'); assert.match(html, /mentalCalcEndTime -= 3000/);
+  assert.match(html, /MENTALCALC_BONUS_MS = 5000/); assert.match(html, /mentalCalcEndTime \+ MENTALCALC_BONUS_MS/); assert.ok(!/mentalCalcEndTime \+ 2000/.test(html), 'ya no es +2 s'); assert.ok(!/MENTALCALC_BONUS_MS = 3000/.test(html), 'ya no es +3 s'); assert.match(html, /mentalCalcEndTime -= 3000/);
 });
 
 test('mental-calc.js está en index.html y en la caché sin conexión', () => {

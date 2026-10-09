@@ -355,8 +355,8 @@ const SEQMentalCalc = (function () {
   }
 
   // ----------------------------------------------------- progresión y adaptación ---
-  // Dificultad base según la racha: curva suave (sin saltos en los umbrales de antes).
-  var CURVE = [[0, 14], [5, 22], [10, 32], [15, 44], [20, 56], [30, 72], [45, 84]];
+  // Dificultad base según la racha: curva suave (sin saltos en los umbrales de antes). Casi igual hasta ~8 seguidas; a partir de ahí sube más despacio.
+  var CURVE = [[0, 14], [5, 22], [10, 30], [15, 37], [20, 45], [30, 60], [45, 76]];
   function curve(streak) {
     if (streak <= 0) return CURVE[0][1];
     for (var i = 1; i < CURVE.length; i++) {
