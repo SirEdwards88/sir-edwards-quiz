@@ -297,7 +297,6 @@
   }
 
   // Lectura de la cuenta sin lote propio: aplica solo lo que aportaron otros dispositivos.
-  function rankingOn() { return !!(ENABLED && account && account.features && account.features.ranking === true); }
   function refreshFeatures(res) {
     if (account && res && res.features) { var f = normFeatures(res.features); if (JSON.stringify(account.features) !== JSON.stringify(f)) { account.features = f; saveAccount(); notifyDuels(); } }
   }
@@ -782,51 +781,7 @@
     else toast('ID: ' + id);
   }
 
-  // ---- Ranking -------------------------------------------------------------------------------
-  function openRanking() {
-    if (!rankingOn()) return; // el ranking está desactivado en el servidor por defecto
-    var m = $('seq-ranking-modal'); if (!m) return;
-    m.style.display = 'flex';
-    loadRanking();
-  }
-  function closeRanking() { var m = $('seq-ranking-modal'); if (m) m.style.display = 'none'; }
-  function goToAccount() { closeRanking(); try { switchTab('settings'); } catch (e) {} }
-  function loadRanking() {
-    var body = $('seq-ranking-body'); if (!body) return;
-    if (!rankingOn()) {
-      body.innerHTML = '<p>El ranking no está disponible.</p>';
-      return;
-    }
-    if (!account) {
-      body.innerHTML = '<p>Inicia sesión con Google para ver el ranking global y aparecer en él.</p><div class="modal-warning-actions"><button class="btn btn-primary" onclick="SEQOnline.goToAccount()">Ir a Cuenta online</button></div>';
-      return;
-    }
-    if (navigator.onLine === false) { body.innerHTML = '<p>El ranking necesita conexión.</p>' + retryBtn(); return; }
-    body.innerHTML = '<p class="seq-loading">Cargando ranking…</p>';
-    api('GET', '/ranking?limit=50').then(function (d) {
-      // Todo lo que llega del servidor se trata como NO fiable al pintar: los números pasan por n() (entero >= 0),
-      // el avatar solo se acepta si está en la lista cerrada y los textos por esc().
-      if (!d || !Array.isArray(d.ranking)) throw invalidResponse();
-      var list = d.ranking.filter(function (r) { return r && typeof r === 'object'; }).slice(0, 100);
-      var rows = list.map(function (r) {
-        var av = AVATARS.indexOf(r.avatar) !== -1 ? r.avatar : DEFAULT_AVATAR;
-        var rk = n(r.rank), xp = n(r.xp), me = r.is_me === true;
-        var pos = rk === 1 ? ico('oro', 'seq-ico-lg') : rk === 2 ? ico('plata', 'seq-ico-lg') : rk === 3 ? ico('bronce', 'seq-ico-lg') : rk;
-        return '<li class="seq-rank-row' + (me ? ' me' : '') + '"><span class="seq-rank-pos">' + pos + '</span><span class="seq-rank-av">' + (window.SEQAvatars ? window.SEQAvatars.avatarHTML(av) : av) + '</span>' +
-          '<span class="seq-rank-name">' + esc(r.display_name) + (me ? ' <em>(tú)</em>' : '') + '</span>' +
-          '<span class="seq-rank-xp"><b>Nv ' + levelOf(xp) + '</b><small>' + xp + ' XP</small></span></li>';
-      }).join('');
-      var meOut = d.me && typeof d.me === 'object' && !list.some(function (r) { return r.is_me === true; })
-        ? '<div class="seq-rank-me-out">Tu puesto: <b>#' + n(d.me.rank) + '</b> de ' + n(d.total_players) + ' · ' + n(d.me.xp) + ' XP</div>' : '';
-      body.innerHTML = (rows ? '<ol class="seq-rank-list">' + rows + '</ol>' : '<p>Aún no hay nadie en el ranking.</p>') + meOut +
-        '<p class="seq-note">Clasificación por XP total online. Se actualiza cuando cada jugador sincroniza.</p>' +
-        '<p class="seq-warn">' + ico('atencion') + 'Clasificación NO verificada: cada dispositivo informa de su propio progreso y el servidor no puede comprobar que los aciertos sean reales.</p>' + retryBtn();
-    }).catch(function (err) {
-      if (authFailure(err)) { body.innerHTML = '<p>Tu sesión ha caducado. Vuelve a iniciar sesión desde Ajustes.</p>'; render(); return; }
-      body.innerHTML = '<p>' + (err && err.network ? 'No se pudo conectar. El juego sigue funcionando sin conexión.' : 'No se pudo cargar el ranking.') + '</p>' + retryBtn();
-    });
-  }
-  function retryBtn() { return '<div class="modal-warning-actions"><button class="btn btn-secondary" onclick="SEQOnline.loadRanking()">↻ Actualizar</button></div>'; }
+  function goToAccount() { try { switchTab('settings'); } catch (e) {} }
 
   // ---- Render de la interfaz -------------------------------------------------------------------
   function statusInfo() {
@@ -909,14 +864,8 @@
     host.innerHTML = html;
   }
 
-  // El botón «Ranking global» ya no aparece en Estadísticas (decisión del propietario): el hueco se queda vacío.
-  function renderStatsSlot() {
-    var slot = $('seq-stats-slot');
-    if (slot) slot.innerHTML = '';
-  }
-
   function render() {
-    try { renderAccount(); renderStatsSlot(); } catch (e) { /* la UI online nunca debe romper el juego */ }
+    try { renderAccount(); } catch (e) { /* la UI online nunca debe romper el juego */ }
     notifyDuels();
     // v1.5 — Fase B (Prompt 3): actualiza si el gate de acceso obligatorio debe
     // mostrarse (solo lo hace cuando SEQOnline.enabled es true y no hay sesión;
@@ -945,7 +894,6 @@
   function onTabShown(tabId) {
     if (!ENABLED) return;
     if (tabId === 'settings') render();
-    if (tabId === 'stats') renderStatsSlot();
     if (tabId === 'duelo') notifyDuelsShown();
   }
 
@@ -974,7 +922,7 @@
     // 2.0: el servidor concede XP al cerrar un Duelo / terminar tu parte de un Reto; el pull la trae a este dispositivo.
     syncSoon: function () { if (ENABLED && account) scheduleSync(1500, 'duelxp'); },
     signOut: signOut, logoutAll: logoutAll, deleteAccount: deleteAccount,
-    openRanking: openRanking, closeRanking: closeRanking, loadRanking: loadRanking, goToAccount: goToAccount,
+    goToAccount: goToAccount,
     openMigration: function () { openMigration(); }, prepareLocalReset: prepareLocalReset, accountHadProgress: function () { return loginHadProgress; }, hasAccount: function () { return !!(ENABLED && account); }, closeMigration: closeMigration, doMerge: doMerge, skipMigration: skipMigration,
     rerenderAccount: function () { try { renderAccount(); } catch (e) {} },
     // 2.2: poner el nombre desde la pregunta de bienvenida (src/ui/name-prompt.js); no toca el avatar.

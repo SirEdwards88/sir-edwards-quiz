@@ -14,7 +14,6 @@
 .seq-av-btn .seq-av-img { width: 60px; height: 60px; }
 .seq-av-name { display: block; margin-top: 4px; font-size: 12px; font-weight: 600; color: var(--sub); line-height: 1.2; }
 .seq-av-btn.sel .seq-av-name { color: var(--primary); }
-.seq-rank-av .seq-av-img { width: 26px; height: 26px; vertical-align: -7px; }
 /* Menciones de avatar en línea dentro de texto (duels.js): historial, chip de
    rival, resultado de duelo, resumen "Tú contra …" — mismo tamaño pequeño para
    los seis puntos que antes pintaban el glifo suelto junto al nombre. */
@@ -75,19 +74,6 @@
 .seq-loading { text-align: center; color: var(--sub); }
 
 /* Ranking */
-.seq-rank-list { list-style: none; margin: 0 !important; padding: 0 !important; display: flex; flex-direction: column; gap: 6px; }
-.seq-rank-row { display: grid; grid-template-columns: 34px 32px 1fr auto; align-items: center; gap: 8px; padding: 9px 10px; border-radius: 14px; background: var(--badge-bg); border: 1px solid var(--badge-border); margin: 0 !important; }
-.seq-rank-row.me { border-color: var(--primary); box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 25%, transparent); }
-.seq-rank-pos { text-align: center; font-weight: 800; font-size: 15px; color: var(--text); }
-.seq-rank-av { font-size: 22px; text-align: center; }
-.seq-rank-name { font-weight: 700; font-size: 14px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.seq-rank-name em { font-style: normal; font-weight: 500; color: var(--sub); font-size: 12px; }
-.seq-rank-xp { display: flex; flex-direction: column; align-items: flex-end; font-size: 13px; color: var(--text); line-height: 1.2; }
-.seq-rank-xp small { color: var(--sub); font-size: 11px; }
-.seq-rank-me-out { margin-top: 10px; padding: 10px 12px; border-radius: 14px; border: 1px dashed var(--primary); font-size: 13px; color: var(--text); }
-.seq-stats-slot { margin: 12px 0; }
-.seq-stats-slot:empty { display: none; }
-.seq-stats-rank-btn { width: 100%; }
 
 @media (max-width: 380px) { .seq-sums { grid-template-columns: 1fr; } }
 
