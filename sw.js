@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 173;
+const CACHE_VERSION = 174;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -63,6 +63,7 @@ const APP_SHELL = [
   './src/data/phrases.js',
   './src/data/duel-phrases.js',
   './src/ui/a11y.js',
+  './src/ui/back-nav.js',
   './src/data/questions.js',
   './src/data/questions-retired.js',
   './src/data/ui-maps.js',
@@ -313,6 +314,7 @@ const APP_SHELL = [
   './src/state/sir-events.js',
   './assets/character/event_siredwards_visit.webp',
   './assets/character/event_siredwards_streak.webp',
+  './assets/character/event_siredwards_record.webp',
   './assets/character/event_siredwards_day.webp',
   './assets/character/event_siredwards_night.webp',
   './assets/character/event_siredwards_comeback.webp',
@@ -403,7 +405,8 @@ const ASSET_REVS = {
   './assets/character/event_siredwards_comeback.webp': 'e1b589e8',
   './assets/character/event_siredwards_day.webp': '8cacefd5',
   './assets/character/event_siredwards_night.webp': 'f50f1203',
-  './assets/character/event_siredwards_streak.webp': 'f43c5ebd',
+  './assets/character/event_siredwards_record.webp': '954f50aa',
+  './assets/character/event_siredwards_streak.webp': '5a5725fc',
   './assets/character/event_siredwards_visit.webp': '6df39c1c',
   './assets/character/hat.webp': '89336d1f',
   './assets/character/hito-barbilla.webp': '10eabc42',
