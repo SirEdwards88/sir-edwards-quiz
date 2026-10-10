@@ -47,13 +47,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles/main.css?v=184">
+<link rel="stylesheet" href="styles/main.css?v=185">
 <!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
-<link rel="stylesheet" href="styles/online.css?v=184">
-<link rel="stylesheet" href="styles/encargos.css?v=184">
-<link rel="stylesheet" href="styles/encargos-intro.css?v=184">
-<link rel="stylesheet" href="styles/sir-events.css?v=184">
-<link rel="stylesheet" href="styles/theme.css?v=184">
+<link rel="stylesheet" href="styles/online.css?v=185">
+<link rel="stylesheet" href="styles/encargos.css?v=185">
+<link rel="stylesheet" href="styles/encargos-intro.css?v=185">
+<link rel="stylesheet" href="styles/sir-events.css?v=185">
+<link rel="stylesheet" href="styles/theme.css?v=185">
 
 </head>
 <body class="on-home">
@@ -535,6 +535,13 @@ try {
             <p id="mode-desc-mental-calc">Operaciones contra el reloj, cada vez más difíciles. Empiezas con 60 s: aciertos +4 s, fallos −3 s.</p>
             <p class="mode-req" id="mode-req-mental_calc"></p>
             <p class="mode-subtitle mode-status-open">✓ DISPONIBLE</p>
+          </div>
+          <!-- Cálculo Clásico (en pruebas): oculto salvo que se abra la app con ?clasico=1 (src/ui/mental-classic-ui.js). -->
+          <div class="mode-card mode-mentalcalc" id="mode-card-mental_classic" style="display:none;" onclick="SEQMentalClassicUI.start()">
+            <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/calculo.webp" alt="" draggable="false"></div>
+            <h3>Cálculo Clásico</h3>
+            <p>Una vida y 20 s por operación. Cada 8 aciertos seguidos, una vida extra.</p>
+            <p class="mode-subtitle mode-status-open">EN PRUEBAS</p>
           </div>
           <div class="mode-card mode-lucidez locked" id="mode-card-lucidez_mental" onclick="openLucidezMentalMode()">
             <span class="mode-lock-badge" id="lock-badge-lucidez_mental" aria-label="Bloqueado" title="Modo bloqueado"></span>
@@ -1097,51 +1104,53 @@ try {
 <!-- Fase 2: datos y constantes extraidos a modulos, cargados como scripts
      clasicos (no ES Modules) para conservar el scope global compartido con
      el script principal, sin convertir todavia la app a ES Modules. -->
-<script src="src/data/ui-maps.js?v=184"></script>
-<script src="src/data/questions.js?v=184"></script>
-<script src="src/data/questions-retired.js?v=184"></script>
-<script src="src/data/phrases.js?v=184"></script>
-<script src="src/data/duel-phrases.js?v=184"></script>
-<script src="src/data/lucidez.js?v=184"></script>
-<script src="src/data/medals.js?v=184"></script>
+<script src="src/data/ui-maps.js?v=185"></script>
+<script src="src/data/questions.js?v=185"></script>
+<script src="src/data/questions-retired.js?v=185"></script>
+<script src="src/data/phrases.js?v=185"></script>
+<script src="src/data/duel-phrases.js?v=185"></script>
+<script src="src/data/lucidez.js?v=185"></script>
+<script src="src/data/medals.js?v=185"></script>
 <!-- Prompt 3 — Fase C: sistema de avatares compartido (window.SEQAvatars). Debe
      cargarse antes de src/online/online.js y src/online/duels.js: ambos lo
      consumen en vez de mantener cada uno su propia copia de la lista. -->
-<script src="src/data/avatars.js?v=184"></script>
-<script src="src/share/share-card.js?v=184"></script>
+<script src="src/data/avatars.js?v=185"></script>
+<script src="src/share/share-card.js?v=185"></script>
 
 <!-- Fase 3 (Lote 3A): motor de coincidencia de respuestas extraido a
      src/utils/matching.js, mismo criterio que la Fase 2 (script clasico,
      sin ES Modules todavia). -->
-<script src="src/utils/matching.js?v=184"></script>
-<script src="src/utils/answer-alias.js?v=184"></script>
-<script src="src/utils/lucidez-select.js?v=184"></script>
-<script src="src/state/lucidez-bag.js?v=184"></script>
-<script src="src/utils/encargos-core.js?v=184"></script>
-<script src="src/utils/encargos-progress.js?v=184"></script>
-<script src="src/state/encargos.js?v=184"></script>
-<script src="src/data/encargos-phrases.js?v=184"></script>
-<script src="src/ui/encargos-ui.js?v=184"></script>
-<script src="src/data/named-phrases.js?v=184"></script>
-<script src="src/utils/named-phrases.js?v=184"></script>
-<script src="src/utils/encargos-intro-core.js?v=184"></script>
-<script src="src/data/encargos-intro-phrases.js?v=184"></script>
-<script src="src/ui/encargos-intro.js?v=184"></script>
-<script src="src/data/home-quotes.js?v=184"></script>
-<script src="src/ui/home-quote.js?v=184"></script>
-<script src="src/utils/sir-events.js?v=184"></script>
-<script src="src/ui/sir-events-ui.js?v=184"></script>
-<script src="src/state/sir-events.js?v=184"></script>
-<script src="src/utils/sudden-progression.js?v=184"></script>
-<script src="src/utils/fresh-first.js?v=184"></script>
-<script src="src/utils/mental-calc.js?v=184"></script>
+<script src="src/utils/matching.js?v=185"></script>
+<script src="src/utils/answer-alias.js?v=185"></script>
+<script src="src/utils/lucidez-select.js?v=185"></script>
+<script src="src/state/lucidez-bag.js?v=185"></script>
+<script src="src/utils/encargos-core.js?v=185"></script>
+<script src="src/utils/encargos-progress.js?v=185"></script>
+<script src="src/state/encargos.js?v=185"></script>
+<script src="src/data/encargos-phrases.js?v=185"></script>
+<script src="src/ui/encargos-ui.js?v=185"></script>
+<script src="src/data/named-phrases.js?v=185"></script>
+<script src="src/utils/named-phrases.js?v=185"></script>
+<script src="src/utils/encargos-intro-core.js?v=185"></script>
+<script src="src/data/encargos-intro-phrases.js?v=185"></script>
+<script src="src/ui/encargos-intro.js?v=185"></script>
+<script src="src/data/home-quotes.js?v=185"></script>
+<script src="src/ui/home-quote.js?v=185"></script>
+<script src="src/utils/sir-events.js?v=185"></script>
+<script src="src/ui/sir-events-ui.js?v=185"></script>
+<script src="src/state/sir-events.js?v=185"></script>
+<script src="src/utils/sudden-progression.js?v=185"></script>
+<script src="src/utils/fresh-first.js?v=185"></script>
+<script src="src/utils/mental-calc.js?v=185"></script>
+<script src="src/utils/mental-classic.js?v=185"></script>
+<script src="src/ui/mental-classic-ui.js?v=185"></script>
 
 <!-- Fase 3 (Lote 3B): nucleo algoritmico de Duelo extraido a
      src/utils/duel.js, mismo criterio que el resto (script clasico, sin
      ES Modules todavia). Las dependencias compartidas con otros modos
      (arrangeStandardBlock, generateLucidezMentalOp)
      permanecen en este script principal, sin moverse en este lote. -->
-<script src="src/utils/duel.js?v=184"></script>
+<script src="src/utils/duel.js?v=185"></script>
 
 <!-- Fase 3 (Lote 3C): defaults, migracion y saneamiento del Store
      extraidos a src/utils/store.js, mismo criterio que el resto (script
@@ -1153,50 +1162,50 @@ try {
      getLevelData) y las 8 funciones de persistencia real (loadStore,
      saveStore, exportProgress...) permanecen en este script principal,
      sin moverse en este lote. -->
-<script src="src/utils/store.js?v=184"></script>
+<script src="src/utils/store.js?v=185"></script>
 
 <!-- Fase 4B: fachada de estado de solo lectura (getStore/getCurrentGame),
      mismo criterio que el resto (script clasico, sin ES Modules todavia).
      No copia, no transforma, no cachea. Ver src/state/read-facade.js. -->
-<script src="src/state/read-facade.js?v=184"></script>
+<script src="src/state/read-facade.js?v=185"></script>
 
-<script src="src/utils/streak-xp.js?v=184"></script>
+<script src="src/utils/streak-xp.js?v=185"></script>
 <!-- Fase 4C: helpers minimos de escritura (pushCapped, resetStreak) para
      eliminar 2 duplicaciones reales concretas -- no un sistema de
      mutaciones. Ver src/state/write-helpers.js y CHANGELOG_FASE4C.md. -->
-<script src="src/state/write-helpers.js?v=184"></script>
+<script src="src/state/write-helpers.js?v=185"></script>
 
 <!-- v1.4: capa online (cuenta Google, sincronización, migración, ranking).
      config.js es PÚBLICO (URL del Worker + Client ID de Google); si está
      vacío, la capa online queda desactivada y la app es idéntica a la v1.3.
      online.js solo usa el store/funciones del juego en tiempo de ejecución. -->
-<script src="src/ui/install-app.js?v=184"></script>
-<script src="src/ui/a11y.js?v=184"></script>
-<script src="src/ui/back-nav.js?v=184"></script>
-<script src="src/ui/game-fx.js?v=184"></script>
-<script src="src/ui/last-life.js?v=184"></script>
-<script src="src/ui/hitos.js?v=184"></script>
-<script src="src/ui/achievements.js?v=184"></script>
-<script src="src/ui/stats-extra.js?v=184"></script>
-<script src="src/ui/name-prompt.js?v=184"></script>
-<script src="src/ui/intro.js?v=184"></script>
-<script src="src/ui/mode-badges.js?v=184"></script>
-<script src="src/ui/lucidez-ui.js?v=184"></script>
-<script src="src/ui/sabias.js?v=184"></script>
-<script src="src/ui/icons.js?v=184"></script>
-<script src="src/online/config.js?v=184"></script>
+<script src="src/ui/install-app.js?v=185"></script>
+<script src="src/ui/a11y.js?v=185"></script>
+<script src="src/ui/back-nav.js?v=185"></script>
+<script src="src/ui/game-fx.js?v=185"></script>
+<script src="src/ui/last-life.js?v=185"></script>
+<script src="src/ui/hitos.js?v=185"></script>
+<script src="src/ui/achievements.js?v=185"></script>
+<script src="src/ui/stats-extra.js?v=185"></script>
+<script src="src/ui/name-prompt.js?v=185"></script>
+<script src="src/ui/intro.js?v=185"></script>
+<script src="src/ui/mode-badges.js?v=185"></script>
+<script src="src/ui/lucidez-ui.js?v=185"></script>
+<script src="src/ui/sabias.js?v=185"></script>
+<script src="src/ui/icons.js?v=185"></script>
+<script src="src/online/config.js?v=185"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
-<script src="src/utils/sync-merge.js?v=184"></script>
-<script src="src/online/data-sync.js?v=184"></script>
-<script src="src/online/online.js?v=184"></script>
+<script src="src/utils/sync-merge.js?v=185"></script>
+<script src="src/online/data-sync.js?v=185"></script>
+<script src="src/online/online.js?v=185"></script>
 <!-- v1.5: Amigos, Duelo online y Retos. El servidor decide preguntas, tiempo, aciertos y ganador. -->
-<script src="src/online/duels.js?v=184"></script>
+<script src="src/online/duels.js?v=185"></script>
 <!-- 2.1: Duelo por apuestas, ELO PvP, Rankings y estadísticas de Duelos (solo presentación; decide el servidor) -->
-<script src="src/online/duels-v21.js?v=184"></script>
-<script src="src/online/inbox.js?v=184"></script>
-<script src="src/online/push.js?v=184"></script>
+<script src="src/online/duels-v21.js?v=185"></script>
+<script src="src/online/inbox.js?v=185"></script>
+<script src="src/online/push.js?v=185"></script>
 <!-- Audio: sonidos del juego (src/audio/audio.js) -->
-<script src="src/audio/audio.js?v=184"></script>
+<script src="src/audio/audio.js?v=185"></script>
 
 <script>
 function closeWelcomeModal() {
@@ -2212,6 +2221,7 @@ function saveCurrentGame() {
     // reanudar no se sustituya por una operación distinta a la que estaba
     // en pantalla.
     if (!mentalCalcEndTime) return;
+    if (currentGame.variant === 'classic') return; // el Clásico (en pruebas) no se reanuda
     store.savedGame = {
       ...currentGame,
       mentalCalcEndTime,
@@ -4939,7 +4949,8 @@ function startMentalCalcMode() {
   confirmDiscardSavedGame(startMentalCalcModeImpl);
 }
 
-function startMentalCalcModeImpl() {
+function startMentalCalcModeImpl(variant) {
+  const classic = variant === 'classic'; // Cálculo Clásico (en pruebas): src/ui/mental-classic-ui.js
   resetStreak();
   if (timeTrialTimer) { clearInterval(timeTrialTimer); timeTrialTimer = null; }
   if (mentalCalcTimer) { clearInterval(mentalCalcTimer); mentalCalcTimer = null; }
@@ -4960,10 +4971,12 @@ function startMentalCalcModeImpl() {
     bestStreak: 0,
     totalTimeMs: 0
   };
+  if (classic) { currentGame.variant = 'classic'; currentGame.lives = SEQMentalClassic.START_LIVES; }
 
   mentalCalcSession = SEQMentalCalc.createSession();
-  mentalCalcSecondsLeft = 60;
-  mentalCalcEndTime = Date.now() + MENTALCALC_START_MS;
+  // Clásico: el reloj es POR operación (se reinicia en renderMentalCalcOp); Turbo: 60 s para toda la partida.
+  mentalCalcSecondsLeft = classic ? SEQMentalClassic.OP_MS / 1000 : 60;
+  mentalCalcEndTime = Date.now() + (classic ? SEQMentalClassic.OP_MS : MENTALCALC_START_MS);
 
   saveStore();
   document.getElementById('results-card').style.display = 'none';
@@ -4973,11 +4986,14 @@ function startMentalCalcModeImpl() {
   renderQuestion();
 
   const updateTimer = () => {
+    if (classic && currentGame.answered) return; // entre operaciones el reloj de la operación está parado
     const remainingMs = Math.max(0, mentalCalcEndTime - Date.now());
     mentalCalcSecondsLeft = Math.ceil(remainingMs / 1000);
     updateMentalCalcHeader();
-    updateUrgencySound(mentalCalcSecondsLeft);
-    if (remainingMs <= 0) {
+    updateUrgencySound(classic && mentalCalcSecondsLeft > SEQMentalClassic.TICK_FROM_S ? 99 : mentalCalcSecondsLeft);
+    if (remainingMs <= 0 && classic) {
+      checkMentalCalcAnswer(true); // se acabó el tiempo de esta operación: cuenta como fallo
+    } else if (remainingMs <= 0) {
       clearInterval(mentalCalcTimer);
       mentalCalcTimer = null;
       mentalCalcEndTime = 0;
@@ -4996,8 +5012,15 @@ function updateMentalCalcHeader() {
     // Mismo criterio que Contrarreloj: número de segundos en su propio
     // <span> para poder animarlo (flash +3/-3) sin reescribir todo el texto.
     let timerNum = document.getElementById('mc-timer-num');
+    // El Clásico lleva corazones: la etiqueta se repinta entera solo cuando cambian las vidas (o la partida).
+    const mcKey = isMentalClassicGame() ? 'c' + currentGame.lives : 't';
+    if (timerNum && lbl.dataset.mcKey !== mcKey) timerNum = null;
     if (!timerNum) {
-      lbl.innerHTML = `CÁLCULO MENTAL · ${seqIco('tiempo')}<span id="mc-timer-num">${mentalCalcSecondsLeft}</span>s · <span id="mc-pts-num">${currentGame.score}</span> pts`;
+      lbl.dataset.mcKey = mcKey;
+      lbl.innerHTML = (isMentalClassicGame()
+        ? `CLÁSICO · ${SEQMentalClassicUI.livesHtml(currentGame.lives)} · `
+        : 'CÁLCULO MENTAL · ') +
+        `${seqIco('tiempo')}<span id="mc-timer-num">${mentalCalcSecondsLeft}</span>s · <span id="mc-pts-num">${currentGame.score}</span> pts`;
     } else {
       timerNum.textContent = mentalCalcSecondsLeft;
       const ptsNum = document.getElementById('mc-pts-num');
@@ -5010,10 +5033,13 @@ function updateMentalCalcHeader() {
   if (streakEl) setTextWithBump(streakEl, currentGame.streak, 'streak-bump');
   if (bar) {
     const remainingMs = Math.max(0, mentalCalcEndTime - Date.now());
-    const percentage = Math.min(100, (remainingMs / MENTALCALC_MAX_MS) * 100);
+    const percentage = Math.min(100, (remainingMs / (isMentalClassicGame() ? SEQMentalClassic.OP_MS : MENTALCALC_MAX_MS)) * 100);
     bar.style.width = percentage + '%';
   }
 }
+
+// Cálculo Clásico (en pruebas): misma partida de Cálculo Mental con una vida, 20 s por operación y vidas extra por racha.
+function isMentalClassicGame() { return !!currentGame && currentGame.mode === 'mental_calc' && currentGame.variant === 'classic'; }
 
 function renderMentalCalcOp(preserveOp = false) {
   clearTimeout(mentalCalcAutoCheckTimer);
@@ -5021,6 +5047,10 @@ function renderMentalCalcOp(preserveOp = false) {
     if (!mentalCalcSession) mentalCalcSession = SEQMentalCalc.createSession();
     currentMentalOp = SEQMentalCalc.nextOperation(mentalCalcSession, { streak: currentGame.streak });
     currentMentalOp.startedAt = Date.now();
+    if (isMentalClassicGame()) {
+      mentalCalcEndTime = Date.now() + SEQMentalClassic.OP_MS;
+      mentalCalcSecondsLeft = SEQMentalClassic.OP_MS / 1000;
+    }
   }
 
   document.getElementById('q-text').textContent = currentMentalOp.text + ' = ?';
@@ -5055,13 +5085,16 @@ function renderMentalCalcOp(preserveOp = false) {
   setTimeout(() => inputElem.focus(), 50);
 }
 
-function checkMentalCalcAnswer() {
+function checkMentalCalcAnswer(timedOut = false) {
   if (currentGame.answered) return;
   clearTimeout(mentalCalcAutoCheckTimer);
+  const classic = isMentalClassicGame();
+  // Clásico: agotar los 20 s de la operación cuenta como fallo (no termina la partida por sí solo).
+  if (classic && !timedOut && mentalCalcEndTime && Date.now() >= mentalCalcEndTime) timedOut = true;
   // Misma ventana de carrera que en Contrarreloj: el intervalo del reloj
   // corre cada 100ms, así que puede haber respuestas aceptadas justo
   // después de agotarse el tiempo si no se corta aquí explícitamente.
-  if (mentalCalcEndTime && Date.now() >= mentalCalcEndTime) {
+  if (!classic && mentalCalcEndTime && Date.now() >= mentalCalcEndTime) {
     if (mentalCalcTimer) { clearInterval(mentalCalcTimer); mentalCalcTimer = null; }
     mentalCalcEndTime = 0;
     finishGame(false, false);
@@ -5071,7 +5104,7 @@ function checkMentalCalcAnswer() {
   const userVal = Number(raw);
   // Validación estricta: parseFloat() aceptaría "25abc" como 25, así que
   // exigimos que la cadena completa sea un número válido (sin restos de texto).
-  const correct = raw !== '' && /^-?\d+(\.\d+)?$/.test(raw) && Number.isFinite(userVal) && userVal === currentMentalOp.answer;
+  const correct = !timedOut && raw !== '' && /^-?\d+(\.\d+)?$/.test(raw) && Number.isFinite(userVal) && userVal === currentMentalOp.answer;
   currentGame.answered = true;
   currentGame.total++;
 
@@ -5088,7 +5121,7 @@ function checkMentalCalcAnswer() {
     currentGame.correct++;
     currentGame.streak++;
     if (currentGame.streak > currentGame.bestStreak) currentGame.bestStreak = currentGame.streak;
-    if (!currentGame.isDuel) {
+    if (!currentGame.isDuel && !classic) {
       if (currentGame.streak > (store.mentalCalcBestStreak || 0)) store.mentalCalcBestStreak = currentGame.streak;
       store.mentalCalcTotalCorrect = (store.mentalCalcTotalCorrect || 0) + 1;
     }
@@ -5101,18 +5134,40 @@ function checkMentalCalcAnswer() {
     const pointsWon = basePoints + speedBonus + streakBonus;
     currentGame.score += pointsWon;
 
-    // +4s por acierto, con el mismo tope máximo acumulable que Contrarreloj.
-    mentalCalcEndTime = Math.min(mentalCalcEndTime + MENTALCALC_BONUS_MS, Date.now() + MENTALCALC_MAX_MS);
-    mentalCalcSecondsLeft = Math.ceil(Math.max(0, mentalCalcEndTime - Date.now()) / 1000);
-    playMentalCalcChangeFX(true);
-
     fb.className = 'feedback ok';
-    fb.innerHTML = `${seqIco('correcto')}¡Correcto! <span style="color:#16a34a;font-weight:bold;">+${pointsWon} pts</span>`;
+    if (classic) {
+      // Clásico: sin bonus de tiempo; las rachas de 8, 16 y 24 conceden una vida extra.
+      const gained = SEQMentalClassic.lifeGain(currentGame.streak, currentGame.lives);
+      currentGame.lives += gained;
+      fb.innerHTML = `${seqIco('correcto')}¡Correcto! <span style="color:#16a34a;font-weight:bold;">+${pointsWon} pts</span>` + (gained ? ' · vida extra' : '');
+    } else {
+      // +4s por acierto, con el mismo tope máximo acumulable que Contrarreloj.
+      mentalCalcEndTime = Math.min(mentalCalcEndTime + MENTALCALC_BONUS_MS, Date.now() + MENTALCALC_MAX_MS);
+      mentalCalcSecondsLeft = Math.ceil(Math.max(0, mentalCalcEndTime - Date.now()) / 1000);
+      playMentalCalcChangeFX(true);
+      fb.innerHTML = `${seqIco('correcto')}¡Correcto! <span style="color:#16a34a;font-weight:bold;">+${pointsWon} pts</span>`;
+    }
   } else {
     playSound('bad');
     currentGame.streak = 0;
     fb.className = 'feedback bad';
-    fb.innerHTML = `${seqIco('incorrecto')}Incorrecto. Era: <b>${currentMentalOp.answer}</b>`;
+    fb.innerHTML = `${seqIco('incorrecto')}${timedOut ? 'Tiempo agotado' : 'Incorrecto'}. Era: <b>${currentMentalOp.answer}</b>`;
+
+    if (classic) {
+      currentGame.lives--;
+      updateMentalCalcHeader();
+      saveStore();
+      document.getElementById('btn-check').style.display = 'none';
+      document.getElementById('btn-next').style.display = 'none';
+      if (currentGame.lives <= 0) {
+        if (mentalCalcTimer) { clearInterval(mentalCalcTimer); mentalCalcTimer = null; }
+        scheduleModeFinish(() => finishGame(false, false), 1400);
+      } else {
+        // Con vidas de sobra: tiempo para leer la solución antes de la siguiente operación.
+        setTimeout(() => { if (isMentalClassicGame() && currentGame.answered && mentalCalcTimer !== null) nextQuestion(); }, 1500);
+      }
+      return;
+    }
 
     // -3s por fallo. Si el tiempo llega a 0, la partida termina de inmediato
     // en vez de esperar al siguiente tick del intervalo (cada 100ms).
@@ -5136,7 +5191,7 @@ function checkMentalCalcAnswer() {
   document.getElementById('btn-next').style.display = 'none';
 
   updateMentalCalcHeader();
-  updateUrgencySound(mentalCalcSecondsLeft);
+  if (!classic) updateUrgencySound(mentalCalcSecondsLeft);
   saveStore();
 
   setTimeout(() => {
@@ -5827,6 +5882,8 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   stopUrgencySound();
   if (timeTrialTimer) { clearInterval(timeTrialTimer); timeTrialTimer = null; }
   timeTrialEndTime = 0;
+  // Cálculo Clásico (en pruebas): tarjeta propia, sin tocar estadísticas, logros ni ránkings (src/ui/mental-classic-ui.js).
+  if (isMentalClassicGame()) { SEQMentalClassicUI.finish(); return; }
 
   // Duelo: se resetea en cada cierre de partida y solo se rellena más
   // abajo si currentGame.isDuel es true, para que una partida normal
