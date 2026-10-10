@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 187;
+const CACHE_VERSION = 188;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -563,11 +563,11 @@ const ASSET_REVS = {
   './assets/ui/bombilla.webp': '38c00fe5',
   './assets/ui/bronce.webp': '5a68a9d9',
   './assets/ui/calavera.webp': '19d4f16e',
-  './assets/ui/calculadora-humo.webp': 'd62bbef4',
+  './assets/ui/calculadora-humo.webp': 'a33795b5',
   './assets/ui/calculadora-laton.webp': '7912ca3d',
   './assets/ui/caracol.webp': '59071199',
   './assets/ui/cartel-peligro.webp': '97d54d81',
-  './assets/ui/casi.webp': '6bfb6d21',
+  './assets/ui/casi.webp': 'eb33c177',
   './assets/ui/celebracion.webp': '87e6433a',
   './assets/ui/cerebro-engranajes.webp': 'b446d97a',
   './assets/ui/cerebro.webp': '416f0417',
@@ -575,13 +575,13 @@ const ASSET_REVS = {
   './assets/ui/compartir.webp': '2b2e6a06',
   './assets/ui/copa.webp': '0c2c5067',
   './assets/ui/correcto.webp': '924ae99a',
-  './assets/ui/derrota.webp': '8ccd87f3',
+  './assets/ui/derrota.webp': '209581d4',
   './assets/ui/desastre.webp': '2b34b57a',
   './assets/ui/diamante.webp': '79ba4678',
   './assets/ui/escoba.webp': '173febbe',
   './assets/ui/escudo.webp': '53e5ae4f',
   './assets/ui/fragmento.webp': '4a6cbc9e',
-  './assets/ui/gorro-burro.webp': 'fa3c4688',
+  './assets/ui/gorro-burro.webp': '3c695c11',
   './assets/ui/guante.webp': '82d30bd8',
   './assets/ui/hito12.webp': '8fd60e1f',
   './assets/ui/hito15.webp': '957fbb83',
@@ -589,8 +589,8 @@ const ASSET_REVS = {
   './assets/ui/insignia-nivel.webp': '04b26e8e',
   './assets/ui/insignia.webp': 'c6704d09',
   './assets/ui/instalar-app.webp': '4b10f2c0',
-  './assets/ui/libreta.webp': '3734c844',
-  './assets/ui/libro-vela.webp': 'e2da705b',
+  './assets/ui/libreta.webp': '692a9ac7',
+  './assets/ui/libro-vela.webp': '7a383ca7',
   './assets/ui/libro.webp': 'fab53d16',
   './assets/ui/liebre.webp': '6781ca8d',
   './assets/ui/marca-duelo.webp': '4ed6e4f5',
@@ -608,9 +608,9 @@ const ASSET_REVS = {
   './assets/ui/regla-calculo.webp': '74673993',
   './assets/ui/reloj-derretido.webp': '2789b018',
   './assets/ui/revancha.webp': 'ad4f0bf4',
-  './assets/ui/sombrero-aplastado.webp': 'ce481fbc',
+  './assets/ui/sombrero-aplastado.webp': '1d3f5b12',
   './assets/ui/sombrero-laurel.webp': '18b65104',
-  './assets/ui/sombrero-mediocre.webp': '3531e6f5',
+  './assets/ui/sombrero-mediocre.webp': '02513cbd',
   './assets/ui/sombrero-saludo.webp': '23366762',
   './assets/ui/suspenso.webp': '7489b62c',
   './assets/ui/tiempo.webp': 'ee46f823',
