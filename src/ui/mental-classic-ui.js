@@ -83,7 +83,7 @@
 
     var m1 = document.getElementById('session-mode-unlock-box'); if (m1) m1.style.display = 'none';
     var m2 = document.getElementById('session-medals-box'); if (m2) m2.style.display = 'none';
-    if (r.category !== 'mal') playSound('win');
+    if (r.category !== 'mal' && !recordSoundPlayed) playSound('win');
   }
 
   window.SEQMentalClassicUI = { isClassic: isClassic, start: start, finish: finish, livesHtml: livesHtml, flagOn: flagOn };

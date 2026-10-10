@@ -192,6 +192,34 @@ function playWinFanfare() {
   } catch (e) {}
 }
 
+// ====== Campanillas (eventos de Sir Edwards y récords) ======
+// Timbre de campanilla de mostrador: parciales inarmónicos con ataque seco y caída exponencial.
+// «Evento»: dos golpes (sol agudo y do agudo). «Récord»: tres golpes ascendentes. Respetan el interruptor de sonido.
+const BELL_PARTIALS = [[1, 1], [2.0, 0.45], [2.76, 0.3], [5.4, 0.12]];
+function playBellNote(freq, delay, vol, ringS) {
+  const ctx = getAudioCtx();
+  const t0 = ctx.currentTime + delay;
+  const tau = ringS / 4; // caída: cuatro constantes de tiempo a lo largo del sonido
+  const norm = BELL_PARTIALS.reduce((n, p) => n + p[1], 0);
+  BELL_PARTIALS.forEach(([ratio, amp]) => {
+    const o = ctx.createOscillator(); const g = ctx.createGain();
+    o.type = 'sine'; o.frequency.setValueAtTime(freq * ratio, t0);
+    const peak = vol * amp / norm;
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.linearRampToValueAtTime(peak, t0 + 0.002);
+    g.gain.setTargetAtTime(0.0001, t0 + 0.002, tau);
+    o.connect(g); g.connect(ctx.destination); o.start(t0); o.stop(t0 + ringS + 0.05);
+  });
+}
+function playSirEventSound() {
+  if (store.sound === 'off') return;
+  try { playBellNote(1568, 0, 0.5, 1.4); playBellNote(2093, 0.18, 0.45, 1.4); } catch (e) {}
+}
+function playRecordSound() {
+  if (store.sound === 'off') return;
+  try { [1319, 1568, 2093].forEach((f, i) => playBellNote(f, i * 0.16, 0.5 - 0.04 * i, 1.6)); } catch (e) {}
+}
+
 // ====== Música de menús («The Earl's Waiting Room») ======
 // Suena solo fuera de la partida (inicio, Jugar, Duelos, Estadísticas, Logros, Ajustes), a volumen bajo y
 // con fundidos; se pausa al entrar en una partida o un duelo en directo y al salir de la app.

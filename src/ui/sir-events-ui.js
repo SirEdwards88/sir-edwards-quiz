@@ -41,6 +41,8 @@ const SEQSirEventsUI = (function () {
     void n.offsetWidth;
     visible = true;
     n.classList.add('show');
+    // Sonido de campanilla: el de récord para el aviso de récord, el de siempre para el resto de apariciones.
+    try { if (ev.type === 'record') { if (typeof playRecordSound === 'function') playRecordSound(); } else if (typeof playSirEventSound === 'function') playSirEventSound(); } catch (e) {}
     clearTimeout(hideT);
     hideT = setTimeout(hide, Math.max(2500, Number(ev.durationMs) || 4000));
     return true;

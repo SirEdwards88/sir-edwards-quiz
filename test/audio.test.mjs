@@ -29,3 +29,14 @@ test('música de menús: archivo ligero, no se precarga al instalar y tiene su i
   assert.match(audio, /function changeMusic\(/);
   assert.match(sw, /res\.status !== 206/);
 });
+
+test('campanillas: sonido de evento de Sir Edwards y de récord, con el interruptor de sonido respetado', async () => {
+  const fs = await import('node:fs');
+  const a = fs.readFileSync(new URL('../src/audio/audio.js', import.meta.url), 'utf8');
+  assert.ok(a.includes('function playSirEventSound()') && a.includes('function playRecordSound()'));
+  assert.equal((a.match(/if \(store\.sound === 'off'\) return;\n  try \{ (playBellNote|\[1319)/g) || []).length, 2);
+  const ui = fs.readFileSync(new URL('../src/ui/sir-events-ui.js', import.meta.url), 'utf8');
+  assert.ok(ui.includes("ev.type === 'record'") && ui.includes('playSirEventSound'));
+  const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  assert.ok(html.includes('playRecordSound();') && html.includes('!recordSoundPlayed'));
+});
