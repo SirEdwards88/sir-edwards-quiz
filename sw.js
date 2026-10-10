@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 189;
+const CACHE_VERSION = 190;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -567,7 +567,7 @@ const ASSET_REVS = {
   './assets/ui/calculadora-laton.webp': '7912ca3d',
   './assets/ui/caracol.webp': '59071199',
   './assets/ui/cartel-peligro.webp': '97d54d81',
-  './assets/ui/casi.webp': 'eb33c177',
+  './assets/ui/casi.webp': '946a7878',
   './assets/ui/celebracion.webp': '87e6433a',
   './assets/ui/cerebro-engranajes.webp': 'b446d97a',
   './assets/ui/cerebro.webp': '416f0417',
