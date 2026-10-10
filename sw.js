@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 188;
+const CACHE_VERSION = 189;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -563,7 +563,7 @@ const ASSET_REVS = {
   './assets/ui/bombilla.webp': '38c00fe5',
   './assets/ui/bronce.webp': '5a68a9d9',
   './assets/ui/calavera.webp': '19d4f16e',
-  './assets/ui/calculadora-humo.webp': 'a33795b5',
+  './assets/ui/calculadora-humo.webp': 'd056b438',
   './assets/ui/calculadora-laton.webp': '7912ca3d',
   './assets/ui/caracol.webp': '59071199',
   './assets/ui/cartel-peligro.webp': '97d54d81',
@@ -590,7 +590,7 @@ const ASSET_REVS = {
   './assets/ui/insignia.webp': 'c6704d09',
   './assets/ui/instalar-app.webp': '4b10f2c0',
   './assets/ui/libreta.webp': '692a9ac7',
-  './assets/ui/libro-vela.webp': '7a383ca7',
+  './assets/ui/libro-vela.webp': '37b490f3',
   './assets/ui/libro.webp': 'fab53d16',
   './assets/ui/liebre.webp': '6781ca8d',
   './assets/ui/marca-duelo.webp': '4ed6e4f5',
