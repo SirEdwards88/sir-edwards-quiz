@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 191;
+const CACHE_VERSION = 192;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -437,7 +437,7 @@ const ASSET_REVS = {
   './assets/duelos/rangos/lord_sabelotodo.webp': '9d4e0dea',
   './assets/duelos/rangos/plebeyo_ilustrado.webp': '9c9aadc0',
   './assets/duelos/rangos/sir_edwards.webp': '05fa85f5',
-  './assets/duelos/rankings/friends.webp': 'c8a2fd49',
+  './assets/duelos/rankings/friends.webp': '0703935f',
   './assets/duelos/rankings/global.webp': 'dcfdf98c',
   './assets/duelos/rankings/mental.webp': 'f823292b',
   './assets/duelos/rankings/pvp.webp': '9d9a136b',
@@ -514,7 +514,7 @@ const ASSET_REVS = {
   './assets/logros/tt_50.webp': '68630d42',
   './assets/modes/ajustes.webp': '04e7acbd',
   './assets/modes/ameba.webp': '9253546d',
-  './assets/modes/amigos.webp': '8e170114',
+  './assets/modes/amigos.webp': '0703935f',
   './assets/modes/calculo.webp': 'f2414652',
   './assets/modes/contrarreloj.webp': '77bff741',
   './assets/modes/derrame.webp': '04ceb604',
