@@ -36,6 +36,14 @@ test('cableado: tarjeta oculta por defecto, scripts enlazados y archivos en sw.j
   assert.ok(sw.includes("'./src/utils/mental-classic.js'") && sw.includes("'./src/ui/mental-classic-ui.js'"));
 });
 
+test('Estadísticas: la fila del Clásico se crea desde el módulo, solo con récord, y renderStats la invoca', () => {
+  const ui = read('src/ui/mental-classic-ui.js'), html = read('index.html');
+  assert.ok(ui.includes('best-mentalclassic-box') && ui.includes('renderStat: renderStat'));
+  assert.ok(!html.includes('best-mentalclassic'), 'index.html no crece con la fila: la crea el módulo');
+  const rs = html.slice(html.indexOf('function renderStats('));
+  assert.ok(rs.indexOf('SEQMentalClassicUI.renderStat()') > 0 && rs.indexOf('SEQMentalClassicUI.renderStat()') < rs.indexOf('best-lucidez-box'));
+});
+
 test('el final del Clásico no toca estadísticas de Turbo ni el contador de partidas', () => {
   const ui = read('src/ui/mental-classic-ui.js');
   for (const k of ['gamesPlayed', 'bestMentalCalcScore', 'bestMentalCalcCorrect', 'mentalCalcBestStreak', 'mentalCalcTotalCorrect', 'encargosOnGameEnd', 'checkMedalsAndGetNew', 'gameHistory']) {

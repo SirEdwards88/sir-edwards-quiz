@@ -86,7 +86,28 @@
     if (r.category !== 'mal' && !recordSoundPlayed) playSound('win');
   }
 
-  window.SEQMentalClassicUI = { isClassic: isClassic, start: start, finish: finish, livesHtml: livesHtml, flagOn: flagOn };
+  // Estadísticas > Récords personales: fila propia del Clásico (aciertos, no puntos). No existe hasta que se juega una
+  // partida con récord, así no delata el modo durante las pruebas. Se crea aquí para no crecer index.html.
+  function renderStat() {
+    var best = store && store.mentalClassicBest;
+    var box = document.getElementById('best-mentalclassic-box');
+    if (!best || !(best.correct > 0)) { if (box) box.style.display = 'none'; return; }
+    if (!box) {
+      var turbo = document.querySelector('#extra-stats .stat-mentalcalc');
+      if (!turbo) return;
+      box = document.createElement('div');
+      box.id = 'best-mentalclassic-box';
+      box.className = 'stat-extra stat-mentalcalc';
+      box.innerHTML = '<span class="stat-extra-icon has-img" aria-hidden="true"><img class="mode-img mode-img-loose" src="assets/modes/suelto/calculo.webp" alt="" draggable="false"></span>' +
+        '<div><span class="stat-extra-label">Mejor Cálculo Clásico</span><span class="stat-extra-value" id="best-mentalclassic"></span></div>';
+      turbo.parentNode.insertBefore(box, turbo.nextSibling);
+    }
+    box.style.display = '';
+    var v = document.getElementById('best-mentalclassic');
+    if (v) v.textContent = best.correct + (best.correct === 1 ? ' acierto' : ' aciertos');
+  }
+
+  window.SEQMentalClassicUI = { isClassic: isClassic, start: start, finish: finish, livesHtml: livesHtml, flagOn: flagOn, renderStat: renderStat };
   applyFlagFromUrl();
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', showCardIfEnabled);
   else showCardIfEnabled();
