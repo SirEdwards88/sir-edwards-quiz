@@ -31,7 +31,7 @@
   var ICON_DIR = 'assets/duelos/';
   var BOARDS = {
     pvp: { nombre: 'PvP', sub: 'Por ELO' },
-    mental: { nombre: 'Cálculo Mental', sub: 'Mejor puntuación' },
+    mental: { nombre: 'Cálculo Turbo', sub: 'Mejor puntuación' },
     timetrial: { nombre: 'Contrarreloj', sub: 'Mejor puntuación' }
   };
   var BOARD_ORDER = ['pvp', 'mental', 'timetrial'];

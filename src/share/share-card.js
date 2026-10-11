@@ -69,7 +69,7 @@
     reto:          { bg: ['#0b4a5c', '#03161c'], glow: 'rgba(34,211,238,.38)', accent: '#a5f3fc', ring: '#22d3ee', icon: 'retos' }
   };
   var MODE_BY_NAME = { 'modo estándar': 'play', 'estándar': 'play', 'supervivencia': 'survival', 'muerte súbita': 'sudden_death',
-    'contrarreloj': 'timetrial', 'cálculo mental': 'mental_calc', 'repaso': 'review', 'lucidez mental': 'lucidez_mental' };
+    'contrarreloj': 'timetrial', 'cálculo mental': 'mental_calc', 'cálculo turbo': 'mental_calc', 'repaso': 'review', 'lucidez mental': 'lucidez_mental' };
   var MODE_ICON_DIR = 'assets/modes/suelto/';
   function themeFor(model) {
     var base = MODE_BG[model.mode] || THEMES[model.variant] || THEMES.standard;

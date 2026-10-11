@@ -28,9 +28,12 @@ test('la marca del Fondo: más aciertos, y a igualdad más puntos; sin aciertos 
   assert.equal(C.isBetter(4, 999, { correct: 5, score: 1 }), false);
 });
 
-test('cableado: tarjeta oculta por defecto, scripts enlazados y archivos en sw.js', () => {
+test('cableado: tarjeta pública con candado como Turbo, scripts enlazados y archivos en sw.js', () => {
   const html = read('index.html'), sw = read('sw.js');
-  assert.match(html, /id="mode-card-mental_classic" style="display:none;"/);
+  assert.match(html, /class="mode-card mode-mentalcalc locked" id="mode-card-mental_classic"/);
+  assert.ok(!/style="display:none;" onclick="SEQMentalClassicUI/.test(html), 'ya no está oculta');
+  assert.match(html, /cardId: 'mode-card-mental_classic'/);
+  assert.ok(!/clasico=/.test(read('src/ui/mental-classic-ui.js')), 'sin bandera de pruebas');
   assert.match(html, /src="src\/utils\/mental-classic\.js\?v=\d+"/);
   assert.match(html, /src="src\/ui\/mental-classic-ui\.js\?v=\d+"/);
   assert.ok(sw.includes("'./src/utils/mental-classic.js'") && sw.includes("'./src/ui/mental-classic-ui.js'"));

@@ -1,34 +1,15 @@
-// SirEdwards Quiz — Cálculo de Fondo (en pruebas): arranque, tarjeta oculta y final de partida.
-// El modo reutiliza el bucle de Cálculo Mental de index.html (currentGame.mode === 'mental_calc' con variant 'classic');
-// aquí viven lo que es solo suyo: la tarjeta del menú (oculta salvo que el propietario la active), la comprobación
-// de la variante y la tarjeta final, que NO toca estadísticas, récords de Turbo, logros, encargos ni ránkings.
+// SirEdwards Quiz — Cálculo de Fondo (2.3): arranque y final de partida.
+// El modo reutiliza el bucle de Cálculo Turbo de index.html (currentGame.mode === 'mental_calc' con variant 'classic');
+// aquí vive lo que es solo suyo: la comprobación de la variante, el arranque y la tarjeta final, que NO toca
+// estadísticas de Turbo, logros, encargos ni ránkings (su récord es local: store.mentalClassicBest).
 // Script clásico (scope global). Reglas puras en src/utils/mental-classic.js.
 (function () {
   'use strict';
-  var FLAG = 'seq_beta_clasico';
-
-  function flagOn() { try { return localStorage.getItem(FLAG) === '1'; } catch (e) { return false; } }
-
-  // Activación: abrir la app con ?clasico=1 (se recuerda en este dispositivo) y ?clasico=0 para quitarlo.
-  function applyFlagFromUrl() {
-    try {
-      var q = new URLSearchParams(location.search).get('clasico');
-      if (q === '1') localStorage.setItem(FLAG, '1');
-      else if (q === '0') localStorage.removeItem(FLAG);
-    } catch (e) {}
-  }
-
-  function showCardIfEnabled() {
-    var card = document.getElementById('mode-card-mental_classic');
-    if (card) card.style.display = flagOn() ? '' : 'none';
-  }
-
   function isClassic(g) { return !!g && g.mode === 'mental_calc' && g.variant === 'classic'; }
 
   function start() {
-    if (!flagOn()) return;
     if (!(store.unlockedMedals || []).includes('tt_15')) {
-      showInfoToast('Cálculo Mental sigue cerrado. Antes necesitas el logro «Velocidad Mental». Ya llegarás, o no.', 'candado');
+      showInfoToast('Cálculo de Fondo sigue cerrado. Antes necesitas el logro «Velocidad Mental». Ya llegarás, o no.', 'candado');
       return;
     }
     confirmDiscardSavedGame(function () { startMentalCalcModeImpl('classic'); });
@@ -107,8 +88,5 @@
     if (v) v.textContent = best.correct + (best.correct === 1 ? ' acierto' : ' aciertos');
   }
 
-  window.SEQMentalClassicUI = { isClassic: isClassic, start: start, finish: finish, livesHtml: livesHtml, flagOn: flagOn, renderStat: renderStat };
-  applyFlagFromUrl();
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', showCardIfEnabled);
-  else showCardIfEnabled();
+  window.SEQMentalClassicUI = { isClassic: isClassic, start: start, finish: finish, livesHtml: livesHtml, renderStat: renderStat };
 })();

@@ -93,7 +93,7 @@
     supervivencia: { nombre: 'Supervivencia', icono: 'supervivencia', reglas: 'Hasta 40 preguntas · 3 vidas · 10 s cada una' },
     muerte_subita: { nombre: 'Muerte Súbita', icono: 'muerte-subita', reglas: '25 preguntas cada vez más difíciles · un fallo y fuera' },
     contrarreloj: { nombre: 'Contrarreloj', icono: 'contrarreloj', reglas: '60 s · +3 s por acierto, −3 s por fallo' },
-    calculo_mental: { nombre: 'Cálculo Mental', icono: 'calculo', reglas: '60 s de operaciones · +4 s por acierto, −3 s por fallo' },
+    calculo_mental: { nombre: 'Cálculo Turbo', icono: 'calculo', reglas: '60 s de operaciones · +4 s por acierto, −3 s por fallo' },
     lucidez: { nombre: 'Lucidez Mental', icono: 'secreto', reglas: 'Tres fases y un enigma final, con respuestas escritas' }
   };
   var NIVEL_UI = { ameba: 'Nivel Ameba', humano: 'Humano Promedio', derrame: 'Derrame Cerebral' };
@@ -202,7 +202,7 @@
     if (f.async_challenges) h += hubCard('retos', '<img class="mode-img" src="assets/modes/retos.webp" alt="" draggable="false">', 'Retos', 'Elige el modo y reta a un amigo; cada uno juega cuando pueda.', "SEQDuels.open('retos')", pending(re, 'PENDIENTE', 'PENDIENTES'));
     h += hubCard('amigos', '<img class="mode-img" src="assets/modes/amigos.webp" alt="" draggable="false">', 'Amigos', 'Añade amigos y rétalos desde tu lista.', "SEQDuels.open('friends')", pending(fr, 'SOLICITUD', 'SOLICITUDES'));
     // 2.1: Rankings (PvP, Cálculo Mental y Contrarreloj; entre amigos o global). Pantalla propia, en src/online/duels-v21.js.
-    h += hubCard('rank', '<img class="mode-img" src="assets/modes/ranking.webp" alt="" draggable="false">', 'Rankings', 'PvP, Cálculo Mental y Contrarreloj. Entre amigos o global.', "SEQDuels.open('rankings')", '');
+    h += hubCard('rank', '<img class="mode-img" src="assets/modes/ranking.webp" alt="" draggable="false">', 'Rankings', 'PvP, Cálculo Turbo y Contrarreloj. Entre amigos o global.', "SEQDuels.open('rankings')", '');
     slot.innerHTML = h;
   }
   // El aviso «sin conexión» del hub se actualiza en cuanto cambia la red.

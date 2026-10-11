@@ -148,13 +148,13 @@ test('apuesta y respuesta: solo se envían claves/opciones (nunca resultados) y 
 test('Rankings: dos ámbitos, tres tableros exactos, sin ranking universal ni emojis como iconografía', () => {
   const { M, win } = load();
   assert.deepEqual(Object.keys(M.BOARDS), ['pvp', 'mental', 'timetrial']);
-  assert.deepEqual(Object.values(M.BOARDS).map((b) => b.nombre), ['PvP', 'Cálculo Mental', 'Contrarreloj']);
+  assert.deepEqual(Object.values(M.BOARDS).map((b) => b.nombre), ['PvP', 'Cálculo Turbo', 'Contrarreloj']);
   assert.equal(/universal|todos los rankings/i.test(SRC), false);
   win.SEQDuels._h.call = () => new Promise(() => {});
   const html = M.renderRankings();
   const sinAtributos = html.replace(/<[^>]*>/g, '');           // texto visible
   assert.match(sinAtributos, /Amigos/); assert.match(sinAtributos, /Global/);
-  assert.match(sinAtributos, /PvP/); assert.match(sinAtributos, /Cálculo Mental/); assert.match(sinAtributos, /Contrarreloj/);
+  assert.match(sinAtributos, /PvP/); assert.match(sinAtributos, /Cálculo Turbo/); assert.match(sinAtributos, /Contrarreloj/);
   assert.equal(/\p{Extended_Pictographic}/u.test(sinAtributos), false, 'ningún emoji como iconografía visible');
   for (const id of ['pvp', 'mental', 'timetrial']) assert.match(html, new RegExp('assets/duelos/rankings/' + id + '\\.webp'));
   assert.equal(/rankings\/(friends|global)\.webp/.test(html), false, 'el ámbito es un selector de texto, sin iconos');
@@ -195,7 +195,7 @@ test('Rankings PvP: «Tu posición», podio con medallas, insignia de rango y co
   assert.match(SRC, /El Salón de la Fama/);
 });
 
-test('Rankings Cálculo Mental y Contrarreloj: misma estructura, sin inventar rangos', async () => {
+test('Rankings Cálculo Turbo y Contrarreloj: misma estructura, sin inventar rangos', async () => {
   const { M, win } = load();
   const rows = [['Ana', 4000], ['Bruno', 3000], ['Carla', 2500], ['Dani', 2000], ['Eva', 1500]].map(([n, s], i) => ({ rank: i + 1, display_name: n, avatar: 'x' + i, score: s, is_me: i === 2 }));
   for (const board of ['mental', 'timetrial']) {

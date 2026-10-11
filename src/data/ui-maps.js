@@ -19,7 +19,7 @@ const MODE_IDENTITY = {
   survival: 'SUPERVIVENCIA',
   sudden_death: 'MUERTE SÚBITA',
   timetrial: 'CONTRARRELOJ',
-  mental_calc: 'CÁLCULO MENTAL',
+  mental_calc: 'CÁLCULO TURBO',
   lucidez_mental: 'LUCIDEZ MENTAL'
 };;
 

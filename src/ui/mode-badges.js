@@ -15,7 +15,7 @@
   var BY_TIER = { ameba: 'ameba', humano: 'humano', derrame: 'derrame' };
   // El historial guarda el nombre visible del modo, no su clave.
   var BY_NAME = { 'Modo Estándar': 'play', 'Repaso': 'review', 'Supervivencia': 'survival', 'Muerte Súbita': 'sudden_death',
-    'Contrarreloj': 'timetrial', 'Cálculo Mental': 'mental_calc', 'Lucidez Mental': 'lucidez_mental' };
+    'Contrarreloj': 'timetrial', 'Cálculo Mental': 'mental_calc', 'Cálculo Turbo': 'mental_calc', 'Lucidez Mental': 'lucidez_mental' };
 
   function src(mode, tier) {
     var n = (mode === 'survival' && BY_TIER[tier]) || BY_MODE[mode] || BY_MODE[BY_NAME[mode]];
