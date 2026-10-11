@@ -608,7 +608,7 @@
     if (!list) return h + '<p class="stats-section-sub">Cargando…</p>';
     var act_ = list.filter(function (x) { return ['pendiente', 'aceptado', 'en_curso'].indexOf(x.estado) >= 0; });
     var hist = list.filter(function (x) { return act_.indexOf(x) < 0; });
-    h += '<h3 class="seq-d-h3">Activos</h3>' + (act_.length ? '<div class="history-list">' + act_.map(function (x) { return rowFor(kind, x); }).join('') + '</div>' : emptyImg('vacio-retos') + '<p class="stats-section-sub">No tienes ninguno activo.</p>');
+    h += '<h3 class="seq-d-h3">Activos</h3>' + (act_.length ? '<div class="history-list">' + act_.map(function (x) { return rowFor(kind, x); }).join('') + '</div>' : '<p class="stats-section-sub">No tienes ninguno activo.</p>');
     h += '<h3 class="seq-d-h3">Historial</h3>' + (hist.length ? '<div class="history-list">' + hist.map(function (x) { return rowFor(kind, x); }).join('') + '</div>' : emptyImg('vacio-general') + '<p class="stats-section-sub">Todavía no hay historial.</p>');
     return h;
   }
