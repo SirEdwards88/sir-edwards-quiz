@@ -52,15 +52,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles/main.css?v=208">
+<link rel="stylesheet" href="styles/main.css?v=209">
 <!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
-<link rel="stylesheet" href="styles/online.css?v=208">
-<link rel="stylesheet" href="styles/results-frame.css?v=208">
-<link rel="stylesheet" href="styles/visual-2-3.css?v=208">
-<link rel="stylesheet" href="styles/encargos.css?v=208">
-<link rel="stylesheet" href="styles/encargos-intro.css?v=208">
-<link rel="stylesheet" href="styles/sir-events.css?v=208">
-<link rel="stylesheet" href="styles/theme.css?v=208">
+<link rel="stylesheet" href="styles/online.css?v=209">
+<link rel="stylesheet" href="styles/results-frame.css?v=209">
+<link rel="stylesheet" href="styles/visual-2-3.css?v=209">
+<link rel="stylesheet" href="styles/encargos.css?v=209">
+<link rel="stylesheet" href="styles/encargos-intro.css?v=209">
+<link rel="stylesheet" href="styles/sir-events.css?v=209">
+<link rel="stylesheet" href="styles/theme.css?v=209">
 
 </head>
 <body class="on-home">
@@ -538,21 +538,13 @@ try {
             <p class="mode-req" id="mode-req-timetrial"></p>
             <p class="mode-subtitle mode-status-open">✓ DISPONIBLE</p>
           </div>
-          <div class="mode-card mode-mentalcalc locked" id="mode-card-mental_calc" onclick="startMentalCalcMode()">
+          <!-- Cálculo (2.3): una sola tarjeta; al entrar se elige Turbo o Fondo (src/ui/mental-menu.js). Se desbloquea con «Velocidad Mental». -->
+          <div class="mode-card mode-mentalcalc locked" id="mode-card-mental_calc" onclick="SEQMentalMenu.open()">
             <span class="mode-lock-badge" id="lock-badge-mental_calc" aria-label="Bloqueado" title="Modo bloqueado"></span>
             <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/calculo.webp" alt="" draggable="false"></div>
-            <h3>Cálculo Turbo</h3>
-            <p id="mode-desc-mental-calc">Operaciones contra el reloj, cada vez más difíciles. Empiezas con 60 s: aciertos +4 s, fallos −3 s.</p>
+            <h3>Cálculo</h3>
+            <p id="mode-desc-mental-calc">Dos maneras de sufrir con los números. Elige tu nivel de crueldad.</p>
             <p class="mode-req" id="mode-req-mental_calc"></p>
-            <p class="mode-subtitle mode-status-open">✓ DISPONIBLE</p>
-          </div>
-          <!-- Cálculo de Fondo (2.3): se desbloquea junto a Turbo; reglas en src/utils/mental-classic.js, interfaz en src/ui/mental-classic-ui.js. -->
-          <div class="mode-card mode-mentalcalc locked" id="mode-card-mental_classic" onclick="SEQMentalClassicUI.start()">
-            <span class="mode-lock-badge" id="lock-badge-mental_classic" aria-label="Bloqueado" title="Modo bloqueado"></span>
-            <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/calculo-clasico.webp" alt="" draggable="false"></div>
-            <h3>Cálculo de Fondo</h3>
-            <p id="mode-desc-mental-classic">Una vida, 20 s por operación y una vida extra cada 8 aciertos seguidos. Aquí gana quien aguanta.</p>
-            <p class="mode-req" id="mode-req-mental_classic"></p>
             <p class="mode-subtitle mode-status-open">✓ DISPONIBLE</p>
           </div>
           <div class="mode-card mode-lucidez locked" id="mode-card-lucidez_mental" onclick="openLucidezMentalMode()">
@@ -572,7 +564,7 @@ try {
           <button class="btn btn-secondary" onclick="closeDifficultyMenu()">← Volver</button>
           <h2 id="diff-menu-title" style="margin: 0;">Selecciona Dificultad</h2>
         </div>
-        <div class="modes-grid">
+        <div class="modes-grid" id="diff-grid-survival">
           <div class="mode-card diff-card" data-difficulty="ameba" onclick="selectDifficulty('ameba')">
             <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/ameba.webp" alt="" draggable="false"></div>
             <h3>Nivel Ameba</h3>
@@ -584,6 +576,19 @@ try {
           <div class="mode-card diff-card" data-difficulty="derrame" onclick="selectDifficulty('derrame')">
             <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/derrame.webp" alt="" draggable="false"></div>
             <h3>Derrame Cerebral</h3>
+          </div>
+        </div>
+        <!-- Cálculo: Turbo y Fondo (lo muestra src/ui/mental-menu.js) -->
+        <div class="modes-grid" id="diff-grid-mental" hidden>
+          <div class="mode-card diff-card" data-mental="turbo" onclick="SEQMentalMenu.pick('turbo')">
+            <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/calculo.webp" alt="" draggable="false"></div>
+            <div class="diff-card-text"><h3>Cálculo Turbo</h3>
+            <p>60 s en el reloj, operaciones cada vez peores. Aciertos +4 s, fallos −3 s.</p></div>
+          </div>
+          <div class="mode-card diff-card" data-mental="fondo" onclick="SEQMentalMenu.pick('fondo')">
+            <div class="mode-card-icon has-img" aria-hidden="true"><img class="mode-img" src="assets/modes/calculo-clasico.webp" alt="" draggable="false"></div>
+            <div class="diff-card-text"><h3>Cálculo de Fondo</h3>
+            <p>Una vida y 20 s por operación. Cada 8 aciertos seguidos, una vida extra.</p></div>
           </div>
         </div>
       </div>
@@ -1128,54 +1133,55 @@ try {
 <!-- Fase 2: datos y constantes extraidos a modulos, cargados como scripts
      clasicos (no ES Modules) para conservar el scope global compartido con
      el script principal, sin convertir todavia la app a ES Modules. -->
-<script src="src/data/ui-maps.js?v=208"></script>
-<script src="src/data/questions.js?v=208"></script>
-<script src="src/data/questions-retired.js?v=208"></script>
-<script src="src/data/phrases.js?v=208"></script>
-<script src="src/data/duel-phrases.js?v=208"></script>
-<script src="src/data/lucidez.js?v=208"></script>
-<script src="src/data/medals.js?v=208"></script>
+<script src="src/data/ui-maps.js?v=209"></script>
+<script src="src/data/questions.js?v=209"></script>
+<script src="src/data/questions-retired.js?v=209"></script>
+<script src="src/data/phrases.js?v=209"></script>
+<script src="src/data/duel-phrases.js?v=209"></script>
+<script src="src/data/lucidez.js?v=209"></script>
+<script src="src/data/medals.js?v=209"></script>
 <!-- Prompt 3 — Fase C: sistema de avatares compartido (window.SEQAvatars). Debe
      cargarse antes de src/online/online.js y src/online/duels.js: ambos lo
      consumen en vez de mantener cada uno su propia copia de la lista. -->
-<script src="src/data/avatars.js?v=208"></script>
-<script src="src/share/share-card.js?v=208"></script>
+<script src="src/data/avatars.js?v=209"></script>
+<script src="src/share/share-card.js?v=209"></script>
 
 <!-- Fase 3 (Lote 3A): motor de coincidencia de respuestas extraido a
      src/utils/matching.js, mismo criterio que la Fase 2 (script clasico,
      sin ES Modules todavia). -->
-<script src="src/utils/matching.js?v=208"></script>
-<script src="src/utils/answer-alias.js?v=208"></script>
-<script src="src/utils/lucidez-select.js?v=208"></script>
-<script src="src/state/lucidez-bag.js?v=208"></script>
-<script src="src/utils/encargos-core.js?v=208"></script>
-<script src="src/utils/encargos-progress.js?v=208"></script>
-<script src="src/state/encargos.js?v=208"></script>
-<script src="src/data/encargos-phrases.js?v=208"></script>
-<script src="src/ui/encargos-ui.js?v=208"></script>
-<script src="src/data/named-phrases.js?v=208"></script>
-<script src="src/utils/named-phrases.js?v=208"></script>
-<script src="src/utils/encargos-intro-core.js?v=208"></script>
-<script src="src/data/encargos-intro-phrases.js?v=208"></script>
-<script src="src/ui/encargos-intro.js?v=208"></script>
-<script src="src/data/home-quotes.js?v=208"></script>
-<script src="src/ui/home-quote.js?v=208"></script>
-<script src="src/utils/sir-events.js?v=208"></script>
-<script src="src/ui/sir-events-ui.js?v=208"></script>
-<script src="src/state/sir-events.js?v=208"></script>
-<script src="src/utils/sudden-progression.js?v=208"></script>
-<script src="src/utils/fresh-first.js?v=208"></script>
-<script src="src/utils/mental-calc.js?v=208"></script>
-<script src="src/utils/mental-classic.js?v=208"></script>
-<script src="src/ui/mental-classic-ui.js?v=208"></script>
-<script src="src/ui/level-up.js?v=208"></script>
+<script src="src/utils/matching.js?v=209"></script>
+<script src="src/utils/answer-alias.js?v=209"></script>
+<script src="src/utils/lucidez-select.js?v=209"></script>
+<script src="src/state/lucidez-bag.js?v=209"></script>
+<script src="src/utils/encargos-core.js?v=209"></script>
+<script src="src/utils/encargos-progress.js?v=209"></script>
+<script src="src/state/encargos.js?v=209"></script>
+<script src="src/data/encargos-phrases.js?v=209"></script>
+<script src="src/ui/encargos-ui.js?v=209"></script>
+<script src="src/data/named-phrases.js?v=209"></script>
+<script src="src/utils/named-phrases.js?v=209"></script>
+<script src="src/utils/encargos-intro-core.js?v=209"></script>
+<script src="src/data/encargos-intro-phrases.js?v=209"></script>
+<script src="src/ui/encargos-intro.js?v=209"></script>
+<script src="src/data/home-quotes.js?v=209"></script>
+<script src="src/ui/home-quote.js?v=209"></script>
+<script src="src/utils/sir-events.js?v=209"></script>
+<script src="src/ui/sir-events-ui.js?v=209"></script>
+<script src="src/state/sir-events.js?v=209"></script>
+<script src="src/utils/sudden-progression.js?v=209"></script>
+<script src="src/utils/fresh-first.js?v=209"></script>
+<script src="src/utils/mental-calc.js?v=209"></script>
+<script src="src/utils/mental-classic.js?v=209"></script>
+<script src="src/ui/mental-classic-ui.js?v=209"></script>
+<script src="src/ui/mental-menu.js?v=209"></script>
+<script src="src/ui/level-up.js?v=209"></script>
 
 <!-- Fase 3 (Lote 3B): nucleo algoritmico de Duelo extraido a
      src/utils/duel.js, mismo criterio que el resto (script clasico, sin
      ES Modules todavia). Las dependencias compartidas con otros modos
      (arrangeStandardBlock, generateLucidezMentalOp)
      permanecen en este script principal, sin moverse en este lote. -->
-<script src="src/utils/duel.js?v=208"></script>
+<script src="src/utils/duel.js?v=209"></script>
 
 <!-- Fase 3 (Lote 3C): defaults, migracion y saneamiento del Store
      extraidos a src/utils/store.js, mismo criterio que el resto (script
@@ -1187,50 +1193,50 @@ try {
      getLevelData) y las 8 funciones de persistencia real (loadStore,
      saveStore, exportProgress...) permanecen en este script principal,
      sin moverse en este lote. -->
-<script src="src/utils/store.js?v=208"></script>
+<script src="src/utils/store.js?v=209"></script>
 
 <!-- Fase 4B: fachada de estado de solo lectura (getStore/getCurrentGame),
      mismo criterio que el resto (script clasico, sin ES Modules todavia).
      No copia, no transforma, no cachea. Ver src/state/read-facade.js. -->
-<script src="src/state/read-facade.js?v=208"></script>
+<script src="src/state/read-facade.js?v=209"></script>
 
-<script src="src/utils/streak-xp.js?v=208"></script>
+<script src="src/utils/streak-xp.js?v=209"></script>
 <!-- Fase 4C: helpers minimos de escritura (pushCapped, resetStreak) para
      eliminar 2 duplicaciones reales concretas -- no un sistema de
      mutaciones. Ver src/state/write-helpers.js y CHANGELOG_FASE4C.md. -->
-<script src="src/state/write-helpers.js?v=208"></script>
+<script src="src/state/write-helpers.js?v=209"></script>
 
 <!-- v1.4: capa online (cuenta Google, sincronización, migración, ranking).
      config.js es PÚBLICO (URL del Worker + Client ID de Google); si está
      vacío, la capa online queda desactivada y la app es idéntica a la v1.3.
      online.js solo usa el store/funciones del juego en tiempo de ejecución. -->
-<script src="src/ui/install-app.js?v=208"></script>
-<script src="src/ui/a11y.js?v=208"></script>
-<script src="src/ui/back-nav.js?v=208"></script>
-<script src="src/ui/game-fx.js?v=208"></script>
-<script src="src/ui/last-life.js?v=208"></script>
-<script src="src/ui/hitos.js?v=208"></script>
-<script src="src/ui/achievements.js?v=208"></script>
-<script src="src/ui/stats-extra.js?v=208"></script>
-<script src="src/ui/name-prompt.js?v=208"></script>
-<script src="src/ui/intro.js?v=208"></script>
-<script src="src/ui/mode-badges.js?v=208"></script>
-<script src="src/ui/lucidez-ui.js?v=208"></script>
-<script src="src/ui/sabias.js?v=208"></script>
-<script src="src/ui/icons.js?v=208"></script>
-<script src="src/online/config.js?v=208"></script>
+<script src="src/ui/install-app.js?v=209"></script>
+<script src="src/ui/a11y.js?v=209"></script>
+<script src="src/ui/back-nav.js?v=209"></script>
+<script src="src/ui/game-fx.js?v=209"></script>
+<script src="src/ui/last-life.js?v=209"></script>
+<script src="src/ui/hitos.js?v=209"></script>
+<script src="src/ui/achievements.js?v=209"></script>
+<script src="src/ui/stats-extra.js?v=209"></script>
+<script src="src/ui/name-prompt.js?v=209"></script>
+<script src="src/ui/intro.js?v=209"></script>
+<script src="src/ui/mode-badges.js?v=209"></script>
+<script src="src/ui/lucidez-ui.js?v=209"></script>
+<script src="src/ui/sabias.js?v=209"></script>
+<script src="src/ui/icons.js?v=209"></script>
+<script src="src/online/config.js?v=209"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
-<script src="src/utils/sync-merge.js?v=208"></script>
-<script src="src/online/data-sync.js?v=208"></script>
-<script src="src/online/online.js?v=208"></script>
+<script src="src/utils/sync-merge.js?v=209"></script>
+<script src="src/online/data-sync.js?v=209"></script>
+<script src="src/online/online.js?v=209"></script>
 <!-- v1.5: Amigos, Duelo online y Retos. El servidor decide preguntas, tiempo, aciertos y ganador. -->
-<script src="src/online/duels.js?v=208"></script>
+<script src="src/online/duels.js?v=209"></script>
 <!-- 2.1: Duelo por apuestas, ELO PvP, Rankings y estadísticas de Duelos (solo presentación; decide el servidor) -->
-<script src="src/online/duels-v21.js?v=208"></script>
-<script src="src/online/inbox.js?v=208"></script>
-<script src="src/online/push.js?v=208"></script>
+<script src="src/online/duels-v21.js?v=209"></script>
+<script src="src/online/inbox.js?v=209"></script>
+<script src="src/online/push.js?v=209"></script>
 <!-- Audio: sonidos del juego (src/audio/audio.js) -->
-<script src="src/audio/audio.js?v=208"></script>
+<script src="src/audio/audio.js?v=209"></script>
 
 <script>
 function closeWelcomeModal() {
@@ -2889,13 +2895,7 @@ const LOCKABLE_MODE_UI = [
   },
   {
     cardId: 'mode-card-mental_calc', badgeId: 'lock-badge-mental_calc', descId: 'mode-desc-mental-calc', reqId: 'mode-req-mental_calc',
-    baseDesc: 'Operaciones contra el reloj, cada vez más difíciles. Empiezas con 60 s: aciertos +4 s, fallos −3 s.',
-    reqText: () => 'Requiere el logro «Velocidad Mental»',
-    isUnlocked: s => (s.unlockedMedals || []).includes('tt_15')
-  },
-  {
-    cardId: 'mode-card-mental_classic', badgeId: 'lock-badge-mental_classic', descId: 'mode-desc-mental-classic', reqId: 'mode-req-mental_classic',
-    baseDesc: 'Una vida, 20 s por operación y una vida extra cada 8 aciertos seguidos. Aquí gana quien aguanta.',
+    baseDesc: 'Dos maneras de sufrir con los números. Elige tu nivel de crueldad.',
     reqText: () => 'Requiere el logro «Velocidad Mental»',
     isUnlocked: s => (s.unlockedMedals || []).includes('tt_15')
   },
@@ -3441,6 +3441,8 @@ function openDifficultyMenu(mode) {
   difficultyMenu.classList.add('diff-survival');
 
   difficultyMenu.style.display = 'block';
+  document.getElementById('diff-grid-survival').hidden = false;
+  document.getElementById('diff-grid-mental').hidden = true;
   document.getElementById('diff-menu-title').innerHTML = '<img class="ui-img ui-title-img ui-title-loose" src="assets/modes/suelto/supervivencia.webp" alt="" draggable="false">Supervivencia: Elige Dificultad';
 }
 

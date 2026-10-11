@@ -1,4 +1,4 @@
-/* 2.3: fondos de pantalla ilustrados (tema oscuro) y sello de récord. Solo estilo, sin lógica. */
+/* 2.3: fondos de pantalla ilustrados (tema oscuro), damasco marfil (tema claro), fondo del modo secreto y sello de récord. Solo estilo, sin lógica. */
 :root[data-theme="dark"] #view-home {
   background:
     linear-gradient(180deg, rgba(15,20,36,0) 0, rgba(15,20,36,0) 300px, #0f1424 560px),
@@ -21,3 +21,27 @@
 /* Modo claro: contraste del texto dorado sobre pergamino (el dorado #c9992e solo da 2,2:1 sobre crema). */
 :root:not([data-theme="dark"]) .enc-card:not(.is-great):not(.is-done) .enc-card-xp { color: #7a5c14; }
 :root:not([data-theme="dark"]) .home-small-card .home-small-arrow { color: color-mix(in srgb, var(--hc, #c9992e) 62%, #000); }
+
+/* Modo claro: damasco marfil tonal sobre el pergamino (contraste ~1,1:1: se nota, pero no compite con el texto). */
+:root:not([data-theme="dark"]) .view:not(#view-game) {
+  background-image: url("../assets/ui/fondos/damasco-marfil.svg");
+  background-size: 120px 160px;
+  border-radius: 18px;
+}
+
+/* Modo secreto: el grabado de engranajes y ojos (assets/ui/fondos/secreto.webp) detrás de la partida, en las tres fases.
+   Oscuro: casi entero. Claro: velado con marfil para que solo se adivine. */
+:root { --sec-art: linear-gradient(rgba(251,246,234,.90), rgba(251,246,234,.84)), url("../assets/ui/fondos/secreto.webp"); }
+:root[data-theme="dark"] { --sec-art: linear-gradient(rgba(14,10,28,.12), rgba(14,10,28,.34)), url("../assets/ui/fondos/secreto.webp"); }
+.card.theme-lucidez {
+  background-image: radial-gradient(circle at 0% 0%, rgba(109,40,217,.16), transparent 34%), radial-gradient(circle at 100% 100%, rgba(6,182,212,.10), transparent 38%), var(--sec-art);
+}
+.card.theme-lucidez.lucidez-fase-2 {
+  background-image: radial-gradient(circle at 0% 0%, rgba(109,40,217,.22), transparent 36%), radial-gradient(circle at 100% 100%, rgba(6,182,212,.14), transparent 40%), var(--sec-art);
+}
+.card.theme-lucidez.lucidez-fase-3 {
+  background-image: radial-gradient(circle at 0% 0%, rgba(109,40,217,.30), transparent 40%), radial-gradient(circle at 100% 0%, rgba(6,182,212,.18), transparent 44%), var(--sec-art);
+}
+.card.theme-lucidez, .card.theme-lucidez.lucidez-fase-2, .card.theme-lucidez.lucidez-fase-3 {
+  background-size: auto, auto, cover; background-position: 0 0, 0 0, center top; background-repeat: no-repeat;
+}

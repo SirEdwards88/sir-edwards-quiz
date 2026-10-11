@@ -40,6 +40,7 @@
 
     document.getElementById('game-play-area').style.display = 'none';
     document.getElementById('results-card').style.display = 'block';
+    SEQLevelUp.show();
     var grid = document.getElementById('results-metrics-grid'); if (grid) grid.style.display = '';
     var phrase = document.getElementById('results-phrase-container'); if (phrase) phrase.style.display = '';
 

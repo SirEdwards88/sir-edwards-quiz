@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="160" viewBox="0 0 120 160">
+  <defs>
+    <g id="half">
+      <path d="M0-34C9-27 30-19 30 0C30 14 14 23 0 36" fill="#e7d9b4" fill-opacity=".5" stroke="#cdb986" stroke-opacity=".55" stroke-width="1"/>
+      <path d="M0-25C7-19 20-12 20 0C20 10 9 17 0 26" fill="none" stroke="#cdb986" stroke-opacity=".5" stroke-width=".9"/>
+      <path d="M0-12L8 0L0 12" fill="#d8c597" fill-opacity=".5" stroke="#cdb986" stroke-opacity=".5" stroke-width=".8"/>
+      <path d="M30 0C41-5 48 6 40 11C34 14 30 8 34 6" fill="none" stroke="#cdb986" stroke-opacity=".5" stroke-width="1"/>
+      <path d="M22-14C30-22 40-20 38-12C37-8 32-9 33-12" fill="none" stroke="#cdb986" stroke-opacity=".45" stroke-width=".9"/>
+      <path d="M22 14C30 22 40 20 38 12C37 8 32 9 33 12" fill="none" stroke="#cdb986" stroke-opacity=".45" stroke-width=".9"/>
+      <path d="M0-34C3-38 8-38 8-42C8-44 5-45 4-43" fill="none" stroke="#cdb986" stroke-opacity=".5" stroke-width=".9"/>
+      <path d="M0 36C3 40 8 40 8 44C8 46 5 47 4 45" fill="none" stroke="#cdb986" stroke-opacity=".5" stroke-width=".9"/>
+    </g>
+    <g id="m"><use href="#half"/><use href="#half" transform="scale(-1 1)"/><circle r="1.6" fill="#cdb986" fill-opacity=".55"/></g>
+  </defs>
+  <use href="#m" x="60" y="42"/>
+  <use href="#m" x="0" y="122"/>
+  <use href="#m" x="120" y="122"/>
+</svg>

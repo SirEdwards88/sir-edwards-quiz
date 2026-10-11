@@ -28,15 +28,19 @@ test('la marca del Fondo: más aciertos, y a igualdad más puntos; sin aciertos 
   assert.equal(C.isBetter(4, 999, { correct: 5, score: 1 }), false);
 });
 
-test('cableado: tarjeta pública con candado como Turbo, scripts enlazados y archivos en sw.js', () => {
-  const html = read('index.html'), sw = read('sw.js');
-  assert.match(html, /class="mode-card mode-mentalcalc locked" id="mode-card-mental_classic"/);
-  assert.ok(!/style="display:none;" onclick="SEQMentalClassicUI/.test(html), 'ya no está oculta');
-  assert.match(html, /cardId: 'mode-card-mental_classic'/);
+test('cableado: una sola tarjeta Cálculo con selector Turbo/Fondo, scripts enlazados y archivos en sw.js', () => {
+  const html = read('index.html'), sw = read('sw.js'), menu = read('src/ui/mental-menu.js');
+  assert.match(html, /class="mode-card mode-mentalcalc locked" id="mode-card-mental_calc" onclick="SEQMentalMenu\.open\(\)"/);
+  assert.ok(!html.includes('id="mode-card-mental_classic"') && !html.includes("cardId: 'mode-card-mental_classic'"), 'Fondo ya no tiene tarjeta propia');
+  assert.match(html, /data-mental="turbo" onclick="SEQMentalMenu\.pick\('turbo'\)"/);
+  assert.match(html, /data-mental="fondo" onclick="SEQMentalMenu\.pick\('fondo'\)"/);
+  assert.ok(/SEQMentalClassicUI\.start\(\)/.test(menu) && /startMentalCalcMode\(\)/.test(menu), 'el selector arranca cada modo por su camino');
+  assert.ok(menu.includes("'tt_15'"), 'el selector respeta el desbloqueo');
   assert.ok(!/clasico=/.test(read('src/ui/mental-classic-ui.js')), 'sin bandera de pruebas');
   assert.match(html, /src="src\/utils\/mental-classic\.js\?v=\d+"/);
   assert.match(html, /src="src\/ui\/mental-classic-ui\.js\?v=\d+"/);
-  assert.ok(sw.includes("'./src/utils/mental-classic.js'") && sw.includes("'./src/ui/mental-classic-ui.js'"));
+  assert.match(html, /src="src\/ui\/mental-menu\.js\?v=\d+"/);
+  assert.ok(sw.includes("'./src/utils/mental-classic.js'") && sw.includes("'./src/ui/mental-classic-ui.js'") && sw.includes("'./src/ui/mental-menu.js'"));
 });
 
 test('Estadísticas: la fila del Fondo se crea desde el módulo, solo con récord, y renderStats la invoca', () => {

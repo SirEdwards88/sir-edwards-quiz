@@ -364,3 +364,9 @@ h3 .ui-btn-ico { width: 34px; height: 34px; vertical-align: middle; margin: -4px
 
 /* 2.3: HUD estrecho (320 px) o con 4 vidas en Cálculo de Fondo: la fila de datos pasa a dos líneas en vez de recortarse bajo la píldora de racha. */
 #game-progress-lbl > .hud-data { flex-wrap: wrap; row-gap: 1px; }
+
+/* 2.3: selector Cálculo (Turbo / Fondo): mismas tarjetas que las dificultades, con una línea de descripción. */
+#menu-difficulty-modes .modes-grid[hidden] { display: none !important; }
+#menu-difficulty-modes .mode-card .diff-card-text { flex: 1 1 auto; min-width: 0; text-align: left; }
+#menu-difficulty-modes .mode-card .diff-card-text h3 { text-align: left !important; }
+#menu-difficulty-modes .mode-card .diff-card-text p { text-align: left !important; margin: 4px 0 0 !important; font-size: 12.5px; line-height: 1.35; color: var(--sub); }

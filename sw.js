@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 208;
+const CACHE_VERSION = 209;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -87,6 +87,7 @@ const APP_SHELL = [
   './assets/modes/calculo.webp',
   './assets/character/hat-destello.webp',
   './assets/ui/fondos/cabecera.webp',
+  './assets/ui/fondos/damasco-marfil.svg',
   './assets/ui/fondos/duelo.webp',
   './assets/ui/fondos/encargos.webp',
   './assets/ui/fondos/estadisticas.webp',
@@ -385,6 +386,7 @@ const APP_SHELL = [
   './src/utils/mental-calc.js',
   './src/utils/mental-classic.js',
   './src/ui/mental-classic-ui.js',
+  './src/ui/mental-menu.js',
   './src/ui/level-up.js',
   './src/utils/store.js',
   './src/state/read-facade.js',
@@ -647,6 +649,7 @@ const ASSET_REVS = {
   './assets/ui/escoba.webp': 'bcb8cf24',
   './assets/ui/escudo.webp': '4c0a7fbf',
   './assets/ui/fondos/cabecera.webp': '76ee3e40',
+  './assets/ui/fondos/damasco-marfil.svg': '215adc44',
   './assets/ui/fondos/duelo.webp': '3883e2b3',
   './assets/ui/fondos/encargos.webp': '54f2070c',
   './assets/ui/fondos/estadisticas.webp': 'a64f5f52',

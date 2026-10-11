@@ -94,6 +94,8 @@
     muerte_subita: { nombre: 'Muerte Súbita', icono: 'muerte-subita', reglas: '25 preguntas cada vez más difíciles · un fallo y fuera' },
     contrarreloj: { nombre: 'Contrarreloj', icono: 'contrarreloj', reglas: '60 s · +3 s por acierto, −3 s por fallo' },
     calculo_mental: { nombre: 'Cálculo Turbo', icono: 'calculo', reglas: '60 s de operaciones · +4 s por acierto, −3 s por fallo' },
+    // 2.3: Fondo. El servidor lleva las vidas (est.vidas / est.vidas_max) y el tiempo de cada operación (limite_at / total_ms).
+    calculo_fondo: { nombre: 'Cálculo de Fondo', icono: 'calculo-clasico', reglas: '1 vida · 20 s por operación · vida extra con rachas de 8, 16 y 24' },
     lucidez: { nombre: 'Lucidez Mental', icono: 'secreto', reglas: 'Tres fases y un enigma final, con respuestas escritas' }
   };
   var NIVEL_UI = { ameba: 'Nivel Ameba', humano: 'Humano Promedio', derrame: 'Derrame Cerebral' };
@@ -300,11 +302,13 @@
   // registerOnlineDuelResult) con el ID estable del rival y el marcador, para las estadísticas y los logros
   // de Duelo. 2.0: los Retos también cuentan (los dos son duelos contra alguien); las victorias por
   // abandono o «no jugado», no; la derrota de quien abandona, sí.
+  // 2.3: nivel con el que se entra a la partida, para avisar de la subida en la tarjeta final (src/ui/level-up.js).
+  function markLevel(kind, id) { try { SEQLevelUp.markKey(kind + ':' + id); } catch (e) {} }
   function recordResult(d) {
     if (!d || (S.screen !== 'duel' && S.screen !== 'reto')) return;
     var kind = S.screen;
-    if (kind === 'duel' && d.estado === 'en_curso') markPlaying(kind, S.id);
-    if (kind === 'reto' && d.estado === 'aceptado' && d.yo && d.yo.empezado) markPlaying(kind, S.id);
+    if (kind === 'duel' && d.estado === 'en_curso') { markPlaying(kind, S.id); markLevel(kind, S.id); }
+    if (kind === 'reto' && d.estado === 'aceptado' && d.yo && d.yo.empezado) { markPlaying(kind, S.id); markLevel(kind, S.id); }
     if (d.estado === 'completado') { recordDuel(d, S.id, kind); forgetPlaying(kind, S.id); }
   }
   // Partidas que este dispositivo ha visto «en juego» (lo guarda index.html: duels.js no toca el almacenamiento).
@@ -725,7 +729,7 @@
     // El icono del modo hace de título (como en los Retos y en los modos normales): sin espadas ni texto.
     if (kind === 'duel') lbl = '<span class="seq-d-hud-mode" title="Duelo clásico"><img class="seq-ico seq-d-mode-ico" src="assets/duelos/modos/classic.webp" alt="" draggable="false"></span>' + (num(idx) + 1) + '/20';
     else {
-      var m = retoMode(d), clock = d.modo === 'contrarreloj' || d.modo === 'calculo_mental';
+      var m = retoMode(d), clock = d.modo === 'contrarreloj' || d.modo === 'calculo_mental' || d.modo === 'calculo_fondo';
       // Cabecera: el modo y, según el modo, por qué pregunta vas (x/total), la fase (Lucidez) o los aciertos (modos con reloj).
       // El icono del modo hace de título (el nombre ya no cabe en un móvil junto al reloj y las vidas).
       lbl = '<span class="seq-d-hud-mode" title="' + esc(m.nombre) + '">' + modeIco(m) + '</span>';
@@ -808,7 +812,7 @@
   // 2.0: XP que concede el servidor por esta partida (10 por acierto; Cálculo Mental no da; nivel máximo no suma).
   function xpFor(kind, d, aciertos) {
     try {
-      if (kind === 'reto' && d.modo === 'calculo_mental') return 0;
+      if (kind === 'reto' && (d.modo === 'calculo_mental' || d.modo === 'calculo_fondo')) return 0;
       if (window.SEQStreakXp && SEQStreakXp.atMaxLevel()) return 0;
     } catch (e) {}
     return 10 * Math.max(0, num(aciertos));
@@ -820,6 +824,8 @@
     if (!xp || xpSynced[k]) return;
     xpSynced[k] = true;
     try { if (window.SEQOnline && SEQOnline.syncSoon) SEQOnline.syncSoon(); } catch (e) {}
+    // La XP llega a este dispositivo tras la sincronización: se repinta la tarjeta final por si ha subido el nivel.
+    [4000, 9000].forEach(function (ms) { setTimeout(function () { if (S.screen === kind && S.id === (d && d.id) && S.data && S.data.estado === 'completado') render(); }, ms); });
   }
   function xpChipHtml(xp) {
     return xp > 0 ? '<span class="result-chip"><span class="result-chip-value">+' + xp + '</span><span class="result-chip-label">XP</span></span>' : '';
@@ -866,6 +872,7 @@
     var h = '<div class="results-card seq-d-results seq-d-final duel-result-box ' + cls + '" data-tier="' + (res === 'win' ? 'oro' : res === 'loss' ? 'derrota' : 'azul') + '">' +
       '<div class="results-character show char-' + (res === 'draw' ? 'neutral' : charKey) + '" aria-hidden="true"><picture><source srcset="assets/character/' + charKey + '.webp" type="image/webp"><img src="assets/character/' + charKey + '.webp" alt="" draggable="false"></picture></div>' +
       '<h3 class="seq-d-res-title">' + esc(title) + '</h3>' +
+      ((xpGain > 0 && window.SEQLevelUp) ? SEQLevelUp.htmlFor(kind + ':' + (S.id || d.id)) : '') +
       '<div class="results-metrics-grid">' + side(avatar(me.avatar), 'Tú', mine, 'seq-d-mbox-me') + side(p.avatar, p.name, his, 'seq-d-mbox-rival') + '</div>' +
       '<div class="results-phrase-container ' + (res === 'win' ? 'tone-win' : res === 'loss' ? 'tone-fail' : 'tone-bien') + '">' +
       '<div class="results-mood-icon has-img"><img class="mood-img" src="' + moodSrc + '" alt="" draggable="false"></div>' +

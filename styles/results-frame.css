@@ -49,3 +49,5 @@
 @keyframes luRot { to { transform: rotate(360deg); } }
 @keyframes luIn { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) { .lvlup-block, .lvlup-block .lu-rays { animation: none; } }
+
+.lvlup-block.lu-still, .lvlup-block.lu-still .lu-rays { animation: none; }
