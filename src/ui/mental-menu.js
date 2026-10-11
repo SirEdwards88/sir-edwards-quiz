@@ -8,7 +8,7 @@
 
   function open() {
     if (!unlocked()) {
-      showInfoToast('Cálculo sigue cerrado. Antes necesitas el logro «Velocidad Mental». Ya llegarás, o no.', 'candado');
+      showInfoToast('Cálculo mental sigue cerrado. Antes necesitas el logro «Velocidad Mental». Ya llegarás, o no.', 'candado');
       return;
     }
     selectedPendingMode = 'mental';
