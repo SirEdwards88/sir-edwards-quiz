@@ -97,7 +97,7 @@
     box.style.display = '';
     var v = document.getElementById('best-mentalclassic');
     var n = best ? best.correct : 0;
-    if (v) v.textContent = n + (n === 1 ? ' acierto' : ' aciertos');
+    if (v) v.textContent = String(n);
   }
 
   window.SEQMentalClassicUI = { bestOf: bestOf, isClassic: isClassic, start: start, finish: finish, livesHtml: livesHtml, renderStat: renderStat };

@@ -377,3 +377,9 @@ h3 .ui-btn-ico { width: 34px; height: 34px; vertical-align: middle; margin: -4px
 #diff-menu-title { font-size: clamp(17px, 5.6vw, 24px) !important; line-height: 1.1; }
 #diff-menu-title .ui-title-img { width: 34px; height: 34px; margin-right: 4px; }
 @media (max-width: 359px) { #diff-menu-title .ui-title-img { display: none; } }
+
+/* Récords personales: cuadrícula pareja (mismas alturas) y «Preguntas dominadas» a todo el ancho. */
+@media (min-width: 340px) { #extra-stats { grid-template-columns: repeat(2, 1fr) !important; grid-auto-rows: 1fr; } }
+#extra-stats .stat-extra { align-items: center; }
+#extra-stats .stat-extra.stat-master { grid-column: 1 / -1; }
+#extra-stats .stat-extra.stat-master { justify-content: center; }
