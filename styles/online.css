@@ -813,4 +813,4 @@
 .seq-d-off .seq-pl-sub { font-style: italic; }
 
 /* Estado vacío con ilustración (2.3) */
-.seq-empty-img { display: block; width: min(60%, 220px); height: auto; margin: 6px auto 12px; border-radius: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.35); }
+.seq-empty-img { display: block; width: min(56%, 200px); height: auto; margin: 8px auto 10px; filter: drop-shadow(0 6px 10px rgba(0,0,0,.4)); }

@@ -197,7 +197,7 @@
     // Duelo en directo en marcha (p. ej. tras recargar): aviso arriba del todo, porque a los 60 s sin volver se pierde.
     var live = L.duels ? L.duels.filter(function (d) { return d.estado === 'en_curso'; })[0] : null;
     var h = live ? '<div class="mode-card seq-d-card seq-d-live" role="button" tabindex="0" onclick="SEQDuels.open(\'duel\',\'' + safeId(live.id) + '\')"><div class="duel-action-text"><h3>Un duelo te espera</h3><p>Sir Edwards no tiene todo el día. Vuelve antes de que te declaren desertor.</p><p class="mode-subtitle seq-d-pending">● VOLVER AL DUELO</p></div></div>' : '';
-    h += navigator.onLine === false ? '<p class="stats-section-sub seq-d-offline">' + ico('nube') + 'Sin conexión: los duelos y los retos necesitan Internet.</p>' : '';
+    h += navigator.onLine === false ? emptyImg('sin-conexion') + '<p class="stats-section-sub seq-d-offline">' + ico('nube') + 'Sin conexión: los duelos y los retos necesitan Internet.</p>' : '';
     if (f.classic_duel) h += hubCard('duel', '<img class="mode-img" src="assets/modes/duelo.webp" alt="" draggable="false">', 'Duelo online', 'Juega un duelo en directo contra un amigo.', "SEQDuels.open('duels')", pending(du, 'PENDIENTE', 'PENDIENTES'));
     if (f.async_challenges) h += hubCard('retos', '<img class="mode-img" src="assets/modes/retos.webp" alt="" draggable="false">', 'Retos', 'Elige el modo y reta a un amigo; cada uno juega cuando pueda.', "SEQDuels.open('retos')", pending(re, 'PENDIENTE', 'PENDIENTES'));
     h += hubCard('amigos', '<img class="mode-img" src="assets/modes/amigos.webp" alt="" draggable="false">', 'Amigos', 'Añade amigos y rétalos desde tu lista.', "SEQDuels.open('friends')", pending(fr, 'SOLICITUD', 'SOLICITUDES'));
@@ -608,17 +608,19 @@
     if (!list) return h + '<p class="stats-section-sub">Cargando…</p>';
     var act_ = list.filter(function (x) { return ['pendiente', 'aceptado', 'en_curso'].indexOf(x.estado) >= 0; });
     var hist = list.filter(function (x) { return act_.indexOf(x) < 0; });
-    h += '<h3 class="seq-d-h3">Activos</h3>' + (act_.length ? '<div class="history-list">' + act_.map(function (x) { return rowFor(kind, x); }).join('') + '</div>' : '<p class="stats-section-sub">No tienes ninguno activo.</p>');
-    h += '<h3 class="seq-d-h3">Historial</h3>' + (hist.length ? '<div class="history-list">' + hist.map(function (x) { return rowFor(kind, x); }).join('') + '</div>' : '<p class="stats-section-sub">Todavía no hay historial.</p>');
+    h += '<h3 class="seq-d-h3">Activos</h3>' + (act_.length ? '<div class="history-list">' + act_.map(function (x) { return rowFor(kind, x); }).join('') + '</div>' : emptyImg('vacio-retos') + '<p class="stats-section-sub">No tienes ninguno activo.</p>');
+    h += '<h3 class="seq-d-h3">Historial</h3>' + (hist.length ? '<div class="history-list">' + hist.map(function (x) { return rowFor(kind, x); }).join('') + '</div>' : emptyImg('vacio-general') + '<p class="stats-section-sub">Todavía no hay historial.</p>');
     return h;
   }
+  // Ilustración de estado vacío (2.3): objetos recortados, sin marco.
+  function emptyImg(n) { return '<img class="seq-empty-img" src="assets/ui/escenas/' + n + '.webp" alt="" draggable="false">'; }
   function renderPick() {
     var fl = S.lists.friends;
     var h = header('Elige a quién retar', S.pickKind === 'duel' ? (S.pickModo === 'stakes' ? 'Duelo por apuestas' : 'Duelo clásico') : 'Reto', backToList);
     if (S.pickKind === 'duel') h += '<p class="stats-section-sub">Tu amigo tendrá 60 s para aceptar. Luego los dos pulsáis «Listo» y empieza.</p>';
     else h += '<p class="stats-section-sub">Tu amigo tiene 3 días para aceptar y jugar. Cada uno juega cuando pueda. Después eliges el modo.</p>';
     if (!fl) return h + '<p class="stats-section-sub">Cargando…</p>';
-    if (!fl.friends.length) return h + '<img class="seq-empty-img" src="assets/ui/escenas/vacio-amigos.webp" alt="" draggable="false"><p class="stats-section-sub">Aún no tienes amigos.</p><button class="btn btn-secondary" onclick="SEQDuels.open(\'friends\')">' + ico('amigos') + 'Añadir amigos</button>';
+    if (!fl.friends.length) return h + '' + emptyImg('vacio-amigos') + '<p class="stats-section-sub">Aún no tienes amigos.</p><button class="btn btn-secondary" onclick="SEQDuels.open(\'friends\')">' + ico('amigos') + 'Añadir amigos</button>';
     if (S.pickKind === 'duel') {
       // Duelo en directo: los dos tienen que estar a la vez. Solo se puede retar a quien está en línea ahora mismo.
       var on = fl.friends.filter(isOnline), off = fl.friends.filter(function (f) { return !isOnline(f); });
@@ -961,7 +963,7 @@
       else if (S.screen === 'reto') h = renderReto();
       else if (S.screen === 'logros') h = renderLogros();
       else if (S.screen === 'rankings') h = window.SEQDuels21 ? SEQDuels21.renderRankings() : '';
-    } catch (e) { S.shown = null; h = header('Duelos', '', back) + '<p class="stats-section-sub">No se pudo mostrar esta pantalla.</p>'; }
+    } catch (e) { S.shown = null; h = header('Duelos', '', back) + emptyImg('error') + '<p class="stats-section-sub">No se pudo mostrar esta pantalla.</p>'; }
     // Un repintado (al llegar datos del servidor) no debe borrar lo que el
     // usuario está escribiendo en la búsqueda ni quitarle el foco.
     var d = S.data, playing = !!(d && ((S.screen === 'duel' && d.estado === 'en_curso' && !(d.yo && d.yo.completado)) ||

@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 196;
+const CACHE_VERSION = 198;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -84,6 +84,11 @@ const APP_SHELL = [
   './assets/modes/muerte-subita.webp',
   './assets/modes/contrarreloj.webp',
   './assets/modes/calculo.webp',
+  './assets/ui/escenas/carga.webp',
+  './assets/ui/escenas/error.webp',
+  './assets/ui/escenas/sin-conexion.webp',
+  './assets/ui/escenas/vacio-general.webp',
+  './assets/ui/escenas/vacio-retos.webp',
   './assets/ui/tarjeta/cinta-azul.webp',
   './assets/ui/tarjeta/cinta-derrota.webp',
   './assets/ui/tarjeta/cinta-oro.webp',
@@ -607,7 +612,12 @@ const ASSET_REVS = {
   './assets/ui/derrota.webp': '209581d4',
   './assets/ui/desastre.webp': 'dddd27e9',
   './assets/ui/diamante.webp': '7ddddd27',
-  './assets/ui/escenas/vacio-amigos.webp': '319fa5b4',
+  './assets/ui/escenas/carga.webp': '16bc9a4b',
+  './assets/ui/escenas/error.webp': '224f56ac',
+  './assets/ui/escenas/sin-conexion.webp': '9076a1a8',
+  './assets/ui/escenas/vacio-amigos.webp': 'e9fc13d9',
+  './assets/ui/escenas/vacio-general.webp': '19c959cc',
+  './assets/ui/escenas/vacio-retos.webp': '2cbbaf58',
   './assets/ui/escoba.webp': 'bcb8cf24',
   './assets/ui/escudo.webp': '4c0a7fbf',
   './assets/ui/fragmento.webp': '9ee6dbe6',
@@ -638,7 +648,7 @@ const ASSET_REVS = {
   './assets/ui/regla-calculo.webp': '968d898c',
   './assets/ui/reloj-derretido.webp': 'a501d0d4',
   './assets/ui/revancha.webp': 'c7fc74b3',
-  './assets/ui/sombrero-aplastado.webp': '1d3f5b12',
+  './assets/ui/sombrero-aplastado.webp': 'bd1a6ce9',
   './assets/ui/sombrero-laurel.webp': '1d238ebe',
   './assets/ui/sombrero-mediocre.webp': '02513cbd',
   './assets/ui/sombrero-saludo.webp': 'beada3bd',
