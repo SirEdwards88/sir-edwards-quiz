@@ -1,4 +1,4 @@
-// SirEdwards Quiz — Cálculo Clásico (en pruebas): arranque, tarjeta oculta y final de partida.
+// SirEdwards Quiz — Cálculo de Fondo (en pruebas): arranque, tarjeta oculta y final de partida.
 // El modo reutiliza el bucle de Cálculo Mental de index.html (currentGame.mode === 'mental_calc' con variant 'classic');
 // aquí viven lo que es solo suyo: la tarjeta del menú (oculta salvo que el propietario la active), la comprobación
 // de la variante y la tarjeta final, que NO toca estadísticas, récords de Turbo, logros, encargos ni ránkings.
@@ -45,7 +45,7 @@
     var totalQ = g.total > 0 ? g.total : 1;
     var accuracy = Math.round((g.correct / totalQ) * 100);
 
-    // Marca local exclusiva del Clásico: no se mezcla con la de Turbo, no sube a ningún ránking.
+    // Marca local exclusiva del Fondo: no se mezcla con la de Turbo, no sube a ningún ránking.
     var best = store.mentalClassicBest || null;
     var isRecord = SEQMentalClassic.isBetter(g.correct, g.score, best);
     if (isRecord) store.mentalClassicBest = { correct: g.correct, score: g.score };
@@ -62,7 +62,7 @@
     var grid = document.getElementById('results-metrics-grid'); if (grid) grid.style.display = '';
     var phrase = document.getElementById('results-phrase-container'); if (phrase) phrase.style.display = '';
 
-    document.getElementById('res-main-title').textContent = 'CÁLCULO CLÁSICO';
+    document.getElementById('res-main-title').textContent = 'CÁLCULO DE FONDO';
     document.getElementById('res-score-text').textContent = String(g.correct);
     document.getElementById('res-score-label').textContent = g.correct === 1 ? 'Acierto' : 'Aciertos';
     document.getElementById('res-percentage-text').textContent = String(g.score);
@@ -86,7 +86,7 @@
     if (r.category !== 'mal' && !recordSoundPlayed) playSound('win');
   }
 
-  // Estadísticas > Récords personales: fila propia del Clásico (aciertos, no puntos). No existe hasta que se juega una
+  // Estadísticas > Récords personales: fila propia del Fondo (aciertos, no puntos). No existe hasta que se juega una
   // partida con récord, así no delata el modo durante las pruebas. Se crea aquí para no crecer index.html.
   function renderStat() {
     var best = store && store.mentalClassicBest;
@@ -99,7 +99,7 @@
       box.id = 'best-mentalclassic-box';
       box.className = 'stat-extra stat-mentalcalc';
       box.innerHTML = '<span class="stat-extra-icon has-img" aria-hidden="true"><img class="mode-img mode-img-loose" src="assets/modes/suelto/calculo-clasico.webp" alt="" draggable="false"></span>' +
-        '<div><span class="stat-extra-label">Mejor Cálculo Clásico</span><span class="stat-extra-value" id="best-mentalclassic"></span></div>';
+        '<div><span class="stat-extra-label">Mejor Cálculo de Fondo</span><span class="stat-extra-value" id="best-mentalclassic"></span></div>';
       turbo.parentNode.insertBefore(box, turbo.nextSibling);
     }
     box.style.display = '';

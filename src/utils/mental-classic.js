@@ -1,4 +1,4 @@
-// SirEdwards Quiz — Cálculo Clásico (en pruebas): reglas puras del modo.
+// SirEdwards Quiz — Cálculo de Fondo (en pruebas): reglas puras del modo.
 // Una vida y 20 s por operación; con rachas de 8, 16 y 24 aciertos seguidos se gana una vida extra.
 // Las operaciones y su dificultad las genera src/utils/mental-calc.js, igual que en Turbo (el Cálculo Mental de siempre).
 // Script clásico (scope global), sin dependencias. La interfaz y el final de partida viven en src/ui/mental-classic-ui.js.

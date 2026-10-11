@@ -1,4 +1,4 @@
-// Cálculo Clásico (en pruebas): reglas puras y cableado mínimo en index.html / sw.js.
+// Cálculo de Fondo (en pruebas): reglas puras y cableado mínimo en index.html / sw.js.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -19,7 +19,7 @@ test('una vida, 20 s por operación y vida extra con rachas de 8, 16 y 24', () =
   assert.equal(C.lifeGain(8, 4), 0, 'nunca por encima del máximo');
 });
 
-test('la marca del Clásico: más aciertos, y a igualdad más puntos; sin aciertos no hay récord', () => {
+test('la marca del Fondo: más aciertos, y a igualdad más puntos; sin aciertos no hay récord', () => {
   assert.equal(C.isBetter(0, 50, null), false);
   assert.equal(C.isBetter(5, 100, null), true);
   assert.equal(C.isBetter(6, 10, { correct: 5, score: 999 }), true);
@@ -36,7 +36,7 @@ test('cableado: tarjeta oculta por defecto, scripts enlazados y archivos en sw.j
   assert.ok(sw.includes("'./src/utils/mental-classic.js'") && sw.includes("'./src/ui/mental-classic-ui.js'"));
 });
 
-test('Estadísticas: la fila del Clásico se crea desde el módulo, solo con récord, y renderStats la invoca', () => {
+test('Estadísticas: la fila del Fondo se crea desde el módulo, solo con récord, y renderStats la invoca', () => {
   const ui = read('src/ui/mental-classic-ui.js'), html = read('index.html');
   assert.ok(ui.includes('best-mentalclassic-box') && ui.includes('renderStat: renderStat'));
   assert.ok(!html.includes('best-mentalclassic'), 'index.html no crece con la fila: la crea el módulo');
@@ -44,12 +44,12 @@ test('Estadísticas: la fila del Clásico se crea desde el módulo, solo con ré
   assert.ok(rs.indexOf('SEQMentalClassicUI.renderStat()') > 0 && rs.indexOf('SEQMentalClassicUI.renderStat()') < rs.indexOf('best-lucidez-box'));
 });
 
-test('el final del Clásico no toca estadísticas de Turbo ni el contador de partidas', () => {
+test('el final del Fondo no toca estadísticas de Turbo ni el contador de partidas', () => {
   const ui = read('src/ui/mental-classic-ui.js');
   for (const k of ['gamesPlayed', 'bestMentalCalcScore', 'bestMentalCalcCorrect', 'mentalCalcBestStreak', 'mentalCalcTotalCorrect', 'encargosOnGameEnd', 'checkMedalsAndGetNew', 'gameHistory']) {
     assert.ok(!ui.includes(k), 'mental-classic-ui.js no debe tocar ' + k);
   }
   const html = read('index.html');
   const fg = html.slice(html.indexOf('function finishGame('));
-  assert.ok(fg.indexOf('isMentalClassicGame()) { SEQMentalClassicUI.finish()') > 0 && fg.indexOf('isMentalClassicGame()) { SEQMentalClassicUI.finish()') < fg.indexOf('store.gamesPlayed++'), 'el Clásico sale de finishGame antes de contar la partida');
+  assert.ok(fg.indexOf('isMentalClassicGame()) { SEQMentalClassicUI.finish()') > 0 && fg.indexOf('isMentalClassicGame()) { SEQMentalClassicUI.finish()') < fg.indexOf('store.gamesPlayed++'), 'el Fondo sale de finishGame antes de contar la partida');
 });
