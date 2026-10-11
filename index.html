@@ -56,6 +56,7 @@
 <!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
 <link rel="stylesheet" href="styles/online.css?v=201">
 <link rel="stylesheet" href="styles/results-frame.css?v=201">
+<link rel="stylesheet" href="styles/visual-2-3.css?v=201">
 <link rel="stylesheet" href="styles/encargos.css?v=201">
 <link rel="stylesheet" href="styles/encargos-intro.css?v=201">
 <link rel="stylesheet" href="styles/sir-events.css?v=201">
@@ -1890,7 +1891,7 @@ function renderRecordBadge(text, tone) {
     recordSoundPlayed = false;
     return;
   }
-  box.innerHTML = `<span class="stamp-badge tone-${tone || 'gold'}">${text}</span>`;
+  box.innerHTML = `<img class="rec-seal" src="assets/ui/tarjeta/sello-record.webp" alt="" draggable="false"><span class="stamp-badge tone-${tone || 'gold'}">${text}</span>`;
   box.classList.add('show');
   // Nuevo récord: suena la campanilla de récord (y finishGame omite entonces la fanfarra de siempre).
   recordSoundPlayed = true;
