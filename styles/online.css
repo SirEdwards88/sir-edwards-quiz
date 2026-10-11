@@ -347,7 +347,7 @@
 #seq-duel-root .seq-d-results { position: relative; isolation: isolate; }
 #seq-duel-root .seq-d-results::before {
   content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; border-radius: inherit;
-  background: url(../assets/ui/marca-duelo.webp) center / min(74%, 300px) auto no-repeat; opacity: .2;
+  background: url(../assets/ui/marca-duelo.webp) center / min(74%, 300px) auto no-repeat; opacity: .16;
 }
 [data-theme="dark"] #seq-duel-root .seq-d-results::before { opacity: .16; }
 
@@ -811,3 +811,6 @@
 .seq-d-on { color: #5fd08b; font-weight: 700; }
 .seq-d-off { opacity: .5; cursor: default; filter: grayscale(.6); }
 .seq-d-off .seq-pl-sub { font-style: italic; }
+
+/* Estado vacío con ilustración (2.3) */
+.seq-empty-img { display: block; width: min(60%, 220px); height: auto; margin: 6px auto 12px; border-radius: 20px; box-shadow: 0 8px 24px rgba(0,0,0,.35); }

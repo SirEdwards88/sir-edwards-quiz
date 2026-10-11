@@ -98,7 +98,7 @@
       box = document.createElement('div');
       box.id = 'best-mentalclassic-box';
       box.className = 'stat-extra stat-mentalcalc';
-      box.innerHTML = '<span class="stat-extra-icon has-img" aria-hidden="true"><img class="mode-img mode-img-loose" src="assets/modes/suelto/calculo.webp" alt="" draggable="false"></span>' +
+      box.innerHTML = '<span class="stat-extra-icon has-img" aria-hidden="true"><img class="mode-img mode-img-loose" src="assets/modes/suelto/calculo-clasico.webp" alt="" draggable="false"></span>' +
         '<div><span class="stat-extra-label">Mejor Cálculo Clásico</span><span class="stat-extra-value" id="best-mentalclassic"></span></div>';
       turbo.parentNode.insertBefore(box, turbo.nextSibling);
     }
