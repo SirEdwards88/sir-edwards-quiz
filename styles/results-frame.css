@@ -38,3 +38,14 @@
 }
 #results-card .metric-box, .seq-d-results .metric-box { background: var(--card) !important; }
 #results-card .metrics-grid, #results-card .results-metrics-grid, .seq-d-results .results-metrics-grid { background: rgba(201,153,46,.18) !important; border-color: rgba(201,153,46,.3) !important; }
+
+/* Subida de nivel (src/ui/level-up.js) */
+.lvlup-block { position: relative; height: 176px; margin: 0 0 10px; text-align: center; animation: luIn .55s var(--ease-decelerate, ease-out) both; }
+.lvlup-block .lu-rays { position: absolute; left: 50%; top: -6px; width: 190px; margin-left: -95px; opacity: .6; animation: luRot 30s linear infinite; pointer-events: none; }
+.lvlup-block .lu-badge { position: absolute; left: 50%; top: 10px; width: 104px; margin-left: -52px; filter: drop-shadow(0 6px 10px rgba(0,0,0,.5)); }
+.lvlup-block .lu-ribbon { position: absolute; left: 50%; top: 98px; width: 220px; margin-left: -110px; }
+.lvlup-block .lu-ribbon img { width: 100%; display: block; }
+.lvlup-block .lu-ribbon span { position: absolute; left: 0; right: 0; top: 33%; font-family: inherit; font-weight: 800; font-size: 13px; line-height: 1; letter-spacing: 2px; color: #f6e6b8; text-shadow: 0 1px 2px #000; }
+@keyframes luRot { to { transform: rotate(360deg); } }
+@keyframes luIn { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .lvlup-block, .lvlup-block .lu-rays { animation: none; } }

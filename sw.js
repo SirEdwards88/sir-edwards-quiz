@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 198;
+const CACHE_VERSION = 200;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -84,6 +84,18 @@ const APP_SHELL = [
   './assets/modes/muerte-subita.webp',
   './assets/modes/contrarreloj.webp',
   './assets/modes/calculo.webp',
+  './assets/ui/logros/candado.webp',
+  './assets/ui/logros/sello-conseguido.webp',
+  './assets/ui/logros/sello-secreto.webp',
+  './assets/ui/logros/silueta-secreta.webp',
+  './assets/ui/nivel/cinta-nivel.webp',
+  './assets/ui/nivel/confeti.webp',
+  './assets/ui/nivel/insignia-bronce.webp',
+  './assets/ui/nivel/insignia-diamante.webp',
+  './assets/ui/nivel/insignia-oro.webp',
+  './assets/ui/nivel/insignia-plata.webp',
+  './assets/ui/nivel/insignia-rubi.webp',
+  './assets/ui/nivel/rayos.webp',
   './assets/ui/escenas/carga.webp',
   './assets/ui/escenas/error.webp',
   './assets/ui/escenas/sin-conexion.webp',
@@ -361,6 +373,7 @@ const APP_SHELL = [
   './src/utils/mental-calc.js',
   './src/utils/mental-classic.js',
   './src/ui/mental-classic-ui.js',
+  './src/ui/level-up.js',
   './src/utils/store.js',
   './src/state/read-facade.js',
   './src/utils/streak-xp.js',
@@ -633,10 +646,22 @@ const ASSET_REVS = {
   './assets/ui/libro-vela.webp': '37b490f3',
   './assets/ui/libro.webp': '486b4819',
   './assets/ui/liebre.webp': '6781ca8d',
+  './assets/ui/logros/candado.webp': '6ea1573a',
+  './assets/ui/logros/sello-conseguido.webp': '92112121',
+  './assets/ui/logros/sello-secreto.webp': '90114283',
+  './assets/ui/logros/silueta-secreta.webp': '045b4b95',
   './assets/ui/marca-duelo.webp': '329a4844',
   './assets/ui/medalla.webp': '67b76085',
   './assets/ui/mediocre.webp': 'fcf4d284',
   './assets/ui/movil.webp': 'cc6ab1aa',
+  './assets/ui/nivel/cinta-nivel.webp': 'cbf35898',
+  './assets/ui/nivel/confeti.webp': '36473c45',
+  './assets/ui/nivel/insignia-bronce.webp': 'df3ad9fa',
+  './assets/ui/nivel/insignia-diamante.webp': '55ceab53',
+  './assets/ui/nivel/insignia-oro.webp': 'aafc1757',
+  './assets/ui/nivel/insignia-plata.webp': '96d96a8b',
+  './assets/ui/nivel/insignia-rubi.webp': '25f16e7e',
+  './assets/ui/nivel/rayos.webp': 'e94f846a',
   './assets/ui/nube.webp': '0848c96b',
   './assets/ui/oro.webp': 'e6d1e643',
   './assets/ui/perfecto.webp': 'c82114e6',

@@ -96,7 +96,7 @@
   function row(m, s, unlocked) {
     var frag = false; try { frag = FRAGMENT_MEDAL_IDS.indexOf(m.id) !== -1; } catch (e) {}
     if (m.secret && !unlocked) {
-      return '<div class="ach-row is-secret"><div class="ach-ico"><span class="ach-secret-seal" aria-hidden="true">?</span></div><div class="ach-body"><div class="ach-title">???</div>' +
+      return '<div class="ach-row is-secret"><div class="ach-ico"><img class="ach-secret-img" src="assets/ui/logros/silueta-secreta.webp" alt="" draggable="false"></div><div class="ach-body"><div class="ach-title">???</div>' +
         '<div class="ach-desc">Logro secreto</div></div></div>';
     }
     var prog = '';
@@ -108,7 +108,7 @@
     var avTag = av ? '<span class="ach-frag ach-avatar' + (unlocked ? ' got' : '') + '" title="' + (unlocked ? 'Avatar desbloqueado' : 'Desbloquea un avatar') + '">Avatar</span>' : '';
     var tag = (frag ? '<span class="ach-frag' + (unlocked ? ' got' : '') + '" title="' + (unlocked ? 'Fragmento obtenido' : 'Otorga un Fragmento de Mente') + '"><img src="assets/ui/fragmento.webp" alt="" draggable="false"></span>' : '') + avTag;
     return '<div class="ach-row ' + (unlocked ? 'is-done' : 'is-locked') + '">' +
-      '<div class="ach-ico has-img">' + iconHTML(m) + (unlocked ? '<span class="ach-check" aria-hidden="true">✓</span>' : '') + '</div>' +
+      '<div class="ach-ico-wrap"><div class="ach-ico has-img">' + iconHTML(m) + (unlocked ? '<span class="ach-check" aria-hidden="true">✓</span>' : '') + '</div>' + (unlocked ? '' : '<img class="ach-lock" src="assets/ui/logros/candado.webp" alt="" draggable="false">') + '</div>' +
       '<div class="ach-body"><div class="ach-title">' + esc(m.title) + tag + '</div><div class="ach-desc">' + esc(m.desc) + '</div>' + prog + '</div></div>';
   }
 
