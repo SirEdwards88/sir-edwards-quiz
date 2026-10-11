@@ -861,7 +861,7 @@
     var eloHtml = kind === 'duel' && r.elo && window.SEQDuels21 ? SEQDuels21.eloBlock(r.elo) : '';
     var chips = '<div class="results-mode-chips show">' + (res === 'draw' ? '' : '<span class="result-chip"><span class="result-chip-icon">' + ico(res === 'win' ? 'copa' : 'duelo') + '</span><span class="result-chip-value">' + (res === 'win' ? '+' : '−') + diff + '</span><span class="result-chip-label">' + diffWord + '</span></span>') + xpChipHtml(xpGain) + '</div>';
     var stamp = ({ win: ['VICTORIA', 'gold'], loss: ['DERROTA', 'fail'], draw: ['EMPATE', 'ok'] })[res];
-    var h = '<div class="results-card seq-d-results seq-d-final duel-result-box ' + cls + '">' +
+    var h = '<div class="results-card seq-d-results seq-d-final duel-result-box ' + cls + '" data-tier="' + (res === 'win' ? 'oro' : res === 'loss' ? 'derrota' : 'azul') + '">' +
       '<div class="results-character show char-' + (res === 'draw' ? 'neutral' : charKey) + '" aria-hidden="true"><picture><source srcset="assets/character/' + charKey + '.webp" type="image/webp"><img src="assets/character/' + charKey + '.webp" alt="" draggable="false"></picture></div>' +
       '<h3 class="seq-d-res-title">' + esc(title) + '</h3>' +
       '<div class="results-metrics-grid">' + side(avatar(me.avatar), 'Tú', mine, 'seq-d-mbox-me') + side(p.avatar, p.name, his, 'seq-d-mbox-rival') + '</div>' +

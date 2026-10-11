@@ -1,0 +1,40 @@
+/* Tarjeta final con marco, fondo y cinta según el resultado (2.3).
+   Se aplica a #results-card y a la tarjeta final de Duelo/Reto. El tono llega en data-tier:
+   oro (perfecto/victoria), azul (bien), plata (mediocre), derrota, secreto (Lucidez). Sin tier = oro. */
+#results-card.results-card, .seq-d-results.results-card {
+  --rc-fondo: url("../assets/ui/tarjeta/fondo-oro.webp");
+  --rc-marco: url("../assets/ui/tarjeta/marco-oro.webp");
+  --rc-cinta: url("../assets/ui/tarjeta/cinta-oro.webp");
+  --text: #f3ead8; --sub: #d3c8ae; --card: rgba(8,12,26,.62); --badge-bg: rgba(8,12,26,.55);
+  --border: rgba(201,153,46,.38); --badge-border: rgba(201,153,46,.38);
+}
+#results-card[data-tier="azul"], .seq-d-results[data-tier="azul"] { --rc-fondo: url("../assets/ui/tarjeta/fondo-azul.webp"); --rc-marco: url("../assets/ui/tarjeta/marco-azul.webp"); --rc-cinta: url("../assets/ui/tarjeta/cinta-azul.webp"); }
+#results-card[data-tier="plata"], .seq-d-results[data-tier="plata"] { --rc-fondo: url("../assets/ui/tarjeta/fondo-plata.webp"); --rc-marco: url("../assets/ui/tarjeta/marco-plata.webp"); --rc-cinta: url("../assets/ui/tarjeta/cinta-plata.webp"); }
+#results-card[data-tier="derrota"], .seq-d-results[data-tier="derrota"] { --rc-fondo: url("../assets/ui/tarjeta/fondo-derrota.webp"); --rc-marco: url("../assets/ui/tarjeta/marco-derrota.webp"); --rc-cinta: url("../assets/ui/tarjeta/cinta-derrota.webp"); }
+#results-card[data-tier="secreto"], .seq-d-results[data-tier="secreto"] { --rc-fondo: url("../assets/ui/tarjeta/fondo-secreto.webp"); --rc-marco: url("../assets/ui/tarjeta/marco-secreto.webp"); --rc-cinta: url("../assets/ui/tarjeta/cinta-secreto.webp"); }
+
+#results-card.results-card, .seq-d-results.results-card {
+  position: relative; overflow: hidden;
+  background: linear-gradient(rgba(5,8,18,.30), rgba(5,8,18,.50)), var(--rc-fondo) center / cover no-repeat !important;
+  border: 0 !important; border-radius: 16px !important;
+  padding: 34px 22px 24px !important;
+  box-shadow: 0 16px 40px rgba(0,0,0,.5) !important;
+}
+#results-card.results-card::after, .seq-d-results.results-card::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  border: 30px solid transparent;
+  border-image: var(--rc-marco) 108 / 30px stretch;
+}
+#results-card.results-card > *, .seq-d-results.results-card > * { position: relative; z-index: 1; }
+#results-card.results-card h3, .seq-d-results.results-card h3 {
+  display: inline-block; min-width: 62%; max-width: 100%; box-sizing: border-box;
+  margin: 0 0 12px !important; padding: 0 4px !important;
+  height: 31px; line-height: 29px !important;
+  border-style: solid; border-width: 0 44px; border-color: transparent;
+  border-image: var(--rc-cinta) 0 150 fill / 0 44px stretch;
+  color: #f6e6b8 !important; font-size: 11px !important; letter-spacing: 1.4px !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,.6);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+#results-card .metric-box, .seq-d-results .metric-box { background: var(--card) !important; }
+#results-card .metrics-grid, #results-card .results-metrics-grid, .seq-d-results .results-metrics-grid { background: rgba(201,153,46,.18) !important; border-color: rgba(201,153,46,.3) !important; }
