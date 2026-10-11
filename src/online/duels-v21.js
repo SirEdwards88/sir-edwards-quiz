@@ -242,7 +242,7 @@
     return h.call('GET', '/rankings?scope=' + scope + '&board=' + board).then(function (d) {
       S21.rankings[key] = d; if (window.SEQDuels._state().screen === 'rankings') window.SEQDuels.rerender();
     }).catch(function (e) {
-      S21.rankErr = (e && e.status === 404) ? (scope === 'global' ? 'El ranking global todavía no está abierto. Mientras tanto, compite con tus amigos.' : 'Este ranking todavía no está disponible.') : h.errText(e);
+      S21.rankErr = (board === 'fondo' && e && (e.status === 400 || e.status === 404)) ? 'El ranking de Cálculo de Fondo todavía no está abierto. Mientras tanto, sigue acumulando aciertos: tu mejor partida se guarda.' : (e && e.status === 404) ? (scope === 'global' ? 'El ranking global todavía no está abierto. Mientras tanto, compite con tus amigos.' : 'Este ranking todavía no está disponible.') : h.errText(e);
       if (window.SEQDuels._state().screen === 'rankings') window.SEQDuels.rerender();
     });
   }

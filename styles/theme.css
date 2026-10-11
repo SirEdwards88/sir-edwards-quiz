@@ -383,9 +383,3 @@ h3 .ui-btn-ico { width: 34px; height: 34px; vertical-align: middle; margin: -4px
 #extra-stats .stat-extra { align-items: center; }
 #extra-stats .stat-extra.stat-master { grid-column: 1 / -1; }
 #extra-stats .stat-extra.stat-master { justify-content: center; }
-
-/* Tarjeta «Cálculo mental» (2.3): los iconos de Fondo y Turbo unidos, en diagonal. */
-#view-modes .mode-card-icon.mode-icon-pair{ position:relative; }
-#view-modes .mode-icon-pair .mode-img{ position:absolute; width:46px; height:46px; object-fit:contain; }
-#view-modes .mode-icon-pair .pair-a{ left:-2px; top:-2px; z-index:1; }
-#view-modes .mode-icon-pair .pair-b{ right:-2px; bottom:-2px; z-index:2; }
