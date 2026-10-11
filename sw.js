@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 210;
+const CACHE_VERSION = 212;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -85,6 +85,7 @@ const APP_SHELL = [
   './assets/modes/muerte-subita.webp',
   './assets/modes/contrarreloj.webp',
   './assets/modes/calculo.webp',
+  './assets/modes/calculo-turbo.webp',
   './assets/character/hat-destello.webp',
   './assets/ui/fondos/cabecera.webp',
   './assets/ui/fondos/damasco-marfil.svg',
@@ -202,6 +203,7 @@ const APP_SHELL = [
   './assets/modes/suelto/muerte-subita.webp',
   './assets/modes/suelto/contrarreloj.webp',
   './assets/modes/suelto/calculo.webp',
+  './assets/modes/suelto/calculo-turbo.webp',
   './assets/modes/suelto/calculo-clasico.webp',
   './assets/modes/suelto/secreto.webp',
   './assets/modes/suelto/duelo.webp',
@@ -257,6 +259,7 @@ const APP_SHELL = [
   './assets/duelos/rangos/erudito_de_salon.webp',
   './assets/duelos/rangos/lord_sabelotodo.webp',
   './assets/duelos/rangos/sir_edwards.webp',
+  './assets/duelos/rankings/fondo.webp',
   './assets/duelos/rankings/friends.webp',
   './assets/duelos/rankings/global.webp',
   './assets/duelos/rankings/mental.webp',
@@ -496,6 +499,7 @@ const ASSET_REVS = {
   './assets/duelos/rangos/lord_sabelotodo.webp': '9d4e0dea',
   './assets/duelos/rangos/plebeyo_ilustrado.webp': '9c9aadc0',
   './assets/duelos/rangos/sir_edwards.webp': '05fa85f5',
+  './assets/duelos/rankings/fondo.webp': '2bec7013',
   './assets/duelos/rankings/friends.webp': 'd908f9d6',
   './assets/duelos/rankings/global.webp': 'dcfdf98c',
   './assets/duelos/rankings/mental.webp': 'f823292b',
@@ -575,6 +579,7 @@ const ASSET_REVS = {
   './assets/modes/ameba.webp': '9253546d',
   './assets/modes/amigos.webp': 'd908f9d6',
   './assets/modes/calculo-clasico.webp': '2bec7013',
+  './assets/modes/calculo-turbo.webp': '49d957df',
   './assets/modes/calculo.webp': '005a5053',
   './assets/modes/contrarreloj.webp': '77bff741',
   './assets/modes/derrame.webp': '04ceb604',
@@ -604,6 +609,7 @@ const ASSET_REVS = {
   './assets/modes/secreto.webp': '52143f5e',
   './assets/modes/suelto/ameba.webp': 'df950cb2',
   './assets/modes/suelto/calculo-clasico.webp': '0ff29c70',
+  './assets/modes/suelto/calculo-turbo.webp': '6565f430',
   './assets/modes/suelto/calculo.webp': '8bcd1f43',
   './assets/modes/suelto/contrarreloj.webp': 'ef766c64',
   './assets/modes/suelto/derrame.webp': 'f5bb4ad6',

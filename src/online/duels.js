@@ -93,7 +93,7 @@
     supervivencia: { nombre: 'Supervivencia', icono: 'supervivencia', reglas: 'Hasta 40 preguntas · 3 vidas · 10 s cada una' },
     muerte_subita: { nombre: 'Muerte Súbita', icono: 'muerte-subita', reglas: '25 preguntas cada vez más difíciles · un fallo y fuera' },
     contrarreloj: { nombre: 'Contrarreloj', icono: 'contrarreloj', reglas: '60 s · +3 s por acierto, −3 s por fallo' },
-    calculo_mental: { nombre: 'Cálculo Turbo', icono: 'calculo', reglas: '60 s de operaciones · +4 s por acierto, −3 s por fallo' },
+    calculo_mental: { nombre: 'Cálculo Turbo', icono: 'calculo-turbo', reglas: '60 s de operaciones · +4 s por acierto, −3 s por fallo' },
     // 2.3: Fondo. El servidor lleva las vidas (est.vidas / est.vidas_max) y el tiempo de cada operación (limite_at / total_ms).
     calculo_fondo: { nombre: 'Cálculo de Fondo', icono: 'calculo-clasico', reglas: '1 vida · 20 s por operación · vida extra con rachas de 8, 16 y 24' },
     lucidez: { nombre: 'Lucidez Mental', icono: 'secreto', reglas: 'Tres fases y un enigma final, con respuestas escritas' }

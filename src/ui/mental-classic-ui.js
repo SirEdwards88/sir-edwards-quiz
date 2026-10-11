@@ -1,11 +1,22 @@
 // SirEdwards Quiz — Cálculo de Fondo (2.3): arranque y final de partida.
 // El modo reutiliza el bucle de Cálculo Turbo de index.html (currentGame.mode === 'mental_calc' con variant 'classic');
 // aquí vive lo que es solo suyo: la comprobación de la variante, el arranque y la tarjeta final, que NO toca
-// estadísticas de Turbo, logros, encargos ni ránkings (su récord es local: store.mentalClassicBest).
+// estadísticas de Turbo, logros ni encargos. Su récord vive en store.bestMentalClassicCorrect / bestMentalClassicScore
+// (viajan por la sincronización y alimentan el ranking de Fondo); la marca antigua store.mentalClassicBest se sigue leyendo.
 // Script clásico (scope global). Reglas puras en src/utils/mental-classic.js.
 (function () {
   'use strict';
   function isClassic(g) { return !!g && g.mode === 'mental_calc' && g.variant === 'classic'; }
+
+  // Mejor partida de Fondo: lo guardado en los campos nuevos o, si es mayor, la marca de la primera versión.
+  function bestOf() {
+    var old = (store && store.mentalClassicBest) || {};
+    var oc = old.correct || 0, nc = store.bestMentalClassicCorrect || 0, ns = store.bestMentalClassicScore || 0;
+    if (!oc && !nc) return null;
+    if (nc > oc) return { correct: nc, score: ns };
+    if (oc > nc) return { correct: oc, score: old.score || 0 };
+    return { correct: nc, score: Math.max(ns, old.score || 0) };
+  }
 
   function start() {
     if (!(store.unlockedMedals || []).includes('tt_15')) {
@@ -27,9 +38,9 @@
     var accuracy = Math.round((g.correct / totalQ) * 100);
 
     // Marca local exclusiva del Fondo: no se mezcla con la de Turbo, no sube a ningún ránking.
-    var best = store.mentalClassicBest || null;
+    var best = bestOf();
     var isRecord = SEQMentalClassic.isBetter(g.correct, g.score, best);
-    if (isRecord) store.mentalClassicBest = { correct: g.correct, score: g.score };
+    if (isRecord) { store.bestMentalClassicCorrect = g.correct; store.bestMentalClassicScore = g.score; }
     clearSavedGame();
     saveStore(false);
     updateResumeButton();
@@ -68,12 +79,11 @@
     if (r.category !== 'mal' && !recordSoundPlayed) playSound('win');
   }
 
-  // Estadísticas > Récords personales: fila propia del Fondo (aciertos, no puntos). No existe hasta que se juega una
-  // partida con récord, así no delata el modo durante las pruebas. Se crea aquí para no crecer index.html.
+  // Estadísticas > Récords personales: fila propia del Fondo (aciertos, no puntos), junto a la de Turbo.
+  // Se crea aquí para no crecer index.html.
   function renderStat() {
-    var best = store && store.mentalClassicBest;
+    var best = store && bestOf();
     var box = document.getElementById('best-mentalclassic-box');
-    if (!best || !(best.correct > 0)) { if (box) box.style.display = 'none'; return; }
     if (!box) {
       var turbo = document.querySelector('#extra-stats .stat-mentalcalc');
       if (!turbo) return;
@@ -86,8 +96,9 @@
     }
     box.style.display = '';
     var v = document.getElementById('best-mentalclassic');
-    if (v) v.textContent = best.correct + (best.correct === 1 ? ' acierto' : ' aciertos');
+    var n = best ? best.correct : 0;
+    if (v) v.textContent = n + (n === 1 ? ' acierto' : ' aciertos');
   }
 
-  window.SEQMentalClassicUI = { isClassic: isClassic, start: start, finish: finish, livesHtml: livesHtml, renderStat: renderStat };
+  window.SEQMentalClassicUI = { bestOf: bestOf, isClassic: isClassic, start: start, finish: finish, livesHtml: livesHtml, renderStat: renderStat };
 })();

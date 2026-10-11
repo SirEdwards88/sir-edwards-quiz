@@ -60,3 +60,14 @@ test('el final del Fondo no toca estadísticas de Turbo ni el contador de partid
   const fg = html.slice(html.indexOf('function finishGame('));
   assert.ok(fg.indexOf('isMentalClassicGame()) { SEQMentalClassicUI.finish()') > 0 && fg.indexOf('isMentalClassicGame()) { SEQMentalClassicUI.finish()') < fg.indexOf('store.gamesPlayed++'), 'el Fondo sale de finishGame antes de contar la partida');
 });
+
+test('el récord de Fondo viaja por la sincronización y el ranking de Fondo existe en la PWA', () => {
+  for (const f of ['bestMentalClassicCorrect', 'bestMentalClassicScore']) {
+    assert.ok(read('src/utils/sync-merge.js').includes("'" + f + "'"), f + ' en MAX_FIELDS');
+    assert.ok(read('src/utils/store.js').split(f).length >= 3, f + ' con valor por defecto y saneado');
+  }
+  const rk = read('src/online/duels-v21.js');
+  assert.match(rk, /fondo: \{ nombre: 'Cálculo de Fondo'/);
+  assert.ok(rk.includes("BOARD_ORDER = ['pvp', 'mental', 'fondo', 'timetrial']"));
+  assert.match(read('index.html'), /data-mental="fondo"[\s\S]*data-mental="turbo"/, 'Fondo arriba, Turbo abajo');
+});

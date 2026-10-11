@@ -19,7 +19,7 @@
     menu.style.display = 'block';
     document.getElementById('diff-grid-survival').hidden = true;
     document.getElementById('diff-grid-mental').hidden = false;
-    document.getElementById('diff-menu-title').innerHTML = '<img class="ui-img ui-title-img ui-title-loose" src="assets/modes/suelto/calculo.webp" alt="" draggable="false">Elige tu Cálculo';
+    document.getElementById('diff-menu-title').innerHTML = '<img class="ui-img ui-title-img ui-title-loose" src="assets/modes/suelto/calculo.webp" alt="" draggable="false">Elige cómo sufrir';
   }
 
   // Cada modo conserva su propia comprobación de desbloqueo, su aviso de partida guardada y su arranque.

@@ -145,18 +145,18 @@ test('apuesta y respuesta: solo se envían claves/opciones (nunca resultados) y 
   assert.equal(JSON.stringify(calls).includes('es_correcta'), false);
 });
 
-test('Rankings: dos ámbitos, tres tableros exactos, sin ranking universal ni emojis como iconografía', () => {
+test('Rankings: dos ámbitos, cuatro tableros exactos, sin ranking universal ni emojis como iconografía', () => {
   const { M, win } = load();
-  assert.deepEqual(Object.keys(M.BOARDS), ['pvp', 'mental', 'timetrial']);
-  assert.deepEqual(Object.values(M.BOARDS).map((b) => b.nombre), ['PvP', 'Cálculo Turbo', 'Contrarreloj']);
+  assert.deepEqual(Object.keys(M.BOARDS), ['pvp', 'mental', 'fondo', 'timetrial']);
+  assert.deepEqual(Object.values(M.BOARDS).map((b) => b.nombre), ['PvP', 'Cálculo Turbo', 'Cálculo de Fondo', 'Contrarreloj']);
   assert.equal(/universal|todos los rankings/i.test(SRC), false);
   win.SEQDuels._h.call = () => new Promise(() => {});
   const html = M.renderRankings();
   const sinAtributos = html.replace(/<[^>]*>/g, '');           // texto visible
   assert.match(sinAtributos, /Amigos/); assert.match(sinAtributos, /Global/);
-  assert.match(sinAtributos, /PvP/); assert.match(sinAtributos, /Cálculo Turbo/); assert.match(sinAtributos, /Contrarreloj/);
+  assert.match(sinAtributos, /PvP/); assert.match(sinAtributos, /Cálculo Turbo/); assert.match(sinAtributos, /Cálculo de Fondo/); assert.match(sinAtributos, /Contrarreloj/);
   assert.equal(/\p{Extended_Pictographic}/u.test(sinAtributos), false, 'ningún emoji como iconografía visible');
-  for (const id of ['pvp', 'mental', 'timetrial']) assert.match(html, new RegExp('assets/duelos/rankings/' + id + '\\.webp'));
+  for (const id of ['pvp', 'mental', 'fondo', 'timetrial']) assert.match(html, new RegExp('assets/duelos/rankings/' + id + '\\.webp'));
   assert.equal(/rankings\/(friends|global)\.webp/.test(html), false, 'el ámbito es un selector de texto, sin iconos');
 });
 

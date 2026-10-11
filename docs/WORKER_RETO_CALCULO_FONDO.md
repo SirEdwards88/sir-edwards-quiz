@@ -23,3 +23,14 @@ La PWA pinta solo: icono, nombre «Cálculo de Fondo», aciertos, corazones (`vi
 (`limite_at`/`total_ms`). Todo lo demás lo manda el servidor.
 
 Tras desplegar: añadir al historial 2.3 una línea del tipo «El Fondo también se juega en Retos.» y subir versión.
+
+## Ranking de Cálculo de Fondo (pendiente de desplegar)
+La PWA ya pide `GET /rankings?scope=friends|global&board=fondo` y pinta una cuarta pestaña «Cálculo de Fondo». Hasta que el
+Worker lo conozca verá «Este ranking todavía no está disponible» (el 404 ya se trata).
+
+1. **Sincronización:** la PWA envía dos campos nuevos tipo `max`: `bestMentalClassicCorrect` (aciertos de su mejor partida)
+   y `bestMentalClassicScore` (sus puntos). Ya están en `src/utils/sync-merge.js` de la PWA (`MAX_FIELDS`): copiar ese
+   archivo tal cual a `src/sync-merge.js` del backend (más su `export default`) y guardar los dos campos en D1 como los demás.
+2. **Ranking `board=fondo`:** orden por `bestMentalClassicCorrect` desc y, a igualdad, `bestMentalClassicScore` desc; solo
+   jugadores con aciertos > 0. Mismo formato que `mental`, pero en cada fila y en `me` el campo **`score` = aciertos**
+   (la PWA lo pinta como «N aciertos»). `rank`, `display_name`, `avatar`, `is_me` como en `mental`.

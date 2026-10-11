@@ -32,9 +32,10 @@
   var BOARDS = {
     pvp: { nombre: 'PvP', sub: 'Por ELO' },
     mental: { nombre: 'Cálculo Turbo', sub: 'Mejor puntuación' },
+    fondo: { nombre: 'Cálculo de Fondo', sub: 'Más aciertos', unit: 'aciertos' },
     timetrial: { nombre: 'Contrarreloj', sub: 'Mejor puntuación' }
   };
-  var BOARD_ORDER = ['pvp', 'mental', 'timetrial'];
+  var BOARD_ORDER = ['pvp', 'mental', 'fondo', 'timetrial'];
   var SCOPES = { friends: 'Amigos', global: 'Global' };
 
   var S21 = {
@@ -230,7 +231,7 @@
   // assets/duelos/rankings/<id>.webp: se sustituyen soltando un archivo con el mismo nombre) → «Tu posición» →
   // podio con los tres primeros (medallas de oro, plata y bronce) → resto de la clasificación.
   // Solo presentación: el orden, las posiciones y las puntuaciones vienen tal cual del servidor.
-  var RK_ICON = { pvp: { id: 'pvp' }, mental: { id: 'mental' }, timetrial: { id: 'timetrial' } };
+  var RK_ICON = { pvp: { id: 'pvp' }, mental: { id: 'mental' }, fondo: { id: 'fondo' }, timetrial: { id: 'timetrial' } };
   var PODIUM_MEDAL = { 1: 'oro', 2: 'plata', 3: 'bronce' };
   function rkIcon(k, cls) { var r = RK_ICON[k]; return r ? icon('rankings', r.id, 'seq-v21-ico-rk ' + (cls || '')) : ''; }
   function rankKey() { return S21.scope + ':' + S21.board; }
@@ -254,7 +255,7 @@
       return '<button type="button" role="tab" aria-selected="' + sel + '" class="seq-v21-scope-btn' + (sel ? ' sel' : '') + '" onclick="SEQDuels21.setScope(\'' + k + '\')">' + SCOPES[k] + '</button>';
     }).join('') + '</div>';
   }
-  // Tipo de ranking: tres medallones (PvP / Cálculo Mental / Contrarreloj).
+  // Tipo de ranking: cuatro medallones (PvP / Cálculo Turbo / Cálculo de Fondo / Contrarreloj).
   function boardTabs() {
     return '<div class="seq-v21-boards" role="tablist" aria-label="Ranking">' + BOARD_ORDER.map(function (k) {
       var sel = k === S21.board;
@@ -265,7 +266,8 @@
   function isPvp(b) { return b === 'pvp'; }
   // Posición «oficial» de una fila: en PvP, quien está en colocación todavía no tiene puesto.
   function placeOf(r, b) { return isPvp(b) && r.en_colocacion ? null : (r.rank != null ? num(r.rank) : null); }
-  function valueHtml(r, b) { return isPvp(b) ? fmt(r.elo) + '<small>ELO</small>' : fmt(r.score) + '<small>pts</small>'; }
+  function unitOf(b) { return (BOARDS[b] && BOARDS[b].unit) || 'pts'; }
+  function valueHtml(r, b) { return isPvp(b) ? fmt(r.elo) + '<small>ELO</small>' : fmt(r.score) + '<small>' + unitOf(b) + '</small>'; }
   function subOf(r, b) { return isPvp(b) ? (r.en_colocacion ? 'En colocación' : esc(rankName(r.rango))) : ''; }
   function avatarOf(r) { return window.SEQAvatars ? window.SEQAvatars.avatarHTML(r.avatar) : ''; }
   function medalImg(n, cls) {
@@ -307,7 +309,7 @@
       ? esc(rankName(me.rango)) + (me.en_colocacion ? ' · colocación ' + num(me.partidas_colocacion) + '/' + (num(me.colocacion_total) || 5) : '')
       : esc(BOARDS[b].sub);
     return '<div class="seq-v21-me"><span class="seq-v21-me-pos' + (place ? '' : ' none') + '">' + (place ? '<small>#</small>' + place : '—') + '</span>' +
-      '<div class="seq-v21-me-txt"><span class="seq-v21-me-lbl">Tu posición</span><b>' + (pvp ? fmt(me.elo) + ' ELO' : fmt(me.score) + ' pts') + '</b><small>' + detail + '</small></div>' +
+      '<div class="seq-v21-me-txt"><span class="seq-v21-me-lbl">Tu posición</span><b>' + (pvp ? fmt(me.elo) + ' ELO' : fmt(me.score) + ' ' + unitOf(b)) + '</b><small>' + detail + '</small></div>' +
       (pvp ? rankIcon(me.rango, 'seq-v21-me-badge') : '') + '</div>';
   }
   function rkNote(text) { return '<div class="seq-v21-rk-note"><p>' + esc(text) + '</p></div>'; }

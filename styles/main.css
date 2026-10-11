@@ -732,7 +732,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   position: absolute; left: 15px; top: 50%;
   transform: translateY(-50%);
   width: 28px; height: 28px;
-  background: url("../assets/modes/suelto/calculo.webp") center / contain no-repeat;
+  background: url("../assets/modes/suelto/calculo-turbo.webp") center / contain no-repeat;
 }
 .card.theme-mentalcalc .mode-header::after {
   content: "AGILIDAD";

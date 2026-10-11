@@ -77,6 +77,8 @@ function getDefaultStore() {
     bestMentalCalcScore: 0,
     mentalCalcBestStreak: 0,
     bestMentalCalcCorrect: 0,
+    bestMentalClassicCorrect: 0, // Cálculo de Fondo (2.3): aciertos y puntos de su mejor partida; viajan por la sincronización
+    bestMentalClassicScore: 0,
     mentalCalcTotalCorrect: 0,
     bestLucidezScore: 0,
     bestLucidezStreak: 0,
@@ -225,6 +227,8 @@ function sanitizeStore(s) {
   s.bestMentalCalcScore = asFiniteNonNegNumber(s.bestMentalCalcScore);
   s.mentalCalcBestStreak = asFiniteNonNegNumber(s.mentalCalcBestStreak);
   s.bestMentalCalcCorrect = asFiniteNonNegNumber(s.bestMentalCalcCorrect);
+  s.bestMentalClassicCorrect = asFiniteNonNegNumber(s.bestMentalClassicCorrect);
+  s.bestMentalClassicScore = asFiniteNonNegNumber(s.bestMentalClassicScore);
   s.mentalCalcTotalCorrect = asFiniteNonNegNumber(s.mentalCalcTotalCorrect);
   s.bestLucidezScore = asFiniteNonNegNumber(s.bestLucidezScore);
   s.bestLucidezStreak = asFiniteNonNegNumber(s.bestLucidezStreak);
