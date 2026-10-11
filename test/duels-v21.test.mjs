@@ -154,9 +154,13 @@ test('Rankings: dos ámbitos, cuatro tableros exactos, sin ranking universal ni 
   const html = M.renderRankings();
   const sinAtributos = html.replace(/<[^>]*>/g, '');           // texto visible
   assert.match(sinAtributos, /Amigos/); assert.match(sinAtributos, /Global/);
-  assert.match(sinAtributos, /PvP/); assert.match(sinAtributos, /Cálculo Turbo/); assert.match(sinAtributos, /Cálculo de Fondo/); assert.match(sinAtributos, /Contrarreloj/);
+  assert.match(sinAtributos, /PvP/); assert.match(sinAtributos, /Cálculo/); assert.match(sinAtributos, /Contrarreloj/);
+  assert.equal(/Cálculo Turbo/.test(sinAtributos), false, 'las subpestañas solo aparecen dentro de Cálculo');
+  win.SEQDuels21.setBoard('fondo');
+  const calc = M.renderRankings().replace(/<[^>]*>/g, '');
+  assert.match(calc, /Cálculo Turbo/); assert.match(calc, /Cálculo de Fondo/);
   assert.equal(/\p{Extended_Pictographic}/u.test(sinAtributos), false, 'ningún emoji como iconografía visible');
-  for (const id of ['pvp', 'mental', 'fondo', 'timetrial']) assert.match(html, new RegExp('assets/duelos/rankings/' + id + '\\.webp'));
+  for (const id of ['pvp', 'mental', 'timetrial']) assert.match(html, new RegExp('assets/duelos/rankings/' + id + '\\.webp'));
   assert.equal(/rankings\/(friends|global)\.webp/.test(html), false, 'el ámbito es un selector de texto, sin iconos');
 });
 

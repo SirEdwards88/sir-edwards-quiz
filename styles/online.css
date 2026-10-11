@@ -679,9 +679,9 @@
 .seq-v21-scope-btn.sel { color: var(--text); }
 .seq-v21-scope-btn.sel::after { background: linear-gradient(90deg, transparent, var(--se-gold, var(--primary)) 20%, var(--se-gold-light, var(--se-gold, var(--primary))) 50%, var(--se-gold, var(--primary)) 80%, transparent); }
 /* Los tres rankings: medallones; el elegido, con aro y brillo dorado */
-.seq-v21-boards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin: 0 0 14px; }
+.seq-v21-boards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 0 0 14px; }
 .seq-v21-board-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 8px 2px 6px; font: inherit; font-size: 12px; font-weight: 800; line-height: 1.15; text-align: center; cursor: pointer; color: var(--sub); background: none; border: 0; border-radius: 16px; }
-.seq-v21-board-btn .seq-v21-ico-rk { width: 54px; height: 54px; border-radius: 50%; transition: transform .2s, box-shadow .2s, opacity .2s; }
+.seq-v21-board-btn .seq-v21-ico-rk { width: 62px; height: 62px; border-radius: 50%; transition: transform .2s, box-shadow .2s, opacity .2s; }
 .seq-v21-board-btn .seq-v21-ico-rk img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .seq-v21-board-btn:not(.sel) .seq-v21-ico-rk { opacity: .62; filter: saturate(.7); transform: scale(.9); }
 .seq-v21-board-btn.sel { color: var(--text); }
@@ -814,3 +814,5 @@
 
 /* Estado vacío con ilustración (2.3) */
 .seq-empty-img { display: block; width: min(56%, 200px); height: auto; margin: 8px auto 10px; filter: drop-shadow(0 6px 10px rgba(0,0,0,.4)); }
+
+.seq-v21-calcsub { margin-top: -4px; }

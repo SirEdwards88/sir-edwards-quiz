@@ -35,7 +35,7 @@
     fondo: { nombre: 'Cálculo de Fondo', sub: 'Más aciertos', unit: 'aciertos' },
     timetrial: { nombre: 'Contrarreloj', sub: 'Mejor puntuación' }
   };
-  var BOARD_ORDER = ['pvp', 'mental', 'fondo', 'timetrial'];
+  var BOARD_ORDER = ['pvp', 'timetrial', 'mental', 'fondo'];
   var SCOPES = { friends: 'Amigos', global: 'Global' };
 
   var S21 = {
@@ -247,7 +247,7 @@
     });
   }
   function setScope(s) { if (SCOPES[s]) { S21.scope = s; loadRankings(); window.SEQDuels.rerender(); } }
-  function setBoard(b) { if (BOARDS[b]) { S21.board = b; loadRankings(); window.SEQDuels.rerender(); } }
+  function setBoard(b) { if (BOARDS[b]) { S21.board = b; if (isCalc(b)) S21.calcSub = b; loadRankings(); window.SEQDuels.rerender(); } }
   // Ámbito: selector de dos posiciones, solo texto (los iconos los llevan los rankings; aquí serían ruido).
   function scopeTabs() {
     return '<div class="seq-v21-scope" role="tablist" aria-label="Ámbito">' + ['friends', 'global'].map(function (k) {
@@ -255,12 +255,25 @@
       return '<button type="button" role="tab" aria-selected="' + sel + '" class="seq-v21-scope-btn' + (sel ? ' sel' : '') + '" onclick="SEQDuels21.setScope(\'' + k + '\')">' + SCOPES[k] + '</button>';
     }).join('') + '</div>';
   }
-  // Tipo de ranking: cuatro medallones (PvP / Cálculo Turbo / Cálculo de Fondo / Contrarreloj).
+  // Tipo de ranking: tres medallones (PvP / Contrarreloj / Cálculo). Dentro de Cálculo, dos pestañas: Turbo y Fondo
+  // (cada una es su propio ranking en el servidor: board=mental y board=fondo).
+  var CALC_BOARDS = ['mental', 'fondo'];
+  function isCalc(b) { return CALC_BOARDS.indexOf(b) >= 0; }
   function boardTabs() {
-    return '<div class="seq-v21-boards" role="tablist" aria-label="Ranking">' + BOARD_ORDER.map(function (k) {
+    var tabs = [['pvp', 'PvP', 'pvp'], ['timetrial', 'Contrarreloj', 'timetrial'], ['calc', 'Cálculo', 'mental']];
+    return '<div class="seq-v21-boards" role="tablist" aria-label="Ranking">' + tabs.map(function (t) {
+      var sel = t[0] === 'calc' ? isCalc(S21.board) : S21.board === t[0];
+      var target = t[0] === 'calc' ? (S21.calcSub || 'mental') : t[0];
+      return '<button type="button" role="tab" aria-selected="' + sel + '" class="seq-v21-board-btn' + (sel ? ' sel' : '') + '" onclick="SEQDuels21.setBoard(\'' + target + '\')">' +
+        rkIcon(t[2]) + '<span>' + esc(t[1]) + '</span></button>';
+    }).join('') + '</div>';
+  }
+  // Subpestañas de Cálculo (mismo selector de texto que Amigos / Global).
+  function calcTabs() {
+    if (!isCalc(S21.board)) return '';
+    return '<div class="seq-v21-scope seq-v21-calcsub" role="tablist" aria-label="Modo de cálculo">' + CALC_BOARDS.map(function (k) {
       var sel = k === S21.board;
-      return '<button type="button" role="tab" aria-selected="' + sel + '" class="seq-v21-board-btn' + (sel ? ' sel' : '') + '" onclick="SEQDuels21.setBoard(\'' + k + '\')">' +
-        rkIcon(k) + '<span>' + esc(BOARDS[k].nombre) + '</span></button>';
+      return '<button type="button" role="tab" aria-selected="' + sel + '" class="seq-v21-scope-btn' + (sel ? ' sel' : '') + '" onclick="SEQDuels21.setBoard(\'' + k + '\')">' + esc(BOARDS[k].nombre) + '</button>';
     }).join('') + '</div>';
   }
   function isPvp(b) { return b === 'pvp'; }
@@ -316,7 +329,7 @@
   function renderRankings() {
     var h = H();
     var d = S21.rankings[rankKey()], b = S21.board;
-    var out = h.header('Rankings', 'El Salón de la Fama', h.back) + '<div class="seq-v21-rkscreen">' + scopeTabs() + boardTabs();
+    var out = h.header('Rankings', 'El Salón de la Fama', h.back) + '<div class="seq-v21-rkscreen">' + scopeTabs() + boardTabs() + calcTabs();
     if (S21.rankErr) return out + rkNote(S21.rankErr) + '</div>';
     if (!d) return out + '<p class="seq-v21-rk-loading">Cargando…</p></div>';
     out += '<p class="seq-v21-rk-sub"><span>' + esc(BOARDS[b].sub) + '</span></p>';
