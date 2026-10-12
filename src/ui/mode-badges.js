@@ -43,13 +43,21 @@
     return s ? s.replace(DIR, DIR + 'suelto/') : '';
   }
 
+  // Emblema (assets/modes/emblema/): solo el dibujo, sin aro, gemas ni disco. Es el icono de la cabecera de la partida.
+  // El Cálculo de Fondo (variante 'classic' de Cálculo Turbo) tiene el suyo.
+  function emblemSrc(mode, tier, variant) {
+    var n = (mode === 'survival' && BY_TIER[tier]) || BY_MODE[mode] || BY_MODE[BY_NAME[mode]];
+    if (mode === 'mental_calc') n = variant === 'classic' ? 'calculo-clasico' : 'calculo-turbo';
+    return n ? DIR + 'emblema/' + n + '.webp' : '';
+  }
+
   // Icono de la cabecera de la partida: sigue al modo en curso cada vez que cambia el marcador.
   function syncHud() {
     var el = document.getElementById('game-mode-badge');
     if (!el) return;
     var g = null;
     try { g = currentGame; } catch (e) {}
-    var s = g ? looseSrc(g.mode, g.survivalTier) : '';
+    var s = g ? emblemSrc(g.mode, g.survivalTier, g.variant) : '';
     if (s) { if (el.getAttribute('src') !== s) el.setAttribute('src', s); el.style.display = ''; }
     else el.style.display = 'none';
   }
@@ -77,5 +85,5 @@
     new MutationObserver(function () { try { splitHudLabel(lbl); } catch (e) {} try { syncHud(); } catch (e) {} }).observe(lbl, { childList: true, characterData: true, subtree: true });
   });
 
-  window.SEQModeBadges = { src: src, img: img, miniSrc: miniSrc, miniImg: miniImg, looseSrc: looseSrc, syncHud: syncHud };
+  window.SEQModeBadges = { src: src, img: img, miniSrc: miniSrc, miniImg: miniImg, looseSrc: looseSrc, emblemSrc: emblemSrc, syncHud: syncHud };
 })();

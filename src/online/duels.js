@@ -102,6 +102,8 @@
   var FASE_UI = { 1: 'FASE I', 2: 'FASE II', 3: 'FASE III', 4: 'ENIGMA' };
   function retoMode(d) { return RETO_MODE_UI[d && d.modo] || RETO_MODE_UI.estandar; }
   function retoModeName(d) { return retoMode(d).nombre + (d && NIVEL_UI[d.nivel] ? ' · ' + NIVEL_UI[d.nivel] : ''); }
+  // Emblema (sin aro ni disco) para la cabecera de la partida; modeIco, con su medallón, para listas y tarjetas.
+  function modeEmblem(m) { return '<img class="seq-ico seq-d-mode-ico" src="assets/modes/emblema/' + m.icono + '.webp" alt="" draggable="false">'; }
   function modeIco(m) { return '<img class="seq-ico seq-d-mode-ico" src="assets/modes/suelto/' + m.icono + '.webp" alt="" draggable="false">'; }
   // Un elemento de la partida (lo que manda el servidor) → texto, solución (si ya se puede ver) y forma de responder.
   var LMAP = null;
@@ -727,12 +729,12 @@
     h += '<div id="seq-d-msg" class="feedback" style="display:none;"></div>';
     var lbl, extra = '', est = (d.yo && d.yo.estado) || {};
     // El icono del modo hace de título (como en los Retos y en los modos normales): sin espadas ni texto.
-    if (kind === 'duel') lbl = '<span class="seq-d-hud-mode" title="Duelo clásico"><img class="seq-ico seq-d-mode-ico" src="assets/duelos/modos/classic.webp" alt="" draggable="false"></span>' + (num(idx) + 1) + '/20';
+    if (kind === 'duel') lbl = '<span class="seq-d-hud-mode" title="Duelo clásico"><img class="seq-ico seq-d-mode-ico" src="assets/modes/emblema/duelo-clasico.webp" alt="" draggable="false"></span>' + (num(idx) + 1) + '/20';
     else {
       var m = retoMode(d), clock = d.modo === 'contrarreloj' || d.modo === 'calculo_mental' || d.modo === 'calculo_fondo';
       // Cabecera: el modo y, según el modo, por qué pregunta vas (x/total), la fase (Lucidez) o los aciertos (modos con reloj).
       // El icono del modo hace de título (el nombre ya no cabe en un móvil junto al reloj y las vidas).
-      lbl = '<span class="seq-d-hud-mode" title="' + esc(m.nombre) + '">' + modeIco(m) + '</span>';
+      lbl = '<span class="seq-d-hud-mode" title="' + esc(m.nombre) + '">' + modeEmblem(m) + '</span>';
       if (d.modo === 'lucidez') lbl += (FASE_UI[num(est.fase)] || '');
       else if (clock) lbl += ico('correcto') + num(d.yo && d.yo.aciertos);
       else lbl += (num(idx) + 1) + '/' + num(d.n_preguntas || 20);
