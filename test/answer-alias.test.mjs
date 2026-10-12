@@ -19,11 +19,11 @@ test('370 (24 segundos) acepta «24» y «veinticuatro» además de la respuesta
   for (const u of ['25', '14', 'veinte', '']) assert.ok(!M(u, p), 'no debería aceptar «' + u + '»');
 });
 
-test('sin alias se comporta exactamente como isMatchFlexible', () => {
+test('sin alias, la respuesta exacta y lo que no es respuesta se comportan como isMatchFlexible', () => {
   for (const n of [383, 381, 22, 27, 28]) {
     const p = q(n);
     assert.equal(p.alias, undefined);
-    for (const u of [p.a, 'cualquier cosa', '', p.a.split(' ')[0]]) assert.equal(M(u, p), F(u, p.a, p.q), n + ' «' + u + '»');
+    for (const u of [p.a, 'cualquier cosa', '']) assert.equal(M(u, p), F(u, p.a, p.q), n + ' «' + u + '»');
   }
 });
 

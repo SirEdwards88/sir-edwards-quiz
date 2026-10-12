@@ -1353,6 +1353,7 @@ body.in-game .stats-badges { display: none; }
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   padding: 8px 12px;
+  min-height: 44px; /* objetivo táctil mínimo */
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;

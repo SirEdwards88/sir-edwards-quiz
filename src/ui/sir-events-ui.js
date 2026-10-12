@@ -6,7 +6,7 @@ const SEQSirEventsUI = (function () {
   'use strict';
   var el = null, hideT = null, removeT = null, visible = false;
 
-  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function esc(s) { s = String(s == null ? '' : s); return typeof escapeHtml === 'function' ? escapeHtml(s) : s.replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
   function ensure() {
     if (el && document.body.contains(el)) return el;

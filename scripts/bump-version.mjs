@@ -8,6 +8,7 @@
 //      node scripts/bump-version.mjs --check  (solo comprueba que todo coincide; sale con error si no)
 import fs from 'node:fs';
 import { applyRevs, currentBlock } from './asset-revs.mjs';
+import { status as workerStatus } from './worker-sync.mjs';
 
 const root = new URL('../', import.meta.url);
 const swPath = new URL('sw.js', root);
@@ -37,4 +38,12 @@ if (check) {
   fs.writeFileSync(swPath, swWithRevs.replace(/const CACHE_VERSION = \d+;/, `const CACHE_VERSION = ${v};`));
   fs.writeFileSync(htmlPath, out);
   console.log(`CACHE_VERSION → ${v} (sw.js e index.html; huellas de imágenes al día)`);
+}
+
+// Aviso: lo que el Worker copia de la PWA (ver scripts/worker-sync.mjs) cambió desde la última sincronización.
+{
+  const ws = workerStatus();
+  if (ws.logic.length || ws.data.length) {
+    console.warn(`AVISO: cambió lo que el Worker copia (${[...ws.logic, ...ws.data].join(', ')}). Antes de publicar: node scripts/worker-sync.mjs <ruta del backend> y desplegar el Worker.`);
+  }
 }

@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 223;
+const CACHE_VERSION = 224;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -59,6 +59,7 @@ const APP_SHELL = [
   './styles/results-frame.css',
   './styles/visual-2-3.css',
   './styles/theme.css',
+  './styles/fonts.css',
   './src/data/avatars.js',
   './src/data/lucidez.js',
   './src/data/medals.js',
@@ -352,6 +353,8 @@ const APP_SHELL = [
   './assets/modes/mini/logros.webp',
   './src/audio/audio.js',
   './assets/audio/correct.mp3',
+  './assets/fonts/inter-latin.woff',
+  './assets/fonts/playfair-display-latin.woff',
   './assets/audio/wrong.mp3',
   './src/utils/sync-merge.js',
   './src/online/data-sync.js',
@@ -366,6 +369,7 @@ const APP_SHELL = [
   './src/utils/answer-alias.js',
   './src/utils/lucidez-select.js',
   './src/state/lucidez-bag.js',
+  './src/state/timetrial-bag.js',
   './src/utils/encargos-core.js',
   './src/utils/encargos-progress.js',
   './src/state/encargos.js',
@@ -398,7 +402,6 @@ const APP_SHELL = [
   './assets/character/lunes-aprobacion.webp',
   './assets/character/lunes-reproche.webp',
   './src/utils/sudden-progression.js',
-  './src/utils/fresh-first.js',
   './src/utils/mental-calc.js',
   './src/utils/mental-classic.js',
   './src/ui/mental-classic-ui.js',
@@ -528,6 +531,8 @@ const ASSET_REVS = {
   './assets/familias/prog.webp': '63da724b',
   './assets/familias/racha.webp': '935e4201',
   './assets/familias/secretos.webp': '71d42b2c',
+  './assets/fonts/inter-latin.woff': 'd7de890e',
+  './assets/fonts/playfair-display-latin.woff': '5e956ae2',
   './assets/logros/all_medals_secret.webp': 'e1705874',
   './assets/logros/balanced_master.webp': 'b30a2fa7',
   './assets/logros/cleaner_25.webp': '6abf53aa',
@@ -847,8 +852,11 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(req)
         .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+          // Solo se guarda una página correcta: un 404/500 de la red no puede sustituir a la copia buena de sin conexión.
+          if (res && res.ok) {
+            const copy = res.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+          }
           return res;
         })
         .catch(() => caches.match(req).then((res) => res || caches.match('./index.html')))

@@ -12,7 +12,7 @@ const SEQEncargosUI = (function () {
   var IMG_SCENE = 'assets/character/siredwards_encargos.webp';
   var IMG_DONE = 'assets/character/siredwards_encargos_completados.webp';
 
-  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function esc(s) { s = String(s == null ? '' : s); return typeof escapeHtml === 'function' ? escapeHtml(s) : s.replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function pct(r) { return Math.round(Math.max(0, Math.min(1, r.frac)) * 100); }
 
   function timeLeftText(ms) {

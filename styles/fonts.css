@@ -1,0 +1,17 @@
+/* 2.4 — Tipografías alojadas en la propia app (antes venían de Google Fonts y no estaban disponibles sin conexión).
+   Inter (interfaz) y Playfair Display (títulos), variables y recortadas a latín (español incluido). Licencia SIL OFL:
+   assets/fonts/OFL-*.txt. Van en la caché de imágenes/recursos del service worker (assets/ + huella). */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('../assets/fonts/inter-latin.woff') format('woff');
+}
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 600 800;
+  font-display: swap;
+  src: url('../assets/fonts/playfair-display-latin.woff') format('woff');
+}

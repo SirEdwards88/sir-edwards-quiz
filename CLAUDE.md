@@ -10,8 +10,7 @@ Backend aparte (Cloudflare Worker + D1), que NO vive en este repositorio.
 - Reutiliza los módulos existentes antes de crear otro. No crees módulos duplicados ni reorganices archivos sin una necesidad concreta.
 - Separa lógica de negocio, persistencia e interfaz cuando sea razonable.
 - Sin dependencias nuevas ni herramienta de compilación salvo que sean imprescindibles.
-- **Audio:** sonidos y música se centralizan en `src/audio/audio.js` (reproducción, ajustes de sonido, comportamiento sin conexión).
-  Hoy el audio sigue dentro de `index.html` (`playSound` y afines); se extrae al añadir los sonidos nuevos, en un commit propio.
+- **Audio:** sonidos y música viven en `src/audio/audio.js` (reproducción, ajustes de sonido, comportamiento sin conexión). No añadas audio en `index.html`.
 - Una reorganización mayor de `index.html` se deja para una versión posterior y solo si hace falta.
 - No mezclar cambios de modularización con cambios funcionales ajenos a la tarea.
 
@@ -25,9 +24,11 @@ Backend aparte (Cloudflare Worker + D1), que NO vive en este repositorio.
 
 ## Backend acoplado a esta PWA
 El Worker (fuera de este repo) tiene su propia copia del banco de preguntas (corrige Duelo/Retos), de la lista de logros y de la de avatares,
-**generadas a partir de `src/data/questions.js`, `lucidez.js`, `medals.js` y `avatars.js`**. Si cambias cualquiera de ellos: regenerar (`scripts/gen-questions.mjs`,
-`scripts/gen-lucidez.mjs`, `scripts/gen-constants.mjs`) y **volver a desplegar el Worker**; si no, Duelo/Retos y el perfil pueden fallar en producción.
-Los Retos por modo (2.0) los corrige el servidor (`src/reto-modes.js` del backend); `src/utils/matching.js` tiene una copia literal allí (`src/matching.js`).
+**generadas a partir de `src/data/questions.js`, `lucidez.js`, `medals.js` y `avatars.js`**. Si cambias cualquiera de ellos: ejecutar
+`node scripts/worker-sync.mjs <ruta del backend>` (copia las partes literales, regenera con los `gen-*.mjs` del backend, pasa sus tests y anota el estado en
+`scripts/worker-copies.json`) y **volver a desplegar el Worker** (`npx wrangler deploy` en el backend); si no, Duelo/Retos y el perfil pueden fallar en producción.
+`node scripts/worker-sync.mjs --check` (lo ejecuta un test y `bump-version.mjs` avisa) detecta que una copia quedó atrasada. Los `gen-*.mjs` viven en el backend, no aquí.
+Los Retos por modo (2.0) los corrige el servidor (`src/reto-modes.js` del backend); `src/utils/matching.js` y `src/utils/answer-alias.js` (la guarda contra respuestas que son otro distractor del banco) tienen copia literal allí.
 Igual con `src/utils/sync-merge.js`: debe ser el mismo texto que `src/sync-merge.js` del backend.
 
 ## Producto (decisiones cerradas de la 2.0)
@@ -39,4 +40,5 @@ Igual con `src/utils/sync-merge.js`: debe ser el mismo texto que `src/sync-merge
 - Bienvenida (primera vez, tras la cuenta) y aviso de novedades (al actualizar, lee la entrada del historial de la versión):
   mantener SIEMPRE su tono de Sir Edwards, elegante y sarcástico («Vaya, un nuevo aspirante.», «Tus excusas, no.»,
   «Mientras no mirabas, Sir Edwards ha estado ocupado:»). Cada versión nueva lleva su entrada en el historial con ese tono.
+- Tipografías (Inter, Playfair Display) alojadas en `assets/fonts/` y `styles/fonts.css`: no volver a depender de Google Fonts (sin conexión no cargan).
 - Nunca perder datos de usuarios existentes: la clave local `siredwards_quiz_v1_0_data` no se cambia.

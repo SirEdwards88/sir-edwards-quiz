@@ -1,0 +1,19 @@
+{
+  "literal": {
+    "src/utils/matching.js": "095f6b8efd6ad320",
+    "src/utils/answer-alias.js": "03aefa9d84d8a724",
+    "src/utils/lucidez-select.js": "d64e741c92968981",
+    "src/utils/mental-calc.js": "eba038f76a434779",
+    "src/utils/sync-merge.js": "1c40769956b6be3c"
+  },
+  "watched": {
+    "src/utils/sudden-progression.js": "d2586129d1166d82"
+  },
+  "data": {
+    "src/data/questions.js": "04220fdde87868af",
+    "src/data/questions-retired.js": "4e3c08fdf9db4039",
+    "src/data/lucidez.js": "4bc05c6b15d06516",
+    "src/data/medals.js": "ce4efd4e7373487d",
+    "src/data/avatars.js": "d264eaf77e377a73"
+  }
+}

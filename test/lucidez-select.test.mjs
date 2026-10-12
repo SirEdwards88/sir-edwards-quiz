@@ -16,14 +16,14 @@ function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; le
 const RANK = { facil: 0, medio: 1, dificil: 2 };
 const count = (arr, f) => arr.filter(f).length;
 
-test('datos: 272 con lz (174 A, 98 B): 189 medias, 51 difíciles, 32 fáciles', () => {
+test('datos: 272 con lz (174 A, 98 B): 192 medias, 49 difíciles, 31 fáciles', () => {
   const lz = BANK.filter((q) => q.lz);
   assert.equal(lz.length, 272);
   assert.equal(count(lz, (q) => q.lz === 'A'), 174);
   assert.equal(count(lz, (q) => q.lz === 'B'), 98);
-  assert.equal(count(lz, (q) => q.dif === 'medio'), 189);
-  assert.equal(count(lz, (q) => q.dif === 'dificil'), 51);
-  assert.equal(count(lz, (q) => q.dif === 'facil'), 32);
+  assert.equal(count(lz, (q) => q.dif === 'medio'), 192);
+  assert.equal(count(lz, (q) => q.dif === 'dificil'), 49);
+  assert.equal(count(lz, (q) => q.dif === 'facil'), 31);
   assert.ok(BANK.every((q) => !q.lz || q.lz === 'A' || q.lz === 'B'));
   assert.ok(lz.every((q) => !(Array.isArray(q.options) && q.options.length)), 'Lucidez es de respuesta escrita: nada con opciones');
   assert.equal(new Set(BANK.map((q) => q.n)).size, BANK.length, 'ids únicos');
@@ -97,7 +97,8 @@ test('memoria (avoid) MANDA sobre la variedad: nunca repite si queda una alterna
     const seen = new Set(), rng = mulberry32(1000 + run);
     for (let g = 0; g < 9; g++) {
       const unseen = (lv) => BANK.filter((q) => q.lz && q.dif === lv && !seen.has(q.n)).length;
-      const can = { facil: unseen('facil') >= NEED.facil, medio: unseen('medio') >= NEED.medio, dificil: unseen('dificil') >= NEED.dificil };
+      // +3 de holgura: con justo las necesarias sin ver, un par (`par`) entre ellas obliga a repetir una; es un borde, no un fallo.
+      const can = { facil: unseen('facil') >= NEED.facil + 3, medio: unseen('medio') >= NEED.medio + 3, dificil: unseen('dificil') >= NEED.dificil + 3 };
       const sel = S.select(BANK, rng, seen);
       check(sel, 'mem' + run + '-' + g, true);          // curva, pares y orden siempre; los límites de categoría ceden ante la memoria
       for (const q of lvlOf(sel)) { if (can[q.dif]) assert.ok(!seen.has(q.n), 'repetida #' + q.n + ' con alternativa (' + q.dif + ') run ' + run + ' juego ' + g); seen.add(q.n); }
@@ -136,7 +137,8 @@ test('pickLucidezGame: guarda las vistas y NO repite mientras quede una no vista
   for (let g = 0; g < 14; g++) {
     const before = new Set(c.store.questionBags.lucidez_vistas || []);
     const unseen = (lv) => bank.filter((q) => q.dif === lv && !before.has(q.n)).length;
-    const can = { facil: unseen('facil') >= NEED.facil, medio: unseen('medio') >= NEED.medio, dificil: unseen('dificil') >= NEED.dificil };
+    // +3 de holgura: con justo las necesarias sin ver, un par (`par`) entre ellas obliga a repetir una; es un borde, no un fallo.
+      const can = { facil: unseen('facil') >= NEED.facil + 3, medio: unseen('medio') >= NEED.medio + 3, dificil: unseen('dificil') >= NEED.dificil + 3 };
     const sel = c.P();
     check(sel, 'cliente' + g, true);
     for (const q of lvlOf(sel)) if (can[q.dif]) assert.ok(!before.has(q.n), 'repetida #' + q.n + ' en la partida ' + g);
