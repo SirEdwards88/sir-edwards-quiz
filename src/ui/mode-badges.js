@@ -19,7 +19,7 @@
 
   function src(mode, tier, variant) {
     var n = (mode === 'survival' && BY_TIER[tier]) || BY_MODE[mode] || BY_MODE[BY_NAME[mode]];
-    if (mode === 'mental_calc' && variant === 'classic') n = 'calculo-clasico'; // Cálculo de Fondo
+    if ((mode === 'mental_calc' && variant === 'classic') || mode === 'Cálculo de Fondo') n = 'calculo-clasico'; // Cálculo de Fondo (por clave+variante o por nombre visible)
     return n ? DIR + n + '.webp' : '';
   }
   function img(mode, tier, variant) {
