@@ -16,13 +16,13 @@ function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; le
 const RANK = { facil: 0, medio: 1, dificil: 2 };
 const count = (arr, f) => arr.filter(f).length;
 
-test('datos: 305 con lz (205 A, 100 B): 193 medias, 81 difíciles, 31 fáciles', () => {
+test('datos: 321 con lz (219 A, 102 B): 193 medias, 97 difíciles, 31 fáciles', () => {
   const lz = BANK.filter((q) => q.lz);
-  assert.equal(lz.length, 305);
-  assert.equal(count(lz, (q) => q.lz === 'A'), 205);
-  assert.equal(count(lz, (q) => q.lz === 'B'), 100);
+  assert.equal(lz.length, 321);
+  assert.equal(count(lz, (q) => q.lz === 'A'), 219);
+  assert.equal(count(lz, (q) => q.lz === 'B'), 102);
   assert.equal(count(lz, (q) => q.dif === 'medio'), 193);
-  assert.equal(count(lz, (q) => q.dif === 'dificil'), 81);
+  assert.equal(count(lz, (q) => q.dif === 'dificil'), 97);
   assert.equal(count(lz, (q) => q.dif === 'facil'), 31);
   assert.ok(BANK.every((q) => !q.lz || q.lz === 'A' || q.lz === 'B'));
   assert.ok(lz.every((q) => !(Array.isArray(q.options) && q.options.length)), 'Lucidez es de respuesta escrita: nada con opciones');
@@ -36,7 +36,7 @@ test('datos: los pares son simétricos y ambos extremos están en la criba', () 
     for (const p of q.par) { assert.ok(by.get(p) && by.get(p).lz, 'par #' + p); assert.ok(Array.from(by.get(p).par).includes(q.n), 'simetría ' + q.n + '-' + p); }
   }
   const ids = BANK.filter((q) => q.par).map((q) => q.n).sort((a, b) => a - b);
-  assert.deepEqual(ids, [23, 32, 44, 45, 48, 51, 87, 101, 102, 196, 205, 295, 296, 297, 337, 338, 339, 381, 382, 383, 413, 454, 468]);
+  assert.deepEqual(ids, [23, 32, 44, 45, 48, 51, 87, 101, 102, 196, 205, 295, 296, 297, 337, 338, 339, 381, 382, 383, 413, 454, 468, 476, 493]);
 });
 
 test('alias: las respuestas naturales que fallaban ahora se aceptan', () => {
@@ -143,7 +143,7 @@ test('pickLucidezGame: guarda las vistas y NO repite mientras quede una no vista
     check(sel, 'cliente' + g, true);
     for (const q of lvlOf(sel)) if (can[q.dif]) assert.ok(!before.has(q.n), 'repetida #' + q.n + ' en la partida ' + g);
   }
-  // Con 14 partidas el banco puede haber dado ya la vuelta entera (305 elegibles, 24 por partida): queda, al menos, la última partida.
+  // Con 14 partidas el banco puede haber dado ya la vuelta entera (321 elegibles, 24 por partida): queda, al menos, la última partida.
   assert.ok(c.store.questionBags.lucidez_vistas.length >= 24);
 });
 
