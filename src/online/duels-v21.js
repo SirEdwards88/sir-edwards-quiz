@@ -64,6 +64,10 @@
     return '<span class="seq-v21-ico ' + (cls || '') + '" aria-hidden="true"><img src="' + ICON_DIR + group + '/' + id + '.webp" alt="" draggable="false" ' +
       'onerror="this.remove()"></span>';
   }
+  // Emblema (sin aro ni disco) para la cabecera de la partida: assets/modes/emblema/duelo-<modo>.webp.
+  function modeEmblem(m) {
+    return '<span class="seq-v21-ico seq-v21-ico-mode" aria-hidden="true"><img src="assets/modes/emblema/' + (modeKey(m) === 'stakes' ? 'duelo-apuestas' : 'duelo-clasico') + '.webp" alt="" draggable="false" onerror="this.remove()"></span>';
+  }
   function modeIcon(m) { m = modeKey(m); return icon('modos', m, 'seq-v21-ico-mode'); }
   // Medallón de «estadísticas de duelos» (libro de cuentas con pluma): assets/duelos/estadisticas.webp. Si falta, el del Duelo clásico.
   function statsIcon() {
@@ -163,7 +167,7 @@
     var p = h.player(d.rival), r = d.ronda || null, fase = r ? r.fase : 'cuenta_atras';
     var out = '<div class="seq-d-toprow"><button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.leaveDuel()">← Duelo online</button></div>';
     out += '<div id="seq-d-msg" class="feedback" style="display:none;"></div>';
-    out += '<div class="mode-header game-hud seq-d-hud seq-d-hud-reto seq-v21-hud"><span class="seq-d-hud-lbl"><span class="seq-d-hud-mode" title="Duelo por apuestas">' + modeIcon('stakes') + '</span></span>' +
+    out += '<div class="mode-header game-hud seq-d-hud seq-d-hud-reto seq-v21-hud"><span class="seq-d-hud-lbl"><span class="seq-d-hud-mode" title="Duelo por apuestas">' + modeEmblem('stakes') + '</span></span>' +
       '<span class="seq-d-hud-right"><span class="seq-d-hud-time">' + h.ico('tiempo') + '<span id="seq-v21-time"></span>s</span></span>' +
       '<span class="seq-d-vs-chip" title="Tu rival">' + p.avatar + '<span class="seq-d-rival-name">' + p.name + '</span></span></div>';
     out += scoreboard(d);
