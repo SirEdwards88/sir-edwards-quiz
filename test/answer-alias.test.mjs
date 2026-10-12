@@ -12,10 +12,10 @@ vm.runInContext(read('src/utils/matching.js') + read('src/utils/answer-alias.js'
 const { M, F, Q } = ctx;
 const q = (n) => Q.find((x) => x.n === n);
 
-test('370 (24 segundos) acepta «24» y «veinticuatro» además de la respuesta', () => {
+test('370 (24 segundos) acepta «24», «veinticuatro» y «veinticuatro segundos» además de la respuesta', () => {
   const p = q(370);
-  assert.deepEqual(Array.from(p.alias), ['24', 'veinticuatro']);
-  for (const u of ['24 segundos', '24', 'veinticuatro', '24 Segundos']) assert.ok(M(u, p), u);
+  assert.deepEqual(Array.from(p.alias), ['24', 'veinticuatro', 'veinticuatro segundos']);
+  for (const u of ['24 segundos', '24', 'veinticuatro', '24 Segundos', 'veinticuatro segundos', 'Veinticuatro Segundos']) assert.ok(M(u, p), u);
   for (const u of ['25', '14', 'veinte', '']) assert.ok(!M(u, p), 'no debería aceptar «' + u + '»');
 });
 

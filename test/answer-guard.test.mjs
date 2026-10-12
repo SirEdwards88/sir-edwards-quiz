@@ -45,3 +45,17 @@ test('Enigma Final: formas naturales válidas y partes sueltas no', () => {
   for (const [i, u] of si) assert.ok(M(u, R[i]), i + ' «' + u + '»');
   for (const [i, u] of no) assert.ok(!M(u, R[i]), i + ' «' + u + '»');
 });
+
+// Los enigmas 9 (huevos) y 15 (guantes) compartían una lista de alias copiada: cada uno aceptaba la unidad del otro
+// («4 guantes» para los huevos). Cada alias con unidad debe nombrar algo que el propio enunciado menciona.
+test('Enigma Final: ningún alias lleva la unidad de otro enigma', () => {
+  // Solo sustantivos de objetos: las unidades de medida alternativas («500 gramos» para 0,5 kg) son alias legítimos.
+  const units = ['huevos', 'guantes', 'conejos', 'gallinas', 'hijos'];
+  for (const [i, r] of R.entries()) {
+    for (const al of r.alias || []) for (const u of units) {
+      if (new RegExp('\\b' + u + '\\b', 'i').test(al)) assert.ok(new RegExp('\\b' + u.replace(/s$/, ''), 'i').test(r.q) || new RegExp('\\b' + u + '\\b', 'i').test(r.a), 'enigma ' + i + ': el alias «' + al + '» usa «' + u + '», que no es de este enigma');
+    }
+  }
+  assert.ok(M('4 huevos', R[9]) && !M('4 guantes', R[9]), 'huevos: «4 huevos» sí, «4 guantes» no');
+  assert.ok(M('4 guantes', R[15]) && !M('4 huevos', R[15]), 'guantes: «4 guantes» sí, «4 huevos» no');
+});

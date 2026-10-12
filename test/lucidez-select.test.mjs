@@ -16,17 +16,23 @@ function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; le
 const RANK = { facil: 0, medio: 1, dificil: 2 };
 const count = (arr, f) => arr.filter(f).length;
 
-test('datos: 321 con lz (219 A, 102 B): 193 medias, 97 difíciles, 31 fáciles', () => {
+test('datos: 320 con lz (219 A, 101 B): 193 medias, 97 difíciles, 30 fáciles', () => {
   const lz = BANK.filter((q) => q.lz);
-  assert.equal(lz.length, 321);
+  assert.equal(lz.length, 320);
   assert.equal(count(lz, (q) => q.lz === 'A'), 219);
-  assert.equal(count(lz, (q) => q.lz === 'B'), 102);
+  assert.equal(count(lz, (q) => q.lz === 'B'), 101);
   assert.equal(count(lz, (q) => q.dif === 'medio'), 193);
   assert.equal(count(lz, (q) => q.dif === 'dificil'), 97);
-  assert.equal(count(lz, (q) => q.dif === 'facil'), 31);
+  assert.equal(count(lz, (q) => q.dif === 'facil'), 30);
   assert.ok(BANK.every((q) => !q.lz || q.lz === 'A' || q.lz === 'B'));
   assert.ok(lz.every((q) => !(Array.isArray(q.options) && q.options.length)), 'Lucidez es de respuesta escrita: nada con opciones');
   assert.equal(new Set(BANK.map((q) => q.n)).size, BANK.length, 'ids únicos');
+});
+
+// Criterio de la criba: sin las opciones delante, el enunciado debe poder contestarse. «¿Cuál de estos mamíferos pone huevos?»
+// (n=128) no lo cumplía (ni tiene respuesta única: el equidna también pone huevos) y se retiró del banco escrito.
+test('datos: ninguna pregunta con lz depende de las opciones («de estos…», «de las siguientes…»)', () => {
+  for (const q of BANK.filter((x) => x.lz)) assert.ok(!/\b(de|entre) (estos|estas|esos|esas|los siguientes|las siguientes)\b|\bcu[aá]l de\b/i.test(q.q), '#' + q.n + ' depende de las opciones: ' + q.q);
 });
 
 test('datos: los pares son simétricos y ambos extremos están en la criba', () => {
