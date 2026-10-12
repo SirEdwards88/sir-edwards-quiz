@@ -112,5 +112,28 @@
     if (v) v.textContent = String(n);
   }
 
-  window.SEQMentalClassicUI = { bestOf: bestOf, isClassic: isClassic, start: start, finish: finish, livesHtml: livesHtml, renderStat: renderStat };
+  // «Continuar partida» del Fondo: el reloj de la operación vuelve con los segundos que quedaban al salir.
+  function restore(saved) {
+    var u = SEQMentalClassic.unpack(saved);
+    currentGame = u.game;
+    mentalCalcSession = SEQMentalCalc.createSession();
+    var hasOp = !!u.op;
+    currentMentalOp = hasOp ? u.op : null;
+    mentalCalcEndTime = Date.now() + u.remainingMs;
+    mentalCalcSecondsLeft = Math.ceil(u.remainingMs / 1000);
+    if (hasOp) currentMentalOp.startedAt = Date.now() - (SEQMentalClassic.OP_MS - u.remainingMs);
+
+    clearCardThemeClasses();
+    document.getElementById('main-card-container').classList.add('theme-mentalcalc');
+    document.getElementById('results-card').style.display = 'none'; SEQLevelUp.mark();
+    document.getElementById('game-play-area').style.display = 'block';
+
+    switchTab('game');
+    renderQuestion(hasOp);
+    runMentalCalcTimer(true);
+    updateResumeButton();
+    return true;
+  }
+
+  window.SEQMentalClassicUI = { bestOf: bestOf, isClassic: isClassic, start: start, finish: finish, livesHtml: livesHtml, renderStat: renderStat, restore: restore };
 })();

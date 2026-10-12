@@ -17,12 +17,13 @@
   var BY_NAME = { 'Modo Estándar': 'play', 'Repaso': 'review', 'Supervivencia': 'survival', 'Muerte Súbita': 'sudden_death',
     'Contrarreloj': 'timetrial', 'Cálculo Mental': 'mental_calc', 'Cálculo Turbo': 'mental_calc', 'Lucidez Mental': 'lucidez_mental' };
 
-  function src(mode, tier) {
+  function src(mode, tier, variant) {
     var n = (mode === 'survival' && BY_TIER[tier]) || BY_MODE[mode] || BY_MODE[BY_NAME[mode]];
+    if (mode === 'mental_calc' && variant === 'classic') n = 'calculo-clasico'; // Cálculo de Fondo
     return n ? DIR + n + '.webp' : '';
   }
-  function img(mode, tier) {
-    var s = src(mode, tier);
+  function img(mode, tier, variant) {
+    var s = src(mode, tier, variant);
     return s ? '<img class="mode-img" src="' + s + '" alt="" draggable="false">' : '';
   }
   // Versión «mini» (assets/modes/mini/): la misma ilustración recortada al centro, sin marco ni gemas, para los

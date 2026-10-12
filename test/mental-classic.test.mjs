@@ -72,3 +72,33 @@ test('el récord de Fondo viaja por la sincronización y el ranking de Fondo exi
   assert.ok(rk.includes("CALC_BOARDS = ['mental', 'fondo']"), 'Cálculo con dos subpestañas');
   assert.match(read('index.html'), /data-mental="fondo"[\s\S]*data-mental="turbo"/, 'Fondo arriba, Turbo abajo');
 });
+
+test('el Fondo se puede continuar: el reloj de la operación queda en pausa', () => {
+  const g = { mode: 'mental_calc', variant: 'classic', lives: 2, score: 90, correct: 7, total: 8, streak: 3, bestStreak: 5, totalTimeMs: 1000, currentIdx: 7, answered: false };
+  const op = { text: '7 × 8', answer: 56, tier: 'facil', startedAt: 1 };
+  const p = C.pack(g, op, 12500);
+  assert.equal(C.isResumable(p), true);
+  assert.equal(p.remainingMs, 12500);
+  const u = C.unpack(p);
+  assert.equal(u.remainingMs, 12500);
+  assert.equal(u.op.answer, 56);
+  assert.equal(u.game.variant, 'classic');
+  assert.equal(u.game.lives, 2);
+  assert.equal(u.game.score, 90);
+  // entre operaciones: operación nueva con los 20 s completos
+  const q = C.unpack(C.pack(Object.assign({}, g, { answered: true }), op, 3000));
+  assert.equal(q.op, null);
+  assert.equal(q.remainingMs, C.OP_MS);
+  // sin vidas no se continúa; Turbo no es Fondo
+  assert.equal(C.isResumable(Object.assign({}, g, { lives: 0 })), false);
+  assert.equal(C.isResumable({ mode: 'mental_calc' }), false);
+});
+
+test('el Fondo guarda y restaura la partida desde index.html', () => {
+  const html = read('index.html');
+  assert.ok(!/el Fondo \(en pruebas\) no se reanuda/.test(html));
+  assert.match(html, /SEQMentalClassic\.pack\(currentGame/);
+  assert.match(html, /SEQMentalClassicUI\.restore\(saved\)/);
+  assert.match(html, /function runMentalCalcTimer\(classic\)/);
+  assert.match(read('src/ui/mental-classic-ui.js'), /restore: restore/);
+});
