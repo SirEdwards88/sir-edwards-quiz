@@ -1,7 +1,8 @@
 // SirEdwards Quiz — Cálculo de Fondo (2.3): arranque y final de partida.
 // El modo reutiliza el bucle de Cálculo Turbo de index.html (currentGame.mode === 'mental_calc' con variant 'classic');
-// aquí vive lo que es solo suyo: la comprobación de la variante, el arranque y la tarjeta final, que NO toca
-// estadísticas de Turbo, logros ni encargos. Su récord vive en store.bestMentalClassicCorrect / bestMentalClassicScore
+// aquí vive lo que es solo suyo: la comprobación de la variante, el arranque y la tarjeta final. Los logros de
+// Cálculo mental (bestMentalCalcCorrect) cuentan las partidas de Turbo y de Fondo; el resto de estadísticas de Turbo
+// y los encargos no se tocan. Su récord vive en store.bestMentalClassicCorrect / bestMentalClassicScore
 // (viajan por la sincronización y alimentan el ranking de Fondo); la marca antigua store.mentalClassicBest se sigue leyendo.
 // Script clásico (scope global). Reglas puras en src/utils/mental-classic.js.
 (function () {
@@ -41,6 +42,9 @@
     var best = bestOf();
     var isRecord = SEQMentalClassic.isBetter(g.correct, g.score, best);
     if (isRecord) { store.bestMentalClassicCorrect = g.correct; store.bestMentalClassicScore = g.score; }
+    // Los logros de Cálculo mental valen para ambos modos de cálculo.
+    if (g.correct > (store.bestMentalCalcCorrect || 0)) store.bestMentalCalcCorrect = g.correct;
+    var newMedals = checkMedalsAndGetNew();
     clearSavedGame();
     saveStore(false);
     updateResumeButton();
@@ -75,7 +79,15 @@
     renderRecordBadge(isRecord ? seqIco('copa') + 'NUEVO RÉCORD' : null, 'gold');
 
     var m1 = document.getElementById('session-mode-unlock-box'); if (m1) m1.style.display = 'none';
-    var m2 = document.getElementById('session-medals-box'); if (m2) m2.style.display = 'none';
+    var m2 = document.getElementById('session-medals-box'), ml = document.getElementById('session-medals-list');
+    if (m2 && ml && newMedals.length) {
+      m2.style.display = 'block';
+      ml.innerHTML = newMedals.map(function (m) {
+        return '<div class="session-medal-item"><div class="session-medal-icon' + (window.SEQAchievements ? ' has-img' : '') + '">' +
+          (window.SEQAchievements ? SEQAchievements.iconHTML(m) : '') + '</div><div><div class="session-medal-info">' + m.title +
+          '</div><div class="session-medal-desc">' + m.desc + '</div></div></div>';
+      }).join('');
+    } else if (m2) m2.style.display = 'none';
     if (r.category !== 'mal' && !recordSoundPlayed) playSound('win');
   }
 

@@ -13,17 +13,17 @@ const { T, Q, RT, RQ } = ctx;
 const CATS = ['historia', 'geografia', 'ciencia', 'arte_literatura', 'deporte', 'cultura_general'];
 const by = (a, k) => a.reduce((m, x) => ((m[x[k]] = (m[x[k]] || 0) + 1), m), {});
 
-test('el banco de test tiene 420 preguntas, sin IDs repetidos, de 1 a 423 con solo 3 huecos', () => {
-  assert.equal(T.length, 420);
+test('el banco de test tiene 450 preguntas, sin IDs repetidos, de 1 a 453 con solo 3 huecos', () => {
+  assert.equal(T.length, 450);
   const ids = T.map((q) => q.n);
-  assert.equal(new Set(ids).size, 420);
-  const missing = Array.from({ length: 423 }, (_, i) => i + 1).filter((n) => !ids.includes(n));
+  assert.equal(new Set(ids).size, 450);
+  const missing = Array.from({ length: 453 }, (_, i) => i + 1).filter((n) => !ids.includes(n));
   assert.deepEqual(missing, [90, 91, 197]);
-  assert.equal(Math.max(...ids), 423);
+  assert.equal(Math.max(...ids), 453);
 });
 
 test('reparto por dificultad y categorías: solo las seis oficiales', () => {
-  assert.deepEqual({ ...by(T, 'dif') }, { facil: 179, medio: 181, dificil: 60 });
+  assert.deepEqual({ ...by(T, 'dif') }, { facil: 186, medio: 203, dificil: 61 });
   assert.ok(T.every((q) => CATS.includes(q.cat)), 'categoría fuera de las seis');
   assert.ok(Q.every((q) => CATS.includes(q.cat)));
 });
@@ -55,10 +55,10 @@ test('las retiradas siguen resolviéndose por ID (duelos y retos creados antes d
   assert.ok(!RT.some((q) => T.some((t) => t.n === q.n)));
 });
 
-test('el banco de Lucidez es el de test (medio y difícil) más las 25 fáciles de la criba, y comparte texto y respuesta', () => {
-  assert.equal(Q.length, 266);
+test('el banco de Lucidez es el de test (medio y difícil) más las fáciles de la criba (25 y las 7 del lote 424-453), y comparte texto y respuesta', () => {
+  assert.equal(Q.length, 296);
   const faciles = Q.filter((q) => q.dif === 'facil');
-  assert.equal(faciles.length, 25);
+  assert.equal(faciles.length, 32);
   assert.ok(faciles.every((q) => q.lz === 'B'));
   const expected = T.filter((q) => q.dif !== 'facil').map((q) => q.n).concat(faciles.map((q) => q.n)).sort((a, b) => a - b);
   assert.deepEqual(Q.map((q) => q.n).sort((a, b) => a - b), expected);
