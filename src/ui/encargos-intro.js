@@ -151,17 +151,14 @@ const SEQEncargosIntro = (function () {
     var key = (preview ? 'normal' : pendingResult) || 'neutra';
     var name = playerName();
     var steps = [
-      { beat: 1, text: (name ? 'Ah, ' + name + '. Una partida terminada.' : 'Ah. Una partida terminada.'), ms: 2400 },
+      { beat: 1, text: name ? 'Ah, ' + name + '. Veo que has terminado tu primera partida.' : 'Veo que has terminado tu primera partida.', ms: 2400 },
       { beat: 1, text: pick('encintro_' + key, R[key] && R[key].length ? R[key] : R.neutra), ms: 2900 },
-      { beat: 1, text: 'Permíteme presentarme: soy Sir Edwards. Evaluador oficial de tu lucidez.', ms: 3300, title: true },
-      { beat: 1, text: 'Nadie me lo pidió. Me nombré yo mismo.', ms: 2600, title: true },
-      { beat: 2, text: 'Y como todo talento necesita supervisión…', ms: 2600 },
-      { beat: 2, text: 'Cada semana tendrás tres encargos.', ms: 2300 },
-      { beat: 2, text: 'Y un Gran Encargo… para quien tenga ambición.', ms: 2900 },
-      { beat: 3, text: 'Cumplirlos mejorará tu expediente. Mi opinión de ti, ya veremos.', ms: 2600 },
-      { beat: 3, text: 'Ignorarlos…', ms: 1900 },
-      { beat: 3, text: 'me dará material.', ms: 2100 },
-      { beat: 3, text: 'Te estaré observando.', ms: 2700, blink: true },
+      { beat: 1, text: 'Permíteme presentarme. Soy Sir Edwards, responsable de evaluar tus facultades intelectuales.', ms: 3300, title: true },
+      { beat: 1, text: 'El cargo no existía. Consideré que era un descuido y lo solucioné.', ms: 3000, title: true },
+      { beat: 2, text: 'Naturalmente, una evaluación seria exige algo más que una partida.', ms: 3000 },
+      { beat: 2, text: 'Cada semana tendrás tres encargos. Y un Gran Encargo, por si los otros tres te parecen poca cosa.', ms: 3400 },
+      { beat: 3, text: 'Cumplirlos mejorará tu expediente. En cuanto a mi opinión sobre ti… eso está por ver.', ms: 3200 },
+      { beat: 3, text: 'Procura no decepcionarme demasiado pronto.', ms: 2800, blink: true },
       { beat: 4, final: true, ms: 5000 }
     ];
 
@@ -176,7 +173,7 @@ const SEQEncargosIntro = (function () {
       '<div class="enc-intro-title" aria-hidden="true"><div class="t1">SIR EDWARDS</div><div class="t2">Evaluador oficial de tu lucidez</div></div>' +
       '<p class="enc-intro-caption" aria-live="polite"></p>' +
       '<div class="enc-intro-hint" aria-hidden="true">Toca para continuar</div>' +
-      '<div class="enc-intro-final"><div class="enc-intro-dossier"><div class="k">ENCARGOS</div><div class="m">Tu expediente ha sido abierto.</div>' +
+      '<div class="enc-intro-final"><div class="enc-intro-dossier"><div class="k">ENCARGOS</div><div class="m">Tu expediente queda oficialmente abierto.</div>' +
         '<div class="seal" aria-hidden="true"><span>SE</span></div></div>' +
         '<button type="button" class="enc-intro-go">Ver mis encargos</button></div>';
     var img = el.querySelector('.enc-intro-img'), sil = el.querySelector('.enc-intro-sil'), cap = el.querySelector('.enc-intro-caption');
