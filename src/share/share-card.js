@@ -63,13 +63,14 @@
     sudden_death:  { bg: ['#601219', '#170407'], glow: 'rgba(220,38,38,.42)', accent: '#f87171', ring: '#ef4444', icon: 'muerte-subita' },
     timetrial:     { bg: ['#6b1240', '#1c0512'], glow: 'rgba(236,72,153,.40)', accent: '#f9a8d4', ring: '#f472b6', icon: 'contrarreloj' },
     mental_calc:   { bg: ['#14532d', '#04140b'], glow: 'rgba(74,222,128,.32)', accent: '#86efac', ring: '#4ade80', icon: 'calculo' },
+    mental_classic:{ bg: ['#14532d', '#04140b'], glow: 'rgba(74,222,128,.32)', accent: '#86efac', ring: '#4ade80', icon: 'calculo-clasico' },
     review:        { bg: ['#0e4d48', '#031615'], glow: 'rgba(20,184,166,.38)', accent: '#5eead4', ring: '#2dd4bf', icon: 'repaso' },
     lucidez_mental:{ bg: ['#1a1240', '#070510'], glow: 'rgba(120,90,255,.42)', accent: BRAND.purpleLight, ring: BRAND.goldLight, icon: 'secreto' },
     duel:          { bg: ['#4a1426', '#14050b'], glow: 'rgba(176,58,92,.42)', accent: '#f4a3b3', ring: '#e0607a', icon: 'duelo' },
     reto:          { bg: ['#0b4a5c', '#03161c'], glow: 'rgba(34,211,238,.38)', accent: '#a5f3fc', ring: '#22d3ee', icon: 'retos' }
   };
   var MODE_BY_NAME = { 'modo estándar': 'play', 'estándar': 'play', 'supervivencia': 'survival', 'muerte súbita': 'sudden_death',
-    'contrarreloj': 'timetrial', 'cálculo mental': 'mental_calc', 'cálculo turbo': 'mental_calc', 'repaso': 'review', 'lucidez mental': 'lucidez_mental' };
+    'contrarreloj': 'timetrial', 'cálculo mental': 'mental_calc', 'cálculo turbo': 'mental_calc', 'cálculo de fondo': 'mental_classic', 'repaso': 'review', 'lucidez mental': 'lucidez_mental' };
   var MODE_ICON_DIR = 'assets/modes/suelto/';
   function themeFor(model) {
     var base = MODE_BG[model.mode] || THEMES[model.variant] || THEMES.standard;

@@ -49,8 +49,10 @@
     saveStore(false);
     updateResumeButton();
 
-    lastResultShareData = null;
-    var shareBtn = document.getElementById('res-share-btn'); if (shareBtn) shareBtn.style.display = 'none';
+    // «Compartir resultado» también en el Fondo (tarjeta con su insignia; no sube nada a ningún ránking).
+    lastResultShareData = { modeName: 'Cálculo de Fondo', scoreStr: g.correct + '/' + totalQ, accuracy: accuracy, streak: g.bestStreak || 0 };
+    var shareBtn = document.getElementById('res-share-btn');
+    if (shareBtn) { shareBtn.innerHTML = seqIco('compartir') + 'Compartir resultado'; shareBtn.style.display = ''; }
     var backBtn = document.getElementById('res-back-btn'); if (backBtn) backBtn.textContent = 'Volver al Menú principal';
 
     document.getElementById('game-play-area').style.display = 'none';

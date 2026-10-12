@@ -102,3 +102,10 @@ test('el Fondo guarda y restaura la partida desde index.html', () => {
   assert.match(html, /function runMentalCalcTimer\(classic\)/);
   assert.match(read('src/ui/mental-classic-ui.js'), /restore: restore/);
 });
+
+test('el resultado del Fondo se puede compartir: datos de la tarjeta y botón visible; la tarjeta tiene su tema', () => {
+  const ui = read('src/ui/mental-classic-ui.js'), card = read('src/share/share-card.js');
+  assert.ok(/lastResultShareData = \{ modeName: 'Cálculo de Fondo'/.test(ui));
+  assert.ok(!/res-share-btn'\); if \(shareBtn\) shareBtn\.style\.display = 'none'/.test(ui), 'el botón ya no se oculta');
+  assert.ok(card.includes("'cálculo de fondo': 'mental_classic'") && /mental_classic:\s*\{[^}]*calculo-clasico/.test(card));
+});
