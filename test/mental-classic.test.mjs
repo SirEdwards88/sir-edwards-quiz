@@ -53,9 +53,10 @@ test('Estadísticas: la fila del Fondo se crea desde el módulo, solo con récor
 
 test('el final del Fondo no toca estadísticas de Turbo ni el contador de partidas', () => {
   const ui = read('src/ui/mental-classic-ui.js');
-  for (const k of ['gamesPlayed', 'bestMentalCalcScore', 'bestMentalCalcCorrect', 'mentalCalcBestStreak', 'mentalCalcTotalCorrect', 'encargosOnGameEnd', 'checkMedalsAndGetNew', 'gameHistory']) {
+  for (const k of ['gamesPlayed', 'bestMentalCalcScore', 'mentalCalcBestStreak', 'mentalCalcTotalCorrect', 'encargosOnGameEnd', 'gameHistory']) {
     assert.ok(!ui.includes(k), 'mental-classic-ui.js no debe tocar ' + k);
   }
+  assert.ok(ui.includes('bestMentalCalcCorrect') && ui.includes('checkMedalsAndGetNew'), 'los logros de Cálculo mental cuentan también el Fondo');
   const html = read('index.html');
   const fg = html.slice(html.indexOf('function finishGame('));
   assert.ok(fg.indexOf('isMentalClassicGame()) { SEQMentalClassicUI.finish()') > 0 && fg.indexOf('isMentalClassicGame()) { SEQMentalClassicUI.finish()') < fg.indexOf('store.gamesPlayed++'), 'el Fondo sale de finishGame antes de contar la partida');

@@ -50,9 +50,9 @@ const ALL_MEDALS = [
   { id: 'sin_frenos', title: 'Sin Frenos', desc: 'Responde correctamente 10 preguntas consecutivas en Contrarreloj.', check: s => (s.timeTrialBestStreak || 0) >= 10 },
 
   // CÁLCULO MENTAL
-  { id: 'mental_calc_15', title: 'Cálculo Relámpago', desc: 'Consigue 15 aciertos en Cálculo Turbo en una misma partida.', check: s => (s.bestMentalCalcCorrect || 0) >= 15 },
-  { id: 'mental_calc_30', title: 'Calculadora Humana', desc: 'Consigue 25 aciertos en Cálculo Turbo en una misma partida.', check: s => (s.bestMentalCalcCorrect || 0) >= 25 },
-  { id: 'mental_calc_40', title: 'Genio Numérico', desc: 'Consigue 35 o más aciertos en Cálculo Turbo en una misma partida.', check: s => (s.bestMentalCalcCorrect || 0) >= 35 },
+  { id: 'mental_calc_15', title: 'Cálculo Relámpago', desc: 'Consigue 15 aciertos en Cálculo mental en una misma partida.', check: s => (s.bestMentalCalcCorrect || 0) >= 15 },
+  { id: 'mental_calc_30', title: 'Calculadora Humana', desc: 'Consigue 25 aciertos en Cálculo mental en una misma partida.', check: s => (s.bestMentalCalcCorrect || 0) >= 25 },
+  { id: 'mental_calc_40', title: 'Genio Numérico', desc: 'Consigue 35 o más aciertos en Cálculo mental en una misma partida.', check: s => (s.bestMentalCalcCorrect || 0) >= 35 },
 
   // PRECISIÓN / HABILIDAD
   { id: 'correct_100', title: 'Cerebro de Precisión', desc: 'Acierta 100 preguntas en total.', check: s => s.totalCorrect >= 100 },
