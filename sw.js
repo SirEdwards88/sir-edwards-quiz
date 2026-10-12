@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 229;
+const CACHE_VERSION = 230;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -111,7 +111,6 @@ const APP_SHELL = [
   './assets/ui/nivel/insignia-plata.webp',
   './assets/ui/nivel/insignia-rubi.webp',
   './assets/ui/nivel/rayos.webp',
-  './assets/ui/escenas/carga.webp',
   './assets/ui/escenas/error.webp',
   './assets/ui/escenas/sin-conexion.webp',
   './assets/ui/escenas/vacio-general.webp',
@@ -677,7 +676,6 @@ const ASSET_REVS = {
   './assets/ui/derrota.webp': '209581d4',
   './assets/ui/desastre.webp': '8e5ccc49',
   './assets/ui/diamante.webp': '8ab2f0aa',
-  './assets/ui/escenas/carga.webp': '16bc9a4b',
   './assets/ui/escenas/error.webp': '224f56ac',
   './assets/ui/escenas/sin-conexion.webp': '9076a1a8',
   './assets/ui/escenas/vacio-amigos.webp': 'e9fc13d9',
