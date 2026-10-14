@@ -2,6 +2,7 @@
 //
 // · Fuera de Inicio (cualquier otra pantalla) o con una ventana abierta, la app mantiene UNA entrada de historial de más: al
 //   pulsar «atrás», el navegador la consume y aquí se decide qué hacer (decide) y se vuelve a poner si sigue haciendo falta.
+// · «Atrás» vuelve a la pantalla anterior (Modos → Estadísticas → atrás → Modos → atrás → Inicio), no siempre a Inicio.
 // · En Inicio y sin ventanas, no hay entrada extra: «atrás» sale de la app como siempre.
 // · En PARTIDA (incluida su tarjeta de resultados, Duelos y Retos), «atrás» no hace nada: no se tira una partida por un gesto
 //   sin querer. Se sale con el botón de la propia pantalla.
@@ -28,7 +29,9 @@
   if (typeof document === 'undefined') { root.SEQBackNav = { decide: decide }; return; }
 
   var guarded = false;   // ¿hay ahora mismo una entrada de historial puesta por nosotros?
-  var pending = false;   // history.go(-1) lanzado por nosotros: su popstate no es un «atrás» del jugador
+  var pending = false;   // history.go(±1) lanzado por nosotros: su popstate no es un «atrás» del jugador
+  var stack = [];        // pantallas por las que se ha pasado (sin Inicio ni partida): «atrás» vuelve a la anterior, no siempre a Inicio
+  var byBack = false;    // el cambio de pantalla lo provoca el propio «atrás»: no se apila
 
   function $(id) { return document.getElementById(id); }
   function isOpen(m) { return m.style.display !== 'none' && getComputedStyle(m).display !== 'none'; }
@@ -72,16 +75,42 @@
     try {
       if (a === 'escape') document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }));
       else if (a === 'duel') root.duelTopbarBack();
-      else if (a === 'home' && typeof root.switchTab === 'function') root.switchTab('home');
+      else if (a === 'home' && typeof root.switchTab === 'function') {
+        var t = stack.pop();
+        if (!t || !$('view-' + t)) t = 'home';
+        byBack = true;
+        try { root.switchTab(t); } finally { byBack = false; }
+      }
     } catch (e) {}
-    setTimeout(ensure, 0);         // si sigue haciendo falta (otra ventana, otra pantalla, partida), se vuelve a poner
+    rearm();
+  }
+
+  // Si sigue haciendo falta la entrada extra (otra pantalla, ventana o partida), se recupera con «adelante» en vez de crear
+  // una nueva: Chrome omite al retroceder las entradas creadas sin gesto del jugador y la app se cerraría al segundo «atrás».
+  function rearm() {
+    if (guarded || pending) return;
+    try {
+      if (need()) { pending = true; guarded = true; history.go(1); }
+    } catch (e) { pending = false; guarded = false; }
   }
 
   function init() {
     // Tras recargar la página en una pantalla interior, la entrada extra sigue ahí: se recoge como propia y, si ya no hace falta, se retira.
     try { if (history.state && history.state.seqBack) guarded = true; } catch (e) {}
     var orig = root.switchTab;
-    if (typeof orig === 'function') root.switchTab = function () { var r = orig.apply(this, arguments); try { ensure(); } catch (e) {} return r; };
+    if (typeof orig === 'function') root.switchTab = function () {
+      var before = activeView(), r = orig.apply(this, arguments);
+      try {
+        var now = activeView();
+        if (now === 'home') stack = [];
+        else if (!byBack && now !== before) {
+          if (stack.length && stack[stack.length - 1] === now) stack.pop();   // se vuelve con un botón de la pantalla
+          else if (before && before !== 'home' && before !== 'game') stack.push(before);
+        }
+        ensure();
+      } catch (e) {}
+      return r;
+    };
     window.addEventListener('popstate', onPop);
     if (typeof MutationObserver !== 'undefined') {
       var obs = new MutationObserver(function () { ensure(); }), all = document.querySelectorAll('.modal-overlay');
