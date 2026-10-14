@@ -62,12 +62,25 @@
 }
 
 /* 3. Tarjetas de modos (Jugar y Duelos): papel limpio, color del modo solo en el filete superior */
-:root:not([data-theme="dark"]) #duel-home .seq-d-card:not(.seq-d-v-rank),
+:root:not([data-theme="dark"]) #duel-home .seq-d-card,
 :root:not([data-theme="dark"]) #view-modes .modes-grid .mode-card:not(.locked) {
   background: linear-gradient(var(--hc), var(--hc)) top / 100% 3px no-repeat, linear-gradient(180deg, var(--lr-paper), var(--lr-paper-2)) !important;
   border: 1px solid color-mix(in srgb, var(--hc) 42%, #b08624) !important;
   box-shadow: var(--lr-shadow) !important;
 }
+:root:not([data-theme="dark"]) #resume-game-card.mode-card {
+  background: linear-gradient(var(--hc), var(--hc)) top / 100% 3px no-repeat, linear-gradient(180deg, var(--lr-paper), var(--lr-paper-2)) !important;
+  border: 1px solid color-mix(in srgb, var(--hc) 42%, #b08624) !important;
+  box-shadow: var(--lr-shadow) !important;
+}
+/* «Continuar»: mismo papel opaco que el resto, con el filete del modo en curso */
+:root:not([data-theme="dark"]) #resume-game-card { --hc: #2d5bb8; }
+:root:not([data-theme="dark"]) #resume-game-card.mode-review { --hc: #0d9488; }
+:root:not([data-theme="dark"]) #resume-game-card.mode-survival { --hc: #d98a0b; }
+:root:not([data-theme="dark"]) #resume-game-card.mode-sudden { --hc: #c0262d; }
+:root:not([data-theme="dark"]) #resume-game-card.mode-timetrial { --hc: #d6336c; }
+:root:not([data-theme="dark"]) #resume-game-card.mode-mentalcalc { --hc: #15803d; }
+:root:not([data-theme="dark"]) #resume-game-card.mode-lucidez { --hc: #6d28d9; }
 /* Bloqueadas: apagadas pero limpias (papel más gris, sombra mínima, texto legible) */
 :root:not([data-theme="dark"]) #view-modes .modes-grid .mode-card.locked {
   background: linear-gradient(color-mix(in srgb, var(--hc) 38%, transparent), color-mix(in srgb, var(--hc) 38%, transparent)) top / 100% 3px no-repeat, linear-gradient(180deg, #f1e8d2, #e9dec2) !important;
