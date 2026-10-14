@@ -65,7 +65,8 @@
   }
 
   function V21() { return window.SEQDuels21 || null; }
-  function ic(board) { var v = V21(); return v && v.rkIcon ? v.rkIcon(board, 'seq-pf-ico') : ''; }
+  // Mismos iconos «sueltos» que en la pantalla de Estadísticas (assets/modes/suelto/).
+  function modeIc(name) { return '<span class="seq-pf-ico" aria-hidden="true"><img class="mode-img mode-img-loose" src="assets/modes/suelto/' + name + '.webp" alt="" draggable="false" onerror="this.remove()"></span>'; }
   // Casilla de dato: icono opcional, etiqueta pequeña, valor grande y detalle opcional (todo ya escapado por esc()/num()).
   function tile(label, value, hint, icon, wide) {
     return '<div class="seq-pf-tile' + (wide ? ' wide' : '') + '">' + (icon || '') + '<div class="seq-pf-tile-txt"><span class="seq-pf-lbl">' + esc(label) + '</span><b>' + value + '</b>' + (hint ? '<small>' + esc(hint) + '</small>' : '') + '</div></div>';
@@ -80,7 +81,7 @@
     var id = safeId(P.id), b = '';
     if (a.estado === 'ninguna') b = '<button class="btn btn-primary seq-pf-main" onclick="SEQProfile.request()">Enviar solicitud de amistad</button>';
     else if (a.estado === 'enviada') b = '<div class="seq-pf-chip seq-pf-wait"><span class="seq-pf-dot"></span>Solicitud enviada, esperando respuesta</div><button class="btn btn-secondary seq-pf-side" onclick="SEQProfile.respond(\'cancel\')">Cancelar</button>';
-    else if (a.estado === 'recibida') b = '<div class="seq-pf-chip seq-pf-wait">Quiere ser tu amigo</div><div class="seq-pf-pair"><button class="btn btn-primary" onclick="SEQProfile.respond(\'accept\')">Aceptar</button><button class="btn btn-secondary" onclick="SEQProfile.respond(\'reject\')">Rechazar</button></div>';
+    else if (a.estado === 'recibida') b = '<div class="seq-pf-pair"><button class="btn btn-primary" onclick="SEQProfile.respond(\'accept\')">Aceptar</button><button class="btn btn-secondary" onclick="SEQProfile.respond(\'reject\')">Rechazar</button></div>';
     else if (a.estado === 'amigos') {
       b = '<div class="seq-pf-chip seq-pf-ok">' + (window.seqIco ? window.seqIco('correcto') : '') + 'Amigos</div>';
       var pair = '';
@@ -112,11 +113,11 @@
 
     var r = d.records;
     out += section('Récords', r
-      ? '<div class="seq-pf-grid">' + tile('Cálculo Turbo', dash(r.calculo_turbo), 'puntos', ic('mental')) + tile('Cálculo de Fondo', dash(r.calculo_fondo), 'aciertos', ic('fondo')) + tile('Contrarreloj', dash(r.contrarreloj), 'puntos', ic('timetrial'), true) + '</div>'
+      ? '<div class="seq-pf-grid">' + tile('Cálculo Turbo', dash(r.calculo_turbo), 'puntos', modeIc('calculo-turbo')) + tile('Cálculo de Fondo', dash(r.calculo_fondo), 'aciertos', modeIc('calculo-clasico')) + tile('Contrarreloj', dash(r.contrarreloj), 'puntos', modeIc('contrarreloj'), true) + '</div>'
       : empty('Aún sin récords que presumir.'));
 
     out += section('Duelo online', v
-      ? '<div class="seq-pf-grid">' + tile('ELO', dash(v.elo), 'pico ' + dash(v.pico), ic('pvp')) + tile('% de victorias', pct(v.porcentaje_victorias), num(v.partidas) + (num(v.partidas) === 1 ? ' duelo' : ' duelos')) +
+      ? '<div class="seq-pf-grid">' + tile('ELO', dash(v.elo), 'pico ' + dash(v.pico), vv && vv.rankIcon ? vv.rankIcon(v.rango, 'seq-pf-ico') : '') + tile('% de victorias', pct(v.porcentaje_victorias), num(v.partidas) + (num(v.partidas) === 1 ? ' duelo' : ' duelos')) +
           '<div class="seq-pf-record"><span class="seq-pf-w"><b>' + num(v.victorias) + '</b>victorias</span><span class="seq-pf-l"><b>' + num(v.derrotas) + '</b>derrotas</span><span class="seq-pf-d"><b>' + num(v.empates) + '</b>empates</span></div></div>'
       : empty('Ningún duelo puntuado todavía.'));
     return out + '</div>';
