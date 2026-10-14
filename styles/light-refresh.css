@@ -12,12 +12,17 @@
   --lr-paper: #fff6df;
   --lr-paper-2: #f6e6bd;
   --bg: #e8d9ae;
-  --card: #f8eed3;
+  /* Escala de claridad (de más oscuro a más claro): lienzo < marco < papel de sección < campos con datos (teselas, filas, chips). */
+  --card: #fffcf3;
+  --badge-bg: #fbf2da;
   --lr-line: rgba(176, 134, 36, .40);
   --lr-shadow: 0 1px 0 rgba(255, 255, 255, .95) inset, 0 1px 2px rgba(74, 48, 8, .10), 0 10px 22px -10px rgba(74, 48, 8, .28);
   --lr-sub: #4a5262;
   --sub: #4a5262;
 }
+
+/* El marco que rodea cada pantalla conserva su tono cálido (antes lo daba --card, que ahora es el de los campos con datos). */
+:root:not([data-theme="dark"]) .card:not([class*="theme-"]) { background-color: #f3e6c3; }
 
 /* 1. Lienzo: sin dibujo, pergamino cálido dorado; pergamino un punto más oscuro que las tarjetas para que estas destaquen,
       y un tinte suave del color de cada pantalla. */
@@ -128,9 +133,10 @@
 
 /* 5. Partida: respuestas como fichas de papel (el estado correcto/incorrecto/seleccionado no se toca) */
 :root:not([data-theme="dark"]) body.in-game .choice-btn:not(.correct):not(.incorrect):not(.selected),
-:root:not([data-theme="dark"]) #view-game .choice-btn:not(.correct):not(.incorrect):not(.selected) {
-  background: linear-gradient(180deg, var(--lr-paper), var(--lr-paper-2));
-  border: 1px solid var(--lr-line);
+:root:not([data-theme="dark"]) #view-game .choice-btn:not(.correct):not(.incorrect):not(.selected),
+:root:not([data-theme="dark"]) .card[class*="theme-"]:not(.theme-lucidez) #choice-options .choice-btn:not(.correct):not(.incorrect):not(.selected) {
+  background: linear-gradient(180deg, #fffdf7, #fbf2d9) !important;
+  border: 1px solid var(--lr-line) !important;
   box-shadow: 0 1px 0 rgba(255, 255, 255, .95) inset, 0 5px 12px -8px rgba(74, 48, 8, .35);
 }
 :root:not([data-theme="dark"]) #view-game .choice-btn:not(.correct):not(.incorrect):not(.selected):hover:not(:disabled) {
@@ -139,15 +145,18 @@
 :root:not([data-theme="dark"]) #view-game .choice-btn:disabled:not(.correct):not(.incorrect) { opacity: .72; }
 /* Caja de la pregunta: papel, no el gris azulado */
 :root:not([data-theme="dark"]) #view-game .q-box {
-  background: linear-gradient(180deg, #fffdf6, var(--lr-paper-2)) !important;
+  background: linear-gradient(180deg, #fffdf7, #fbf2d9) !important;
   box-shadow: var(--lr-shadow);
 }
 /* Cabecera de la partida (icono del modo + racha): papel con filete, no el azul grisáceo */
 :root:not([data-theme="dark"]) #view-game .mode-header.game-hud {
-  background: linear-gradient(180deg, var(--lr-paper), var(--lr-paper-2)) !important;
+  background: linear-gradient(180deg, #fffdf7, #fbf2d9) !important;
   border: 1px solid var(--lr-line) !important;
   box-shadow: var(--lr-shadow);
 }
+
+/* El marco de la partida es papel cálido, un escalón más oscuro que las fichas (respuestas, pregunta, cabecera) que lleva dentro */
+:root:not([data-theme="dark"]) .card[class*="theme-"]:not(.theme-lucidez) { background-color: #f4e6c2; }
 
 /* 6. Inicio: Jugar y Duelo como PERGAMINO ILUMINADO (marco de oro doble, color de la sección en el brillo
       y en el botón), no como el oscuro. Título con el color de la sección; texto legible sobre papel. */
