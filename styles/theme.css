@@ -383,3 +383,18 @@ h3 .ui-btn-ico { width: 34px; height: 34px; vertical-align: middle; margin: -4px
 #extra-stats .stat-extra { align-items: center; }
 #extra-stats .stat-extra.stat-master { grid-column: 1 / -1; }
 #extra-stats .stat-extra.stat-master { justify-content: center; }
+
+
+/* ===== Revisión de coherencia claro/oscuro (14/10) ===== */
+/* Inicio (oscuro): la tarjeta Logros mezclaba oro al 14 % con el azul noche y quedaba gris verdoso; con menos oro encaja con Estadísticas y Ajustes. */
+[data-theme="dark"] .home-small-card.home-card-medals {
+  background: linear-gradient(var(--hc), var(--hc)) top / 100% 3px no-repeat, linear-gradient(180deg, color-mix(in srgb, var(--hc) 6%, var(--brand-cream)), var(--brand-cream-deep));
+}
+/* «Continuar partida» (oscuro): filete superior del color del modo en curso, como en el claro y como las tarjetas de modos de debajo. */
+[data-theme="dark"] #resume-game-card.mode-card { --hc: #3b6fd6; background: linear-gradient(var(--hc), var(--hc)) top / 100% 4px no-repeat, linear-gradient(170deg, var(--se-parch), var(--se-parch-2)) !important; }
+[data-theme="dark"] #resume-game-card.mode-review { --hc: #14b8a6; }
+[data-theme="dark"] #resume-game-card.mode-survival { --hc: #e08a14; }
+[data-theme="dark"] #resume-game-card.mode-sudden { --hc: #dc3545; }
+[data-theme="dark"] #resume-game-card.mode-timetrial { --hc: #e0457f; }
+[data-theme="dark"] #resume-game-card.mode-mentalcalc { --hc: #22a559; }
+[data-theme="dark"] #resume-game-card.mode-lucidez { --hc: #8b5cf6; }
