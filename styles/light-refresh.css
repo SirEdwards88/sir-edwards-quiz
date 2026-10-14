@@ -11,8 +11,8 @@
 :root:not([data-theme="dark"]) {
   --lr-paper: #fff6df;
   --lr-paper-2: #f6e6bd;
-  --bg: #e6d3a2;
-  --card: #f2e3bb;
+  --bg: #e8d9ae;
+  --card: #f8eed3;
   --lr-line: rgba(176, 134, 36, .40);
   --lr-shadow: 0 1px 0 rgba(255, 255, 255, .95) inset, 0 1px 2px rgba(74, 48, 8, .10), 0 10px 22px -10px rgba(74, 48, 8, .28);
   --lr-sub: #4a5262;
@@ -27,7 +27,7 @@
     radial-gradient(130% 55% at 50% -6%, rgba(var(--lr-tint), .34), transparent 62%),
     radial-gradient(90% 40% at 50% 108%, rgba(var(--lr-tint), .18), transparent 70%);
   background-size: auto;
-  background-color: #e9d6a0;
+  background-color: #eadcb2;
 }
 :root:not([data-theme="dark"]) #view-modes    { --lr-tint: 59, 111, 214; }
 :root:not([data-theme="dark"]) #view-duelo    { --lr-tint: 190, 52, 90; }
@@ -186,3 +186,19 @@
 :root:not([data-theme="dark"]) .enc-card.is-great .enc-card-xp,
 :root:not([data-theme="dark"]) .enc-card.is-great.is-done .enc-card-xp,
 :root:not([data-theme="dark"]) .enc-card.is-great.is-done .enc-card-prog { color: #6b4a07; }
+
+/* Zona de peligro (Ajustes): claramente aparte, en rojo (fondo rosado, borde y franja rojos, botón sólido) */
+:root:not([data-theme="dark"]) #view-settings .settings-danger-zone {
+  background: linear-gradient(180deg, #fff3ef, #fbddd4);
+  border: 1.5px solid #c0392b;
+  border-left: 6px solid #b0201a;
+  border-radius: 14px;
+  opacity: 1;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .8) inset, 0 10px 20px -12px rgba(150, 30, 20, .5);
+}
+:root:not([data-theme="dark"]) #view-settings .settings-danger-zone h3 { color: #9a1b14 !important; font-size: 15px; }
+:root:not([data-theme="dark"]) #view-settings .settings-danger-zone .settings-note { color: #6b2a24; }
+:root:not([data-theme="dark"]) #view-settings .settings-danger-zone .btn-danger {
+  background: #b0201a; color: #fff; border: 1px solid #8f1812; font-weight: 800;
+  box-shadow: 0 2px 0 #7a130e, 0 8px 14px -8px rgba(150, 30, 20, .7);
+}
