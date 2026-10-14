@@ -252,3 +252,27 @@
 :root:not([data-theme="dark"]) .enc-card:not(.is-great) .enc-bar {
   background: rgba(138, 106, 26, .22);
 }
+
+/* Amigos / Duelos (claro): los botones secundarios de las filas (Reto, Rechazar, Cancelar) eran crema sobre papel blanco, sin borde, y no se veían.
+   Ahora llevan fondo dorado suave, filete dorado y sombra, a la altura del botón primario de al lado. */
+:root:not([data-theme="dark"]) #seq-duel-root .seq-pl-row .btn.btn-secondary {
+  background: linear-gradient(180deg, #fbefcf, #f0dba6);
+  border: 1.5px solid #b98a1d;
+  color: #1c2340;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .8) inset, 0 2px 0 rgba(138, 106, 26, .35);
+}
+/* El primario desactivado (amigo sin conexión) deja de ser un gris plano: mismo botón, apagado. */
+:root:not([data-theme="dark"]) #seq-duel-root .seq-pl-row .btn.btn-primary:disabled {
+  background: linear-gradient(180deg, #c9cfdd, #aab2c6);
+  border: 1.5px solid #8a93ab;
+  opacity: .8;
+  box-shadow: none;
+}
+/* «En línea»: el verde de modo oscuro (#5fd08b) casi no se leía sobre papel claro. */
+:root:not([data-theme="dark"]) .seq-d-on { color: #17803f; }
+
+/* Rankings (claro): los escalones del podio eran beige sobre beige; algo más de dorado y filete firme para que se lean como peldaños. */
+:root:not([data-theme="dark"]) .seq-v21-pod-step {
+  background: linear-gradient(180deg, #f3d98a, #f8ebc2);
+  border-color: #b98a1d;
+}
