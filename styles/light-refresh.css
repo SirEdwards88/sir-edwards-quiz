@@ -68,15 +68,21 @@
   border: 1.5px solid color-mix(in srgb, var(--hc) 55%, #8a6a1a) !important;
   box-shadow: 0 1px 0 #fff inset, 0 2px 3px rgba(74, 48, 8, .16), 0 12px 24px -10px rgba(74, 48, 8, .40) !important;
 }
+/* «Continuar»: destacada sobre el resto, como el oscuro: marco de oro doble, brillo del color del modo, título y etiqueta «EN CURSO» con ese color */
 :root:not([data-theme="dark"]) #resume-game-card.mode-card {
-  background: linear-gradient(var(--hc), var(--hc)) top / 100% 4px no-repeat, linear-gradient(180deg, #fffefb, #fbf6e8) !important;
-  border: 1.5px solid color-mix(in srgb, var(--hc) 55%, #8a6a1a) !important;
-  box-shadow: 0 1px 0 #fff inset, 0 2px 3px rgba(74, 48, 8, .16), 0 12px 24px -10px rgba(74, 48, 8, .40) !important;
+  background: radial-gradient(75% 140% at 12% 40%, color-mix(in srgb, var(--hc) 12%, transparent), transparent 70%), linear-gradient(165deg, #fffbf0, #f2e5c4) !important;
+  border: 2px solid #c9992e !important;
+  box-shadow: inset 0 0 0 4px #fffaf0, inset 0 0 0 5px rgba(201, 153, 46, .6), 0 14px 26px -12px rgba(74, 48, 8, .45) !important;
 }
-/* «Continuar»: mismo papel opaco que el resto, con el filete del modo en curso */
+:root:not([data-theme="dark"]) #resume-game-card h3 { color: color-mix(in srgb, var(--hc) 72%, #1c2340); }
+:root:not([data-theme="dark"]) #resume-game-card .mode-subtitle {
+  display: inline-block; align-self: flex-start; width: auto; padding: 3px 10px; border-radius: 999px;
+  background: var(--hc); color: #fff; letter-spacing: .08em; border: 0;
+}
+/* Color del modo en curso (filete, brillo, título y etiqueta) */
 :root:not([data-theme="dark"]) #resume-game-card { --hc: #2d5bb8; }
 :root:not([data-theme="dark"]) #resume-game-card.mode-review { --hc: #0d9488; }
-:root:not([data-theme="dark"]) #resume-game-card.mode-survival { --hc: #d98a0b; }
+:root:not([data-theme="dark"]) #resume-game-card.mode-survival { --hc: #b9740a; }
 :root:not([data-theme="dark"]) #resume-game-card.mode-sudden { --hc: #c0262d; }
 :root:not([data-theme="dark"]) #resume-game-card.mode-timetrial { --hc: #d6336c; }
 :root:not([data-theme="dark"]) #resume-game-card.mode-mentalcalc { --hc: #15803d; }
