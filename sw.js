@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 244;
+const CACHE_VERSION = 245;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -418,14 +418,14 @@ const APP_SHELL = [
   './src/state/read-facade.js',
   './src/utils/streak-xp.js',
   './src/state/write-helpers.js',
-  './icons/icon-192.png?v=7',
-  './icons/icon-512.png?v=7',
-  './icons/icon-192-maskable.png?v=7',
-  './icons/icon-512-maskable.png?v=7',
-  './icons/apple-touch-icon.png?v=7',
-  './icons/favicon-16.png?v=7',
-  './icons/favicon-32.png?v=7',
-  './icons/favicon-48.png?v=7',
+  './icons/icon-192.png?v=8',
+  './icons/icon-512.png?v=8',
+  './icons/icon-192-maskable.png?v=8',
+  './icons/icon-512-maskable.png?v=8',
+  './icons/apple-touch-icon.png?v=8',
+  './icons/favicon-16.png?v=8',
+  './icons/favicon-32.png?v=8',
+  './icons/favicon-48.png?v=8',
   './assets/avatars/sombrero.png',
   './assets/avatars/libro.png',
   './assets/avatars/reloj.png',

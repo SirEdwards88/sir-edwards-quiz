@@ -46,5 +46,5 @@ test('los archivos de código y los de imagen no se mezclan: SHELL_URLS sin asse
   assert.ok(ctx.__s.length > 40 && ctx.__s.every((u) => !u.startsWith('./assets/')));
   assert.ok(ctx.__a.length === assetList(sw).length && ctx.__a.every((u) => u.startsWith('./assets/')));
   assert.ok(ctx.__s.some((u) => /^\.\/src\/.+\.js\?v=\d+$/.test(u)), 'el código conserva su ?v=');
-  assert.ok(ctx.__s.includes('./icons/icon-192.png?v=7'), 'los iconos (con su ?v=) viajan con el código');
+  assert.ok(ctx.__s.includes('./icons/icon-192.png?v=8'), 'los iconos (con su ?v=) viajan con el código');
 });
