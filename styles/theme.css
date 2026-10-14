@@ -322,11 +322,11 @@ h3 .ui-btn-ico { width: 34px; height: 34px; vertical-align: middle; margin: -4px
 .modes-grid .mode-mentalcalc { --hc: #15803d; }
 [data-theme="dark"] .modes-grid .mode-mentalcalc { --hc: #5fae7d; }
 .modes-grid .mode-lucidez { --hc: #7c3aed; }
-#duel-home .seq-d-card:not(.seq-d-v-rank), #view-modes .modes-grid .mode-card {
+#duel-home .seq-d-card, #view-modes .modes-grid .mode-card {
   border: 1px solid color-mix(in srgb, var(--hc) 38%, transparent) !important;
   background: linear-gradient(var(--hc), var(--hc)) top / 100% 3px no-repeat, linear-gradient(160deg, color-mix(in srgb, var(--hc) 11%, #f4ecd8), #e8dcc0) !important;
 }
-[data-theme="dark"] #duel-home .seq-d-card:not(.seq-d-v-rank), [data-theme="dark"] #view-modes .modes-grid .mode-card {
+[data-theme="dark"] #duel-home .seq-d-card, [data-theme="dark"] #view-modes .modes-grid .mode-card {
   background: linear-gradient(var(--hc), var(--hc)) top / 100% 3px no-repeat, linear-gradient(160deg, color-mix(in srgb, var(--hc) 16%, var(--brand-cream)), var(--brand-cream-deep)) !important;
 }
 #view-modes .modes-grid .mode-card.locked { background: linear-gradient(color-mix(in srgb, var(--hc) 45%, transparent), color-mix(in srgb, var(--hc) 45%, transparent)) top / 100% 3px no-repeat, linear-gradient(160deg, color-mix(in srgb, var(--hc) 5%, #f4ecd8), #dfd3b4) !important; border-color: color-mix(in srgb, var(--hc) 18%, transparent) !important; }
