@@ -49,6 +49,17 @@
   border: 1px solid var(--lr-line);
   box-shadow: var(--lr-shadow);
 }
+/* Estadísticas y Ajustes: sus secciones llevaban fondo transparente (theme.css les pone solo la franja dorada), así que se confundían con el lienzo.
+   Ahora son papel, con la franja dorada lateral que ya tenían. */
+:root:not([data-theme="dark"]) #view-stats .stats-section,
+:root:not([data-theme="dark"]) #view-stats .history-container,
+:root:not([data-theme="dark"]) #view-settings .settings-section:not(.settings-danger-zone) {
+  background: linear-gradient(180deg, var(--lr-paper), var(--lr-paper-2));
+  border-top: 1px solid var(--lr-line);
+  border-right: 1px solid var(--lr-line);
+  border-bottom: 1px solid var(--lr-line);
+  box-shadow: var(--lr-shadow);
+}
 /* Los grupos de ajustes van dentro de una sección: un escalón más sutil. */
 :root:not([data-theme="dark"]) .settings-group {
   background: rgba(255, 255, 255, .55);
