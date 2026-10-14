@@ -306,3 +306,49 @@
   background: linear-gradient(180deg, #f3d98a, #f8ebc2);
   border-color: #b98a1d;
 }
+
+/* ==== Tarjeta final de partida en modo claro ====
+   La tarjeta final es oscura (marco ornamentado sobre fondo de plata) en los dos temas. En claro heredaba números marrones/azules
+   y el botón azul marino, ilegibles sobre ese fondo: aquí recibe el mismo texto, botón y chips que en oscuro. */
+:root:not([data-theme="dark"]) #results-card .metric-value,
+:root:not([data-theme="dark"]) #results-card .metric-value#res-percentage-text,
+:root:not([data-theme="dark"]) #results-card .metric-label,
+:root:not([data-theme="dark"]) #results-card .results-phrase,
+:root:not([data-theme="dark"]) #results-card .result-chip,
+:root:not([data-theme="dark"]) #results-card .result-chip-value,
+:root:not([data-theme="dark"]) #results-card .results-streak-value { color: #f3ead8; }
+:root:not([data-theme="dark"]) #results-card .metric-label { color: #d9ccae; }
+:root:not([data-theme="dark"]) #results-card .metric-box { border-color: rgba(201, 153, 46, .38); }
+:root:not([data-theme="dark"]) .card.theme-review #results-card .metric-value#res-percentage-text { color: #5eead4; }
+:root:not([data-theme="dark"]) .card.theme-survival #results-card .metric-value#res-percentage-text { color: #fbbf24; }
+:root:not([data-theme="dark"]) .card.theme-sudden #results-card .metric-value#res-percentage-text { color: #fca5a5; }
+:root:not([data-theme="dark"]) .card.theme-timetrial #results-card .metric-value#res-percentage-text { color: #f9a8d4; }
+:root:not([data-theme="dark"]) .card.theme-lucidez #results-card .metric-value#res-percentage-text { color: #c4b5fd; }
+:root:not([data-theme="dark"]) .card.theme-mentalcalc #results-card .metric-value#res-percentage-text { color: #86c59a; }
+:root:not([data-theme="dark"]) #results-card #res-back-btn {
+  background: linear-gradient(180deg, #e8c874, #c9992e) !important; color: #1c2340 !important; border-color: #f0d99a !important;
+}
+:root:not([data-theme="dark"]) #results-card #res-back-btn:hover { background: linear-gradient(180deg, #f0d99a, #d6a93a) !important; }
+:root:not([data-theme="dark"]) #results-card .btn-share {
+  background-color: rgba(167, 139, 250, .12); border-color: rgba(167, 139, 250, .4); color: #f3ead8;
+}
+
+/* Tarjeta final de Duelo y Reto en modo claro: igual que la de partida, oscura en los dos temas (mismos valores que en oscuro). */
+:root:not([data-theme="dark"]) #seq-duel-root .seq-d-final { background-color: #0c1226 !important; }
+:root:not([data-theme="dark"]) #seq-duel-root .seq-d-final .metric-value,
+:root:not([data-theme="dark"]) #seq-duel-root .seq-d-final .results-phrase,
+:root:not([data-theme="dark"]) #seq-duel-root .seq-d-final .seq-d-mbox-rival .metric-value { color: #f3ead8; }
+:root:not([data-theme="dark"]) #seq-duel-root .seq-d-final .seq-d-mbox-me .metric-value { color: #f9b4c5; }
+:root:not([data-theme="dark"]) #seq-duel-root .seq-d-final .metric-label { color: #d9ccae; }
+:root:not([data-theme="dark"]) #seq-duel-root .seq-d-final .metric-box { border-color: rgba(201, 153, 46, .38); }
+:root:not([data-theme="dark"]) #seq-duel-root .seq-d-final .results-phrase-container { background-image: linear-gradient(150deg, rgba(8, 12, 26, .62), rgba(255, 255, 255, .04) 65%); }
+:root:not([data-theme="dark"]) #seq-duel-root .seq-d-final .results-category-title { color: #fbbf24; }
+:root:not([data-theme="dark"]) #seq-duel-root .seq-d-final .result-chip { color: #e8c874; }
+:root:not([data-theme="dark"]) #seq-duel-root .seq-d-final .result-chip-label { color: #b9ad8f; }
+:root:not([data-theme="dark"]) #seq-duel-root .seq-d-final .stamp-badge { color: #fbbf24; border-color: #fbbf24; }
+:root:not([data-theme="dark"]) #seq-duel-root .seq-d-final .btn-primary {
+  background: linear-gradient(180deg, #e8c874, #c9992e) !important; color: #1c2340 !important; border-color: #f0d99a !important;
+}
+:root:not([data-theme="dark"]) #seq-duel-root .seq-d-final .btn-share { background-color: rgba(167, 139, 250, .12); border-color: rgba(167, 139, 250, .4); color: #f3ead8; }
+:root:not([data-theme="dark"]) #seq-duel-root .seq-d-final .btn-secondary { background-color: #232e46; border-color: rgba(243, 234, 216, .35); color: #f3ead8; }
+:root:not([data-theme="dark"]) #seq-duel-root .seq-d-final .seq-d-review-toggle { color: #e8c874; }
