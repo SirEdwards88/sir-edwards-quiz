@@ -312,8 +312,8 @@ h3 .ui-btn-ico { width: 34px; height: 34px; vertical-align: middle; margin: -4px
 #duel-home .seq-d-card, .modes-grid .mode-card { --hc: var(--brand-gold); }
 #duel-home .seq-d-v-duel { --hc: var(--dz-duel); }
 #duel-home .seq-d-v-retos { --hc: var(--dz-reto); }
-#duel-home .seq-d-v-amigos { --hc: #b8932f; }
-[data-theme="dark"] #duel-home .seq-d-v-amigos { --hc: #e0b94f; }
+#duel-home .seq-d-v-amigos { --hc: #2f9e5b; }
+[data-theme="dark"] #duel-home .seq-d-v-amigos { --hc: #5fcf8a; }
 .modes-grid .mode-standard { --hc: #2563eb; }
 .modes-grid .mode-review { --hc: #0d9488; }
 .modes-grid .mode-survival { --hc: #d97706; }
