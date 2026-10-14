@@ -282,7 +282,7 @@
   }
   function isPvp(b) { return b === 'pvp'; }
   // Posición «oficial» de una fila: en PvP, quien está en colocación todavía no tiene puesto.
-  // 2.4: pulsar a un jugador abre su ficha. Solo con un ID válido (10 caracteres A-Z/0-9); si no, la fila no es pulsable.
+  // 2.3: pulsar a un jugador abre su ficha. Solo con un ID válido (10 caracteres A-Z/0-9); si no, la fila no es pulsable.
   function tapOf(r) { return r && typeof r.id === 'string' && /^[0-9A-Z]{10}$/.test(r.id) ? ' role="button" tabindex="0" onclick="SEQProfile.open(\'' + r.id + '\')" onkeydown="if(event.key===\'Enter\')SEQProfile.open(\'' + r.id + '\')"' : ''; }
   function placeOf(r, b) { return isPvp(b) && r.en_colocacion ? null : (r.rank != null ? num(r.rank) : null); }
   function unitOf(b) { return (BOARDS[b] && BOARDS[b].unit) || 'pts'; }

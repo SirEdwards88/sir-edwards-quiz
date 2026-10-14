@@ -1,9 +1,9 @@
-// SirEdwards Quiz 2.4 — ficha pública de un jugador (resumen: precisión, récords por modo y PvP).
+// SirEdwards Quiz 2.3 — ficha pública de un jugador (resumen: precisión, récords por modo y PvP).
 //
 // Se abre desde Amigos, desde los Rankings y desde la búsqueda, y lleva las acciones de amistad (enviar solicitud,
 // aceptar/rechazar, cancelar). Solo presenta lo que devuelve el servidor en GET /players/:id (ver src/profile.js del
-// backend): el PvP lo verifica el servidor; la precisión, las rachas y los récords los DECLARA cada jugador y así se
-// avisa en la pantalla. Un dato que falta llega como null y se muestra como «—», nunca como un cero inventado.
+// backend). Un dato que falta llega como null y se muestra como «—», nunca como un cero inventado.
+// Estética: la de los Rankings (tarjeta dorada, iconos de ranking, insignia de rango); estilos .seq-pf* en styles/online.css.
 //
 // No pinta nada por su cuenta: devuelve el HTML de la pantalla 'profile' de src/online/duels.js, que lo inserta.
 // Todo texto del servidor pasa por esc()/num()/player() de duels.js; los IDs dentro de onclick, por safeId().
@@ -64,53 +64,62 @@
     act('POST', '/friends/requests/' + fid + '/' + action, undefined, null);
   }
 
-  function stat(label, value, hint) {
-    return '<div class="seq-pf-stat"><b>' + value + '</b><span>' + esc(label) + '</span>' + (hint ? '<small>' + esc(hint) + '</small>' : '') + '</div>';
+  function V21() { return window.SEQDuels21 || null; }
+  function ic(board) { var v = V21(); return v && v.rkIcon ? v.rkIcon(board, 'seq-pf-ico') : ''; }
+  // Casilla de dato: icono opcional, etiqueta pequeña, valor grande y detalle opcional (todo ya escapado por esc()/num()).
+  function tile(label, value, hint, icon, wide) {
+    return '<div class="seq-pf-tile' + (wide ? ' wide' : '') + '">' + (icon || '') + '<div class="seq-pf-tile-txt"><span class="seq-pf-lbl">' + esc(label) + '</span><b>' + value + '</b>' + (hint ? '<small>' + esc(hint) + '</small>' : '') + '</div></div>';
   }
-  function section(title, note, body) {
-    return '<h3 class="seq-d-h3">' + esc(title) + '</h3>' + (note ? '<p class="seq-pf-note">' + esc(note) + '</p>' : '') + body;
+  function section(title, body) {
+    return '<div class="seq-pf-sec"><h3 class="seq-pf-h">' + esc(title) + '</h3>' + body + '</div>';
   }
+  function empty(text) { return '<p class="seq-pf-empty">' + esc(text) + '</p>'; }
 
   function actions(a) {
     var f = (window.SEQOnline && window.SEQOnline.session && (window.SEQOnline.session() || {}).features) || {};
-    var b = '';
-    if (a.estado === 'ninguna') b = '<button class="btn btn-primary" onclick="SEQProfile.request()">Enviar solicitud de amistad</button>';
-    else if (a.estado === 'enviada') b = '<span class="seq-pf-state">Solicitud enviada. Esperando respuesta…</span> <button class="btn btn-secondary seq-d-sm" onclick="SEQProfile.respond(\'cancel\')">Cancelar</button>';
-    else if (a.estado === 'recibida') b = '<span class="seq-pf-state">Quiere ser tu amigo.</span> <button class="btn btn-primary seq-d-sm" onclick="SEQProfile.respond(\'accept\')">Aceptar</button> <button class="btn btn-secondary seq-d-sm" onclick="SEQProfile.respond(\'reject\')">Rechazar</button>';
+    var id = safeId(P.id), b = '';
+    if (a.estado === 'ninguna') b = '<button class="btn btn-primary seq-pf-main" onclick="SEQProfile.request()">Enviar solicitud de amistad</button>';
+    else if (a.estado === 'enviada') b = '<div class="seq-pf-chip seq-pf-wait"><span class="seq-pf-dot"></span>Solicitud enviada, esperando respuesta</div><button class="btn btn-secondary seq-pf-side" onclick="SEQProfile.respond(\'cancel\')">Cancelar</button>';
+    else if (a.estado === 'recibida') b = '<div class="seq-pf-chip seq-pf-wait">Quiere ser tu amigo</div><div class="seq-pf-pair"><button class="btn btn-primary" onclick="SEQProfile.respond(\'accept\')">Aceptar</button><button class="btn btn-secondary" onclick="SEQProfile.respond(\'reject\')">Rechazar</button></div>';
     else if (a.estado === 'amigos') {
-      b = '<span class="seq-pf-state seq-pf-friend">Amigos</span>';
-      if (f.async_challenges) b += ' <button class="btn btn-secondary seq-d-sm" onclick="SEQDuels.quick(\'reto\',\'' + safeId(P.id) + '\')">Retar</button>';
-      if (f.classic_duel) b += ' <button class="btn btn-primary seq-d-sm" onclick="SEQDuels.quick(\'duel\',\'' + safeId(P.id) + '\')">Duelo</button>';
+      b = '<div class="seq-pf-chip seq-pf-ok">' + (window.seqIco ? window.seqIco('correcto') : '') + 'Amigos</div>';
+      var pair = '';
+      if (f.classic_duel) pair += '<button class="btn btn-primary" onclick="SEQDuels.quick(\'duel\',\'' + id + '\')">Duelo online</button>';
+      if (f.async_challenges) pair += '<button class="btn btn-secondary" onclick="SEQDuels.quick(\'reto\',\'' + id + '\')">Retar</button>';
+      if (pair) b += '<div class="seq-pf-pair">' + pair + '</div>';
     }
     return b ? '<div class="seq-pf-actions">' + b + '</div>' : '';
   }
 
   function render() {
-    var h = H(), out = h.header('Ficha de jugador', '', back);
-    if (P.err) return out + '<p class="stats-section-sub">' + esc(P.err) + '</p>';
+    var h = H(), out = h.header('Ficha de jugador', 'Lo que se sabe de él', back);
+    if (P.err) return out + '<div class="seq-pf-wrap">' + empty(P.err) + '</div>';
     var d = P.data;
-    if (!d) return out + '<p class="stats-section-sub">Cargando…</p>';
-    var p = h.player(d), lv = level(d.xp), a = d.amistad || { estado: 'ninguna' };
-    out += '<div class="seq-pf-hero"><span class="seq-pl-av seq-pf-av">' + p.avatar + '</span><div class="seq-pf-id"><div class="seq-pf-name">' + p.name + (a.estado === 'yo' ? ' <small>(tú)</small>' : '') + '</div>' +
-      '<div class="seq-pl-sub">' + (lv ? 'Nivel ' + num(lv) + ' · ' : '') + num(d.xp) + ' XP</div></div></div>';
+    if (!d) return out + '<p class="seq-v21-rk-loading">Cargando…</p>';
+    var p = h.player(d), lv = level(d.xp), a = d.amistad || { estado: 'ninguna' }, v = d.pvp, vv = V21();
+    var badge = v && !v.en_colocacion && vv && vv.rankIcon ? vv.rankIcon(v.rango, 'seq-pf-badge') : '';
+    out += '<div class="seq-pf-wrap"><div class="seq-pf-hero"><span class="seq-pl-av seq-pf-av">' + p.avatar + '</span><div class="seq-pf-id">' +
+      '<div class="seq-pf-name">' + p.name + (a.estado === 'yo' ? ' <small>(tú)</small>' : '') + '</div>' +
+      '<div class="seq-pf-meta">' + (lv ? '<span class="seq-pf-lv">Nivel ' + num(lv) + '</span>' : '') + '<span>' + num(d.xp) + ' XP</span></div>' +
+      (v ? '<div class="seq-pf-rank">' + (v.en_colocacion ? 'En colocación' : esc((v.rango && v.rango.nombre) || '')) + '</div>' : '') +
+      '</div>' + badge + '</div>';
     out += actions(a);
 
     var g = d.progreso;
-    out += section('Progreso', 'Declarado por el jugador: el servidor no puede comprobarlo.',
-      g ? '<div class="seq-pf-grid">' + stat('Precisión', pct(g.precision)) + stat('Mejor racha', dash(g.mejor_racha)) + stat('Partidas', dash(g.partidas)) + stat('Logros', dash(g.logros)) + '</div>'
-        : '<p class="stats-section-sub">Sin partidas registradas. Un misterio con encanto.</p>');
+    out += section('Progreso', g
+      ? '<div class="seq-pf-grid">' + tile('Precisión', pct(g.precision)) + tile('Mejor racha', dash(g.mejor_racha)) + tile('Partidas', dash(g.partidas)) + tile('Logros', dash(g.logros)) + '</div>'
+      : empty('Sin partidas registradas. Un misterio con encanto.'));
 
     var r = d.records;
-    out += section('Récords', 'Declarados por el jugador.',
-      r ? '<div class="seq-pf-grid">' + stat('Cálculo Turbo', dash(r.calculo_turbo), 'puntos') + stat('Cálculo de Fondo', dash(r.calculo_fondo), 'aciertos') + stat('Contrarreloj', dash(r.contrarreloj), 'puntos') + '</div>'
-        : '<p class="stats-section-sub">Aún sin récords que presumir.</p>');
+    out += section('Récords', r
+      ? '<div class="seq-pf-grid">' + tile('Cálculo Turbo', dash(r.calculo_turbo), 'puntos', ic('mental')) + tile('Cálculo de Fondo', dash(r.calculo_fondo), 'aciertos', ic('fondo')) + tile('Contrarreloj', dash(r.contrarreloj), 'puntos', ic('timetrial'), true) + '</div>'
+      : empty('Aún sin récords que presumir.'));
 
-    var v = d.pvp;
-    out += section('Duelo online (PvP)', 'Verificado por el servidor.',
-      v ? '<div class="seq-pf-grid">' + stat('Rango', v.en_colocacion ? 'En colocación' : esc((v.rango && v.rango.nombre) || '—')) + stat('ELO', dash(v.elo), 'pico ' + dash(v.pico)) +
-          stat('V / D / E', num(v.victorias) + ' / ' + num(v.derrotas) + ' / ' + num(v.empates)) + stat('Victorias', pct(v.porcentaje_victorias), num(v.partidas) + ' duelos') + '</div>'
-        : '<p class="stats-section-sub">Ningún duelo puntuado todavía.</p>');
-    return out;
+    out += section('Duelo online', v
+      ? '<div class="seq-pf-grid">' + tile('ELO', dash(v.elo), 'pico ' + dash(v.pico), ic('pvp')) + tile('% de victorias', pct(v.porcentaje_victorias), num(v.partidas) + (num(v.partidas) === 1 ? ' duelo' : ' duelos')) +
+          '<div class="seq-pf-record"><span class="seq-pf-w"><b>' + num(v.victorias) + '</b>victorias</span><span class="seq-pf-l"><b>' + num(v.derrotas) + '</b>derrotas</span><span class="seq-pf-d"><b>' + num(v.empates) + '</b>empates</span></div></div>'
+      : empty('Ningún duelo puntuado todavía.'));
+    return out + '</div>';
   }
 
   window.SEQProfile = { open: open, load: load, render: render, request: request, respond: respond, back: back, _state: function () { return P; } };

@@ -817,20 +817,40 @@
 
 .seq-v21-calcsub { margin-top: -4px; }
 
-/* ===== 2.4: ficha de jugador (src/online/player-profile.js) ===== */
+/* ===== 2.3: ficha de jugador (src/online/player-profile.js). Misma estética que los Rankings: tarjeta dorada, iconos de ranking, insignia de rango ===== */
 .seq-pl-tap { display: flex; flex: 1 1 150px; min-width: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .seq-v21-rk[role="button"], .seq-v21-pod[role="button"] { cursor: pointer; }
-.seq-pf-hero { display: flex; align-items: center; gap: 14px; margin: 4px 0 12px; }
-.seq-pf-av { width: 72px; height: 72px; flex: 0 0 auto; }
-.seq-pf-id { min-width: 0; }
-.seq-pf-name { font-family: var(--font-display, inherit); font-weight: 800; font-size: 24px; line-height: 1.15; overflow-wrap: anywhere; color: var(--text); }
-.seq-pf-name small { font-size: 13px; color: var(--sub); font-weight: 700; }
-.seq-pf-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 6px; }
-.seq-pf-state { font-size: 13px; font-weight: 700; color: var(--sub); }
-.seq-pf-friend { color: var(--text); }
-.seq-pf-note { margin: -2px 0 8px; font-size: 12px; color: var(--sub); }
+.seq-pf-wrap { padding-bottom: 8px; }
+.seq-pf-hero { display: flex; align-items: center; gap: 14px; padding: 14px; border-radius: 20px; border: 1.5px solid var(--se-gold, var(--primary));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--se-gold, var(--primary)) 16%, var(--card)), var(--card) 75%); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .05), 0 4px 14px rgba(0, 0, 0, .18); }
+.seq-pf-av { width: 76px; height: 76px; border-width: 2.5px; border-color: var(--se-gold, var(--primary)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--se-gold, var(--primary)) 28%, transparent), 0 6px 16px rgba(0, 0, 0, .35); }
+.seq-pf-id { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.seq-pf-name { font-family: var(--font-display, inherit); font-weight: 800; font-size: 23px; line-height: 1.15; overflow-wrap: anywhere; color: var(--text); }
+.seq-pf-name small { font-size: 13px; color: var(--sub); font-weight: 700; font-family: inherit; }
+.seq-pf-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--sub); }
+.seq-pf-lv { padding: 2px 9px; border-radius: 999px; color: var(--accent-gold-strong, #92400e); background: color-mix(in srgb, var(--se-gold, var(--primary)) 16%, transparent); border: 1px solid var(--se-gold-hair, var(--border)); letter-spacing: .3px; }
+.seq-pf-rank { font-size: 10px; font-weight: 900; letter-spacing: 1.4px; text-transform: uppercase; color: var(--sub); }
+.seq-pf-badge { flex: 0 0 auto; width: 54px; height: 54px; }
+.seq-pf-badge img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.seq-pf-actions { display: flex; flex-direction: column; gap: 8px; margin: 12px 0 2px; }
+.seq-pf-actions .btn { width: 100%; }
+.seq-pf-pair { display: flex; gap: 8px; }
+.seq-pf-pair .btn { flex: 1; }
+.seq-pf-chip { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 14px; border-radius: 14px; font-size: 14px; font-weight: 800; border: 1.5px solid var(--se-gold-hair, var(--border)); background: color-mix(in srgb, var(--se-gold, var(--primary)) 10%, var(--card)); color: var(--text); }
+.seq-pf-chip .seq-ico { width: 18px; height: 18px; }
+.seq-pf-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-gold, #c9992e); animation: seq-pulse 1.2s ease-in-out infinite; }
+.seq-pf-sec { margin-top: 18px; }
+.seq-pf-h { margin: 0 0 8px; font-size: 10px; font-weight: 900; letter-spacing: 1.4px; text-transform: uppercase; color: var(--sub); }
 .seq-pf-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
-.seq-pf-stat { display: flex; flex-direction: column; gap: 2px; padding: 12px; border-radius: 12px; border: 1px solid var(--border, rgba(128, 128, 128, .25)); background: var(--card, transparent); min-width: 0; }
-.seq-pf-stat b { font-size: 20px; line-height: 1.15; overflow-wrap: anywhere; }
-.seq-pf-stat span { font-size: 12px; font-weight: 700; color: var(--sub); letter-spacing: .3px; }
-.seq-pf-stat small { font-size: 11px; color: var(--sub); }
+.seq-pf-tile { display: flex; align-items: center; gap: 10px; padding: 12px; min-width: 0; border-radius: 16px; border: 1px solid var(--border); background: var(--card); box-shadow: 0 2px 8px rgba(0, 0, 0, .12); }
+.seq-pf-tile.wide { grid-column: 1 / -1; }
+.seq-pf-tile .seq-pf-ico { width: 40px; height: 40px; flex: 0 0 auto; }
+.seq-pf-tile-txt { display: flex; flex-direction: column; min-width: 0; line-height: 1.2; }
+.seq-pf-lbl { font-size: 10px; font-weight: 900; letter-spacing: 1.2px; text-transform: uppercase; color: var(--sub); }
+.seq-pf-tile b { font-family: var(--font-display, inherit); font-size: 24px; font-weight: 800; overflow-wrap: anywhere; }
+.seq-pf-tile small { font-size: 12px; color: var(--sub); }
+.seq-pf-record { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; padding: 10px 6px; border-radius: 16px; border: 1px solid var(--border); background: var(--card); }
+.seq-pf-record span { display: flex; flex-direction: column; font-size: 10px; font-weight: 900; letter-spacing: 1.2px; text-transform: uppercase; color: var(--sub); }
+.seq-pf-record b { font-family: var(--font-display, inherit); font-size: 24px; letter-spacing: 0; color: var(--text); }
+.seq-pf-record .seq-pf-w b { color: var(--accent-teal-text, var(--text)); }
+.seq-pf-empty { margin: 0; padding: 14px; text-align: center; font-size: 14px; color: var(--sub); border: 1px dashed var(--border); border-radius: 16px; }

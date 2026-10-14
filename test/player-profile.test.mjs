@@ -1,4 +1,4 @@
-// 2.4: ficha de jugador (src/online/player-profile.js) y sus puntos de entrada.
+// 2.3: ficha de jugador (src/online/player-profile.js) y sus puntos de entrada.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';

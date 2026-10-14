@@ -42,7 +42,7 @@ test('campanillas: sonido de evento de Sir Edwards y de récord, con el interrup
   assert.ok(html.includes('playRecordSound();') && html.includes('!recordSoundPlayed'));
 });
 
-test('2.4 jingles: victoria, derrota, récord, evento y logro secreto; un solo canal y respaldo sintetizado', () => {
+test('2.3 jingles: victoria, derrota, récord, evento y logro secreto; un solo canal y respaldo sintetizado', () => {
   for (const [k, f] of [['win', 'win'], ['lose', 'lose'], ['record', 'record'], ['event', 'event'], ['secret', 'secret']]) {
     assert.ok(audio.includes(`${k}: 'assets/audio/${f}.mp3'`), k);
   }

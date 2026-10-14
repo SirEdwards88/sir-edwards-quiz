@@ -12,7 +12,7 @@
 let audioCtx = null;
 
 const SAMPLE_FILES = { correct: 'assets/audio/correct.mp3', wrong: 'assets/audio/wrong.mp3',
-  // 2.4 — jingles de ~3-4 s (victoria, derrota, récord, aparición de Sir Edwards, logro secreto). Mismo mecanismo:
+  // 2.3 — jingles de ~3-4 s (victoria, derrota, récord, aparición de Sir Edwards, logro secreto). Mismo mecanismo:
   // si aún no están decodificados, suena el sintetizado de siempre (la derrota no tiene sintetizado: silencio).
   win: 'assets/audio/win.mp3', lose: 'assets/audio/lose.mp3', record: 'assets/audio/record.mp3',
   event: 'assets/audio/event.mp3', secret: 'assets/audio/secret.mp3' };

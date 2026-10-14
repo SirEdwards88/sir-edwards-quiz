@@ -1,4 +1,4 @@
-// 2.4: dónde suenan los jingles (derrota/victoria en duelos, logros secretos).
+// 2.3: dónde suenan los jingles (derrota/victoria en duelos, logros secretos).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';

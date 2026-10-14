@@ -830,7 +830,7 @@
     // La XP llega a este dispositivo tras la sincronización: se repinta la tarjeta final por si ha subido el nivel.
     [4000, 9000].forEach(function (ms) { setTimeout(function () { if (S.screen === kind && S.id === (d && d.id) && S.data && S.data.estado === 'completado') render(); }, ms); });
   }
-  // 2.4: jingle de victoria o derrota la PRIMERA vez que se ve el resultado de un duelo o reto (el empate no suena).
+  // 2.3: jingle de victoria o derrota la PRIMERA vez que se ve el resultado de un duelo o reto (el empate no suena).
   // Se recuerdan los últimos resultados oídos para que reabrir uno viejo desde el historial no vuelva a sonar.
   function resultSoundOnce(kind, d, res) {
     try {
