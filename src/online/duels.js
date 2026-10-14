@@ -870,11 +870,11 @@
     var charKey = res === 'win' ? 'victory' : res === 'loss' ? 'defeat' : 'victory';
     var stakes = kind === 'duel' && d.modo === 'stakes';
     var title = kind === 'duel' ? (stakes ? 'Duelo por apuestas' : 'Duelo clásico') : 'Reto · ' + retoModeName(d);
-    // En apuestas el marcador no es «aciertos sobre N»: se muestra solo el número.
-    var unit = stakes || (kind === 'reto' && d.modo && d.modo !== 'estandar' && d.modo !== 'muerte_subita') ? '' : ' / ' + num(d.n_preguntas || (d.modo === 'muerte_subita' ? 25 : 20));
     var diffWord = d.modo === 'muerte_subita' ? (diff === 1 ? 'pregunta de diferencia' : 'preguntas de diferencia') : (diff === 1 ? 'acierto de diferencia' : 'aciertos de diferencia');
-    var side = function (av, name, val, cls) {
-      return '<div class="metric-box seq-d-mbox ' + cls + '"><div class="seq-d-mbox-av">' + av + '</div><div class="metric-value">' + val + '<small>' + esc(unit) + '</small></div><div class="metric-label">' + esc(name) + '</div></div>';
+    // Marcador «cara a cara»: tu avatar, tu puntuación y tu nombre contra los del rival, con un VS en medio.
+    // Gana el dorado quien ganó (los dos, si es empate); el otro queda algo más apagado.
+    var side = function (av, name, val, cls, win) {
+      return '<div class="seq-d-pv ' + cls + (win ? ' w' : ' l') + '"><div class="seq-d-pv-av">' + av + '</div><div class="seq-d-pv-num">' + val + '</div><div class="seq-d-pv-name">' + esc(name) + '</div></div>';
     };
     // La XP son 10 por ACIERTO (no por puntos): en apuestas se cuentan los aciertos reales, no el marcador.
     var hits = stakes ? (d.yo.respuestas || []).filter(function (a) { return a.es_correcta; }).length : mine;
@@ -886,7 +886,7 @@
       '<div class="results-character show char-' + (res === 'draw' ? 'neutral' : charKey) + '" aria-hidden="true"><picture><source srcset="assets/character/' + charKey + '.webp" type="image/webp"><img src="assets/character/' + charKey + '.webp" alt="" draggable="false"></picture></div>' +
       '<h3 class="seq-d-res-title">' + esc(title) + '</h3>' +
       ((xpGain > 0 && window.SEQLevelUp) ? SEQLevelUp.htmlFor(kind + ':' + (S.id || d.id)) : '') +
-      '<div class="results-metrics-grid">' + side(avatar(me.avatar), me.display_name || 'Tú', mine, 'seq-d-mbox-me') + side(p.avatar, (d.rival || {}).display_name || 'Jugador', his, 'seq-d-mbox-rival') + '</div>' +
+      '<div class="seq-d-pv-grid">' + side(avatar(me.avatar), me.display_name || 'Tú', mine, 'seq-d-pv-me', res !== 'loss') + '<span class="seq-d-pv-vs">VS</span>' + side(p.avatar, (d.rival || {}).display_name || 'Jugador', his, 'seq-d-pv-rival', res !== 'win') + '</div>' +
       '<div class="results-phrase-container ' + (res === 'win' ? 'tone-win' : res === 'loss' ? 'tone-fail' : 'tone-bien') + '">' +
       '<div class="results-mood-icon has-img"><img class="mood-img" src="' + moodSrc + '" alt="" draggable="false"></div>' +
       '<div class="results-category-title">' + esc(cat) + '</div>' +

@@ -907,6 +907,17 @@
    Mismo relleno que la tarjeta final de partida (results-frame.css), que ya cuenta con el marco. */
 #seq-duel-root .seq-d-results.results-card.seq-d-final { padding: 34px 24px 28px !important; }
 
-/* Marcador final de Duelo/Reto: bajo cada puntuación va el nombre del jugador; si es largo, se recorta con puntos suspensivos. */
-#seq-duel-root .seq-d-results .seq-d-mbox { min-width: 0; }
-#seq-duel-root .seq-d-results .seq-d-mbox .metric-label { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Marcador final de Duelo/Reto «cara a cara»: dos paneles (tú / rival) con avatar, puntuación y nombre, y un VS en medio.
+   Gana el dorado quien ganó (los dos en empate). Los colores salen de las variables de la tarjeta, así que vale en claro y oscuro. */
+#seq-duel-root .seq-d-results { --pv-gold: #c9992e; }
+[data-theme="dark"] #seq-duel-root .seq-d-results { --pv-gold: #e8c874; }
+#seq-duel-root .seq-d-pv-grid { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0 0 14px; }
+#seq-duel-root .seq-d-pv { min-width: 0; text-align: center; padding: 12px 6px 10px; border-radius: 16px; background: var(--card); border: 1.5px solid var(--border); }
+#seq-duel-root .seq-d-pv.w { border-color: var(--pv-gold); box-shadow: 0 0 0 1px color-mix(in srgb, var(--pv-gold) 50%, transparent), 0 6px 16px rgba(0,0,0,.18); }
+#seq-duel-root .seq-d-pv.l { opacity: .86; }
+#seq-duel-root .seq-d-pv-av { display: flex; justify-content: center; line-height: 1; font-size: 30px; }
+#seq-duel-root .seq-d-pv-av .seq-av-img { width: 46px; height: 46px; border-radius: 50%; border: 2px solid var(--pv-gold); background: #fff; object-fit: cover; }
+#seq-duel-root .seq-d-pv-num { margin-top: 6px; font-size: 46px; font-weight: 900; line-height: 1.05; font-variant-numeric: tabular-nums; color: var(--text); }
+#seq-duel-root .seq-d-pv.w .seq-d-pv-num { color: var(--pv-gold); }
+#seq-duel-root .seq-d-pv-name { margin: 6px auto 0; max-width: 100%; font-size: 12px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#seq-duel-root .seq-d-pv-vs { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, #2a3560, #1c2340); border: 2px solid var(--pv-gold); color: #f6e6b8; font-size: 12px; font-weight: 900; }
