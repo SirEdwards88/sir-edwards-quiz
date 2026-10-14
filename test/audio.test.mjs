@@ -46,10 +46,22 @@ test('2.3 jingles: victoria, derrota, récord, evento y logro secreto; un solo c
   for (const [k, f] of [['win', 'win'], ['lose', 'lose'], ['record', 'record'], ['event', 'event'], ['secret', 'secret']]) {
     assert.ok(audio.includes(`${k}: 'assets/audio/${f}.mp3'`), k);
   }
-  assert.match(audio, /if \(type === 'lose'\) \{ playJingle\('lose'\); return; \}/);
+  // la derrota nunca se queda en silencio: si la muestra no está, suena la sintetizada
+  assert.match(audio, /if \(type === 'lose'\) \{ if \(!playJingle\('lose'\)\) playLoseFallback\(\); return; \}/);
+  assert.match(audio, /function playLoseFallback\(\)/);
   assert.match(audio, /if \(type === 'win'\) \{ if \(!playJingle\('win'\)\) playWinFanfare\(\); return; \}/);
   assert.match(audio, /type === 'eye' && playJingle\('secret'\)/);
   assert.match(audio, /playJingle\('event', 0\.9, true\)/);
   // la derrota suena en los resultados de pérdida y no se pisa con el récord
   assert.match(html, /playSound\('lose'\)/);
+});
+
+test('2.3 muestras: una descarga fallida se reintenta en la siguiente petición de sonido (no queda muda toda la sesión)', () => {
+  assert.match(audio, /const SAMPLE_MAX_TRIES = \d+/);
+  assert.ok(!audio.includes('samplesRequested'), 'ya no hay un único intento global');
+  // cada muestra tiene su propio estado (pendiente / intentos) y se carga solo si falta
+  assert.match(audio, /sampleState\[name\]/);
+  assert.match(audio, /if \(sampleBuffers\[name\] \|\| st\.pending \|\| st\.tries >= SAMPLE_MAX_TRIES\) return;/);
+  // playSample/playJingle piden la carga cuando no encuentran el buffer
+  assert.match(audio, /if \(!buf\) \{ loadSamples\(\); return false; \}/);
 });

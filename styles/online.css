@@ -146,14 +146,25 @@
 /* ---- Partida de Duelo online / Reto (v1.5, fase 2) ---------------------------
    «La partida normal + una capa discreta de duelo». Copia, con el morado del
    duelo (tokens --duel-purple / --accent-purple-*), los mismos valores que la
-   partida de Estándar: marco de la tarjeta con franja superior, HUD
-   .mode-header.game-hud con el icono del modo a la izquierda (el de Duelo en lugar del de Estándar),
-   .q-box con borde lateral, .choice-btn con 50px de alto y .feedback. Todo va
-   acotado a #seq-duel-root / .seq-d-*; las reglas base no se tocan.
-   El marco solo se aplica mientras #seq-duel-root tiene .seq-d-playing (lo pone
-   duels.js al jugar y lo quita al salir) y la pestaña Duelo está activa. */
-.card:has(#view-duelo.active #seq-duel-root.seq-d-playing) { border: 3px solid var(--duel-purple); box-shadow: 0 14px 42px rgba(124,58,237,.17); }
-.card:has(#view-duelo.active #seq-duel-root.seq-d-playing)::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; z-index: 2; background: linear-gradient(90deg, var(--duel-purple-dark), var(--duel-purple), var(--duel-purple-dark)); }
+   partida de Estándar: HUD .mode-header.game-hud con el icono del modo a la
+   izquierda (el de Duelo en lugar del de Estándar), .q-box con borde lateral,
+   .choice-btn con 50px de alto y .feedback. Todo va acotado a #seq-duel-root /
+   .seq-d-*; las reglas base no se tocan. */
+/* Marco de la tarjeta durante la partida y en su tarjeta final: el MISMO marco dorado doble que Jugar (theme.css,
+   «Partida: marco dorado común a todos los modos»), con el granate del Duelo —o el turquesa del Reto— en la franja
+   superior y el aro. Solo con la pestaña Duelo activa y #seq-duel-root en partida (.seq-d-playing) o en su final. */
+.card:has(#view-duelo.active #seq-duel-root:is(.seq-d-playing, .seq-d-final-on)) {
+  --mode-accent: var(--dz-duel); --mode-accent-2: color-mix(in srgb, var(--dz-duel) 70%, #fff);
+  border: 2px solid var(--se-gold-hair);
+  box-shadow: 0 0 0 4px var(--card), 0 0 0 6px color-mix(in srgb, var(--mode-accent) 38%, transparent), 0 14px 40px color-mix(in srgb, var(--mode-accent) 18%, transparent);
+}
+.card:has(#view-duelo.active #seq-duel-root.seq-d-k-reto:is(.seq-d-playing, .seq-d-final-on)) {
+  --mode-accent: var(--dz-reto); --mode-accent-2: color-mix(in srgb, var(--dz-reto) 70%, #fff);
+}
+.card:has(#view-duelo.active #seq-duel-root:is(.seq-d-playing, .seq-d-final-on))::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; z-index: 2;
+  background: linear-gradient(90deg, var(--mode-accent), var(--mode-accent-2), var(--mode-accent));
+}
 #seq-duel-root .seq-d-hud {
   display: flex; align-items: center; position: relative;
   margin: 4px 0 18px; padding: 12px 14px 12px 52px; border-radius: 14px;
@@ -297,11 +308,6 @@
 }
 #seq-duel-root { --dz: var(--dz-duel); --dz-dark: var(--dz-duel-dark); --dz-soft: var(--dz-duel-soft); --dz-surface: var(--dz-duel-surface); --dz-text: var(--dz-duel-text); }
 #seq-duel-root.seq-d-k-reto { --dz: var(--dz-reto); --dz-dark: var(--dz-reto-dark); --dz-soft: var(--dz-reto-soft); --dz-surface: var(--dz-reto-surface); --dz-text: var(--dz-reto-text); }
-/* Marco de «partida en curso» */
-.card:has(#view-duelo.active #seq-duel-root.seq-d-playing) { border-color: var(--dz-duel); box-shadow: 0 14px 42px rgba(154,52,18,.16); }
-.card:has(#view-duelo.active #seq-duel-root.seq-d-playing)::before { background: linear-gradient(90deg, var(--dz-duel-dark), var(--dz-duel), var(--dz-duel-dark)); }
-.card:has(#view-duelo.active #seq-duel-root.seq-d-playing.seq-d-k-reto) { border-color: var(--dz-reto); box-shadow: 0 14px 42px rgba(8,145,178,.16); }
-.card:has(#view-duelo.active #seq-duel-root.seq-d-playing.seq-d-k-reto)::before { background: linear-gradient(90deg, var(--dz-reto-dark), var(--dz-reto), var(--dz-reto-dark)); }
 /* Partida */
 #seq-duel-root .seq-d-hud { color: var(--dz-text); background: var(--dz-surface); border-color: var(--dz-soft); justify-content: space-between; gap: 8px; }
 #seq-duel-root .progress-bar .bar-fill { background: var(--dz); }
@@ -337,11 +343,6 @@
 #seq-duel-root .seq-d-hud .seq-d-hud-right { margin-left: 0; }
 #seq-duel-root .seq-d-hud .seq-d-vs-chip { margin-left: auto; }
 #seq-duel-root .seq-d-hud .seq-d-hud-lbl { white-space: pre; }
-/* Final de Duelo / Reto: mismo marco de color que durante la partida */
-.card:has(#view-duelo.active #seq-duel-root.seq-d-final-on) { border: 3px solid var(--dz-duel); box-shadow: 0 14px 42px rgba(154,52,18,.16); }
-.card:has(#view-duelo.active #seq-duel-root.seq-d-final-on)::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px; z-index: 2; background: linear-gradient(90deg, var(--dz-duel-dark), var(--dz-duel), var(--dz-duel-dark)); }
-.card:has(#view-duelo.active #seq-duel-root.seq-d-final-on.seq-d-k-reto) { border-color: var(--dz-reto); box-shadow: 0 14px 42px rgba(8,145,178,.16); }
-.card:has(#view-duelo.active #seq-duel-root.seq-d-final-on.seq-d-k-reto)::before { background: linear-gradient(90deg, var(--dz-reto-dark), var(--dz-reto), var(--dz-reto-dark)); }
 
 /* Marca de agua propia de la tarjeta final de Duelo/Reto: laurel con sombrero y espadas, detrás del contenido. */
 #seq-duel-root .seq-d-results { position: relative; isolation: isolate; }

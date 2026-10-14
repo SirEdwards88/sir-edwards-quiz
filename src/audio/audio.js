@@ -13,20 +13,26 @@ let audioCtx = null;
 
 const SAMPLE_FILES = { correct: 'assets/audio/correct.mp3', wrong: 'assets/audio/wrong.mp3',
   // 2.3 — jingles de ~3-4 s (victoria, derrota, récord, aparición de Sir Edwards, logro secreto). Mismo mecanismo:
-  // si aún no están decodificados, suena el sintetizado de siempre (la derrota no tiene sintetizado: silencio).
+  // si aún no están decodificados, suena el sintetizado de siempre (la derrota, uno breve: playLoseFallback).
   win: 'assets/audio/win.mp3', lose: 'assets/audio/lose.mp3', record: 'assets/audio/record.mp3',
   event: 'assets/audio/event.mp3', secret: 'assets/audio/secret.mp3' };
 const sampleBuffers = {};
-let samplesRequested = false;
+// Cada muestra se carga por separado y, si falla (red, caché, decodificación), se reintenta en la siguiente petición de
+// sonido (hasta SAMPLE_MAX_TRIES veces). Antes un solo fallo la dejaba muda hasta cerrar la app.
+const sampleState = {};
+const SAMPLE_MAX_TRIES = 4;
 function loadSamples() {
-  if (samplesRequested || typeof fetch !== 'function') return;
-  samplesRequested = true;
+  if (typeof fetch !== 'function') return;
   let ctx; try { ctx = getAudioCtx(); } catch (e) { return; }
   Object.keys(SAMPLE_FILES).forEach((name) => {
+    const st = sampleState[name] || (sampleState[name] = { pending: false, tries: 0 });
+    if (sampleBuffers[name] || st.pending || st.tries >= SAMPLE_MAX_TRIES) return;
+    st.pending = true; st.tries++;
     fetch(SAMPLE_FILES[name]).then((r) => r.ok ? r.arrayBuffer() : Promise.reject())
       .then((buf) => new Promise((ok, ko) => ctx.decodeAudioData(buf, ok, ko)))
       .then((decoded) => { sampleBuffers[name] = decoded; })
-      .catch(() => {});
+      .catch(() => {})
+      .then(() => { st.pending = false; });
   });
 }
 // Devuelve true si ha sonado la muestra; false para que el llamante use el sonido sintetizado.
@@ -71,7 +77,7 @@ function playSound(type) {
   if (store.sound === 'off') return;
   if (type === 'bad' && playSample('wrong', 0.85)) return;
   if (type === 'ok' && playSample('correct', 0.9)) return;
-  if (type === 'lose') { playJingle('lose'); return; }
+  if (type === 'lose') { if (!playJingle('lose')) playLoseFallback(); return; }
   if (type === 'win') { if (!playJingle('win')) playWinFanfare(); return; }
   if (type === 'eye' && playJingle('secret')) return;
   try { const ctx = getAudioCtx(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination); const now = ctx.currentTime; if (type === 'ok') { osc.frequency.setValueAtTime(523.25, now); osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); gain.gain.setValueAtTime(0.15, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15); osc.start(now); osc.stop(now + 0.15); } else if (type === 'bad') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(180, now); osc.frequency.exponentialRampToValueAtTime(110, now + 0.2); gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2); osc.start(now); osc.stop(now + 0.2); } else if (type === 'win') { const notes = [523.25, 659.25, 783.99, 1046.50]; notes.forEach((freq, i) => { const o = ctx.createOscillator(); const g = ctx.createGain(); o.type = 'triangle'; o.connect(g); g.connect(ctx.destination); o.frequency.setValueAtTime(freq, now + i * 0.08); g.gain.setValueAtTime(0.15, now + i * 0.08); g.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.25); o.start(now + i * 0.08); o.stop(now + i * 0.08 + 0.25); }); } else if (type === 'eye') { /* Sonido propio para el logro secreto "Lucidez Absoluta": un acorde grave y disonante que se abre hacia un armónico agudo, distinto del "win" habitual. */ const notes = [220, 261.63, 415.30, 880]; notes.forEach((freq, i) => { const o = ctx.createOscillator(); const g = ctx.createGain(); o.type = i === notes.length - 1 ? 'sine' : 'triangle'; o.connect(g); g.connect(ctx.destination); const start = now + i * 0.12; o.frequency.setValueAtTime(freq, start); g.gain.setValueAtTime(0.001, start); g.gain.exponentialRampToValueAtTime(0.12, start + 0.05); g.gain.exponentialRampToValueAtTime(0.01, start + 0.5); o.start(start); o.stop(start + 0.5); }); } } catch(e) {} 
@@ -214,6 +220,24 @@ function playWinFanfare() {
         g.gain.exponentialRampToValueAtTime(0.0008, start + dur);
         o.connect(g); g.connect(out); o.start(start); o.stop(start + dur + 0.02);
       });
+    });
+  } catch (e) {}
+}
+
+// Derrota sintetizada: solo suena si la muestra (lose.mp3) no está disponible, para que perder nunca se quede en silencio.
+// Tres notas descendentes (Sol-Re-La grave), apagadas y breves; la última se alarga.
+function playLoseFallback() {
+  try {
+    const ctx = getAudioCtx();
+    const now = ctx.currentTime;
+    [[392.0, 0, 0.3], [293.66, 0.24, 0.3], [220.0, 0.48, 0.9]].forEach(([freq, delay, dur]) => {
+      const start = now + delay;
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.type = 'triangle'; o.frequency.setValueAtTime(freq, start);
+      g.gain.setValueAtTime(0.0001, start);
+      g.gain.exponentialRampToValueAtTime(0.16, start + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0008, start + dur);
+      o.connect(g); g.connect(ctx.destination); o.start(start); o.stop(start + dur + 0.02);
     });
   } catch (e) {}
 }
