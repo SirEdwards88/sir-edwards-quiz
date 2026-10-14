@@ -9,24 +9,25 @@
  * Para volver atrás basta con quitar el <link> de index.html (y su línea en sw.js).
  */
 :root:not([data-theme="dark"]) {
-  --lr-paper: #fffbf2;
-  --lr-paper-2: #f8f0dc;
+  --lr-paper: #fff6df;
+  --lr-paper-2: #f6e6bd;
+  --bg: #e6d3a2;
+  --card: #f2e3bb;
   --lr-line: rgba(176, 134, 36, .40);
   --lr-shadow: 0 1px 0 rgba(255, 255, 255, .95) inset, 0 1px 2px rgba(74, 48, 8, .10), 0 10px 22px -10px rgba(74, 48, 8, .28);
   --lr-sub: #4a5262;
   --sub: #4a5262;
 }
 
-/* 1. Lienzo: chisteras de Sir Edwards en tresbolillo, muy tenues (sustituyen al damasco); pergamino un punto más oscuro que las tarjetas para que estas destaquen,
+/* 1. Lienzo: sin dibujo, pergamino cálido dorado; pergamino un punto más oscuro que las tarjetas para que estas destaquen,
       y un tinte suave del color de cada pantalla. */
 :root:not([data-theme="dark"]) .view:not(#view-game) {
   --lr-tint: 232, 200, 116;
   background-image:
     radial-gradient(130% 55% at 50% -6%, rgba(var(--lr-tint), .34), transparent 62%),
-    radial-gradient(90% 40% at 50% 108%, rgba(var(--lr-tint), .18), transparent 70%),
-    url("../assets/ui/fondos/chisteras.webp");
-  background-size: auto, auto, 120px 120px;
-  background-color: #ecdfbb;
+    radial-gradient(90% 40% at 50% 108%, rgba(var(--lr-tint), .18), transparent 70%);
+  background-size: auto;
+  background-color: #e9d6a0;
 }
 :root:not([data-theme="dark"]) #view-modes    { --lr-tint: 59, 111, 214; }
 :root:not([data-theme="dark"]) #view-duelo    { --lr-tint: 190, 52, 90; }
@@ -65,13 +66,13 @@
 /* 3. Tarjetas de modos (Jugar y Duelos): papel limpio, color del modo solo en el filete superior */
 :root:not([data-theme="dark"]) #duel-home .seq-d-card,
 :root:not([data-theme="dark"]) #view-modes .modes-grid .mode-card:not(.locked) {
-  background: linear-gradient(var(--hc), var(--hc)) top / 100% 4px no-repeat, linear-gradient(180deg, #fffefb, #fbf6e8) !important;
+  background: linear-gradient(var(--hc), var(--hc)) top / 100% 4px no-repeat, linear-gradient(180deg, #fffaec, #f8ebc8) !important;
   border: 1.5px solid color-mix(in srgb, var(--hc) 55%, #8a6a1a) !important;
   box-shadow: 0 1px 0 #fff inset, 0 2px 3px rgba(74, 48, 8, .16), 0 12px 24px -10px rgba(74, 48, 8, .40) !important;
 }
 /* «Continuar»: destacada sobre el resto, como el oscuro: marco de oro doble, brillo del color del modo, título y etiqueta «EN CURSO» con ese color */
 :root:not([data-theme="dark"]) #resume-game-card.mode-card {
-  background: radial-gradient(75% 140% at 12% 40%, color-mix(in srgb, var(--hc) 12%, transparent), transparent 70%), linear-gradient(165deg, #fffbf0, #f2e5c4) !important;
+  background: radial-gradient(75% 140% at 12% 40%, color-mix(in srgb, var(--hc) 12%, transparent), transparent 70%), linear-gradient(165deg, #fff8e6, #f0dcaa) !important;
   border: 2px solid #c9992e !important;
   box-shadow: inset 0 0 0 4px #fffaf0, inset 0 0 0 5px rgba(201, 153, 46, .6), 0 14px 26px -12px rgba(74, 48, 8, .45) !important;
 }
@@ -144,8 +145,8 @@
 :root:not([data-theme="dark"]) .home-big-card.home-card-jugar,
 :root:not([data-theme="dark"]) .home-big-card.home-card-duelo {
   background:
-    radial-gradient(70% 130% at 14% 50%, color-mix(in srgb, var(--acc) 20%, transparent), transparent 65%),
-    linear-gradient(165deg, #fffbf0, #f2e5c4);
+    radial-gradient(70% 130% at 14% 50%, color-mix(in srgb, var(--acc) 11%, transparent), transparent 65%),
+    linear-gradient(165deg, #fff8e6, #f0dcaa);
   border: 2px solid #c9992e;
   box-shadow: inset 0 0 0 4px #fffaf0, inset 0 0 0 5px rgba(201, 153, 46, .6), 0 14px 26px -12px rgba(74, 48, 8, .45);
 }
