@@ -282,6 +282,8 @@
   }
   function isPvp(b) { return b === 'pvp'; }
   // Posición «oficial» de una fila: en PvP, quien está en colocación todavía no tiene puesto.
+  // 2.4: pulsar a un jugador abre su ficha. Solo con un ID válido (10 caracteres A-Z/0-9); si no, la fila no es pulsable.
+  function tapOf(r) { return r && typeof r.id === 'string' && /^[0-9A-Z]{10}$/.test(r.id) ? ' role="button" tabindex="0" onclick="SEQProfile.open(\'' + r.id + '\')" onkeydown="if(event.key===\'Enter\')SEQProfile.open(\'' + r.id + '\')"' : ''; }
   function placeOf(r, b) { return isPvp(b) && r.en_colocacion ? null : (r.rank != null ? num(r.rank) : null); }
   function unitOf(b) { return (BOARDS[b] && BOARDS[b].unit) || 'pts'; }
   function valueHtml(r, b) { return isPvp(b) ? fmt(r.elo) + '<small>ELO</small>' : fmt(r.score) + '<small>' + unitOf(b) + '</small>'; }
@@ -295,7 +297,7 @@
     return '<div class="seq-v21-podium" aria-label="Podio">' + [2, 1, 3].map(function (n) {
       var r = top[n];
       var sub = subOf(r, b);
-      return '<div class="seq-v21-pod seq-v21-pod-' + n + (r.is_me ? ' me' : '') + '"><div class="seq-v21-pod-av"><span class="seq-avatar seq-v21-pod-ring">' + avatarOf(r) + '</span>' +
+      return '<div class="seq-v21-pod seq-v21-pod-' + n + (r.is_me ? ' me' : '') + '"' + tapOf(r) + '><div class="seq-v21-pod-av"><span class="seq-avatar seq-v21-pod-ring">' + avatarOf(r) + '</span>' +
         medalImg(n, 'seq-v21-pod-medal') + '</div><b class="seq-v21-pod-name">' + esc(r.display_name) + '</b>' + (sub ? '<small class="seq-v21-pod-sub">' + sub + '</small>' : '') +
         '<span class="seq-v21-pod-val">' + valueHtml(r, b) + '</span><div class="seq-v21-pod-step"><span>' + n + '</span></div></div>';
     }).join('') + '</div>';
@@ -310,7 +312,7 @@
   // PvP lleva la insignia de su rango; Cálculo Mental y Contrarreloj no tienen rangos y no se inventan.
   function rankRow(r, b) {
     var sub = subOf(r, b), ranked = isPvp(b) && !r.en_colocacion;
-    return '<div class="seq-v21-rk' + (r.is_me ? ' me' : '') + '">' + posBadge(placeOf(r, b)) +
+    return '<div class="seq-v21-rk' + (r.is_me ? ' me' : '') + '"' + tapOf(r) + '>' + posBadge(placeOf(r, b)) +
       '<span class="seq-avatar seq-v21-rk-av">' + avatarOf(r) + '</span>' +
       '<span class="seq-v21-rk-name"><b>' + esc(r.display_name) + '</b>' + (sub ? '<small>' + sub + '</small>' : '') + '</span>' +
       (ranked ? rankIcon(r.rango, 'seq-v21-rk-badge') : '') +

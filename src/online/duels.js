@@ -261,6 +261,7 @@
     if (screen === 'duel' || screen === 'reto') load();
     else if (screen === 'logros') loadLogros();
     else if (screen === 'rankings') { if (window.SEQDuels21) SEQDuels21.loadRankings(); }
+    else if (screen === 'profile') { if (window.SEQProfile) SEQProfile.load(); }
     else refreshSummary();
   }
   function loadLogros() {
@@ -653,20 +654,20 @@
     if (S.search.results) {
       h += S.search.results.length ? '<div class="history-list">' + S.search.results.map(function (x) {
         var p = player(x);
-        return '<div class="history-item seq-pl-row">' + who(p, p.id) + '<div class="seq-pl-act"><button class="btn btn-primary seq-d-sm" onclick="SEQDuels.friendAdd(\'' + p.id + '\')">Añadir</button></div></div>';
+        return '<div class="history-item seq-pl-row">' + '<div class="seq-pl-tap" onclick="SEQProfile.open(\'' + p.id + '\')">' + who(p, p.id) + '</div>' + '<div class="seq-pl-act"><button class="btn btn-primary seq-d-sm" onclick="SEQDuels.friendAdd(\'' + p.id + '\')">Añadir</button></div></div>';
       }).join('') + '</div>' : '<p class="stats-section-sub">No se ha encontrado a nadie.</p>';
     }
     if (!fl) return h + '<p class="stats-section-sub">Cargando…</p>';
     if (fl.incoming.length) {
       h += '<h3 class="seq-d-h3">Solicitudes recibidas</h3><div class="history-list">' + fl.incoming.map(function (x) {
         var p = player(x.player), fid = safeId(x.friendship_id);
-        return '<div class="history-item seq-pl-row">' + who(p) + '<div class="seq-pl-act seq-pl-act-full"><button class="btn btn-primary seq-d-sm" onclick="SEQDuels.friendResp(\'' + fid + '\',\'accept\')">Aceptar</button> <button class="btn btn-secondary seq-d-sm" onclick="SEQDuels.friendResp(\'' + fid + '\',\'reject\')">Rechazar</button></div></div>';
+        return '<div class="history-item seq-pl-row">' + '<div class="seq-pl-tap" onclick="SEQProfile.open(\'' + p.id + '\')">' + who(p) + '</div>' + '<div class="seq-pl-act seq-pl-act-full"><button class="btn btn-primary seq-d-sm" onclick="SEQDuels.friendResp(\'' + fid + '\',\'accept\')">Aceptar</button> <button class="btn btn-secondary seq-d-sm" onclick="SEQDuels.friendResp(\'' + fid + '\',\'reject\')">Rechazar</button></div></div>';
       }).join('') + '</div>';
     }
     if (fl.outgoing.length) {
       h += '<h3 class="seq-d-h3">Solicitudes enviadas</h3><div class="history-list">' + fl.outgoing.map(function (x) {
         var p = player(x.player), fid = safeId(x.friendship_id);
-        return '<div class="history-item seq-pl-row">' + who(p, 'pendiente') + '<div class="seq-pl-act"><button class="btn btn-secondary seq-d-sm" onclick="SEQDuels.friendResp(\'' + fid + '\',\'cancel\')">Cancelar</button></div></div>';
+        return '<div class="history-item seq-pl-row">' + '<div class="seq-pl-tap" onclick="SEQProfile.open(\'' + p.id + '\')">' + who(p, 'pendiente') + '</div>' + '<div class="seq-pl-act"><button class="btn btn-secondary seq-d-sm" onclick="SEQDuels.friendResp(\'' + fid + '\',\'cancel\')">Cancelar</button></div></div>';
       }).join('') + '</div>';
     }
     h += '<h3 class="seq-d-h3">Mis amigos</h3>';
@@ -676,7 +677,7 @@
       if (f.classic_duel) b += on ? '<button class="btn btn-primary seq-d-sm" title="Duelo online" aria-label="Duelo online" onclick="SEQDuels.quick(\'duel\',\'' + p.id + '\')">' + ico('duelo') + '</button> '
         : '<button class="btn btn-primary seq-d-sm" disabled title="Sin conexión: solo puedes retar a duelo a quien esté en línea" aria-label="Duelo online (sin conexión)">' + ico('duelo') + '</button> ';
       if (f.async_challenges) b += '<button class="btn btn-secondary seq-d-sm" title="Reto" aria-label="Reto" onclick="SEQDuels.quick(\'reto\',\'' + p.id + '\')">' + ico('retos') + '</button>';
-      return '<div class="history-item seq-pl-row">' + who(p, x.online === true ? '<span class="seq-d-on">● En línea</span>' : '') + '<div class="seq-pl-act">' + b + '</div></div>';
+      return '<div class="history-item seq-pl-row">' + '<div class="seq-pl-tap" onclick="SEQProfile.open(\'' + p.id + '\')">' + who(p, x.online === true ? '<span class="seq-d-on">● En línea</span>' : '') + '</div>' + '<div class="seq-pl-act">' + b + '</div></div>';
     }).join('') + '</div>';
   }
   function renderLogros() {
@@ -829,6 +830,15 @@
     // La XP llega a este dispositivo tras la sincronización: se repinta la tarjeta final por si ha subido el nivel.
     [4000, 9000].forEach(function (ms) { setTimeout(function () { if (S.screen === kind && S.id === (d && d.id) && S.data && S.data.estado === 'completado') render(); }, ms); });
   }
+  // 2.4: jingle de victoria o derrota la PRIMERA vez que se ve el resultado de un duelo o reto (el empate no suena).
+  // Se recuerdan los últimos resultados oídos para que reabrir uno viejo desde el historial no vuelva a sonar.
+  function resultSoundOnce(kind, d, res) {
+    try {
+      if (res === 'draw' || !d || !d.id || typeof playSound !== 'function') return;
+      if (window.SEQResultHeard && !SEQResultHeard.first(kind + ':' + d.id)) return;
+      playSound(res === 'win' ? 'win' : 'lose');
+    } catch (e) {}
+  }
   function xpChipHtml(xp) {
     return xp > 0 ? '<span class="result-chip"><span class="result-chip-value">+' + xp + '</span><span class="result-chip-label">XP</span></span>' : '';
   }
@@ -839,6 +849,7 @@
       return '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">' + esc(ESTADO[d.estado] || '') + '</div><p class="duel-result-hint">' + esc(why) + '</p></div>';
     }
     var res = r.ganador === 'yo' ? 'win' : r.ganador === 'rival' ? 'loss' : 'draw';
+    resultSoundOnce(kind, d, res);
     var cls = res === 'win' ? 'duel-result-win' : res === 'loss' ? 'duel-result-loss' : 'duel-result-draw';
     var note = d.motivo_fin === 'abandono' ? (d.yo && d.yo.abandonado ? 'Perdiste por abandono (más de 60 s sin conexión).' : p.name + ' abandonó la partida.')
       : d.motivo_fin === 'no_jugado' ? (res === 'win' ? p.name + ' no jugó a tiempo.' : 'No jugaste a tiempo.') : '';
@@ -972,6 +983,7 @@
       else if (S.screen === 'reto') h = renderReto();
       else if (S.screen === 'logros') h = renderLogros();
       else if (S.screen === 'rankings') h = window.SEQDuels21 ? SEQDuels21.renderRankings() : '';
+      else if (S.screen === 'profile') h = window.SEQProfile ? SEQProfile.render() : '';
     } catch (e) { S.shown = null; h = header('Duelos', '', back) + emptyImg('error') + '<p class="stats-section-sub">No se pudo mostrar esta pantalla.</p>'; }
     // Un repintado (al llegar datos del servidor) no debe borrar lo que el
     // usuario está escribiendo en la búsqueda ni quitarle el foco.
