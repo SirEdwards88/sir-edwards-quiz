@@ -3,20 +3,20 @@
    oro (perfecto/victoria), azul (bien), plata (mediocre), derrota, secreto (Lucidez). Sin tier = oro. */
 #results-card.results-card, .seq-d-results.results-card {
   --rc-fondo: url("../assets/ui/tarjeta/fondo-oro.webp");
-  --rc-marco: url("../assets/ui/tarjeta/marco-oro.webp");
+  --rc-marco: url("../assets/ui/tarjeta/marco-oro-b.webp");
   --rc-cinta: url("../assets/ui/tarjeta/cinta-oro.webp");
   --text: #f3ead8; --sub: #d3c8ae; --card: rgba(8,12,26,.62); --badge-bg: rgba(8,12,26,.55);
   --border: rgba(201,153,46,.38); --badge-border: rgba(201,153,46,.38);
 }
-#results-card[data-tier="azul"], .seq-d-results[data-tier="azul"] { --rc-fondo: url("../assets/ui/tarjeta/fondo-azul.webp"); --rc-marco: url("../assets/ui/tarjeta/marco-azul.webp"); --rc-cinta: url("../assets/ui/tarjeta/cinta-azul.webp"); }
-#results-card[data-tier="plata"], .seq-d-results[data-tier="plata"] { --rc-fondo: url("../assets/ui/tarjeta/fondo-plata.webp"); --rc-marco: url("../assets/ui/tarjeta/marco-plata.webp"); --rc-cinta: url("../assets/ui/tarjeta/cinta-plata.webp"); }
-#results-card[data-tier="derrota"], .seq-d-results[data-tier="derrota"] { --rc-fondo: url("../assets/ui/tarjeta/fondo-derrota.webp"); --rc-marco: url("../assets/ui/tarjeta/marco-derrota.webp"); --rc-cinta: url("../assets/ui/tarjeta/cinta-derrota.webp"); }
-#results-card[data-tier="secreto"], .seq-d-results[data-tier="secreto"] { --rc-fondo: url("../assets/ui/tarjeta/fondo-secreto.webp"); --rc-marco: url("../assets/ui/tarjeta/marco-secreto.webp"); --rc-cinta: url("../assets/ui/tarjeta/cinta-secreto.webp"); }
+#results-card[data-tier="azul"], .seq-d-results[data-tier="azul"] { --rc-fondo: url("../assets/ui/tarjeta/fondo-azul.webp"); --rc-marco: url("../assets/ui/tarjeta/marco-azul-b.webp"); --rc-cinta: url("../assets/ui/tarjeta/cinta-azul.webp"); }
+#results-card[data-tier="plata"], .seq-d-results[data-tier="plata"] { --rc-fondo: url("../assets/ui/tarjeta/fondo-plata.webp"); --rc-marco: url("../assets/ui/tarjeta/marco-plata-b.webp"); --rc-cinta: url("../assets/ui/tarjeta/cinta-plata.webp"); }
+#results-card[data-tier="derrota"], .seq-d-results[data-tier="derrota"] { --rc-fondo: url("../assets/ui/tarjeta/fondo-derrota.webp"); --rc-marco: url("../assets/ui/tarjeta/marco-derrota-b.webp"); --rc-cinta: url("../assets/ui/tarjeta/cinta-derrota.webp"); }
+#results-card[data-tier="secreto"], .seq-d-results[data-tier="secreto"] { --rc-fondo: url("../assets/ui/tarjeta/fondo-secreto.webp"); --rc-marco: url("../assets/ui/tarjeta/marco-secreto-b.webp"); --rc-cinta: url("../assets/ui/tarjeta/cinta-secreto.webp"); }
 
 #results-card.results-card, .seq-d-results.results-card {
   position: relative; overflow: hidden;
   background: linear-gradient(rgba(5,8,18,.30), rgba(5,8,18,.50)), var(--rc-fondo) center / cover no-repeat !important;
-  border: 0 !important; border-radius: 16px !important;
+  border: 0 !important; border-radius: 6px !important;
   padding: 34px 22px 24px !important;
   box-shadow: 0 16px 40px rgba(0,0,0,.5) !important;
 }

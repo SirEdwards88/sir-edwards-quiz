@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 271;
+const CACHE_VERSION = 272;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -135,11 +135,11 @@ const APP_SHELL = [
   './assets/ui/tarjeta/fondo-secreto-claro.webp',
   './assets/ui/tarjeta/fondo-secreto.webp',
   './assets/ui/tarjeta/fondo.webp',
-  './assets/ui/tarjeta/marco-azul.webp',
-  './assets/ui/tarjeta/marco-derrota.webp',
-  './assets/ui/tarjeta/marco-oro.webp',
-  './assets/ui/tarjeta/marco-plata.webp',
-  './assets/ui/tarjeta/marco-secreto.webp',
+  './assets/ui/tarjeta/marco-azul-b.webp',
+  './assets/ui/tarjeta/marco-derrota-b.webp',
+  './assets/ui/tarjeta/marco-oro-b.webp',
+  './assets/ui/tarjeta/marco-plata-b.webp',
+  './assets/ui/tarjeta/marco-secreto-b.webp',
   './assets/ui/tarjeta/marco.webp',
   './assets/ui/tarjeta/sello.webp',
   './assets/ui/escenas/vacio-amigos.webp',
@@ -774,12 +774,12 @@ const ASSET_REVS = {
   './assets/ui/tarjeta/fondo-secreto-claro.webp': '389f0e0f',
   './assets/ui/tarjeta/fondo-secreto.webp': 'da793ef1',
   './assets/ui/tarjeta/fondo.webp': '802b4ab1',
-  './assets/ui/tarjeta/marco-azul.webp': '71a4181c',
+  './assets/ui/tarjeta/marco-azul-b.webp': '39f62f3e',
+  './assets/ui/tarjeta/marco-derrota-b.webp': 'e0efadcf',
   './assets/ui/tarjeta/marco-derrota-rotulado.webp': '3672ba25',
-  './assets/ui/tarjeta/marco-derrota.webp': '6cc00ad6',
-  './assets/ui/tarjeta/marco-oro.webp': 'cf89acad',
-  './assets/ui/tarjeta/marco-plata.webp': '9b0d2c2b',
-  './assets/ui/tarjeta/marco-secreto.webp': '58c35fd9',
+  './assets/ui/tarjeta/marco-oro-b.webp': 'e388e3e7',
+  './assets/ui/tarjeta/marco-plata-b.webp': '1505e1f5',
+  './assets/ui/tarjeta/marco-secreto-b.webp': '58315445',
   './assets/ui/tarjeta/marco-victoria-rotulado.webp': 'fe24377c',
   './assets/ui/tarjeta/marco.webp': 'a6871713',
   './assets/ui/tarjeta/sello-record.webp': '5e2ca086',
