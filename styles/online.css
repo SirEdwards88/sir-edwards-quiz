@@ -902,3 +902,7 @@
 }
 .seq-d-modes .seq-d-levels .btn { border: 1.5px solid color-mix(in srgb, var(--hc) 55%, transparent); color: var(--text); font-weight: 700; }
 :root:not([data-theme="dark"]) .seq-d-modes .seq-d-levels .btn { background: linear-gradient(180deg, #fffdf4, #f6e8c4); }
+
+/* Tarjeta final de Duelo/Reto: el relleno de móvil la dejaba pegada al marco ornamental (los botones lo pisaban).
+   Mismo relleno que la tarjeta final de partida (results-frame.css), que ya cuenta con el marco. */
+#seq-duel-root .seq-d-results.results-card.seq-d-final { padding: 34px 24px 28px !important; }
