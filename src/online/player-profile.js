@@ -117,7 +117,7 @@
       : empty('Aún sin récords que presumir.'));
 
     out += section('Duelo online', v
-      ? '<div class="seq-pf-grid">' + tile('ELO', dash(v.elo), 'pico ' + dash(v.pico), vv && vv.rankIcon ? vv.rankIcon(v.rango, 'seq-pf-ico') : '') + tile('% de victorias', pct(v.porcentaje_victorias), num(v.partidas) + (num(v.partidas) === 1 ? ' duelo' : ' duelos')) +
+      ? '<div class="seq-pf-grid">' + tile('ELO', dash(v.elo), 'récord ' + dash(v.pico), vv && vv.rankIcon ? vv.rankIcon(v.rango, 'seq-pf-ico') : '') + tile('% de victorias', pct(v.porcentaje_victorias), num(v.partidas) + (num(v.partidas) === 1 ? ' duelo' : ' duelos')) +
           '<div class="seq-pf-record"><span class="seq-pf-w"><b>' + num(v.victorias) + '</b>victorias</span><span class="seq-pf-l"><b>' + num(v.derrotas) + '</b>derrotas</span><span class="seq-pf-d"><b>' + num(v.empates) + '</b>empates</span></div></div>'
       : empty('Ningún duelo puntuado todavía.'));
     return out + '</div>';
