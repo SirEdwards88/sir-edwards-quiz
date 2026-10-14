@@ -90,7 +90,7 @@
           '</div><div class="session-medal-desc">' + m.desc + '</div></div></div>';
       }).join('');
     } else if (m2) m2.style.display = 'none';
-    if (r.category !== 'mal' && !recordSoundPlayed) playSound('win');
+    if (!recordSoundPlayed) playSound(r.category !== 'mal' ? 'win' : 'lose');
   }
 
   // Estadísticas > Récords personales: fila propia del Fondo (aciertos, no puntos), junto a la de Turbo.

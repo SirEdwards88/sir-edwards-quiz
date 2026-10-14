@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 233;
+const CACHE_VERSION = 234;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -352,6 +352,11 @@ const APP_SHELL = [
   './assets/modes/mini/logros.webp',
   './src/audio/audio.js',
   './assets/audio/correct.mp3',
+  './assets/audio/win.mp3',
+  './assets/audio/lose.mp3',
+  './assets/audio/record.mp3',
+  './assets/audio/event.mp3',
+  './assets/audio/secret.mp3',
   './assets/fonts/inter-latin.woff',
   './assets/fonts/playfair-display-latin.woff',
   './assets/audio/wrong.mp3',
@@ -453,6 +458,11 @@ const APP_SHELL = [
 // <asset-revs>
 const ASSET_REVS = {
   './assets/audio/correct.mp3': 'ada74251',
+  './assets/audio/event.mp3': 'cb1d695a',
+  './assets/audio/lose.mp3': '6c44bf69',
+  './assets/audio/record.mp3': '06b66ee8',
+  './assets/audio/secret.mp3': 'ac4062d8',
+  './assets/audio/win.mp3': 'ca841945',
   './assets/audio/wrong.mp3': '738c1d1c',
   './assets/avatars/avatar_siredwards_coleccionista.png': 'e673dc90',
   './assets/avatars/avatar_siredwards_imparable.png': 'fa0e4d0e',

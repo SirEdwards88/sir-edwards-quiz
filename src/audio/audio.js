@@ -11,7 +11,11 @@
 
 let audioCtx = null;
 
-const SAMPLE_FILES = { correct: 'assets/audio/correct.mp3', wrong: 'assets/audio/wrong.mp3' };
+const SAMPLE_FILES = { correct: 'assets/audio/correct.mp3', wrong: 'assets/audio/wrong.mp3',
+  // 2.4 — jingles de ~3-4 s (victoria, derrota, récord, aparición de Sir Edwards, logro secreto). Mismo mecanismo:
+  // si aún no están decodificados, suena el sintetizado de siempre (la derrota no tiene sintetizado: silencio).
+  win: 'assets/audio/win.mp3', lose: 'assets/audio/lose.mp3', record: 'assets/audio/record.mp3',
+  event: 'assets/audio/event.mp3', secret: 'assets/audio/secret.mp3' };
 const sampleBuffers = {};
 let samplesRequested = false;
 function loadSamples() {
@@ -37,6 +41,26 @@ function playSample(name, volume) {
     return true;
   } catch (e) { return false; }
 }
+// Jingles: un solo canal. Uno nuevo sustituye al anterior (con un fundido corto) para que nunca suenen dos a la vez
+// (p. ej. «modo desbloqueado» y «victoria» en la misma pantalla); el mismo jingle no se reinicia si acaba de sonar;
+// y los «suaves» (la aparición de Sir Edwards) no interrumpen a otro que esté sonando.
+let jingle = null; // { src, gain, name, at, until }
+function playJingle(name, volume, soft) {
+  const buf = sampleBuffers[name];
+  if (!buf) { loadSamples(); return false; }
+  try {
+    const ctx = getAudioCtx(), now = ctx.currentTime;
+    if (jingle && now < jingle.until) {
+      if (soft || jingle.name === name && now - jingle.at < 1.5) return true; // ya está sonando algo: no se pisa
+      try { jingle.gain.gain.cancelScheduledValues(now); jingle.gain.gain.setValueAtTime(jingle.gain.gain.value, now); jingle.gain.gain.linearRampToValueAtTime(0.0001, now + 0.12); jingle.src.stop(now + 0.14); } catch (e) {}
+    }
+    const src = ctx.createBufferSource(), g = ctx.createGain();
+    src.buffer = buf; g.gain.value = volume == null ? 0.9 : volume;
+    src.connect(g); g.connect(ctx.destination); src.start();
+    jingle = { src: src, gain: g, name: name, at: now, until: now + buf.duration };
+    return true;
+  } catch (e) { return false; }
+}
 // El navegador solo deja crear/usar el audio tras un toque: se precargan las muestras en el primer toque.
 ['pointerdown', 'keydown', 'touchstart'].forEach((ev) => document.addEventListener(ev, function once() {
   document.removeEventListener(ev, once, true);
@@ -47,7 +71,9 @@ function playSound(type) {
   if (store.sound === 'off') return;
   if (type === 'bad' && playSample('wrong', 0.85)) return;
   if (type === 'ok' && playSample('correct', 0.9)) return;
-  if (type === 'win') { playWinFanfare(); return; }
+  if (type === 'lose') { playJingle('lose'); return; }
+  if (type === 'win') { if (!playJingle('win')) playWinFanfare(); return; }
+  if (type === 'eye' && playJingle('secret')) return;
   try { const ctx = getAudioCtx(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination); const now = ctx.currentTime; if (type === 'ok') { osc.frequency.setValueAtTime(523.25, now); osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); gain.gain.setValueAtTime(0.15, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15); osc.start(now); osc.stop(now + 0.15); } else if (type === 'bad') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(180, now); osc.frequency.exponentialRampToValueAtTime(110, now + 0.2); gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2); osc.start(now); osc.stop(now + 0.2); } else if (type === 'win') { const notes = [523.25, 659.25, 783.99, 1046.50]; notes.forEach((freq, i) => { const o = ctx.createOscillator(); const g = ctx.createGain(); o.type = 'triangle'; o.connect(g); g.connect(ctx.destination); o.frequency.setValueAtTime(freq, now + i * 0.08); g.gain.setValueAtTime(0.15, now + i * 0.08); g.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.25); o.start(now + i * 0.08); o.stop(now + i * 0.08 + 0.25); }); } else if (type === 'eye') { /* Sonido propio para el logro secreto "Lucidez Absoluta": un acorde grave y disonante que se abre hacia un armónico agudo, distinto del "win" habitual. */ const notes = [220, 261.63, 415.30, 880]; notes.forEach((freq, i) => { const o = ctx.createOscillator(); const g = ctx.createGain(); o.type = i === notes.length - 1 ? 'sine' : 'triangle'; o.connect(g); g.connect(ctx.destination); const start = now + i * 0.12; o.frequency.setValueAtTime(freq, start); g.gain.setValueAtTime(0.001, start); g.gain.exponentialRampToValueAtTime(0.12, start + 0.05); g.gain.exponentialRampToValueAtTime(0.01, start + 0.5); o.start(start); o.stop(start + 0.5); }); } } catch(e) {} 
 }
 // Variante de playSound('ok') que hace evolucionar el mismo motivo musical
@@ -213,10 +239,12 @@ function playBellNote(freq, delay, vol, ringS) {
 }
 function playSirEventSound() {
   if (store.sound === 'off') return;
+  if (playJingle('event', 0.9, true)) return;
   try { playBellNote(1568, 0, 0.5, 1.4); playBellNote(2093, 0.18, 0.45, 1.4); } catch (e) {}
 }
 function playRecordSound() {
   if (store.sound === 'off') return;
+  if (playJingle('record')) return;
   try { [1319, 1568, 2093].forEach((f, i) => playBellNote(f, i * 0.16, 0.5 - 0.04 * i, 1.6)); } catch (e) {}
 }
 

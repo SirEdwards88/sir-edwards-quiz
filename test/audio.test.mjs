@@ -12,7 +12,7 @@ test('el audio vive en src/audio/audio.js y no en index.html', () => {
   }
 });
 test('las muestras existen, son ligeras y están en la caché sin conexión', () => {
-  for (const f of ['src/audio/audio.js', 'assets/audio/correct.mp3', 'assets/audio/wrong.mp3']) {
+  for (const f of ['src/audio/audio.js', 'assets/audio/correct.mp3', 'assets/audio/wrong.mp3', 'assets/audio/win.mp3', 'assets/audio/lose.mp3', 'assets/audio/record.mp3', 'assets/audio/event.mp3', 'assets/audio/secret.mp3']) {
     assert.ok(sw.includes(`'./${f}'`), f);
     assert.ok(fs.statSync(new URL('../' + f, import.meta.url)).size < 60000, f + ' pesa demasiado');
   }
@@ -34,9 +34,22 @@ test('campanillas: sonido de evento de Sir Edwards y de récord, con el interrup
   const fs = await import('node:fs');
   const a = fs.readFileSync(new URL('../src/audio/audio.js', import.meta.url), 'utf8');
   assert.ok(a.includes('function playSirEventSound()') && a.includes('function playRecordSound()'));
-  assert.equal((a.match(/if \(store\.sound === 'off'\) return;\n  try \{ (playBellNote|\[1319)/g) || []).length, 2);
+  assert.equal((a.match(/if \(store\.sound === 'off'\) return;\n  if \(playJingle\('(event|record)'/g) || []).length, 2);
+  assert.equal((a.match(/\n  try \{ (playBellNote|\[1319)/g) || []).length, 2, 'el sintetizado de campanillas sigue como respaldo');
   const ui = fs.readFileSync(new URL('../src/ui/sir-events-ui.js', import.meta.url), 'utf8');
   assert.ok(ui.includes("ev.type === 'record'") && ui.includes('playSirEventSound'));
   const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
   assert.ok(html.includes('playRecordSound();') && html.includes('!recordSoundPlayed'));
+});
+
+test('2.4 jingles: victoria, derrota, récord, evento y logro secreto; un solo canal y respaldo sintetizado', () => {
+  for (const [k, f] of [['win', 'win'], ['lose', 'lose'], ['record', 'record'], ['event', 'event'], ['secret', 'secret']]) {
+    assert.ok(audio.includes(`${k}: 'assets/audio/${f}.mp3'`), k);
+  }
+  assert.match(audio, /if \(type === 'lose'\) \{ playJingle\('lose'\); return; \}/);
+  assert.match(audio, /if \(type === 'win'\) \{ if \(!playJingle\('win'\)\) playWinFanfare\(\); return; \}/);
+  assert.match(audio, /type === 'eye' && playJingle\('secret'\)/);
+  assert.match(audio, /playJingle\('event', 0\.9, true\)/);
+  // la derrota suena en los resultados de pérdida y no se pisa con el récord
+  assert.match(html, /playSound\('lose'\)/);
 });

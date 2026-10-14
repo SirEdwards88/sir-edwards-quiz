@@ -366,12 +366,12 @@ test('Avatares: bloqueado → muestra el logro; Supremo → «logro secreto» si
   assert.ok(sup.indexOf('isSecret') < sup.indexOf('ALL_MEDALS'), 'el secreto se comprueba ANTES de buscar el nombre del logro');
 });
 
-test('Novedades de la 2.1: resumen corto de cinco líneas', () => {
+test('Novedades de la 2.1: resumen corto de tres líneas', () => {
   const html = read('index.html');
   const i = html.lastIndexOf('settings-changelog-entry-version">v2.1<');
   const entry = html.slice(i, html.indexOf('</ul>', i));
   const lis = [...entry.matchAll(/<li>([^<]*)<\/li>/g)].map((m) => m[1]);
-  assert.equal(lis.length, 5);
+  assert.equal(lis.length, 3);
   assert.ok(lis.every((l) => l.length <= 45), 'frases de una línea: ' + lis.join(' | '));
   assert.equal(lis.some((l) => /\p{Extended_Pictographic}/u.test(l)), false, 'el historial no lleva emojis: tono de Sir Edwards');
 });

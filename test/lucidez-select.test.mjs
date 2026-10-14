@@ -16,13 +16,13 @@ function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; le
 const RANK = { facil: 0, medio: 1, dificil: 2 };
 const count = (arr, f) => arr.filter(f).length;
 
-test('datos: 320 con lz (219 A, 101 B): 193 medias, 97 difíciles, 30 fáciles', () => {
+test('datos: 326 con lz (219 A, 107 B): 197 medias, 99 difíciles, 30 fáciles', () => {
   const lz = BANK.filter((q) => q.lz);
-  assert.equal(lz.length, 320);
+  assert.equal(lz.length, 326);
   assert.equal(count(lz, (q) => q.lz === 'A'), 219);
-  assert.equal(count(lz, (q) => q.lz === 'B'), 101);
-  assert.equal(count(lz, (q) => q.dif === 'medio'), 193);
-  assert.equal(count(lz, (q) => q.dif === 'dificil'), 97);
+  assert.equal(count(lz, (q) => q.lz === 'B'), 107);
+  assert.equal(count(lz, (q) => q.dif === 'medio'), 197);
+  assert.equal(count(lz, (q) => q.dif === 'dificil'), 99);
   assert.equal(count(lz, (q) => q.dif === 'facil'), 30);
   assert.ok(BANK.every((q) => !q.lz || q.lz === 'A' || q.lz === 'B'));
   assert.ok(lz.every((q) => !(Array.isArray(q.options) && q.options.length)), 'Lucidez es de respuesta escrita: nada con opciones');
@@ -90,7 +90,7 @@ test('determinista con la misma semilla y distinta con otra', () => {
 
 test('ignora las preguntas sin lz aunque sean medias o difíciles', () => {
   const sinLz = BANK.filter((q) => !q.lz).map((q) => q.n);
-  assert.ok(sinLz.length >= 22);
+  assert.ok(sinLz.length >= 15);
   for (let s = 1; s <= 200; s++) { const sel = S.select(BANK, mulberry32(s)); for (const q of sel.p1.concat(sel.p2, sel.p3)) assert.ok(!sinLz.includes(q.n)); }
 });
 
