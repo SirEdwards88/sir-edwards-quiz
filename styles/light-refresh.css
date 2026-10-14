@@ -9,8 +9,8 @@
  * Para volver atrás basta con quitar el <link> de index.html (y su línea en sw.js).
  */
 :root:not([data-theme="dark"]) {
-  --lr-paper: #fff6df;
-  --lr-paper-2: #f6e6bd;
+  --lr-paper: #fffaec;
+  --lr-paper-2: #faf0d4;
   --bg: #e8d9ae;
   /* Escala de claridad (de más oscuro a más claro): lienzo < marco < papel de sección < campos con datos (teselas, filas, chips). */
   --card: #fffcf3;
@@ -211,3 +211,25 @@
   background: #b0201a; color: #fff; border: 1px solid #8f1812; font-weight: 800;
   box-shadow: 0 2px 0 #7a130e, 0 8px 14px -8px rgba(150, 30, 20, .7);
 }
+
+/* Logros (claro): los desbloqueados lucen (fila dorada, icono grande con halo y color); los bloqueados, apagados pero claros, sin el gris oscuro */
+:root:not([data-theme="dark"]) .ach-row.is-done {
+  background: linear-gradient(90deg, #ffefb8 0%, #fff6d8 38%, rgba(255, 250, 236, 0) 100%);
+  border-left: 4px solid #d9a21f;
+  padding-left: 12px;
+}
+:root:not([data-theme="dark"]) .ach-row.is-done .ach-ico-wrap::before {
+  content: ''; position: absolute; inset: -7px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 207, 74, .75) 0%, rgba(255, 207, 74, .28) 52%, transparent 72%);
+  pointer-events: none;
+}
+:root:not([data-theme="dark"]) .ach-row.is-done .ach-ico.has-img { width: 60px !important; height: 60px !important; position: relative; }
+:root:not([data-theme="dark"]) .ach-row.is-done .ach-ico.has-img .ach-img {
+  filter: saturate(1.25) contrast(1.05) drop-shadow(0 4px 7px rgba(150, 100, 10, .5));
+}
+:root:not([data-theme="dark"]) .ach-row.is-done .ach-title { font-size: 15.5px; color: #1c2340; }
+:root:not([data-theme="dark"]) .ach-row.is-done .ach-check { width: 21px; height: 21px; font-size: 12px; right: -4px; bottom: -4px; box-shadow: 0 2px 5px rgba(22, 120, 60, .45); }
+:root:not([data-theme="dark"]) .ach-row.is-done .ach-desc { color: #4a4636; }
+:root:not([data-theme="dark"]) .ach-row.is-locked .ach-ico.has-img { filter: grayscale(.7) brightness(1.18) contrast(.9); opacity: .78; }
+:root:not([data-theme="dark"]) .ach-row.is-locked .ach-title { color: #5b5648; }
+:root:not([data-theme="dark"]) .ach-row.is-locked .ach-desc { color: #6a6454; }
