@@ -4903,7 +4903,8 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
    scroll propio, para que "Últimas partidas" no obligue a un scroll de
    página kilométrico cuando ya hay muchas partidas guardadas. */
 @media (max-width: 600px) {
-  .history-list { max-height: 340px; overflow-y: auto; padding-right: 2px; }
+  /* «Últimas partidas» (#history-list-container) guarda solo 5 partidas: se muestran enteras, sin scroll interno que corte la última fila. */
+  .history-list:not(#history-list-container) { max-height: 340px; overflow-y: auto; padding-right: 2px; }
 }
 
 @media (max-width: 380px) {

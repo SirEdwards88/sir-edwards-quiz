@@ -214,7 +214,7 @@
 
 /* Logros (claro): los desbloqueados lucen (fila dorada, icono grande con halo y color); los bloqueados, apagados pero claros, sin el gris oscuro */
 :root:not([data-theme="dark"]) .ach-row.is-done {
-  background: linear-gradient(90deg, #ffefb8 0%, #fff6d8 38%, rgba(255, 250, 236, 0) 100%);
+  background: transparent; /* mismo papel que la cabecera de la familia; lo desbloqueado se distingue por la franja, el halo y el check */
   border-left: 4px solid #d9a21f;
   padding-left: 12px;
 }
@@ -237,7 +237,7 @@
 /* Logros (claro): la familia completada lleva el mismo tono de papel que las que faltan por completar (solo cambia el contenido: filas y cuenta) */
 :root:not([data-theme="dark"]) .ach-group.is-complete {
   background-color: var(--lr-paper);
-  background-image: linear-gradient(180deg, var(--lr-paper), var(--lr-paper-2));
+  background-image: none;
 }
 :root:not([data-theme="dark"]) .ach-group.is-complete .ach-g-ico { background: var(--badge-bg); }
 
@@ -263,3 +263,46 @@
   background: #7c3aed; color: #fff; font-size: 14px;
 }
 :root:not([data-theme="dark"]) .fragment-milestone.is-locked { opacity: .78; background: rgba(255, 255, 255, .7); }
+
+/* Estadísticas (claro): «Últimas partidas» — filas en crema algo más cálido y con filete dorado, para que no floten como cajas blancas sobre el papel */
+:root:not([data-theme="dark"]) #view-stats .history-item.hist-row {
+  background: #fbf2da;
+  border: 1px solid rgba(176, 134, 36, .28);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .7) inset, 0 1px 2px rgba(74, 48, 8, .08);
+}
+
+/* Logros (claro): la familia llevaba un degradado de papel a lo largo de toda su altura, así que las filas de abajo salían más oscuras que la cabecera. Papel liso: cabecera y filas, del mismo tono. */
+:root:not([data-theme="dark"]) .ach-group:not(.is-complete) {
+  background-image: none;
+  background-color: var(--lr-paper);
+}
+
+/* Barras de progreso (claro): la pista era gris azulado frío sobre papel crema; pasa a beige cálido (el relleno no cambia). La barra de la partida no se toca. */
+:root:not([data-theme="dark"]) :is(#view-home, #view-modes, #view-duelo, #view-stats, #view-medals, #view-encargos) :is(.progress-bar, .progress-track, .dominio-bar, .ach-g-bar, .ach-bar),
+:root:not([data-theme="dark"]) .enc-card:not(.is-great) .enc-bar {
+  background: rgba(138, 106, 26, .22);
+}
+
+/* Amigos / Duelos (claro): los botones secundarios de las filas (Reto, Rechazar, Cancelar) eran crema sobre papel blanco, sin borde, y no se veían.
+   Ahora llevan fondo dorado suave, filete dorado y sombra, a la altura del botón primario de al lado. */
+:root:not([data-theme="dark"]) #seq-duel-root .seq-pl-row .btn.btn-secondary {
+  background: linear-gradient(180deg, #fbefcf, #f0dba6);
+  border: 1.5px solid #b98a1d;
+  color: #1c2340;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .8) inset, 0 2px 0 rgba(138, 106, 26, .35);
+}
+/* El primario desactivado (amigo sin conexión) deja de ser un gris plano: mismo botón, apagado. */
+:root:not([data-theme="dark"]) #seq-duel-root .seq-pl-row .btn.btn-primary:disabled {
+  background: linear-gradient(180deg, #c9cfdd, #aab2c6);
+  border: 1.5px solid #8a93ab;
+  opacity: .8;
+  box-shadow: none;
+}
+/* «En línea»: el verde de modo oscuro (#5fd08b) casi no se leía sobre papel claro. */
+:root:not([data-theme="dark"]) .seq-d-on { color: #17803f; }
+
+/* Rankings (claro): los escalones del podio eran beige sobre beige; algo más de dorado y filete firme para que se lean como peldaños. */
+:root:not([data-theme="dark"]) .seq-v21-pod-step {
+  background: linear-gradient(180deg, #f3d98a, #f8ebc2);
+  border-color: #b98a1d;
+}
