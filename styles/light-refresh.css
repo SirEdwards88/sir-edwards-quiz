@@ -17,14 +17,15 @@
   --sub: #4a5262;
 }
 
-/* 1. Lienzo: sin dibujo de fondo (el damasco se retira); pergamino un punto más oscuro que las tarjetas para que estas destaquen,
+/* 1. Lienzo: chisteras de Sir Edwards en tresbolillo, muy tenues (sustituyen al damasco); pergamino un punto más oscuro que las tarjetas para que estas destaquen,
       y un tinte suave del color de cada pantalla. */
 :root:not([data-theme="dark"]) .view:not(#view-game) {
   --lr-tint: 232, 200, 116;
   background-image:
     radial-gradient(130% 55% at 50% -6%, rgba(var(--lr-tint), .34), transparent 62%),
-    radial-gradient(90% 40% at 50% 108%, rgba(var(--lr-tint), .18), transparent 70%);
-  background-size: auto;
+    radial-gradient(90% 40% at 50% 108%, rgba(var(--lr-tint), .18), transparent 70%),
+    url("../assets/ui/fondos/chisteras.webp");
+  background-size: auto, auto, 120px 120px;
   background-color: #ecdfbb;
 }
 :root:not([data-theme="dark"]) #view-modes    { --lr-tint: 59, 111, 214; }
