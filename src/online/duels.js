@@ -707,12 +707,12 @@
       var mid = m && Object.prototype.hasOwnProperty.call(RETO_MODE_UI, m.id) ? m.id : null, ui = mid ? RETO_MODE_UI[mid] : null; if (!ui) return '';
       var row = '<div class="seq-d-mode-icon">' + modeIco(ui) + '</div><div class="seq-d-mode-body"><div class="history-item-info">' + esc(ui.nombre) + '</div>';
       if (mid === 'supervivencia') {
-        if (!S.pickSurvival) return '<div class="history-item seq-d-row seq-d-mode" onclick="SEQDuels.createReto(\'supervivencia\')">' + row + '</div><div class="history-item-score">Elegir ›</div></div>';
-        return '<div class="history-item seq-d-mode">' + row + '<div class="seq-d-levels">' + ['ameba', 'humano', 'derrame'].map(function (lv) {
+        if (!S.pickSurvival) return '<div class="history-item seq-d-row seq-d-mode seq-d-m-' + mid + '" onclick="SEQDuels.createReto(\'supervivencia\')">' + row + '</div><div class="history-item-score">Elegir ›</div></div>';
+        return '<div class="history-item seq-d-mode seq-d-m-' + mid + '">' + row + '<div class="seq-d-levels">' + ['ameba', 'humano', 'derrame'].map(function (lv) {
           return '<button type="button" class="btn btn-secondary seq-d-sm" onclick="SEQDuels.createReto(\'supervivencia\',\'' + lv + '\')">' + esc(NIVEL_UI[lv]) + '</button>';
         }).join(' ') + '</div></div></div>';
       }
-      return '<div class="history-item seq-d-row seq-d-mode" onclick="SEQDuels.createReto(\'' + mid + '\')">' + row + '</div><div class="history-item-score">Retar ›</div></div>';
+      return '<div class="history-item seq-d-row seq-d-mode seq-d-m-' + mid + '" onclick="SEQDuels.createReto(\'' + mid + '\')">' + row + '</div><div class="history-item-score">Retar ›</div></div>';
     }).join('') + '</div>';
   }
 

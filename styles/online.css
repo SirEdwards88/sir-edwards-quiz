@@ -258,7 +258,7 @@
 .seq-d-heart-off { opacity: .25; filter: grayscale(1); }
 .seq-d-mode > .history-item-score { white-space: nowrap; }
 .seq-d-levels .btn { width: auto; flex: 0 0 auto; margin: 0; }
-.history-list.seq-d-modes { max-height: none; overflow: visible; }
+.history-list.seq-d-modes:not(#history-list-container) { max-height: none; overflow: visible; padding-right: 0; }
 .seq-d-mode > .history-item-score { color: var(--dz-reto-text); }
 .seq-d-levels .btn { display: inline-flex; }
 
@@ -856,3 +856,49 @@
 .seq-pf-record b { font-family: var(--font-display, inherit); font-size: 24px; letter-spacing: 0; color: var(--text); }
 .seq-pf-record .seq-pf-w b { color: var(--accent-teal-text, var(--text)); }
 .seq-pf-empty { margin: 0; padding: 14px; text-align: center; font-size: 14px; color: var(--sub); border: 1px dashed var(--border); border-radius: 16px; }
+
+/* ===== Elegir modo de Duelo (clásico / apuestas) y de Reto: tarjeta con el color del modo (filete y borde sutil), en claro y en oscuro ===== */
+.seq-v21-modecard-classic { --hc: #c43a5f; }
+.seq-v21-modecard-stakes { --hc: #c9992e; }
+.seq-v21-modecard {
+  border: 1.5px solid color-mix(in srgb, var(--hc) 50%, var(--border)) !important;
+  background: linear-gradient(var(--hc), var(--hc)) top / 100% 4px no-repeat, linear-gradient(150deg, color-mix(in srgb, var(--hc) 16%, var(--card)), var(--card) 72%) !important;
+  box-shadow: 0 8px 18px -12px rgba(0, 0, 0, .55);
+}
+[data-theme="dark"] .seq-v21-modecard-classic { --hc: #e0708f; }
+[data-theme="dark"] .seq-v21-modecard-stakes { --hc: #e3b64f; }
+:root:not([data-theme="dark"]) .seq-v21-modecard {
+  background: linear-gradient(var(--hc), var(--hc)) top / 100% 4px no-repeat, linear-gradient(180deg, #fffaec, #f8ebc8) !important;
+  border-color: color-mix(in srgb, var(--hc) 58%, #8a6a1a) !important;
+  box-shadow: 0 1px 0 #fff inset, 0 2px 3px rgba(74, 48, 8, .16), 0 12px 24px -10px rgba(74, 48, 8, .40);
+}
+.seq-v21-modecard-body h3 { color: var(--text); }
+.seq-v21-modecard-classic .seq-v21-modecard-body h3 { color: color-mix(in srgb, var(--hc) 70%, var(--text)); }
+.seq-v21-modecard-stakes .seq-v21-modecard-body h3 { color: color-mix(in srgb, var(--hc) 55%, var(--text)); }
+
+/* Crear reto: cada modo es una ficha con filete lateral y borde del color de su modo (los mismos colores que en Jugar) */
+.seq-d-modes .seq-d-mode { --hc: #c9992e; border: 1.5px solid color-mix(in srgb, var(--hc) 38%, var(--border)); border-left: 5px solid var(--hc); border-radius: 16px; padding: 12px 14px; }
+.seq-d-modes .seq-d-mode.seq-d-m-estandar { --hc: #2563eb; }
+.seq-d-modes .seq-d-mode.seq-d-m-supervivencia { --hc: #d97706; }
+.seq-d-modes .seq-d-mode.seq-d-m-muerte_subita { --hc: #b91c1c; }
+.seq-d-modes .seq-d-mode.seq-d-m-contrarreloj { --hc: #db2777; }
+.seq-d-modes .seq-d-mode.seq-d-m-calculo_mental { --hc: #15803d; }
+.seq-d-modes .seq-d-mode.seq-d-m-calculo_fondo { --hc: #0f8f7e; }
+.seq-d-modes .seq-d-mode.seq-d-m-lucidez { --hc: #7c3aed; }
+[data-theme="dark"] .seq-d-modes .seq-d-mode.seq-d-m-estandar { --hc: #6c9bff; }
+[data-theme="dark"] .seq-d-modes .seq-d-mode.seq-d-m-supervivencia { --hc: #f0a63a; }
+[data-theme="dark"] .seq-d-modes .seq-d-mode.seq-d-m-muerte_subita { --hc: #ef6a6a; }
+[data-theme="dark"] .seq-d-modes .seq-d-mode.seq-d-m-contrarreloj { --hc: #f27aae; }
+[data-theme="dark"] .seq-d-modes .seq-d-mode.seq-d-m-calculo_mental { --hc: #5fbf86; }
+[data-theme="dark"] .seq-d-modes .seq-d-mode.seq-d-m-calculo_fondo { --hc: #4fd1c0; }
+[data-theme="dark"] .seq-d-modes .seq-d-mode.seq-d-m-lucidez { --hc: #a78bfa; }
+.seq-d-modes .seq-d-mode > .history-item-score { color: color-mix(in srgb, var(--hc) 80%, var(--text)); font-weight: 800; }
+[data-theme="dark"] .seq-d-modes .seq-d-mode > .history-item-score { color: var(--hc); }
+.seq-d-modes .seq-d-mode { background: linear-gradient(90deg, color-mix(in srgb, var(--hc) 12%, var(--card)), var(--card) 60%); }
+:root:not([data-theme="dark"]) .seq-d-modes .seq-d-mode {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--hc) 9%, #fffaec), #fffaec 55%);
+  border-color: color-mix(in srgb, var(--hc) 40%, #c9b27a);
+  box-shadow: 0 1px 0 #fff inset, 0 2px 3px rgba(74, 48, 8, .12), 0 8px 16px -10px rgba(74, 48, 8, .35);
+}
+.seq-d-modes .seq-d-levels .btn { border: 1.5px solid color-mix(in srgb, var(--hc) 55%, transparent); color: var(--text); font-weight: 700; }
+:root:not([data-theme="dark"]) .seq-d-modes .seq-d-levels .btn { background: linear-gradient(180deg, #fffdf4, #f6e8c4); }
