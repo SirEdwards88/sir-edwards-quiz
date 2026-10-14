@@ -11,18 +11,28 @@
 :root:not([data-theme="dark"]) {
   --lr-paper: #fffbf2;
   --lr-paper-2: #f8f0dc;
-  --lr-canvas: rgba(252, 247, 236, .66);
   --lr-line: rgba(176, 134, 36, .40);
   --lr-shadow: 0 1px 0 rgba(255, 255, 255, .95) inset, 0 1px 2px rgba(74, 48, 8, .10), 0 10px 22px -10px rgba(74, 48, 8, .28);
   --lr-sub: #4a5262;
   --sub: #4a5262;
 }
 
-/* 1. Lienzo */
+/* 1. Lienzo: el damasco se ve entero (es la personalidad del claro) y cada pantalla lleva su tinte de color,
+      como el oscuro lleva su ilustración. El tinte va POR ENCIMA del damasco, muy suave. */
 :root:not([data-theme="dark"]) .view:not(#view-game) {
-  background-image: linear-gradient(var(--lr-canvas), var(--lr-canvas)), url("../assets/ui/fondos/damasco-marfil.svg");
-  background-size: auto, 120px 160px;
+  --lr-tint: 232, 200, 116;
+  background-image:
+    radial-gradient(130% 55% at 50% -6%, rgba(var(--lr-tint), .34), transparent 62%),
+    radial-gradient(90% 40% at 50% 108%, rgba(var(--lr-tint), .18), transparent 70%),
+    url("../assets/ui/fondos/damasco-marfil.svg");
+  background-size: auto, auto, 120px 160px;
 }
+:root:not([data-theme="dark"]) #view-modes    { --lr-tint: 59, 111, 214; }
+:root:not([data-theme="dark"]) #view-duelo    { --lr-tint: 190, 52, 90; }
+:root:not([data-theme="dark"]) #view-stats    { --lr-tint: 59, 111, 214; }
+:root:not([data-theme="dark"]) #view-medals   { --lr-tint: 232, 180, 60; }
+:root:not([data-theme="dark"]) #view-encargos { --lr-tint: 214, 150, 40; }
+:root:not([data-theme="dark"]) #view-settings { --lr-tint: 100, 116, 139; }
 
 /* 2. Superficies: papel opaco con filete dorado y sombra cálida */
 :root:not([data-theme="dark"]) .stats-dossier,
@@ -106,3 +116,42 @@
   border: 1px solid var(--lr-line) !important;
   box-shadow: var(--lr-shadow);
 }
+
+/* 6. Inicio: Jugar y Duelo como PERGAMINO ILUMINADO (marco de oro doble, damasco dentro, color de la sección en el brillo
+      y en el botón), no como el oscuro. Título con el color de la sección; texto legible sobre papel. */
+:root:not([data-theme="dark"]) .home-big-card.home-card-jugar { --acc: #2d5bb8; }
+:root:not([data-theme="dark"]) .home-big-card.home-card-duelo { --acc: #a3203f; }
+:root:not([data-theme="dark"]) .home-big-card.home-card-jugar,
+:root:not([data-theme="dark"]) .home-big-card.home-card-duelo {
+  background:
+    radial-gradient(70% 130% at 14% 50%, color-mix(in srgb, var(--acc) 20%, transparent), transparent 65%),
+    url("../assets/ui/fondos/damasco-marfil.svg") 0 0 / 120px 160px,
+    linear-gradient(165deg, #fffbf0, #f2e5c4);
+  border: 2px solid #c9992e;
+  box-shadow: inset 0 0 0 4px #fffaf0, inset 0 0 0 5px rgba(201, 153, 46, .6), 0 14px 26px -12px rgba(74, 48, 8, .45);
+}
+:root:not([data-theme="dark"]) .home-big-card.home-card-jugar::before,
+:root:not([data-theme="dark"]) .home-big-card.home-card-duelo::before { background: radial-gradient(120% 90% at 12% -15%, rgba(255, 255, 255, .55), transparent 55%); }
+:root:not([data-theme="dark"]) .home-big-card .home-big-title { color: color-mix(in srgb, var(--acc) 78%, #1c2340); text-shadow: 0 1px 0 rgba(255, 255, 255, .7); }
+:root:not([data-theme="dark"]) .home-big-card .home-big-sub { color: #3d4454; opacity: 1; }
+:root:not([data-theme="dark"]) .home-big-card .home-big-arrow { background: var(--acc); border-color: #fffaf0; box-shadow: 0 0 0 2px #c9992e, 0 3px 8px rgba(0, 0, 0, .25); }
+
+/* 7. Encargos: en el claro, hoja de oro batido con tinta marino (el Gran Encargo, igual pero más intenso) */
+:root:not([data-theme="dark"]) .home-encargos,
+:root:not([data-theme="dark"]) .enc-card.is-great {
+  background: linear-gradient(180deg, #f8e3a0, #e2b955);
+  color: #1c2340;
+  border: 1.5px solid #a9791a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .6), 0 8px 18px -10px rgba(74, 48, 8, .55);
+}
+:root:not([data-theme="dark"]) .home-encargos-kicker { color: #6b4a07; }
+:root:not([data-theme="dark"]) .home-encargos-line { color: #1c2340; }
+:root:not([data-theme="dark"]) .home-encargos-tail { color: #6b4a07; }
+:root:not([data-theme="dark"]) .home-encargos-img { background: rgba(255, 255, 255, .35); }
+:root:not([data-theme="dark"]) .home-encargos-bar,
+:root:not([data-theme="dark"]) .enc-card.is-great .enc-bar { background: rgba(28, 35, 64, .22); }
+:root:not([data-theme="dark"]) .home-encargos-fill,
+:root:not([data-theme="dark"]) .enc-card.is-great .enc-bar-fill { background: linear-gradient(90deg, #1c2340, #34427a); }
+:root:not([data-theme="dark"]) .enc-card.is-great .enc-card-xp,
+:root:not([data-theme="dark"]) .enc-card.is-great.is-done .enc-card-xp,
+:root:not([data-theme="dark"]) .enc-card.is-great.is-done .enc-card-prog { color: #6b4a07; }
