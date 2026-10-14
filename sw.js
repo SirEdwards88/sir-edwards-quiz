@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 266;
+const CACHE_VERSION = 267;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -128,6 +128,11 @@ const APP_SHELL = [
   './assets/ui/tarjeta/fondo-derrota.webp',
   './assets/ui/tarjeta/fondo-oro.webp',
   './assets/ui/tarjeta/fondo-plata.webp',
+  './assets/ui/tarjeta/fondo-oro-claro.webp',
+  './assets/ui/tarjeta/fondo-azul-claro.webp',
+  './assets/ui/tarjeta/fondo-plata-claro.webp',
+  './assets/ui/tarjeta/fondo-derrota-claro.webp',
+  './assets/ui/tarjeta/fondo-secreto-claro.webp',
   './assets/ui/tarjeta/fondo-secreto.webp',
   './assets/ui/tarjeta/fondo.webp',
   './assets/ui/tarjeta/marco-azul.webp',
@@ -758,10 +763,15 @@ const ASSET_REVS = {
   './assets/ui/tarjeta/cinta.webp': 'a4611296',
   './assets/ui/tarjeta/destellos.webp': 'c6b9f65c',
   './assets/ui/tarjeta/divisor.webp': '0da6ec1d',
+  './assets/ui/tarjeta/fondo-azul-claro.webp': '3c421364',
   './assets/ui/tarjeta/fondo-azul.webp': '67dd9888',
+  './assets/ui/tarjeta/fondo-derrota-claro.webp': 'ce36da05',
   './assets/ui/tarjeta/fondo-derrota.webp': '883882ff',
+  './assets/ui/tarjeta/fondo-oro-claro.webp': 'bfd0afd0',
   './assets/ui/tarjeta/fondo-oro.webp': '5dde2b60',
+  './assets/ui/tarjeta/fondo-plata-claro.webp': '6beb7bcc',
   './assets/ui/tarjeta/fondo-plata.webp': 'f00eaa4c',
+  './assets/ui/tarjeta/fondo-secreto-claro.webp': '389f0e0f',
   './assets/ui/tarjeta/fondo-secreto.webp': 'da793ef1',
   './assets/ui/tarjeta/fondo.webp': '802b4ab1',
   './assets/ui/tarjeta/marco-azul.webp': '71a4181c',
