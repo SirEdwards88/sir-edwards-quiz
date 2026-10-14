@@ -886,7 +886,7 @@
       '<div class="results-character show char-' + (res === 'draw' ? 'neutral' : charKey) + '" aria-hidden="true"><picture><source srcset="assets/character/' + charKey + '.webp" type="image/webp"><img src="assets/character/' + charKey + '.webp" alt="" draggable="false"></picture></div>' +
       '<h3 class="seq-d-res-title">' + esc(title) + '</h3>' +
       ((xpGain > 0 && window.SEQLevelUp) ? SEQLevelUp.htmlFor(kind + ':' + (S.id || d.id)) : '') +
-      '<div class="results-metrics-grid">' + side(avatar(me.avatar), 'Tú', mine, 'seq-d-mbox-me') + side(p.avatar, p.name, his, 'seq-d-mbox-rival') + '</div>' +
+      '<div class="results-metrics-grid">' + side(avatar(me.avatar), me.display_name || 'Tú', mine, 'seq-d-mbox-me') + side(p.avatar, (d.rival || {}).display_name || 'Jugador', his, 'seq-d-mbox-rival') + '</div>' +
       '<div class="results-phrase-container ' + (res === 'win' ? 'tone-win' : res === 'loss' ? 'tone-fail' : 'tone-bien') + '">' +
       '<div class="results-mood-icon has-img"><img class="mood-img" src="' + moodSrc + '" alt="" draggable="false"></div>' +
       '<div class="results-category-title">' + esc(cat) + '</div>' +

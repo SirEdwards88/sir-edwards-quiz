@@ -906,3 +906,7 @@
 /* Tarjeta final de Duelo/Reto: el relleno de móvil la dejaba pegada al marco ornamental (los botones lo pisaban).
    Mismo relleno que la tarjeta final de partida (results-frame.css), que ya cuenta con el marco. */
 #seq-duel-root .seq-d-results.results-card.seq-d-final { padding: 34px 24px 28px !important; }
+
+/* Marcador final de Duelo/Reto: bajo cada puntuación va el nombre del jugador; si es largo, se recorta con puntos suspensivos. */
+#seq-duel-root .seq-d-results .seq-d-mbox { min-width: 0; }
+#seq-duel-root .seq-d-results .seq-d-mbox .metric-label { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
