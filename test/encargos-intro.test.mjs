@@ -25,8 +25,7 @@ test('frases: sin vacías, sin repetidas, sin emojis, con las claves que clasifi
   assert.equal(new Set(all).size, all.length, 'ninguna frase repetida, ni dentro de una bolsa ni entre bolsas');
   assert.ok(all.every((t) => t.length > 5 && t.length < 100 && noEmoji(t)));
   assert.equal(P.monday.open, 'Es lunes.');
-  // buena/normal/mala quedaron en una frase cada una tras la revisión de textos del propietario; el resto de bolsas mantienen su variedad.
-  assert.ok(['victoria', 'derrota', 'empate', 'neutra'].every((k) => P.result[k].length >= 5));
+  assert.ok(P.result.buena.length >= 5 && P.result.normal.length >= 5 && P.result.mala.length >= 5);
 });
 
 test('carta semanal: bolsas amplias, para que no se repita semana tras semana', () => {

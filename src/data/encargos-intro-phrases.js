@@ -10,13 +10,31 @@
 const ENCARGOS_INTRO = {
   result: {
     buena: [
-      "Vaya, vaya. Parece que tenemos a alguien con potencial."
+      'Vaya, vaya. Parece que tenemos a alguien con potencial.',
+      'Sorprendentemente decente.',
+      'Mejor de lo que cabía esperar. Y yo esperaba poco.',
+      'No ha estado mal. Detesto decirlo, pero ahí queda.',
+      'Una buena actuación. No arruines la estadística intentando repetirla.',
+      'Un resultado respetable. Lo pronuncio con cautela y sin testigos.',
+      'Interesante. Casi creo que sabes lo que haces. Casi.'
     ],
     normal: [
-      "Interesante. Hay material con el que trabajar."
+      'Interesante. Hay material con el que trabajar.',
+      'Digamos que ha sido… instructiva.',
+      'Correcta. Que es, a veces, el insulto más educado.',
+      'Un comienzo. Hay tanto que corregir que elegir por dónde será tu primer acierto.',
+      'Ha tenido sus momentos. Pocos, pero ha tenido.',
+      'Has cumplido. No es una ovación, pero tampoco una llamada al servicio técnico.',
+      'Ni lo uno ni lo otro. Una mediocridad con cierto estilo.'
     ],
     mala: [
-      "Hum. Digamos que hay margen de mejora."
+      'Hum. Digamos que hay margen de mejora.',
+      'Prefiero no comentar. Lo cual, viniendo de mí, es un comentario.',
+      'Lo he anotado todo. Con detalle. Con mucho detalle.',
+      'No te preocupes: hay espacio de sobra en tu expediente.',
+      'Ha sido memorable, a su manera.',
+      'He visto comienzos peores. No muchos, y ninguno que recuerde con agrado.',
+      'Un debut que conviene no enseñar a nadie.'
     ],
     victoria: [
       'Has ganado. Tomo nota de tu crueldad.',
