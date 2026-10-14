@@ -1,0 +1,108 @@
+/* SirEdwards Quiz 2.3 — modo claro renovado. Solo presentación; solo actúa con el tema claro; se carga la ÚLTIMA.
+ *
+ * Qué corrige (el claro era crema sobre crema, con el damasco asomando por detrás de las tarjetas):
+ *  1. Lienzo: el damasco se vela con marfil para que sea una textura y no un dibujo que compita con el contenido.
+ *  2. Profundidad: las tarjetas pasan a papel marfil opaco, más claro que el lienzo, con filete dorado y una sombra
+ *     cálida (marrón, no gris) que las separa del fondo.
+ *  3. Tarjetas de modos: sin el tinte grisáceo del color de cada modo; el color queda en el filete superior.
+ *  4. Texto secundario algo más oscuro para leerse sobre el papel (contraste ≥ 5:1).
+ * Para volver atrás basta con quitar el <link> de index.html (y su línea en sw.js).
+ */
+:root:not([data-theme="dark"]) {
+  --lr-paper: #fffbf2;
+  --lr-paper-2: #f8f0dc;
+  --lr-canvas: rgba(252, 247, 236, .66);
+  --lr-line: rgba(176, 134, 36, .40);
+  --lr-shadow: 0 1px 0 rgba(255, 255, 255, .95) inset, 0 1px 2px rgba(74, 48, 8, .10), 0 10px 22px -10px rgba(74, 48, 8, .28);
+  --lr-sub: #4a5262;
+  --sub: #4a5262;
+}
+
+/* 1. Lienzo */
+:root:not([data-theme="dark"]) .view:not(#view-game) {
+  background-image: linear-gradient(var(--lr-canvas), var(--lr-canvas)), url("../assets/ui/fondos/damasco-marfil.svg");
+  background-size: auto, 120px 160px;
+}
+
+/* 2. Superficies: papel opaco con filete dorado y sombra cálida */
+:root:not([data-theme="dark"]) .stats-dossier,
+:root:not([data-theme="dark"]) .achievements-progress-box,
+:root:not([data-theme="dark"]) .fragments-progress-box,
+:root:not([data-theme="dark"]) .ach-group,
+:root:not([data-theme="dark"]) .enc-card:not(.is-great),
+:root:not([data-theme="dark"]) .settings-section,
+:root:not([data-theme="dark"]) .home-small-card {
+  background-color: var(--lr-paper);
+  background-image: linear-gradient(180deg, var(--lr-paper), var(--lr-paper-2));
+  border: 1px solid var(--lr-line);
+  box-shadow: var(--lr-shadow);
+}
+/* Los grupos de ajustes van dentro de una sección: un escalón más sutil. */
+:root:not([data-theme="dark"]) .settings-group {
+  background: rgba(255, 255, 255, .55);
+  border: 1px solid rgba(176, 134, 36, .26);
+  box-shadow: none;
+}
+/* Tarjetas pequeñas de la home: papel + filete superior del color de su sección (se conserva) */
+:root:not([data-theme="dark"]) .home-small-card {
+  background-image: linear-gradient(var(--hc, #c9a227), var(--hc, #c9a227)), linear-gradient(180deg, var(--lr-paper), var(--lr-paper-2));
+  background-size: 100% 3px, auto;
+  background-position: top, 0 0;
+  background-repeat: no-repeat;
+}
+
+/* 3. Tarjetas de modos (Jugar y Duelos): papel limpio, color del modo solo en el filete superior */
+:root:not([data-theme="dark"]) #duel-home .seq-d-card:not(.seq-d-v-rank),
+:root:not([data-theme="dark"]) #view-modes .modes-grid .mode-card:not(.locked) {
+  background: linear-gradient(var(--hc), var(--hc)) top / 100% 3px no-repeat, linear-gradient(180deg, var(--lr-paper), var(--lr-paper-2)) !important;
+  border: 1px solid color-mix(in srgb, var(--hc) 42%, #b08624) !important;
+  box-shadow: var(--lr-shadow) !important;
+}
+/* Bloqueadas: apagadas pero limpias (papel más gris, sombra mínima, texto legible) */
+:root:not([data-theme="dark"]) #view-modes .modes-grid .mode-card.locked {
+  background: linear-gradient(color-mix(in srgb, var(--hc) 38%, transparent), color-mix(in srgb, var(--hc) 38%, transparent)) top / 100% 3px no-repeat, linear-gradient(180deg, #f1e8d2, #e9dec2) !important;
+  border: 1px dashed rgba(120, 98, 50, .38) !important;
+  box-shadow: none !important;
+  opacity: 1;
+}
+:root:not([data-theme="dark"]) #view-modes .modes-grid .mode-card.locked :is(.mode-subtitle, .mode-req, p) { color: #5a5445; }
+:root:not([data-theme="dark"]) #view-modes .modes-grid .mode-card.locked .mode-card-icon { filter: grayscale(.55) opacity(.85); }
+
+/* Modo secreto y fragmentos: el violeta se queda, sin el velo gris verdoso */
+:root:not([data-theme="dark"]) .fragments-progress-box {
+  background-image: linear-gradient(180deg, #fbf6ff, #f1e8fb);
+  border: 1.5px dashed rgba(124, 58, 237, .45);
+}
+:root:not([data-theme="dark"]) .fragment-milestone.is-locked { background: rgba(255, 255, 255, .6); opacity: .85; }
+
+/* 4. Texto secundario */
+:root:not([data-theme="dark"]) .mode-card p,
+:root:not([data-theme="dark"]) .home-small-card p,
+:root:not([data-theme="dark"]) .home-small-sub,
+:root:not([data-theme="dark"]) .settings-note { color: var(--lr-sub); }
+
+/* Barras de progreso: más definidas sobre el papel */
+:root:not([data-theme="dark"]) .progress-bar { background: #e6dcc3; box-shadow: inset 0 1px 2px rgba(74, 48, 8, .18); }
+
+/* 5. Partida: respuestas como fichas de papel (el estado correcto/incorrecto/seleccionado no se toca) */
+:root:not([data-theme="dark"]) body.in-game .choice-btn:not(.correct):not(.incorrect):not(.selected),
+:root:not([data-theme="dark"]) #view-game .choice-btn:not(.correct):not(.incorrect):not(.selected) {
+  background: linear-gradient(180deg, var(--lr-paper), var(--lr-paper-2));
+  border: 1px solid var(--lr-line);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .95) inset, 0 5px 12px -8px rgba(74, 48, 8, .35);
+}
+:root:not([data-theme="dark"]) #view-game .choice-btn:not(.correct):not(.incorrect):not(.selected):hover:not(:disabled) {
+  border-color: var(--se-gold, #c9992e);
+}
+:root:not([data-theme="dark"]) #view-game .choice-btn:disabled:not(.correct):not(.incorrect) { opacity: .72; }
+/* Caja de la pregunta: papel, no el gris azulado */
+:root:not([data-theme="dark"]) #view-game .q-box {
+  background: linear-gradient(180deg, #fffdf6, var(--lr-paper-2)) !important;
+  box-shadow: var(--lr-shadow);
+}
+/* Cabecera de la partida (icono del modo + racha): papel con filete, no el azul grisáceo */
+:root:not([data-theme="dark"]) #view-game .mode-header.game-hud {
+  background: linear-gradient(180deg, var(--lr-paper), var(--lr-paper-2)) !important;
+  border: 1px solid var(--lr-line) !important;
+  box-shadow: var(--lr-shadow);
+}
