@@ -612,7 +612,7 @@
 .seq-v21-ico-rank { width: 30px; height: 30px; font-size: 24px; }
 .seq-v21-badge .seq-v21-ico-mode, .seq-v21-hud .seq-v21-ico-mode, .seq-v21-hrow .seq-v21-ico-mode { width: 20px; height: 20px; font-size: 16px; }
 /* Marcador dinámico */
-.seq-v21-score { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 6px 0 2px; font-family: var(--font-display, inherit); }
+.seq-v21-score { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 6px 0 2px; font-family: var(--font-ui); }
 .seq-v21-score b { font-size: 38px; line-height: 1; }
 .seq-v21-score small { display: block; font-size: 10px; letter-spacing: 1.2px; color: var(--sub); font-weight: 800; }
 .seq-v21-score-me, .seq-v21-score-rv { display: flex; align-items: flex-end; gap: 8px; }
@@ -694,7 +694,7 @@
 .seq-v21-modecard-body h3 { margin: 0 0 6px; }
 /* Rankings — «el Salón de la Fama»: ámbito en texto, tres medallones, «Tu posición», podio y lista */
 .seq-v21-ico-rk { width: 44px; height: 44px; font-size: 32px; }
-.seq-v21-rkscreen { padding: 0 10px 8px; }
+.seq-v21-rkscreen { padding: 0 12px 8px; }
 /* Ámbito: selector de dos posiciones, con filete dorado bajo el elegido */
 .seq-v21-scope { display: grid; grid-template-columns: 1fr 1fr; margin: 6px 0 14px; border-bottom: 1.5px solid var(--se-gold-hair, var(--border)); }
 .seq-v21-scope-btn { position: relative; padding: 10px 8px 12px; font: inherit; font-family: var(--font-display, inherit); font-weight: 700; font-size: 18px; letter-spacing: .3px; cursor: pointer; color: var(--sub); background: none; border: 0; }
@@ -844,7 +844,7 @@
 /* ===== 2.3: ficha de jugador (src/online/player-profile.js). Misma estética que los Rankings: tarjeta dorada, iconos de ranking, insignia de rango ===== */
 .seq-pl-tap { display: flex; flex: 1 1 150px; min-width: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .seq-v21-rk[role="button"], .seq-v21-pod[role="button"] { cursor: pointer; }
-.seq-pf-wrap { padding-bottom: 8px; }
+.seq-pf-wrap { padding: 0 12px 8px; }
 .seq-pf-actions { display: flex; flex-direction: column; gap: 8px; margin: 12px 0 2px; }
 .seq-pf-actions .btn { width: 100%; }
 .seq-pf-pair { display: flex; gap: 8px; }
@@ -862,7 +862,7 @@
 #seq-duel-root .seq-pf-sec .stats-extra-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 #seq-duel-root .seq-pf-sec .stat-extra:last-child:nth-child(odd) { grid-column: 1 / -1; }
 #seq-duel-root .seq-pf-sec .stats-mini-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
-#seq-duel-root .seq-pf-sec { padding: 18px 16px; margin-top: 18px; }
+#seq-duel-root .seq-pf-sec { padding: 18px 16px; margin-top: 18px; border-left: 4px solid #c9992e; background: linear-gradient(90deg, rgba(201,153,46,.07), transparent 45%), var(--card); }
 #seq-duel-root .seq-pf-sec .stat-extra { padding: 12px; }
 #seq-duel-root .seq-pf-sec .stats-mini { padding: 12px 6px; }
 .seq-pf-empty { margin: 0; padding: 14px; text-align: center; font-size: 14px; color: var(--sub); border: 1px dashed var(--border); border-radius: 16px; }
