@@ -13,7 +13,9 @@ const NAMED_PHRASES = {
   ],
   end_desastre: [
     'Derrota, {nombre}. Puedes culpar al azar; ya está acostumbrado.',
-    '{nombre}, tu derrota ha sido tan completa que me resulta casi entrañable.'
+    '{nombre}, tu derrota ha sido tan completa que me resulta casi entrañable.',
+    '{nombre}, el resultado ha sido contundente. Desde aquí, lo único posible es mejorar, que es una forma elegante de decirlo.',
+    'Mal día, {nombre}. Mañana las preguntas serán las mismas; tú, con suerte, mejor.'
   ],
   survival_win: [
     'Cuarenta preguntas, {nombre}. Has llegado al final y el expediente lo agradece.',
@@ -76,7 +78,9 @@ const NAMED_PHRASES = {
     'La victoria ha sido amplia. {nombre} necesitará un tiempo antes de hablar del tema.'
   ],
   duel_derrota_ajustada: [
-    'Por poco. {nombre} presumirá, pero con la boca pequeña.'
+    'Por poco. {nombre} presumirá, pero con la boca pequeña.',
+    'Margen mínimo. {nombre} se lleva la victoria y tú, un argumento sólido para la revancha.',
+    'Por un suspiro. {nombre} gana hoy; mañana, ya veremos.'
   ],
   duel_derrota_clara: [
     '{nombre} ha ganado con holgura. Ya tiene material para una conversación incómoda.',
