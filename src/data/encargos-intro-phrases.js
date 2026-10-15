@@ -22,7 +22,7 @@ const ENCARGOS_INTRO = {
       'Interesante. Hay material con el que trabajar.',
       'Digamos que ha sido… instructiva.',
       'Correcta. Que es, a veces, el insulto más educado.',
-      'Un comienzo. Hay tanto que corregir que elegir por dónde será tu primer acierto.',
+      'Un comienzo. Hay tanto que corregir que elegir por dónde empezar ya sería un primer acierto.',
       'Ha tenido sus momentos. Pocos, pero ha tenido.',
       'Has cumplido. No es una ovación, pero tampoco una llamada al servicio técnico.',
       'Ni lo uno ni lo otro. Una mediocridad con cierto estilo.'
@@ -46,7 +46,7 @@ const ENCARGOS_INTRO = {
     ],
     derrota: [
       'Has perdido. Lo he anotado, con la discreción debida.',
-      'Derrota. Hay quien nace para aprender y quien, para servir de ejemplo. Tú vas por lo segundo.',
+      'Derrota. Hay quien aprende a la primera y quien da más trabajo. Aún es pronto para saber cuál eres.',
       'Has perdido. Un estreno así deja material para meses. Qué generoso por tu parte.',
       'Derrota. Empezar con margen de mejora es empezar con futuro. O con deudas.',
       'Has perdido. Sucede en las mejores familias y en los peores momentos.',
