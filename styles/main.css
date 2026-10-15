@@ -170,6 +170,10 @@
   box-shadow: var(--focus-ring);
   border-radius: var(--radius-sm);
 }
+/* Alto contraste del sistema: las sombras se ignoran, así que el foco vuelve a ser un contorno real. */
+@media (forced-colors: active) {
+  :focus-visible { outline: 2px solid CanvasText; outline-offset: 2px; }
+}
 button, .btn, [role="button"], a, input, select, textarea {
   transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease, border-color .2s ease, filter .2s ease, opacity .2s ease;
 }
