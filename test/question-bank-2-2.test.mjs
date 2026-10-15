@@ -13,17 +13,17 @@ const { T, Q, RT, RQ } = ctx;
 const CATS = ['historia', 'geografia', 'ciencia', 'arte_literatura', 'deporte', 'cultura_general'];
 const by = (a, k) => a.reduce((m, x) => ((m[x[k]] = (m[x[k]] || 0) + 1), m), {});
 
-test('el banco de test tiene 600 preguntas, sin IDs repetidos, de 1 a 603 con solo 3 huecos', () => {
-  assert.equal(T.length, 600);
+test('el banco de test tiene 650 preguntas, sin IDs repetidos, de 1 a 653 con solo 3 huecos', () => {
+  assert.equal(T.length, 650);
   const ids = T.map((q) => q.n);
-  assert.equal(new Set(ids).size, 600);
-  const missing = Array.from({ length: 603 }, (_, i) => i + 1).filter((n) => !ids.includes(n));
+  assert.equal(new Set(ids).size, 650);
+  const missing = Array.from({ length: 653 }, (_, i) => i + 1).filter((n) => !ids.includes(n));
   assert.deepEqual(missing, [90, 91, 197]);
-  assert.equal(Math.max(...ids), 603);
+  assert.equal(Math.max(...ids), 653);
 });
 
 test('reparto por dificultad y categorías: solo las seis oficiales', () => {
-  assert.deepEqual({ ...by(T, 'dif') }, { facil: 211, medio: 264, dificil: 125 });
+  assert.deepEqual({ ...by(T, 'dif') }, { facil: 223, medio: 296, dificil: 131 });
   assert.ok(T.every((q) => CATS.includes(q.cat)), 'categoría fuera de las seis');
   assert.ok(Q.every((q) => CATS.includes(q.cat)));
 });
