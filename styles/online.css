@@ -965,3 +965,13 @@
 #seq-duel-root .seq-d-search input:focus { outline: none; border-color: #c9992e; box-shadow: 0 0 0 3px rgba(201, 153, 46, .22), inset 0 2px 6px rgba(0, 0, 0, .12); }
 /* Avatares de las filas con un halo suave. */
 #seq-duel-root .seq-pl-row .seq-pl-av { box-shadow: 0 0 0 3px rgba(201, 153, 46, .16), 0 4px 10px rgba(0, 0, 0, .3); }
+
+/* Rankings: los tres tableros como tarjetas con relieve; el elegido, con filete dorado y brillo. */
+#seq-duel-root .seq-v21-boards { gap: 8px; }
+#seq-duel-root .seq-v21-board-btn { padding: 12px 4px 10px; border-radius: 16px; border: 1px solid rgba(201, 153, 46, .22);
+  background: linear-gradient(160deg, color-mix(in srgb, #c9992e 5%, var(--card)), var(--card) 70%); box-shadow: 0 2px 8px rgba(0, 0, 0, .14); transition: border-color .2s, box-shadow .2s, background .2s; }
+#seq-duel-root .seq-v21-board-btn.sel { border: 1.5px solid #c9992e; background: linear-gradient(160deg, color-mix(in srgb, #c9992e 18%, var(--card)), var(--card) 75%);
+  box-shadow: 0 0 0 3px rgba(201, 153, 46, .16), 0 6px 16px rgba(0, 0, 0, .25), inset 0 1px 0 rgba(255, 255, 255, .08); }
+#seq-duel-root .seq-v21-board-btn.sel span:last-child { border-bottom: 0; padding-bottom: 0; }
+#seq-duel-root .seq-v21-board-btn .seq-v21-ico-rk { width: 64px; height: 64px; }
+#seq-duel-root .seq-v21-board-btn:not(.sel) .seq-v21-ico-rk { opacity: .7; transform: scale(.92); }
