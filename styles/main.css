@@ -5656,3 +5656,6 @@ h3.stats-h::before { display: none !important; content: none !important; }
   #results-card .results-phrase:not(:empty)::after{ display:none; }
   #results-card .results-character{ width:66px!important; margin-bottom:6px!important; }
 }
+
+/* Con la tarjeta final en pantalla, «← Menú principal» de arriba sobra: ya está «Volver al Menú principal» abajo. */
+#view-game:has(#results-card[style*="display: block"]) #game-exit-btn { display: none; }
