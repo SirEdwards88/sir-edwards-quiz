@@ -948,3 +948,10 @@
 /* Cajas de espera (invitación, sala): pocas líneas y con aire entre ellas y antes de los botones. */
 #seq-duel-root .duel-result-neutral .duel-result-title { margin-bottom: 12px; }
 #seq-duel-root .duel-result-neutral .duel-result-hint { margin: 12px 0 18px; }
+
+/* Estado vacío de Duelos, Retos, Amigos y Elegir rival (2.3): centrado, con aire y una sola frase. */
+.seq-ev { padding: 14px 20px 8px; text-align: center; }
+.seq-ev .seq-empty-img { width: 130px; height: auto; display: block; margin: 0 auto 8px; }
+.seq-ev-t { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 20px; color: var(--text); }
+.seq-ev-s { margin-top: 6px; font-size: 14px; color: var(--sub, var(--color-text-muted)); line-height: 1.45; }
+.seq-ev .btn { width: 100%; margin-top: 18px; }

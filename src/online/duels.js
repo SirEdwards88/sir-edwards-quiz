@@ -643,19 +643,25 @@
     if (!list) return h + '<p class="stats-section-sub">Cargando…</p>';
     var act_ = list.filter(function (x) { return ['pendiente', 'aceptado', 'en_curso'].indexOf(x.estado) >= 0; });
     var hist = list.filter(function (x) { return act_.indexOf(x) < 0; });
+    if (!act_.length && !hist.length) return h + (kind === 'duel' ? emptyState('vacio-general', 'Aún no hay duelos', 'Cuando juegues, aparecerán aquí.') : emptyState('vacio-general', 'Aún no hay retos', 'Cuando retes o te reten, aparecerán aquí.'));
     h += '<h3 class="seq-d-h3">Activos</h3>' + (act_.length ? '<div class="history-list">' + act_.map(function (x) { return rowFor(kind, x); }).join('') + '</div>' : '<p class="stats-section-sub">No tienes ninguno activo.</p>');
-    h += '<h3 class="seq-d-h3">Historial</h3>' + (hist.length ? '<div class="history-list">' + hist.map(function (x) { return rowFor(kind, x); }).join('') + '</div>' : emptyImg('vacio-general') + '<p class="stats-section-sub">Todavía no hay historial.</p>');
+    h += '<h3 class="seq-d-h3">Historial</h3>' + (hist.length ? '<div class="history-list">' + hist.map(function (x) { return rowFor(kind, x); }).join('') + '</div>' : '<p class="stats-section-sub">Todavía no hay historial.</p>');
     return h;
   }
   // Ilustración de estado vacío (2.3): objetos recortados, sin marco.
   function emptyImg(n) { return '<img class="seq-empty-img" src="assets/ui/escenas/' + n + '.webp" alt="" draggable="false">'; }
+  // Estado vacío de las pantallas de Duelos (2.3): ilustración pequeña centrada, título, una frase y, si procede, un botón.
+  function emptyState(img, title, sub, btn) {
+    return '<div class="seq-ev">' + emptyImg(img) + '<div class="seq-ev-t">' + title + '</div><div class="seq-ev-s">' + sub + '</div>' + (btn || '') + '</div>';
+  }
   function renderPick() {
     var fl = S.lists.friends;
     var h = header('Elige a quién retar', S.pickKind === 'duel' ? (S.pickModo === 'stakes' ? 'Duelo por apuestas' : 'Duelo clásico') : 'Reto', backToList);
-    if (S.pickKind === 'duel') h += '<p class="stats-section-sub">Tu amigo tiene 3 min para aceptar.</p>';
+    if (fl && !fl.friends.length) { /* sin amigos: no hay nada que explicar todavía */ }
+    else if (S.pickKind === 'duel') h += '<p class="stats-section-sub">Tu amigo tiene 3 min para aceptar.</p>';
     else h += '<p class="stats-section-sub">Tu amigo tiene 3 días para aceptar y jugar. Cada uno juega cuando pueda. Después eliges el modo.</p>';
     if (!fl) return h + '<p class="stats-section-sub">Cargando…</p>';
-    if (!fl.friends.length) return h + '' + emptyImg('vacio-amigos') + '<p class="stats-section-sub">Aún no tienes amigos.</p><button class="btn btn-secondary" onclick="SEQDuels.open(\'friends\')">' + ico('amigos') + 'Añadir amigos</button>';
+    if (!fl.friends.length) return h + emptyState('vacio-amigos', 'Aún no tienes amigos', 'Añádelos para poder retarlos.', '<button class="btn btn-primary" onclick="SEQDuels.open(\'friends\')">Añadir amigos</button>');
     if (S.pickKind === 'duel') {
       // Duelo en directo: los dos tienen que estar a la vez. Solo se puede retar a quien está en línea ahora mismo.
       var on = fl.friends.filter(isOnline), off = fl.friends.filter(function (f) { return !isOnline(f); });
@@ -677,7 +683,6 @@
   function renderFriends() {
     var fl = S.lists.friends, me = session() || {}, f = features();
     var h = header('Amigos', 'Añade amigos y rétalos', back);
-    h += '<p class="stats-section-sub">Tu ID para que te encuentren: <b>' + esc(safeId(me.id)) + '</b></p>';
     h += '<div class="seq-d-search"><input type="text" id="seq-d-q" maxlength="24" autocomplete="off" placeholder="Nombre o ID de tu amigo" onkeydown="if(event.key===\'Enter\')SEQDuels.doSearch()" /><button class="btn btn-primary" onclick="SEQDuels.doSearch()">Buscar</button></div>';
     if (S.search.results) {
       h += S.search.results.length ? '<div class="history-list">' + S.search.results.map(function (x) {
@@ -698,8 +703,8 @@
         return '<div class="history-item seq-pl-row">' + '<div class="seq-pl-tap" onclick="SEQProfile.open(\'' + p.id + '\')">' + who(p, 'pendiente') + '</div>' + '<div class="seq-pl-act"><button class="btn btn-secondary seq-d-sm" onclick="SEQDuels.friendResp(\'' + fid + '\',\'cancel\')">Cancelar</button></div></div>';
       }).join('') + '</div>';
     }
+    if (!fl.friends.length) return h + emptyState('vacio-amigos', 'Sin amigos todavía', 'Búscalos por su nombre o ID.');
     h += '<h3 class="seq-d-h3">Mis amigos</h3>';
-    if (!fl.friends.length) return h + '<p class="stats-section-sub">Busca a un amigo por su nombre o su ID para empezar.</p>';
     return h + '<div class="history-list">' + fl.friends.map(function (x) {
       var p = player(x.player), b = '', on = isOnline(x);
       if (f.classic_duel) b += on ? '<button class="btn btn-primary seq-d-sm" title="Duelo online" aria-label="Duelo online" onclick="SEQDuels.quick(\'duel\',\'' + p.id + '\')">' + ico('duelo') + '</button> '
