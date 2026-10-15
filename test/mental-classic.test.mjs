@@ -51,15 +51,19 @@ test('Estadísticas: la fila del Fondo se crea desde el módulo, solo con récor
   assert.ok(rs.indexOf('SEQMentalClassicUI.renderStat()') > 0 && rs.indexOf('SEQMentalClassicUI.renderStat()') < rs.indexOf('best-lucidez-box'));
 });
 
-test('el final del Fondo no toca estadísticas de Turbo ni el contador de partidas', () => {
+test('el final del Fondo cuenta como partida (jugadas, historial y Encargos) sin tocar las marcas de Turbo', () => {
   const ui = read('src/ui/mental-classic-ui.js');
-  for (const k of ['gamesPlayed', 'bestMentalCalcScore', 'mentalCalcBestStreak', 'mentalCalcTotalCorrect', 'encargosOnGameEnd', 'gameHistory']) {
+  for (const k of ['bestMentalCalcScore', 'mentalCalcBestStreak', 'mentalCalcTotalCorrect']) {
     assert.ok(!ui.includes(k), 'mental-classic-ui.js no debe tocar ' + k);
   }
+  for (const k of ['store.gamesPlayed++', 'pushCapped(store.gameHistory', "encargosOnGameEnd('mental_calc'", 'noteGame']) {
+    assert.equal(ui.split(k).length - 1, 1, 'Fondo debe llamar una sola vez a ' + k);
+  }
   assert.ok(ui.includes('bestMentalCalcCorrect') && ui.includes('checkMedalsAndGetNew'), 'los logros de Cálculo mental cuentan también el Fondo');
+  assert.ok(!ui.includes('grantXp'), 'Fondo no da XP');
   const html = read('index.html');
   const fg = html.slice(html.indexOf('function finishGame('));
-  assert.ok(fg.indexOf('isMentalClassicGame()) { SEQMentalClassicUI.finish()') > 0 && fg.indexOf('isMentalClassicGame()) { SEQMentalClassicUI.finish()') < fg.indexOf('store.gamesPlayed++'), 'el Fondo sale de finishGame antes de contar la partida');
+  assert.ok(fg.indexOf('isMentalClassicGame()) { SEQMentalClassicUI.finish()') > 0 && fg.indexOf('isMentalClassicGame()) { SEQMentalClassicUI.finish()') < fg.indexOf('store.gamesPlayed++'), 'el cierre de Fondo sale antes del de Turbo (no se cuenta dos veces)');
 });
 
 test('el récord de Fondo viaja por la sincronización y el ranking de Fondo existe en la PWA', () => {

@@ -1,8 +1,8 @@
 // SirEdwards Quiz — Cálculo de Fondo (2.3): arranque y final de partida.
 // El modo reutiliza el bucle de Cálculo Turbo de index.html (currentGame.mode === 'mental_calc' con variant 'classic');
 // aquí vive lo que es solo suyo: la comprobación de la variante, el arranque y la tarjeta final. Los logros de
-// Cálculo mental (bestMentalCalcCorrect) cuentan las partidas de Turbo y de Fondo; el resto de estadísticas de Turbo
-// y los encargos no se tocan. Su récord vive en store.bestMentalClassicCorrect / bestMentalClassicScore
+// Cálculo mental (bestMentalCalcCorrect) cuentan las partidas de Turbo y de Fondo; cada partida de Fondo también suma
+// a partidas jugadas, historial y Encargos (no a la XP ni a los récords de Turbo). Su récord vive en store.bestMentalClassicCorrect / bestMentalClassicScore
 // (viajan por la sincronización y alimentan el ranking de Fondo); la marca antigua store.mentalClassicBest se sigue leyendo.
 // Script clásico (scope global). Reglas puras en src/utils/mental-classic.js.
 (function () {
@@ -44,6 +44,16 @@
     if (isRecord) { store.bestMentalClassicCorrect = g.correct; store.bestMentalClassicScore = g.score; }
     // Los logros de Cálculo mental valen para ambos modos de cálculo.
     if (g.correct > (store.bestMentalCalcCorrect || 0)) store.bestMentalCalcCorrect = g.correct;
+    // Cuenta como partida terminada, igual que Turbo: partidas jugadas, historial y Encargos (el récord sigue siendo propio).
+    store.gamesPlayed++;
+    store.lastGameAccuracy = accuracy;
+    if (!store.gameHistory) store.gameHistory = [];
+    pushCapped(store.gameHistory, {
+      date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      mode: 'Cálculo de Fondo', score: g.correct + '/' + totalQ, percentage: accuracy, ts: Date.now()
+    }, 5);
+    try { encargosOnGameEnd('mental_calc', g.correct, totalQ); } catch (e) {}
+    try { SEQEncargosIntro.noteGame({ mode: 'mental_calc', score: g.correct, total: totalQ, failed: false }); } catch (e) {}
     var newMedals = checkMedalsAndGetNew();
     clearSavedGame();
     saveStore(false);
@@ -119,6 +129,17 @@
   function restore(saved) {
     var u = SEQMentalClassic.unpack(saved);
     currentGame = u.game;
+    if (!SEQMentalClassic.isResumable(saved)) {
+      // Sin vidas: la partida ya estaba perdida y su cierre no llegó a ejecutarse. Se cierra (y se cuenta) ahora.
+      currentGame.lives = 0;
+      mentalCalcSession = SEQMentalCalc.createSession();
+      currentMentalOp = null;
+      clearCardThemeClasses();
+      document.getElementById('main-card-container').classList.add('theme-mentalcalc');
+      switchTab('game');
+      finish();
+      return true;
+    }
     mentalCalcSession = SEQMentalCalc.createSession();
     var hasOp = !!u.op;
     currentMentalOp = hasOp ? u.op : null;

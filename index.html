@@ -49,18 +49,18 @@
 <!-- Tipografía: Playfair Display para el "display" institucional (nombre de la
      app / títulos), Inter para toda la interfaz funcional. Alojadas en la propia app
      (styles/fonts.css, assets/fonts/): funcionan sin conexión y no dependen de Google. -->
-<link rel="stylesheet" href="styles/fonts.css?v=279">
+<link rel="stylesheet" href="styles/fonts.css?v=280">
 <link rel="preload" href="assets/fonts/inter-latin.woff" as="font" type="font/woff" crossorigin>
-<link rel="stylesheet" href="styles/main.css?v=279">
+<link rel="stylesheet" href="styles/main.css?v=280">
 <!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
-<link rel="stylesheet" href="styles/online.css?v=279">
-<link rel="stylesheet" href="styles/results-frame.css?v=279">
-<link rel="stylesheet" href="styles/visual-2-3.css?v=279">
-<link rel="stylesheet" href="styles/light-refresh.css?v=279">
-<link rel="stylesheet" href="styles/encargos.css?v=279">
-<link rel="stylesheet" href="styles/encargos-intro.css?v=279">
-<link rel="stylesheet" href="styles/sir-events.css?v=279">
-<link rel="stylesheet" href="styles/theme.css?v=279">
+<link rel="stylesheet" href="styles/online.css?v=280">
+<link rel="stylesheet" href="styles/results-frame.css?v=280">
+<link rel="stylesheet" href="styles/visual-2-3.css?v=280">
+<link rel="stylesheet" href="styles/light-refresh.css?v=280">
+<link rel="stylesheet" href="styles/encargos.css?v=280">
+<link rel="stylesheet" href="styles/encargos-intro.css?v=280">
+<link rel="stylesheet" href="styles/sir-events.css?v=280">
+<link rel="stylesheet" href="styles/theme.css?v=280">
 
 </head>
 <body class="on-home">
@@ -1120,55 +1120,55 @@ try {
 <!-- Fase 2: datos y constantes extraidos a modulos, cargados como scripts
      clasicos (no ES Modules) para conservar el scope global compartido con
      el script principal, sin convertir todavia la app a ES Modules. -->
-<script src="src/data/ui-maps.js?v=279"></script>
-<script src="src/data/questions.js?v=279"></script>
-<script src="src/data/questions-retired.js?v=279"></script>
-<script src="src/data/phrases.js?v=279"></script>
-<script src="src/data/duel-phrases.js?v=279"></script>
-<script src="src/data/lucidez.js?v=279"></script>
-<script src="src/data/medals.js?v=279"></script>
+<script src="src/data/ui-maps.js?v=280"></script>
+<script src="src/data/questions.js?v=280"></script>
+<script src="src/data/questions-retired.js?v=280"></script>
+<script src="src/data/phrases.js?v=280"></script>
+<script src="src/data/duel-phrases.js?v=280"></script>
+<script src="src/data/lucidez.js?v=280"></script>
+<script src="src/data/medals.js?v=280"></script>
 <!-- Prompt 3 — Fase C: sistema de avatares compartido (window.SEQAvatars). Debe
      cargarse antes de src/online/online.js y src/online/duels.js: ambos lo
      consumen en vez de mantener cada uno su propia copia de la lista. -->
-<script src="src/data/avatars.js?v=279"></script>
-<script src="src/share/share-card.js?v=279"></script>
+<script src="src/data/avatars.js?v=280"></script>
+<script src="src/share/share-card.js?v=280"></script>
 
 <!-- Fase 3 (Lote 3A): motor de coincidencia de respuestas extraido a
      src/utils/matching.js, mismo criterio que la Fase 2 (script clasico,
      sin ES Modules todavia). -->
-<script src="src/utils/matching.js?v=279"></script>
-<script src="src/utils/answer-alias.js?v=279"></script>
-<script src="src/utils/lucidez-select.js?v=279"></script>
-<script src="src/state/lucidez-bag.js?v=279"></script>
-<script src="src/state/timetrial-bag.js?v=279"></script>
-<script src="src/utils/encargos-core.js?v=279"></script>
-<script src="src/utils/encargos-progress.js?v=279"></script>
-<script src="src/state/encargos.js?v=279"></script>
-<script src="src/data/encargos-phrases.js?v=279"></script>
-<script src="src/ui/encargos-ui.js?v=279"></script>
-<script src="src/data/named-phrases.js?v=279"></script>
-<script src="src/utils/named-phrases.js?v=279"></script>
-<script src="src/utils/encargos-intro-core.js?v=279"></script>
-<script src="src/data/encargos-intro-phrases.js?v=279"></script>
-<script src="src/ui/encargos-intro.js?v=279"></script>
-<script src="src/data/home-quotes.js?v=279"></script>
-<script src="src/ui/home-quote.js?v=279"></script>
-<script src="src/utils/sir-events.js?v=279"></script>
-<script src="src/ui/sir-events-ui.js?v=279"></script>
-<script src="src/state/sir-events.js?v=279"></script>
-<script src="src/utils/sudden-progression.js?v=279"></script>
-<script src="src/utils/mental-calc.js?v=279"></script>
-<script src="src/utils/mental-classic.js?v=279"></script>
-<script src="src/ui/mental-classic-ui.js?v=279"></script>
-<script src="src/ui/mental-menu.js?v=279"></script>
-<script src="src/ui/level-up.js?v=279"></script>
+<script src="src/utils/matching.js?v=280"></script>
+<script src="src/utils/answer-alias.js?v=280"></script>
+<script src="src/utils/lucidez-select.js?v=280"></script>
+<script src="src/state/lucidez-bag.js?v=280"></script>
+<script src="src/state/timetrial-bag.js?v=280"></script>
+<script src="src/utils/encargos-core.js?v=280"></script>
+<script src="src/utils/encargos-progress.js?v=280"></script>
+<script src="src/state/encargos.js?v=280"></script>
+<script src="src/data/encargos-phrases.js?v=280"></script>
+<script src="src/ui/encargos-ui.js?v=280"></script>
+<script src="src/data/named-phrases.js?v=280"></script>
+<script src="src/utils/named-phrases.js?v=280"></script>
+<script src="src/utils/encargos-intro-core.js?v=280"></script>
+<script src="src/data/encargos-intro-phrases.js?v=280"></script>
+<script src="src/ui/encargos-intro.js?v=280"></script>
+<script src="src/data/home-quotes.js?v=280"></script>
+<script src="src/ui/home-quote.js?v=280"></script>
+<script src="src/utils/sir-events.js?v=280"></script>
+<script src="src/ui/sir-events-ui.js?v=280"></script>
+<script src="src/state/sir-events.js?v=280"></script>
+<script src="src/utils/sudden-progression.js?v=280"></script>
+<script src="src/utils/mental-calc.js?v=280"></script>
+<script src="src/utils/mental-classic.js?v=280"></script>
+<script src="src/ui/mental-classic-ui.js?v=280"></script>
+<script src="src/ui/mental-menu.js?v=280"></script>
+<script src="src/ui/level-up.js?v=280"></script>
 
 <!-- Fase 3 (Lote 3B): nucleo algoritmico de Duelo extraido a
      src/utils/duel.js, mismo criterio que el resto (script clasico, sin
      ES Modules todavia). Las dependencias compartidas con otros modos
      (arrangeStandardBlock, generateLucidezMentalOp)
      permanecen en este script principal, sin moverse en este lote. -->
-<script src="src/utils/duel.js?v=279"></script>
+<script src="src/utils/duel.js?v=280"></script>
 
 <!-- Fase 3 (Lote 3C): defaults, migracion y saneamiento del Store
      extraidos a src/utils/store.js, mismo criterio que el resto (script
@@ -1180,53 +1180,53 @@ try {
      getLevelData) y las 8 funciones de persistencia real (loadStore,
      saveStore, exportProgress...) permanecen en este script principal,
      sin moverse en este lote. -->
-<script src="src/utils/store.js?v=279"></script>
+<script src="src/utils/store.js?v=280"></script>
 
 <!-- Fase 4B: fachada de estado de solo lectura (getStore/getCurrentGame),
      mismo criterio que el resto (script clasico, sin ES Modules todavia).
      No copia, no transforma, no cachea. Ver src/state/read-facade.js. -->
-<script src="src/state/read-facade.js?v=279"></script>
+<script src="src/state/read-facade.js?v=280"></script>
 
-<script src="src/utils/streak-xp.js?v=279"></script>
+<script src="src/utils/streak-xp.js?v=280"></script>
 <!-- Fase 4C: helpers minimos de escritura (pushCapped, resetStreak) para
      eliminar 2 duplicaciones reales concretas -- no un sistema de
      mutaciones. Ver src/state/write-helpers.js y CHANGELOG_FASE4C.md. -->
-<script src="src/state/write-helpers.js?v=279"></script>
+<script src="src/state/write-helpers.js?v=280"></script>
 
 <!-- v1.4: capa online (cuenta Google, sincronización, migración, ranking).
      config.js es PÚBLICO (URL del Worker + Client ID de Google); si está
      vacío, la capa online queda desactivada y la app es idéntica a la v1.3.
      online.js solo usa el store/funciones del juego en tiempo de ejecución. -->
-<script src="src/ui/install-app.js?v=279"></script>
-<script src="src/ui/a11y.js?v=279"></script>
-<script src="src/ui/back-nav.js?v=279"></script>
-<script src="src/ui/game-fx.js?v=279"></script>
-<script src="src/ui/last-life.js?v=279"></script>
-<script src="src/ui/hitos.js?v=279"></script>
-<script src="src/ui/achievements.js?v=279"></script>
-<script src="src/ui/stats-extra.js?v=279"></script>
-<script src="src/ui/name-prompt.js?v=279"></script>
-<script src="src/ui/intro.js?v=279"></script>
-<script src="src/ui/mode-badges.js?v=279"></script>
-<script src="src/ui/lucidez-ui.js?v=279"></script>
-<script src="src/ui/sabias.js?v=279"></script>
-<script src="src/ui/icons.js?v=279"></script>
-<script src="src/online/config.js?v=279"></script>
+<script src="src/ui/install-app.js?v=280"></script>
+<script src="src/ui/a11y.js?v=280"></script>
+<script src="src/ui/back-nav.js?v=280"></script>
+<script src="src/ui/game-fx.js?v=280"></script>
+<script src="src/ui/last-life.js?v=280"></script>
+<script src="src/ui/hitos.js?v=280"></script>
+<script src="src/ui/achievements.js?v=280"></script>
+<script src="src/ui/stats-extra.js?v=280"></script>
+<script src="src/ui/name-prompt.js?v=280"></script>
+<script src="src/ui/intro.js?v=280"></script>
+<script src="src/ui/mode-badges.js?v=280"></script>
+<script src="src/ui/lucidez-ui.js?v=280"></script>
+<script src="src/ui/sabias.js?v=280"></script>
+<script src="src/ui/icons.js?v=280"></script>
+<script src="src/online/config.js?v=280"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
-<script src="src/utils/sync-merge.js?v=279"></script>
-<script src="src/online/data-sync.js?v=279"></script>
-<script src="src/online/online.js?v=279"></script>
+<script src="src/utils/sync-merge.js?v=280"></script>
+<script src="src/online/data-sync.js?v=280"></script>
+<script src="src/online/online.js?v=280"></script>
 <!-- v1.5: Amigos, Duelo online y Retos. El servidor decide preguntas, tiempo, aciertos y ganador. -->
-<script src="src/state/result-heard.js?v=279"></script>
-<script src="src/online/duels.js?v=279"></script>
+<script src="src/state/result-heard.js?v=280"></script>
+<script src="src/online/duels.js?v=280"></script>
 <!-- 2.1: Duelo por apuestas, ELO PvP, Rankings y estadísticas de Duelos (solo presentación; decide el servidor) -->
-<script src="src/online/duels-v21.js?v=279"></script>
+<script src="src/online/duels-v21.js?v=280"></script>
 <!-- 2.3: ficha pública de un jugador (resumen, récords, PvP y solicitud de amistad) -->
-<script src="src/online/player-profile.js?v=279"></script>
-<script src="src/online/inbox.js?v=279"></script>
-<script src="src/online/push.js?v=279"></script>
+<script src="src/online/player-profile.js?v=280"></script>
+<script src="src/online/inbox.js?v=280"></script>
+<script src="src/online/push.js?v=280"></script>
 <!-- Audio: sonidos del juego (src/audio/audio.js) -->
-<script src="src/audio/audio.js?v=279"></script>
+<script src="src/audio/audio.js?v=280"></script>
 
 <script>
 function closeWelcomeModal() {
@@ -2205,6 +2205,17 @@ function runPendingModeFinishIfDue() {
   pending.callback();
 }
 
+// Ejecuta ya el cierre diferido pendiente (si lo hay). Salir al menú durante la espera previa al resultado
+// no debe tirar la derrota: se cierra y se registra en ese momento, y el jugador ve antes el resultado.
+function flushPendingModeFinish() {
+  if (!pendingModeFinish) return false;
+  if (pendingModeFinishTimer) { clearTimeout(pendingModeFinishTimer); pendingModeFinishTimer = null; }
+  const pending = pendingModeFinish;
+  pendingModeFinish = null;
+  pending.callback();
+  return true;
+}
+
 function cancelPendingModeFinish() {
   if (pendingModeFinishTimer) clearTimeout(pendingModeFinishTimer);
   pendingModeFinishTimer = null;
@@ -2273,44 +2284,43 @@ function discardSavedGameAsFinished() {
   return false;
 }
 
+// Una partida guardada que ya está decidida (derrota marcada, vidas a cero, reloj agotado, enigma respondido) pero
+// cuyo cierre no llegó a ejecutarse porque se salió o se cerró la app durante la espera previa al resultado.
+// NO se descarta: restoreSavedGame() la cierra con finishGame()/finishLucidezMode() para que quede registrada.
+function savedGameNeedsSettling(g) {
+  if (!g || g.isDuel) return false;
+  if (g.mode === 'lucidez_mental') {
+    const phase = getLucidezPhase(Number(g.currentIdx) || 0);
+    if (phase === 2 && Number(g.lucidezLives) <= 0) return true;
+    if (phase === 3 && typeof g.lucidezPhase3EndTime === 'number' && g.lucidezPhase3EndTime > 0 && g.lucidezPhase3EndTime <= Date.now()) return true;
+    if (phase === 'final' && typeof g.lucidezFinalEndTime === 'number' && g.lucidezFinalEndTime > 0 && g.lucidezFinalEndTime <= Date.now()) return true;
+    return phase === 'final' && !!g.answered;
+  }
+  if (g.mode === 'mental_calc') {
+    if (g.variant === 'classic') return !SEQMentalClassic.isResumable(g) && Number.isFinite(Number(g.lives)) && Number(g.lives) <= 0;
+    return typeof g.mentalCalcEndTime === 'number' && g.mentalCalcEndTime > 0 && g.mentalCalcEndTime <= Date.now();
+  }
+  if (g.mode === 'timetrial') return !!g.timeTrialFailed || (typeof g.timeTrialEndTime === 'number' && g.timeTrialEndTime > 0 && g.timeTrialEndTime <= Date.now());
+  if (g.mode === 'survival') return !!g.survivalFailed;
+  if (g.mode === 'sudden_death') return !!g.suddenDeathFailed;
+  return false;
+}
+
 function hasSavedGame() {
   const g = getStore() && getStore().savedGame;
   if (!g) return false;
   if (g.isDuel) return false; // partida de un Duelo por código (modo retirado): no se puede reanudar
   if (g.mode === 'lucidez_mental') {
     if (!(Array.isArray(g.phase1Queue) && Array.isArray(g.phase2Queue) && Array.isArray(g.phase3Queue) && typeof g.currentIdx === 'number' && g.currentIdx < 30)) return false;
-    // Mismo hueco que en Supervivencia/Muerte Súbita/Contrarreloj: si la
-    // partida ya estaba perdida o terminada (vidas de Fase II a 0, tiempo
-    // de Fase III o del acertijo final ya agotado, o acertijo final ya
-    // respondido) antes de que finishLucidezMode() llegara a ejecutarse
-    // durante su ventana de espera de 1.2-1.4s, no debe ofrecerse como
-    // "Continuar" (restoreSavedGame() haría lo mismo al pulsarla, pero eso
-    // no debe depender de que el jugador llegue a pulsar el botón).
-    const phase = getLucidezPhase(Number(g.currentIdx) || 0);
-    if (phase === 2 && Number(g.lucidezLives) <= 0) return discardSavedGameAsFinished();
-    if (phase === 3 && typeof g.lucidezPhase3EndTime === 'number' && g.lucidezPhase3EndTime > 0 && g.lucidezPhase3EndTime <= Date.now()) return discardSavedGameAsFinished();
-    if (phase === 'final' && typeof g.lucidezFinalEndTime === 'number' && g.lucidezFinalEndTime > 0 && g.lucidezFinalEndTime <= Date.now()) return discardSavedGameAsFinished();
-    if (phase === 'final' && g.answered) return discardSavedGameAsFinished();
-    return true;
+    return true; // jugable o por cerrar (savedGameNeedsSettling): restoreSavedGame() se ocupa de ambas
   }
   if (g.mode === 'mental_calc') {
-    if (g.variant === 'classic') return SEQMentalClassic.isResumable(g) ? true : discardSavedGameAsFinished();
-    return typeof g.mentalCalcEndTime === 'number' && g.mentalCalcEndTime > Date.now();
+    if (g.variant === 'classic') return SEQMentalClassic.isResumable(g) || savedGameNeedsSettling(g) ? true : discardSavedGameAsFinished();
+    return typeof g.mentalCalcEndTime === 'number' && g.mentalCalcEndTime > 0;
   }
-  // Contrarreloj: si el reloj absoluto guardado ya se agotó (por ejemplo,
-  // el tiempo terminó mientras la app estaba en segundo plano y no llegó a
-  // procesarse el fin de partida), la partida ya está perdida y no debe
-  // ofrecerse como "Continuar".
-  if (g.mode === 'timetrial' && typeof g.timeTrialEndTime === 'number' && g.timeTrialEndTime <= Date.now()) {
-    return discardSavedGameAsFinished();
-  }
-  // Supervivencia y Muerte Súbita marcan de forma persistente el fallo que
-  // termina la partida (survivalFailed/suddenDeathFailed) antes de que
-  // finishGame() llegue a ejecutarse, precisamente para poder detectar aquí
-  // que la partida ya está perdida aunque la app se cerrara durante esa
-  // breve espera (0.9-1.5s).
-  if (g.mode === 'survival' && g.survivalFailed) return discardSavedGameAsFinished();
-  if (g.mode === 'sudden_death' && g.suddenDeathFailed) return discardSavedGameAsFinished();
+  // Supervivencia, Muerte Súbita y Contrarreloj marcan de forma persistente que la partida ya está decidida antes de
+  // que finishGame() llegue a ejecutarse. Esa partida se conserva para cerrarla (y contarla) al volver.
+  if (savedGameNeedsSettling(g)) return Array.isArray(g.queue);
   return !!(Array.isArray(g.queue) && g.queue.length && typeof g.currentIdx === 'number' && g.currentIdx < g.queue.length);
 }
 
@@ -2326,6 +2336,8 @@ function hasSavedGame() {
 let pendingDiscardSavedGameAction = null;
 function confirmDiscardSavedGame(onProceed) {
   if (!hasSavedGame()) { onProceed(); return; }
+  // Una partida ya decidida solo espera su cierre: se cierra y se cuenta (muestra su resultado) en vez de descartarla.
+  if (savedGameNeedsSettling(store.savedGame)) { switchTab('game'); return; }
   pendingDiscardSavedGameAction = onProceed;
   document.getElementById('discard-game-modal').style.display = 'flex';
 }
@@ -3058,9 +3070,12 @@ function exitGameToMenu() {
   // Abandonar la pantalla de juego pausa los relojes y cancela cualquier
   // cierre diferido pendiente antes de guardar la partida.
   pauseActiveGameTimers();
-  cancelPendingModeFinish();
   cancelLucidezStoryOverlay();
   cancelLucidezRevealTimeout();
+  // Si la partida ya estaba decidida (tercer fallo, Muerte Súbita, enigma final...) y solo esperaba su cierre,
+  // se cierra ahora para que cuente; la pantalla de resultados lleva de vuelta al menú.
+  if (flushPendingModeFinish()) return;
+  cancelPendingModeFinish();
   try { saveStore(); } catch (e) {}
   const input = document.getElementById('ans-input');
   if (input) input.blur();
@@ -4118,7 +4133,7 @@ function checkLucidezAnswer() {
     if (phase === 1) currentGame.phase1Correct = (currentGame.phase1Correct || 0) + 1;
     if (phase === 3) currentGame.phase3Correct = (currentGame.phase3Correct || 0) + 1;
     fb.className = 'feedback bad';
-    fb.innerHTML = `${seqIco('escudo')}Error extra: no cuenta. Era: <b>${escapeHtml(String(q.a))}</b>${lucidezForgiveNote()}`;
+    fb.innerHTML = `${seqIco('escudo')}Error extra perdonado: cuenta para el mínimo de la fase, pero no suma punto. Era: <b>${escapeHtml(String(q.a))}</b>${lucidezForgiveNote()}`;
   } else {
     updateAnswerStreak(false, q);
     playSound('bad');
@@ -4180,7 +4195,7 @@ function checkLucidezPhase2Answer(item) {
     fb.innerHTML = `${seqIco('correcto')}¡Correcto! Era ${op.answer}.`;
   } else if (forgiven) {
     fb.className = 'feedback bad';
-    fb.innerHTML = `${seqIco('escudo')}Error extra: no cuenta. Era: <b>${escapeHtml(String(op.answer))}</b> · ${renderLivesHearts(currentGame.lucidezLives, 2)}${lucidezForgiveNote()}`;
+    fb.innerHTML = `${seqIco('escudo')}Error extra perdonado: no te cuesta una vida. Era: <b>${escapeHtml(String(op.answer))}</b> · ${renderLivesHearts(currentGame.lucidezLives, 2)}${lucidezForgiveNote()}`;
   } else {
     updateAnswerStreak(false);
     playSound('bad');
@@ -4245,7 +4260,7 @@ function checkLucidezPhase2QuestionAnswer(q) {
     fb.innerHTML = `${seqIco('correcto')}¡Correcto! (Era: <b>${escapeHtml(String(q.a))}</b>)`;
   } else if (forgiven) {
     fb.className = 'feedback bad';
-    fb.innerHTML = `${seqIco('escudo')}Error extra: no cuenta. Era: <b>${escapeHtml(String(q.a))}</b> · ${renderLivesHearts(currentGame.lucidezLives, 2)}${lucidezForgiveNote()}`;
+    fb.innerHTML = `${seqIco('escudo')}Error extra perdonado: no te cuesta una vida. Era: <b>${escapeHtml(String(q.a))}</b> · ${renderLivesHearts(currentGame.lucidezLives, 2)}${lucidezForgiveNote()}`;
   } else {
     updateAnswerStreak(false, q);
     playSound('bad');
@@ -5925,7 +5940,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   stopUrgencySound();
   if (timeTrialTimer) { clearInterval(timeTrialTimer); timeTrialTimer = null; }
   timeTrialEndTime = 0;
-  // Cálculo de Fondo (en pruebas): tarjeta propia, sin tocar estadísticas, logros ni ránkings (src/ui/mental-classic-ui.js).
+  // Cálculo de Fondo: tarjeta y récord propios (src/ui/mental-classic-ui.js); sí cuenta en partidas, historial y Encargos.
   if (isMentalClassicGame()) { SEQMentalClassicUI.finish(); return; }
 
   // Duelo: se resetea en cada cierre de partida y solo se rellena más
@@ -7242,6 +7257,6 @@ window.addEventListener('appinstalled', () => {
   hidePwaHint();
 });
 </script>
-<script src="src/ui/resume-clock.js?v=279"></script>
+<script src="src/ui/resume-clock.js?v=280"></script>
 </body>
 </html>
