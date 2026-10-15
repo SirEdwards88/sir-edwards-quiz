@@ -191,8 +191,8 @@ test('Rankings PvP: «Tu posición», podio con medallas, insignia de rango y co
   const h = M.renderRankings();
   assert.match(h, /seq-v21-podium/); assert.match(h, /seq-v21-pod-1/); assert.match(h, /seq-v21-pod-2/); assert.match(h, /seq-v21-pod-3/);
   for (const m of ['oro', 'plata', 'bronce']) assert.match(h, new RegExp('assets/ui/' + m + '\\.webp'), 'medalla ' + m);
-  assert.match(h, /seq-v21-me-pos[^>]*><small>#<\/small>2/, '«Tu posición»: puesto 2');
-  assert.match(h, /1\.265 ELO/); assert.match(h, /lord_sabelotodo\.webp/, 'insignia de rango');
+  assert.equal(/seq-v21-me-pos/.test(h), false, 'si ya se te ve en el podio o la lista, no se repite «Tu posición»');
+  assert.match(h, /seq-v21-pod seq-v21-pod-2 me/, 'tu puesto 2 sale marcado en el podio');
   assert.equal((h.match(/seq-v21-rk-badge/g) || []).length, 1, 'solo Dani (clasificado) lleva insignia en la lista; Rita está en colocación');
   assert.match(h, /En colocación/); assert.match(h, /seq-v21-pos">4</); assert.equal(/seq-v21-pos none/.test(h), false, 'sin puesto no se pinta un guion');
   assert.equal(/sin verificar/i.test(h), false);
@@ -206,8 +206,7 @@ test('Rankings Cálculo Turbo y Contrarreloj: misma estructura, sin inventar ran
     win.SEQDuels._h.call = () => Promise.resolve({ validado: false, ranking: rows, me: { score: 2500, rank: 3 } });
     M.setBoard(board); await M.loadRankings();
     const h = M.renderRankings();
-    assert.match(h, /seq-v21-podium/); assert.match(h, /4\.000/); assert.match(h, /2\.500 pts/);
-    assert.match(h, /seq-v21-me-pos[^>]*><small>#<\/small>3/);
+    assert.match(h, /seq-v21-podium/); assert.match(h, /4\.000/); assert.equal(/seq-v21-me-pos/.test(h), false, 'si sales en la lista, no hay tarjeta «Tu posición»');
     assert.equal(/sin verificar/i.test(h), false, 'se eliminó «sin verificar por el servidor»');
     assert.equal(/seq-v21-rk-badge|rangos\//.test(h), false, board + ': no hay rangos que mostrar ni se inventan');
     assert.equal((h.match(/seq-avatar seq-v21-rk-av/g) || []).length, 2, 'puestos 4 y 5 en la lista, con avatar en el contenedor estándar');

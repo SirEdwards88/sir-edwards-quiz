@@ -362,8 +362,8 @@
     if (!d) return out + '<p class="seq-v21-rk-loading">Cargando…</p></div>';
     out += '<p class="seq-v21-rk-sub"><span>' + esc(BOARDS[b].sub) + '</span></p>';
     var rows = d.ranking || [];
-    // En colocación no hay puesto que mostrar y la lista ya te marca: «Tu posición» solo repetiría el mismo dato.
-    var meListed = isPvp(b) && d.me && d.me.en_colocacion && rows.some(function (r) { return r && r.is_me; });
+    // «Tu posición» solo aparece si no se te ve ya en el ranking (podio o lista, donde sales marcado): así no se repite el dato.
+    var meListed = rows.some(function (r) { return r && r.is_me; });
     if (!meListed) out += meCard(d, b);
     if (!rows.length) return out + rkNote(isPvp(b) ? 'Aún no hay duelos puntuados. Juega uno y aparecerás aquí.' : 'Todavía nadie tiene puntuación en este ranking.') + '</div>';
     // Podio: puestos 1, 2 y 3 tal como los da el servidor; el resto (y quien está en colocación) va en la lista.
