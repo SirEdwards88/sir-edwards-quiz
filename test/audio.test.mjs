@@ -65,3 +65,9 @@ test('2.3 muestras: una descarga fallida se reintenta en la siguiente petición 
   // playSample/playJingle piden la carga cuando no encuentran el buffer
   assert.match(audio, /if \(!buf\) \{ loadSamples\(\); return false; \}/);
 });
+
+test('«sonido: off» corta también el jingle que ya está sonando', () => {
+  assert.match(audio, /function stopJingleNow\(\)/);
+  assert.match(audio, /j\.src\.stop\(/);
+  assert.match(html, /if \(sound === 'off'\) \{ stopUrgencySound\(\); stopJingleNow\(\); \}/);
+});

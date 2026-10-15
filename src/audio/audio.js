@@ -67,6 +67,16 @@ function playJingle(name, volume, soft) {
     return true;
   } catch (e) { return false; }
 }
+// «Sonido: off» corta al momento el jingle que esté sonando (con un fundido de 60 ms para que no chasquee).
+function stopJingleNow() {
+  if (!jingle) return;
+  try {
+    const ctx = getAudioCtx(), now = ctx.currentTime, j = jingle;
+    j.gain.gain.cancelScheduledValues(now); j.gain.gain.setValueAtTime(j.gain.gain.value, now); j.gain.gain.linearRampToValueAtTime(0.0001, now + 0.06);
+    j.src.stop(now + 0.08);
+  } catch (e) {}
+  jingle = null;
+}
 // El navegador solo deja crear/usar el audio tras un toque: se precargan las muestras en el primer toque.
 ['pointerdown', 'keydown', 'touchstart'].forEach((ev) => document.addEventListener(ev, function once() {
   document.removeEventListener(ev, once, true);
