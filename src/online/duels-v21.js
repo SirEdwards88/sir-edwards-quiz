@@ -23,7 +23,7 @@
   };
   var STAKE_ORDER = ['cuerdo', 'osado', 'insensato'];
   var MODES = {
-    classic: { nombre: 'Duelo clásico', desc: '20 preguntas · 10 s cada una' },
+    classic: { nombre: 'Duelo clásico', desc: '20 preguntas · hasta 20 s cada una' },
     stakes: { nombre: 'Duelo por apuestas', desc: '12 rondas · apuesta en secreto antes de cada pregunta' }
   };
   var RANK_IDS = { plebeyo_ilustrado: 1, caballero_del_dato: 1, erudito_de_salon: 1, lord_sabelotodo: 1, sir_edwards: 1 };
@@ -177,12 +177,12 @@
     }
     if (fase === 'apuesta') {
       var locked = !!r.mi_apuesta;
-      out += '<div class="seq-v21-prompt">' + (locked ? 'Apuesta bloqueada' : 'Elige tu apuesta. En secreto, claro: la vergüenza viene después.') + '</div>' + stakeButtons(d, locked);
-      out += locked ? '<p class="stats-section-sub seq-v21-wait">' + (r.rival_bloqueada ? 'Tu rival ya ha apostado. Qué decisión tan firme, o tan imprudente.' : 'Tu rival sigue eligiendo. La indecisión también es una apuesta.') + '</p>' + (r.mi_apuesta_auto ? '<p class="stats-section-sub">Se acabó el tiempo: Cuerdo, por prudencia.</p>' : '') : '';
+      out += '<div class="seq-v21-prompt">' + (locked ? 'Apuesta bloqueada' : 'Elige tu apuesta') + '</div>' + stakeButtons(d, locked);
+      out += locked ? '<p class="stats-section-sub seq-v21-wait">' + (r.rival_bloqueada ? 'Tu rival ya ha elegido.' : 'Esperando a tu rival…') + '</p>' + (r.mi_apuesta_auto ? '<p class="stats-section-sub">Se acabó el tiempo: Cuerdo.</p>' : '') : '';
       return out;
     }
     if (fase === 'revelando') {
-      return out + '<div class="seq-v21-prompt">Las apuestas, sobre la mesa</div>' + vsStakes(d) + '<p class="stats-section-sub seq-v21-wait">Veamos quién ha sido prudente y quién, simplemente, optimista. La pregunta llega en <span id="seq-v21-count"></span>…</p>';
+      return out + '<div class="seq-v21-prompt">Apuestas sobre la mesa</div>' + vsStakes(d) + '<p class="stats-section-sub seq-v21-wait">La pregunta llega en <span id="seq-v21-count"></span>…</p>';
     }
     if (fase === 'pregunta') return out + vsStakes(d) + questionHtml(d, h);
     // resolución entre rondas: se revela quién acertó y con qué apuesta
@@ -197,9 +197,14 @@
       if (num(d.t0) > now) { setText('seq-v21-count', String(secs(num(d.t0) - now))); }
       return;
     }
-    if (r.fase === 'apuesta') { boundary = num(r.apuesta_cierra_at); total = 8000; left = boundary - now; setText('seq-v21-time', String(secs(left))); setBar('seq-v21-bar', left / total); }
+    if (r.fase === 'apuesta') {
+      // Con las dos apuestas ya dentro, la pantalla de elegir sigue hasta `revelacion_at` (mínimo garantizado por el servidor).
+      boundary = num(r.revelacion_at) || num(r.apuesta_cierra_at);
+      total = Math.max(1, boundary - num(r.apuesta_abre_at)); left = boundary - now;
+      setText('seq-v21-time', String(secs(left))); setBar('seq-v21-bar', left / total);
+    }
     else if (r.fase === 'revelando') { boundary = num(r.pregunta_abre_at); setText('seq-v21-count', String(secs(boundary - now))); setBar('seq-v21-bar', 1); }
-    else if (r.fase === 'pregunta') { boundary = num(r.pregunta_cierra_at) + 1100; total = 10000; left = num(r.pregunta_cierra_at) - now; setText('seq-v21-time', String(secs(left))); setBar('seq-v21-bar', left / total); }
+    else if (r.fase === 'pregunta') { boundary = num(r.pregunta_cierra_at) + 1100; total = Math.max(1, num(r.pregunta_cierra_at) - num(r.pregunta_abre_at)) || 20000; left = num(r.pregunta_cierra_at) - now; setText('seq-v21-time', String(secs(left))); setBar('seq-v21-bar', left / total); }
     else { boundary = num(r.apuesta_abre_at); setBar('seq-v21-bar', 0); }
     if (boundary && now >= boundary) {
       var key = d.id + ':' + r.indice + ':' + r.fase;

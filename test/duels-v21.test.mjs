@@ -106,7 +106,7 @@ test('apuestas: se pintan las 3 opciones con ±valor; la apuesta del rival NO ap
   assert.match(h, /Cuerdo/); assert.match(h, /Osado/); assert.match(h, /Insensato/);
   assert.match(h, /\+1/); assert.match(h, /−3/);
   assert.match(h, /Apuesta bloqueada/);
-  assert.match(h, /Tu rival ya ha apostado/);
+  assert.match(h, /Tu rival ya ha elegido/);
   assert.equal((h.match(/seq-v21-reveal-side/g) || []).length, 0, 'no hay panel de revelación mientras se apuesta');
   assert.match(h, /disabled/, 'una apuesta bloqueada no se puede cambiar');
 });
@@ -389,4 +389,18 @@ test('iconos de Rankings: existen como archivo y están en el service worker', (
 test('el módulo no guarda nada en el almacenamiento ni decide resultados', () => {
   assert.equal(/localStorage|sessionStorage|indexedDB/.test(SRC), false);
   assert.equal(/es_correcta\s*[:=]\s*true|ganador\s*=|elo\s*\+=|puntuacion\s*\+=/.test(SRC), false);
+});
+
+test('2.3: la pantalla de apuesta es corta y la ventana/mínimos vienen del servidor', () => {
+  const src = fs.readFileSync(new URL('../src/online/duels-v21.js', import.meta.url), 'utf8');
+  assert.match(src, /'Elige tu apuesta'/);
+  assert.doesNotMatch(src, /la vergüenza viene después|Veamos quién ha sido prudente/);
+  assert.match(src, /revelacion_at/);
+  assert.doesNotMatch(src, /total = 8000|total = 10000/, 'los totales de las barras ya no están fijos');
+});
+
+test('2.3: el duelo clásico usa el calendario dinámico del servidor (inicios) con horario fijo de reserva', () => {
+  const src = fs.readFileSync(new URL('../src/online/duels.js', import.meta.url), 'utf8');
+  assert.match(src, /function classicWin\(d, now\)/);
+  assert.match(src, /d\.inicios/);
 });

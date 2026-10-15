@@ -345,7 +345,7 @@
     if (!d || document.visibilityState === 'hidden') return;
     var wait = null;
     if (S.screen === 'duel') {
-      if (d.estado === 'en_curso' || d.estado === 'aceptado') wait = POLL_ACTIVE_MS;
+      if (d.estado === 'en_curso' || d.estado === 'aceptado') wait = (d.estado === 'en_curso' && d.modo !== 'stakes' && S.shownAnswered) ? 1000 : POLL_ACTIVE_MS; // ya respondida: se sondea más rápido por si el rival ya contestó y la ronda acaba antes
       else if (d.estado === 'pendiente') wait = POLL_WAIT_MS;
     } else if (d.estado === 'pendiente' && d.soy === 'creador') wait = POLL_WAIT_MS * 3;
     else if (d.estado === 'aceptado' && d.yo && d.yo.empezado && !d.yo.terminado) wait = POLL_RETO_MS; // red de seguridad
@@ -357,6 +357,18 @@
     clearInterval(S.tickT);
     S.tickT = setInterval(tick, 250);
   }
+  // Duelo clásico con calendario dinámico (2.3): el servidor manda `inicios` (n + 1 instantes). La pregunta que toca es la
+  // última ya abierta; acaba cuando abre la siguiente (antes de tiempo si respondieron los dos). Sin `inicios` (servidor
+  // antiguo) se usa el horario fijo de siempre.
+  function classicWin(d, now) {
+    var dur = num(d.duracion_pregunta_ms) || 20000, t0 = num(d.t0), n = num(d.n_preguntas) || 20, ini = d.inicios;
+    if (ini && ini.length > n) {
+      var k = 0; while (k < n - 1 && num(ini[k + 1]) <= now) k++;
+      return { k: k, end: num(ini[k + 1]), dur: dur };
+    }
+    var kk = Math.min(n - 1, Math.floor((now - t0) / dur));
+    return { k: kk, end: t0 + (kk + 1) * dur, dur: dur };
+  }
   // Actualiza cuentas atrás y barras con textContent/style; nunca repinta HTML.
   function tick() {
     var d = S.data; if (!d) return;
@@ -364,9 +376,9 @@
     if (S.screen === 'duel' && d.estado === 'en_curso' && d.modo === 'stakes') {
       if (window.SEQDuels21) SEQDuels21.tick(d, now);
     } else if (S.screen === 'duel' && d.estado === 'en_curso') {
-      var dur = num(d.duracion_pregunta_ms) || 10000, t0 = num(d.t0);
+      var t0 = num(d.t0);
       if (now < t0) { setCount(String(secs(t0 - now))); return; }
-      var k = Math.floor((now - t0) / dur);
+      var win = classicWin(d, now), k = win.k, dur = win.dur;
       if (k !== S.lastIdx) {
         // Cambió la ventana: los botones que se ven son de la pregunta
         // anterior. Se bloquean YA (un toque ahora no puede caer en otra
@@ -376,7 +388,7 @@
         load();
         return;
       }
-      var rem = t0 + (k + 1) * dur - now;
+      var rem = win.end - now;
       setBar('seq-d-bar', rem / dur); setText('seq-d-time', String(secs(rem)));
       if (S.shown && S.shown.idx === k && !S.shownAnswered) urgency(rem);
     } else if (S.screen === 'duel' && (d.estado === 'aceptado' || d.estado === 'pendiente')) {
@@ -940,16 +952,16 @@
       return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Sala de espera</div><p class="duel-result-hint">Tú: ' + (d.yo.listo ? ico('correcto') + 'listo' : ico('mediocre')) + ' · ' + p.name + ': ' + (d.rival_estado.listo ? ico('correcto') + 'listo' : ico('mediocre')) + '</p><p class="duel-result-hint">Quedan <span id="seq-d-count"></span> s para que los dos estéis listos.</p><p class="duel-result-hint seq-d-stay">Durante la partida no salgas de la app ni bloquees el móvil: a los 60 s sin conexión se pierde por abandono.</p>' + (d.yo.listo ? '' : '<button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.duelAction(\'ready\')">¡Listo!</button>') + '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.duelAction(\'cancel\')">Salir</button></div>';
     }
     if (d.estado === 'en_curso') {
-      var t0 = num(d.t0), dur = num(d.duracion_pregunta_ms) || 10000;
+      var t0 = num(d.t0);
       if (now < t0 && d.modo !== 'stakes') { S.shown = null; return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Empieza en <span id="seq-d-count"></span>…</div></div>'; }
       if (d.modo === 'stakes' && window.SEQDuels21) { S.shown = null; return SEQDuels21.play(d, HELPERS); }
-      var k = Math.min(19, Math.floor((now - t0) / dur)); S.lastIdx = k;
+      var k = classicWin(d, now).k; S.lastIdx = k;
       if (d.yo.completado && d.modo !== 'stakes') { S.shown = null; return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Has terminado. Nadie ha aplaudido.</div><p class="duel-result-hint">Esperando a que acabe ' + p.name + '…</p></div>'; }
       // Si el servidor aún no ha revelado la pregunta k (los datos son de
       // antes de que se abriera), no se pinta nada respondible: se espera.
       if (!d.preguntas || d.preguntas.length <= k) { S.shown = null; return h + '<p class="stats-section-sub">Cargando pregunta…</p>'; }
       var mine = null; (d.yo.respuestas || []).forEach(function (a) { if (num(a.indice) === k) mine = a; });
-      return playScreen('duel', d, k, d.preguntas[k], mine) + (mine ? '<p class="stats-section-sub seq-d-next">Siguiente pregunta en cuanto acabe el tiempo.</p>' : '');
+      return playScreen('duel', d, k, d.preguntas[k], mine) + (mine ? '<p class="stats-section-sub seq-d-next">Siguiente pregunta en cuanto responda ' + p.name + ' o acabe el tiempo.</p>' : '');
     }
     S.shown = null;
     return h + resultBlock(d, 'duel');
