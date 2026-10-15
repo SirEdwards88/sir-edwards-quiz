@@ -39,3 +39,14 @@ test('los botones que cita la política existen en Ajustes', () => {
 test('el texto se pinta con textContent, sin innerHTML', () => {
   assert.ok(!/innerHTML\s*=/.test(mod));
 });
+
+test('si el almacenamiento local falla, se avisa una vez por racha (y se rearma al volver a guardar)', () => {
+  const a = html.indexOf('function saveStore('); const body = html.slice(a, html.indexOf('\n}\n', a));
+  assert.ok(body.includes('storageFailWarned = false;') && body.includes('if (!storageFailWarned) {') && body.includes('showInfoToast('));
+  const ctx2 = { msgs: [], fail: true, storageFailWarned: false, store: {}, answerStreak: 0, saveCurrentGame() {}, updateBadges() {}, updateStreakDisplay() {}, updateResumeButton() {},
+    localStorage: { setItem() { if (ctx2.fail) throw new Error('quota'); } }, console: { warn() {} }, showInfoToast(m) { ctx2.msgs.push(m); } };
+  vm.createContext(ctx2);
+  vm.runInContext('let storageFailWarned = false;' + html.slice(a, html.indexOf('\n}\n', a) + 3) + ';this.save=saveStore;', ctx2);
+  ctx2.save(); ctx2.save(); assert.equal(ctx2.msgs.length, 1, 'un solo aviso mientras siga fallando');
+  ctx2.fail = false; ctx2.save(); ctx2.fail = true; ctx2.save(); assert.equal(ctx2.msgs.length, 2, 'se vuelve a avisar tras una racha buena');
+});

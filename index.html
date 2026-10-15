@@ -2716,6 +2716,7 @@ function restoreSavedGame() {
   return true;
 }
 
+let storageFailWarned = false; // ver saveStore(): un único aviso por racha de fallos de almacenamiento
 function saveStore(persistCurrentGame = true) {
   if (!store.questionStats) store.questionStats = {};
   if (!Array.isArray(store.seenQuestionIds)) store.seenQuestionIds = [];
@@ -2723,10 +2724,16 @@ function saveStore(persistCurrentGame = true) {
   if (persistCurrentGame) saveCurrentGame();
   try {
     localStorage.setItem('siredwards_quiz_v1_0_data', JSON.stringify(store));
+    storageFailWarned = false;
   } catch (e) {
     // Ej. almacenamiento lleno (QuotaExceededError): el progreso de esta
     // acción no se guarda, pero la partida sigue jugable en memoria.
     console.warn('No se pudo guardar el progreso.', e);
+    // Se avisa una vez por racha de fallos: el jugador no debe creer que su progreso está a salvo cuando no lo está.
+    if (!storageFailWarned) {
+      storageFailWarned = true;
+      try { showInfoToast('Sir Edwards no logra apuntar tu progreso: el almacenamiento está lleno o bloqueado. Libera espacio o descarga una copia desde Ajustes.'); } catch (e2) {}
+    }
   }
   updateBadges();
   updateStreakDisplay();
