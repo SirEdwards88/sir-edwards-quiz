@@ -63,7 +63,7 @@ test('correcciones: q8, q146, q223, q225, q247, q297, q305, q330 y q392 iguales 
   assert.match(g(T, 146).q, /tiroxina/);
   assert.deepEqual(Array.from(g(T, 223).options), ['Estados Unidos', 'India', 'China', 'Nigeria']);
   assert.match(g(T, 225).q, /«Back to Black»/);
-  assert.match(g(T, 247).q, /tras la edición de 2023/);
+  assert.match(g(T, 247).q, /ha ganado más títulos del Mundial de rugby masculino/);
   assert.match(g(T, 297).q, /ecuador y el meridiano de Greenwich/);
   assert.deepEqual(Array.from(g(Q, 297).par), [295]);
   assert.match(g(T, 305).sabias, /relatividad general/);
