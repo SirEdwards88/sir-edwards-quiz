@@ -408,7 +408,16 @@
   function act(method, p, body, then) {
     if (S.busy) return;
     S.busy = true; say('');
-    call(method, p, body).then(function (d) { S.busy = false; then && then(d); }).catch(function (e) { S.busy = false; say(errText(e), true); });
+    call(method, p, body).then(function (d) { S.busy = false; then && then(d); }).catch(function (e) {
+      S.busy = false;
+      var msg = errText(e), c = e && e.code;
+      say(msg, true);
+      // Resultado dudoso (se cortó la red) o estado que ya cambió (plazo vencido, otro dispositivo lo hizo antes):
+      // se consulta el estado real para no dejar un botón que parece válido. El aviso se mantiene.
+      if ((e && e.network) || c === 'invalid_state' || c === 'reto_expired') {
+        (S.id ? load() : refreshSummary()).then(function () { say(msg, true); }, function () {});
+      }
+    });
   }
   function duelAction(action) {
     if (!S.id) return;
@@ -598,7 +607,7 @@
     var btns = '';
     if (x.estado === 'pendiente' && x.soy === 'rival') {
       btns = '<button class="btn btn-primary seq-d-sm" onclick="event.stopPropagation();SEQDuels.listAction(\'' + kind + '\',\'' + id + '\',\'accept\')">Aceptar</button> <button class="btn btn-secondary seq-d-sm" onclick="event.stopPropagation();SEQDuels.listAction(\'' + kind + '\',\'' + id + '\',\'reject\')">Rechazar</button>';
-      sub = kind === 'duel' ? '¡Te ha retado!' : 'Te ha retado · caduca en ' + left(num(x.expira_at) - Date.now());
+      sub = kind === 'duel' ? '¡Te ha retado!' : 'Te ha retado · caduca en ' + left(num(x.expira_at) - serverNow());
     } else if (x.estado === 'pendiente') sub = 'Esperando respuesta';
     else if (x.estado === 'completado') sub = resultLine(x.resultado);
     else if (kind === 'reto' && x.estado === 'aceptado') sub = x.yo.terminado ? 'Esperando a tu amigo' : '¡Te toca jugar!';
