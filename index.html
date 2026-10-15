@@ -61,6 +61,7 @@
 <link rel="stylesheet" href="styles/encargos-intro.css?v=284">
 <link rel="stylesheet" href="styles/sir-events.css?v=284">
 <link rel="stylesheet" href="styles/theme.css?v=284">
+<link rel="stylesheet" href="styles/privacy.css?v=284">
 
 </head>
 <body class="on-home">
@@ -238,6 +239,17 @@
   </div>
 </div>
 
+<!-- Política de privacidad: el texto lo pinta src/ui/privacy.js (SEQPrivacy). -->
+<div id="privacy-modal" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="privacy-modal-title" data-modal-esc>
+  <div class="modal-card">
+    <h2 id="privacy-modal-title">Política de privacidad</h2>
+    <div id="privacy-modal-body"></div>
+    <div class="modal-warning-actions">
+      <button class="btn btn-primary" data-autofocus onclick="SEQPrivacy.close()">Entendido</button>
+    </div>
+  </div>
+</div>
+
 <!-- v1.4: migración / combinación del progreso local con la cuenta online.
      Contenido y botones los pinta src/online/online.js (SEQOnline). -->
 <div id="seq-migrate-modal" class="modal-overlay" style="display:none;">
@@ -277,7 +289,7 @@
     </ul>
     <div id="seq-gate-gsi-slot" class="seq-gsi-slot"></div>
     <p class="settings-note seq-msg gate-msg" id="seq-gate-msg"></p>
-    <p class="gate-fine">Solo usamos tu cuenta para identificarte. Tu nombre de Google no se muestra a otros jugadores.</p>
+    <p class="gate-fine">Guardamos tu progreso y tu actividad online, nunca tu correo ni tu nombre real. Tu nombre de Google no se muestra a otros jugadores. <button type="button" class="privacy-link" onclick="SEQPrivacy.open()">Política de privacidad</button></p>
   </div>
 </div>
 <script>
@@ -1001,6 +1013,12 @@ try {
       </div>
 
       <div class="settings-section">
+        <h3 style="margin-top:0;">Privacidad</h3>
+        <p class="settings-note">Qué guarda el juego, para qué y cómo borrarlo.</p>
+        <button class="btn btn-secondary" onclick="SEQPrivacy.open()">Política de privacidad</button>
+      </div>
+
+      <div class="settings-section">
         <h3 style="margin-top:0;">Historial de versiones</h3>
         <div class="settings-changelog">
           <div class="settings-changelog-entry">
@@ -1198,6 +1216,7 @@ try {
      vacío, la capa online queda desactivada y la app es idéntica a la v1.3.
      online.js solo usa el store/funciones del juego en tiempo de ejecución. -->
 <script src="src/ui/install-app.js?v=284"></script>
+<script src="src/ui/privacy.js?v=284"></script>
 <script src="src/ui/a11y.js?v=284"></script>
 <script src="src/ui/back-nav.js?v=284"></script>
 <script src="src/ui/game-fx.js?v=284"></script>
@@ -3121,6 +3140,7 @@ function authGateFocusables() {
 function authGateKeydown(e) {
   if (e.key !== 'Tab') return;
   const wm = document.getElementById('welcome-modal'); if (wm && wm.style.display === 'flex') return; // la bienvenida va encima de la pantalla de cuenta
+  const pm = document.getElementById('privacy-modal'); if (pm && pm.style.display === 'flex') return; // la política de privacidad también va encima
   const gate = document.getElementById('auth-gate');
   if (!gate) return;
   const focusables = authGateFocusables();
