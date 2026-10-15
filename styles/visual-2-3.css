@@ -12,7 +12,6 @@
   background-repeat: no-repeat; background-size: cover; background-position: center top;
   border-radius: 18px;
 }
-:root[data-theme="dark"] #view-duelo { background-image: linear-gradient(rgba(10,12,24,.55), rgba(10,12,24,.78)), url("../assets/ui/fondos/duelo.webp"); }
 :root[data-theme="dark"] #view-encargos { background-image: linear-gradient(rgba(10,14,20,.55), rgba(10,14,20,.78)), url("../assets/ui/fondos/encargos.webp"); }
 :root[data-theme="dark"] #view-stats { background-image: linear-gradient(rgba(10,14,30,.55), rgba(10,14,30,.78)), url("../assets/ui/fondos/estadisticas.webp"); }
 
