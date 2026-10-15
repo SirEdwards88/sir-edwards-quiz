@@ -67,9 +67,9 @@ test('correcciones: q8, q146, q223, q225, q247, q297, q305, q330 y q392 iguales 
   assert.match(g(T, 297).q, /ecuador y el meridiano de Greenwich/);
   assert.deepEqual(Array.from(g(Q, 297).par), [295]);
   assert.match(g(T, 305).sabias, /relatividad general/);
-  assert.equal(g(T, 330).a, 'Houston Comets');
-  assert.ok(g(T, 330).options.includes('Houston Comets'));
-  assert.ok(ctx.m('Comets', g(Q, 330)));
+  assert.equal(g(T, 330).a, 'Pau Gasol');
+  assert.ok(g(T, 330).options.includes('Pau Gasol'));
+  assert.ok(ctx.m('Gasol', g(Q, 330)));
   assert.match(g(T, 392).q, /número atómico 54/);
   assert.ok(ctx.m('xenon', g(Q, 392)));
 });
