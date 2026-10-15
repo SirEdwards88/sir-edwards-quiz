@@ -944,3 +944,6 @@
 #seq-duel-root .seq-d-pv.w .seq-d-pv-num { color: var(--pv-gold); }
 #seq-duel-root .seq-d-pv-name { margin: 6px auto 0; max-width: 100%; font-size: 12px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #seq-duel-root .seq-d-pv-vs { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, #2a3560, #1c2340); border: 2px solid var(--pv-gold); color: #f6e6b8; font-size: 12px; font-weight: 900; }
+
+/* Sala de espera: el aviso corto no debe quedar pegado al botón «¡Listo!». */
+.seq-d-stay { margin-bottom: 14px; }
