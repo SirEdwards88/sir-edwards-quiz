@@ -47,3 +47,14 @@ test('index.html y sw.js enlazan el módulo', () => {
   assert.ok(fs.readFileSync(path.join(here, '..', 'index.html'), 'utf8').includes('src/ui/last-life.js'));
   assert.ok(fs.readFileSync(path.join(here, '..', 'sw.js'), 'utf8').includes('src/ui/last-life.js'));
 });
+
+test('los avisos de vida tienen prioridad: retiran un evento de Sir Edwards que siga a la vista', () => {
+  let hidden = 0;
+  const el = () => ({ className: '', style: {}, setAttribute() {}, appendChild() {}, remove() {}, querySelector: () => null, getBoundingClientRect: () => ({ top: 0, height: 0 }) });
+  const host = el();
+  const c = vm.createContext({ document: { getElementById: (id) => (id === 'view-game' ? host : null), createElement: el }, setTimeout: () => 0, clearTimeout() {},
+    SEQSirEventsUI: { isVisible: () => true, hide: () => { hidden++; } } });
+  vm.runInContext(fs.readFileSync(path.join(here, '..', 'src', 'ui', 'last-life.js'), 'utf8'), c);
+  c.SEQLastLife.onLifeLost({ mode: 'survival', lives: 1, currentIdx: 5, totalQuestionsToPlay: 40 });
+  assert.equal(hidden, 1);
+});

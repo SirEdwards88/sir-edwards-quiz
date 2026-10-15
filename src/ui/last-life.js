@@ -46,6 +46,8 @@
     if (!host) return;
     var old = host.querySelector('.fx-lastlife-banner'); if (old) old.remove();
     clearTimeout(timer);
+    // Los avisos de vida mandan sobre los eventos de Sir Edwards: si hay uno a la vista, se retira.
+    try { if (typeof SEQSirEventsUI !== 'undefined' && SEQSirEventsUI.isVisible()) SEQSirEventsUI.hide(); } catch (e) {}
     var b = root.document.createElement('div');
     b.className = 'fx-lastlife-banner' + (tone ? ' ' + tone : '');
     b.setAttribute('aria-hidden', 'true');
