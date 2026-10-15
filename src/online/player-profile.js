@@ -65,15 +65,15 @@
   }
 
   function V21() { return window.SEQDuels21 || null; }
-  // Mismos iconos «sueltos» que en la pantalla de Estadísticas (assets/modes/suelto/).
-  function modeIc(name) { return '<span class="seq-pf-ico" aria-hidden="true"><img class="mode-img mode-img-loose" src="assets/modes/suelto/' + name + '.webp" alt="" draggable="false" onerror="this.remove()"></span>'; }
-  // Casilla de dato: icono opcional, etiqueta pequeña, valor grande y detalle opcional (todo ya escapado por esc()/num()).
-  function tile(label, value, hint, icon, wide) {
-    return '<div class="seq-pf-tile' + (wide ? ' wide' : '') + '">' + (icon || '') + '<div class="seq-pf-tile-txt"><span class="seq-pf-lbl">' + esc(label) + '</span><b>' + value + '</b>' + (hint ? '<small>' + esc(hint) + '</small>' : '') + '</div></div>';
+  // Misma estética que «Estadísticas»: expediente (.stats-dossier) y secciones con filete dorado (.stats-section).
+  function sectionImg(img, title, body) {
+    return '<div class="stats-section seq-pf-sec"><h3 class="stats-h"><img class="stats-h-img" src="assets/' + img + '.webp" alt="" draggable="false">' + esc(title) + '</h3>' + body + '</div>';
   }
-  function section(title, body) {
-    return '<div class="seq-pf-sec"><h3 class="seq-pf-h">' + esc(title) + '</h3>' + body + '</div>';
+  function extra(label, value, icon, hint) {
+    return '<div class="stat-extra"><span class="stat-extra-icon has-img" aria-hidden="true">' + icon + '</span><div><span class="stat-extra-label">' + esc(label) + '</span><span class="stat-extra-value">' + value + '</span>' + (hint ? '<span class="stat-extra-context">' + esc(hint) + '</span>' : '') + '</div></div>';
   }
+  function modeImg(name) { return '<img class="mode-img mode-img-loose" src="assets/modes/suelto/' + name + '.webp" alt="" draggable="false" onerror="this.remove()">'; }
+  function mini(value, label) { return '<div class="stats-mini"><div class="stats-mini-value">' + value + '</div><div class="stats-mini-label">' + esc(label) + '</div></div>'; }
   function empty(text) { return '<p class="seq-pf-empty">' + esc(text) + '</p>'; }
 
   function actions(a) {
@@ -97,28 +97,31 @@
     if (P.err) return out + '<div class="seq-pf-wrap">' + empty(P.err) + '</div>';
     var d = P.data;
     if (!d) return out + '<p class="seq-v21-rk-loading">Cargando…</p>';
-    var p = h.player(d), lv = level(d.xp), a = d.amistad || { estado: 'ninguna' }, v = d.pvp, vv = V21();
+    var p = h.player(d), a = d.amistad || { estado: 'ninguna' }, v = d.pvp, vv = V21(), g = d.progreso, r = d.records;
+    var lucOk = false; try { lucOk = typeof getFragmentCount === 'function' && getFragmentCount(getStore()) >= FRAGMENT_TARGET; } catch (e) {}   // el modo secreto no se nombra hasta desbloquearlo
+    var lp = null; try { lp = typeof getLevelProgressData === 'function' ? getLevelProgressData(num(d.xp)) : null; } catch (e) {}
+    var rank = v ? (v.en_colocacion ? 'En colocación' : esc((v.rango && v.rango.nombre) || '')) : '';
     var badge = v && !v.en_colocacion && vv && vv.rankIcon ? vv.rankIcon(v.rango, 'seq-pf-badge') : '';
-    out += '<div class="seq-pf-wrap"><div class="seq-pf-hero"><span class="seq-pl-av seq-pf-av">' + p.avatar + '</span><div class="seq-pf-id">' +
-      '<div class="seq-pf-name">' + p.name + (a.estado === 'yo' ? ' <small>(tú)</small>' : '') + '</div>' +
-      '<div class="seq-pf-meta">' + (lv ? '<span class="seq-pf-lv">Nivel ' + num(lv) + '</span>' : '') + '<span>' + num(d.xp) + ' XP</span></div>' +
-      (v ? '<div class="seq-pf-rank">' + (v.en_colocacion ? 'En colocación' : esc((v.rango && v.rango.nombre) || '')) + '</div>' : '') +
-      '</div>' + badge + '</div>';
+
+    out += '<div class="seq-pf-wrap"><div class="stats-dossier seq-pf-dossier">' +
+      '<div class="dossier-head"><span class="dossier-kicker">Expediente de</span><span class="dossier-name">' + p.name + (a.estado === 'yo' ? ' <small>(tú)</small>' : '') + '</span></div>' +
+      '<div class="stats-level-widget"><div class="stats-level-widget-icon dossier-seal seq-pf-seal" aria-hidden="true">' + p.avatar + '</div>' +
+      '<div class="stats-level-widget-info"><div class="stats-level-widget-top">NIVEL ' + (lp ? num(lp.level) : '—') + (rank ? ' · <span class="seq-pf-rk">' + rank + '</span>' : '') + '</div>' +
+      '<div class="progress-bar stats-level-widget-bar"><div class="bar-fill" style="width:' + (lp ? lp.progressPct : 0) + '%"></div></div>' +
+      '<div class="stats-level-widget-xp">' + num(d.xp) + ' XP</div></div>' + badge + '</div>' +
+      (g ? '<div class="dossier-tiles"><div class="dossier-tile"><div class="dossier-tile-label">Precisión</div><div class="dossier-tile-value">' + pct(g.precision) + '</div><div class="dossier-tile-sub">' + dash(g.partidas) + ' partidas · ' + dash(g.logros) + ' logros</div></div>' +
+        '<div class="dossier-tile"><div class="dossier-tile-label">Mejor racha</div><div class="dossier-tile-value">' + dash(g.mejor_racha) + '</div><div class="dossier-tile-sub">aciertos seguidos</div></div></div>' : '') +
+      '</div>';
+    if (!g) out += empty('Sin partidas registradas. Un misterio con encanto.');
     out += actions(a);
 
-    var g = d.progreso;
-    out += section('Progreso', g
-      ? '<div class="seq-pf-grid">' + tile('Precisión', pct(g.precision)) + tile('Mejor racha', dash(g.mejor_racha)) + tile('Partidas', dash(g.partidas)) + tile('Logros', dash(g.logros)) + '</div>'
-      : empty('Sin partidas registradas. Un misterio con encanto.'));
-
-    var r = d.records;
-    out += section('Récords', r
-      ? '<div class="seq-pf-grid">' + tile('Cálculo Turbo', dash(r.calculo_turbo), 'puntos', modeIc('calculo-turbo')) + tile('Cálculo de Fondo', dash(r.calculo_fondo), 'aciertos', modeIc('calculo-clasico')) + tile('Contrarreloj', dash(r.contrarreloj), 'puntos', modeIc('contrarreloj'), true) + '</div>'
+    out += sectionImg('ui/copa', 'Récords personales', r
+      ? '<div class="stats-extra-grid" id="extra-stats">' + extra('Cálculo Turbo', dash(r.calculo_turbo), modeImg('calculo-turbo'), 'puntos') + extra('Cálculo de Fondo', dash(r.calculo_fondo), modeImg('calculo-clasico'), 'aciertos') + extra('Contrarreloj', dash(r.contrarreloj), modeImg('contrarreloj'), 'puntos') + (lucOk && r.lucidez ? extra('Lucidez Mental', dash(r.lucidez, '/30'), modeImg('secreto'), 'mejor partida') : '') + '</div>'
       : empty('Aún sin récords que presumir.'));
 
-    out += section('Duelo online', v
-      ? '<div class="seq-pf-grid">' + tile('ELO', dash(v.elo), 'récord ' + dash(v.pico), vv && vv.rankIcon ? vv.rankIcon(v.rango, 'seq-pf-ico') : '') + tile('% de victorias', pct(v.porcentaje_victorias), num(v.partidas) + (num(v.partidas) === 1 ? ' duelo' : ' duelos')) +
-          '<div class="seq-pf-record"><span class="seq-pf-w"><b>' + num(v.victorias) + '</b>victorias</span><span class="seq-pf-l"><b>' + num(v.derrotas) + '</b>derrotas</span><span class="seq-pf-d"><b>' + num(v.empates) + '</b>empates</span></div></div>'
+    out += sectionImg('modes/suelto/duelo', 'Historial de duelos', v
+      ? '<div class="stats-mini-grid">' + mini(dash(v.elo), 'ELO') + mini(dash(v.pico), 'Récord ELO') + mini(pct(v.porcentaje_victorias), '% Victorias') +
+        mini(num(v.victorias), 'Victorias') + mini(num(v.derrotas), 'Derrotas') + mini(num(v.empates), 'Empates') + '</div>'
       : empty('Ningún duelo puntuado todavía.'));
     return out + '</div>';
   }

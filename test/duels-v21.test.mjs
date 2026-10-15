@@ -160,7 +160,7 @@ test('Rankings: dos ámbitos, cuatro tableros exactos, sin ranking universal ni 
   const calc = M.renderRankings().replace(/<[^>]*>/g, '');
   assert.match(calc, /Cálculo Turbo/); assert.match(calc, /Cálculo de Fondo/);
   assert.equal(/\p{Extended_Pictographic}/u.test(sinAtributos), false, 'ningún emoji como iconografía visible');
-  for (const id of ['pvp', 'mental', 'timetrial']) assert.match(html, new RegExp('assets/duelos/rankings/' + id + '\\.webp'));
+  for (const id of ['pvp', 'fondo', 'timetrial']) assert.match(html, new RegExp('assets/duelos/rankings/' + id + '\\.webp'));
   assert.equal(/rankings\/(friends|global)\.webp/.test(html), false, 'el ámbito es un selector de texto, sin iconos');
 });
 
@@ -194,7 +194,7 @@ test('Rankings PvP: «Tu posición», podio con medallas, insignia de rango y co
   assert.match(h, /seq-v21-me-pos[^>]*><small>#<\/small>2/, '«Tu posición»: puesto 2');
   assert.match(h, /1\.265 ELO/); assert.match(h, /lord_sabelotodo\.webp/, 'insignia de rango');
   assert.equal((h.match(/seq-v21-rk-badge/g) || []).length, 1, 'solo Dani (clasificado) lleva insignia en la lista; Rita está en colocación');
-  assert.match(h, /En colocación/); assert.match(h, /seq-v21-pos">4</); assert.match(h, /seq-v21-pos none">—</);
+  assert.match(h, /En colocación/); assert.match(h, /seq-v21-pos">4</); assert.equal(/seq-v21-pos none/.test(h), false, 'sin puesto no se pinta un guion');
   assert.equal(/sin verificar/i.test(h), false);
   assert.match(SRC, /El Salón de la Fama/);
 });
@@ -212,7 +212,7 @@ test('Rankings Cálculo Turbo y Contrarreloj: misma estructura, sin inventar ran
     assert.equal(/seq-v21-rk-badge|rangos\//.test(h), false, board + ': no hay rangos que mostrar ni se inventan');
     assert.equal((h.match(/seq-avatar seq-v21-rk-av/g) || []).length, 2, 'puestos 4 y 5 en la lista, con avatar en el contenedor estándar');
     assert.equal((h.match(/seq-avatar seq-v21-pod-ring/g) || []).length, 3, 'tres avatares en el podio');
-    assert.match(h, new RegExp('assets/duelos/rankings/' + board + '\.webp'));
+    assert.match(h, new RegExp('assets/duelos/rankings/' + (board === 'mental' ? 'fondo' : board) + '\.webp'));
   }
 });
 
@@ -273,7 +273,7 @@ test('Estadísticas: solo un botón «Ver estadísticas de duelos»; al pulsarlo
 test('Estadísticas completas: ELO y rango, pico, posición, últimos duelos de ambos modos y cara a cara (sin duplicar el Historial)', () => {
   const { M } = load();
   const html = M._pure.fullStatsHtml(STATS);
-  for (const t of ['Pico de ELO', 'Posición global', 'Duelos con ELO', 'Últimos duelos con ELO', 'Cara a cara', 'Lord Sabelotodo', 'Clasificado']) assert.match(html, new RegExp(t));
+  for (const t of ['Pico de ELO', 'Posición global', 'Duelos con ELO', 'Últimos duelos', 'Cara a cara', 'Lord Sabelotodo', 'Clasificado']) assert.match(html, new RegExp(t));
   assert.match(html, /1\.284/); assert.match(html, /lord_sabelotodo\.webp/);
   assert.equal(/Historial competitivo|% victorias|>Derrotas<|>Empates<|>Victorias<|Mejor racha|Racha actual|ELO actual/.test(html), false,
     'partidas, victorias, derrotas, empates y rachas ya están en «Historial de duelos»: no se repiten');

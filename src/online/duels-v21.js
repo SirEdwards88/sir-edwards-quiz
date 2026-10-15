@@ -286,7 +286,7 @@
   var CALC_BOARDS = ['mental', 'fondo'];
   function isCalc(b) { return CALC_BOARDS.indexOf(b) >= 0; }
   function boardTabs() {
-    var tabs = [['pvp', 'PvP', 'pvp'], ['timetrial', 'Contrarreloj', 'timetrial'], ['calc', 'Cálculo', 'mental']];
+    var tabs = [['pvp', 'PvP', 'pvp'], ['timetrial', 'Contrarreloj', 'timetrial'], ['calc', 'Cálculo', 'fondo']];
     return '<div class="seq-v21-boards" role="tablist" aria-label="Ranking">' + tabs.map(function (t) {
       var sel = t[0] === 'calc' ? isCalc(S21.board) : S21.board === t[0];
       var target = t[0] === 'calc' ? (S21.calcSub || 'mental') : t[0];
@@ -326,7 +326,7 @@
   }
   // Posición en la lista: los tres primeros llevan su medalla (cuando no hay podio); el resto, el número.
   function posBadge(place) {
-    if (place == null) return '<span class="seq-v21-pos none">—</span>';
+    if (place == null) return '';   // sin puesto (en colocación): no se pinta un guion; la fila ya dice «En colocación»
     if (PODIUM_MEDAL[place]) return '<span class="seq-v21-pos medal">' + medalImg(place, 'seq-v21-pos-medal') + '<i class="seq-v21-pos-n">' + place + '</i></span>';
     return '<span class="seq-v21-pos">' + place + '</span>';
   }
@@ -361,8 +361,10 @@
     if (S21.rankErr) return out + rkNote(S21.rankErr) + '</div>';
     if (!d) return out + '<p class="seq-v21-rk-loading">Cargando…</p></div>';
     out += '<p class="seq-v21-rk-sub"><span>' + esc(BOARDS[b].sub) + '</span></p>';
-    out += meCard(d, b);
     var rows = d.ranking || [];
+    // En colocación no hay puesto que mostrar y la lista ya te marca: «Tu posición» solo repetiría el mismo dato.
+    var meListed = isPvp(b) && d.me && d.me.en_colocacion && rows.some(function (r) { return r && r.is_me; });
+    if (!meListed) out += meCard(d, b);
     if (!rows.length) return out + rkNote(isPvp(b) ? 'Aún no hay duelos puntuados. Juega uno y aparecerás aquí.' : 'Todavía nadie tiene puntuación en este ranking.') + '</div>';
     // Podio: puestos 1, 2 y 3 tal como los da el servidor; el resto (y quien está en colocación) va en la lista.
     var top = {}, rest = [];
@@ -398,7 +400,7 @@
     out += '<div class="seq-v21-grid">' + statCell('Pico de ELO', fmt(e.peak)) + statCell('Posición global', e.posicion_global ? '#' + num(e.posicion_global) : '—') +
       statCell('Duelos con ELO', num(c.partidas)) + '</div>';
     var hist = s.historial || [];
-    out += '<h4 class="seq-v21-h">Últimos duelos con ELO</h4>' + (hist.length ? '<div class="history-list">' + hist.map(function (x) {
+    out += '<h4 class="seq-v21-h">Últimos duelos</h4>' + (hist.length ? '<div class="history-list">' + hist.map(function (x) {
       var res = x.resultado === 'win' ? 'Victoria' : x.resultado === 'loss' ? 'Derrota' : 'Empate';
       var date = ''; try { date = new Date(num(x.fecha)).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }); } catch (er) {}
       var rv = x.rival || {};

@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 307;
+const CACHE_VERSION = 308;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -82,7 +82,9 @@ const APP_SHELL = [
   './src/ui/name-prompt.js',
   './src/ui/intro.js',
   './assets/modes/estandar.webp',
+  './assets/modes/home-jugar.webp',
   './assets/modes/duelo.webp',
+  './assets/modes/duelo-online.webp',
   './assets/modes/repaso.webp',
   './assets/modes/supervivencia.webp',
   './assets/modes/muerte-subita.webp',
@@ -535,12 +537,12 @@ const ASSET_REVS = {
   './assets/duelos/rangos/lord_sabelotodo.webp': '9d4e0dea',
   './assets/duelos/rangos/plebeyo_ilustrado.webp': '9c9aadc0',
   './assets/duelos/rangos/sir_edwards.webp': '05fa85f5',
-  './assets/duelos/rankings/fondo.webp': '2bec7013',
+  './assets/duelos/rankings/fondo.webp': '1a39e8f5',
   './assets/duelos/rankings/friends.webp': 'd908f9d6',
   './assets/duelos/rankings/global.webp': 'dcfdf98c',
-  './assets/duelos/rankings/mental.webp': 'f823292b',
-  './assets/duelos/rankings/pvp.webp': '9d9a136b',
-  './assets/duelos/rankings/timetrial.webp': '38e11a75',
+  './assets/duelos/rankings/mental.webp': '64643357',
+  './assets/duelos/rankings/pvp.webp': '1d932d90',
+  './assets/duelos/rankings/timetrial.webp': 'e2753514',
   './assets/familias/aciertos.webp': '097c4a53',
   './assets/familias/dominio.webp': '06c0ebe9',
   './assets/familias/duelo.webp': '08a7a9bc',
@@ -621,6 +623,7 @@ const ASSET_REVS = {
   './assets/modes/calculo.webp': 'c0a2c952',
   './assets/modes/contrarreloj.webp': '77bff741',
   './assets/modes/derrame.webp': '04ceb604',
+  './assets/modes/duelo-online.webp': 'dde605d4',
   './assets/modes/duelo.webp': 'a4a67f60',
   './assets/modes/emblema/ameba.webp': 'f63f2828',
   './assets/modes/emblema/calculo-clasico.webp': '5c93e490',
@@ -637,6 +640,7 @@ const ASSET_REVS = {
   './assets/modes/emblema/supervivencia.webp': 'c783fd6b',
   './assets/modes/estadisticas.webp': '11e2a663',
   './assets/modes/estandar.webp': '6a6a14f7',
+  './assets/modes/home-jugar.webp': '36ce73eb',
   './assets/modes/humano.webp': '782482e6',
   './assets/modes/logros.webp': 'bb4f08de',
   './assets/modes/mini/ameba.webp': 'ec7aca36',
