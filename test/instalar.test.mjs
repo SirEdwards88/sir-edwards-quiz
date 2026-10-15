@@ -18,10 +18,8 @@ test('instalar.html enlaza manifest, estilos, script e imágenes que existen', (
   assert.match(html, /Añadir a pantalla de inicio/);
 });
 
-test('el QR enlaza con la propia página de instalación y existe', () => {
-  assert.ok(fs.statSync(R('assets/share/qr-instalar.png')).size > 1000);
-  assert.match(html, /qr-instalar\.png/);
-  assert.match(html, /instalar\.html/);
+test('la página de instalación no lleva QR', () => {
+  assert.doesNotMatch(html, /qr-instalar|ins-qr/);
 });
 
 test('plataforma: iPhone/iPad (también Chrome en iOS y iPad que se hace pasar por Mac) y Safari', () => {

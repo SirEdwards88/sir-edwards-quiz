@@ -44,7 +44,6 @@
     btn.hidden = state !== 'ready';
     if (open) open.hidden = state !== 'installed';
     if (ios) { ios.classList.toggle('is-hint', state === 'ios'); ios.hidden = state === 'installed'; }
-    var qr = doc.querySelector('.ins-qr'); if (qr) qr.hidden = state === 'installed';
   }
 
   root.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferred = e; render(); });
