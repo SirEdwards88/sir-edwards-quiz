@@ -19,7 +19,7 @@ test('son 100, con IDs 504-603 seguidos, y no se toca ninguna anterior', () => {
   assert.equal(OLD.length, 500);
 });
 
-test('Lucidez: las 75 medias y difíciles se reflejan (mismo texto y respuesta, sin opciones); solo 7 de respuesta corta son jugables', () => {
+test('Lucidez: las 74 medias y difíciles se reflejan (mismo texto y respuesta, sin opciones); solo 7 de respuesta corta son jugables', () => {
   const NQ = Q.filter((q) => q.n >= 504);
   assert.deepEqual(Array.from(NQ, (q) => q.n), Array.from(NEW.filter((q) => q.dif !== 'facil'), (q) => q.n));
   for (const q of NQ) {
@@ -52,9 +52,9 @@ test('formato: 4 opciones distintas con la respuesta entre ellas, categoría y d
   }
 });
 
-test('reparto: 25 fáciles, 55 medias y 20 difíciles; la respuesta cae en las cuatro posiciones por igual', () => {
+test('reparto: 26 fáciles, 56 medias y 18 difíciles; la respuesta cae en las cuatro posiciones por igual', () => {
   const c = (f) => NEW.filter(f).length;
-  assert.deepEqual([c((q) => q.dif === 'facil'), c((q) => q.dif === 'medio'), c((q) => q.dif === 'dificil')], [25, 55, 20]);
+  assert.deepEqual([c((q) => q.dif === 'facil'), c((q) => q.dif === 'medio'), c((q) => q.dif === 'dificil')], [26, 56, 18]);
   for (let p = 0; p < 4; p++) assert.equal(c((q) => q.options.indexOf(q.a) === p), 25);
 });
 
