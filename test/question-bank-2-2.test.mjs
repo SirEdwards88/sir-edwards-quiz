@@ -55,14 +55,15 @@ test('las retiradas siguen resolviéndose por ID (duelos y retos creados antes d
   assert.ok(!RT.some((q) => T.some((t) => t.n === q.n)));
 });
 
-test('el banco de Lucidez es el de test (medio y difícil) más las fáciles de la criba (23 y las 7 del lote 424-453), y comparte texto y respuesta', () => {
-  assert.equal(Q.length, 419);
+test('el banco de Lucidez: medias/difíciles hasta la 503, las fáciles de la criba (23 y 7) y solo las nuevas de la 504 en adelante que se pueden jugar (con lz); comparte texto y respuesta', () => {
+  assert.equal(Q.length, 352);
   const faciles = Q.filter((q) => q.dif === 'facil');
   assert.equal(faciles.length, 30);
   assert.equal(faciles.filter((q) => q.n < 424).length, 23);
   assert.equal(faciles.filter((q) => q.n >= 424).length, 7);
   assert.ok(faciles.every((q) => q.lz === 'B'));
-  const expected = T.filter((q) => q.dif !== 'facil').map((q) => q.n).concat(faciles.map((q) => q.n)).sort((a, b) => a - b);
+  const expected = T.filter((q) => q.dif !== 'facil' && (q.n < 504 || Q.some((x) => x.n === q.n && x.lz))).map((q) => q.n).concat(faciles.map((q) => q.n)).sort((a, b) => a - b);
+  assert.ok(Q.filter((q) => q.n >= 504).every((q) => q.lz), 'las nuevas sin lz no se copian a Lucidez');
   assert.deepEqual(Q.map((q) => q.n).sort((a, b) => a - b), expected);
   for (const q of Q) {
     const t = T.find((x) => x.n === q.n);

@@ -19,9 +19,9 @@ test('son 100, con IDs 504-603 seguidos, y no se toca ninguna anterior', () => {
   assert.equal(OLD.length, 500);
 });
 
-test('Lucidez: las 74 medias y difíciles se reflejan (mismo texto y respuesta, sin opciones); solo 7 de respuesta corta son jugables', () => {
+test('Lucidez: solo las 7 de respuesta corta jugables están en Lucidez (mismo texto y respuesta, sin opciones)', () => {
   const NQ = Q.filter((q) => q.n >= 504);
-  assert.deepEqual(Array.from(NQ, (q) => q.n), Array.from(NEW.filter((q) => q.dif !== 'facil'), (q) => q.n));
+  assert.deepEqual(Array.from(NQ, (q) => q.n), [545, 558, 560, 566, 571, 585, 590]);
   for (const q of NQ) {
     const t = T.find((x) => x.n === q.n);
     assert.equal(q.q, t.q); assert.equal(q.a, t.a); assert.equal(q.sabias, t.sabias); assert.ok(!q.options);
