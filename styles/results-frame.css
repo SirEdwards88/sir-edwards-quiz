@@ -45,7 +45,7 @@
 .lvlup-block .lu-badge { position: absolute; left: 50%; top: 10px; width: 104px; margin-left: -52px; filter: drop-shadow(0 6px 10px rgba(0,0,0,.5)); }
 .lvlup-block .lu-ribbon { position: absolute; left: 50%; top: 98px; width: 220px; margin-left: -110px; }
 .lvlup-block .lu-ribbon img { width: 100%; display: block; }
-.lvlup-block .lu-ribbon span { position: absolute; left: 0; right: 0; top: 52%; transform: translateY(-50%); padding-left: 2px; white-space: nowrap; -webkit-text-size-adjust: none; text-size-adjust: none; font-family: inherit; font-weight: 800; font-size: 13px; line-height: 1; letter-spacing: 2px; color: #f6e6b8; text-align: center; text-shadow: 0 1px 2px #000; } /* centrado por su punto medio (no por su borde superior): con un tamaño de fuente mayor en el móvil sigue sobre la cinta */
+.lvlup-block .lu-ribbon span { position: absolute; left: 0; right: 0; top: 27%; transform: translateY(-50%); padding-left: 2px; white-space: nowrap; -webkit-text-size-adjust: none; text-size-adjust: none; font-family: inherit; font-weight: 800; font-size: 13px; line-height: 1; letter-spacing: 2px; color: #f6e6b8; text-align: center; text-shadow: 0 1px 2px #000; } /* centrado por su punto medio (no por su borde superior): con un tamaño de fuente mayor en el móvil sigue sobre la cinta */
 @keyframes luRot { to { transform: rotate(360deg); } }
 @keyframes luIn { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) { .lvlup-block, .lvlup-block .lu-rays { animation: none; } }
