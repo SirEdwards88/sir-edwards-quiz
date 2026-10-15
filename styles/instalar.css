@@ -24,3 +24,45 @@ body { margin: 0; background: radial-gradient(120% 70% at 50% 0%, #1b2342 0%, va
 @media (prefers-reduced-motion: no-preference) { .ins-btn { transition: filter .15s; } .ins-btn:hover { filter: brightness(1.08); } }
 @media (forced-colors: active) { .ins-btn, .ins-card { border: 1px solid CanvasText; } }
 [hidden] { display: none !important; }
+
+/* Animación de los tres pasos de iPhone (decorativa; los pasos escritos siguen debajo). Ciclo de 10 s: 4 escenas de 2,5 s. */
+.ins-demo { display: flex; justify-content: center; margin: 6px 0 8px; width: 100%; }
+.ins-phone { position: relative; width: 190px; height: 330px; border-radius: 30px; border: 6px solid #2a3354; background: #0c1020; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,.45); }
+.ins-sc { position: absolute; inset: 0; opacity: 0; animation: ins-sc 10s infinite; }
+.ins-sc1 { opacity: 1; } .ins-sc2 { animation-delay: 2.5s; } .ins-sc3 { animation-delay: 5s; } .ins-sc4 { animation-delay: 7.5s; }
+.ins-sc1 { animation-name: ins-sc1; }
+@keyframes ins-sc  { 0% { opacity: 0; } 3% { opacity: 1; } 24% { opacity: 1; } 27% { opacity: 0; } 100% { opacity: 0; } }
+@keyframes ins-sc1 { 0% { opacity: 1; } 24% { opacity: 1; } 27% { opacity: 0; } 97% { opacity: 0; } 100% { opacity: 1; } }
+.ins-page { position: absolute; inset: 0 0 46px; padding: 38px 18px 0; display: flex; flex-direction: column; gap: 10px; align-items: center; background: linear-gradient(#1b2342, #0f1424); }
+.ins-page i { width: 54px; height: 54px; border-radius: 14px; background: linear-gradient(180deg, var(--gold-2), var(--gold)); }
+.ins-page b { width: 120px; height: 9px; border-radius: 6px; background: #2a3354; } .ins-page b.s { width: 80px; }
+.ins-page.dim { filter: brightness(.45); inset: 0; }
+.ins-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 66px; padding: 6px 8px 0; background: #1a2036; display: flex; flex-direction: column; gap: 6px; align-items: center; }
+.ins-url { font-size: 9.5px; color: var(--sub); background: #0f1424; border-radius: 8px; padding: 3px 14px; }
+.ins-tools { display: flex; justify-content: space-between; width: 100%; color: #8fb4ff; }
+.ins-tools u { position: relative; width: 22px; height: 22px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+.ins-tools u:not(.ins-share)::before { content: ""; width: 14px; height: 14px; border-radius: 4px; border: 2px solid #4a5578; }
+.ins-sheet { position: absolute; left: 6px; right: 6px; bottom: 0; background: #232a45; border-radius: 16px 16px 0 0; padding: 8px 8px 14px; display: flex; flex-direction: column; gap: 4px; animation: ins-up 10s infinite 2.5s; }
+.ins-sheet em { width: 34px; height: 4px; border-radius: 3px; background: #4a5578; align-self: center; margin-bottom: 4px; }
+.ins-sheet p { position: relative; margin: 0; padding: 8px 10px; font-size: 10.5px; text-align: left; border-radius: 9px; background: #2c3555; color: var(--ink); }
+.ins-sheet p.hot { background: #3a3320; outline: 1.5px solid var(--gold); color: var(--gold-2); font-weight: 700; }
+@keyframes ins-up { 0% { transform: translateY(100%); } 4% { transform: translateY(0); } 100% { transform: translateY(0); } }
+.ins-dialog { position: absolute; left: 10px; right: 10px; top: 70px; background: #232a45; border-radius: 16px; overflow: hidden; }
+.ins-dh { position: relative; display: flex; justify-content: space-between; align-items: center; padding: 10px 12px; font-size: 10.5px; border-bottom: 1px solid #343d62; }
+.ins-dh span { color: var(--sub); } .ins-dh strong { color: var(--gold-2); position: relative; }
+.ins-dbody { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 22px 12px; font-size: 11px; color: var(--ink); }
+.ins-dbody img { border-radius: 10px; }
+.ins-home { position: absolute; inset: 0; padding: 40px 14px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px 6px; align-content: start; justify-items: center; background: linear-gradient(160deg, #26305a, #0f1424); }
+.ins-home u { width: 40px; height: 40px; border-radius: 10px; background: rgba(255,255,255,.14); }
+.ins-app { display: flex; flex-direction: column; align-items: center; gap: 3px; animation: ins-pop 10s infinite 7.5s; }
+.ins-app img { border-radius: 10px; box-shadow: 0 0 0 2px var(--gold-2), 0 0 16px rgba(240,195,90,.6); }
+.ins-app small { font-size: 8px; color: var(--ink); }
+@keyframes ins-pop { 0% { transform: scale(0); } 5% { transform: scale(1.25); } 9% { transform: scale(1); } 100% { transform: scale(1); } }
+.ins-ring { position: absolute; left: 50%; top: 50%; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%; border: 2.5px solid var(--gold-2); background: rgba(240,195,90,.25); opacity: 0; pointer-events: none; animation: ins-tap 10s infinite; }
+.ins-sc2 .ins-ring { left: auto; right: 14px; margin-left: 0; animation-delay: 3.7s; } .ins-sc1 .ins-ring { animation-delay: 1.2s; } .ins-sc3 .ins-ring { animation-delay: 6.2s; width: 48px; height: 36px; margin: -18px 0 0 -24px; border-radius: 18px; }
+@keyframes ins-tap { 0% { opacity: 0; transform: scale(.4); } 6% { opacity: .95; transform: scale(1); } 12% { opacity: 0; transform: scale(1.5); } 100% { opacity: 0; } }
+/* Cada paso de la lista se ilumina cuando le toca en la animación. */
+.ins-steps li .ins-n { animation: ins-n 10s infinite; }
+.ins-steps li:nth-child(2) .ins-n { animation-delay: 2.5s; } .ins-steps li:nth-child(3) .ins-n { animation-delay: 5s; }
+@keyframes ins-n { 0% { box-shadow: 0 0 0 0 rgba(240,195,90,.9); } 10% { box-shadow: 0 0 0 7px rgba(240,195,90,0); } 100% { box-shadow: 0 0 0 0 rgba(240,195,90,0); } }
+@media (prefers-reduced-motion: reduce) { .ins-demo { display: none; } .ins-steps li .ins-n { animation: none; } }
