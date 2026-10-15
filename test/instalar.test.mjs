@@ -42,6 +42,6 @@ test('textos de estado: uno por situación, en el tono de Sir Edwards y sin emoj
 });
 
 test('la vista previa al compartir usa una imagen propia (sombrero centrado) de 1200x630 que existe', () => {
-  assert.match(html, /og:image" content="https:\/\/siredwards88\.github\.io\/sir-edwards-quiz\/assets\/share\/og-instalar\.jpg"/);
-  assert.ok(fs.statSync(R('assets/share/og-instalar.jpg')).size > 20000);
+  assert.match(html, /og:image" content="https:\/\/siredwards88\.github\.io\/sir-edwards-quiz\/assets\/share\/og-instalar-2\.jpg"/);
+  assert.ok(fs.statSync(R('assets/share/og-instalar-2.jpg')).size > 20000);
 });
