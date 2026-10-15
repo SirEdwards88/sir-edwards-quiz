@@ -13,17 +13,17 @@ const { T, Q, RT, RQ } = ctx;
 const CATS = ['historia', 'geografia', 'ciencia', 'arte_literatura', 'deporte', 'cultura_general'];
 const by = (a, k) => a.reduce((m, x) => ((m[x[k]] = (m[x[k]] || 0) + 1), m), {});
 
-test('el banco de test tiene 500 preguntas, sin IDs repetidos, de 1 a 503 con solo 3 huecos', () => {
-  assert.equal(T.length, 500);
+test('el banco de test tiene 600 preguntas, sin IDs repetidos, de 1 a 603 con solo 3 huecos', () => {
+  assert.equal(T.length, 600);
   const ids = T.map((q) => q.n);
-  assert.equal(new Set(ids).size, 500);
-  const missing = Array.from({ length: 503 }, (_, i) => i + 1).filter((n) => !ids.includes(n));
+  assert.equal(new Set(ids).size, 600);
+  const missing = Array.from({ length: 603 }, (_, i) => i + 1).filter((n) => !ids.includes(n));
   assert.deepEqual(missing, [90, 91, 197]);
-  assert.equal(Math.max(...ids), 503);
+  assert.equal(Math.max(...ids), 603);
 });
 
 test('reparto por dificultad y categorías: solo las seis oficiales', () => {
-  assert.deepEqual({ ...by(T, 'dif') }, { facil: 185, medio: 208, dificil: 107 });
+  assert.deepEqual({ ...by(T, 'dif') }, { facil: 210, medio: 263, dificil: 127 });
   assert.ok(T.every((q) => CATS.includes(q.cat)), 'categoría fuera de las seis');
   assert.ok(Q.every((q) => CATS.includes(q.cat)));
 });
@@ -56,7 +56,7 @@ test('las retiradas siguen resolviéndose por ID (duelos y retos creados antes d
 });
 
 test('el banco de Lucidez es el de test (medio y difícil) más las fáciles de la criba (23 y las 7 del lote 424-453), y comparte texto y respuesta', () => {
-  assert.equal(Q.length, 345);
+  assert.equal(Q.length, 420);
   const faciles = Q.filter((q) => q.dif === 'facil');
   assert.equal(faciles.length, 30);
   assert.equal(faciles.filter((q) => q.n < 424).length, 23);
