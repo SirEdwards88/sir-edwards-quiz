@@ -42,8 +42,19 @@
     scope: 'friends', board: 'pvp', rankings: {}, rankErr: '',
     stats: null, statsErr: '', statsAt: 0, statsOpen: false, statsLoading: false,
     sent: {},        // «<duelo>:<ronda>» → respuesta enviada (solo para marcarla en pantalla; no es un resultado)
-    fetchedKey: ''   // evita pedir dos veces la misma frontera de tiempo
+    fetchedKey: '',  // evita pedir dos veces la misma frontera de tiempo
+    soundKey: '', streak: 0  // sonido del veredicto: una sola vez por ronda; racha de aciertos para el motivo musical
   };
+  // Sonidos de la partida por apuestas (los mismos que el clásico; respetan el ajuste de sonido). Solo desde el reloj o un evento.
+  function sfxVerdict(ok) {
+    try {
+      S21.streak = ok ? S21.streak + 1 : 0;
+      if (ok && typeof playCorrectSound === 'function') playCorrectSound(S21.streak);
+      else if (!ok && typeof playSound === 'function') playSound('bad');
+    } catch (e) {}
+  }
+  function urgencySfx(ms) { try { if (typeof updateUrgencySound === 'function') updateUrgencySound(ms / 1000); } catch (e) {} }
+  function urgencyOff() { try { if (typeof stopUrgencySound === 'function') stopUrgencySound(); } catch (e) {} }
 
   // ---- Utilidades -------------------------------------------------------------------------------
   function H() { return (window.SEQDuels && window.SEQDuels._h) || null; }
@@ -204,8 +215,14 @@
       setText('seq-v21-time', String(secs(left))); setBar('seq-v21-bar', left / total);
     }
     else if (r.fase === 'revelando') { boundary = num(r.pregunta_abre_at); setText('seq-v21-count', String(secs(boundary - now))); setBar('seq-v21-bar', 1); }
-    else if (r.fase === 'pregunta') { boundary = num(r.pregunta_cierra_at) + 1100; total = Math.max(1, num(r.pregunta_cierra_at) - num(r.pregunta_abre_at)) || 20000; left = num(r.pregunta_cierra_at) - now; setText('seq-v21-time', String(secs(left))); setBar('seq-v21-bar', left / total); }
-    else { boundary = num(r.apuesta_abre_at); setBar('seq-v21-bar', 0); }
+    else if (r.fase === 'pregunta') { var mineSent = !!(r.yo_respondi || S21.sent[d.id + ':' + r.indice] != null); if (mineSent) urgencyOff(); else urgencySfx(num(r.pregunta_cierra_at) - now); boundary = num(r.pregunta_cierra_at) + 1100; total = Math.max(1, num(r.pregunta_cierra_at) - num(r.pregunta_abre_at)) || 20000; left = num(r.pregunta_cierra_at) - now; setText('seq-v21-time', String(secs(left))); setBar('seq-v21-bar', left / total); }
+    else {
+      boundary = num(r.apuesta_abre_at); setBar('seq-v21-bar', 0);
+      // Resolución de la ronda: suena el veredicto (acierto o fallo) una sola vez por ronda.
+      var last = (d.rondas_resueltas || [])[(d.rondas_resueltas || []).length - 1], sk = d.id + ':' + (last ? last.indice : '-');
+      if (last && S21.soundKey !== sk) { S21.soundKey = sk; sfxVerdict(!!last.mi_correcta); }
+    }
+    if (r.fase !== 'pregunta') urgencyOff();
     if (boundary && now >= boundary) {
       var key = d.id + ':' + r.indice + ':' + r.fase;
       if (S21.fetchedKey !== key) { S21.fetchedKey = key; if (window.SEQDuels) window.SEQDuels.reload(); }

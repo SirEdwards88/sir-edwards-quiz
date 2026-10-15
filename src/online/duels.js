@@ -393,7 +393,7 @@
       if (S.shown && S.shown.idx === k && !S.shownAnswered) urgency(rem);
     } else if (S.screen === 'duel' && (d.estado === 'aceptado' || d.estado === 'pendiente')) {
       var lim = d.estado === 'aceptado' ? num(d.listos_expira_at) : num(d.invitacion_expira_at);
-      setText('seq-d-count', String(secs(lim - now)));
+      setText('seq-d-count', d.estado === 'aceptado' ? String(secs(lim - now)) : clock(secs(lim - now)));
     } else if (S.screen === 'reto' && d.estado === 'aceptado' && d.yo.actual) {
       var limit = num(d.yo.actual.limite_at), dd = num(d.yo.actual.total_ms) || num(d.duracion_pregunta_ms) || 10000;
       setBar('seq-d-bar', (limit - now) / dd); setText('seq-d-time', String(secs(limit - now)));
@@ -402,6 +402,8 @@
       if (now > limit + 2500 && !S.sending && S.shown && S.shown.idx === d.yo.actual.indice) { S.shown = null; load(); } // venció: el servidor ya abrió la siguiente
     }
   }
+  // 3:00, 2:59… (la invitación dura minutos; la sala de espera, segundos)
+  function clock(s) { s = Math.max(0, Math.floor(s)); return Math.floor(s / 60) + ':' + (s % 60 < 10 ? '0' : '') + (s % 60); }
   function setText(id, t) { var el = $(id); if (el) el.textContent = t; }
   // Cuenta atrás de salida («Empieza en 3, 2, 1…»): cada número nuevo entra con un pequeño golpe visual.
   // Solo presentación: el número es el mismo que ya se pintaba.
@@ -945,11 +947,11 @@
     var p = player(d.rival), now = serverNow();
     h += '<p class="stats-section-sub seq-d-vs">Tú contra ' + p.avatar + ' ' + p.name + '</p>';
     if (d.estado === 'pendiente') {
-      if (d.soy === 'rival') return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">' + p.name + ' te reta a un duelo</div><p class="duel-result-hint">Caduca en <span id="seq-d-count"></span> s</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.duelAction(\'accept\')">Aceptar</button> <button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.duelAction(\'reject\')">Rechazar</button></div>';
-      return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Esperando a que ' + p.name + ' acepte…</div><p class="duel-result-hint">Le quedan <span id="seq-d-count"></span> s. Lo verá al abrir el juego.</p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.duelAction(\'cancel\')">Cancelar</button></div>';
+      if (d.soy === 'rival') return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">' + p.name + ' te reta a un duelo</div><p class="duel-result-hint">Caduca en <span id="seq-d-count"></span></p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.duelAction(\'accept\')">Aceptar</button> <button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.duelAction(\'reject\')">Rechazar</button></div>';
+      return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Esperando a que ' + p.name + ' acepte…</div><p class="duel-result-hint">Caduca en <span id="seq-d-count"></span></p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.duelAction(\'cancel\')">Cancelar</button></div>';
     }
     if (d.estado === 'aceptado') {
-      return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Sala de espera</div><p class="duel-result-hint">Tú: ' + (d.yo.listo ? ico('correcto') + 'listo' : ico('mediocre')) + ' · ' + p.name + ': ' + (d.rival_estado.listo ? ico('correcto') + 'listo' : ico('mediocre')) + '</p><p class="duel-result-hint">Quedan <span id="seq-d-count"></span> s para que los dos estéis listos.</p><p class="duel-result-hint seq-d-stay">Durante la partida no salgas de la app ni bloquees el móvil: a los 60 s sin conexión se pierde por abandono.</p>' + (d.yo.listo ? '' : '<button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.duelAction(\'ready\')">¡Listo!</button>') + '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.duelAction(\'cancel\')">Salir</button></div>';
+      return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Sala de espera</div><p class="duel-result-hint">Tú: ' + (d.yo.listo ? ico('correcto') + 'listo' : ico('mediocre')) + ' · ' + p.name + ': ' + (d.rival_estado.listo ? ico('correcto') + 'listo' : ico('mediocre')) + '</p><p class="duel-result-hint">Tenéis <span id="seq-d-count"></span> s para estar listos.</p><p class="duel-result-hint seq-d-stay">No salgas de la app durante la partida.</p>' + (d.yo.listo ? '' : '<button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.duelAction(\'ready\')">¡Listo!</button>') + '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.duelAction(\'cancel\')">Salir</button></div>';
     }
     if (d.estado === 'en_curso') {
       var t0 = num(d.t0);
@@ -977,13 +979,13 @@
     if (d.estado === 'pendiente') {
       var cad = left(num(d.expira_at) - now);
       if (d.soy === 'rival') return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">' + p.name + ' te ha retado</div><p class="duel-result-hint">Caduca en ' + esc(cad) + '.</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.retoAction(\'accept\')">Aceptar</button> <button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.retoAction(\'reject\')">Rechazar</button></div>';
-      return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Esperando a que ' + p.name + ' acepte</div><p class="duel-result-hint">Lo verá cuando abra el juego. Caduca en ' + esc(cad) + '.</p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.retoAction(\'cancel\')">Cancelar reto</button></div>';
+      return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Esperando a que ' + p.name + ' acepte</div><p class="duel-result-hint">Caduca en ' + esc(cad) + '.</p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.retoAction(\'cancel\')">Cancelar reto</button></div>';
     }
     if (d.estado === 'aceptado') {
       var y = d.yo, rv = d.rival_estado;
       var rs = '<p class="history-item-sub seq-d-rival">' + p.avatar + ' ' + p.name + ': ' + (rv.terminado ? 'ya ha jugado (verás su marca al terminar tú)' : rv.empezado ? 'jugando…' : 'aún no ha jugado') + '</p>';
       if (y.terminado) { syncXpOnce('reto', d, xpFor('reto', d, y.aciertos)); return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Tu parte está hecha: ' + num(y.aciertos) + (d.modo && d.modo !== 'estandar' ? (num(y.aciertos) === 1 ? ' acierto' : ' aciertos') : '/' + num(d.n_preguntas || 20)) + '</div><p class="duel-result-hint">' + (xpFor('reto', d, y.aciertos) ? '+' + xpFor('reto', d, y.aciertos) + ' XP ya en tu cuenta. ' : '') + 'Cuando ' + p.name + ' juegue verás el resultado. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.reload()">Actualizar</button></div>' }
-      if (!y.empezado) return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Cuando quieras. El reloj, no.</div><p class="duel-result-hint">Una vez empieces el reloj no se detiene. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.retoAction(\'start\')">Jugar mi parte</button></div>';
+      if (!y.empezado) return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Cuando quieras. El reloj, no.</div><p class="duel-result-hint">El reloj no se detiene al empezar. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.retoAction(\'start\')">Jugar mi parte</button></div>';
       if (!y.actual) return h + '<p class="stats-section-sub">Cargando…</p>';
       return playScreen('reto', d, y.actual.indice, y.actual.pregunta, null);
     }
