@@ -345,7 +345,12 @@
     if (!d || document.visibilityState === 'hidden') return;
     var wait = null;
     if (S.screen === 'duel') {
-      if (d.estado === 'en_curso' || d.estado === 'aceptado') wait = (d.estado === 'en_curso' && d.modo !== 'stakes' && S.shownAnswered) ? 1000 : POLL_ACTIVE_MS; // ya respondida: se sondea más rápido por si el rival ya contestó y la ronda acaba antes
+      if (d.estado === 'en_curso' || d.estado === 'aceptado') wait = POLL_ACTIVE_MS;
+        // Ya has respondido o bloqueado y esperas al rival: se sondea cada segundo para pasar al instante cuando él también lo haga.
+        if (d.estado === 'en_curso') {
+          var rn = d.ronda, esperando = d.modo === 'stakes' ? !!(rn && ((rn.fase === 'apuesta' && rn.mi_apuesta) || (rn.fase === 'pregunta' && rn.yo_respondi))) : !!S.shownAnswered;
+          if (esperando) wait = 1000;
+        }
       else if (d.estado === 'pendiente') wait = POLL_WAIT_MS;
     } else if (d.estado === 'pendiente' && d.soy === 'creador') wait = POLL_WAIT_MS * 3;
     else if (d.estado === 'aceptado' && d.yo && d.yo.empezado && !d.yo.terminado) wait = POLL_RETO_MS; // red de seguridad
