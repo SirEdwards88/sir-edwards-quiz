@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Instalar Sir Edwards Quiz</title>
+<meta name="description" content="Instala Sir Edwards Quiz en tu móvil u ordenador: se abre como una app, con su icono y sin conexión.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Instala Sir Edwards Quiz">
+<meta property="og:description" content="Se abre como una app, con su icono y sin conexión.">
+<meta property="og:url" content="https://siredwards88.github.io/sir-edwards-quiz/instalar.html">
+<meta property="og:image" content="https://siredwards88.github.io/sir-edwards-quiz/assets/share/og.jpg">
+<meta name="theme-color" content="#0f1424">
+<meta name="apple-mobile-web-app-title" content="Sir Edwards Quiz">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="styles/fonts.css">
+<link rel="stylesheet" href="styles/instalar.css">
+</head>
+<body>
+<main class="ins">
+  <img class="ins-icon" src="icons/icon-192.png" width="112" height="112" alt="" decoding="async">
+  <h1 class="ins-title">Sir Edwards Quiz</h1>
+  <p class="ins-lead">Instálalo y tendrás a Sir Edwards en tu pantalla de inicio, listo para juzgarte cuando quieras. También sin conexión.</p>
+
+  <section class="ins-card" aria-labelledby="ins-h-main">
+    <h2 id="ins-h-main" class="ins-h">Instalar</h2>
+    <button type="button" id="ins-btn" class="ins-btn" hidden>Instalar Sir Edwards Quiz</button>
+    <p id="ins-status" class="ins-status" role="status" aria-live="polite">Preparando la instalación…</p>
+    <a id="ins-open" class="ins-btn ins-btn-ghost" href="./" hidden>Abrir el juego</a>
+  </section>
+
+  <section class="ins-card" id="ins-ios" aria-labelledby="ins-h-ios">
+    <h2 id="ins-h-ios" class="ins-h">En iPhone o iPad</h2>
+    <p class="ins-small">Apple no permite instalarla con un botón. Son tres toques, en Safari:</p>
+    <ol class="ins-steps">
+      <li><span class="ins-n">1</span><span>Toca el botón de <b>compartir</b>, el cuadrado con la flecha hacia arriba.</span></li>
+      <li><span class="ins-n">2</span><span>Desliza el menú y elige <b>Añadir a pantalla de inicio</b>.</span></li>
+      <li><span class="ins-n">3</span><span>Toca <b>Añadir</b>. El icono aparecerá junto a tus otras apps.</span></li>
+    </ol>
+  </section>
+
+  <section class="ins-card ins-qr" aria-labelledby="ins-h-qr">
+    <h2 id="ins-h-qr" class="ins-h">Compártelo</h2>
+    <img src="assets/share/qr-instalar.png" width="220" height="220" alt="Código QR que abre esta página de instalación" decoding="async">
+    <p class="ins-small">Apunta con la cámara y se abre esta misma página.</p>
+  </section>
+
+  <p class="ins-foot"><a href="./">Prefiero jugar sin instalar</a></p>
+</main>
+<script src="src/install/instalar-page.js"></script>
+</body>
+</html>
