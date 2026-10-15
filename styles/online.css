@@ -307,6 +307,8 @@
   --dz-reto: #22d3ee; --dz-reto-dark: #155e75; --dz-reto-soft: rgba(34,211,238,.22); --dz-reto-surface: rgba(34,211,238,.09); --dz-reto-text: #67e8f9;
 }
 #seq-duel-root { padding-left: 12px; padding-right: 12px; --dz: var(--dz-duel); --dz-dark: var(--dz-duel-dark); --dz-soft: var(--dz-duel-soft); --dz-surface: var(--dz-duel-surface); --dz-text: var(--dz-duel-text); }
+/* Dentro de una partida (duelo o reto) el margen es el de los modos de Jugar: sin el extra de las pantallas de menú. */
+#seq-duel-root:has(> .seq-d-toprow, > .submenu-header) { padding-left: 0; padding-right: 0; }
 #seq-duel-root.seq-d-k-reto { --dz: var(--dz-reto); --dz-dark: var(--dz-reto-dark); --dz-soft: var(--dz-reto-soft); --dz-surface: var(--dz-reto-surface); --dz-text: var(--dz-reto-text); }
 /* Partida */
 #seq-duel-root .seq-d-hud { color: var(--dz-text); background: var(--dz-surface); border-color: var(--dz-soft); justify-content: space-between; gap: 8px; }
