@@ -306,7 +306,7 @@
   --dz-duel: #f08aa3; --dz-duel-dark: #6e1630; --dz-duel-soft: rgba(240,138,163,.22); --dz-duel-surface: rgba(240,138,163,.09); --dz-duel-text: #f9b4c5;
   --dz-reto: #22d3ee; --dz-reto-dark: #155e75; --dz-reto-soft: rgba(34,211,238,.22); --dz-reto-surface: rgba(34,211,238,.09); --dz-reto-text: #67e8f9;
 }
-#seq-duel-root { --dz: var(--dz-duel); --dz-dark: var(--dz-duel-dark); --dz-soft: var(--dz-duel-soft); --dz-surface: var(--dz-duel-surface); --dz-text: var(--dz-duel-text); }
+#seq-duel-root { padding-left: 12px; padding-right: 12px; --dz: var(--dz-duel); --dz-dark: var(--dz-duel-dark); --dz-soft: var(--dz-duel-soft); --dz-surface: var(--dz-duel-surface); --dz-text: var(--dz-duel-text); }
 #seq-duel-root.seq-d-k-reto { --dz: var(--dz-reto); --dz-dark: var(--dz-reto-dark); --dz-soft: var(--dz-reto-soft); --dz-surface: var(--dz-reto-surface); --dz-text: var(--dz-reto-text); }
 /* Partida */
 #seq-duel-root .seq-d-hud { color: var(--dz-text); background: var(--dz-surface); border-color: var(--dz-soft); justify-content: space-between; gap: 8px; }
@@ -694,7 +694,7 @@
 .seq-v21-modecard-body h3 { margin: 0 0 6px; }
 /* Rankings — «el Salón de la Fama»: ámbito en texto, tres medallones, «Tu posición», podio y lista */
 .seq-v21-ico-rk { width: 44px; height: 44px; font-size: 32px; }
-.seq-v21-rkscreen { padding: 0 12px 8px; }
+.seq-v21-rkscreen { padding-bottom: 8px; }
 /* Ámbito: selector de dos posiciones, con filete dorado bajo el elegido */
 .seq-v21-scope { display: grid; grid-template-columns: 1fr 1fr; margin: 6px 0 14px; border-bottom: 1.5px solid var(--se-gold-hair, var(--border)); }
 .seq-v21-scope-btn { position: relative; padding: 10px 8px 12px; font: inherit; font-family: var(--font-display, inherit); font-weight: 700; font-size: 18px; letter-spacing: .3px; cursor: pointer; color: var(--sub); background: none; border: 0; }
@@ -844,7 +844,7 @@
 /* ===== 2.3: ficha de jugador (src/online/player-profile.js). Misma estética que los Rankings: tarjeta dorada, iconos de ranking, insignia de rango ===== */
 .seq-pl-tap { display: flex; flex: 1 1 150px; min-width: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .seq-v21-rk[role="button"], .seq-v21-pod[role="button"] { cursor: pointer; }
-.seq-pf-wrap { padding: 0 12px 8px; }
+.seq-pf-wrap { padding-bottom: 8px; }
 .seq-pf-actions { display: flex; flex-direction: column; gap: 8px; margin: 12px 0 2px; }
 .seq-pf-actions .btn { width: 100%; }
 .seq-pf-pair { display: flex; gap: 8px; }
