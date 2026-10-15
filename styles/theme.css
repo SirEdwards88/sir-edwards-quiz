@@ -297,7 +297,7 @@ h3 .ui-btn-ico { width: 34px; height: 34px; vertical-align: middle; margin: -4px
 #game-progress-lbl > .hud-data .seq-ico { width: 13px; height: 13px; }
 .results-character.char-neutral { animation: moodPop .4s cubic-bezier(.34,1.56,.64,1); }
 /* Etiqueta mínima en las pastillas de la tarjeta final (qué es cada número). */
-.result-chip-label { font-size: 11px; font-weight: 700; color: var(--text-muted, #6b7280); margin-left: -2px; white-space: nowrap; }
+.result-chip-label { font-size: 11px; font-weight: 700; color: var(--sub); margin-left: -2px; white-space: nowrap; }
 
 /* ===== Home: botones grandes en azul noche con oro («Noche y oro») y acentos suaves en las tarjetas pequeñas ===== */
 .home-small-card { background: linear-gradient(var(--hc, #c9a227), var(--hc, #c9a227)) top / 100% 3px no-repeat, linear-gradient(180deg, color-mix(in srgb, var(--hc, #c9a227) 9%, #f4ecd8), #e8dcc0); }

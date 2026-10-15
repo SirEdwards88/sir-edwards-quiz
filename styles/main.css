@@ -59,7 +59,7 @@
   --color-surface-muted: #f6efe0;
   --color-text: var(--text);
   --color-text-secondary: var(--sub);
-  --color-text-muted: #9ca3af;
+  --color-text-muted: #5b6472;
   --color-text-inverse: #ffffff;
   --color-border: var(--border);
   --color-border-subtle: #e5e7eb;
@@ -139,7 +139,7 @@
   /* Modo oscuro: sin atmósfera cálida (mantiene su propia identidad). */
   --ambient-gold-glow: none;
   --card-ambient-glow: none;
-  --color-text-muted: #6b7690;
+  --color-text-muted: #8e99b4;
   --color-text-inverse: #0f1420;
   --color-border-subtle: #232c42;
   --color-border-strong: #465272;
@@ -5033,7 +5033,10 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   cursor: pointer;
   min-height: 36px;
   min-width: 28px;
+  position: relative;
 }
+/* Zona táctil ampliada (~48 px) sin mover ni agrandar la cruz. */
+.pwa-install-hint-dismiss::after { content: ''; position: absolute; inset: -8px -10px; }
 [data-theme="dark"] .pwa-install-hint {
   background: var(--color-surface-elevated, var(--card));
   border-color: var(--color-border, var(--border));
