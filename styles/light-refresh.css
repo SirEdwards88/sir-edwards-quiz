@@ -308,22 +308,18 @@
 }
 
 /* ==== Tarjeta final de partida y de Duelo/Reto en modo claro ====
-   Pergamino claro (fondo-<tono>-claro) con el mismo marco y cinta que en oscuro, y tinta oscura. El oscuro no se toca. */
+   Papel claro liso con el mismo marco y cinta que en oscuro, y tinta oscura. El oscuro no se toca. */
 :root:not([data-theme="dark"]) #results-card.results-card, :root:not([data-theme="dark"]) .seq-d-results.results-card {
-  --rc-fondo: url("../assets/ui/tarjeta/fondo-oro-claro.webp");
+  --rc-superficie: var(--lr-paper-2);
   --text: #2b2114; --sub: #5e4d34; --card: rgba(255, 250, 236, .66); --badge-bg: rgba(255, 250, 236, .7);
   --border: rgba(138, 106, 26, .45); --badge-border: rgba(138, 106, 26, .4);
-  background: linear-gradient(rgba(255, 248, 228, .18), rgba(255, 248, 228, .06)), var(--rc-fondo) center / cover no-repeat !important;
+  background: var(--rc-superficie) !important;
   box-shadow: 0 14px 34px rgba(80, 56, 12, .28) !important;
 }
-:root:not([data-theme="dark"]) #results-card[data-tier="azul"], :root:not([data-theme="dark"]) .seq-d-results[data-tier="azul"] { --rc-fondo: url("../assets/ui/tarjeta/fondo-azul-claro.webp"); }
-:root:not([data-theme="dark"]) #results-card[data-tier="plata"], :root:not([data-theme="dark"]) .seq-d-results[data-tier="plata"] { --rc-fondo: url("../assets/ui/tarjeta/fondo-plata-claro.webp"); }
-:root:not([data-theme="dark"]) #results-card[data-tier="derrota"], :root:not([data-theme="dark"]) .seq-d-results[data-tier="derrota"] { --rc-fondo: url("../assets/ui/tarjeta/fondo-derrota-claro.webp"); }
-:root:not([data-theme="dark"]) #results-card[data-tier="secreto"], :root:not([data-theme="dark"]) .seq-d-results[data-tier="secreto"] { --rc-fondo: url("../assets/ui/tarjeta/fondo-secreto-claro.webp"); }
 :root:not([data-theme="dark"]) #results-card .metric-label, :root:not([data-theme="dark"]) .seq-d-results .metric-label { color: #5e4d34; }
-/* En Duelo/Reto la regla móvil de online.css pone el fondo plano: aquí se repone el pergamino (solo en claro). */
+/* En Duelo/Reto la regla móvil de online.css pone otro fondo plano: aquí se repone el papel de la tarjeta (solo en claro). */
 :root:not([data-theme="dark"]) #seq-duel-root .seq-d-results.results-card {
-  background: linear-gradient(rgba(255, 248, 228, .18), rgba(255, 248, 228, .06)), var(--rc-fondo) center / cover no-repeat !important;
+  background: var(--rc-superficie) !important;
   box-shadow: 0 14px 34px rgba(80, 56, 12, .28) !important;
 }
 

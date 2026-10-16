@@ -80,7 +80,7 @@
     var r = getModeEndPhrase(MENTAL_CALC_END_PHRASES, g.correct || 0, 'mentalcalc');
     document.getElementById('res-category-text').textContent = ({ mal: 'Las matemáticas ganan', normal: 'Tregua con los números', bien: 'Los números se rinden' })[r.category] || '';
     document.getElementById('res-phrase-text').textContent = r.phrase;
-    setResultTone('mentalcalc', RESULT_MOOD_BY_CATEGORY.mentalcalc[r.category] || RESULT_MOOD_ICONS.mentalcalc, RESULT_CHARACTER_BY_CATEGORY[r.category] || null);
+    setResultTone('mentalcalc', RESULT_MOOD_BY_CATEGORY.mentalcalc[r.category] || RESULT_MOOD_ICONS.mentalcalc, RESULT_CHARACTER_BY_CATEGORY[r.category] || null, RESULT_TIER_BY_CATEGORY[r.category]);
     renderLucidezStamp(null, 'ok');
 
     var avg = g.total > 0 ? (g.totalTimeMs / g.total / 1000).toFixed(1) : '0.0';
