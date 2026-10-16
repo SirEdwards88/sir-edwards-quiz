@@ -171,7 +171,7 @@ test('el estado es de UNA partida: newState reinicia límites e hitos', () => {
   const a = S.newState(); warm(a); assert.ok(ans(a, 1e6, 14));
   assert.equal(ans(a, 9e6, 14, 1, {}, ALWAYS), null, 'visit ya usado en esa partida');
   const b = S.newState(); warm(b); assert.ok(ans(b, 1e6, 14), 'partida nueva: vuelve a poder salir');
-  assert.deepEqual(JSON.parse(JSON.stringify(S.newState())), { shown: { visit: 0, day: 0, night: 0, broken: 0, record: 0, comeback: 0, weak: 0 }, milestones: {}, lastAt: null, lastAnswer: null, answers: 0, run: 0, count: 0, last: {} });
+  assert.deepEqual(JSON.parse(JSON.stringify(S.newState())), { shown: { visit: 0, day: 0, night: 0, broken: 0, record: 0, comeback: 0, weak: 0, tilt: 0 }, milestones: {}, lastAt: null, lastAnswer: null, answers: 0, run: 0, miss: 0, count: 0, last: {} });
 });
 
 // ---- Enganche con la partida: no modifica nada del juego ----
@@ -209,7 +209,9 @@ test('enganche: Duelo y modos desconocidos, fallos, última pregunta, Contrarrel
   const run = (game, correct = true, extra = {}) => { const c = makeGameEnv(game, extra); vm.runInContext('Math.random = () => 0', c); let n = 0; for (let i = 0; i < 40; i++) { game.currentIdx = game.currentIdx; if (vm.runInContext(`sirEventsOnAnswer(${correct})`, c)) n++; c.flush(); } return c.shown.length; };
   assert.equal(run({ mode: 'play', isDuel: true, currentIdx: 3, totalQuestionsToPlay: 30 }), 0);
   assert.equal(run({ mode: 'duelo_online', currentIdx: 3, totalQuestionsToPlay: 30 }), 0);
-  assert.equal(run({ mode: 'play', currentIdx: 3, totalQuestionsToPlay: 30 }, false), 0);
+  // Solo fallos: en la partida estándar sale el ánimo (una sola vez, tras 3 seguidos); en el resto, nada.
+  assert.equal(run({ mode: 'play', currentIdx: 3, totalQuestionsToPlay: 30 }, false), 1, 'ánimo: una vez por partida');
+  ['survival', 'sudden_death', 'review', 'lucidez_mental'].forEach((m) => assert.equal(run({ mode: m, currentIdx: 3, totalQuestionsToPlay: 30 }, false), 0, m));
   assert.equal(run({ mode: 'play', currentIdx: 29, totalQuestionsToPlay: 30 }), 0);
   // Contrarreloj y Cálculo Mental: nunca eventos, por mucho que dure la partida ni cuántos aciertos lleve (racha incluida).
   ['timetrial', 'mental_calc'].forEach((m) => assert.equal(run({ mode: m, currentIdx: 3, totalQuestionsToPlay: 20 }, true, { timeTrialEndTime: Date.now() + 60000 }), 0, m));
@@ -522,4 +524,24 @@ test('Supervivencia y Muerte Súbita: nunca racha ni racha rota en el enganche',
     vm.runInContext('sirEventsOnAnswer(false)', c); c.flush();
     assert.ok(!c.shown.some((e) => e.type === 'streak' || e.type === 'broken'), m);
   });
+});
+
+test('ánimo: 3 fallos seguidos → un aviso cálido, una vez por partida; un acierto reinicia la cuenta', () => {
+  const ev = (st, correct, now) => S.evaluate(st, { nowMs: now, hour: 12, streak: 0, correct, last: false, blocked: false, noStreak: false, noBroken: false, recent: {} }, () => 0);
+  let st = S.newState();
+  assert.equal(ev(st, false, 1e6), null); assert.equal(ev(st, false, 1e6 + 1), null);
+  const e = ev(st, false, 1e6 + 2);
+  assert.ok(e && e.type === 'tilt', 'sale en el 3.º fallo seguido, aunque sea el 3.º de la partida');
+  assert.equal(e.asset, S.ASSETS.tilt); assert.ok(!/\{n\}/.test(e.message) && e.message.length > 10);
+  for (let i = 0; i < 6; i++) assert.equal(ev(st, false, 2e6 + i), null, 'una sola vez por partida');
+  st = S.newState();
+  ev(st, false, 1e6); ev(st, false, 1e6 + 1); ev(st, true, 1e6 + 2);
+  assert.equal(ev(st, false, 1e6 + 3), null); assert.equal(ev(st, false, 1e6 + 4), null);
+  assert.ok(ev(st, false, 1e6 + 5), 'tras el acierto vuelve a contar desde cero');
+  st = S.newState(); const noTilt = (c) => S.evaluate(st, { nowMs: 1e6, hour: 12, streak: 0, correct: c, last: false, blocked: false, noTilt: true, recent: {} }, () => 0);
+  for (let i = 0; i < 6; i++) assert.equal(noTilt(false), null, 'noTilt lo veta');
+  st = S.newState(); let hi = null; for (let i = 0; i < 2; i++) ev(st, false, 1e6 + i);
+  st.miss = 4; hi = ev(st, false, 1e6 + 9);
+  assert.ok(hi && hi.type === 'tilt', 'con 5 o más sigue saliendo el ánimo (frases de más consuelo)');
+  S.PHRASES.tilt.low.concat(S.PHRASES.tilt.high).forEach((t) => assert.ok(!/estúpid|inútil|torpe/i.test(t), t));
 });

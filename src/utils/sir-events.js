@@ -10,6 +10,8 @@
 // · weak () un acierto en la categoría más floja del jugador: ctx.weakCat = nombre. Una vez por partida y como mucho 1 al día.
 // · broken () racha rota: un FALLO tras 5 o más aciertos seguidos; la frase cita el número real. Una vez por partida.
 //   Es el único que sale tras un fallo; usa la imagen de «visita» (Sir Edwards observando).
+// · tilt () ánimo tras 3 o más FALLOS SEGUIDOS (solo en la partida estándar): Sir Edwards baja el tono y da ánimos, sin sarcasmo
+//   duro. Una vez por partida; no pasa por el cooldown largo pero nunca sale pegado a otro evento. Imagen propia (animo).
 // · night () 00:00–04:00 hora local.
 // · day () 06:00–10:00 hora local.
 // · visit () genérico (incluye el antiguo «evaluando»).
@@ -34,6 +36,8 @@ const SEQSirEvents = (function () {
   var STREAK_P = { 10: 0.5, 15: 0.7, 20: 1, 30: 1 };     // 10 «puede», 15 más probable, 20 y 30 especiales
   var MILESTONES = [10, 15, 20, 30];
   var BROKEN_MIN_RUN = 5;         // racha mínima para que su rotura merezca comentario
+  var TILT_MIN_MISSES = 3;          // fallos seguidos que activan el ánimo
+  var TILT_HIGH = 5;                // a partir de aquí, frases de más consuelo
   var BROKEN_P = { low: 0.35, mid: 0.7, high: 1 };        // 5-9 · 10-19 · 20 o más
   var MAX_PER_GAME = 1;           // como mucho un evento por partida (salvo un hito de racha de 20 o más)
   var RECENT_MS = 6 * 3600 * 1000;        // día, noche y visita: como mucho uno cada 6 h (lo recuerda quien llama, entre partidas)
@@ -45,6 +49,7 @@ const SEQSirEvents = (function () {
   var ASSETS = {
     visit: 'assets/character/event_siredwards_visit.webp',
     broken: 'assets/character/event_siredwards_visit.webp',
+    tilt: 'assets/character/event_siredwards_animo.webp',
     comeback: 'assets/character/event_siredwards_comeback.webp',
     weak: 'assets/character/event_siredwards_visit.webp',
     record: 'assets/character/event_siredwards_record.webp',
@@ -154,6 +159,28 @@ const SEQSirEvents = (function () {
       '«Casi pude respetarte. {n} seguidas. Casi.»']
   };
 
+  // Ánimo tras fallos seguidos ({n} = cuántos): tono cálido y breve; Sir Edwards sigue siendo él, pero sin pinchar.
+  var TILT_PHRASES = {
+    low: ['«{n} seguidas. Ocurre hasta en las mejores familias. Respira y sigue.»',
+      '«Una mala racha no es un veredicto. Es solo una mala racha.»',
+      '«Tranquilo. Las preguntas se terminan; la paciencia, no.»',
+      '«Nadie lo ha visto. Bueno, yo sí, pero soy discreto.»',
+      '«Hasta Sir Edwards tiene días así. Lo he oído decir.»',
+      '«Aprender cuesta, y a veces cuesta unas cuantas seguidas.»',
+      '«La siguiente es tuya. Lo digo con la poca fe que me queda, que no es poca.»',
+      '«Un respiro, un sorbo de agua y vuelta al ruedo.»',
+      '«Los fallos también cuentan: son los que más enseñan.»',
+      '«No pasa nada. Casi nunca pasa nada. Sigue.»'],
+    high: ['«{n} seguidas. Hoy la suerte no está de tu parte, pero tú sí. Sigue.»',
+      '«Ni los mejores acaban un día así. Perdón: ni los mejores empiezan uno así.»',
+      '«Si te sirve de consuelo, yo he tenido días peores. Y tengo sombrero.»',
+      '«Un descanso no es una derrota. Cuando quieras, aquí sigo.»',
+      '«Esto no te define. Lo que hagas con la siguiente, quizá sí.»',
+      '«{n} seguidas, y aún aquí. Eso dice más de ti que los fallos.»',
+      '«Respira hondo. La pregunta que viene no sabe lo que ha pasado antes.»',
+      '«Sin prisa. Aquí nadie te cobra el tiempo, salvo el reloj.»']
+  };
+
   // Récord personal ({n} = la racha nueva), regreso tras días y categoría débil ({cat} = su nombre): siempre en positivo o en tono de reproche suave.
   var RECORD = [
     '«{n} seguidas. Tu mejor marca. Qué inoportuna mejora.»', '«Récord personal: {n}. Lo anoto en tinta discreta.»',
@@ -224,7 +251,7 @@ const SEQSirEvents = (function () {
   function isDay(hour) { return hour >= 6 && hour < 10; }
 
   function newState() {
-    return { shown: { visit: 0, day: 0, night: 0, broken: 0, record: 0, comeback: 0, weak: 0 }, milestones: {}, lastAt: null, lastAnswer: null, answers: 0, run: 0, count: 0, last: {} };
+    return { shown: { visit: 0, day: 0, night: 0, broken: 0, record: 0, comeback: 0, weak: 0, tilt: 0 }, milestones: {}, lastAt: null, lastAnswer: null, answers: 0, run: 0, miss: 0, count: 0, last: {} };
   }
 
   // Elige una frase del grupo (cadena u objeto {t,h}) válida para la hora, sin repetir la última del mismo evento.
@@ -259,6 +286,11 @@ const SEQSirEvents = (function () {
       var lst = type === 'record' ? RECORD : type === 'comeback' ? COMEBACK : WEAK;
       var tp = choose(type, lst, hour, rng, avoid, rotate);
       return tp ? tp.replace(/\{n\}/g, String(milestone)).replace(/\{cat\}/g, String(cat || 'Esta categoría')) : null;
+    }
+    if (type === 'tilt') {
+      var ttier = milestone >= TILT_HIGH ? 'high' : 'low';
+      var ttpl = choose('tilt_' + ttier, TILT_PHRASES[ttier], hour, rng, avoid, rotate);
+      return ttpl ? ttpl.replace(/\{n\}/g, String(milestone)) : null;
     }
     if (type === 'broken') {
       var tier = milestone >= 20 ? 'high' : milestone >= 10 ? 'mid' : 'low';
@@ -297,16 +329,23 @@ const SEQSirEvents = (function () {
   function evaluate(state, ctx, rng) {
     rng = rng || Math.random;
     state.answers++;                                 // respuestas de la partida (acierto o no)
-    ['broken', 'record', 'comeback', 'weak'].forEach(function (k) { if (!state.shown[k]) state.shown[k] = 0; });
+    ['broken', 'record', 'comeback', 'weak', 'tilt'].forEach(function (k) { if (!state.shown[k]) state.shown[k] = 0; });
     if (!state.count) state.count = 0;
     var run = state.run || 0;                        // aciertos seguidos que llevaba el motor antes de esta respuesta
-    if (ctx && ctx.correct === true) state.run = run + 1; else state.run = 0;
+    var miss = state.miss || 0;                      // fallos seguidos que llevaba antes de esta respuesta
+    if (ctx && ctx.correct === true) { state.run = run + 1; state.miss = 0; } else { state.run = 0; state.miss = miss + 1; }
     if (!ctx || ctx.blocked || ctx.last) return null;
 
     // Regreso tras días sin jugar: tras la 1.ª respuesta, acierto o no.
     if (state.answers === 1 && ctx.comeback === true && !state.shown.comeback) {
       var ct = phraseFor('comeback', Math.floor(ctx.hour), rng, state.last.comeback, 0, ctx.rotate);
       if (ct) return done(state, ctx, 'comeback', ct, ctx.nowMs);
+    }
+    // Ánimo: 3 o más fallos seguidos (solo si quien llama no lo veta con noTilt). Una vez por partida; nunca pegado a otro evento.
+    if (ctx.correct !== true && ctx.noTilt !== true && state.miss >= TILT_MIN_MISSES && !state.shown.tilt &&
+        !(state.lastAnswer !== null && state.answers - state.lastAnswer < 2)) {
+      var tt = phraseFor('tilt', Math.floor(ctx.hour), rng, state.last.tilt, state.miss, ctx.rotate);
+      if (tt) return done(state, ctx, 'tilt', tt, ctx.nowMs);
     }
     if (state.answers <= MIN_ANSWERS_START) return null;
 
@@ -346,8 +385,8 @@ const SEQSirEvents = (function () {
 
   return {
     COOLDOWN_MS: COOLDOWN_MS, MIN_ANSWERS_BETWEEN: MIN_ANSWERS_BETWEEN, MIN_ANSWERS_START: MIN_ANSWERS_START,
-    P: P, STREAK_P: STREAK_P, BROKEN_MIN_RUN: BROKEN_MIN_RUN, BROKEN_P: BROKEN_P, MAX_PER_GAME: MAX_PER_GAME, RECENT_MS: RECENT_MS, WEAK_MS: WEAK_MS, DAYNIGHT_MS: DAYNIGHT_MS, MILESTONES: MILESTONES, ASSETS: ASSETS, LABELS: LABELS, RARE_P: RARE_P,
-    PHRASES: { visit: VISIT, visitRare: VISIT_RARE, streak: STREAK_PHRASES, broken: BROKEN_PHRASES, record: RECORD, comeback: COMEBACK, weak: WEAK, day: DAY, dayRare: DAY_RARE, nightEarly: NIGHT_EARLY, nightLate: NIGHT_LATE, nightRare: NIGHT_RARE },
+    P: P, STREAK_P: STREAK_P, BROKEN_MIN_RUN: BROKEN_MIN_RUN, TILT_MIN_MISSES: TILT_MIN_MISSES, BROKEN_P: BROKEN_P, MAX_PER_GAME: MAX_PER_GAME, RECENT_MS: RECENT_MS, WEAK_MS: WEAK_MS, DAYNIGHT_MS: DAYNIGHT_MS, MILESTONES: MILESTONES, ASSETS: ASSETS, LABELS: LABELS, RARE_P: RARE_P,
+    PHRASES: { tilt: TILT_PHRASES, visit: VISIT, visitRare: VISIT_RARE, streak: STREAK_PHRASES, broken: BROKEN_PHRASES, record: RECORD, comeback: COMEBACK, weak: WEAK, day: DAY, dayRare: DAY_RARE, nightEarly: NIGHT_EARLY, nightLate: NIGHT_LATE, nightRare: NIGHT_RARE },
     isNight: isNight, isDay: isDay, newState: newState, evaluate: evaluate
   };
 })();

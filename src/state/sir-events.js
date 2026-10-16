@@ -117,6 +117,7 @@ function sirEventsOnAnswer(correct, q) {
       last: sirEventsIsLast(g),
       blocked: typeof document !== 'undefined' && document.hidden === true,
       noStreak: g.mode === 'survival' || g.mode === 'sudden_death',    // ahí ya salen los hitos de Sir Edwards (10/20/30 y 13/20): el aviso de racha se solapa (récord y regreso sí salen)
+      noTilt: g.mode !== 'play',                                      // el ánimo solo en la partida estándar (en el resto ya hay avisos propios o el fallo cuesta vidas/tiempo)
       noBroken: g.mode === 'review' || g.mode === 'survival' || g.mode === 'sudden_death',   // en Repaso no hay racha; en Supervivencia y Muerte Súbita ya hay hitos propios (y en Muerte Súbita el fallo termina la partida)
       record: record,
       comeback: g._sevCome === true,

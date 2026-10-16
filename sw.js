@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 329;
+const CACHE_VERSION = 331;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -356,6 +356,10 @@ const APP_SHELL = [
   './assets/audio/record.mp3',
   './assets/audio/event.mp3',
   './assets/audio/secret.mp3',
+  './assets/audio/lucidez-fase1.mp3',
+  './assets/audio/lucidez-fase2.mp3',
+  './assets/audio/lucidez-fase3.mp3',
+  './assets/audio/lucidez-enigma.mp3',
   './assets/fonts/inter-latin.woff',
   './assets/fonts/playfair-display-latin.woff',
   './assets/audio/wrong.mp3',
@@ -400,6 +404,7 @@ const APP_SHELL = [
   './assets/character/event_siredwards_day.webp',
   './assets/character/event_siredwards_night.webp',
   './assets/character/event_siredwards_comeback.webp',
+  './assets/character/event_siredwards_animo.webp',
   './assets/character/siredwards_encargos.webp',
   './assets/character/siredwards_encargos_completados.webp',
   './assets/character/presentacion-evaluador.webp',
@@ -459,6 +464,10 @@ const ASSET_REVS = {
   './assets/audio/correct.mp3': 'ada74251',
   './assets/audio/event.mp3': 'e5595ae9',
   './assets/audio/lose.mp3': 'bf64ed58',
+  './assets/audio/lucidez-enigma.mp3': '396acf20',
+  './assets/audio/lucidez-fase1.mp3': '9871d467',
+  './assets/audio/lucidez-fase2.mp3': '3e9ab8f8',
+  './assets/audio/lucidez-fase3.mp3': 'e84fbaaa',
   './assets/audio/record.mp3': '59d1eef1',
   './assets/audio/secret.mp3': 'fe9a2e00',
   './assets/audio/win.mp3': '3165b8dd',
@@ -487,6 +496,7 @@ const ASSET_REVS = {
   './assets/cats/geografia.webp': '0a32eea5',
   './assets/cats/historia.webp': 'c208d729',
   './assets/character/defeat.webp': 'd4895852',
+  './assets/character/event_siredwards_animo.webp': '6df39c1c',
   './assets/character/event_siredwards_comeback.webp': 'e1b589e8',
   './assets/character/event_siredwards_day.webp': '8cacefd5',
   './assets/character/event_siredwards_night.webp': 'f50f1203',

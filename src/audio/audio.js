@@ -15,7 +15,10 @@ const SAMPLE_FILES = { correct: 'assets/audio/correct.mp3', wrong: 'assets/audio
   // 2.3 — jingles de ~3-4 s (victoria, derrota, récord, aparición de Sir Edwards, logro secreto). Mismo mecanismo:
   // si aún no están decodificados, suena el sintetizado de siempre (la derrota, uno breve: playLoseFallback).
   win: 'assets/audio/win.mp3', lose: 'assets/audio/lose.mp3', record: 'assets/audio/record.mp3',
-  event: 'assets/audio/event.mp3', secret: 'assets/audio/secret.mp3' };
+  event: 'assets/audio/event.mp3', secret: 'assets/audio/secret.mp3',
+  // 2.4 — Lucidez Mental: un sonido propio por pantalla de capítulo (Fase I, II, III y Enigma final).
+  luc1: 'assets/audio/lucidez-fase1.mp3', luc2: 'assets/audio/lucidez-fase2.mp3',
+  luc3: 'assets/audio/lucidez-fase3.mp3', luc4: 'assets/audio/lucidez-enigma.mp3' };
 const sampleBuffers = {};
 // Cada muestra se carga por separado y, si falla (red, caché, decodificación), se reintenta en la siguiente petición de
 // sonido (hasta SAMPLE_MAX_TRIES veces). Antes un solo fallo la dejaba muda hasta cerrar la app.
@@ -275,6 +278,14 @@ function playSirEventSound() {
   if (store.sound === 'off') return;
   if (playJingle('event', 0.9, true)) return;
   try { playBellNote(1568, 0, 0.5, 1.4); playBellNote(2093, 0.18, 0.45, 1.4); } catch (e) {}
+}
+// Lucidez Mental: sonido de la pantalla de capítulo. `characterKey` es el mismo que usa showLucidezStoryOverlay
+// ('phase1' | 'phase2' | 'phase3' | 'enigma'); cualquier otro valor no suena. Sin muestra cargada, silencio (no hay sintetizado).
+const LUCIDEZ_STINGS = { phase1: 'luc1', phase2: 'luc2', phase3: 'luc3', enigma: 'luc4' };
+function playLucidezChapterSound(characterKey) {
+  if (store.sound === 'off') return;
+  const name = LUCIDEZ_STINGS[characterKey];
+  if (name) playJingle(name, 0.85);
 }
 function playRecordSound() {
   if (store.sound === 'off') return;
