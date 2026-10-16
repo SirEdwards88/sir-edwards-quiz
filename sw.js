@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 360;
+const CACHE_VERSION = 361;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -898,7 +898,7 @@ self.addEventListener('push', (event) => {
     }
     await self.registration.showNotification(title, {
       body: String(d.b || '').slice(0, 160),
-      icon: './icons/icon-192.png', badge: './icons/icon-192.png',
+      badge: './icons/badge-96.png',
       tag: String(d.tag || 'seq'), renotify: false, data: { id: m ? m[1] : null },
     });
   })());
