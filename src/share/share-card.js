@@ -478,13 +478,13 @@
           // Con frase: el personaje cede altura según las líneas de la frase; debajo, jugador y puntuación.
           var hasP = !!model.player;
           var L = phraseLayout(ctx, model.phrase);
-          var yEnd = hasP ? 920 : 1000;
+          var yEnd = hasP ? 900 : 1000;
           var topBase = yEnd - (L.lines.length - 1) * L.lh;
           var boxH = Math.max(220, Math.min(420, topBase - L.px - 24 - 470));
           var hatH = Math.min(boxH, 300);
           drawCharacter(ctx, charImg, big ? { y: 470 + (boxH - hatH) / 2, w: 500, h: hatH } : { y: 470, w: 560, h: boxH }, theme);
           drawPhraseLayout(ctx, L, yEnd);
-          if (hasP) drawPlayerChip(ctx, theme, model.player, meImg, 1010, 52);
+          if (hasP) drawPlayerChip(ctx, theme, model.player, meImg, 978, 50);
           drawScore(ctx, theme, model, hasP ? 1128 : 1110, 88);
         } else {
         drawCharacter(ctx, charImg, big ? { y: 500, w: 520, h: 330 } : { y: 476, w: 600, h: 420 }, theme);
