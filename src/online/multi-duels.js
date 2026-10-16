@@ -3,8 +3,8 @@
 // Módulo aparte para no engordar duels.js: este archivo solo PINTA y manda acciones. El servidor (/multi-duels) es la única
 // autoridad de preguntas, tiempos, corrección, puntos y clasificación; aquí no se calcula nada de eso.
 // Se apoya en duels.js (estado S, sondeo, reloj, respuesta, bloque de pregunta) a través de los ayudantes `H` que éste le pasa:
-// pantallas 'pickkind' (1 contra 1 / Múltiple), 'multipick' (elegir 2 o 3 amigos) y 'multi' (sala, partida y final).
-// No cuenta para ELO, estadísticas ni logros del Duelo 1 contra 1 (no se llama a registerOnlineDuelResult).
+// pantallas 'pickkind' (1 vs 1 / Múltiple), 'multipick' (elegir 2 o 3 amigos) y 'multi' (sala, partida y final).
+// No cuenta para ELO, estadísticas ni logros del Duelo 1 vs 1 (no se llama a registerOnlineDuelResult).
 // Todo texto que viene del servidor pasa por H.esc() / H.player() y los números por H.num().
 //
 // La parte pura (ordinal, frases, estado de cada jugador, recuento de pendientes) se prueba en test/multi-duels.test.mjs.
@@ -53,7 +53,7 @@
     var w = top.filter(function (x) { return !x.es_yo; })[0];
     return { res: 'loss', margin: Math.max(0, best - mine), pos: pos, winner: w ? String(w.display_name || '') : '' };
   }
-  // Título de la categoría, igual que en el 1 contra 1: aplastante (8 o más), por la mínima (2 o menos) o clara.
+  // Título de la categoría, igual que en el 1 vs 1: aplastante (8 o más), por la mínima (2 o menos) o clara.
   function categoryTitle(o) {
     if (o.res === 'gone') return 'Retirada';
     if (o.res === 'draw') return 'Empate en cabeza';
@@ -61,7 +61,7 @@
     if (o.res === 'win') return big ? 'Victoria aplastante' : close ? 'Victoria por la mínima' : 'Victoria clara';
     return big ? 'Derrota sin paliativos' : close ? 'Derrota por la mínima' : 'Derrota clara';
   }
-  // Frases de Sir Edwards para varios jugadores (las del 1 contra 1 hablan de «el rival», aquí hay una mesa entera).
+  // Frases de Sir Edwards para varios jugadores (las del 1 vs 1 hablan de «el rival», aquí hay una mesa entera).
   // Estables por sala y categoría: el mismo duelo siempre enseña la misma frase. {nombre} es el ganador.
   var PHRASES = {
     win_close: ['Victoria por la mínima. Los demás aún discuten el recuento.', 'Has ganado por un suspiro. Presume en voz baja.'],
@@ -81,9 +81,10 @@
     return list[hashStr(seedId + ':' + key) % list.length].replace(/\{nombre\}/g, name);
   }
 
-  // En partida el múltiple no se anuncia: título y botón de salida iguales a los del 1 contra 1.
+  // En partida el múltiple no se anuncia: título y botón de salida iguales a los del 1 vs 1.
   function isReto(d) { return !!(d && d.tipo === 'reto_multi'); }
-  function gameTitle(d) { return isReto(d) ? H.ico('retos') + 'Reto' : d && d.modo === 'stakes' ? H.ico('duelo') + 'Duelo por apuestas' : H.ico('duelo') + 'Duelo online'; }
+  // El Duelo no lleva título arriba (la tarjeta ya dice si es clásico o por apuestas); el Reto sí.
+  function gameTitle(d) { return isReto(d) ? H.ico('retos') + 'Reto' : ''; }
   function exitText(d) { return isReto(d) ? '← Retos' : '← Duelo online'; }
 
   // ---- Pintado --------------------------------------------------------------------------------
@@ -105,10 +106,10 @@
       if (off) return '<div class="seq-m-opt seq-d-off" aria-disabled="true">' + ic + body + '</div>';
       return '<div class="seq-m-opt" role="button" tabindex="0" onclick="' + act + '" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();' + act + '}">' + ic + body + '<span class="seq-m-opt-go" aria-hidden="true">›</span></div>';
     }
-    var one = card('uno-contra-uno', '1 contra 1', reto ? 'Un amigo, cada uno a su hora.' : 'Un amigo, cara a cara.', 'SEQMulti.one()');
+    var one = card('uno-contra-uno', '1 vs 1', reto ? 'Un amigo, a su ritmo.' : 'Un amigo, cara a cara.', 'SEQMulti.one()');
     var multi = (stakes && !STAKES_READY)
       ? card('multiple', 'Múltiple', 'Muy pronto. Sir Edwards aún afila las apuestas.', '', true)
-      : card('multiple', 'Múltiple', 'De ' + MIN_PLAYERS + ' a ' + MAX_PLAYERS + ' jugadores. ' + (reto ? 'Cada uno juega cuando pueda.' : 'Clasificación final.'), 'SEQMulti.startPick()');
+      : card('multiple', 'Múltiple', 'De ' + MIN_PLAYERS + ' a ' + MAX_PLAYERS + ' jugadores.' + (reto ? ' A su ritmo.' : ''), 'SEQMulti.startPick()');
     return h + '<div class="seq-m-opts">' + one + multi + '</div>';
   }
 
@@ -116,8 +117,8 @@
     var s = S(), fl = s.lists.friends, chosen = sel();
     var reto = s.pickKind === 'reto';
     var h = H.header('Elige a tus rivales', reto ? 'Reto múltiple' : (s.pickModo === 'stakes' ? 'Duelo por apuestas' : 'Duelo clásico') + ' · múltiple', function () { s.screen = 'pickkind'; H.render(); });
-    h += reto ? '<p class="stats-section-sub">Elige a ' + (MIN_PLAYERS - 1) + ' o ' + (MAX_PLAYERS - 1) + ' amigos. Tienen 3 días para aceptar y jugar. Después eliges el modo.</p>'
-      : '<p class="stats-section-sub">Elige a ' + (MIN_PLAYERS - 1) + ' o ' + (MAX_PLAYERS - 1) + ' amigos en línea. Tienen 3 min para aceptar.</p>';
+    h += reto ? '<p class="stats-section-sub">Elige a ' + (MIN_PLAYERS - 1) + ' o ' + (MAX_PLAYERS - 1) + ' amigos. Tienen 3 días para jugar.</p>'
+      : '<p class="stats-section-sub">Elige a ' + (MIN_PLAYERS - 1) + ' o ' + (MAX_PLAYERS - 1) + ' amigos en línea.</p>';
     if (!fl) return h + '<p class="stats-section-sub">Cargando…</p>';
     if (!fl.friends.length) return h + H.emptyState('vacio-amigos', 'Aún no tienes amigos', 'Añádelos para poder retarlos.', '<button class="btn btn-primary" onclick="SEQDuels.open(\'friends\')">Añadir amigos</button>');
     var on = reto ? fl.friends : fl.friends.filter(H.isOnline), off = reto ? [] : fl.friends.filter(function (f) { return !H.isOnline(f); });
@@ -136,7 +137,8 @@
   }
 
   // Marcador compacto de todos durante la partida: puesto, avatar, nombre corto y puntos.
-  function chips(d) {
+  function chips(d, helpers) {
+    if (helpers) H = helpers;
     var m = d.marcador; if (!m || !m.jugadores) return '';
     var by = {}; (d.jugadores || []).forEach(function (j) { by[j.id] = j; });
     var rows = m.jugadores.slice().sort(function (a, b) { return (num(a.posicion) || 9) - (num(b.posicion) || 9); });
@@ -238,7 +240,8 @@
     var res = o.res === 'win' ? 'win' : o.res === 'draw' ? 'draw' : 'loss';
     H.resultSoundOnce(reto ? 'mreto' : 'multi', d, res);
     var charKey = res === 'win' ? 'victory' : res === 'loss' ? 'defeat' : 'empate';
-    var moodSrc = res === 'win' ? 'assets/ui/copa.webp' : res === 'loss' ? 'assets/ui/bandera-blanca.webp' : 'assets/modes/amigos.webp';
+    var big = o.margin >= 8;
+    var moodSrc = res === 'win' ? (big ? 'assets/ui/sombrero-laurel.webp' : 'assets/ui/copa.webp') : res === 'loss' ? (big ? 'assets/ui/sombrero-aplastado.webp' : 'assets/ui/bandera-blanca.webp') : 'assets/modes/amigos.webp';
     var cat = categoryTitle(o);
     var xp = H.xpFor(reto ? 'reto' : 'duel', d, mine.aciertos); H.syncXpOnce(reto ? 'reto' : 'multi', d, xp);
     var tone = res === 'win' ? 'tone-win' : res === 'loss' ? 'tone-fail' : 'tone-bien';
@@ -264,7 +267,7 @@
     return head + h;
   }
 
-  // ---- Reto múltiple (2.5): pantallas de la sala; la partida de cada uno es la misma de un Reto 1 contra 1 (duels.js) ----
+  // ---- Reto múltiple (2.5): pantallas de la sala; la partida de cada uno es la misma de un Reto 1 vs 1 (duels.js) ----
   function retoStatus(j, d) {
     if (j.estado === 'rechazado') return 'Ha rechazado';
     if (j.estado === 'invitado') return 'Sin responder';
@@ -398,7 +401,17 @@
     var rows = r.clasificacion.map(function (x) { return ordinal(x.posicion) + ' ' + String(x.display_name || 'Jugador') + ' · ' + (Math.floor(Number(x.puntuacion)) || 0); });
     return (d.tipo === 'reto_multi' ? 'Reto múltiple' : 'Duelo múltiple') + ' en SirEdwards Quiz' + (d.modo === 'stakes' ? ' (por apuestas)' : '') + '\n' + rows.join('\n') + '\nSir Edwards lo ha visto todo.';
   }
-  window.SEQMulti = { shareText: shareText, renderMReto: renderMReto, rowReto: rowReto, pendingCountMReto: pendingCountMReto, next: next, 
+  // Datos para la imagen de compartir (SEQShareCard): clasificación, frase y desenlace que ya decidió el servidor.
+  function shareInput(d, helpers) {
+    var HH = helpers || H, r = d && d.resultado; if (!r || !r.clasificacion) return null;
+    var o = outcome(r, !!(d.yo && d.yo.abandonado)), reto = isReto(d);
+    var res = o.res === 'win' ? 'win' : o.res === 'draw' ? 'draw' : 'loss';
+    return { kind: reto ? 'reto' : 'duel', result: res, myScore: Math.floor(Number(r.mi_puntuacion)) || 0, opponentScore: 0,
+      modeLabel: reto ? HH.retoModeName(d) : d.modo === 'stakes' ? 'por apuestas' : 'clásico',
+      unit: reto ? '' : d.modo === 'stakes' ? 'Puntos' : 'Aciertos', phrase: phraseFor(o, d.id), place: Math.floor(Number(r.mi_posicion)) || 0,
+      ranking: r.clasificacion.map(function (x) { var p = HH.player(x); return { pos: x.posicion, name: x.display_name || 'Jugador', avatar: x.avatar, score: x.puntuacion, me: !!x.es_yo, gone: !!(x.abandonado || x.jugo === false) }; }) };
+  }
+  window.SEQMulti = { board: chips, shareInput: shareInput, shareText: shareText, renderMReto: renderMReto, rowReto: rowReto, pendingCountMReto: pendingCountMReto, next: next, 
     render: render, row: row, pendingCount: pendingCount,
     startPick: startPick, toggle: toggle, create: create, action: action, listAction: listAction, one: one,
     core: { ordinal: ordinal, playerStatus: playerStatus, pendingCount: pendingCount, outcome: outcome, categoryTitle: categoryTitle, phraseFor: phraseFor, MIN_PLAYERS: MIN_PLAYERS, MAX_PLAYERS: MAX_PLAYERS }

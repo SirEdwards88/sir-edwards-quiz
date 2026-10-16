@@ -113,6 +113,15 @@
                    rival: o.rival && o.rival.name ? { name: String(o.rival.name), avatar: o.rival.avatar } : null };
       m.main = m.versus.me + ' — ' + m.versus.them;
       m.mainLabel = '';
+      if (Array.isArray(o.ranking) && o.ranking.length >= 2) {
+        // Duelo / Reto múltiple: clasificación de 3 o 4 jugadores en lugar del cara a cara.
+        m.versus = null; m.main = '';
+        m.pill = m.variant === 'reto' ? 'RETO' + (o.modeLabel ? ' · ' + String(o.modeLabel).toUpperCase() : '') : 'DUELO ' + String(o.modeLabel || '').toUpperCase();
+        m.unit = o.unit ? String(o.unit).toUpperCase().slice(0, 12) : '';
+        m.ranking = o.ranking.slice(0, 4).map(function (x) {
+          return { pos: clampInt(x.pos) || 1, name: String(x.name || 'Jugador').slice(0, 24), avatar: x.avatar, score: clampInt(x.score), me: !!x.me, gone: !!x.gone };
+        });
+      }
       m.phrase = o.phrase ? String(o.phrase).replace(/\s+/g, ' ').trim().slice(0, 200) : '';
       return m;
     }
@@ -428,6 +437,29 @@
     }
   }
 
+  // Clasificación de un Duelo / Reto múltiple: una fila por jugador (puesto, avatar, nombre y puntos).
+  function drawRanking(ctx, theme, model, avatars, y) {
+    var list = model.ranking, rh = 88, gap = 12, x0 = 110, w = W - 220;
+    if (model.unit) { ctx.fillStyle = theme.accent; ctx.textAlign = 'right'; ctx.font = '700 22px ' + SANS; var uw = model.unit.split('').reduce(function (a, c) { return a + ctx.measureText(c).width + 4; }, -4); spaced(ctx, model.unit, x0 + w - 12 - uw / 2, y - 12, 4); }
+    list.forEach(function (e, k) {
+      var ry = y + k * (rh + gap), cy = ry + rh / 2;
+      roundRect(ctx, x0, ry, w, rh, 22);
+      ctx.fillStyle = e.me ? 'rgba(255,255,255,.14)' : 'rgba(255,255,255,.07)'; ctx.fill();
+      ctx.lineWidth = e.me ? 3 : 1.5; ctx.strokeStyle = e.me ? theme.ring : 'rgba(255,255,255,.18)'; ctx.stroke();
+      ctx.globalAlpha = e.gone ? .55 : 1;
+      ctx.textAlign = 'center'; ctx.fillStyle = e.pos === 1 ? BRAND.goldLight : BRAND.creamDim; ctx.font = '800 40px ' + SERIF;
+      ctx.fillText(e.pos + '.º', x0 + 58, cy + 14);
+      drawAvatar(ctx, avatars && avatars[k], x0 + 158, cy, 31, { ring: e.me ? theme.ring : BRAND.gold, initial: e.name });
+      var nm = e.me ? 'Tú' : e.name; ctx.textAlign = 'left'; ctx.fillStyle = e.me ? theme.accent : BRAND.cream; ctx.font = '700 34px ' + SERIF;
+      while (ctx.measureText(nm).width > 400 && nm.length > 3) nm = nm.slice(0, -2);
+      if (nm !== (e.me ? 'Tú' : e.name)) nm += '…';
+      ctx.fillText(nm, x0 + 214, cy + 12);
+      ctx.textAlign = 'right'; ctx.fillStyle = e.pos === 1 ? BRAND.goldLight : BRAND.cream; ctx.font = '900 46px ' + SANS;
+      ctx.fillText(String(e.score), x0 + w - 32, cy + 16);
+      ctx.globalAlpha = 1;
+    });
+  }
+
   function drawFooter(ctx, theme, badge) {
     ctx.textAlign = 'center'; ctx.fillStyle = BRAND.gold;
     // Sin lema al pie (el nombre del juego ya va arriba); solo la insignia (o, si no carga, el rombo).
@@ -447,7 +479,8 @@
       model.player ? avatarImage(model.player.avatar) : null,
       model.versus && model.versus.rival ? avatarImage(model.versus.rival.avatar) : null,
       modeIcon ? loadImage([MODE_ICON_DIR + modeIcon + '.webp']) : null,
-      loadImage(['assets/ui/insignia.webp'])
+      loadImage(['assets/ui/insignia.webp']),
+      model.ranking ? Promise.all(model.ranking.map(function (x) { return avatarImage(x.avatar); })) : null
     ];
     return Promise.all(loads).then(function (r) {
       var hat = r[1], charImg = r[2] || (model.character === 'hat' ? hat : null), meImg = r[3], rivalImg = r[4];
@@ -460,7 +493,13 @@
       drawHeader(ctx, theme, model, hat);
       drawTitle(ctx, theme, model, 432);
 
-      if (model.versus) {
+      if (model.ranking) {
+        var LR = phraseLayout(ctx, model.phrase || '·');
+        var n = model.ranking.length, yEndR = n > 3 ? 1206 : 1176;
+        drawCharacter(ctx, charImg, { y: 462, w: 520, h: n > 3 ? 190 : 240 }, theme);
+        drawRanking(ctx, theme, model, r[7], n > 3 ? 706 : 730);
+        if (model.phrase) drawPhraseLayout(ctx, LR, yEndR);
+      } else if (model.versus) {
         // Duelo / Reto: personaje más pequeño y fila de enfrentamiento.
         if (model.phrase) {
           var LV = phraseLayout(ctx, model.phrase);
@@ -510,7 +549,12 @@
   function shareText(d) {
     d = d || {};
     var head, remark;
-    if (d.online) {
+    if (d.online && d.online.ranking) {
+      head = 'Sir Edwards Quiz · ' + (d.online.kind === 'reto' ? 'Reto múltiple' : 'Duelo múltiple') + ': ' + (d.online.place ? d.online.place + 'º de ' + d.online.ranking.length : 'clasificación') + '.';
+      remark = d.online.result === 'win' ? 'Victoria. Sir Edwards asiente con discreción.'
+        : d.online.result === 'loss' ? 'Derrota. Sir Edwards prefiere mirar hacia otro lado.'
+        : 'Empate en cabeza. Nadie se salva.';
+    } else if (d.online) {
       head = 'Sir Edwards Quiz · ' + (d.online.kind === 'reto' ? 'Reto' : 'Duelo online') + ': ' + clampInt(d.online.me) + ' a ' + clampInt(d.online.them) + '.';
       remark = d.online.result === 'win' ? 'Victoria. Sir Edwards asiente con discreción.'
         : d.online.result === 'loss' ? 'Derrota. Sir Edwards prefiere mirar hacia otro lado.'

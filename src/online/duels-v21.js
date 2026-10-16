@@ -111,9 +111,12 @@
     var m = d.marcador || {}, total = num(m.total) || num(d.n_preguntas);
     var isS = modeKey(d.modo) === 'stakes';
     var cur = Math.min(total, (d.ronda ? num(d.ronda.indice) : idx != null ? num(idx) : num(m.resueltas)) + 1);
-    return '<div class="seq-v21-score" aria-live="polite"><span class="seq-v21-score-me"><small>TÚ</small><b>' + num(m.yo) + '</b></span>' +
-      '<span class="seq-v21-score-sep">—</span><span class="seq-v21-score-rv"><b>' + num(m.rival) + '</b><small>RIVAL</small></span></div>' +
-      '<div class="seq-v21-round">' + (isS ? 'Ronda ' : 'Pregunta ') + cur + ' / ' + total + '</div>';
+    // Niebla (últimas rondas): el servidor no manda los puntos, solo la posición de cada uno.
+    var me = m.niebla ? num(m.posicion_yo) + '.º' : num(m.yo), rv = m.niebla ? num(m.posicion_rival) + '.º' : num(m.rival);
+    return '<div class="seq-v21-score' + (m.niebla ? ' seq-v21-fog' : '') + '" aria-live="polite"><span class="seq-v21-score-me"><small>TÚ</small><b>' + me + '</b></span>' +
+      '<span class="seq-v21-score-sep">—</span><span class="seq-v21-score-rv"><b>' + rv + '</b><small>RIVAL</small></span></div>' +
+      '<div class="seq-v21-round">' + (isS ? 'Ronda ' : 'Pregunta ') + cur + ' / ' + total + (d.ronda && d.ronda.doble ? ' · <b class="seq-m-double">Doble</b>' : '') + '</div>' +
+      (m.niebla ? '<p class="stats-section-sub seq-m-fog">Niebla: ya solo se ven las posiciones.</p>' : '');
   }
   // Carta final: SOLO el ELO antes → después, el cambio y el rango. Nada de apuestas ni rondas.
   function eloBlock(elo) {
@@ -135,10 +138,10 @@
   function stakeButtons(d, locked) {
     var mine = d.ronda && stakeKey(d.ronda.mi_apuesta);
     return '<div class="seq-v21-stakes" role="group" aria-label="Elige tu apuesta">' + STAKE_ORDER.map(function (k) {
-      var st = STAKES[k], sel = mine === k;
+      var st = STAKES[k], sel = mine === k, v = st.valor * (d.ronda && d.ronda.doble ? 2 : 1);
       return '<button type="button" class="seq-v21-stake seq-v21-stake-' + k + (sel ? ' sel' : '') + '"' + (locked ? ' disabled' : '') + ' onclick="SEQDuels21.stake(\'' + k + '\')">' +
         stakeIcon(k) + '<span class="seq-v21-stake-name">' + st.nombre + '</span>' +
-        '<span class="seq-v21-stake-val"><i>+' + st.valor + '</i><i>−' + st.valor + '</i></span></button>';
+        '<span class="seq-v21-stake-val"><i>+' + v + '</i><i>−' + v + '</i></span></button>';
     }).join('') + '</div>';
   }
   function vsStakes(d) {
@@ -150,12 +153,14 @@
   function resolvedLine(d) {
     var list = d.rondas_resueltas || [], r = list[list.length - 1];
     if (!r) return '';
-    var okMe = !!r.mi_correcta, okRv = !!r.rival_correcta, h = H();
+    var okMe = !!r.mi_correcta, okRv = !!r.rival_correcta, h = H(), x = r.doble ? 2 : 1;
     var ico = function (ok) { return h ? h.ico(ok ? 'correcto' : 'incorrecto') : (ok ? '✓' : '✗'); };
-    return '<div class="seq-v21-resolved"><div class="seq-v21-res-row ' + (okMe ? 'ok' : 'bad') + '"><span>Tú</span>' + ico(okMe) + stakeLabel(stakeKey(r.mi_apuesta)) +
-      '<b>' + (okMe ? '+' : '−') + (STAKES[stakeKey(r.mi_apuesta) || 'cuerdo'].valor) + '</b></div>' +
-      '<div class="seq-v21-res-row ' + (okRv ? 'ok' : 'bad') + '"><span>Rival</span>' + ico(okRv) + stakeLabel(stakeKey(r.apuesta_rival)) +
-      '<b>' + (okRv ? '+' : '−') + (STAKES[stakeKey(r.apuesta_rival) || 'cuerdo'].valor) + '</b></div></div>';
+    var mine = '<div class="seq-v21-res-row ' + (okMe ? 'ok' : 'bad') + '"><span>Tú</span>' + ico(okMe) + stakeLabel(stakeKey(r.mi_apuesta)) +
+      '<b>' + (okMe ? '+' : '−') + (STAKES[stakeKey(r.mi_apuesta) || 'cuerdo'].valor * x) + '</b></div>';
+    // En la niebla el servidor no envía lo del rival: su fila no se pinta.
+    var his = r.oculta ? '' : '<div class="seq-v21-res-row ' + (okRv ? 'ok' : 'bad') + '"><span>Rival</span>' + ico(okRv) + stakeLabel(stakeKey(r.apuesta_rival)) +
+      '<b>' + (okRv ? '+' : '−') + (STAKES[stakeKey(r.apuesta_rival) || 'cuerdo'].valor * x) + '</b></div>';
+    return '<div class="seq-v21-resolved">' + mine + his + '</div>';
   }
   function questionHtml(d, h) {
     var r = d.ronda, idx = num(r.indice), qn = (d.preguntas || [])[idx];
@@ -188,7 +193,7 @@
     }
     if (fase === 'apuesta') {
       var locked = !!r.mi_apuesta;
-      out += '<div class="seq-v21-prompt">' + (locked ? 'Apuesta bloqueada' : 'Elige tu apuesta') + '</div>' + stakeButtons(d, locked);
+      out += '<div class="seq-v21-prompt">' + (locked ? 'Apuesta bloqueada' : (r.doble ? 'Ronda doble: elige tu apuesta' : 'Elige tu apuesta')) + '</div>' + stakeButtons(d, locked);
       out += locked ? '<p class="stats-section-sub seq-v21-wait">' + (r.rival_bloqueada ? 'Tu rival ya ha elegido.' : 'Esperando a tu rival…') + '</p>' + (r.mi_apuesta_auto ? '<p class="stats-section-sub">Se acabó el tiempo: Cuerdo.</p>' : '') : '';
       return out;
     }

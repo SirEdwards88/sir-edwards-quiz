@@ -68,3 +68,13 @@ test('Todas las variantes tienen tema definido y el tamaño es 1080×1350 a 2×'
   for (const v of ['standard', 'victory', 'defeat', 'lucidez', 'duel', 'reto']) assert.ok(win.SEQShareCard.THEMES[v], v);
   assert.deepEqual(JSON.parse(JSON.stringify(win.SEQShareCard.SIZE)), { w: 1080, h: 1350, scale: 2 });
 });
+
+test('Duelo múltiple: la clasificación sustituye al cara a cara y la etiqueta nombra el formato', () => {
+  const m = win.SEQShareCard.buildModel({ online: { kind: 'duel', result: 'win', modeLabel: 'por apuestas', unit: 'Puntos', phrase: 'x',
+    ranking: [{ pos: 1, name: 'A', score: 9, me: true }, { pos: 2, name: 'B', score: 5 }, { pos: 3, name: 'C', score: 1 }] } });
+  assert.equal(m.versus, null);
+  assert.equal(m.ranking.length, 3);
+  assert.equal(m.pill, 'DUELO POR APUESTAS');
+  assert.equal(m.unit, 'PUNTOS');
+  assert.match(win.SEQShareCard.shareText({ online: { kind: 'duel', result: 'win', place: 1, ranking: [1, 2, 3] } }), /Duelo múltiple: 1º de 3/);
+});

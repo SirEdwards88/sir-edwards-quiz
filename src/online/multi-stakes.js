@@ -4,7 +4,7 @@
 // el servidor ya ha decidido y envía ENTRADAS (la clave de la apuesta y la respuesta elegida), nunca resultados. Lo que el servidor aún
 // no debe revelar (las apuestas ajenas antes de tiempo, el acierto de la ronda en curso y, en las últimas rondas, los puntos) ni llega.
 // Reglas (las aplica el servidor; aquí solo se explican): cada uno apuesta a su riesgo, las apuestas se revelan juntas y las dos últimas
-// rondas valen doble; en las tres últimas el marcador enseña posiciones, no puntos.
+// rondas valen doble; en esas mismas dos el marcador enseña posiciones, no puntos.
 //
 // Lo llama src/online/multi-duels.js (play) y src/online/duels.js (tick, cada 250 ms). Todo texto del servidor pasa por esc() y los números
 // por num(); las claves de apuesta que van en atributos son siempre constantes de este archivo.
@@ -94,7 +94,7 @@
       return out + (locked && r.mi_apuesta_auto ? '<p class="stats-section-sub">Se acabó el tiempo: Cuerdo.</p>' : '');
     }
     if (fase === 'revelando') return out + '<div class="seq-v21-prompt">Apuestas sobre la mesa</div>' + table(d, h) + '<p class="stats-section-sub seq-v21-wait">La pregunta llega en <span id="seq-m-count"></span>…</p>';
-    if (fase === 'pregunta') return out + table(d, h) + question(d, h);
+    if (fase === 'pregunta') return out + question(d, h);
     return out + '<div class="seq-v21-prompt">Resultado de la ronda</div>' + resolved(d, h);
   }
 
@@ -141,26 +141,56 @@
 
   // ---- Entradas -------------------------------------------------------------------------------------------
   function state() { var h = H(), st = window.SEQDuels && window.SEQDuels._state(); return h && st && st.data && st.data.ronda ? { h: h, st: st, d: st.data } : null; }
+  function base(c) { return c.st.screen === 'duel' ? '/duels/' : '/multi-duels/'; }
   function stake(k) {
     k = key(k); var c = state();
-    if (!k || !c || c.st.screen !== 'multi' || c.d.ronda.fase !== 'apuesta' || c.d.ronda.mi_apuesta || c.st.sending) return;
+    if (!k || !c || (c.st.screen !== 'multi' && c.st.screen !== 'duel') || c.d.ronda.fase !== 'apuesta' || c.d.ronda.mi_apuesta || c.st.sending) return;
     c.st.sending = true;
-    c.h.call('POST', '/multi-duels/' + c.st.id + '/stake', { indice: num(c.d.ronda.indice), apuesta: k }).then(function () {
+    c.h.call('POST', base(c) + c.st.id + '/stake', { indice: num(c.d.ronda.indice), apuesta: k }).then(function () {
       c.st.sending = false; window.SEQDuels.reload();
     }).catch(function (e) { c.st.sending = false; c.h.say(c.h.errText(e), true); window.SEQDuels.reload(); });
   }
   function answer(i) {
     var c = state();
-    if (!c || c.st.screen !== 'multi' || c.d.ronda.fase !== 'pregunta' || c.st.sending) return;
+    if (!c || (c.st.screen !== 'multi' && c.st.screen !== 'duel') || c.d.ronda.fase !== 'pregunta' || c.st.sending) return;
     var idx = num(c.d.ronda.indice), info = c.h.itemInfo((c.d.preguntas || [])[idx]);
     if (!info || !info.options) return;
     var chosen = c.h.optionsFor(c.d.id, idx, info)[num(i)]; if (chosen == null) return;
     var k = c.d.id + ':' + idx; if (ST.sent[k] != null) return;
     c.st.sending = true; ST.sent[k] = chosen;
-    c.h.call('POST', '/multi-duels/' + c.st.id + '/answer', { indice: idx, respuesta: chosen }).then(function () {
+    c.h.call('POST', base(c) + c.st.id + '/answer', { indice: idx, respuesta: chosen }).then(function () {
       c.st.sending = false; window.SEQDuels.reload();
     }).catch(function (e) { c.st.sending = false; delete ST.sent[k]; c.h.say(c.h.errText(e), true); window.SEQDuels.reload(); });
   }
 
-  window.SEQMultiStakes = { play: play, tick: tick, stake: stake, answer: answer, core: { STAKES: STAKES, mult: mult } };
+  // ---- 1 vs 1 por apuestas: misma pantalla que el múltiple, con dos jugadores ------------------------------
+  // El servidor del 1 vs 1 manda la partida en su forma de siempre (mi_apuesta / apuesta_rival…); aquí solo se REORDENA a la forma
+  // del múltiple para pintarla con las mismas piezas. No se calcula nada: lo que no llegó (niebla) sigue sin pintarse.
+  function fromDuel(d, h) {
+    var rv = d.rival || {}, rid = String(rv.id || 'rival'), sess = h.session && h.session();
+    var me = { id: 'yo', es_yo: true, estado: 'aceptado', display_name: sess && sess.display_name || 'Tú', avatar: sess && sess.avatar };
+    var he = { id: rid, es_yo: false, estado: 'aceptado', display_name: rv.display_name, avatar: rv.avatar };
+    var r = d.ronda, m = d.marcador || {}, out = {};
+    for (var k in d) if (Object.prototype.hasOwnProperty.call(d, k)) out[k] = d[k];
+    out.jugadores = [me, he];
+    if (r) {
+      var rr = {}; for (var q in r) if (Object.prototype.hasOwnProperty.call(r, q)) rr[q] = r[q];
+      rr.bloqueadas = (r.mi_apuesta ? ['yo'] : []).concat(r.rival_bloqueada ? [rid] : []);
+      if (r.apuesta_rival && r.mi_apuesta) { rr.apuestas = {}; rr.apuestas.yo = r.mi_apuesta; rr.apuestas[rid] = r.apuesta_rival; } else rr.apuestas = null;
+      rr.respondieron = (r.yo_respondi ? ['yo'] : []).concat(r.rival_respondio ? [rid] : []);
+      out.ronda = rr;
+    }
+    out.rondas_resueltas = (d.rondas_resueltas || []).map(function (x) {
+      var js = [{ id: 'yo', apuesta: x.mi_apuesta, correcta: !!x.mi_correcta }];
+      if (!x.oculta) js.push({ id: rid, apuesta: x.apuesta_rival, correcta: !!x.rival_correcta });
+      return { indice: x.indice, doble: !!x.doble, jugadores: js };
+    });
+    var a = num(m.yo), b = num(m.rival), pa = m.niebla ? num(m.posicion_yo) : a >= b ? 1 : 2, pb = m.niebla ? num(m.posicion_rival) : b >= a ? 1 : 2;
+    out.marcador = { jugadores: [{ id: 'yo', puntos: m.niebla ? null : a, posicion: pa }, { id: rid, puntos: m.niebla ? null : b, posicion: pb }], niebla: !!m.niebla };
+    return out;
+  }
+  function playDuel(d, h) { return play(fromDuel(d, h), h, function (v) { return window.SEQMulti && SEQMulti.board ? SEQMulti.board(v, h) : ''; }); }
+  function tickDuel(d, now) { var h = H(); if (h) tick(fromDuel(d, h), now); }
+
+  window.SEQMultiStakes = { playDuel: playDuel, tickDuel: tickDuel, play: play, tick: tick, stake: stake, answer: answer, core: { STAKES: STAKES, mult: mult } };
 })();

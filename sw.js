@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 365;
+const CACHE_VERSION = 366;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -137,7 +137,6 @@ const APP_SHELL = [
   './assets/ui/avatar-desbloqueado.webp',
   './assets/ui/guante.webp',
   './assets/ui/insignia.webp',
-  './assets/ui/marca-duelo.webp',
   './assets/ui/casi.webp',
   './assets/ui/derrota.webp',
   './assets/ui/cofre-medallas.webp',
@@ -722,7 +721,6 @@ const ASSET_REVS = {
   './assets/ui/logros/sello-conseguido.webp': '92112121',
   './assets/ui/logros/sello-secreto.webp': '90114283',
   './assets/ui/logros/silueta-secreta.webp': '045b4b95',
-  './assets/ui/marca-duelo.webp': '329a4844',
   './assets/ui/medalla.webp': '67b76085',
   './assets/ui/mediocre.webp': '99595f15',
   './assets/ui/movil.webp': 'cc6ab1aa',

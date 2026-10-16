@@ -1,4 +1,4 @@
-// Duelo online múltiple 2.4 (cliente): lógica pura, pintado seguro, cableado y que no toca el 1 contra 1.
+// Duelo online múltiple 2.4 (cliente): lógica pura, pintado seguro, cableado y que no toca el 1 vs 1.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -73,7 +73,7 @@ test('resultado y frases: gana el primero, pierden los demás, y el margen elige
 test('elegir modo: apuestas + múltiple ya está activo', () => {
   const { M, S, H } = load();
   let h = M.render('pickkind', H);
-  assert.match(h, /1 contra 1/); assert.match(h, /SEQMulti\.startPick\(\)/);
+  assert.match(h, /1 vs 1/); assert.match(h, /SEQMulti\.startPick\(\)/);
   S.pickModo = 'stakes';
   h = M.render('pickkind', H);
   assert.ok(!/Muy pronto/.test(h)); assert.match(h, /SEQMulti\.startPick\(\)/);
@@ -149,9 +149,9 @@ test('acciones: solo nombres conocidos y ruta propia /multi-duels', () => {
   M.listAction('mal', 'accept'); M.listAction('MMMMMMMMMM', 'start'); assert.equal(calls.length, 2 - 1 + 1 - 1 + 1 - 1 + 1, 'lista: solo aceptar o rechazar');
   M.one(); assert.deepEqual(calls[calls.length - 1], ['pick1v1', 'duel', 'classic']);
 });
-test('no toca el 1 contra 1: el módulo no registra estadísticas ni logros y duels.js solo delega', () => {
+test('no toca el 1 vs 1: el módulo no registra estadísticas ni logros y duels.js solo delega', () => {
   const code = SRC.replace(/^\s*\/\/.*$/gm, '');
-  assert.ok(!/registerOnlineDuelResult|recordDuel/.test(code), 'el múltiple no cuenta para estadísticas de Duelo 1 contra 1');
+  assert.ok(!/registerOnlineDuelResult|recordDuel/.test(code), 'el múltiple no cuenta para estadísticas de Duelo 1 vs 1');
   assert.ok(!/innerHTML\s*=/.test(code), 'el módulo devuelve HTML; nunca lo inserta él');
   const d = read('src/online/duels.js');
   assert.match(d, /features\(\)\.multi_duel && window\.SEQMulti/);
@@ -186,11 +186,11 @@ const mreto = (o = {}) => ({
   jugadores: [J(0, 'Edu', { estado: 'aceptado', empezado: false, terminado: false }), J(1, 'Ana', { estado: 'invitado', es_creador: false, empezado: false, terminado: false }), J(2, 'Luis', { estado: 'invitado', es_creador: false, empezado: false, terminado: false })],
   yo: { invitacion: 'aceptado', empezado: false, terminado: false, aciertos: 0, actual: null }, resultado: null, ...o,
 });
-test('Reto: elegir «1 contra 1 / Múltiple» y los amigos (todos, sin exigir presencia); sigue al modo', () => {
+test('Reto: elegir «1 vs 1 / Múltiple» y los amigos (todos, sin exigir presencia); sigue al modo', () => {
   const { M, H, S, calls } = load();
   S.pickKind = 'reto';
   let h = M.render('pickkind', H);
-  assert.match(h, /Reto/); assert.match(h, /Cada uno juega cuando pueda/); assert.ok(!/Clasificación final/.test(h));
+  assert.match(h, /Reto/); assert.match(h, /A su ritmo/); assert.ok(!/Clasificación final/.test(h));
   M.one(); assert.deepEqual(calls[calls.length - 1], ['pick1v1', 'reto', 'classic']);
   S.lists.friends = { friends: [{ player: { id: 'AAAAAAAAA1', display_name: 'Ana' }, online: false }, { player: { id: 'AAAAAAAAA2', display_name: 'Luis' }, online: true }, { player: { id: 'AAAAAAAAA3', display_name: 'Eva' }, online: false }] };
   M.startPick(); h = M.render('multipick', H);
