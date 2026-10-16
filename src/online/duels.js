@@ -201,6 +201,7 @@
     var du = L.duels ? L.duels.filter(function (d) { return (d.estado === 'pendiente' && d.soy === 'rival') || d.estado === 'aceptado' || d.estado === 'en_curso'; }).length : 0;
     du += window.SEQMulti ? SEQMulti.pendingCount(L.multis) : 0;
     var re = L.retos ? L.retos.filter(function (r) { return (r.estado === 'pendiente' && r.soy === 'rival') || (r.estado === 'aceptado' && !r.yo.terminado); }).length : 0;
+    re += window.SEQMulti ? SEQMulti.pendingCountMReto(L.mretos) : 0;
     // Duelo en directo en marcha (p. ej. tras recargar): aviso arriba del todo, porque a los 60 s sin volver se pierde.
     var live = L.duels ? L.duels.filter(function (d) { return d.estado === 'en_curso'; })[0] : null;
     var liveM = !live && L.multis ? L.multis.filter(function (d) { return d.estado === 'en_curso' && d.mi_estado === 'aceptado'; })[0] : null;
@@ -250,6 +251,7 @@
         recordFromList(S.lists.duels, 'duel'); // solo los que este dispositivo vio en juego: nunca se recuentan antiguos
       }).catch(function () {}) : null,
       f.multi_duel ? call('GET', '/multi-duels').then(function (d) { S.lists.multis = d.duels || []; }).catch(function () {}) : null,
+      f.multi_reto ? call('GET', '/multi-challenges').then(function (d) { S.lists.mretos = d.retos || []; }).catch(function () {}) : null,
       f.async_challenges ? call('GET', '/challenges').then(function (d) { S.lists.retos = d.challenges || []; recordFromList(S.lists.retos, 'reto'); }).catch(function () {}) : null,
     ]).then(function () { renderCards(); if (S.screen && S.screen !== 'duel' && S.screen !== 'reto' && S.screen !== 'multi') render(); });
   }
@@ -260,6 +262,8 @@
     if (!active()) return;
     stopTimers();
     try { if (typeof closeDuelPanels === 'function') closeDuelPanels(); } catch (e) {}
+    // 2.5: «mreto» = Reto múltiple; se comporta como un Reto (mismo reloj, sondeo y partida) con otra ruta y otras pantallas.
+    S.isMulti = screen === 'mreto'; if (S.isMulti) screen = 'reto';
     S.screen = screen; S.id = id ? safeId(id) : null; S.data = null; S.msg = ''; S.lastIdx = -1; S.shown = null; S.streak = 0;
     var home = $('duel-home'); if (home) home.style.display = 'none';
     var root = $('seq-duel-root'); if (root) root.style.display = 'block';
@@ -285,7 +289,7 @@
   }
 
   // ---- Carga y sondeo de una partida -------------------------------------------
-  function path() { return (S.screen === 'duel' ? '/duels/' : S.screen === 'multi' ? '/multi-duels/' : '/challenges/') + S.id; }
+  function path() { return (S.screen === 'duel' ? '/duels/' : S.screen === 'multi' ? '/multi-duels/' : S.isMulti ? '/multi-challenges/' : '/challenges/') + S.id; }
   // Cada load() lleva un número de secuencia: si llegan respuestas
   // desordenadas (dos peticiones en vuelo), solo se aplica la más reciente.
   // Sin esto, un estado viejo podía pintarse encima de uno nuevo.
@@ -316,6 +320,8 @@
   function recordResult(d) {
     if (!d || (S.screen !== 'duel' && S.screen !== 'reto')) return;
     var kind = S.screen;
+    // 2.5: el Reto múltiple no cuenta para estadísticas ni logros de Duelo (solo XP, que da el servidor); sí avisa de la subida de nivel.
+    if (S.isMulti) { if (d.estado === 'aceptado' && d.yo && d.yo.empezado) markLevel('mreto', S.id); return; }
     if (kind === 'duel' && d.estado === 'en_curso') { markPlaying(kind, S.id); markLevel(kind, S.id); }
     if (kind === 'reto' && d.estado === 'aceptado' && d.yo && d.yo.empezado) { markPlaying(kind, S.id); markLevel(kind, S.id); }
     if (d.estado === 'completado') { recordDuel(d, S.id, kind); forgetPlaying(kind, S.id); }
@@ -462,7 +468,7 @@
   }
   function retoAction(action) {
     if (!S.id) return;
-    act('POST', '/challenges/' + S.id + '/' + action, undefined, function (d) {
+    act('POST', path() + '/' + action, undefined, function (d) {
       if (action === 'rematch') { open('reto', d.id); return; }
       S.gotSeq = ++S.reqSeq;
       S.offset = num(d.server_now) - Date.now(); S.data = d; render(); schedule();
@@ -471,8 +477,9 @@
   function listAction(kind, id, action) {
     id = safeId(id); if (!id) return;
     var base = kind === 'duel' ? '/duels/' : '/challenges/';
+    if (kind === 'mreto') base = '/multi-challenges/';
     act('POST', base + id + '/' + action, undefined, function (d) {
-      if (action === 'accept') open(kind === 'duel' ? 'duel' : 'reto', d.id);
+      if (action === 'accept') open(kind === 'duel' ? 'duel' : kind === 'mreto' ? 'mreto' : 'reto', d.id);
       else refreshSummary();
     });
   }
@@ -486,7 +493,7 @@
   function pickMode(rivalId) {
     rivalId = safeId(rivalId); if (!rivalId) return;
     stopTimers();
-    S.pickKind = 'reto'; S.pickRival = rivalId; S.screen = 'retomode'; S.id = null; S.data = null; S.shown = null; S.lists.retoModes = null; S.pickSurvival = false;
+    S.pickRivals = null; S.pickKind = 'reto'; S.pickRival = rivalId; S.screen = 'retomode'; S.id = null; S.data = null; S.shown = null; S.lists.retoModes = null; S.pickSurvival = false;
     var home = $('duel-home'); if (home) home.style.display = 'none';
     var root = $('seq-duel-root'); if (root) root.style.display = 'block';
     render();
@@ -495,8 +502,25 @@
       if (S.screen === 'retomode') render();
     }).catch(function (e) { say(errText(e), true); });
   }
+  // 2.5: Reto múltiple: tras elegir a los amigos (src/online/multi-duels.js), se elige el modo entre los que TODOS tienen desbloqueados.
+  function pickModeMulti(ids) {
+    ids = (ids || []).map(safeId).filter(Boolean); if (ids.length < 2) return;
+    stopTimers();
+    S.pickKind = 'reto'; S.pickRival = null; S.pickRivals = ids; S.screen = 'retomode'; S.id = null; S.data = null; S.shown = null; S.lists.retoModes = null; S.pickSurvival = false;
+    render();
+    call('GET', '/multi-challenges/modes?rivales=' + ids.map(encodeURIComponent).join(',')).then(function (d) {
+      S.lists.retoModes = (d && d.modos) || [];
+      if (S.screen === 'retomode') render();
+    }).catch(function (e) { say(errText(e), true); });
+  }
   function createReto(modo, nivel) {
-    var rivalId = safeId(S.pickRival); if (!rivalId || !RETO_MODE_UI[modo]) return;
+    var rivalId = safeId(S.pickRival);
+    if (S.pickRivals && S.pickRivals.length && RETO_MODE_UI[modo]) {
+      if (modo === 'supervivencia' && !NIVEL_UI[nivel]) { S.pickSurvival = true; render(); return; }
+      act('POST', '/multi-challenges', { rivales: S.pickRivals, modo: modo, nivel: NIVEL_UI[nivel] ? nivel : undefined }, function (d) { S.pickRivals = null; open('mreto', d.id); });
+      return;
+    }
+    if (!rivalId || !RETO_MODE_UI[modo]) return;
     if (modo === 'supervivencia' && !NIVEL_UI[nivel]) { S.pickSurvival = true; render(); return; }
     act('POST', '/challenges', { rival: rivalId, modo: modo, nivel: NIVEL_UI[nivel] ? nivel : undefined }, function (d) { open('reto', d.id); });
   }
@@ -504,9 +528,10 @@
   function pick(kind, modo) {
     // 2.4: con el Duelo múltiple activo, tras elegir clásico o apuestas se elige «1 contra 1» o «Múltiple».
     if (kind === 'duel' && features().multi_duel && window.SEQMulti) { S.pickKind = 'duel'; S.pickModo = modo === 'stakes' ? 'stakes' : 'classic'; S.screen = 'pickkind'; render(); refreshSummary(); return; }
+    if (kind === 'reto' && features().multi_reto && window.SEQMulti) { S.pickKind = 'reto'; S.pickModo = 'classic'; S.screen = 'pickkind'; render(); refreshSummary(); return; }
     pick1v1(kind, modo);
   }
-  function pick1v1(kind, modo) { S.pickKind = kind === 'duel' ? 'duel' : 'reto'; S.pickModo = modo === 'stakes' ? 'stakes' : 'classic'; S.screen = 'pick'; render(); refreshSummary(); watchPresence(); }
+  function pick1v1(kind, modo) { S.pickRivals = null; S.pickKind = kind === 'duel' ? 'duel' : 'reto'; S.pickModo = modo === 'stakes' ? 'stakes' : 'classic'; S.screen = 'pick'; render(); refreshSummary(); watchPresence(); }
   // En la lista de a quién retar a un duelo en directo, la presencia se refresca cada 15 s (solo mientras esa pantalla está abierta y visible).
   var PRESENCE_MS = 15000;
   function watchPresence() {
@@ -641,6 +666,7 @@
   }
   function rowFor(kind, x) {
     if (x && x.tipo === 'duelo_multi' && window.SEQMulti) return SEQMulti.row(x, HELPERS);
+    if (x && x.tipo === 'reto_multi' && window.SEQMulti) return SEQMulti.rowReto(x, HELPERS);
     var p = player(x.rival), id = safeId(x.id);
     var sub = ESTADO[x.estado] || '';
     var btns = '';
@@ -663,6 +689,7 @@
     if (!list) return h + '<p class="stats-section-sub">Cargando…</p>';
     // 2.4: las salas múltiples comparten lista con los duelos 1 contra 1 (cada una con su fila), por fecha.
     if (kind === 'duel' && window.SEQMulti && S.lists.multis && S.lists.multis.length) list = list.concat(S.lists.multis).sort(function (a, b) { return num(b.creado_at) - num(a.creado_at); });
+    if (kind === 'reto' && window.SEQMulti && S.lists.mretos && S.lists.mretos.length) list = list.concat(S.lists.mretos).sort(function (a, b) { return num(b.creado_at) - num(a.creado_at); });
     var act_ = list.filter(function (x) { return ['pendiente', 'aceptado', 'en_curso'].indexOf(x.estado) >= 0; });
     var hist = list.filter(function (x) { return act_.indexOf(x) < 0; });
     if (!act_.length && !hist.length) return h + (kind === 'duel' ? emptyState('vacio-general', 'Aún no hay duelos', 'Cuando juegues, aparecerán aquí.') : emptyState('vacio-general', 'Aún no hay retos', 'Cuando retes o te reten, aparecerán aquí.'));
@@ -751,10 +778,10 @@
   }
   function quick(kind, id) { S.pickKind = kind === 'duel' ? 'duel' : 'reto'; create(id); }
   function renderRetoMode() {
-    var rid = safeId(S.pickRival), fl = S.lists.friends, name = 'tu amigo';
+    var rid = safeId(S.pickRival), fl = S.lists.friends, name = 'tu amigo', multi = !!(S.pickRivals && S.pickRivals.length);
     (fl && fl.friends || []).forEach(function (f) { var p = player(f.player); if (p.id === rid) name = p.name; });
-    var h = header('Elige el modo', 'Reto a ' + name, backToList);
-    h += '<p class="stats-section-sub">Los dos jugaréis exactamente la misma partida. Solo aparecen los modos que los dos tenéis desbloqueados.</p>';
+    var h = header('Elige el modo', multi ? 'Reto múltiple · ' + (S.pickRivals.length + 1) + ' jugadores' : 'Reto a ' + name, backToList);
+    h += multi ? '<p class="stats-section-sub">Todos jugaréis exactamente la misma partida. Solo aparecen los modos que todos tenéis desbloqueados.</p>' : '<p class="stats-section-sub">Los dos jugaréis exactamente la misma partida. Solo aparecen los modos que los dos tenéis desbloqueados.</p>';
     var list = S.lists.retoModes;
     if (!list) return h + '<p class="stats-section-sub">Cargando…</p>';
     return h + '<div class="history-list seq-d-modes">' + list.map(function (m) {
@@ -778,7 +805,7 @@
   // Deliberadamente NO se pinta nada del rival salvo su nombre y avatar: ni
   // aciertos, ni respuestas, ni si ya ha terminado. El resultado es sorpresa.
   function playScreen(kind, d, idx, qn, mine) {
-    var p = player(d.rival);
+    var p = d.tipo === 'reto_multi' ? { avatar: '', name: num((d.jugadores || []).length) + ' jugadores' } : player(d.rival);
     topbarShown(false);
     var h = '<div class="seq-d-toprow">' + (kind === 'duel' ? '<button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.leaveDuel()">← Duelo online</button>'
       : '<button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.open(\'retos\')">← Retos</button>') + '</div>';
@@ -1009,8 +1036,13 @@
   }
   function renderReto() {
     var d = S.data;
-    var h = gameHeader(ico('retos') + 'Reto', "SEQDuels.open('retos')");
+    var h = gameHeader(ico('retos') + (S.isMulti ? 'Reto múltiple' : 'Reto'), "SEQDuels.open('retos')");
     if (!d) return h + '<p class="stats-section-sub">Cargando…</p>';
+    if (S.isMulti) {
+      var mh = window.SEQMulti ? SEQMulti.renderMReto(d, HELPERS, h) : '';
+      if (mh !== null) { S.shown = null; return mh; }
+      return d.yo.actual ? playScreen('reto', d, d.yo.actual.indice, d.yo.actual.pregunta, null) : h + '<p class="stats-section-sub">Cargando…</p>';
+    }
     var p = player(d.rival), now = serverNow();
     h += '<p class="stats-section-sub seq-d-vs">Tú contra ' + p.avatar + ' ' + p.name + '</p>';
     if (d.estado !== 'completado') h += '<p class="seq-d-mode-line">' + modeIco(retoMode(d)) + '<b>' + esc(retoModeName(d)) + '</b></p>';
@@ -1123,7 +1155,7 @@
   function shareResultCard() {
     try {
       var d = S.data, r = d && d.resultado;
-      if (S.screen === 'multi' && window.SEQMulti && r && d.estado === 'completado') { var mt = SEQMulti.shareText(d); if (mt && typeof shareResultAsText === 'function') shareResultAsText(mt); return; }
+      if ((S.screen === 'multi' || S.isMulti) && window.SEQMulti && r && d.estado === 'completado') { var mt = SEQMulti.shareText(d); if (mt && typeof shareResultAsText === 'function') shareResultAsText(mt); return; }
       if (!r || d.estado !== 'completado' || typeof shareResultImage !== 'function') return;
       var res = r.ganador === 'yo' ? 'win' : r.ganador === 'rival' ? 'loss' : 'draw';
       var rv = d.rival || {}, sess = session(), kind = S.screen === 'duel' ? 'duel' : 'reto';
@@ -1149,12 +1181,13 @@
     avatar: avatar, questionBlock: questionBlock, classicWin: classicWin, gameHeader: gameHeader, topbarShown: topbarShown,
     emptyState: emptyState, open: function (a, b) { open(a, b); }, refresh: function () { return refreshSummary(); },
     resultSoundOnce: resultSoundOnce, xpFor: xpFor, syncXpOnce: syncXpOnce, xpChipHtml: xpChipHtml, act: act,
-    render: function () { render(); }, pick1v1: function (m) { pick1v1('duel', m); }, backToList: backToList,
+    modeLine: function (d) { return '<p class="seq-d-mode-line">' + modeIco(retoMode(d)) + '<b>' + esc(retoModeName(d)) + '</b></p>'; }, retoModeName: retoModeName,
+    render: function () { render(); }, pick1v1: function (k, m) { if (m === undefined && k !== 'reto' && k !== 'duel') { m = k; k = 'duel'; } pick1v1(k || 'duel', m); }, pickModeMulti: pickModeMulti, backToList: backToList,
     apply: function (d) { S.gotSeq = ++S.reqSeq; S.offset = num(d.server_now) - Date.now(); S.data = d; render(); schedule(); }
   };
   window.SEQDuels = {
     shareResult: shareResultCard, leaveDuel: leaveDuel, answerText: answerText, createReto: createReto, pickMode: pickMode,
-    open: open, back: back, pick: pick, pick1v1: function (m) { pick1v1('duel', m); }, create: create, quick: quick,
+    open: open, back: back, pick: pick, pick1v1: function (m) { pick1v1('duel', m); }, pickModeMulti: pickModeMulti, create: create, quick: quick,
     duelAction: duelAction, retoAction: retoAction, listAction: listAction, answer: answer,
     doSearch: doSearch, friendAdd: friendAdd, friendResp: friendResp, reload: load,
     onAccountChange: onAccountChange, onShow: onShow,

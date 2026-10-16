@@ -21,7 +21,8 @@ function load() {
     questionBlock: (scope, k) => '<q k=' + k + '>', classicWin: () => ({ k: 2 }),
     resultSoundOnce() {}, xpFor: (_k, _d, a) => 10 * num(a), syncXpOnce() {}, xpChipHtml: (x) => '<xp>' + x + '</xp>',
     render() {}, refresh() {}, open: (a, b) => calls.push(['open', a, b]), apply: (d) => calls.push(['apply', d.id]),
-    act: (m, p, b, then) => { calls.push([m, p, b]); then && then({ id: 'NNNNNNNNNN' }); }, pick1v1: (m) => calls.push(['pick1v1', m]),
+    act: (m, p, b, then) => { calls.push([m, p, b]); then && then({ id: 'NNNNNNNNNN' }); }, pick1v1: (k, m) => calls.push(['pick1v1', k, m]), pickModeMulti: (ids) => calls.push(['pickModeMulti', ids]),
+    modeLine: () => '<mode>', retoModeName: (x) => 'Modo ' + (x && x.modo), left: () => '2 d 23 h',
   };
   const ctx = vm.createContext({ SEQDuels: { _h: H }, Math, String, Number, Object, isFinite, console });
   ctx.window = ctx;
@@ -146,7 +147,7 @@ test('acciones: solo nombres conocidos y ruta propia /multi-duels', () => {
   M.action('hackea'); assert.equal(calls.length, 0);
   M.action('ready'); assert.deepEqual(calls[0], ['POST', '/multi-duels/MMMMMMMMMM/ready', undefined]);
   M.listAction('mal', 'accept'); M.listAction('MMMMMMMMMM', 'start'); assert.equal(calls.length, 2 - 1 + 1 - 1 + 1 - 1 + 1, 'lista: solo aceptar o rechazar');
-  M.one(); assert.deepEqual(calls[calls.length - 1], ['pick1v1', 'classic']);
+  M.one(); assert.deepEqual(calls[calls.length - 1], ['pick1v1', 'duel', 'classic']);
 });
 test('no toca el 1 contra 1: el módulo no registra estadísticas ni logros y duels.js solo delega', () => {
   const code = SRC.replace(/^\s*\/\/.*$/gm, '');
@@ -177,4 +178,61 @@ test('compartir: texto plano con la clasificación y sin HTML', () => {
   const t = M.shareText({ modo: 'stakes', resultado: { clasificacion: [{ posicion: 1, display_name: 'Ana', puntuacion: 7 }, { posicion: 2, display_name: 'Edu', puntuacion: 3 }] } });
   assert.match(t, /por apuestas/); assert.match(t, /1\.º Ana · 7/); assert.match(t, /2\.º Edu · 3/);
   assert.equal(M.shareText({}), '');
+});
+
+// ---- Reto múltiple (2.5) ----
+const mreto = (o = {}) => ({
+  id: 'RRRRRRRRRR', tipo: 'reto_multi', estado: 'pendiente', soy: 'creador', modo: 'estandar', nivel: null, n_preguntas: 20, server_now: 5000, expira_at: 9000,
+  jugadores: [J(0, 'Edu', { estado: 'aceptado', empezado: false, terminado: false }), J(1, 'Ana', { estado: 'invitado', es_creador: false, empezado: false, terminado: false }), J(2, 'Luis', { estado: 'invitado', es_creador: false, empezado: false, terminado: false })],
+  yo: { invitacion: 'aceptado', empezado: false, terminado: false, aciertos: 0, actual: null }, resultado: null, ...o,
+});
+test('Reto: elegir «1 contra 1 / Múltiple» y los amigos (todos, sin exigir presencia); sigue al modo', () => {
+  const { M, H, S, calls } = load();
+  S.pickKind = 'reto';
+  let h = M.render('pickkind', H);
+  assert.match(h, /Reto/); assert.match(h, /Cada uno juega cuando pueda/); assert.ok(!/Clasificación final/.test(h));
+  M.one(); assert.deepEqual(calls[calls.length - 1], ['pick1v1', 'reto', 'classic']);
+  S.lists.friends = { friends: [{ player: { id: 'AAAAAAAAA1', display_name: 'Ana' }, online: false }, { player: { id: 'AAAAAAAAA2', display_name: 'Luis' }, online: true }, { player: { id: 'AAAAAAAAA3', display_name: 'Eva' }, online: false }] };
+  M.startPick(); h = M.render('multipick', H);
+  assert.match(h, /3 días/); assert.ok(!/Sin conexión/.test(h)); assert.match(h, /toggle\('AAAAAAAAA1'\)/);
+  M.toggle('AAAAAAAAA1'); M.toggle('AAAAAAAAA2');
+  h = M.render('multipick', H); assert.match(h, /SEQMulti\.next\(\)/); assert.match(h, /Elegir el modo · 3 jugadores/);
+  M.next(); assert.equal(JSON.stringify(calls[calls.length - 1]), JSON.stringify(['pickModeMulti', ['AAAAAAAAA1', 'AAAAAAAAA2']]));
+});
+test('Reto: pantallas de invitación, espera, tu turno, parte hecha y partida (null → juega el Reto de siempre)', () => {
+  const { M, H } = load();
+  let h = M.renderMReto(mreto({ soy: 'invitado', yo: { invitacion: 'invitado' } }), H, '<head>');
+  assert.match(h, /te ha retado/); assert.match(h, /retoAction\('accept'\)/); assert.match(h, /retoAction\('reject'\)/);
+  h = M.renderMReto(mreto(), H, '<head>'); assert.match(h, /Esperando respuestas/); assert.match(h, /retoAction\('cancel'\)/);
+  h = M.renderMReto(mreto({ soy: 'invitado' }), H, '<head>'); assert.ok(!/retoAction\('cancel'\)/.test(h), 'solo el creador cancela');
+  h = M.renderMReto(mreto({ estado: 'aceptado' }), H, '<head>'); assert.match(h, /Tu turno, aspirante/); assert.match(h, /retoAction\('start'\)/);
+  h = M.renderMReto(mreto({ estado: 'aceptado', yo: { invitacion: 'aceptado', empezado: true, terminado: true, aciertos: 12 } }), H, '<head>'); assert.match(h, /Tu parte está hecha: 12\/20/);
+  assert.equal(M.renderMReto(mreto({ estado: 'aceptado', yo: { invitacion: 'aceptado', empezado: true, terminado: false, actual: { indice: 0 } } }), H, '<head>'), null);
+  h = M.renderMReto(mreto({ yo: { invitacion: 'rechazado' } }), H, '<head>'); assert.match(h, /Has rechazado/);
+});
+test('Reto: final con clasificación (también quien no jugó), sin revancha, y cancelado/expirado con su texto', () => {
+  const { M, H } = load();
+  const c = (i, pos, pt, o = {}) => ({ id: 'JJJJJJJJJ' + i, display_name: ['Edu', 'Ana', 'Luis'][i], avatar: 'x', es_yo: i === 0, posicion: pos, jugo: true, puntuacion: pt, ...o });
+  const h = M.renderMReto(mreto({ estado: 'completado', resultado: { clasificacion: [c(0, 1, 15), c(1, 2, 9), c(2, 3, null, { jugo: false })], mi_posicion: 1, mi_puntuacion: 15, n_jugadores: 3 }, yo: { aciertos: 15 } }), H, '<head>');
+  assert.match(h, /seq-m-rank/); assert.match(h, /Reto múltiple/); assert.match(h, /no jugó/); assert.match(h, /VICTORIA/);
+  assert.ok(!/rematch/.test(h), 'sin revancha'); assert.match(h, /Volver a Retos/);
+  assert.match(M.renderMReto(mreto({ estado: 'cancelado', motivo_fin: 'todos_rechazan' }), H, ''), /rechazaron/);
+  assert.match(M.renderMReto(mreto({ estado: 'expirado' }), H, ''), /Caducado/);
+  assert.match(M.shareText(mreto({ resultado: { clasificacion: [c(0, 1, 15)] } })), /^Reto múltiple en SirEdwards Quiz/);
+});
+test('Reto: filas de la lista y recuento de pendientes', () => {
+  const { M, H } = load();
+  const row = (o) => M.rowReto({ id: 'RRRRRRRRRR', tipo: 'reto_multi', estado: 'pendiente', modo: 'estandar', mi_estado: 'invitado', yo: { terminado: false },
+    jugadores: [J(0, 'Edu'), J(1, 'Ana'), J(2, 'Luis')].map((j, i) => ({ ...j, es_yo: i === 2 })), resultado: null, ...o }, H);
+  assert.match(row({}), /Te han retado/); assert.match(row({}), /listAction\('mreto','RRRRRRRRRR','accept'\)/); assert.match(row({}), /open\('mreto'/);
+  assert.match(row({ mi_estado: 'aceptado', estado: 'aceptado' }), /Te toca jugar/);
+  assert.match(row({ mi_estado: 'aceptado', estado: 'completado', resultado: { mi_posicion: 2, n_jugadores: 3, mi_puntuacion: 9 } }), /2\.º de 3 · 9 aciertos/);
+  assert.equal(M.pendingCountMReto([{ mi_estado: 'invitado', estado: 'pendiente' }, { mi_estado: 'aceptado', estado: 'aceptado', yo: { terminado: false } }, { mi_estado: 'aceptado', estado: 'aceptado', yo: { terminado: true } }, { mi_estado: 'rechazado', estado: 'aceptado' }, { mi_estado: 'invitado', estado: 'completado' }]), 2);
+  assert.equal(M.pendingCountMReto(null), 0);
+});
+test('Reto: el Reto múltiple no registra resultados de Duelo y duels.js lo enlaza a su ruta', () => {
+  const d = read('src/online/duels.js');
+  assert.match(d, /\/multi-challenges\//); assert.match(d, /S\.isMulti = screen === 'mreto'/);
+  assert.match(d, /if \(S\.isMulti\) \{ if \(d\.estado === 'aceptado'/, 'recordResult sale antes de registrar estadísticas');
+  assert.match(d, /features\(\)\.multi_reto && window\.SEQMulti/);
 });
