@@ -49,15 +49,17 @@ const SEQSirEvents = (function () {
 
   var ASSETS = {
     visit: 'assets/character/event_siredwards_visit.webp',
-    broken: 'assets/character/event_siredwards_visit.webp',
+    broken: 'assets/character/event_siredwards_broken.webp',
     tilt: 'assets/character/event_siredwards_animo.webp',
     comeback: 'assets/character/event_siredwards_comeback.webp',
-    weak: 'assets/character/event_siredwards_visit.webp',
+    weak: 'assets/character/event_siredwards_weak.webp',
     record: 'assets/character/event_siredwards_record.webp',
     streak: 'assets/character/event_siredwards_streak.webp',
     day: 'assets/character/event_siredwards_day.webp',
     night: 'assets/character/event_siredwards_night.webp'
   };
+  // La visita alterna entre dos imágenes (libreta y pañuelo) para no ser siempre la misma.
+  var VISIT_ASSETS = ['assets/character/event_siredwards_visit.webp', 'assets/character/event_siredwards_visit2.webp'];
   var LABELS = {};                  // sin rótulos: Sir Edwards y su frase bastan
 
   // Frases. `h` (opcional) limita la frase a esas horas locales (para que no mienta con la hora).
@@ -319,11 +321,11 @@ const SEQSirEvents = (function () {
     var t = ctx && ctx.recent && ctx.recent[type];
     return !(typeof t === 'number' && nowMs - t < (type === 'weak' ? WEAK_MS : (type === 'day' || type === 'night') ? DAYNIGHT_MS : RECENT_MS));
   }
-  function done(state, ctx, type, text, nowMs) {
+  function done(state, ctx, type, text, nowMs, rng) {
     if (type !== 'streak') state.shown[type] = (state.shown[type] || 0) + 1;   // el hito de racha se cuenta en state.milestones
     state.count++;
     state.lastAt = nowMs; state.lastAnswer = state.answers; state.last[type] = text;
-    return { type: type, asset: ASSETS[type], label: LABELS[type] || '', message: text, durationMs: Math.min(5200, 3200 + text.length * 25) };
+    return { type: type, asset: type === 'visit' && rng ? VISIT_ASSETS[Math.min(VISIT_ASSETS.length - 1, Math.floor(rng() * VISIT_ASSETS.length))] : ASSETS[type], label: LABELS[type] || '', message: text, durationMs: Math.min(5200, 3200 + text.length * 25) };
   }
 
   function evaluate(state, ctx, rng) {
@@ -381,7 +383,7 @@ const SEQSirEvents = (function () {
     if (!text) return null;
     // Un hito superado sin evento queda cerrado para no disparar tarde: los inferiores se consideran vistos.
     if (chosen === 'streak') { state.milestones[milestone] = true; MILESTONES.forEach(function (x) { if (x < milestone) state.milestones[x] = true; }); }
-    return done(state, ctx, chosen, text, ctx.nowMs);
+    return done(state, ctx, chosen, text, ctx.nowMs, rng);
   }
 
   return {

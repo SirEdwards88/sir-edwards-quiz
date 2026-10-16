@@ -55,7 +55,7 @@ test('Duelo online y Reto: rival, avatar y marcador del servidor; empate con som
   const d = o('duel', 'win');
   assert.deepEqual([d.variant, d.title, d.character, d.main, d.versus.rival.name, d.versus.rival.avatar, d.player.name], ['duel', 'VICTORIA', 'victory', '18 — 15', 'Bruno', 'reloj', 'Yo']);
   assert.equal(o('reto', 'loss').variant, 'reto');
-  assert.equal(o('reto', 'draw').character, 'hat');
+  assert.equal(o('reto', 'draw').character, 'draw');
   assert.match(o('reto', 'win').pill, /^RETO/);
 });
 test('Sin sesión no hay jugador (la tarjeta no inventa identidad); datos vacíos no lanzan', () => {

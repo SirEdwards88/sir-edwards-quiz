@@ -31,6 +31,7 @@
     victory: 'assets/character/victory',
     defeat: 'assets/character/defeat',
     hat: 'assets/character/hat',
+    draw: 'assets/character/empate',
     phase1: 'assets/character/lucidez-fase1',
     phase2: 'assets/character/lucidez-fase2',
     phase3: 'assets/character/lucidez-fase3',
@@ -107,7 +108,7 @@
       m.outcome = o.result === 'win' || o.result === 'loss' ? o.result : 'draw';
       m.title = outcomeTitle(m.outcome);
       m.pill = (m.variant === 'reto' ? 'RETO' : 'DUELO ONLINE') + (o.modeLabel ? ' · ' + String(o.modeLabel).toUpperCase() : '');
-      m.character = m.outcome === 'win' ? 'victory' : m.outcome === 'loss' ? 'defeat' : 'hat';
+      m.character = m.outcome === 'win' ? 'victory' : m.outcome === 'loss' ? 'defeat' : 'draw';
       m.versus = { me: clampInt(o.myScore), them: clampInt(o.opponentScore),
                    rival: o.rival && o.rival.name ? { name: String(o.rival.name), avatar: o.rival.avatar } : null };
       m.main = m.versus.me + ' — ' + m.versus.them;
@@ -125,7 +126,7 @@
       } else {
         m.outcome = d.result === 'win' || d.result === 'loss' ? d.result : 'draw';
         m.title = outcomeTitle(m.outcome);
-        m.character = m.outcome === 'win' ? 'victory' : m.outcome === 'loss' ? 'defeat' : 'hat';
+        m.character = m.outcome === 'win' ? 'victory' : m.outcome === 'loss' ? 'defeat' : 'draw';
         m.versus = { me: clampInt(d.myScore), them: clampInt(d.opponentScore), rival: null };
         m.main = m.versus.me + ' — ' + m.versus.them; m.mainLabel = '';
       }

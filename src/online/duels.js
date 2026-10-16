@@ -900,7 +900,7 @@
     var moodSrc = res === 'draw' ? 'assets/modes/amigos.webp'
       : res === 'win' ? (big ? 'assets/ui/sombrero-laurel.webp' : 'assets/ui/copa.webp')
       : (big ? 'assets/ui/sombrero-aplastado.webp' : 'assets/ui/bandera-blanca.webp');
-    var charKey = res === 'win' ? 'victory' : res === 'loss' ? 'defeat' : 'victory';
+    var charKey = res === 'win' ? 'victory' : res === 'loss' ? 'defeat' : 'empate';
     var stakes = kind === 'duel' && d.modo === 'stakes';
     var title = kind === 'duel' ? (stakes ? 'Duelo por apuestas' : 'Duelo clásico') : 'Reto · ' + retoModeName(d);
     var diffWord = d.modo === 'muerte_subita' ? (diff === 1 ? 'pregunta de diferencia' : 'preguntas de diferencia') : (diff === 1 ? 'acierto de diferencia' : 'aciertos de diferencia');

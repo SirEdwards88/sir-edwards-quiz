@@ -349,11 +349,11 @@ test('rotación: las frases raras también usan bolsa (una por hora si dependen 
 const wrong = (st, t, hour = 14, extra = {}, rng = ALWAYS) => S.evaluate(st, { nowMs: t, hour, streak: 0, correct: false, last: false, blocked: false, ...extra }, rng);
 function run(st, n, t0 = 0) { for (let i = 0; i < n; i++) ans(st, t0 + i, 14, i + 1, {}, NEVER); }
 
-test('racha rota: tras 5 o más aciertos seguidos y un fallo; cita la racha real; usa la imagen de visita', () => {
+test('racha rota: tras 5 o más aciertos seguidos y un fallo; cita la racha real; usa su propia imagen', () => {
   const st = S.newState(); run(st, 7);
   const ev = wrong(st, 10);
   assert.ok(ev); assert.equal(ev.type, 'broken'); assert.equal(ev.label, '');
-  assert.equal(ev.asset, S.ASSETS.visit);
+  assert.equal(ev.asset, S.ASSETS.broken);
   assert.ok(!/\{n\}/.test(ev.message));
   const long = S.newState(); run(long, 23);
   const e2 = wrong(long, 10);
@@ -548,4 +548,18 @@ test('ánimo: desde el 2.º fallo seguido con probabilidad creciente, una vez po
   const all = S.PHRASES.tilt.low.concat(S.PHRASES.tilt.high);
   all.forEach((t) => { assert.ok(!/estúpid|inútil|torpe/i.test(t), t); assert.ok(!/\b(dos|tres|cuatro|cinco)\s+(fallos|errores|seguidas)/i.test(t), 'sin cifras fijas: ' + t); assert.ok(t.length <= 110, t); });
   assert.equal(new Set(all).size, all.length, 'sin frases repetidas');
+});
+
+test('imágenes de los eventos: cada tipo tiene la suya, existe y está en sw.js; la visita alterna entre dos', () => {
+  ['tilt', 'broken', 'weak', 'record', 'streak', 'comeback', 'day', 'night'].forEach((t) => {
+    const f = S.ASSETS[t]; assert.ok(f, t); assert.ok(fs.existsSync(new URL('../' + f, import.meta.url)), f); assert.ok(read('sw.js').includes(f.replace('assets/', './assets/')), 'sw.js: ' + f);
+  });
+  assert.equal(new Set(['tilt', 'broken', 'weak', 'record', 'streak', 'comeback', 'day', 'night', 'visit'].map((t) => S.ASSETS[t])).size, 9, 'ningún tipo comparte imagen');
+  ['assets/character/event_siredwards_visit2.webp', 'assets/character/empate.webp'].forEach((f) => { assert.ok(fs.existsSync(new URL('../' + f, import.meta.url)), f); assert.ok(read('sw.js').includes(f.replace('assets/', './assets/')), f); });
+  const mk = () => { const st = S.newState(); st.answers = 5; st.lastAt = null; return st; };
+  const v = (r) => S.evaluate(mk(), { nowMs: 1e7, hour: 13, streak: 1, correct: true, last: false, blocked: false, noStreak: true, recent: {} }, r);
+  let calls = 0; const a = v(() => { calls++; return 0; });
+  let k = 0; const b = v(() => (++k === calls ? 0.99 : 0));   // la última tirada es la de la imagen
+  assert.ok(a && b && a.type === 'visit' && b.type === 'visit');
+  assert.notEqual(a.asset, b.asset, 'la visita alterna de imagen');
 });
