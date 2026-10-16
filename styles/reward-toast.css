@@ -1,0 +1,38 @@
+/* Aviso de recompensa de logro (src/ui/reward-toast.js): arriba, como el de modo nuevo, pero más sobrio. */
+.reward-toast {
+  position: fixed; top: 78px; left: 50%; z-index: 9998;
+  display: flex; align-items: center; gap: 14px;
+  min-width: 280px; max-width: min(440px, calc(100vw - 24px));
+  padding: 13px 20px 13px 14px;
+  border-radius: var(--radius-md, 16px);
+  border: 1.5px solid var(--se-gold, #c9992e);
+  background: linear-gradient(135deg, #fffaf0, #f4e8cb);
+  color: #16244a;
+  box-shadow: 0 16px 40px rgba(10, 16, 36, .30), 0 0 0 1px rgba(255, 255, 255, .35) inset, 0 0 26px rgba(201, 153, 46, .28);
+  opacity: 0; pointer-events: none;
+  transform: translate(-50%, -18px) scale(.96);
+  transition: opacity .3s ease, transform .3s ease;
+}
+.reward-toast.show { opacity: 1; transform: translate(-50%, 0) scale(1); }
+[data-theme="dark"] .reward-toast {
+  background: linear-gradient(135deg, #222c57, #171d36);
+  color: #fdf7ea;
+  border-color: rgba(232, 200, 116, .75);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .5), 0 0 26px rgba(201, 153, 46, .22);
+}
+.reward-toast-ico { flex: 0 0 auto; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
+.reward-toast-ico .ach-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 2px 5px rgba(0, 0, 0, .35)); }
+.reward-toast-body { min-width: 0; }
+.reward-toast-kicker { display: block; font-size: 10.5px; font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; color: #8a6414; }
+[data-theme="dark"] .reward-toast-kicker { color: var(--se-gold-light, #e8c874); }
+.reward-toast-name { display: block; margin-top: 2px; font-family: 'Playfair Display', Georgia, serif; font-size: 18px; font-weight: 800; line-height: 1.2; }
+.reward-toast-reward { display: block; margin-top: 3px; font-size: 13.5px; font-weight: 600; opacity: .85; }
+.reward-toast-list { margin: 4px 0 0; padding: 0; list-style: none; display: grid; gap: 3px; }
+.reward-toast-list li { font-size: 14px; font-weight: 700; }
+.reward-toast-list li span { font-weight: 600; opacity: .8; }
+@media (max-width: 600px) {
+  .reward-toast { top: max(10px, env(safe-area-inset-top)); width: calc(100vw - 24px); min-width: 0; padding: 11px 14px 11px 12px; }
+  .reward-toast-ico { width: 42px; height: 42px; }
+  .reward-toast-name { font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .reward-toast { transition: opacity .2s ease; transform: translate(-50%, 0); } }

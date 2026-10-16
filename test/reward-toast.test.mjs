@@ -15,7 +15,7 @@ test('logros sin recompensa: ningún aviso', () => {
 });
 test('un logro con avatar o fragmento: aviso con su nombre', () => {
   const t = load();
-  assert.equal(t.message([m('av_a', 'Imparable')]), 'Logro conseguido: Imparable · avatar desbloqueado');
+  assert.equal(t.message([m('av_a', 'Imparable')]), 'Logro conseguido: Imparable · Avatar desbloqueado');
   assert.equal(t.message([m('frag_a', 'Mente Fracturada')]), 'Logro conseguido: Mente Fracturada · +1 Fragmento de Mente');
 });
 test('varias recompensas se agrupan en un solo aviso, ignorando los logros normales', () => {
