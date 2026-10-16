@@ -183,8 +183,8 @@ test('Rankings PvP: «Tu posición», podio con medallas, insignia de rango y co
     scope: 'friends', board: 'pvp', validado: true, me: { elo: 1265, rank: 2, rango: lord, en_colocacion: false },
     ranking: [{ rank: 1, display_name: 'Ana', avatar: 'sombrero', elo: 1300, rango: lord, en_colocacion: false, is_me: false },
       { rank: 2, display_name: 'Yo', avatar: 'libro', elo: 1265, rango: lord, en_colocacion: false, is_me: true },
-      { rank: 3, display_name: 'Cris', avatar: 'lupa', elo: 1200, rango: cab, en_colocacion: false, is_me: false },
-      { rank: 4, display_name: 'Dani', avatar: 'pipa', elo: 1100, rango: cab, en_colocacion: false, is_me: false },
+      { rank: 3, display_name: 'Cris', avatar: 'gato', elo: 1200, rango: cab, en_colocacion: false, is_me: false },
+      { rank: 4, display_name: 'Dani', avatar: 'caballo', elo: 1100, rango: cab, en_colocacion: false, is_me: false },
       { rank: null, display_name: 'Rita', avatar: 'reloj', elo: 1500, rango: { nombre: 'Sir Edwards' }, en_colocacion: true, is_me: false }],
   });
   await M.loadRankings();

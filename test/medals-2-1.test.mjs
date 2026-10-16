@@ -51,7 +51,7 @@ test('IDs normalizados: master_100/200 y correct_400/800 con alias de los antigu
 test('nombres de los logros nuevos, exactos', () => {
   const c = load();
   const t = (id) => c.ALL_MEDALS.find((m) => m.id === id).title;
-  assert.equal(t('streak_20'), 'Racha de Élite'); assert.equal(t('streak_30'), 'SirEdwards Imparable');
+  assert.equal(t('streak_20'), 'Racha de Élite'); assert.equal(t('streak_30'), 'Imparable');
   assert.equal(t('diurno'), 'Primera Luz'); assert.equal(t('duel_sin_titubear'), 'Sin Titubear');
   assert.equal(t('duel_apuestas_ultima_locura'), 'La Última Locura'); assert.equal(t('duel_apuestas_calculada'), 'Apuesta Calculada');
   assert.equal(t('duel_tres_al_hilo'), 'Caballero Invicto');

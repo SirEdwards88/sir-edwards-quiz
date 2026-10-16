@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 323;
+const CACHE_VERSION = 325;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -429,12 +429,9 @@ const APP_SHELL = [
   './assets/avatars/sombrero.png',
   './assets/avatars/libro.png',
   './assets/avatars/reloj.png',
-  './assets/avatars/lupa.png',
   './assets/avatars/mascara.png',
   './assets/avatars/gato.png',
-  './assets/avatars/pipa.png',
   './assets/avatars/caballo.png',
-  './assets/avatars/reloj_arena.png',
   './assets/avatars/sello.png',
   './assets/avatars/gramofono.png',
   './assets/avatars/buho.png',
@@ -466,10 +463,10 @@ const ASSET_REVS = {
   './assets/audio/secret.mp3': 'fe9a2e00',
   './assets/audio/win.mp3': '3165b8dd',
   './assets/audio/wrong.mp3': '738c1d1c',
-  './assets/avatars/avatar_siredwards_coleccionista.png': 'e673dc90',
-  './assets/avatars/avatar_siredwards_imparable.png': 'fa0e4d0e',
+  './assets/avatars/avatar_siredwards_coleccionista.png': '584b3729',
+  './assets/avatars/avatar_siredwards_imparable.png': '06e74544',
   './assets/avatars/avatar_siredwards_insensato.png': 'e93833f7',
-  './assets/avatars/avatar_siredwards_medianoche.png': '22ff76ca',
+  './assets/avatars/avatar_siredwards_medianoche.png': '1e74df22',
   './assets/avatars/avatar_siredwards_supremo.png': '28ec36fd',
   './assets/avatars/avatar_siredwards_vengador.png': 'bcde96ef',
   './assets/avatars/buho.png': '66608045',
@@ -477,11 +474,8 @@ const ASSET_REVS = {
   './assets/avatars/gato.png': '2197648d',
   './assets/avatars/gramofono.png': 'c0a52977',
   './assets/avatars/libro.png': 'e10102e6',
-  './assets/avatars/lupa.png': '8455a10c',
   './assets/avatars/mascara.png': 'd1b2daef',
-  './assets/avatars/pipa.png': 'b218d2cf',
   './assets/avatars/reloj.png': '090c2ea8',
-  './assets/avatars/reloj_arena.png': 'c6bff30a',
   './assets/avatars/sello.png': 'cde68711',
   './assets/avatars/sombrero.png': 'f0e31e52',
   './assets/cats/arte.webp': '0d91c36e',
