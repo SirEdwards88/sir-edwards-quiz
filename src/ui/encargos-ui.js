@@ -125,18 +125,32 @@ const SEQEncargosUI = (function () {
     if (waited < 15000 && otherToastBusy()) { setTimeout(function () { next(waited + 400); }, 400); return; }
     var t = queue.shift(), n = ensureEl();
     n.className = 'encargos-toast is-' + t.kind;
-    n.innerHTML = '<div class="encargos-toast-main">' + (t.kind === 'progress' ? seqIco('sombrero') : '') + esc(t.main) + '</div>' +
-      (t.sub ? '<div class="encargos-toast-sub">' + esc(t.sub) + '</div>' : '');
+    var o = t.o || {};
+    if (o.name) {
+      // Tarjeta como la de modo nuevo y logro: icono, rótulo, nombre del encargo y, si avanzó, su barra y su contador.
+      // Un contador corto va a la derecha; uno largo («3/5 estándar · 1/2 duelos…») pasa a una línea bajo el nombre.
+      var longAux = !!o.aux && String(o.aux).length > 10;
+      n.innerHTML = '<span class="encargos-toast-ico">' + seqIco('sombrero') + '</span><span class="encargos-toast-body">' +
+        '<span class="encargos-toast-kicker">' + esc(o.kicker || t.main) + '</span>' +
+        '<span class="encargos-toast-name">' + esc(o.name) + '</span>' +
+        (o.frac != null ? '<span class="encargos-toast-bar"><i style="width:' + Math.round(Math.max(0, Math.min(1, o.frac)) * 100) + '%"></i></span>' : '') +
+        (longAux ? '<span class="encargos-toast-detail">' + esc(o.aux) + '</span>' : '') +
+        (o.quip ? '<span class="encargos-toast-quip">' + esc(o.quip) + '</span>' : '') + '</span>' +
+        (o.aux && !longAux ? '<span class="encargos-toast-aux">' + esc(o.aux) + '</span>' : '');
+    } else {
+      n.innerHTML = '<div class="encargos-toast-main">' + (t.kind === 'progress' ? seqIco('sombrero') : '') + esc(t.main) + '</div>' +
+        (t.sub ? '<div class="encargos-toast-sub">' + esc(t.sub) + '</div>' : '');
+    }
     void n.offsetWidth;
     n.classList.add('show');
     clearTimeout(hideT);
-    hideT = setTimeout(function () { n.classList.remove('show'); setTimeout(function () { next(); }, 260); }, 2600);
+    hideT = setTimeout(function () { n.classList.remove('show'); setTimeout(function () { next(); }, 260); }, 4200);
   }
   // kind: 'progress' | 'done' | 'great'
-  function toast(main, kind, sub) {
+  function toast(main, kind, sub, opts) {
     // Hasta la presentación los Encargos no existen para el jugador: el progreso se cuenta, pero sin avisos.
     try { if (typeof SEQEncargosIntro !== 'undefined' && !SEQEncargosIntro.seen()) return; } catch (e) {}
-    queue.push({ main: main, kind: kind || 'progress', sub: sub || '' });
+    queue.push({ main: main, kind: kind || 'progress', sub: sub || '', o: opts || null });
     if (queue.length > 4) queue.splice(0, queue.length - 4);
     if (!showing) next();
   }

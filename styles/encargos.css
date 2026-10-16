@@ -65,18 +65,42 @@
 
 /* ---- Aviso flotante (arriba, sin modal, sin recibir toques) ---- */
 .encargos-toast {
-  position: fixed; left: 50%; top: calc(14px + env(safe-area-inset-top, 0px)); z-index: 10001;
-  transform: translate(-50%, -16px) scale(.96); opacity: 0; pointer-events: none;
-  width: max-content; max-width: min(440px, calc(100vw - 32px)); box-sizing: border-box;
-  padding: 10px 18px; text-align: center; border-radius: 999px;
-  background: rgba(250,243,230,.97); color: #16244a; border: 1px solid rgba(201,153,46,.6);
-  box-shadow: 0 12px 30px rgba(10,16,36,.32);
-  transition: opacity .22s ease, transform .22s ease;
+  position: fixed; left: 50%; top: 78px; z-index: 10001;
+  display: flex; align-items: center; gap: 12px; box-sizing: border-box;
+  min-width: 280px; max-width: min(440px, calc(100vw - 24px));
+  padding: 12px 18px 12px 14px; text-align: left;
+  border-radius: var(--radius-md, 16px); border: 1.5px solid var(--se-gold, #c9992e);
+  background: linear-gradient(135deg, #fffaf0, #f4e8cb); color: #16244a;
+  box-shadow: 0 16px 40px rgba(10,16,36,.30), 0 0 26px rgba(201,153,46,.28);
+  opacity: 0; pointer-events: none; transform: translate(-50%, -18px) scale(.96);
+  transition: opacity .3s ease, transform .3s ease;
 }
 .encargos-toast.show { opacity: 1; transform: translate(-50%, 0) scale(1); }
+[data-theme="dark"] .encargos-toast {
+  background: linear-gradient(135deg, #222c57, #171d36); color: #fdf7ea;
+  border-color: rgba(232,200,116,.75); box-shadow: 0 16px 40px rgba(0,0,0,.5), 0 0 26px rgba(201,153,46,.22);
+}
+.encargos-toast-ico { flex: 0 0 auto; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; }
+.encargos-toast-ico img, .encargos-toast-ico svg { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 2px 5px rgba(0,0,0,.35)); }
+.encargos-toast-body { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.encargos-toast-kicker { font-size: 10.5px; font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; color: #8a6414; }
+[data-theme="dark"] .encargos-toast-kicker { color: var(--se-gold-light, #e8c874); }
+.encargos-toast-name { font-family: 'Playfair Display', Georgia, serif; font-size: 17px; font-weight: 800; line-height: 1.2; }
+.encargos-toast-quip { font-size: 12.5px; font-weight: 600; font-style: italic; opacity: .8; }
+.encargos-toast-detail { font-size: 12.5px; font-weight: 700; opacity: .85; }
+.encargos-toast-bar { display: block; height: 6px; margin-top: 4px; border-radius: 99px; background: rgba(22,36,74,.14); overflow: hidden; }
+[data-theme="dark"] .encargos-toast-bar { background: rgba(255,255,255,.14); }
+.encargos-toast-bar i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #c9992e, #e8c874); }
+.encargos-toast-aux { flex: 0 0 auto; font-size: 15px; font-weight: 800; color: #8a6414; white-space: nowrap; }
+[data-theme="dark"] .encargos-toast-aux { color: var(--se-gold-light, #e8c874); }
+.encargos-toast.is-great { border-color: #e8c874; }
+/* Versión antigua (píldora de una línea), por si un aviso llega sin datos de tarjeta. */
 .encargos-toast-main { font-size: 13.5px; font-weight: 800; }
 .encargos-toast-sub { font-size: 12px; font-weight: 600; opacity: .8; margin-top: 1px; }
-.encargos-toast.is-done { border-color: #2e7d4f; }
-.encargos-toast.is-great { background: linear-gradient(180deg, #2a3560, #1c2340); color: #f6e6b8; border-color: #e8c874; }
-[data-theme="dark"] .encargos-toast { background: rgba(28,35,64,.97); color: #f6e6b8; }
 @media (prefers-reduced-motion: reduce) { .encargos-toast, .home-encargos-fill, .enc-bar-fill { transition: none; } }
+
+/* Avisos de modo nuevo, logro con recompensa y Encargos: algo más cerca del centro, para que se vean al mirar el resultado. */
+@media (max-width: 600px) {
+  .mode-unlock-toast, .reward-toast, .encargos-toast { top: clamp(80px, 17vh, 160px) !important; }
+  .encargos-toast { width: calc(100vw - 24px); min-width: 0; }
+}

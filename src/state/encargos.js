@@ -120,7 +120,12 @@ function encargosToastText(ev) {
 }
 function encargosToastEvents(events) {
   if (!events.length || typeof SEQEncargosUI === 'undefined') return;
-  events.forEach(function (ev) { SEQEncargosUI.toast(encargosToastText(ev), ev.kind === 'g' ? 'great' : 'done', ev.title); });
+  events.forEach(function (ev) {
+    const o = ev.kind === 'm' ? { kicker: 'Encargo saldado', name: ev.title, aux: '+' + ev.xp + ' XP' }
+      : ev.kind === 'b' ? { kicker: 'Encargos saldados', name: ev.title, aux: '+' + ev.xp + ' XP', quip: 'Sigo sin aplaudir.' }
+      : { kicker: 'Gran Encargo cobrado', name: ev.title, aux: '+' + ev.xp + ' XP', quip: 'Qué ambición.' };
+    SEQEncargosUI.toast(encargosToastText(ev), ev.kind === 'g' ? 'great' : 'done', ev.title, o);
+  });
 }
 
 // Avance actual de las misiones activas: { id: cur }.
@@ -187,7 +192,7 @@ function encargosFinishToast(hadCompletion) {
   });
   if (!best) return;
   const m = C.NORMAL_BY_ID[best.id] || C.GREAT_BY_ID[best.id];
-  SEQEncargosUI.toast('Encargo avanzado', 'progress', m.titulo + ' · ' + best.r.label);
+  SEQEncargosUI.toast('Encargo avanzado', 'progress', m.titulo + ' · ' + best.r.label, { kicker: 'Encargo avanzado', name: m.titulo, aux: best.r.label, frac: best.r.frac });
 }
 
 // ---- vista para la pantalla y la tira de inicio -------------------------------------------------------------
