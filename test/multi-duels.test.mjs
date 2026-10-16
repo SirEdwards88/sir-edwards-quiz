@@ -172,3 +172,9 @@ test('cableado: script en index.html, en el shell sin conexión y aviso de invit
   assert.match(C.textFor(p).title, /Ana te invita a un duelo múltiple/);
   assert.equal(C.pendingFrom([], []).length, 0, 'sin tercer argumento sigue igual');
 });
+test('compartir: texto plano con la clasificación y sin HTML', () => {
+  const { M } = load();
+  const t = M.shareText({ modo: 'stakes', resultado: { clasificacion: [{ posicion: 1, display_name: 'Ana', puntuacion: 7 }, { posicion: 2, display_name: 'Edu', puntuacion: 3 }] } });
+  assert.match(t, /por apuestas/); assert.match(t, /1\.º Ana · 7/); assert.match(t, /2\.º Edu · 3/);
+  assert.equal(M.shareText({}), '');
+});

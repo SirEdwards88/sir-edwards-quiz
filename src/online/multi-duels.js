@@ -232,6 +232,7 @@
       '<div class="results-lucidez-stamp show"><span class="stamp-badge tone-' + stamp[1] + '">' + stamp[0] + '</span></div>' +
       '<div class="results-actions">' +
       (d.soy === 'creador' ? '<button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="SEQMulti.action(\'rematch\')">' + H.ico('revancha') + 'Revancha</button>' : '') +
+      '<button class="btn btn-share btn-share-quiet" style="width:100%;margin-top:8px;" onclick="SEQDuels.shareResult()">' + H.ico('compartir') + 'Compartir resultado</button>' +
       '<button type="button" class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.open(\'duels\')">Volver a Duelos</button></div></div>';
     return head + h;
   }
@@ -297,7 +298,12 @@
   }
   function one() { if (!ready()) return; hh(); H.pick1v1(S().pickModo); }
 
-  window.SEQMulti = {
+  function shareText(d) {
+    var r = d && d.resultado; if (!r || !r.clasificacion) return '';
+    var rows = r.clasificacion.map(function (x) { return ordinal(x.posicion) + ' ' + String(x.display_name || 'Jugador') + ' · ' + (Math.floor(Number(x.puntuacion)) || 0); });
+    return 'Duelo múltiple en SirEdwards Quiz' + (d.modo === 'stakes' ? ' (por apuestas)' : '') + '\n' + rows.join('\n') + '\nSir Edwards lo ha visto todo.';
+  }
+  window.SEQMulti = { shareText: shareText, 
     render: render, row: row, pendingCount: pendingCount,
     startPick: startPick, toggle: toggle, create: create, action: action, listAction: listAction, one: one,
     core: { ordinal: ordinal, playerStatus: playerStatus, pendingCount: pendingCount, outcome: outcome, categoryTitle: categoryTitle, phraseFor: phraseFor, MIN_PLAYERS: MIN_PLAYERS, MAX_PLAYERS: MAX_PLAYERS }

@@ -1123,6 +1123,7 @@
   function shareResultCard() {
     try {
       var d = S.data, r = d && d.resultado;
+      if (S.screen === 'multi' && window.SEQMulti && r && d.estado === 'completado') { var mt = SEQMulti.shareText(d); if (mt && typeof shareResultAsText === 'function') shareResultAsText(mt); return; }
       if (!r || d.estado !== 'completado' || typeof shareResultImage !== 'function') return;
       var res = r.ganador === 'yo' ? 'win' : r.ganador === 'rival' ? 'loss' : 'draw';
       var rv = d.rival || {}, sess = session(), kind = S.screen === 'duel' ? 'duel' : 'reto';
