@@ -38,8 +38,8 @@ const SEQSirEvents = (function () {
   var BROKEN_MIN_RUN = 5;         // racha mínima para que su rotura merezca comentario
   var TILT_MIN_MISSES = 2;          // fallos seguidos a partir de los cuales PUEDE salir el ánimo
   var TILT_HIGH = 4;                // a partir de aquí, frases «fuertes» (más teatrales)
-  var TILT_P = { 2: 0.05, 3: 0.12, 4: 0.3 };      // probabilidad por fallo seguido; con 5 o más, TILT_P5 (una vez por partida)
-  var TILT_P5 = 0.6;
+  var TILT_P = { 2: 0.08, 3: 0.18, 4: 0.4 };      // probabilidad por fallo seguido; con 5 o más, TILT_P5 (una vez por partida)
+  var TILT_P5 = 0.7;
   var BROKEN_P = { low: 0.1, mid: 0.25, high: 0.5 };        // 5-9 · 10-19 · 20 o más
   var MAX_PER_GAME = 1;           // como mucho un evento por partida (salvo un hito de racha de 20 o más)
   var RECENT_MS = 6 * 3600 * 1000;        // día, noche y visita: como mucho uno cada 6 h (lo recuerda quien llama, entre partidas)
@@ -347,7 +347,7 @@ const SEQSirEvents = (function () {
     // Espaciado entre partidas: si la partida anterior de este dispositivo (hace poco) llevó evento, esta no lleva ninguno (salvo el regreso).
     if (ctx.spaced === true) return null;
 
-    // Ánimo: desde el 2.º fallo seguido, con probabilidad creciente (2 → 5 %, 3 → 12 %, 4 → 30 %, 5 o más → 60 %). Una vez por
+    // Ánimo: desde el 2.º fallo seguido, con probabilidad creciente (2 → 8 %, 3 → 18 %, 4 → 40 %, 5 o más → 70 %). Una vez por
     // partida; nunca pegado a otro evento; ctx.noTilt lo veta (solo se usa en la partida estándar).
     if (ctx.correct !== true && ctx.noTilt !== true && state.miss >= TILT_MIN_MISSES && !state.shown.tilt &&
         !(state.lastAnswer !== null && state.answers - state.lastAnswer < 2) && rng() < (TILT_P[state.miss] || TILT_P5)) {
