@@ -33,14 +33,14 @@ const SEQSirEvents = (function () {
   var MIN_ANSWERS_BETWEEN = 4;    // y al menos 4 respuestas de por medio
   var MIN_ANSWERS_START = 3;      // nunca en las primeras respuestas de la partida
   var P = { visit: 0.006, day: 0.012, night: 0.018 };    // probabilidad por acierto evaluado: pocas partidas llevan evento (día y noche, algo más probables)
-  var STREAK_P = { 10: 0.5, 15: 0.7, 20: 1, 30: 1 };     // 10 «puede», 15 más probable, 20 y 30 especiales
+  var STREAK_P = { 10: 0.2, 15: 0.3, 20: 0.6, 30: 1 };     // 10 «puede», 15 algo más, 20 probable, 30 siempre
   var MILESTONES = [10, 15, 20, 30];
   var BROKEN_MIN_RUN = 5;         // racha mínima para que su rotura merezca comentario
   var TILT_MIN_MISSES = 2;          // fallos seguidos a partir de los cuales PUEDE salir el ánimo
   var TILT_HIGH = 4;                // a partir de aquí, frases «fuertes» (más teatrales)
-  var TILT_P = { 2: 0.08, 3: 0.2, 4: 0.45 };      // probabilidad por fallo seguido; con 5 o más, TILT_P5 (una vez por partida)
-  var TILT_P5 = 0.8;
-  var BROKEN_P = { low: 0.35, mid: 0.7, high: 1 };        // 5-9 · 10-19 · 20 o más
+  var TILT_P = { 2: 0.05, 3: 0.12, 4: 0.3 };      // probabilidad por fallo seguido; con 5 o más, TILT_P5 (una vez por partida)
+  var TILT_P5 = 0.6;
+  var BROKEN_P = { low: 0.1, mid: 0.25, high: 0.5 };        // 5-9 · 10-19 · 20 o más
   var MAX_PER_GAME = 1;           // como mucho un evento por partida (salvo un hito de racha de 20 o más)
   var RECENT_MS = 6 * 3600 * 1000;        // día, noche y visita: como mucho uno cada 6 h (lo recuerda quien llama, entre partidas)
   var WEAK_MS = 24 * 3600 * 1000;         // categoría débil: como mucho uno al día
@@ -344,9 +344,12 @@ const SEQSirEvents = (function () {
       var ct = phraseFor('comeback', Math.floor(ctx.hour), rng, state.last.comeback, 0, ctx.rotate);
       if (ct) return done(state, ctx, 'comeback', ct, ctx.nowMs);
     }
-    // Ánimo: desde el 2.º fallo seguido, con probabilidad creciente (2 → 8 %, 3 → 20 %, 4 → 45 %, 5 o más → 80 %); no en dos partidas seguidas del mismo dispositivo (ctx.tiltBlocked). Una vez por
+    // Espaciado entre partidas: si la partida anterior de este dispositivo (hace poco) llevó evento, esta no lleva ninguno (salvo el regreso).
+    if (ctx.spaced === true) return null;
+
+    // Ánimo: desde el 2.º fallo seguido, con probabilidad creciente (2 → 5 %, 3 → 12 %, 4 → 30 %, 5 o más → 60 %). Una vez por
     // partida; nunca pegado a otro evento; ctx.noTilt lo veta (solo se usa en la partida estándar).
-    if (ctx.correct !== true && ctx.noTilt !== true && state.miss >= TILT_MIN_MISSES && !state.shown.tilt && ctx.tiltBlocked !== true &&
+    if (ctx.correct !== true && ctx.noTilt !== true && state.miss >= TILT_MIN_MISSES && !state.shown.tilt &&
         !(state.lastAnswer !== null && state.answers - state.lastAnswer < 2) && rng() < (TILT_P[state.miss] || TILT_P5)) {
       var tt = phraseFor('tilt', Math.floor(ctx.hour), rng, state.last.tilt, state.miss, ctx.rotate);
       if (tt) return done(state, ctx, 'tilt', tt, ctx.nowMs);

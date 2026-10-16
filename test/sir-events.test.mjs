@@ -287,7 +287,7 @@ function withRotation(game, store, showResult = true) {
 function playStreakGame(store, showResult = true) {
   const game = { mode: 'play', currentIdx: 3, totalQuestionsToPlay: 30 };
   const c = withRotation(game, store, showResult);
-  vm.runInContext('Math.random = () => 0.3; answerStreak = 10', c);
+  vm.runInContext('Math.random = () => 0.1; answerStreak = 10', c);
   let ev = null;
   for (let i = 0; i < 6 && !ev; i++) { ev = vm.runInContext('sirEventsOnAnswer(true)', c); c.flush(); }
   return { ev, c };
@@ -543,8 +543,9 @@ test('ánimo: desde el 2.º fallo seguido con probabilidad creciente, una vez po
   assert.ok(ev(st, false, 1e6 + 4, R(S.TILT_P5 - 0.01)), 'con 5 o más fallos seguidos, 80 %');
   st = S.newState(); [0, 1, 2, 3].forEach((k) => ev(st, false, 1e6 + k, R(0.99)));
   assert.equal(ev(st, false, 1e6 + 4, R(S.TILT_P5 + 0.01)), null, 'con 5 o más fallos seguidos, no es segura');
-  st = S.newState(); const blk = (c) => S.evaluate(st, { nowMs: 1e6, hour: 12, streak: 0, correct: c, last: false, blocked: false, tiltBlocked: true, recent: {} }, () => 0);
-  for (let i = 0; i < 6; i++) assert.equal(blk(false), null, 'tiltBlocked: no sale si hubo ánimo en la partida anterior');
+  st = S.newState(); const spc = (c, i) => S.evaluate(st, { nowMs: 1e6 + i * 9000, hour: 12, streak: 12, correct: c, last: false, blocked: false, spaced: true, recent: {} }, () => 0);
+  for (let i = 0; i < 14; i++) assert.equal(spc(i < 12, i), null, 'spaced: tras una partida con evento, esta no lleva ninguno (ni racha ni ánimo)');
+  st = S.newState(); assert.ok(S.evaluate(st, { nowMs: 1e6, hour: 12, streak: 0, correct: true, last: false, blocked: false, spaced: true, comeback: true, recent: {} }, () => 0), 'el regreso no se espacia');
   st = S.newState(); ev(st, false, 1e6); ev(st, true, 1e6 + 1);
   assert.equal(ev(st, false, 1e6 + 2), null, 'tras un acierto vuelve a contar desde cero');
   st = S.newState(); const noTilt = (c) => S.evaluate(st, { nowMs: 1e6, hour: 12, streak: 0, correct: c, last: false, blocked: false, noTilt: true, recent: {} }, () => 0);

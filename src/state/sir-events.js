@@ -36,6 +36,7 @@ const SIR_EVENT_DELAY_MS = 450; // tras la respuesta: se espera a que aparezca e
 // ---- Memoria local entre partidas (solo en este dispositivo, fuera del store: ni se guarda en la cuenta ni va al Worker) ----
 // { day, night, visit, weak: instante (ms) del último evento de ese tipo; lastplay: última partida solo de esta pantalla }
 const SEV_RECENT_KEY = 'siredwards_quiz_sev_recent';
+const SEV_SPACE_MS = 45 * 60 * 1000;   // una partida sin evento tras otra con evento, si la anterior fue hace menos de 45 min
 let sevRecentMem = {};
 function sevRecentRead() {
   try { const o = JSON.parse(localStorage.getItem(SEV_RECENT_KEY)); if (o && typeof o === 'object' && !Array.isArray(o)) return o; } catch (e) {}
@@ -53,7 +54,9 @@ function sirEventsTouchPlay(g, now) {
   let introShown = false;
   try { introShown = typeof SEQEncargosIntro !== 'undefined' && SEQEncargosIntro.shownThisSession(); } catch (e) {}
   Object.defineProperty(g, '_sevCome', { value: days >= 4 && days < 21 && !introShown, enumerable: false, configurable: true, writable: true });
-  r.lastplay = now; r.plays = (Number(r.plays) || 0) + 1; sevRecentWrite(r);
+  const plays0 = Number(r.plays) || 0;
+  Object.defineProperty(g, '_sevSpaced', { value: Number(r.evPlay) === plays0 && plays0 > 0 && now - (Number(r.evAt) || 0) < SEV_SPACE_MS, enumerable: false, configurable: true, writable: true });
+  r.lastplay = now; r.plays = plays0 + 1; sevRecentWrite(r);
 }
 
 // Categoría más floja del jugador (≥25 respuestas, ≥15 puntos por debajo de su media), solo si `q` es de esa categoría.
@@ -117,7 +120,7 @@ function sirEventsOnAnswer(correct, q) {
       last: sirEventsIsLast(g),
       blocked: typeof document !== 'undefined' && document.hidden === true,
       noStreak: g.mode === 'survival' || g.mode === 'sudden_death',    // ahí ya salen los hitos de Sir Edwards (10/20/30 y 13/20): el aviso de racha se solapa (récord y regreso sí salen)
-      tiltBlocked: typeof recent.tiltAt === 'number' && (Number(recent.plays) || 0) - recent.tiltAt < 2,   // no en dos partidas seguidas de este dispositivo
+      spaced: g._sevSpaced === true,                                  // la partida anterior de este dispositivo (hace poco) ya llevó evento
       noTilt: g.mode !== 'play',                                      // el ánimo solo en la partida estándar (en el resto ya hay avisos propios o el fallo cuesta vidas/tiempo)
       noBroken: g.mode === 'review' || g.mode === 'survival' || g.mode === 'sudden_death',   // en Repaso no hay racha; en Supervivencia y Muerte Súbita ya hay hitos propios (y en Muerte Súbita el fallo termina la partida)
       record: record,
@@ -137,7 +140,7 @@ function sirEventsOnAnswer(correct, q) {
         // Logros «Noctámbulo» / «Primera Luz»: haber encontrado a Sir Edwards nocturno / diurno (se evalúan al acabar la partida).
         try { if (ev.type === 'night') store.hasCompletedNightGame = true; else if (ev.type === 'day') store.hasCompletedMorningGame = true; } catch (e) {}
         if (ev.type === 'day' || ev.type === 'night' || ev.type === 'visit' || ev.type === 'weak') { const r = sevRecentRead(); r[ev.type] = Date.now(); sevRecentWrite(r); }
-        if (ev.type === 'tilt') { const r = sevRecentRead(); r.tiltAt = Number(r.plays) || 0; sevRecentWrite(r); }
+        { const r = sevRecentRead(); r.evPlay = Number(r.plays) || 0; r.evAt = Date.now(); sevRecentWrite(r); }   // para espaciar las partidas con evento
       } catch (e) { sirEventsRollback(st, snap, undo); }
     }, SIR_EVENT_DELAY_MS);
     return ev;
