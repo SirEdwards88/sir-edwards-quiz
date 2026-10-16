@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 337;
+const CACHE_VERSION = 338;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -468,10 +468,10 @@ const ASSET_REVS = {
   './assets/audio/correct.mp3': 'ada74251',
   './assets/audio/event.mp3': 'e5595ae9',
   './assets/audio/lose.mp3': 'bf64ed58',
-  './assets/audio/lucidez-enigma.mp3': '396acf20',
-  './assets/audio/lucidez-fase1.mp3': '9871d467',
-  './assets/audio/lucidez-fase2.mp3': '3e9ab8f8',
-  './assets/audio/lucidez-fase3.mp3': 'e84fbaaa',
+  './assets/audio/lucidez-enigma.mp3': '157889a8',
+  './assets/audio/lucidez-fase1.mp3': 'd8b89cd3',
+  './assets/audio/lucidez-fase2.mp3': '464b2b68',
+  './assets/audio/lucidez-fase3.mp3': '4689da7d',
   './assets/audio/record.mp3': '59d1eef1',
   './assets/audio/secret.mp3': 'fe9a2e00',
   './assets/audio/win.mp3': '3165b8dd',
