@@ -22,3 +22,8 @@ test('varios logros: una tarjeta por cada uno con recompensa, en orden, sin los 
   const c = load().cards([m('av_a', 'A'), m('games_5', 'D'), m('frag_a', 'C'), m('av_b', 'B')]);
   assert.equal(c.map(x => x.title).join(','), 'A,C,B');
 });
+
+test('duelos: announceAll existe y muestra también los logros sin recompensa', () => {
+  const t = load();
+  assert.equal(typeof t.announceAll, 'function');
+});

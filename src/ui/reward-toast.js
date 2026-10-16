@@ -8,13 +8,13 @@
 (function () {
   'use strict';
 
-  function rewardsOf(medals) {
+  function rewardsOf(medals, all) {
     var out = { avatars: 0, fragments: 0, medals: [] };
     (medals || []).forEach(function (m) {
       var frag = false, av = false;
       try { frag = FRAGMENT_MEDAL_IDS.indexOf(m.id) !== -1; } catch (e) {}
       try { av = !!getMedalAvatar(m.id); } catch (e) {}
-      if (!frag && !av) return;
+      if (!frag && !av && !all) return;
       out.medals.push(m);
       if (frag) out.fragments++;
       if (av) out.avatars++;
@@ -40,19 +40,19 @@
     if (list.length === 1) {
       var m = list[0];
       return '<span class="reward-toast-ico">' + icon(m) + '</span><span class="reward-toast-body"><span class="reward-toast-kicker">¡Logro desbloqueado!</span>' +
-        '<span class="reward-toast-name">' + esc(m.title) + '</span><span class="reward-toast-reward">' + esc(rewardText(m)) + '</span></span>';
+        '<span class="reward-toast-name">' + esc(m.title) + '</span><span class="reward-toast-reward">' + esc(rewardText(m) || m.desc || '') + '</span></span>';
     }
     var shown = list.slice(0, 4), extra = list.length - shown.length;
     return '<span class="reward-toast-body reward-toast-multi"><span class="reward-toast-kicker">¡Logros desbloqueados!</span><span class="reward-toast-rows">' +
       shown.map(function (m) {
         return '<span class="reward-toast-row"><span class="reward-toast-ico">' + icon(m) + '</span><span><span class="reward-toast-rname">' + esc(m.title) +
-          '</span><span class="reward-toast-reward">' + esc(rewardText(m)) + '</span></span></span>';
+          '</span>' + (rewardText(m) ? '<span class="reward-toast-reward">' + esc(rewardText(m)) + '</span>' : '') + '</span></span>';
       }).join('') + '</span>' + (extra > 0 ? '<span class="reward-toast-reward">y ' + extra + (extra === 1 ? ' más' : ' más') + '</span>' : '') + '</span>';
   }
 
   // Uno: tarjeta con su icono. Varios a la vez: una sola tarjeta con todos.
-  function show(medals) {
-    var list = rewardsOf(medals).medals;
+  function show(medals, all) {
+    var list = rewardsOf(medals, all).medals;
     if (!list.length) return;
     var t = document.querySelector('.reward-toast');
     if (!t) { t = document.createElement('div'); t.className = 'reward-toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
@@ -75,5 +75,8 @@
     }, hadNewModes ? 4800 : 900);
   }
 
-  window.SEQRewardToast = { announce: announce, cards: cards };
+  // Duelos y Retos: no hay tarjeta final con la lista de logros, así que aquí salen TODOS los logros nuevos, con o sin recompensa.
+  function announceAll(medals) { setTimeout(function () { show(medals, true); }, 600); }
+
+  window.SEQRewardToast = { announce: announce, announceAll: announceAll, cards: cards };
 })();
