@@ -267,6 +267,13 @@
     var glow = ctx.createRadialGradient(CX, 640, 20, CX, 640, 520);
     glow.addColorStop(0, theme.glow); glow.addColorStop(1, 'rgba(0,0,0,0)');
     ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+    // Destello dorado suave arriba y viñeta abajo: da relieve sin recargar.
+    var top = ctx.createRadialGradient(CX, 150, 10, CX, 150, 620);
+    top.addColorStop(0, 'rgba(232,200,120,.16)'); top.addColorStop(1, 'rgba(232,200,120,0)');
+    ctx.fillStyle = top; ctx.fillRect(0, 0, W, H);
+    var vg = ctx.createRadialGradient(CX, H * .48, H * .30, CX, H * .48, H * .82);
+    vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,.38)');
+    ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
     // Marco doble dorado + esquinas.
     ctx.lineWidth = 3; ctx.strokeStyle = theme.ring; ctx.globalAlpha = .85; roundRect(ctx, 30, 30, W - 60, H - 60, 26); ctx.stroke();
     ctx.lineWidth = 1; ctx.globalAlpha = .35; roundRect(ctx, 48, 48, W - 96, H - 96, 18); ctx.stroke();
@@ -325,20 +332,29 @@
       ctx.fillText('SE', CX, cy + r * 0.3); ctx.restore();
       return;
     }
-    // Suelo suave bajo el personaje para "asentarlo" en la composición.
-    var sh = ctx.createRadialGradient(CX, box.y + box.h - 6, 10, CX, box.y + box.h - 6, box.w * .45);
-    sh.addColorStop(0, 'rgba(0,0,0,.45)'); sh.addColorStop(1, 'rgba(0,0,0,0)');
-    ctx.fillStyle = sh; ctx.fillRect(CX - box.w, box.y + box.h - 60, box.w * 2, 90);
-    drawContain(ctx, img, CX - box.w / 2, box.y, box.w, box.h);
+    // El busto se desvanece por abajo (sin corte plano) y se asienta sobre una sombra elíptica.
+    var r = Math.min(box.w / img.width, box.h / img.height), dw = img.width * r, dh = img.height * r;
+    var ox = CX - dw / 2, oy = box.y + (box.h - dh) / 2;
+    ctx.save(); ctx.translate(CX, oy + dh - 4); ctx.scale(1, .16);
+    var sh = ctx.createRadialGradient(0, 0, 8, 0, 0, dw * .46);
+    sh.addColorStop(0, 'rgba(0,0,0,.42)'); sh.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = sh; ctx.beginPath(); ctx.arc(0, 0, dw * .46, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+    var off = document.createElement('canvas'); off.width = Math.ceil(dw); off.height = Math.ceil(dh);
+    var oc = off.getContext('2d'); oc.drawImage(img, 0, 0, off.width, off.height);
+    oc.globalCompositeOperation = 'destination-out';
+    var fade = oc.createLinearGradient(0, off.height * .80, 0, off.height);
+    fade.addColorStop(0, 'rgba(0,0,0,0)'); fade.addColorStop(1, 'rgba(0,0,0,1)');
+    oc.fillStyle = fade; oc.fillRect(0, off.height * .80, off.width, off.height * .20 + 1);
+    ctx.drawImage(off, ox, oy, dw, dh);
   }
 
   function drawPlayerChip(ctx, theme, player, avatarImg, y, radius) {
     if (!player) return false;
-    ctx.font = '700 ' + (radius && radius < 56 ? 34 : 38) + 'px ' + SERIF;
+    ctx.font = '700 ' + (radius && radius < 56 ? 36 : 40) + 'px ' + SERIF;
     var name = player.name, maxW = 560;
     while (ctx.measureText(name).width > maxW && name.length > 3) name = name.slice(0, -2);
     if (name !== player.name) name += '…';
-    var tw = ctx.measureText(name).width, r = radius || 56, total = r * 2 + 22 + tw, x0 = CX - total / 2;
+    var tw = ctx.measureText(name).width, r = radius || 60, total = r * 2 + 22 + tw, x0 = CX - total / 2;
     drawAvatar(ctx, avatarImg, x0 + r, y, r, { ring: theme.ring, initial: player.name });
     ctx.fillStyle = BRAND.cream; ctx.textAlign = 'left'; ctx.fillText(name, x0 + r * 2 + 22, y + 13); ctx.textAlign = 'center';
     return true;
@@ -360,6 +376,12 @@
     }
     lines = wrap();
     while (lines.length > 3 && px > 28) { px -= 2; lines = wrap(); }
+    // Equilibra: si hay varias líneas, estrecha el ancho mientras no aumente su número (evita una última palabra suelta).
+    if (lines.length > 1) {
+      var n = lines.length, lo = 300, hi = maxW;
+      while (hi - lo > 8) { var mid = (lo + hi) / 2; maxW = mid; if (wrap().length <= n) hi = mid; else lo = mid; }
+      maxW = hi; lines = wrap();
+    }
     return { lines: lines, px: px, lh: Math.round(px * 1.22) };
   }
   function drawPhraseLayout(ctx, L, yEnd) {
@@ -408,8 +430,8 @@
   function drawFooter(ctx, theme, badge) {
     ctx.textAlign = 'center'; ctx.fillStyle = BRAND.gold;
     // Sin lema al pie (el nombre del juego ya va arriba); solo la insignia (o, si no carga, el rombo).
-    if (badge) drawContain(ctx, badge, CX - 24, H - 116, 48, 48);
-    else diamond(ctx, CX, H - 90, 9, theme.ring);
+    if (badge) drawContain(ctx, badge, CX - 20, H - 104, 40, 40);
+    else diamond(ctx, CX, H - 84, 9, theme.ring);
   }
 
   // Compone la tarjeta. Devuelve Promise<canvas>. Nunca lanza por un asset o
@@ -456,14 +478,14 @@
           // Con frase: el personaje cede altura según las líneas de la frase; debajo, jugador y puntuación.
           var hasP = !!model.player;
           var L = phraseLayout(ctx, model.phrase);
-          var yEnd = hasP ? 950 : 1010;
+          var yEnd = hasP ? 920 : 1000;
           var topBase = yEnd - (L.lines.length - 1) * L.lh;
           var boxH = Math.max(220, Math.min(420, topBase - L.px - 24 - 470));
           var hatH = Math.min(boxH, 300);
           drawCharacter(ctx, charImg, big ? { y: 470 + (boxH - hatH) / 2, w: 500, h: hatH } : { y: 470, w: 560, h: boxH }, theme);
           drawPhraseLayout(ctx, L, yEnd);
-          if (hasP) drawPlayerChip(ctx, theme, model.player, meImg, 1030, 40);
-          drawScore(ctx, theme, model, hasP ? 1150 : 1120, 88);
+          if (hasP) drawPlayerChip(ctx, theme, model.player, meImg, 1010, 52);
+          drawScore(ctx, theme, model, hasP ? 1128 : 1110, 88);
         } else {
         drawCharacter(ctx, charImg, big ? { y: 500, w: 520, h: 330 } : { y: 476, w: 600, h: 420 }, theme);
         var hasChip = drawPlayerChip(ctx, theme, model.player, meImg, model.code ? 930 : 950);
