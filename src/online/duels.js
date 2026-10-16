@@ -202,11 +202,11 @@
     var live = L.duels ? L.duels.filter(function (d) { return d.estado === 'en_curso'; })[0] : null;
     var h = live ? '<div class="mode-card seq-d-card seq-d-live" role="button" tabindex="0" onclick="SEQDuels.open(\'duel\',\'' + safeId(live.id) + '\')"><div class="duel-action-text"><h3>Un duelo te espera</h3><p>Sir Edwards no tiene todo el día. Vuelve antes de que te declaren desertor.</p><p class="mode-subtitle seq-d-pending">● VOLVER AL DUELO</p></div></div>' : '';
     h += navigator.onLine === false ? emptyImg('sin-conexion') + '<p class="stats-section-sub seq-d-offline">' + ico('nube') + 'Sin conexión: los duelos y los retos necesitan Internet.</p>' : '';
-    if (f.classic_duel) h += hubCard('duel', '<img class="mode-img" src="assets/modes/duelo-online.webp" alt="" draggable="false">', 'Duelo online', 'Juega un duelo en directo contra un amigo.', "SEQDuels.open('duels')", pending(du, 'PENDIENTE', 'PENDIENTES'));
-    if (f.async_challenges) h += hubCard('retos', '<img class="mode-img" src="assets/modes/retos.webp" alt="" draggable="false">', 'Retos', 'Elige el modo y reta a un amigo; cada uno juega cuando pueda.', "SEQDuels.open('retos')", pending(re, 'PENDIENTE', 'PENDIENTES'));
+    if (f.classic_duel) h += hubCard('duel', '<img class="mode-img" src="assets/modes/duelo-online.webp" alt="" draggable="false">', 'Duelo online', 'Veinte preguntas, o apuestas en secreto. Tú eliges cuánto arriesgas.', "SEQDuels.open('duels')", pending(du, 'PENDIENTE', 'PENDIENTES'));
+    if (f.async_challenges) h += hubCard('retos', '<img class="mode-img" src="assets/modes/retos.webp" alt="" draggable="false">', 'Retos', 'Elige el modo y reta a un amigo. Cada uno juega cuando pueda.', "SEQDuels.open('retos')", pending(re, 'PENDIENTE', 'PENDIENTES'));
     h += hubCard('amigos', '<img class="mode-img" src="assets/modes/amigos.webp" alt="" draggable="false">', 'Amigos', 'Añade amigos y rétalos desde tu lista.', "SEQDuels.open('friends')", pending(fr, 'SOLICITUD', 'SOLICITUDES'));
     // 2.1: Rankings (PvP, Cálculo Mental y Contrarreloj; entre amigos o global). Pantalla propia, en src/online/duels-v21.js.
-    h += hubCard('rank', '<img class="mode-img" src="assets/modes/ranking.webp" alt="" draggable="false">', 'Rankings', 'PvP, Cálculo Turbo y Contrarreloj. Entre amigos o global.', "SEQDuels.open('rankings')", '');
+    h += hubCard('rank', '<img class="mode-img" src="assets/modes/ranking.webp" alt="" draggable="false">', 'Rankings', 'PvP, Contrarreloj y Cálculo mental. Entre amigos o global.', "SEQDuels.open('rankings')", '');
     slot.innerHTML = h;
   }
   // El aviso «sin conexión» del hub se actualiza en cuanto cambia la red.
