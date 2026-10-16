@@ -526,22 +526,26 @@ test('Supervivencia y Muerte Súbita: nunca racha ni racha rota en el enganche',
   });
 });
 
-test('ánimo: 3 fallos seguidos → un aviso cálido, una vez por partida; un acierto reinicia la cuenta', () => {
-  const ev = (st, correct, now) => S.evaluate(st, { nowMs: now, hour: 12, streak: 0, correct, last: false, blocked: false, noStreak: false, noBroken: false, recent: {} }, () => 0);
+test('ánimo: desde el 2.º fallo seguido con probabilidad creciente, una vez por partida; un acierto reinicia la cuenta', () => {
+  const ev = (st, correct, now, rng) => S.evaluate(st, { nowMs: now, hour: 12, streak: 0, correct, last: false, blocked: false, noStreak: false, noBroken: false, recent: {} }, rng || (() => 0));
+  const P = S.TILT_P; assert.ok(P[2] < P[3] && P[3] < P[4] && P[4] < 1, 'la probabilidad crece con cada fallo seguido');
   let st = S.newState();
-  assert.equal(ev(st, false, 1e6), null); assert.equal(ev(st, false, 1e6 + 1), null);
-  const e = ev(st, false, 1e6 + 2);
-  assert.ok(e && e.type === 'tilt', 'sale en el 3.º fallo seguido, aunque sea el 3.º de la partida');
+  assert.equal(ev(st, false, 1e6), null, 'con un solo fallo no sale');
+  const e = ev(st, false, 1e6 + 1);
+  assert.ok(e && e.type === 'tilt', 'con el 2.º fallo ya puede salir');
   assert.equal(e.asset, S.ASSETS.tilt); assert.ok(!/\{n\}/.test(e.message) && e.message.length > 10);
   for (let i = 0; i < 6; i++) assert.equal(ev(st, false, 2e6 + i), null, 'una sola vez por partida');
-  st = S.newState();
-  ev(st, false, 1e6); ev(st, false, 1e6 + 1); ev(st, true, 1e6 + 2);
-  assert.equal(ev(st, false, 1e6 + 3), null); assert.equal(ev(st, false, 1e6 + 4), null);
-  assert.ok(ev(st, false, 1e6 + 5), 'tras el acierto vuelve a contar desde cero');
+  // La tirada manda: con rng alto no sale en el 2.º (20 %), sí con 3 o más según su umbral.
+  st = S.newState(); const R = (x) => () => x;
+  ev(st, false, 1e6, R(0.5)); assert.equal(ev(st, false, 1e6 + 1, R(P[2] + 0.01)), null, '2.º fallo: no sale por encima del 20 %');
+  assert.ok(ev(st, false, 1e6 + 2, R(P[3] - 0.01)), '3.º: sale por debajo del 45 %');
+  st = S.newState(); ev(st, false, 1e6, R(0.99)); ev(st, false, 1e6 + 1, R(0.99)); ev(st, false, 1e6 + 2, R(0.99)); ev(st, false, 1e6 + 3, R(0.99));
+  assert.ok(ev(st, false, 1e6 + 4, R(0.9999)), 'con 5 o más fallos seguidos, segura');
+  st = S.newState(); ev(st, false, 1e6); ev(st, true, 1e6 + 1);
+  assert.equal(ev(st, false, 1e6 + 2), null, 'tras un acierto vuelve a contar desde cero');
   st = S.newState(); const noTilt = (c) => S.evaluate(st, { nowMs: 1e6, hour: 12, streak: 0, correct: c, last: false, blocked: false, noTilt: true, recent: {} }, () => 0);
   for (let i = 0; i < 6; i++) assert.equal(noTilt(false), null, 'noTilt lo veta');
-  st = S.newState(); let hi = null; for (let i = 0; i < 2; i++) ev(st, false, 1e6 + i);
-  st.miss = 4; hi = ev(st, false, 1e6 + 9);
-  assert.ok(hi && hi.type === 'tilt', 'con 5 o más sigue saliendo el ánimo (frases de más consuelo)');
-  S.PHRASES.tilt.low.concat(S.PHRASES.tilt.high).forEach((t) => assert.ok(!/estúpid|inútil|torpe/i.test(t), t));
+  const all = S.PHRASES.tilt.low.concat(S.PHRASES.tilt.high);
+  all.forEach((t) => { assert.ok(!/estúpid|inútil|torpe/i.test(t), t); assert.ok(!/\b(dos|tres|cuatro|cinco)\s+(fallos|errores|seguidas)/i.test(t), 'sin cifras fijas: ' + t); assert.ok(t.length <= 110, t); });
+  assert.equal(new Set(all).size, all.length, 'sin frases repetidas');
 });

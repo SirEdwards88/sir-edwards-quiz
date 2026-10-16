@@ -10,8 +10,8 @@
 // · weak () un acierto en la categoría más floja del jugador: ctx.weakCat = nombre. Una vez por partida y como mucho 1 al día.
 // · broken () racha rota: un FALLO tras 5 o más aciertos seguidos; la frase cita el número real. Una vez por partida.
 //   Es el único que sale tras un fallo; usa la imagen de «visita» (Sir Edwards observando).
-// · tilt () ánimo tras 3 o más FALLOS SEGUIDOS (solo en la partida estándar): Sir Edwards baja el tono y da ánimos, sin sarcasmo
-//   duro. Una vez por partida; no pasa por el cooldown largo pero nunca sale pegado a otro evento. Imagen propia (animo).
+// · tilt () ánimo tras FALLOS SEGUIDOS (desde el 2.º, con probabilidad creciente; solo en la partida estándar): Sir Edwards baja el tono
+//   con alguna pulla suave, sin consuelo explícito. Una vez por partida; no pasa por el cooldown largo pero nunca sale pegado a otro evento.
 // · night () 00:00–04:00 hora local.
 // · day () 06:00–10:00 hora local.
 // · visit () genérico (incluye el antiguo «evaluando»).
@@ -36,8 +36,9 @@ const SEQSirEvents = (function () {
   var STREAK_P = { 10: 0.5, 15: 0.7, 20: 1, 30: 1 };     // 10 «puede», 15 más probable, 20 y 30 especiales
   var MILESTONES = [10, 15, 20, 30];
   var BROKEN_MIN_RUN = 5;         // racha mínima para que su rotura merezca comentario
-  var TILT_MIN_MISSES = 3;          // fallos seguidos que activan el ánimo
-  var TILT_HIGH = 5;                // a partir de aquí, frases de más consuelo
+  var TILT_MIN_MISSES = 2;          // fallos seguidos a partir de los cuales PUEDE salir el ánimo
+  var TILT_HIGH = 4;                // a partir de aquí, frases «fuertes» (más teatrales)
+  var TILT_P = { 2: 0.2, 3: 0.45, 4: 0.75 };      // probabilidad por fallo seguido; con 5 o más, segura (una vez por partida)
   var BROKEN_P = { low: 0.35, mid: 0.7, high: 1 };        // 5-9 · 10-19 · 20 o más
   var MAX_PER_GAME = 1;           // como mucho un evento por partida (salvo un hito de racha de 20 o más)
   var RECENT_MS = 6 * 3600 * 1000;        // día, noche y visita: como mucho uno cada 6 h (lo recuerda quien llama, entre partidas)
@@ -159,26 +160,25 @@ const SEQSirEvents = (function () {
       '«Casi pude respetarte. {n} seguidas. Casi.»']
   };
 
-  // Ánimo tras fallos seguidos ({n} = cuántos): tono cálido y breve; Sir Edwards sigue siendo él, pero sin pinchar.
+  // Ánimo tras fallos seguidos ({n} = cuántos): Sir Edwards más suave, con pullas pequeñas; sin consuelo explícito ni humillar.
+  // low = 2-3 fallos seguidos · high = 4 o más (más teatrales). Ninguna cita una cifra fija: solo {n}.
   var TILT_PHRASES = {
-    low: ['«{n} seguidas. Ocurre hasta en las mejores familias. Respira y sigue.»',
-      '«Una mala racha no es un veredicto. Es solo una mala racha.»',
-      '«Tranquilo. Las preguntas se terminan; la paciencia, no.»',
-      '«Nadie lo ha visto. Bueno, yo sí, pero soy discreto.»',
-      '«Hasta Sir Edwards tiene días así. Lo he oído decir.»',
-      '«Aprender cuesta, y a veces cuesta unas cuantas seguidas.»',
-      '«La siguiente es tuya. Lo digo con la poca fe que me queda, que no es poca.»',
-      '«Un respiro, un sorbo de agua y vuelta al ruedo.»',
-      '«Los fallos también cuentan: son los que más enseñan.»',
-      '«No pasa nada. Casi nunca pasa nada. Sigue.»'],
-    high: ['«{n} seguidas. Hoy la suerte no está de tu parte, pero tú sí. Sigue.»',
-      '«Ni los mejores acaban un día así. Perdón: ni los mejores empiezan uno así.»',
-      '«Si te sirve de consuelo, yo he tenido días peores. Y tengo sombrero.»',
-      '«Un descanso no es una derrota. Cuando quieras, aquí sigo.»',
-      '«Esto no te define. Lo que hagas con la siguiente, quizá sí.»',
-      '«{n} seguidas, y aún aquí. Eso dice más de ti que los fallos.»',
-      '«Respira hondo. La pregunta que viene no sabe lo que ha pasado antes.»',
-      '«Sin prisa. Aquí nadie te cobra el tiempo, salvo el reloj.»']
+    low: ['«La estadística empieza a ponerse impertinente. No le concedas demasiada confianza.»',
+      '«He conocido interrogatorios más amables. Y con bastante peor iluminación.»',
+      '«{n} errores. Y uno más, si contamos mi optimismo inicial.»',
+      '«La pregunta anterior tenía muy malas maneras. La siguiente, espero, tendrá mejores.»',
+      '«No pienso retirar mi confianza todavía. Aunque agradecería algún argumento a favor.»',
+      '«Yo también he dado respuestas equivocadas. Por suerte, suelo hacer las preguntas.»',
+      '«El reloj insiste en avanzar. Siempre tan poco considerado con los momentos delicados.»',
+      '«Se me ha torcido el ala del sombrero. O quizá sea la jornada; cuesta distinguirlo.»',
+      '«Te serviría la respuesta en bandeja, pero el reglamento desaprueba mis métodos.»',
+      '«He servido cenas bastante más tensas. Aunque ninguna tenía cuatro opciones por plato.»'],
+    high: ['«{n} seguidas. Voy a quedarme un rato; alguien debe vigilar este interrogatorio.»',
+      '«He preparado té para situaciones menos delicadas. Qué desperdicio de previsión.»',
+      '«Por mi parte, sigo aquí. Mi dimisión tendría un efecto teatral, pero sería prematura.»',
+      '«Hay tardes que exigen una paciencia extraordinaria. Esta, por lo visto, exige la mía.»',
+      '«No he cerrado el libro. Sería una descortesía dejar el capítulo a medias.»',
+      '«He archivado días mejores, desde luego. Pero este expediente aún no está cerrado.»']
   };
 
   // Récord personal ({n} = la racha nueva), regreso tras días y categoría débil ({cat} = su nombre): siempre en positivo o en tono de reproche suave.
@@ -341,9 +341,10 @@ const SEQSirEvents = (function () {
       var ct = phraseFor('comeback', Math.floor(ctx.hour), rng, state.last.comeback, 0, ctx.rotate);
       if (ct) return done(state, ctx, 'comeback', ct, ctx.nowMs);
     }
-    // Ánimo: 3 o más fallos seguidos (solo si quien llama no lo veta con noTilt). Una vez por partida; nunca pegado a otro evento.
+    // Ánimo: desde el 2.º fallo seguido, con probabilidad creciente (2 → 20 %, 3 → 45 %, 4 → 75 %, 5 o más → segura). Una vez por
+    // partida; nunca pegado a otro evento; ctx.noTilt lo veta (solo se usa en la partida estándar).
     if (ctx.correct !== true && ctx.noTilt !== true && state.miss >= TILT_MIN_MISSES && !state.shown.tilt &&
-        !(state.lastAnswer !== null && state.answers - state.lastAnswer < 2)) {
+        !(state.lastAnswer !== null && state.answers - state.lastAnswer < 2) && rng() < (TILT_P[state.miss] || 1)) {
       var tt = phraseFor('tilt', Math.floor(ctx.hour), rng, state.last.tilt, state.miss, ctx.rotate);
       if (tt) return done(state, ctx, 'tilt', tt, ctx.nowMs);
     }
@@ -385,7 +386,7 @@ const SEQSirEvents = (function () {
 
   return {
     COOLDOWN_MS: COOLDOWN_MS, MIN_ANSWERS_BETWEEN: MIN_ANSWERS_BETWEEN, MIN_ANSWERS_START: MIN_ANSWERS_START,
-    P: P, STREAK_P: STREAK_P, BROKEN_MIN_RUN: BROKEN_MIN_RUN, TILT_MIN_MISSES: TILT_MIN_MISSES, BROKEN_P: BROKEN_P, MAX_PER_GAME: MAX_PER_GAME, RECENT_MS: RECENT_MS, WEAK_MS: WEAK_MS, DAYNIGHT_MS: DAYNIGHT_MS, MILESTONES: MILESTONES, ASSETS: ASSETS, LABELS: LABELS, RARE_P: RARE_P,
+    P: P, STREAK_P: STREAK_P, BROKEN_MIN_RUN: BROKEN_MIN_RUN, TILT_MIN_MISSES: TILT_MIN_MISSES, TILT_P: TILT_P, BROKEN_P: BROKEN_P, MAX_PER_GAME: MAX_PER_GAME, RECENT_MS: RECENT_MS, WEAK_MS: WEAK_MS, DAYNIGHT_MS: DAYNIGHT_MS, MILESTONES: MILESTONES, ASSETS: ASSETS, LABELS: LABELS, RARE_P: RARE_P,
     PHRASES: { tilt: TILT_PHRASES, visit: VISIT, visitRare: VISIT_RARE, streak: STREAK_PHRASES, broken: BROKEN_PHRASES, record: RECORD, comeback: COMEBACK, weak: WEAK, day: DAY, dayRare: DAY_RARE, nightEarly: NIGHT_EARLY, nightLate: NIGHT_LATE, nightRare: NIGHT_RARE },
     isNight: isNight, isDay: isDay, newState: newState, evaluate: evaluate
   };
