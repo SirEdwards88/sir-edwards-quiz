@@ -528,7 +528,7 @@ test('Supervivencia y Muerte Súbita: nunca racha ni racha rota en el enganche',
 
 test('ánimo: desde el 2.º fallo seguido con probabilidad creciente, una vez por partida; un acierto reinicia la cuenta', () => {
   const ev = (st, correct, now, rng) => S.evaluate(st, { nowMs: now, hour: 12, streak: 0, correct, last: false, blocked: false, noStreak: false, noBroken: false, recent: {} }, rng || (() => 0));
-  const P = S.TILT_P; assert.ok(P[2] < P[3] && P[3] < P[4] && P[4] < 1, 'la probabilidad crece con cada fallo seguido');
+  const P = S.TILT_P; assert.ok(P[2] < P[3] && P[3] < P[4] && P[4] < S.TILT_P5 && S.TILT_P5 < 1, 'la probabilidad crece con cada fallo seguido');
   let st = S.newState();
   assert.equal(ev(st, false, 1e6), null, 'con un solo fallo no sale');
   const e = ev(st, false, 1e6 + 1);
@@ -540,7 +540,11 @@ test('ánimo: desde el 2.º fallo seguido con probabilidad creciente, una vez po
   ev(st, false, 1e6, R(0.5)); assert.equal(ev(st, false, 1e6 + 1, R(P[2] + 0.01)), null, '2.º fallo: no sale por encima del 20 %');
   assert.ok(ev(st, false, 1e6 + 2, R(P[3] - 0.01)), '3.º: sale por debajo del 45 %');
   st = S.newState(); ev(st, false, 1e6, R(0.99)); ev(st, false, 1e6 + 1, R(0.99)); ev(st, false, 1e6 + 2, R(0.99)); ev(st, false, 1e6 + 3, R(0.99));
-  assert.ok(ev(st, false, 1e6 + 4, R(0.9999)), 'con 5 o más fallos seguidos, segura');
+  assert.ok(ev(st, false, 1e6 + 4, R(S.TILT_P5 - 0.01)), 'con 5 o más fallos seguidos, 80 %');
+  st = S.newState(); [0, 1, 2, 3].forEach((k) => ev(st, false, 1e6 + k, R(0.99)));
+  assert.equal(ev(st, false, 1e6 + 4, R(S.TILT_P5 + 0.01)), null, 'con 5 o más fallos seguidos, no es segura');
+  st = S.newState(); const blk = (c) => S.evaluate(st, { nowMs: 1e6, hour: 12, streak: 0, correct: c, last: false, blocked: false, tiltBlocked: true, recent: {} }, () => 0);
+  for (let i = 0; i < 6; i++) assert.equal(blk(false), null, 'tiltBlocked: no sale si hubo ánimo en la partida anterior');
   st = S.newState(); ev(st, false, 1e6); ev(st, true, 1e6 + 1);
   assert.equal(ev(st, false, 1e6 + 2), null, 'tras un acierto vuelve a contar desde cero');
   st = S.newState(); const noTilt = (c) => S.evaluate(st, { nowMs: 1e6, hour: 12, streak: 0, correct: c, last: false, blocked: false, noTilt: true, recent: {} }, () => 0);

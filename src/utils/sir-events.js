@@ -38,7 +38,8 @@ const SEQSirEvents = (function () {
   var BROKEN_MIN_RUN = 5;         // racha mínima para que su rotura merezca comentario
   var TILT_MIN_MISSES = 2;          // fallos seguidos a partir de los cuales PUEDE salir el ánimo
   var TILT_HIGH = 4;                // a partir de aquí, frases «fuertes» (más teatrales)
-  var TILT_P = { 2: 0.2, 3: 0.45, 4: 0.75 };      // probabilidad por fallo seguido; con 5 o más, segura (una vez por partida)
+  var TILT_P = { 2: 0.08, 3: 0.2, 4: 0.45 };      // probabilidad por fallo seguido; con 5 o más, TILT_P5 (una vez por partida)
+  var TILT_P5 = 0.8;
   var BROKEN_P = { low: 0.35, mid: 0.7, high: 1 };        // 5-9 · 10-19 · 20 o más
   var MAX_PER_GAME = 1;           // como mucho un evento por partida (salvo un hito de racha de 20 o más)
   var RECENT_MS = 6 * 3600 * 1000;        // día, noche y visita: como mucho uno cada 6 h (lo recuerda quien llama, entre partidas)
@@ -343,10 +344,10 @@ const SEQSirEvents = (function () {
       var ct = phraseFor('comeback', Math.floor(ctx.hour), rng, state.last.comeback, 0, ctx.rotate);
       if (ct) return done(state, ctx, 'comeback', ct, ctx.nowMs);
     }
-    // Ánimo: desde el 2.º fallo seguido, con probabilidad creciente (2 → 20 %, 3 → 45 %, 4 → 75 %, 5 o más → segura). Una vez por
+    // Ánimo: desde el 2.º fallo seguido, con probabilidad creciente (2 → 8 %, 3 → 20 %, 4 → 45 %, 5 o más → 80 %); no en dos partidas seguidas del mismo dispositivo (ctx.tiltBlocked). Una vez por
     // partida; nunca pegado a otro evento; ctx.noTilt lo veta (solo se usa en la partida estándar).
-    if (ctx.correct !== true && ctx.noTilt !== true && state.miss >= TILT_MIN_MISSES && !state.shown.tilt &&
-        !(state.lastAnswer !== null && state.answers - state.lastAnswer < 2) && rng() < (TILT_P[state.miss] || 1)) {
+    if (ctx.correct !== true && ctx.noTilt !== true && state.miss >= TILT_MIN_MISSES && !state.shown.tilt && ctx.tiltBlocked !== true &&
+        !(state.lastAnswer !== null && state.answers - state.lastAnswer < 2) && rng() < (TILT_P[state.miss] || TILT_P5)) {
       var tt = phraseFor('tilt', Math.floor(ctx.hour), rng, state.last.tilt, state.miss, ctx.rotate);
       if (tt) return done(state, ctx, 'tilt', tt, ctx.nowMs);
     }
@@ -388,7 +389,7 @@ const SEQSirEvents = (function () {
 
   return {
     COOLDOWN_MS: COOLDOWN_MS, MIN_ANSWERS_BETWEEN: MIN_ANSWERS_BETWEEN, MIN_ANSWERS_START: MIN_ANSWERS_START,
-    P: P, STREAK_P: STREAK_P, BROKEN_MIN_RUN: BROKEN_MIN_RUN, TILT_MIN_MISSES: TILT_MIN_MISSES, TILT_P: TILT_P, BROKEN_P: BROKEN_P, MAX_PER_GAME: MAX_PER_GAME, RECENT_MS: RECENT_MS, WEAK_MS: WEAK_MS, DAYNIGHT_MS: DAYNIGHT_MS, MILESTONES: MILESTONES, ASSETS: ASSETS, LABELS: LABELS, RARE_P: RARE_P,
+    P: P, STREAK_P: STREAK_P, BROKEN_MIN_RUN: BROKEN_MIN_RUN, TILT_MIN_MISSES: TILT_MIN_MISSES, TILT_P: TILT_P, TILT_P5: TILT_P5, BROKEN_P: BROKEN_P, MAX_PER_GAME: MAX_PER_GAME, RECENT_MS: RECENT_MS, WEAK_MS: WEAK_MS, DAYNIGHT_MS: DAYNIGHT_MS, MILESTONES: MILESTONES, ASSETS: ASSETS, LABELS: LABELS, RARE_P: RARE_P,
     PHRASES: { tilt: TILT_PHRASES, visit: VISIT, visitRare: VISIT_RARE, streak: STREAK_PHRASES, broken: BROKEN_PHRASES, record: RECORD, comeback: COMEBACK, weak: WEAK, day: DAY, dayRare: DAY_RARE, nightEarly: NIGHT_EARLY, nightLate: NIGHT_LATE, nightRare: NIGHT_RARE },
     isNight: isNight, isDay: isDay, newState: newState, evaluate: evaluate
   };
