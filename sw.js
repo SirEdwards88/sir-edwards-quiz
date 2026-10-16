@@ -469,15 +469,15 @@ const APP_SHELL = [
 // <asset-revs>
 const ASSET_REVS = {
   './assets/audio/correct.mp3': 'ada74251',
-  './assets/audio/event.mp3': 'e5595ae9',
+  './assets/audio/event.mp3': '3dfec73a',
   './assets/audio/lose.mp3': 'bf64ed58',
   './assets/audio/lucidez-enigma.mp3': '157889a8',
   './assets/audio/lucidez-fase1.mp3': 'd8b89cd3',
   './assets/audio/lucidez-fase2.mp3': '464b2b68',
   './assets/audio/lucidez-fase3.mp3': '4689da7d',
-  './assets/audio/record.mp3': '59d1eef1',
+  './assets/audio/record.mp3': '3165b8dd',
   './assets/audio/secret.mp3': 'fe9a2e00',
-  './assets/audio/win.mp3': '3165b8dd',
+  './assets/audio/win.mp3': '59d1eef1',
   './assets/audio/wrong.mp3': '738c1d1c',
   './assets/avatars/avatar_siredwards_coleccionista.png': '3f6ad265',
   './assets/avatars/avatar_siredwards_imparable.png': '06e74544',
