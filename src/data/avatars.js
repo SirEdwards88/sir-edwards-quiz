@@ -51,13 +51,13 @@
     { id: 'sello', value: 'sello', short: 'Sello', src: ASSET_DIR + 'sello.png', label: 'Sello de lacre', base: true },
     { id: 'gramofono', value: 'gramofono', short: 'Gramófono', src: ASSET_DIR + 'gramofono.png', label: 'Gramófono', base: true },
     // Los id avatar_siredwards_coleccionista, _imparable y _medianoche se CONSERVAN (están guardados en perfiles y el Worker los valida),
-    // pero su arte es ahora el Pulpo Archivero, el Carnero de la Racha y el Murciélago Noctámbulo: personajes propios en vez de más variantes de Sir Edwards.
+    // pero su arte es ahora un personaje propio (pulpo, carnero y murciélago) en vez de más variantes de Sir Edwards; se nombran por su logro.
     // 2.1: avatares que se GANAN con un logro (`medal` = ID del logro; la recompensa se define en MEDAL_REWARDS, medals.js).
     // El servidor solo deja elegirlos a quien tiene el logro. Cualquiera los VE en el perfil de otro jugador.
-    { id: 'avatar_siredwards_imparable', value: 'avatar_siredwards_imparable', short: 'Carnero', src: ASSET_DIR + 'avatar_siredwards_imparable.png', label: 'El Carnero de la Racha', base: false, medal: 'streak_30' },
-    { id: 'avatar_siredwards_medianoche', value: 'avatar_siredwards_medianoche', short: 'Murciélago', src: ASSET_DIR + 'avatar_siredwards_medianoche.png', label: 'El Murciélago Noctámbulo', base: false, medal: 'noctambulo' },
-    { id: 'avatar_siredwards_coleccionista', value: 'avatar_siredwards_coleccionista', short: 'Pulpo', src: ASSET_DIR + 'avatar_siredwards_coleccionista.png', label: 'El Pulpo Archivero', base: false, medal: 'medal_collector_30' },
-    { id: 'buho', value: 'buho', short: 'Búho', src: ASSET_DIR + 'buho.png', label: 'Búho universitario', base: false, medal: 'polimata' },
+    { id: 'avatar_siredwards_imparable', value: 'avatar_siredwards_imparable', short: 'Imparable', src: ASSET_DIR + 'avatar_siredwards_imparable.png', label: 'SirEdwards Imparable', base: false, medal: 'streak_30' },
+    { id: 'avatar_siredwards_medianoche', value: 'avatar_siredwards_medianoche', short: 'Nocturno', src: ASSET_DIR + 'avatar_siredwards_medianoche.png', label: 'SirEdwards Nocturno', base: false, medal: 'noctambulo' },
+    { id: 'avatar_siredwards_coleccionista', value: 'avatar_siredwards_coleccionista', short: 'Coleccionista', src: ASSET_DIR + 'avatar_siredwards_coleccionista.png', label: 'SirEdwards Coleccionista', base: false, medal: 'medal_collector_30' },
+    { id: 'buho', value: 'buho', short: 'Polímata', src: ASSET_DIR + 'buho.png', label: 'SirEdwards Polímata', base: false, medal: 'polimata' },
     { id: 'avatar_siredwards_vengador', value: 'avatar_siredwards_vengador', short: 'Vengador', src: ASSET_DIR + 'avatar_siredwards_vengador.png', label: 'SirEdwards Vengador', base: false, medal: 'duel_revancha' },
     { id: 'avatar_siredwards_insensato', value: 'avatar_siredwards_insensato', short: 'Insensato', src: ASSET_DIR + 'avatar_siredwards_insensato.png', label: 'SirEdwards Insensato', base: false, medal: 'duel_apuestas_ultima_locura' },
     { id: 'avatar_siredwards_supremo', value: 'avatar_siredwards_supremo', short: 'Supremo', src: ASSET_DIR + 'avatar_siredwards_supremo.png', label: 'SirEdwards Supremo', base: false, medal: 'all_medals_secret', secret: true },
