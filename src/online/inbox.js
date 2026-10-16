@@ -25,16 +25,22 @@
 
   // ---- Lógica pura ------------------------------------------------------------------------
   // Desafíos que te esperan: invitaciones recibidas (duelo y reto). → [{ kind, id, name, avatar }]
-  function pendingFrom(duels, retos) {
+  function pendingFrom(duels, retos, multis) {
     var out = [];
     (Array.isArray(duels) ? duels : []).forEach(function (d) { if (d && d.estado === 'pendiente' && d.soy === 'rival' && ID_RE.test(String(d.id))) out.push(item('duel', d)); });
     (Array.isArray(retos) ? retos : []).forEach(function (r) { if (r && r.estado === 'pendiente' && r.soy === 'rival' && ID_RE.test(String(r.id))) out.push(item('reto', r)); });
+    // 2.4: invitaciones a un duelo múltiple (el anfitrión es el primero de la lista que no soy yo).
+    (Array.isArray(multis) ? multis : []).forEach(function (m) {
+      if (!m || m.estado !== 'pendiente' || m.mi_estado !== 'invitado' || !ID_RE.test(String(m.id))) return;
+      var host = (Array.isArray(m.jugadores) ? m.jugadores : []).filter(function (j) { return j && !j.es_yo; })[0] || {};
+      out.push({ kind: 'multi', id: String(m.id), name: String(host.display_name || 'Un amigo').slice(0, 24), avatar: host.avatar });
+    });
     return out;
   }
   function item(kind, x) { var p = x.rival || {}; return { kind: kind, id: String(x.id), name: String(p.display_name || 'Un amigo').slice(0, 24), avatar: p.avatar }; }
   // Lo que te toca jugar y aún no has hecho (para el punto del menú): invitaciones recibidas + retos aceptados sin terminar.
-  function dotCount(duels, retos) {
-    var n = pendingFrom(duels, retos).length;
+  function dotCount(duels, retos, multis) {
+    var n = pendingFrom(duels, retos, multis).length;
     (Array.isArray(retos) ? retos : []).forEach(function (r) { if (r && r.estado === 'aceptado' && r.yo && !r.yo.terminado) n++; });
     return n;
   }
@@ -45,6 +51,7 @@
   var SUBS = {
     reto: ['Toca para verlo. Ya habrá tiempo para excusas.', 'Toca para verlo. Tres días deberían bastar.', 'Un reto así merece, al menos, una mirada.', 'El reto ha llegado. Qué oportuno.'],
     duel: ['Toca para responder. El reloj corre.', 'Toca para responder. El tiempo tiene otros planes.', 'Toca para responder. Sesenta segundos, ni uno más.', 'El duelo no piensa esperar demasiado.', 'Toca para responder. La puntualidad importa.'],
+    multi: ['Toca para verlo. Tres o cuatro, y un solo ganador.', 'Toca para responder. La sala no espera eternamente.', 'Más de un rival a la vez. Sir Edwards aprueba.'],
     many: ['Toca para verlos. Sir Edwards espera.', 'Hay asuntos pendientes. Naturalmente.', 'Toca para verlos. Se han acumulado.']
   };
   var lastSub = {};
@@ -57,6 +64,7 @@
   function textFor(list, rnd) {
     if (list.length === 1) {
       var i = list[0];
+      if (i.kind === 'multi') return { title: i.name + ' te invita a un duelo múltiple', sub: pickSub('multi', rnd) };
       return i.kind === 'duel'
         ? { title: i.name + ' te reta a un duelo', sub: pickSub('duel', rnd) }
         : { title: i.name + ' te ha retado', sub: pickSub('reto', rnd) };
@@ -97,7 +105,7 @@
       if (typeof switchTab === 'function') switchTab('duelo');
       if (!window.SEQDuels || !SEQDuels.open) return;
       if (list.length === 1) SEQDuels.open(list[0].kind, list[0].id);
-      else SEQDuels.open(list.every(function (i) { return i.kind === 'reto'; }) ? 'retos' : list.every(function (i) { return i.kind === 'duel'; }) ? 'duels' : null);
+      else SEQDuels.open(list.every(function (i) { return i.kind === 'reto'; }) ? 'retos' : list.every(function (i) { return i.kind === 'duel' || i.kind === 'multi'; }) ? 'duels' : null);
     } catch (e) {}
   }
   function show(list) {
@@ -139,18 +147,19 @@
   function session() { try { return window.SEQOnline && SEQOnline.session ? SEQOnline.session() : null; } catch (e) { return null; } }
   function check(force) {
     var s = session(), f = s && s.features || {};
-    if (busy || !s || !(f.classic_duel || f.async_challenges) || document.visibilityState === 'hidden' || navigator.onLine === false) return Promise.resolve();
+    if (busy || !s || !(f.classic_duel || f.async_challenges || f.multi_duel) || document.visibilityState === 'hidden' || navigator.onLine === false) return Promise.resolve();
     if (force !== true && Date.now() - lastCheck < MIN_GAP_MS) return Promise.resolve();
     busy = true; lastCheck = Date.now();
-    var got = { duels: null, retos: null }, failed = false;
+    var got = { duels: null, retos: null, multis: null }, failed = false;
     return Promise.all([
       f.classic_duel ? SEQOnline.api('GET', '/duels').then(function (d) { got.duels = d && d.duels; }).catch(function () { failed = true; }) : null,
+      f.multi_duel ? SEQOnline.api('GET', '/multi-duels').then(function (d) { got.multis = d && d.duels; }).catch(function () { failed = true; }) : null,
       f.async_challenges ? SEQOnline.api('GET', '/challenges').then(function (d) { got.retos = d && d.challenges; }).catch(function () { failed = true; }) : null
     ]).then(function () {
       busy = false; fails = failed ? Math.min(fails + 1, 6) : 0;
       if (failed && !got.duels && !got.retos) return;
-      paintDot(dotCount(got.duels, got.retos));
-      var fresh = unseen(pendingFrom(got.duels, got.retos), readSeen());
+      paintDot(dotCount(got.duels, got.retos, got.multis));
+      var fresh = unseen(pendingFrom(got.duels, got.retos, got.multis), readSeen());
       queue = unseen(queue.concat(fresh), []).filter(function (i, k, a) { return a.findIndex(function (j) { return j.kind === i.kind && j.id === i.id; }) === k; });
       flush();
     }).catch(function () { busy = false; });

@@ -351,6 +351,8 @@ const APP_SHELL = [
   './src/share/share-card.js',
   './src/online/duels.js',
   './src/online/duels-v21.js',
+  './src/online/multi-duels.js',
+  './src/online/multi-stakes.js',
   './src/online/player-profile.js',
   './src/online/inbox.js',
   './src/online/push.js',

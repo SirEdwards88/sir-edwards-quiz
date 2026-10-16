@@ -974,3 +974,56 @@
 #seq-duel-root .seq-v21-board-btn.sel span:last-child { border-bottom: 0; padding-bottom: 0; }
 #seq-duel-root .seq-v21-board-btn .seq-v21-ico-rk { width: 64px; height: 64px; }
 #seq-duel-root .seq-v21-board-btn:not(.sel) .seq-v21-ico-rk { opacity: .7; transform: scale(.92); }
+
+/* ===== 2.4 Duelo online múltiple (src/online/multi-duels.js) ===== */
+#seq-duel-root .seq-m-opts, #seq-duel-root .seq-m-players { gap: 10px; max-height: none; overflow: visible; }
+#seq-duel-root .seq-m-opt { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 16px; border-radius: 16px; border: 1px solid rgba(201, 153, 46, .30);
+  background: linear-gradient(160deg, color-mix(in srgb, #c9992e 8%, var(--card)), var(--card) 65%); box-shadow: 0 3px 10px rgba(0, 0, 0, .18); }
+#seq-duel-root .seq-m-opt-body { min-width: 0; }
+#seq-duel-root .seq-m-friend { align-items: center; }
+#seq-duel-root .seq-m-friend.seq-m-on { border-color: #c9992e; box-shadow: 0 0 0 2px rgba(201, 153, 46, .28), 0 4px 12px rgba(0, 0, 0, .2); }
+#seq-duel-root .seq-m-check { width: 26px; min-width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid rgba(201, 153, 46, .55); display: flex; align-items: center; justify-content: center; }
+#seq-duel-root .seq-m-check .seq-ico { width: 16px; height: 16px; }
+#seq-duel-root .seq-m-bar { position: sticky; bottom: 0; padding: 12px 0 4px; margin-top: 14px; background: linear-gradient(180deg, transparent, var(--card) 40%); }
+#seq-duel-root .seq-m-players { margin: 0 0 16px; text-align: left; display: flex; flex-direction: column; }
+
+/* Marcador en vivo de todos los jugadores (partida). */
+#seq-duel-root .seq-m-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 6px; margin: 8px 0 10px; }
+#seq-duel-root .seq-m-chip { min-width: 0; display: grid; grid-template-columns: auto 1fr; grid-template-areas: "pos pts" "av av" "nm nm"; align-items: baseline; justify-items: center; gap: 2px 4px; padding: 6px 4px 5px; border-radius: 12px;
+  background: var(--card); border: 1px solid var(--border); }
+#seq-duel-root .seq-m-chip.me { border-color: #c9992e; box-shadow: 0 0 0 1px rgba(201, 153, 46, .4); }
+#seq-duel-root .seq-m-chip.gone { opacity: .5; }
+#seq-duel-root .seq-m-chip .seq-m-pos { grid-area: pos; font-size: 11px; font-weight: 800; color: var(--sub, var(--color-text-muted)); justify-self: start; padding-left: 4px; }
+#seq-duel-root .seq-m-chip .seq-m-pts { grid-area: pts; font-size: 18px; font-weight: 900; line-height: 1; font-variant-numeric: tabular-nums; color: var(--text); justify-self: end; padding-right: 4px; }
+#seq-duel-root .seq-m-chip .seq-m-av { grid-area: av; line-height: 1; }
+#seq-duel-root .seq-m-chip .seq-av-img, #seq-duel-root .seq-m-row .seq-av-img { width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid #c9992e; background: #fff; object-fit: cover; }
+#seq-duel-root .seq-m-nm { grid-area: nm; max-width: 100%; font-size: 10.5px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Clasificación de la tarjeta final. */
+#seq-duel-root .seq-m-rank { display: flex; flex-direction: column; gap: 8px; margin: 4px 0 14px; }
+#seq-duel-root .seq-m-row { display: grid; grid-template-columns: 38px 40px 1fr auto; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 14px; background: var(--card); border: 1.5px solid var(--border); text-align: left; }
+#seq-duel-root .seq-m-row.first { border-color: #c9992e; box-shadow: 0 0 0 1px rgba(201, 153, 46, .45), 0 6px 16px rgba(0, 0, 0, .16); }
+#seq-duel-root .seq-m-row.me .seq-m-rname { color: #c9992e; }
+#seq-duel-root .seq-m-row.gone { opacity: .6; }
+#seq-duel-root .seq-m-rpos { font-family: var(--font-display); font-size: 18px; font-weight: 800; color: var(--text); }
+#seq-duel-root .seq-m-row.first .seq-m-rpos, #seq-duel-root .seq-m-row.first .seq-m-pts { color: #c9992e; }
+#seq-duel-root .seq-m-rname { min-width: 0; font-weight: 800; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#seq-duel-root .seq-m-rname i { font-weight: 500; font-size: 12px; opacity: .8; }
+#seq-duel-root .seq-m-row .seq-m-pts { font-size: 22px; font-weight: 900; font-variant-numeric: tabular-nums; color: var(--text); }
+[data-theme="dark"] #seq-duel-root .seq-m-row.first, [data-theme="dark"] #seq-duel-root .seq-m-chip.me { border-color: #e8c874; }
+
+/* 2.4 Duelo múltiple por apuestas (src/online/multi-stakes.js) */
+.seq-m-locks { display: flex; justify-content: center; gap: 14px; margin: 12px 0 4px; }
+.seq-m-lock { position: relative; display: inline-flex; opacity: .55; }
+.seq-m-lock.on { opacity: 1; }
+.seq-m-lock .seq-pl-av, .seq-m-lock img, .seq-m-lock > * { max-width: 40px; max-height: 40px; }
+.seq-m-lock small { position: absolute; right: -6px; bottom: -4px; width: 16px; height: 16px; display: inline-flex; }
+.seq-m-lock small svg, .seq-m-lock small img { width: 100%; height: 100%; }
+.seq-m-table { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 10px 0; }
+.seq-m-bet { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 72px; padding: 8px 10px; border-radius: 12px; border: 1px solid var(--border, rgba(255,255,255,.12)); background: rgba(255,255,255,.03); }
+.seq-m-bet.me { border-color: var(--gold, #d4a937); }
+.seq-m-bet small { opacity: .8; font-size: .75rem; }
+.seq-m-bet-av > * { max-width: 32px; max-height: 32px; }
+.seq-m-bet .seq-v21-ico { width: 28px; height: 28px; }
+.seq-m-double { color: var(--gold, #d4a937); }
+.seq-m-fog { text-align: center; margin: 4px 0; font-style: italic; }
