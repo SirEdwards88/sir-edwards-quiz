@@ -65,9 +65,14 @@
   }
 
   // hadNewModes: si acaba de salir el aviso de un modo nuevo, espera a que termine el suyo.
+  var pend = 0;
+  // true mientras haya un aviso de logro en pantalla o programado (los Encargos esperan a que acabe).
+  function busy() { return pend > 0 || !!document.querySelector('.reward-toast.show'); }
   function announce(medals, hadNewModes) {
     if (!cards(medals).length) return;
+    pend++;
     setTimeout(function () {
+      pend--;
       // Si el jugador ya salió de la tarjeta final, no se muestra: el logro sigue en sus resultados y en Logros.
       var card = document.getElementById('results-card');
       if (!card || !card.offsetParent) return;
@@ -79,8 +84,9 @@
   // No se comprueba #results-card (el duelo tiene su propia tarjeta).
   function announceNow(medals) {
     if (!cards(medals).length) return;
-    setTimeout(function () { show(medals); }, 600);
+    pend++;
+    setTimeout(function () { pend--; show(medals); }, 600);
   }
 
-  window.SEQRewardToast = { announce: announce, announceNow: announceNow, cards: cards };
+  window.SEQRewardToast = { announce: announce, announceNow: announceNow, cards: cards, busy: busy };
 })();

@@ -110,9 +110,19 @@ const SEQEncargosUI = (function () {
     document.body.appendChild(el);
     return el;
   }
-  function next() {
+  // Prioridad de avisos: modo nuevo, luego logro con recompensa, y al final los Encargos. Esperan a que esos acaben.
+  function otherToastBusy() {
+    try {
+      if (document.querySelector('.mode-unlock-toast.show')) return true;
+      return typeof SEQRewardToast !== 'undefined' && SEQRewardToast.busy && SEQRewardToast.busy();
+    } catch (e) { return false; }
+  }
+  function next(waited) {
     if (!queue.length) { showing = false; return; }
     showing = true;
+    // Primera comprobación a los 350 ms: los avisos de modo y logro se programan justo después del fin de partida.
+    if (waited == null) { setTimeout(function () { next(0); }, 350); return; }
+    if (waited < 15000 && otherToastBusy()) { setTimeout(function () { next(waited + 400); }, 400); return; }
     var t = queue.shift(), n = ensureEl();
     n.className = 'encargos-toast is-' + t.kind;
     n.innerHTML = '<div class="encargos-toast-main">' + (t.kind === 'progress' ? seqIco('sombrero') : '') + esc(t.main) + '</div>' +
@@ -120,7 +130,7 @@ const SEQEncargosUI = (function () {
     void n.offsetWidth;
     n.classList.add('show');
     clearTimeout(hideT);
-    hideT = setTimeout(function () { n.classList.remove('show'); setTimeout(next, 260); }, 2600);
+    hideT = setTimeout(function () { n.classList.remove('show'); setTimeout(function () { next(); }, 260); }, 2600);
   }
   // kind: 'progress' | 'done' | 'great'
   function toast(main, kind, sub) {
