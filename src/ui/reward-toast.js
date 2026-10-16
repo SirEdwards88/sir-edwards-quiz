@@ -2,7 +2,7 @@
 //
 // Los logros se muestran siempre en la tarjeta final. Solo los que dan algo tangible (un avatar o un
 // Fragmento de Mente) llevan además este aviso breve, sin confeti ni sonido, para que no pase inadvertido.
-// Varios a la vez salen uno tras otro, cada uno con su tarjeta. Si hay modo nuevo, espera a que termine el suyo.
+// Varios a la vez salen en una sola tarjeta, con icono, nombre y recompensa de cada uno. Si hay modo nuevo, espera a que termine el suyo.
 // Reutiliza showInfoToast (index.html). Solo interfaz: no toca logros, XP ni recompensas.
 
 (function () {
@@ -26,7 +26,7 @@
   function rewardText(m) {
     var parts = [];
     try { if (getMedalAvatar(m.id)) parts.push('Avatar desbloqueado'); } catch (e) {}
-    try { if (FRAGMENT_MEDAL_IDS.indexOf(m.id) !== -1) parts.push('+1 Fragmento de Mente'); } catch (e) {}
+    try { if (FRAGMENT_MEDAL_IDS.indexOf(m.id) !== -1) parts.push('Fragmento de Mente desbloqueado'); } catch (e) {}
     return parts.join(' · ');
   }
   function icon(m) { try { return window.SEQAchievements ? SEQAchievements.iconHTML(m) : ''; } catch (e) { return ''; } }
@@ -36,33 +36,32 @@
     return rewardsOf(medals).medals.map(function (m) { return { id: m.id, title: m.title, reward: rewardText(m) }; });
   }
 
-  function cardHTML(m) {
-    return '<span class="reward-toast-ico">' + icon(m) + '</span><span class="reward-toast-body"><span class="reward-toast-kicker">Logro conseguido</span>' +
-      '<span class="reward-toast-name">' + esc(m.title) + '</span><span class="reward-toast-reward">' + esc(rewardText(m)) + '</span></span>';
+  function cardHTML(list) {
+    if (list.length === 1) {
+      var m = list[0];
+      return '<span class="reward-toast-ico">' + icon(m) + '</span><span class="reward-toast-body"><span class="reward-toast-kicker">¡Logro desbloqueado!</span>' +
+        '<span class="reward-toast-name">' + esc(m.title) + '</span><span class="reward-toast-reward">' + esc(rewardText(m)) + '</span></span>';
+    }
+    var shown = list.slice(0, 4), extra = list.length - shown.length;
+    return '<span class="reward-toast-body reward-toast-multi"><span class="reward-toast-kicker">¡Logros desbloqueados!</span><span class="reward-toast-rows">' +
+      shown.map(function (m) {
+        return '<span class="reward-toast-row"><span class="reward-toast-ico">' + icon(m) + '</span><span><span class="reward-toast-rname">' + esc(m.title) +
+          '</span><span class="reward-toast-reward">' + esc(rewardText(m)) + '</span></span></span>';
+      }).join('') + '</span>' + (extra > 0 ? '<span class="reward-toast-reward">y ' + extra + (extra === 1 ? ' más' : ' más') + '</span>' : '') + '</span>';
   }
 
-  // Si caen varios de golpe, salen uno tras otro con la misma tarjeta; cada uno se despide antes de que entre el siguiente.
+  // Uno: tarjeta con su icono. Varios a la vez: una sola tarjeta con todos.
   function show(medals) {
     var list = rewardsOf(medals).medals;
     if (!list.length) return;
     var t = document.querySelector('.reward-toast');
     if (!t) { t = document.createElement('div'); t.className = 'reward-toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
+    t.classList.toggle('reward-toast-group', list.length > 1);
+    t.innerHTML = cardHTML(list);
+    void t.offsetWidth;
+    t.classList.add('show');
     clearTimeout(window.__rewardToastTimer);
-    var i = 0;
-    (function next() {
-      if (i >= list.length) return;
-      t.classList.remove('show');
-      var m = list[i++];
-      window.__rewardToastTimer = setTimeout(function () {
-        t.innerHTML = cardHTML(m);
-        void t.offsetWidth;
-        t.classList.add('show');
-        window.__rewardToastTimer = setTimeout(function () {
-          t.classList.remove('show');
-          if (i < list.length) window.__rewardToastTimer = setTimeout(next, 400);
-        }, 3300);
-      }, i === 1 ? 0 : 50);
-    })();
+    window.__rewardToastTimer = setTimeout(function () { t.classList.remove('show'); }, list.length > 1 ? 4800 : 3600);
   }
 
   // hadNewModes: si acaba de salir el aviso de un modo nuevo, espera a que termine el suyo.

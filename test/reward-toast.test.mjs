@@ -16,7 +16,7 @@ test('logros sin recompensa: ninguna tarjeta', () => {
 test('un logro con avatar o fragmento: una tarjeta con su recompensa', () => {
   const t = load();
   assert.equal(JSON.stringify(t.cards([m('av_a', 'Imparable')]).map(c => [c.title, c.reward])), JSON.stringify([['Imparable', 'Avatar desbloqueado']]));
-  assert.equal(t.cards([m('frag_a', 'Mente Fracturada')])[0].reward, '+1 Fragmento de Mente');
+  assert.equal(t.cards([m('frag_a', 'Mente Fracturada')])[0].reward, 'Fragmento de Mente desbloqueado');
 });
 test('varios logros: una tarjeta por cada uno con recompensa, en orden, sin los normales', () => {
   const c = load().cards([m('av_a', 'A'), m('games_5', 'D'), m('frag_a', 'C'), m('av_b', 'B')]);
