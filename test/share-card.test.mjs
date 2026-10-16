@@ -17,7 +17,7 @@ const base = { modeName: 'Modo Estándar', scoreStr: '27/30', accuracy: 90, stre
 
 test('Estándar sin retrato en pantalla -> variante standard con sombrero', () => {
   const m = build({ ...base, modeName: 'Contrarreloj' });
-  assert.equal(m.variant, 'standard'); assert.equal(m.title, 'RESULTADO'); assert.equal(m.character, 'hat');
+  assert.equal(m.variant, 'standard'); assert.equal(m.title, 'RESULTADO'); assert.equal(m.character, 'draw');
   assert.equal(m.main, '27/30'); assert.equal(m.pill, 'CONTRARRELOJ');
   assert.equal(m.secondary, '90 % de efectividad · racha máxima 14');
 });

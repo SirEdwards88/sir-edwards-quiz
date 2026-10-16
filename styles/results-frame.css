@@ -1,41 +1,47 @@
-/* Tarjeta final con marco y cinta según el resultado (2.3), sobre una superficie lisa (sin imagen de fondo).
+/* Tarjeta final según el resultado (2.3), sobre una superficie lisa (sin imagen de fondo).
    Se aplica a #results-card y a la tarjeta final de Duelo/Reto. El tono llega en data-tier:
-   oro (perfecto/victoria), azul (bien), plata (mediocre), derrota, secreto (Lucidez). Sin tier = oro. */
+   oro (perfecto/victoria), azul (bien), plata (mediocre), derrota, secreto (Lucidez). Sin tier = oro.
+   Sin marco ni cinta de imagen: filete fino del color del tono, franja de acento arriba y título entre dos filetes. */
 #results-card.results-card, .seq-d-results.results-card {
   --rc-superficie: #1a2233; /* la misma superficie oscura que el resto de tarjetas del juego */
-  --rc-marco: url("../assets/ui/tarjeta/marco-oro-b.webp");
-  --rc-cinta: url("../assets/ui/tarjeta/cinta-oro.webp");
+  --rc-accent: #e8c874;
   --text: #f3ead8; --sub: #d3c8ae; --card: rgba(8,12,26,.62); --badge-bg: rgba(8,12,26,.55);
   --border: rgba(201,153,46,.38); --badge-border: rgba(201,153,46,.38);
 }
-#results-card[data-tier="azul"], .seq-d-results[data-tier="azul"] { --rc-marco: url("../assets/ui/tarjeta/marco-azul-b.webp"); --rc-cinta: url("../assets/ui/tarjeta/cinta-azul.webp"); }
-#results-card[data-tier="plata"], .seq-d-results[data-tier="plata"] { --rc-marco: url("../assets/ui/tarjeta/marco-plata-b.webp"); --rc-cinta: url("../assets/ui/tarjeta/cinta-plata.webp"); }
-#results-card[data-tier="derrota"], .seq-d-results[data-tier="derrota"] { --rc-marco: url("../assets/ui/tarjeta/marco-derrota-b.webp"); --rc-cinta: url("../assets/ui/tarjeta/cinta-derrota.webp"); }
-#results-card[data-tier="secreto"], .seq-d-results[data-tier="secreto"] { --rc-marco: url("../assets/ui/tarjeta/marco-secreto-b.webp"); --rc-cinta: url("../assets/ui/tarjeta/cinta-secreto.webp"); }
+#results-card[data-tier="azul"], .seq-d-results[data-tier="azul"] { --rc-accent: #8fb4f0; }
+#results-card[data-tier="plata"], .seq-d-results[data-tier="plata"] { --rc-accent: #cbd3df; }
+#results-card[data-tier="derrota"], .seq-d-results[data-tier="derrota"] { --rc-accent: #e08a80; }
+#results-card[data-tier="secreto"], .seq-d-results[data-tier="secreto"] { --rc-accent: #c4b5fd; }
+:root:not([data-theme="dark"]) #results-card.results-card, :root:not([data-theme="dark"]) .seq-d-results.results-card { --rc-accent: #8a6a1a; }
+:root:not([data-theme="dark"]) #results-card[data-tier="azul"], :root:not([data-theme="dark"]) .seq-d-results[data-tier="azul"] { --rc-accent: #2a5db0; }
+:root:not([data-theme="dark"]) #results-card[data-tier="plata"], :root:not([data-theme="dark"]) .seq-d-results[data-tier="plata"] { --rc-accent: #5a6578; }
+:root:not([data-theme="dark"]) #results-card[data-tier="derrota"], :root:not([data-theme="dark"]) .seq-d-results[data-tier="derrota"] { --rc-accent: #9b2f26; }
+:root:not([data-theme="dark"]) #results-card[data-tier="secreto"], :root:not([data-theme="dark"]) .seq-d-results[data-tier="secreto"] { --rc-accent: #6d28d9; }
 
 #results-card.results-card, .seq-d-results.results-card {
   position: relative; overflow: hidden;
   background: var(--rc-superficie) !important;
-  border: 0 !important; border-radius: 6px !important;
-  padding: 34px 22px 24px !important;
+  border: 1px solid color-mix(in srgb, var(--rc-accent) 38%, transparent) !important; border-radius: 18px !important;
+  padding: 26px 20px 22px !important;
   box-shadow: 0 16px 40px rgba(0,0,0,.5) !important;
 }
 #results-card.results-card::after, .seq-d-results.results-card::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  border: 30px solid transparent;
-  border-image: var(--rc-marco) 108 / 30px stretch;
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--rc-accent) 22%, var(--rc-accent) 78%, transparent);
 }
 #results-card.results-card > *, .seq-d-results.results-card > * { position: relative; z-index: 1; }
 #results-card.results-card h3, .seq-d-results.results-card h3 {
-  display: inline-block; min-width: 62%; max-width: 100%; box-sizing: border-box;
-  margin: 0 0 12px !important; padding: 0 4px !important;
-  height: 31px; line-height: 29px !important;
-  border-style: solid; border-width: 0 44px; border-color: transparent;
-  border-image: var(--rc-cinta) 0 150 fill / 0 44px stretch;
-  color: #f6e6b8 !important; font-size: 11px !important; letter-spacing: 1.4px !important;
-  text-shadow: 0 1px 2px rgba(0,0,0,.6);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; box-sizing: border-box;
+  margin: 0 0 14px !important; padding: 0 !important;
+  color: var(--rc-accent) !important; font-size: 11.5px !important; letter-spacing: 2px !important; font-weight: 800;
+  white-space: nowrap;
 }
+#results-card.results-card h3::before, #results-card.results-card h3::after,
+.seq-d-results.results-card h3::before, .seq-d-results.results-card h3::after {
+  content: ""; flex: 1 1 0; min-width: 14px; height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--rc-accent) 70%, transparent));
+}
+#results-card.results-card h3::after, .seq-d-results.results-card h3::after { transform: scaleX(-1); }
 #results-card .metric-box, .seq-d-results .metric-box { background: var(--card) !important; }
 #results-card .metrics-grid, #results-card .results-metrics-grid, .seq-d-results .results-metrics-grid { background: rgba(201,153,46,.18) !important; border-color: rgba(201,153,46,.3) !important; }
 

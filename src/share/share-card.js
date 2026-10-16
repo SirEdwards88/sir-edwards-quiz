@@ -98,7 +98,7 @@
     var player = input.player && input.player.name ? { name: String(input.player.name), avatar: input.player.avatar } : null;
     var accuracy = clampInt(input.accuracy);
     var streak = clampInt(input.streak);
-    var m = { variant: 'standard', mode: null, outcome: null, title: 'RESULTADO', pill: '', character: 'hat', player: player,
+    var m = { variant: 'standard', mode: null, outcome: null, title: 'RESULTADO', pill: '', character: 'draw', player: player,
               main: '', mainLabel: 'ACIERTOS', secondary: '', versus: null, code: null, phrase: '' };
 
     var o = input.online, d = input.duel;
