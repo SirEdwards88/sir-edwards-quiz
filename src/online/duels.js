@@ -254,7 +254,7 @@
     if (!active()) return;
     stopTimers();
     try { if (typeof closeDuelPanels === 'function') closeDuelPanels(); } catch (e) {}
-    S.screen = screen; S.id = id ? safeId(id) : null; S.data = null; S.msg = ''; S.lastIdx = -1; S.shown = null; S.streak = 0; S.showReview = false;
+    S.screen = screen; S.id = id ? safeId(id) : null; S.data = null; S.msg = ''; S.lastIdx = -1; S.shown = null; S.streak = 0;
     var home = $('duel-home'); if (home) home.style.display = 'none';
     var root = $('seq-duel-root'); if (root) root.style.display = 'block';
     render();
@@ -956,21 +956,7 @@
       h += '<button class="btn btn-share' + (res === 'win' ? '' : ' btn-share-quiet') + '" onclick="SEQDuels.shareResult()">' + ico('compartir') + 'Compartir resultado</button>';
       h += '<button type="button" class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.back()">Volver a Duelos</button></div>';
     }
-    // El repaso de preguntas, plegado: quien quiera curiosear, lo abre.
-    h += '<button type="button" class="seq-link seq-d-review-toggle" onclick="SEQDuels.toggleReview()">' + (S.showReview ? 'Ocultar las preguntas' : 'Ver las preguntas') + '</button>' + hEnd;
-    if (!S.showReview) return h;
-    var ids = kind === 'duel' ? d.preguntas : r.preguntas;
-    var myAns = {}, hisAns = {};
-    (d.yo.respuestas || []).forEach(function (a) { myAns[num(a.indice)] = a; });
-    (r.respuestas_rival || []).forEach(function (a) { hisAns[num(a.indice)] = a; });
-    var byMode = kind === 'reto' && d.modo && d.modo !== 'estandar';
-    h += '<div class="history-list seq-d-review">' + (ids || []).map(function (qn, i) {
-      var a = myAns[i], b = hisAns[i];
-      if (byMode && !a && !b) return ''; // en los modos con vidas o reloj, solo lo que llegó a jugar alguno
-      var q = itemInfo(qn); if (!q) return '';
-      return '<div class="history-item"><div><div class="history-item-info">' + (i + 1) + '. ' + esc(q.q) + '</div><div class="history-item-sub">Respuesta: ' + esc(q.a) + (a && !a.es_correcta ? ' · tú: ' + esc(a.respuesta) : '') + '</div></div><div class="seq-d-marks" title="Tú · rival">' + mark(a) + ' ' + mark(b) + '</div></div>';
-    }).join('') + '</div>';
-    return h;
+    return h + hEnd;
   }
   function renderDuel() {
     var d = S.data;
@@ -1137,7 +1123,7 @@
     call: call, say: say, errText: errText, header: header, back: function () { back(); }, updateNeeded: updateNeeded
   };
   window.SEQDuels = {
-    shareResult: shareResultCard, leaveDuel: leaveDuel, toggleReview: function () { S.showReview = !S.showReview; render(); }, answerText: answerText, createReto: createReto, pickMode: pickMode,
+    shareResult: shareResultCard, leaveDuel: leaveDuel, answerText: answerText, createReto: createReto, pickMode: pickMode,
     open: open, back: back, pick: pick, create: create, quick: quick,
     duelAction: duelAction, retoAction: retoAction, listAction: listAction, answer: answer,
     doSearch: doSearch, friendAdd: friendAdd, friendResp: friendResp, reload: load,
