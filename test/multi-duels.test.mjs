@@ -61,14 +61,14 @@ test('resultado y frases: gana el primero, pierden los demás, y el margen elige
   assert.equal(C.outcome({ mi_posicion: 4, mi_puntuacion: 2, clasificacion: [] }, true).res, 'gone');
   assert.equal(C.categoryTitle({ res: 'win', margin: 9 }), 'Victoria aplastante'); assert.equal(C.categoryTitle({ res: 'win', margin: 1 }), 'Victoria por la mínima');
   assert.equal(C.categoryTitle({ res: 'loss', margin: 5 }), 'Derrota clara'); assert.equal(C.categoryTitle({ res: 'loss', margin: 12 }), 'Derrota sin paliativos');
-  // Frases: usa las bolsas del 1 contra 1 con el resultado y el margen; sin ellas, texto vacío (nunca rompe).
-  assert.equal(C.phraseFor({ res: 'win', margin: 3 }, 'X'), '');
-  const calls = [];
-  const ctx = vm.createContext({ SEQDuels: { _h: {} }, Math, String, Number, Object, isFinite, console, SEQDuelPhrases: { pickRotating: (...a) => (calls.push(a), 'frase'), pickForfeit: (...a) => (calls.push(a), 'huida') } });
-  ctx.window = ctx; vm.runInContext(SRC, ctx);
-  assert.equal(ctx.SEQMulti.core.phraseFor({ res: 'loss', margin: 6, winner: 'Ana' }, 'SALA'), 'frase');
-  assert.deepEqual(calls[0], ['loss', 6, 'SALA', 'Ana']);
-  assert.equal(ctx.SEQMulti.core.phraseFor({ res: 'gone' }, 'SALA'), 'huida');
+  // Frases propias del múltiple (hablan de «la mesa», no de «el rival»): estables por sala, con el nombre del ganador y sin llaves sueltas.
+  const f = (o, id) => C.phraseFor(o, id);
+  assert.equal(f({ res: 'loss', margin: 6, winner: 'Ana' }, 'SALA'), f({ res: 'loss', margin: 6, winner: 'Ana' }, 'SALA'));
+  for (const o of [{ res: 'win', margin: 1 }, { res: 'win', margin: 5 }, { res: 'win', margin: 9 }, { res: 'draw', margin: 0 }, { res: 'loss', margin: 1, winner: 'Ana' }, { res: 'loss', margin: 5, winner: 'Ana' }, { res: 'loss', margin: 9, winner: 'Ana' }, { res: 'gone', margin: 0 }]) {
+    for (const id of ['A', 'B', 'C', 'SALA1']) { const t = f(o, id); assert.ok(t.length > 10 && !/[{}]/.test(t) && !/\brival\b/i.test(t), t); }
+  }
+  assert.ok(['A', 'B', 'C', 'D', 'E', 'F'].some((id) => f({ res: 'loss', margin: 5, winner: 'Ana' }, id).includes('Ana')));
+  assert.ok(f({ res: 'loss', margin: 5, winner: 'X'.repeat(40) }, 'A').length < 120);
 });
 test('elegir modo: apuestas + múltiple ya está activo', () => {
   const { M, S, H } = load();
@@ -128,7 +128,7 @@ test('tarjeta final: clasificación completa con puestos compartidos, XP por aci
   const clas = [{ id: 'JJJJJJJJJ1', display_name: 'Ana', posicion: 1, puntuacion: 15 }, { id: 'JJJJJJJJJ0', display_name: 'Edu', es_yo: true, posicion: 1, puntuacion: 15 }, { id: 'JJJJJJJJJ2', display_name: '<i>Luis</i>', posicion: 3, puntuacion: 9, abandonado: true }];
   S.data = room({ estado: 'completado', yo: { estado: 'aceptado', aciertos: 15, respuestas: [] }, resultado: { mi_posicion: 1, mi_puntuacion: 15, n_jugadores: 3, empate_en_cabeza: true, clasificacion: clas } });
   let h = M.render('multi', H);
-  assert.match(h, /Duelo múltiple · clásico/); assert.match(h, /Empate en cabeza/); assert.match(h, /<xp>150<\/xp>/);
+  assert.match(h, /Duelo clásico/); assert.doesNotMatch(h, /múltiple/); assert.match(h, /Empate en cabeza/); assert.match(h, /<xp>150<\/xp>/);
   assert.equal((h.match(/seq-m-row/g) || []).length >= 3, true); assert.ok(!h.includes('<i>Luis</i>')); assert.match(h, /se fue/);
   assert.match(h, /action\('rematch'\)/);
   S.data.soy = 'invitado'; h = M.render('multi', H); assert.ok(!/action\('rematch'\)/.test(h));
@@ -214,7 +214,7 @@ test('Reto: final con clasificación (también quien no jugó), sin revancha, y 
   const { M, H } = load();
   const c = (i, pos, pt, o = {}) => ({ id: 'JJJJJJJJJ' + i, display_name: ['Edu', 'Ana', 'Luis'][i], avatar: 'x', es_yo: i === 0, posicion: pos, jugo: true, puntuacion: pt, ...o });
   const h = M.renderMReto(mreto({ estado: 'completado', resultado: { clasificacion: [c(0, 1, 15), c(1, 2, 9), c(2, 3, null, { jugo: false })], mi_posicion: 1, mi_puntuacion: 15, n_jugadores: 3 }, yo: { aciertos: 15 } }), H, '<head>');
-  assert.match(h, /seq-m-rank/); assert.match(h, /Reto múltiple/); assert.match(h, /no jugó/); assert.match(h, /VICTORIA/);
+  assert.match(h, /seq-m-rank/); assert.match(h, /Reto · /); assert.match(h, /no jugó/); assert.match(h, /VICTORIA/);
   assert.ok(!/rematch/.test(h), 'sin revancha'); assert.match(h, /Volver a Retos/);
   assert.match(M.renderMReto(mreto({ estado: 'cancelado', motivo_fin: 'todos_rechazan' }), H, ''), /rechazaron/);
   assert.match(M.renderMReto(mreto({ estado: 'expirado' }), H, ''), /Caducado/);

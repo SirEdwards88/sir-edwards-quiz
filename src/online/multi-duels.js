@@ -61,13 +61,30 @@
     if (o.res === 'win') return big ? 'Victoria aplastante' : close ? 'Victoria por la mínima' : 'Victoria clara';
     return big ? 'Derrota sin paliativos' : close ? 'Derrota por la mínima' : 'Derrota clara';
   }
-  // Frase de Sir Edwards (las mismas bolsas que el Duelo 1 contra 1, estables por sala).
+  // Frases de Sir Edwards para varios jugadores (las del 1 contra 1 hablan de «el rival», aquí hay una mesa entera).
+  // Estables por sala y categoría: el mismo duelo siempre enseña la misma frase. {nombre} es el ganador.
+  var PHRASES = {
+    win_close: ['Victoria por la mínima. Los demás aún discuten el recuento.', 'Has ganado por un suspiro. Presume en voz baja.'],
+    win_clear: ['Victoria clara. La mesa tomará nota, aunque no de buena gana.', 'Has ganado con holgura. Los demás pueden atribuirlo a la suerte.'],
+    win_big: ['Una ventaja así roza la descortesía. Sir Edwards lo aprueba.', 'La mesa entera merece una disculpa. No pienses darla.'],
+    draw: ['Empate en cabeza. Nadie ha ganado y nadie lo olvidará.', 'Cabeza compartida. El trono se reparte, aunque nadie lo desea.', 'Sir Edwards no firma empates, pero hoy hará una excepción.'],
+    loss_close: ['Por poco. {nombre} se lleva el duelo y tú, la experiencia.', 'Derrota por la mínima. Cerca, pero cerca no puntúa.'],
+    loss_clear: ['{nombre} ha ganado con claridad. Tú has participado, que también cuenta.', 'Derrota clara. La mesa ha hablado y {nombre} ha hablado más alto.'],
+    loss_big: ['{nombre} ha ganado con tanta ventaja que conviene no hacer cuentas.', 'Derrota sin paliativos. Sir Edwards sugiere cambiar de tema.'],
+    gone: ['Te has ido a medias. Quedas el último, como manda la lógica.', 'La partida sigue sin ti. Los duelos no hacen pausas.', 'Retirarse a tiempo es una virtud. A mitad de partida, solo una duda.']
+  };
+  function hashStr(t) { var h = 0; t = String(t); for (var i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) >>> 0; return h; }
   function phraseFor(o, seedId) {
-    var P = typeof window !== 'undefined' ? window.SEQDuelPhrases : null;
-    if (!P) return '';
-    if (o.res === 'gone') return P.pickForfeit('yo_abandono', '', seedId);
-    return P.pickRotating(o.res, o.margin, seedId, o.winner);
+    var key = o.res === 'gone' ? 'gone' : o.res === 'draw' ? 'draw' : o.res + '_' + (o.margin >= 8 ? 'big' : o.margin <= 2 ? 'close' : 'clear');
+    var list = PHRASES[key] || PHRASES.draw;
+    var name = String(o.winner || 'Otro jugador').slice(0, 18);
+    return list[hashStr(seedId + ':' + key) % list.length].replace(/\{nombre\}/g, name);
   }
+
+  // En partida el múltiple no se anuncia: título y botón de salida iguales a los del 1 contra 1.
+  function isReto(d) { return !!(d && d.tipo === 'reto_multi'); }
+  function gameTitle(d) { return isReto(d) ? H.ico('retos') + 'Reto' : d && d.modo === 'stakes' ? H.ico('duelo') + 'Duelo por apuestas' : H.ico('duelo') + 'Duelo online'; }
+  function exitText(d) { return isReto(d) ? '← Retos' : '← Duelo online'; }
 
   // ---- Pintado --------------------------------------------------------------------------------
   var H = null;
@@ -82,14 +99,17 @@
     var stakes = !reto && S().pickModo === 'stakes';
     var back = H.backToList;
     var h = H.header(reto ? 'Reto' : stakes ? 'Duelo por apuestas' : 'Duelo clásico', 'Elige cómo jugar', back);
-    var one = '<div class="history-item seq-d-row seq-m-opt" role="button" tabindex="0" onclick="SEQMulti.one()" onkeydown="if(event.key===\'Enter\')SEQMulti.one()"><div class="seq-m-opt-body"><div class="history-item-info">1 contra 1</div><div class="history-item-sub">' + (reto ? 'Un amigo, cada uno a su hora.' : 'Un amigo, cara a cara.') + '</div></div><div class="history-item-score">›</div></div>';
-    var multi;
-    if (stakes && !STAKES_READY) {
-      multi = '<div class="history-item seq-d-row seq-m-opt seq-d-off" aria-disabled="true"><div class="seq-m-opt-body"><div class="history-item-info">Múltiple</div><div class="history-item-sub">Muy pronto. Sir Edwards aún afila las apuestas.</div></div></div>';
-    } else {
-      multi = '<div class="history-item seq-d-row seq-m-opt" role="button" tabindex="0" onclick="SEQMulti.startPick()" onkeydown="if(event.key===\'Enter\')SEQMulti.startPick()"><div class="seq-m-opt-body"><div class="history-item-info">Múltiple</div><div class="history-item-sub">De ' + MIN_PLAYERS + ' a ' + MAX_PLAYERS + ' jugadores. ' + (reto ? 'Cada uno juega cuando pueda.' : 'Clasificación final.') + '</div></div><div class="history-item-score">›</div></div>';
+    function card(img, title, sub, act, off) {
+      var ic = '<span class="seq-m-opt-ic" aria-hidden="true"><img src="assets/duelos/formato/' + img + '.webp" alt="" draggable="false" onerror="this.remove()"></span>';
+      var body = '<div class="seq-m-opt-body"><div class="seq-m-opt-title">' + title + '</div><div class="seq-m-opt-sub">' + sub + '</div></div>';
+      if (off) return '<div class="seq-m-opt seq-d-off" aria-disabled="true">' + ic + body + '</div>';
+      return '<div class="seq-m-opt" role="button" tabindex="0" onclick="' + act + '" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();' + act + '}">' + ic + body + '<span class="seq-m-opt-go" aria-hidden="true">›</span></div>';
     }
-    return h + '<div class="history-list seq-m-opts">' + one + multi + '</div>';
+    var one = card('uno-contra-uno', '1 contra 1', reto ? 'Un amigo, cada uno a su hora.' : 'Un amigo, cara a cara.', 'SEQMulti.one()');
+    var multi = (stakes && !STAKES_READY)
+      ? card('multiple', 'Múltiple', 'Muy pronto. Sir Edwards aún afila las apuestas.', '', true)
+      : card('multiple', 'Múltiple', 'De ' + MIN_PLAYERS + ' a ' + MAX_PLAYERS + ' jugadores. ' + (reto ? 'Cada uno juega cuando pueda.' : 'Clasificación final.'), 'SEQMulti.startPick()');
+    return h + '<div class="seq-m-opts">' + one + multi + '</div>';
   }
 
   function renderPickPlayers() {
@@ -127,9 +147,9 @@
     }).join('') + '</div>';
   }
 
-  function playersList(d) {
+  function playersList(d, go) {
     return '<div class="history-list seq-m-players">' + (d.jugadores || []).map(function (j) {
-      var st = playerStatus(j, d.estado), good = j.estado === 'aceptado' && (d.estado === 'pendiente' || j.listo);
+      var st = go && j.estado === 'aceptado' ? 'Listo' : playerStatus(j, d.estado), good = j.estado === 'aceptado' && (go || d.estado === 'pendiente' || j.listo);
       return '<div class="history-item seq-pl-row">' + H.who(H.player(j), (j.es_yo ? 'Tú · ' : '') + (good ? H.ico('correcto') : j.estado === 'rechazado' || j.estado === 'fuera' ? H.ico('incorrecto') : H.ico('mediocre')) + esc(st)) + '</div>';
     }).join('') + '</div>';
   }
@@ -137,11 +157,10 @@
   function accepted(d) { return (d.jugadores || []).filter(function (j) { return j.estado === 'aceptado'; }).length; }
 
   function renderRoom(d) {
-    var h = H.gameHeader(H.ico('duelo') + 'Duelo múltiple', 'SEQDuels.leaveDuel()');
+    var h = H.gameHeader(gameTitle(d), 'SEQDuels.leaveDuel()');
     var s = S(), now = H.serverNow();
     if (!d) return h + '<p class="stats-section-sub">Cargando…</p>';
     var mine = d.yo || {}, creator = d.soy === 'creador';
-    h += '<p class="stats-section-sub seq-d-vs">' + (d.modo === 'stakes' ? 'Duelo por apuestas' : 'Duelo clásico') + ' · ' + num((d.jugadores || []).length) + ' jugadores</p>';
 
     if (d.estado === 'pendiente') {
       s.shown = null;
@@ -182,7 +201,7 @@
   function renderPlay(d, head, now) {
     var s = S(), t0 = num(d.t0), mine = d.yo || {};
     if (mine.estado !== 'aceptado') { s.shown = null; return head + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Ya no estás en esta sala</div><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.open(\'duels\')">Volver a Duelos</button></div>'; }
-    if (now < t0) { s.shown = null; return head + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Empieza en <span id="seq-d-count"></span>…</div>' + playersList(d) + '</div>'; }
+    if (now < t0) { s.shown = null; return head + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Empieza en <span id="seq-d-count"></span>…</div>' + playersList(d, true) + '</div>'; }
     try { SEQLevelUp.markKey('multi:' + d.id); } catch (e) {}
     if (mine.abandonado) { s.shown = null; return head + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Has salido de la partida</div><p class="duel-result-hint">Quedas el último. Los demás siguen sin ti.</p></div>'; }
     if (d.modo === 'stakes' && window.SEQMultiStakes && !mine.completado) { s.shown = null; return SEQMultiStakes.play(d, H, chips); }
@@ -191,9 +210,9 @@
     if (!d.preguntas || d.preguntas.length <= k) { s.shown = null; return head + '<p class="stats-section-sub">Cargando pregunta…</p>'; }
     var rs = null; (mine.respuestas || []).forEach(function (a) { if (num(a.indice) === k) rs = a; });
     H.topbarShown(false);
-    var h = '<div class="seq-d-toprow"><button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.leaveDuel()">← Duelo múltiple</button></div>' +
+    var h = '<div class="seq-d-toprow"><button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.leaveDuel()">' + exitText(d) + '</button></div>' +
       '<div id="seq-d-msg" class="feedback" style="display:none;"></div>' +
-      '<div class="mode-header game-hud seq-d-hud seq-d-hud-reto"><span class="seq-d-hud-lbl"><span class="seq-d-hud-mode" title="Duelo múltiple"><img class="seq-ico seq-d-mode-ico" src="assets/modes/emblema/duelo-clasico.webp" alt="" draggable="false"></span>' + (k + 1) + '/' + num(d.n_preguntas || 20) + ' · </span>' +
+      '<div class="mode-header game-hud seq-d-hud seq-d-hud-reto"><span class="seq-d-hud-lbl"><span class="seq-d-hud-mode" title="' + (isReto(d) ? 'Reto' : 'Duelo clásico') + '"><img class="seq-ico seq-d-mode-ico" src="assets/modes/emblema/duelo-clasico.webp" alt="" draggable="false"></span>' + (k + 1) + '/' + num(d.n_preguntas || 20) + '</span>' +
       '<span class="seq-d-hud-right"><span class="seq-d-hud-time">' + H.ico('tiempo') + '<span id="seq-d-time"></span>s</span></span></div>' +
       chips(d) + '<div class="progress-bar"><div id="seq-d-bar" class="bar-fill"></div></div>' +
       H.questionBlock(d.id, k, d.preguntas[k], rs, false);
@@ -204,7 +223,7 @@
   function renderEnd(d, reto) {
     H.topbarShown(false);
     var back = reto ? "SEQDuels.open('retos')" : "SEQDuels.open('duels')", backTxt = reto ? 'Volver a Retos' : 'Volver a Duelos';
-    var head = H.gameHeader(reto ? H.ico('retos') + 'Reto múltiple' : H.ico('duelo') + 'Duelo múltiple', back);
+    var head = H.gameHeader(gameTitle(d), back);
     var r = d.resultado;
     if (!r && reto) {
       var whyR = { cancelado: d.motivo_fin === 'todos_rechazan' ? 'Todos rechazaron el reto. Qué manera de dejarte solo.' : 'Reto cancelado. Aquí no ha pasado nada.', expirado: 'Pasó el plazo y nadie jugó. Sir Edwards no ha visto nada que comentar.' }[d.estado] || 'Reto cerrado.';
@@ -231,9 +250,9 @@
     var stamp = ({ win: ['VICTORIA', 'gold'], loss: ['DERROTA', 'fail'], draw: ['EMPATE', 'ok'] })[res];
     var h = '<div class="results-card seq-d-results seq-d-final seq-m-final duel-result-box ' + (res === 'win' ? 'duel-result-win' : res === 'loss' ? 'duel-result-loss' : 'duel-result-draw') + '" data-tier="' + (res === 'win' ? 'oro' : res === 'loss' ? 'derrota' : 'azul') + '">' +
       '<div class="results-character show char-' + (res === 'draw' ? 'neutral' : charKey) + '" aria-hidden="true"><picture><source srcset="assets/character/' + charKey + '.webp" type="image/webp"><img src="assets/character/' + charKey + '.webp" alt="" draggable="false"></picture></div>' +
-      '<h3 class="seq-d-res-title">' + (reto ? 'Reto múltiple · ' + esc(H.retoModeName(d)) : 'Duelo múltiple · ' + (d.modo === 'stakes' ? 'por apuestas' : 'clásico')) + '</h3>' +
+      '<h3 class="seq-d-res-title">' + (reto ? 'Reto · ' + esc(H.retoModeName(d)) : d.modo === 'stakes' ? 'Duelo por apuestas' : 'Duelo clásico') + '</h3>' +
       ((xp > 0 && window.SEQLevelUp) ? SEQLevelUp.htmlFor((reto ? 'mreto:' : 'multi:') + d.id) : '') +
-      '<div class="seq-m-rank" role="list">' + rows + '</div>' +
+      (reto ? '' : '<div class="seq-m-unit">' + (d.modo === 'stakes' ? 'Puntos' : 'Aciertos') + '</div>') + '<div class="seq-m-rank" role="list">' + rows + '</div>' +
       '<div class="results-phrase-container ' + tone + '"><div class="results-mood-icon has-img"><img class="mood-img" src="' + moodSrc + '" alt="" draggable="false"></div>' +
       '<div class="results-category-title">' + esc(cat) + '</div>' +
       '<div class="results-phrase duel-result-phrase">' + esc(phraseFor(o, d.id)) + '</div></div>' + chipsXp +

@@ -34,7 +34,7 @@
     var r = d.ronda, locked = r.bloqueadas || [];
     return '<div class="seq-m-locks">' + (d.jugadores || []).filter(function (j) { return j.estado === 'aceptado' && !j.abandonado; }).map(function (j) {
       var on = locked.indexOf(j.id) >= 0, p = h.player(j);
-      return '<span class="seq-m-lock' + (on ? ' on' : '') + '" title="' + (on ? 'Ha apostado' : 'Aún piensa') + '">' + p.avatar + '<small>' + (on ? h.ico('correcto') : h.ico('mediocre')) + '</small></span>';
+      return '<span class="seq-m-lock' + (on ? ' on' : '') + '" role="img" aria-label="' + (j.es_yo ? 'Tú' : p.name) + (on ? ': ha apostado' : ': aún piensa') + '" title="' + (on ? 'Ha apostado' : 'Aún piensa') + '">' + p.avatar + '<small>' + (on ? h.ico('correcto') : h.ico('mediocre')) + '</small><em>' + (j.es_yo ? 'Tú' : p.name) + '</em></span>';
     }).join('') + '</div>';
   }
   function stakeButtons(d, locked) {
@@ -61,8 +61,7 @@
       var k = key(e.apuesta) || 'cuerdo', v = STAKES[k].valor * x;
       return '<div class="seq-v21-res-row ' + (e.correcta ? 'ok' : 'bad') + '"><span>' + nameOf(j, h) + '</span>' + h.ico(e.correcta ? 'correcto' : 'incorrecto') + label(k) + '<b>' + (e.correcta ? '+' : '−') + v + '</b></div>';
     }).join('');
-    var fog = d.niebla && (r.jugadores || []).length <= 1 ? '<p class="stats-section-sub seq-v21-wait">Niebla en la mesa: de los demás, solo posiciones.</p>' : '';
-    return '<div class="seq-v21-resolved">' + rows + '</div>' + fog;
+    return '<div class="seq-v21-resolved seq-m-res">' + rows + '</div>';
   }
   function question(d, h) {
     var r = d.ronda, idx = num(r.indice), qn = (d.preguntas || [])[idx];
@@ -81,11 +80,11 @@
   function play(d, h, chips) {
     var r = d.ronda || null, fase = r ? r.fase : 'cuenta_atras', total = num(d.n_rondas) || 12;
     h.topbarShown(false);
-    var out = '<div class="seq-d-toprow"><button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.leaveDuel()">← Duelo múltiple</button></div>' +
+    var out = '<div class="seq-d-toprow"><button type="button" class="game-exit-btn seq-d-exit" onclick="SEQDuels.leaveDuel()">← Duelo online</button></div>' +
       '<div id="seq-d-msg" class="feedback" style="display:none;"></div>' +
       '<div class="mode-header game-hud seq-d-hud seq-d-hud-reto seq-v21-hud"><span class="seq-d-hud-lbl"><span class="seq-d-hud-mode" title="Duelo por apuestas"><img class="seq-ico seq-d-mode-ico" src="assets/modes/emblema/duelo-apuestas.webp" alt="" draggable="false"></span>' +
       (r ? (num(r.indice) + 1) + '/' + total : '') + (r && r.doble ? ' · <b class="seq-m-double">Doble</b>' : '') + '</span>' +
-      '<span class="seq-d-hud-right"><span class="seq-d-hud-time">' + h.ico('tiempo') + '<span id="seq-m-time"></span>s</span></span></div>' +
+      '<span class="seq-d-hud-right">' + (fase === 'apuesta' || fase === 'pregunta' ? '<span class="seq-d-hud-time">' + h.ico('tiempo') + '<span id="seq-m-time"></span>s</span>' : '') + '</span></div>' +
       chips(d) + (d.niebla ? '<p class="stats-section-sub seq-m-fog">Niebla: ya solo se ven las posiciones.</p>' : '') +
       '<div class="progress-bar"><div id="seq-m-bar" class="bar-fill"></div></div>';
     if (fase === 'cuenta_atras' || (!r && num(d.t0) > h.serverNow())) return out + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Empieza en <span id="seq-m-count"></span>…</div></div>';
@@ -111,7 +110,7 @@
   function urgencyOff() { try { if (typeof stopUrgencySound === 'function') stopUrgencySound(); } catch (e) {} }
   function tick(d, now) {
     var r = d.ronda, boundary = null, total = 1, left = 0;
-    if (!r) { if (num(d.t0) > now) setText('seq-m-count', String(secs(num(d.t0) - now))); return; }
+    if (!r) { if (num(d.t0) > now) { setText('seq-m-count', String(secs(num(d.t0) - now))); setText('seq-d-count', String(secs(num(d.t0) - now))); } return; }
     if (r.fase === 'apuesta') {
       boundary = num(r.revelacion_at) || num(r.apuesta_cierra_at);
       total = Math.max(1, boundary - num(r.apuesta_abre_at)); left = boundary - now;

@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 364;
+const CACHE_VERSION = 365;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -262,6 +262,8 @@ const APP_SHELL = [
   './assets/duelos/estadisticas.webp',
   './assets/duelos/modos/classic.webp',
   './assets/duelos/modos/stakes.webp',
+  './assets/duelos/formato/uno-contra-uno.webp',
+  './assets/duelos/formato/multiple.webp',
   './assets/duelos/apuestas/cuerdo.webp',
   './assets/duelos/apuestas/osado.webp',
   './assets/duelos/apuestas/insensato.webp',
@@ -517,6 +519,8 @@ const ASSET_REVS = {
   './assets/duelos/apuestas/insensato.webp': '628352d0',
   './assets/duelos/apuestas/osado.webp': 'a6d8261b',
   './assets/duelos/estadisticas.webp': '947e443b',
+  './assets/duelos/formato/multiple.webp': 'a1882ac3',
+  './assets/duelos/formato/uno-contra-uno.webp': '746d567d',
   './assets/duelos/modos/classic.webp': '683e5674',
   './assets/duelos/modos/stakes.webp': '2b319ce8',
   './assets/duelos/rangos/caballero_del_dato.webp': '099a63ba',
