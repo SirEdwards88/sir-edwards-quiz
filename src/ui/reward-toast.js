@@ -61,7 +61,7 @@
     void t.offsetWidth;
     t.classList.add('show');
     clearTimeout(window.__rewardToastTimer);
-    window.__rewardToastTimer = setTimeout(function () { t.classList.remove('show'); }, list.length > 1 ? 4800 : 3600);
+    window.__rewardToastTimer = setTimeout(function () { t.classList.remove('show'); }, list.length > 1 ? 4000 : 3200);
   }
 
   // hadNewModes: si acaba de salir el aviso de un modo nuevo, espera a que termine el suyo.
@@ -77,7 +77,7 @@
       var card = document.getElementById('results-card');
       if (!card || !card.offsetParent) return;
       show(medals);
-    }, hadNewModes ? 4800 : 900);
+    }, hadNewModes ? 3900 : 900);
   }
 
   // Duelos y Retos: la tarjeta final ya muestra la lista de logros; aquí solo el aviso de los que dan recompensa.

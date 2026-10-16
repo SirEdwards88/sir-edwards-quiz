@@ -144,7 +144,7 @@ const SEQEncargosUI = (function () {
     void n.offsetWidth;
     n.classList.add('show');
     clearTimeout(hideT);
-    hideT = setTimeout(function () { n.classList.remove('show'); setTimeout(function () { next(); }, 260); }, 4200);
+    hideT = setTimeout(function () { n.classList.remove('show'); setTimeout(function () { next(); }, 260); }, 3000);
   }
   // kind: 'progress' | 'done' | 'great'
   function toast(main, kind, sub, opts) {
