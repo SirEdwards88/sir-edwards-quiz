@@ -23,7 +23,6 @@ test('varios logros: una tarjeta por cada uno con recompensa, en orden, sin los 
   assert.equal(c.map(x => x.title).join(','), 'A,C,B');
 });
 
-test('duelos: announceAll existe y muestra también los logros sin recompensa', () => {
-  const t = load();
-  assert.equal(typeof t.announceAll, 'function');
+test('duelos: announceNow existe (aviso solo de recompensas, sin comprobar #results-card)', () => {
+  assert.equal(typeof load().announceNow, 'function');
 });

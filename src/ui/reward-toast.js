@@ -75,8 +75,12 @@
     }, hadNewModes ? 4800 : 900);
   }
 
-  // Duelos y Retos: no hay tarjeta final con la lista de logros, así que aquí salen TODOS los logros nuevos, con o sin recompensa.
-  function announceAll(medals) { setTimeout(function () { show(medals, true); }, 600); }
+  // Duelos y Retos: la tarjeta final ya muestra la lista de logros; aquí solo el aviso de los que dan recompensa.
+  // No se comprueba #results-card (el duelo tiene su propia tarjeta).
+  function announceNow(medals) {
+    if (!cards(medals).length) return;
+    setTimeout(function () { show(medals); }, 600);
+  }
 
-  window.SEQRewardToast = { announce: announce, announceAll: announceAll, cards: cards };
+  window.SEQRewardToast = { announce: announce, announceNow: announceNow, cards: cards };
 })();

@@ -335,7 +335,8 @@
       var draw = r.empate === true || (g == null && num(r.mi_puntuacion) === num(r.puntuacion_rival));
       var res = g === 'yo' ? 'win' : g === 'rival' ? 'loss' : (draw ? 'draw' : null);
       if (!rid || !id || !res || typeof registerOnlineDuelResult !== 'function') return;
-      registerOnlineDuelResult({ duelId: id, rivalId: rid, result: res, myScore: num(r.mi_puntuacion), opponentScore: num(r.puntuacion_rival), forfeit: d.motivo_fin === 'abandono' || d.motivo_fin === 'no_jugado', abandoned: d.motivo_fin === 'abandono', hitos: kind === 'duel' && r.hitos && typeof r.hitos === 'object' ? r.hitos : null, stakes: kind === 'duel' && d.modo === 'stakes' });
+      var out = registerOnlineDuelResult({ duelId: id, rivalId: rid, result: res, myScore: num(r.mi_puntuacion), opponentScore: num(r.puntuacion_rival), forfeit: d.motivo_fin === 'abandono' || d.motivo_fin === 'no_jugado', abandoned: d.motivo_fin === 'abandono', hitos: kind === 'duel' && r.hitos && typeof r.hitos === 'object' ? r.hitos : null, stakes: kind === 'duel' && d.modo === 'stakes' });
+      if (out && out.medals && out.medals.length) { S.newMedals = S.newMedals || {}; S.newMedals[id] = out.medals.map(function (m) { return m.id; }); }
     } catch (e) {}
   }
   // Solo se sondea cuando hace falta y nunca con la pestaña oculta.
@@ -875,6 +876,26 @@
   function xpChipHtml(xp) {
     return xp > 0 ? '<span class="result-chip"><span class="result-chip-value">+' + xp + '</span><span class="result-chip-label">XP</span></span>' : '';
   }
+  // Logros que ha desbloqueado ESTE duelo o reto: la misma lista que en la tarjeta final de Jugar. Los que dan
+  // recompensa llevan además el aviso flotante (src/ui/reward-toast.js), que lo lanza registerOnlineDuelResult.
+  function medalsBlock(key) {
+    var ids = (S.newMedals && S.newMedals[key]) || [];
+    if (!ids.length || typeof ALL_MEDALS === 'undefined') return '';
+    var rows = ids.map(function (id) {
+      var m = null; for (var i = 0; i < ALL_MEDALS.length; i++) if (ALL_MEDALS[i].id === id) { m = ALL_MEDALS[i]; break; }
+      if (!m) return '';
+      var icon = ''; try { icon = window.SEQAchievements ? SEQAchievements.iconHTML(m) : ''; } catch (e) {}
+      var frag = false, av = false;
+      try { frag = FRAGMENT_MEDAL_IDS.indexOf(m.id) !== -1; } catch (e) {}
+      try { av = !!getMedalAvatar(m.id); } catch (e) {}
+      return '<div class="session-medal-item"><div class="session-medal-icon' + (icon ? ' has-img' : '') + '">' + icon + '</div><div>' +
+        '<div class="session-medal-info">' + esc(m.title) + '</div><div class="session-medal-desc">' + esc(m.desc) + '</div>' +
+        (frag ? '<div class="session-medal-fragment">' + ico('fragmento') + '+1 Fragmento de Mente</div>' : '') +
+        (av ? '<div class="session-medal-fragment">Avatar desbloqueado</div>' : '') + '</div></div>';
+    }).join('');
+    if (!rows) return '';
+    return '<div class="session-medals-box" style="display:block;"><div class="session-medals-title">' + ico('copa') + '¡Nuevo(s) Logro(s) Desbloqueado(s)!</div><div class="session-medals-list">' + rows + '</div></div>';
+  }
   function resultBlock(d, kind) {
     var r = d.resultado, p = player(d.rival);
     if (!r) {
@@ -928,6 +949,7 @@
       (eloHtml || chips) +
       '<div class="results-lucidez-stamp show"><span class="stamp-badge tone-' + stamp[1] + '">' + stamp[0] + '</span></div>';
     var hEnd = '</div>';
+    h += medalsBlock(playKey(kind, S.id || d.id));
     if (d.estado === 'completado') {
       h += '<div class="results-actions"><button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="SEQDuels.' + (kind === 'duel' ? 'duelAction' : 'retoAction') + '(\'rematch\')">' + ico('revancha') + 'Revancha</button>';
       // «Compartir» discreto, como en solitario; gana presencia cuando hay algo que presumir (una victoria).

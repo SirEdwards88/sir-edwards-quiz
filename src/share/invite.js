@@ -7,7 +7,8 @@
 (function () {
   'use strict';
 
-  var URL_JUEGO = 'https://siredwards88.github.io/sir-edwards-quiz/';
+  // Lleva a la página de instalación (instalar.html): botón de instalar en Android y los tres pasos en iPhone.
+  var URL_JUEGO = 'https://siredwards88.github.io/sir-edwards-quiz/instalar.html';
   var TEXTO = 'Sir Edwards ha decidido concederte una oportunidad. Demuestra que estás a la altura.';
 
   function message() { return TEXTO + '\n' + URL_JUEGO; }

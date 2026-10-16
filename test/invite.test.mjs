@@ -34,3 +34,8 @@ test('invitar: cerrar el menú de compartir no copia nada', async () => {
   await inv.share();
   assert.equal(copied, false);
 });
+
+test('invitar: el enlace lleva a la página de instalación', () => {
+  const { inv } = load({});
+  assert.match(inv.URL, /\/instalar\.html$/);
+});
