@@ -217,24 +217,28 @@ body.in-game .actions .btn-primary {
 /* ---- Estadísticas: iconos de los títulos (insignias completas, con su disco) ---- */
 h3.stats-h .stats-h-img { width: 34px; height: 34px; flex: 0 0 auto; object-fit: contain; border-radius: 50%; margin: -3px 0 -3px -2px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.25)); }
 
-/* ---- «¿Sabías que…?» y «Explicación»: nota de pergamino con filete dorado ---- */
+/* ---- «¿Sabías que…?» y «Explicación»: tarjeta con marco dorado, protagonista bajo la respuesta ---- */
 .sabias-que-box {
-  margin-top: 12px; padding: 9px 13px 11px 12px; opacity: 1;
-  border: 0 !important; border-left: 3px solid var(--se-gold) !important; border-radius: 4px 12px 12px 4px;
-  background: color-mix(in srgb, var(--se-parch) 82%, transparent);
-  box-shadow: 0 1px 0 var(--se-gold-soft), 0 3px 10px rgba(28,35,64,.10);
-  color: var(--text); font-size: 13.5px; line-height: 1.5; text-align: left;
+  margin-top: 14px; padding: 12px 15px 14px; opacity: 1;
+  border: 1.5px solid var(--se-gold) !important; border-radius: 16px;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--se-parch) 92%, #fff 8%), color-mix(in srgb, var(--se-parch) 78%, var(--se-gold) 22%));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--se-gold) 18%, transparent), 0 8px 22px rgba(0,0,0,.22);
+  color: var(--text); font-size: 16px; line-height: 1.5; text-align: left;
 }
+[data-theme="dark"] .sabias-que-box { background: linear-gradient(160deg, #232b4a, #1a2140); }
 .sabias-que-box .sq-head {
-  display: flex; align-items: center; gap: 6px; margin-bottom: 3px;
-  font-family: var(--font-display); font-size: 11.5px; font-weight: 800; letter-spacing: 1.1px; text-transform: uppercase; color: #8a5a0b;
+  display: flex; align-items: center; gap: 6px; margin-bottom: 7px; padding-bottom: 7px;
+  border-bottom: 1px solid color-mix(in srgb, var(--se-gold) 45%, transparent);
+  font-family: var(--font-display); font-size: 13px; font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; color: #8a5a0b;
 }
 [data-theme="dark"] .sabias-que-box .sq-head { color: var(--se-gold-light); }
-.sabias-que-box .sq-ico { width: 28px; height: 28px; margin: -6px 0 -6px -4px; object-fit: contain; filter: drop-shadow(0 1px 2px rgba(0,0,0,.30)); }
-.sabias-que-box .sq-text { color: var(--text); }
+.sabias-que-box .sq-ico { width: 38px; height: 38px; margin: -10px 0 -10px -6px; object-fit: contain; filter: drop-shadow(0 1px 2px rgba(0,0,0,.30)); }
+.sabias-que-box .sq-text { color: var(--text); font-weight: 500; }
 @keyframes sqIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: no-preference) { .sabias-que-box { animation: sqIn .35s ease-out .12s both; } }
 body.keyboard-open .sabias-que-box { margin-top: 8px; padding: 6px 10px 7px; font-size: 12.5px; }
+body.keyboard-open .sabias-que-box .sq-head { margin-bottom: 3px; padding-bottom: 3px; font-size: 11px; }
+body.keyboard-open .sabias-que-box .sq-ico { width: 26px; height: 26px; margin: -6px 0 -6px -4px; }
 
 /* Logros y Fragmentos: iconos del título sin el disco de la insignia, a tamaño legible. */
 .achievements-progress-title .ui-title-img, .fragments-progress-title .ui-title-img { width: 38px; height: 38px; margin: -8px .3em -8px 0; filter: drop-shadow(0 1px 2px rgba(0,0,0,.3)); }
