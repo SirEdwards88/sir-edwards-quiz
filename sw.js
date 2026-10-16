@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 325;
+const CACHE_VERSION = 327;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -470,14 +470,14 @@ const ASSET_REVS = {
   './assets/avatars/avatar_siredwards_supremo.png': '28ec36fd',
   './assets/avatars/avatar_siredwards_vengador.png': 'bcde96ef',
   './assets/avatars/buho.png': '66608045',
-  './assets/avatars/caballo.png': 'c9c2b6e6',
-  './assets/avatars/gato.png': '2197648d',
-  './assets/avatars/gramofono.png': 'c0a52977',
-  './assets/avatars/libro.png': 'e10102e6',
-  './assets/avatars/mascara.png': 'd1b2daef',
-  './assets/avatars/reloj.png': '090c2ea8',
-  './assets/avatars/sello.png': 'cde68711',
-  './assets/avatars/sombrero.png': 'f0e31e52',
+  './assets/avatars/caballo.png': '7540fbcc',
+  './assets/avatars/gato.png': '6f3a32b2',
+  './assets/avatars/gramofono.png': '28475006',
+  './assets/avatars/libro.png': 'b335e4ec',
+  './assets/avatars/mascara.png': 'e4a66caa',
+  './assets/avatars/reloj.png': 'b86627f5',
+  './assets/avatars/sello.png': '4de41fde',
+  './assets/avatars/sombrero.png': '41592fd6',
   './assets/cats/arte.webp': '0d91c36e',
   './assets/cats/candado-abierto.webp': 'b059b37f',
   './assets/cats/candado.webp': '12d27bf4',
