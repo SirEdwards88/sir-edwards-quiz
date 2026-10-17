@@ -717,8 +717,10 @@
     var act_ = list.filter(function (x) { return ['pendiente', 'aceptado', 'en_curso'].indexOf(x.estado) >= 0; });
     var hist = list.filter(function (x) { return act_.indexOf(x) < 0; });
     if (!act_.length && !hist.length) return h + (kind === 'duel' ? emptyState('vacio-general', 'Aún no hay duelos', 'Cuando juegues, aparecerán aquí.') : emptyState('vacio-general', 'Aún no hay retos', 'Cuando retes o te reten, aparecerán aquí.'));
-    h += '<h3 class="seq-d-h3">Activos</h3>' + (act_.length ? '<div class="history-list">' + act_.map(function (x) { return rowFor(kind, x); }).join('') + '</div>' : '<p class="stats-section-sub">No tienes ninguno activo.</p>');
-    h += '<h3 class="seq-d-h3">Historial</h3>' + (hist.length ? '<div class="history-list">' + hist.map(function (x) { return rowFor(kind, x); }).join('') + '</div>' : '<p class="stats-section-sub">Todavía no hay historial.</p>');
+    h += act_.length
+      ? '<div class="seq-d-active"><h3 class="seq-d-h3 seq-d-h3-act">Activos<span class="seq-d-count">' + num(act_.length) + '</span></h3><div class="history-list">' + act_.map(function (x) { return rowFor(kind, x); }).join('') + '</div></div>'
+      : '<h3 class="seq-d-h3">Activos</h3><p class="stats-section-sub">No tienes ninguno activo.</p>';
+    h += '<h3 class="seq-d-h3 seq-d-h3-hist">Historial</h3>' + (hist.length ? '<div class="history-list">' + hist.map(function (x) { return rowFor(kind, x); }).join('') + '</div>' : '<p class="stats-section-sub">Todavía no hay historial.</p>');
     return h;
   }
   // Ilustración de estado vacío (2.3): objetos recortados, sin marco.

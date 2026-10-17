@@ -1040,3 +1040,9 @@
 #seq-duel-root .seq-m-unit { margin: 0 12px -2px 0; text-align: right; font-size: 10px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--sub, var(--color-text-muted)); }
 #seq-duel-root .submenu-header .btn { white-space: nowrap; flex: none; }
 @media (max-width: 340px) { #seq-duel-root .submenu-header h2 { font-size: 1.1rem; white-space: nowrap; } .seq-m-bet { padding: 8px 4px; } }
+
+/* Duelos y Retos: «Activos» se distingue del historial (panel con acento y contador); el historial queda atenuado. */
+#seq-duel-root .seq-d-active { margin: 16px 0 8px; padding: 4px 12px 12px; border: 1px solid rgba(201, 153, 46, .55); border-radius: 16px; background: rgba(201, 153, 46, .07); box-shadow: 0 0 0 3px rgba(201, 153, 46, .08); }
+#seq-duel-root .seq-d-active .seq-d-h3 { margin: 12px 0 10px; }
+#seq-duel-root .seq-d-count { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 7px; border-radius: 999px; background: var(--se-gold, #c9992e); color: #1a1405; font-family: var(--font-body, inherit); font-size: 12px; font-weight: 800; }
+#seq-duel-root .seq-d-h3-hist { margin-top: 28px; color: var(--sub); font-size: 15px; }

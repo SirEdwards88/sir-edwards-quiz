@@ -41,6 +41,7 @@
       window.SEQDuels.rerender();
     });
   }
+  function setTab(t) { P.tab = t === 'multi' ? 'multi' : 'pvp'; window.SEQDuels.rerender(); }
   function back() {
     P.seq++;
     var to = P.from && P.from !== 'profile' ? P.from : 'friends';
@@ -119,16 +120,18 @@
       ? '<div class="stats-extra-grid" id="extra-stats">' + extra('Cálculo Turbo', dash(r.calculo_turbo), modeImg('calculo-turbo'), 'puntos') + extra('Cálculo de Fondo', dash(r.calculo_fondo), modeImg('calculo-clasico'), 'aciertos') + extra('Contrarreloj', dash(r.contrarreloj), modeImg('contrarreloj'), 'puntos') + (lucOk && r.lucidez ? extra('Lucidez Mental', dash(r.lucidez, '/30'), modeImg('secreto'), 'mejor partida') : '') + '</div>'
       : empty('Aún sin récords que presumir.'));
 
-    out += sectionImg('modes/suelto/duelo', 'Historial de duelos', v
-      ? '<div class="stats-mini-grid">' + mini(dash(v.elo), 'ELO') + mini(dash(v.pico), 'Récord ELO') + mini(pct(v.porcentaje_victorias), '% Victorias') +
+    var mu = d.multi, hasMu = !!(mu && num(mu.partidas) > 0), tab = hasMu && (P.tab === 'multi' || !v) ? 'multi' : 'pvp';
+    var tabs = hasMu ? '<div class="seq-v21-scope seq-v21-calcsub" role="tablist" aria-label="Tipo de duelo">' + [['pvp', '1 vs 1'], ['multi', 'Múltiple']].map(function (t) {
+      return '<button type="button" role="tab" aria-selected="' + (tab === t[0]) + '" class="seq-v21-scope-btn' + (tab === t[0] ? ' sel' : '') + '" onclick="SEQProfile.setTab(\'' + t[0] + '\')">' + t[1] + '</button>';
+    }).join('') + '</div>' : '';
+    var body = tab === 'multi'
+      ? '<div class="stats-mini-grid">' + mini(num(mu.partidas), 'Partidas') + mini(num(mu.victorias), 'Victorias') + mini(Math.max(0, num(mu.partidas) - num(mu.victorias) - num(mu.abandonos)), 'Derrotas') + mini(num(mu.abandonos), 'Abandonos') + mini(pct(mu.porcentaje_victorias), '% Victorias') + '</div>'
+      : v ? '<div class="stats-mini-grid">' + mini(dash(v.elo), 'ELO') + mini(dash(v.pico), 'Récord ELO') + mini(pct(v.porcentaje_victorias), '% Victorias') +
         mini(num(v.victorias), 'Victorias') + mini(num(v.derrotas), 'Derrotas') + mini(num(v.empates), 'Empates') + '</div>'
-      : empty('Ningún duelo 1 vs 1 todavía.'));
-    var mu = d.multi;
-    if (mu && num(mu.partidas) > 0) {
-      out += sectionImg('modes/suelto/duelo', 'Duelos múltiples', '<div class="stats-mini-grid">' + mini(num(mu.partidas), 'Partidas') + mini(num(mu.victorias), 'Victorias') + mini(pct(mu.porcentaje_victorias), '% Victorias') + mini(num(mu.abandonos), 'Abandonos') + '</div>');
-    }
+      : empty('Ningún duelo 1 vs 1 todavía.');
+    out += sectionImg('modes/suelto/duelo', 'Historial de duelos', tabs + body);
     return out + '</div>';
   }
 
-  window.SEQProfile = { open: open, load: load, render: render, request: request, respond: respond, back: back, _state: function () { return P; } };
+  window.SEQProfile = { setTab: setTab, open: open, load: load, render: render, request: request, respond: respond, back: back, _state: function () { return P; } };
 })();

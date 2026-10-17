@@ -416,11 +416,9 @@
     var m = s.multi || {};
     if (num(m.jugadas) > 0) {
       var mj = num(m.jugadas), mg = num(m.ganadas), cl = m.clasico || {}, ap = m.apuestas || {};
-      out += '<div class="seq-v21-grid">' + statCell('Partidas', mj) + statCell('Victorias', mg) +
-        statCell('% Victorias', String(Math.round((mg / mj) * 1000) / 10).replace('.', ',') + ' %') + '</div>' +
+      out += '<div class="seq-v21-grid" style="grid-template-columns:repeat(2,1fr)">' + statCell('Victorias', mg) + statCell('Derrotas', Math.max(0, mj - mg - num(m.abandonos))) + statCell('Abandonos', num(m.abandonos)) + statCell('% Victorias', String(Math.round((mg / mj) * 1000) / 10).replace('.', ',') + ' %') + '</div>' +
         '<div class="history-list"><div class="history-item seq-v21-h2h"><span>Clásico</span><small>' + num(cl.jugadas) + ' partidas · ' + num(cl.ganadas) + (num(cl.ganadas) === 1 ? ' victoria' : ' victorias') + '</small></div>' +
-        '<div class="history-item seq-v21-h2h"><span>Apuestas</span><small>' + num(ap.jugadas) + ' partidas · ' + num(ap.ganadas) + (num(ap.ganadas) === 1 ? ' victoria' : ' victorias') + '</small></div>' +
-        (num(m.abandonos) ? '<div class="history-item seq-v21-h2h"><span>Abandonos</span><small>' + num(m.abandonos) + '</small></div>' : '') + '</div>';
+        '<div class="history-item seq-v21-h2h"><span>Apuestas</span><small>' + num(ap.jugadas) + ' partidas · ' + num(ap.ganadas) + (num(ap.ganadas) === 1 ? ' victoria' : ' victorias') + '</small></div></div>';
       var mh = m.historial || [];
       if (mh.length) out += '<h4 class="seq-v21-h">Últimos duelos</h4><div class="history-list">' + mh.map(function (x) {
         var res = x.resultado === 'win' ? 'Victoria' : x.resultado === 'abandono' ? 'Abandono' : 'Derrota';
