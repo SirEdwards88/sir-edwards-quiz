@@ -184,7 +184,9 @@ test('historial: sin los dos logros de Duelo en la 2.0, apuestas solo en la 2.1,
   assert.ok(!/en dos modos: clásico y apuestas/.test(html), 'la 2.0 ya no habla de apuestas (son de la 2.1)');
   assert.match(html, /<li>Nuevo modo: duelo por apuestas\.<\/li>/);
   assert.match(html, /<li>60 preguntas nuevas\. Más formas de fallar\.<\/li>/);
-  assert.match(html, /En directo: clásico, con veinte preguntas, o por apuestas/);
+  const dh = read('src/ui/duel-intro.js');
+  assert.match(dh, /Veinte preguntas; gana quien más acierte/);
+  assert.match(dh, /Antes de cada pregunta eliges en secreto/);
   assert.ok(!/dos logros de Duelo/.test(html));
   assert.match(html, /Sonidos, música en los menús y Sir Edwards opinando/);
 });

@@ -1046,3 +1046,5 @@
 #seq-duel-root .seq-d-active .seq-d-h3 { margin: 12px 0 10px; }
 #seq-duel-root .seq-d-count { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 7px; border-radius: 999px; background: var(--se-gold, #c9992e); color: #1a1405; font-family: var(--font-body, inherit); font-size: 12px; font-weight: 800; }
 #seq-duel-root .seq-d-h3-hist { margin-top: 28px; color: var(--sub); font-size: 15px; }
+#seq-duel-root .seq-d-active .seq-d-turn { border-color: var(--se-gold, #c9992e); box-shadow: 0 0 0 1px rgba(201, 153, 46, .45), 0 4px 14px rgba(201, 153, 46, .12); }
+#seq-duel-root .seq-d-active .history-item:not(.seq-d-turn) { opacity: .82; }

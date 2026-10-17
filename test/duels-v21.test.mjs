@@ -424,10 +424,11 @@ test('2.3: el duelo clásico usa el calendario dinámico del servidor (inicios) 
   assert.match(src, /d\.inicios/);
 });
 
-test('Estadísticas: sección «Duelos múltiples» solo si hay partidas', () => {
+test('Estadísticas: pestaña «Múltiple» siempre visible; vacía dice que no hay partidas', () => {
   const { M } = load();
   const s = JSON.parse(JSON.stringify(STATS));
-  assert.doesNotMatch(M._pure.fullStatsHtml(s), /Múltiple/);
+  assert.match(M._pure.fullStatsHtml(s), /Múltiple/);
+  M.setStatsTab('multi'); assert.match(M._pure.fullStatsHtml(s), /Todavía no has jugado ningún duelo múltiple/); M.setStatsTab('pvp');
   s.multi = { jugadas: 4, ganadas: 1, abandonos: 1, clasico: { jugadas: 3, ganadas: 1 }, apuestas: { jugadas: 1, ganadas: 0 } };
   const h = M._pure.fullStatsHtml(s);
   s.multi.historial = [{ duelo_id: 'a', modo: 'stakes', resultado: 'win', posicion: 1, jugadores: 4, mi_puntuacion: 9, fecha: 1760000000000 }, { duelo_id: 'b', modo: 'classic', resultado: 'abandono', posicion: 4, jugadores: 3, mi_puntuacion: 2, fecha: 1760000000000 }];

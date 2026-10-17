@@ -1,0 +1,56 @@
+/* SirEdwards Quiz — Duelos: tarjeta de ayuda, aviso de bloqueo y presentación de Sir Edwards (src/ui/duel-intro.js). */
+
+/* Tarjeta de ayuda */
+.dhelp-card { max-width: 440px; }
+.dhelp-card h2 { display: flex; align-items: center; gap: 10px; font-family: var(--font-display, 'Playfair Display', serif); margin: 0 0 14px; }
+.dh { display: flex; flex-direction: column; }
+.dh-sec { display: flex; flex-wrap: wrap; gap: 0 14px; padding: 14px 0; border-top: 1px solid rgba(201, 153, 46, .22); }
+.dh-sec:first-child { border-top: 0; padding-top: 4px; }
+.dh-ico { flex: 0 0 auto; width: 44px; height: 44px; object-fit: contain; }
+.dh-ico-s { width: 30px; height: 30px; margin-top: 1px; }
+.dh-txt { flex: 1 1 0; min-width: 0; }
+.dh-subs { flex: 1 0 100%; display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.dh-txt h3 { margin: 0 0 3px; font-family: var(--font-display, 'Playfair Display', serif); font-size: 17px; font-weight: 700; color: var(--text); }
+.dh-txt p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--sub); }
+.dh-sub { display: flex; gap: 10px; padding: 10px 12px; border-radius: 12px; background: rgba(201, 153, 46, .07); border: 1px solid rgba(201, 153, 46, .18); }
+.dh-sub b { display: block; font-size: 14px; color: var(--text); margin-bottom: 2px; }
+.dh-sub span { display: block; font-size: 13.5px; line-height: 1.5; color: var(--sub); }
+.dh-notes { margin-top: 4px; padding-top: 14px; border-top: 1px solid rgba(201, 153, 46, .22); }
+.dh-notes p { margin: 0 0 8px; font-size: 13px; line-height: 1.5; color: var(--sub); }
+.dh-notes b { color: var(--text); }
+
+/* Aviso de bloqueo */
+.dl-card { display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 340px; padding: 28px 24px 24px; }
+.dl-lock { width: 96px; height: 96px; object-fit: contain; margin: 0 0 8px; }
+.modal-card.dl-card h2 { justify-content: center; width: 100%; text-align: center; font-family: var(--font-display, 'Playfair Display', serif); font-size: 28px; margin: 0 0 8px; }
+.dl-lead { width: 100%; text-align: left; margin: 0 0 22px; font-size: 15px; line-height: 1.55; color: var(--sub); }
+.dl-prog { width: 100%; }
+.dl-bar { height: 8px; border-radius: 999px; background: rgba(255, 255, 255, .1); overflow: hidden; }
+.dl-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #c9992e, #e8c874); min-width: 6px; }
+.dl-lv-row { display: flex; justify-content: space-between; margin: 7px 0 22px; font-size: 12px; letter-spacing: .5px; color: var(--sub); }
+.dl-miss { width: 100%; text-align: left; margin: 12px 0 22px; font-size: 13px; color: var(--sub); }
+.dl-ok { width: 100%; }
+
+/* Tarjeta de Duelo bloqueada en Inicio: atenuada, con el candado en la flecha */
+.home-big-card.is-locked { opacity: .6; filter: saturate(.5); }
+.home-big-card.is-locked .home-big-icon > .mode-img { filter: grayscale(.7) brightness(.8); }
+.dl-arrow-lock { width: 52px; height: 52px; object-fit: contain; vertical-align: middle; }
+
+/* Presentación de Sir Edwards */
+.dint { position: fixed; inset: 0; z-index: 9400; display: flex; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;
+  background: radial-gradient(ellipse at 50% 30%, rgba(201, 153, 46, .18), transparent 60%), rgba(6, 6, 10, .94); animation: dintIn .4s ease both; }
+.dint-card { width: 100%; max-width: 420px; max-height: 92vh; overflow-y: auto; box-sizing: border-box; padding: 22px 22px 20px; text-align: center; border-radius: var(--radius-lg, 20px);
+  background: var(--card); border: 1px solid rgba(201, 153, 46, .45); box-shadow: 0 18px 50px rgba(0, 0, 0, .55); animation: dintPage .35s ease both; }
+.dint-card:focus { outline: none; }
+.dint-img { display: block; width: min(70%, 240px); height: 200px; object-fit: contain; margin: 0 auto 6px; }
+.dint-card h2 { margin: 4px 0 8px; font-family: var(--font-display, 'Playfair Display', serif); font-size: 24px; line-height: 1.2; color: var(--text); }
+.dint-body { margin: 0 0 16px; font-size: 15.5px; line-height: 1.55; color: var(--sub); }
+.dint-help { text-align: left; margin: 0 0 14px; }
+.dint-dots { display: flex; justify-content: center; gap: 7px; margin: 0 0 14px; }
+.dint-dots i { width: 7px; height: 7px; border-radius: 50%; background: rgba(255, 255, 255, .2); }
+.dint-dots i.on { background: #e8c874; }
+.dint-go { width: 100%; }
+@keyframes dintIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dintPage { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .dint, .dint-card { animation: none; } }
+:root:not([data-theme="dark"]) .dint { background: radial-gradient(ellipse at 50% 30%, rgba(201, 153, 46, .22), transparent 60%), rgba(30, 24, 12, .72); }

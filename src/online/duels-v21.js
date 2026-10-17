@@ -433,7 +433,6 @@
   }
   function statsTabs(s) {
     var m = s.multi;
-    if (!(hasMulti() || (m && num(m.jugadas) > 0))) return '';
     return '<div class="seq-v21-scope seq-v21-calcsub" role="tablist" aria-label="Tipo de duelo">' + ['pvp', 'multi'].map(function (k) {
       var sel = (S21.statsTab || 'pvp') === k;
       return '<button type="button" role="tab" aria-selected="' + sel + '" class="seq-v21-scope-btn' + (sel ? ' sel' : '') + '" onclick="SEQDuels21.setStatsTab(\'' + k + '\')">' + DUEL_LABELS[k] + '</button>';
