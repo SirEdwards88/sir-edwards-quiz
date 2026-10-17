@@ -48,10 +48,10 @@
     if (pos === 1) {
       if (top.length > 1) return { res: 'draw', margin: 0, pos: pos, winner: '' };
       var second = list.filter(function (x) { return x && x.posicion > 1; }).map(function (x) { return Math.floor(Number(x.puntuacion)) || 0; });
-      return { res: 'win', margin: second.length ? Math.max(0, mine - Math.max.apply(null, second)) : 0, pos: pos, winner: '' };
+      return { res: 'win', margin: second.length ? Math.max(0, mine - Math.max.apply(null, second)) : 0, pos: pos, n: list.length, winner: '' };
     }
     var w = top.filter(function (x) { return !x.es_yo; })[0];
-    return { res: 'loss', margin: Math.max(0, best - mine), pos: pos, winner: w ? String(w.display_name || '') : '' };
+    return { res: 'loss', margin: Math.max(0, best - mine), pos: pos, n: list.length, winner: w ? String(w.display_name || '') : '' };
   }
   // Título de la categoría, igual que en el 1 vs 1: aplastante (8 o más), por la mínima (2 o menos) o clara.
   function categoryTitle(o) {
@@ -64,21 +64,31 @@
   // Frases de Sir Edwards para varios jugadores (las del 1 vs 1 hablan de «el rival», aquí hay una mesa entera).
   // Estables por sala y categoría: el mismo duelo siempre enseña la misma frase. {nombre} es el ganador.
   var PHRASES = {
-    win_close: ['Victoria por la mínima. Los demás aún discuten el recuento.', 'Has ganado por un suspiro. Presume en voz baja.'],
-    win_clear: ['Victoria clara. La mesa tomará nota, aunque no de buena gana.', 'Has ganado con holgura. Los demás pueden atribuirlo a la suerte.'],
-    win_big: ['Una ventaja así roza la descortesía. Sir Edwards lo aprueba.', 'La mesa entera merece una disculpa. No pienses darla.'],
-    draw: ['Empate en cabeza. Nadie ha ganado y nadie lo olvidará.', 'Cabeza compartida. El trono se reparte, aunque nadie lo desea.', 'Sir Edwards no firma empates, pero hoy hará una excepción.'],
-    loss_close: ['Por poco. {nombre} se lleva el duelo y tú, la experiencia.', 'Derrota por la mínima. Cerca, pero cerca no puntúa.'],
-    loss_clear: ['{nombre} ha ganado con claridad. Tú has participado, que también cuenta.', 'Derrota clara. La mesa ha hablado y {nombre} ha hablado más alto.'],
-    loss_big: ['{nombre} ha ganado con tanta ventaja que conviene no hacer cuentas.', 'Derrota sin paliativos. Sir Edwards sugiere cambiar de tema.'],
-    gone: ['Te has ido a medias. Quedas el último, como manda la lógica.', 'La partida sigue sin ti. Los duelos no hacen pausas.', 'Retirarse a tiempo es una virtud. A mitad de partida, solo una duda.']
+    win_close: ['Victoria por la mínima. Los demás aún discuten el recuento.', 'Has ganado por un suspiro. Presume en voz baja.', 'La mesa estuvo a un paso de coronar a otro. Un paso muy corto.', 'Has ganado por un margen que desaconseja cualquier celebración prolongada.', 'Una victoria diminuta sigue siendo una victoria. Qué alivio.', 'Tu ventaja cabe en una servilleta. Los demás ya estudian reclamarla.', 'La victoria ha sido tuya por un margen poco decoroso.', 'La celebración puede ser privada. El resultado, por desgracia, no.', 'La victoria ha sido tuya. La diferencia recomienda no recrearse.'],
+    win_clear: ['Victoria clara. La mesa tomará nota, aunque no de buena gana.', 'Has ganado con holgura. A los demás les queda el consuelo de la estadística.', 'La diferencia es respetable. Los comentarios de la mesa, previsiblemente, también.', 'Los demás han competido con entusiasmo. El resultado ha sido menos entusiasta.', 'Tu victoria no admite demasiadas interpretaciones. Qué inconveniente para algunos.', 'Has ganado con aplomo. La modestia queda a tu elección.', 'La seguridad con que han jugado los demás no ha encontrado respaldo suficiente.', 'Has puesto orden en la mesa. No te acostumbres a tanta obediencia.'],
+    win_big: ['Una ventaja así roza la descortesía. Sir Edwards lo aprueba.', 'La mesa entera merece una disculpa. No pienses darla.', 'Has dejado la competición en un estado puramente decorativo.', 'Has convertido la competición en un trámite de cortesía.', 'Una diferencia así convierte el suspense en un recuerdo lejano.', 'Los demás han venido a jugar. Tú parecías tener otros planes.', 'Sir Edwards considera innecesario organizar una ceremonia de consolación.', 'La mesa entera ha recibido una clase magistral. La matrícula, por desgracia, era obligatoria.'],
+    draw: ['Empate en cabeza. La gloria admite compañía; el mérito, discusiones.', 'Cabeza compartida. El trono se reparte, aunque nadie lo desea.', 'Sir Edwards no firma empates, pero hoy hará una excepción.', 'El primer puesto se comparte. La satisfacción, por lo visto, no.', 'Nadie reina hoy. La mesa puede dormir tranquila.', 'Mismo resultado, mérito compartido y vanidad sin privilegios.', 'La corona tiene varios dueños. Su convivencia promete ser interesante.', 'El empate es justo. Que resulte satisfactorio ya es otra cuestión.', 'Más de una persona en lo más alto. La diplomacia empieza ahora.'],
+    // Según el puesto (solo en derrotas que no son aplastantes; se suman a las de la diferencia).
+    pos2: ['Segundo puesto. El primero ya tiene el discurso preparado.', 'La gloria tenía sitio para uno. Hoy no te ha correspondido.', 'La plata tiene su mérito. El oro, curiosamente, tiene más.', 'Has llegado a la conversación importante. La última palabra la tiene otro.', 'Has sido el mejor de los que no han ganado.', 'Sir Edwards aprecia tu ambición. El marcador, algo menos.', 'La victoria se te ha escapado. Procura no perder también la ambición.', 'El segundo puesto tiene una ventaja: sabes exactamente a quién superar.'],
+    pos3: ['Has subido al podio. La historia será menos generosa.', 'Tercer puesto. Una posición discretamente incómoda.', 'No has ganado, pero tampoco tendrás que dar explicaciones a todos.', 'Dos te han superado. Conviene recordar quiénes.', 'El bronce no se pule. Se tolera.', 'Hay motivos para celebrar. La discreción es uno de ellos.', 'Has quedado a medio camino entre la gloria y el olvido. Con buenas vistas.', 'Sir Edwards considera que aún hay margen para una actuación más memorable.', 'Has terminado entre los primeros. La precisión exige no exagerar.'],
+    pos4: ['Alguien tenía que cerrar la clasificación. Has sido muy generoso.', 'Último puesto. La elegancia está en cómo se afronta.', 'La mesa ha quedado ordenada. Tú has puesto el punto final.', 'Ha sido memorable, aunque no por los motivos habituales.', 'Sir Edwards propone pasar página. Preferiblemente, de esta partida.', 'El marcador no admite reclamaciones. Ya lo he comprobado.', 'Has dejado el podio intacto. Un gesto de consideración.', 'Los puestos de honor ya tienen dueño. Has cedido el paso con generosidad.'],
+    loss_close: ['Por muy poco. {nombre} se lleva la victoria; tú, una historia incómoda.', 'Derrota por la mínima. La diferencia ha sido pequeña; el desenlace, no.', '{nombre} ha celebrado primero. Tú todavía estás calculando dónde se escapó.', 'La victoria ha pasado cerca. No parece que tuviera intención de detenerse.', 'Un par de puntos más y hoy tendrías otra tarjeta.', 'Has estado a punto de cambiar el desenlace. El resultado no contempla los intentos.', 'La mesa recordará lo ajustado del resultado. Tú, probablemente, también.', 'Te ha faltado muy poco. Una cantidad extraordinariamente inoportuna.'],
+    loss_clear: ['{nombre} ha ganado con claridad. Tú has participado, que también cuenta.', '{nombre} ha tomado la delantera. Tú has tenido ocasión de observarlo.', 'La distancia es apreciable. Se llama perspectiva y rara vez gusta.', 'Hoy no has marcado el ritmo. Al menos, has seguido la conversación.', 'Ya hay alguien a quien felicitar. Tu intervención puede ser breve.', '{nombre} ha resuelto mejor el examen. No hace falta levantar acta.', 'El resultado es claro. Tu siguiente actuación tendrá margen de mejora.', 'El resultado se ha pronunciado. {nombre} ha defendido mejor su candidatura.'],
+    loss_big: ['{nombre} ha ganado con tanta ventaja que conviene no hacer cuentas.', 'Derrota sin paliativos. Sir Edwards sugiere cambiar de tema.', 'La distancia ha sido notable. Procura que la revancha resulte más interesante.', 'Hoy has aprendido mucho. Principalmente, cuánto te queda por aprender.', 'La diferencia habla por sí sola. No necesita una segunda declaración.', 'No ha sido tu mejor partida. Compartirla queda a tu criterio.', '{nombre} ha ganado sin esfuerzo aparente. Tú has aportado contexto.', 'Una revisión del temario sería prudente antes de la próxima convocatoria.'],
+    gone: ['Te has ido a medias. Quedas el último, como manda la lógica.', 'La partida ha continuado sin ti. No estaba obligada a esperarte.', 'Retirarse a tiempo es una virtud. A mitad de partida, solo una duda.', 'Has abandonado la mesa. La mesa, curiosamente, ha seguido adelante.', 'La retirada ha sido apresurada. La elegancia, discutible.', 'Te has marchado antes del desenlace. Qué confianza en la imaginación ajena.', 'Abandonar es una decisión. Las consecuencias también lo son.', 'Sir Edwards toma nota de tu salida. No consta que la celebre.', 'El marcador no ha solicitado explicaciones. Qué considerado.', 'Has dejado la partida sin desenlace. Los demás han tenido que escribirlo.']
   };
+
   function hashStr(t) { var h = 0; t = String(t); for (var i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) >>> 0; return h; }
   function phraseFor(o, seedId) {
     var key = o.res === 'gone' ? 'gone' : o.res === 'draw' ? 'draw' : o.res + '_' + (o.margin >= 8 ? 'big' : o.margin <= 2 ? 'close' : 'clear');
     var list = PHRASES[key] || PHRASES.draw;
+    // Derrota que no es aplastante: además de las de la diferencia entran las del puesto (2.º, 3.º y 4.º solo con cuatro jugadores).
+    if (o.res === 'loss' && o.margin < 8) {
+      var pk = o.pos === 2 ? 'pos2' : o.pos === 3 ? 'pos3' : (o.pos === 4 && o.n >= 4) ? 'pos4' : '';
+      if (pk) list = list.concat(PHRASES[pk]);
+    }
     var name = String(o.winner || 'Otro jugador').slice(0, 18);
-    return list[hashStr(seedId + ':' + key) % list.length].replace(/\{nombre\}/g, name);
+    return list[hashStr(seedId + ':' + key + ':' + o.pos) % list.length].replace(/\{nombre\}/g, name);
   }
 
   // En partida el múltiple no se anuncia: título y botón de salida iguales a los del 1 vs 1.
@@ -107,7 +117,10 @@
       return '<div class="seq-m-opt" role="button" tabindex="0" onclick="' + act + '" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();' + act + '}">' + ic + body + '<span class="seq-m-opt-go" aria-hidden="true">›</span></div>';
     }
     var one = card('uno-contra-uno', '1 vs 1', reto ? 'Un amigo, a su ritmo.' : 'Un amigo, cara a cara.', 'SEQMulti.one()');
-    var multi = (stakes && !STAKES_READY)
+    var ft = (H.features && H.features()) || {}, served = reto ? ft.multi_reto : ft.multi_duel;
+    var multi = !served
+      ? card('multiple', 'Múltiple', 'Muy pronto.', '', true)
+      : (stakes && !STAKES_READY)
       ? card('multiple', 'Múltiple', 'Muy pronto. Sir Edwards aún afila las apuestas.', '', true)
       : card('multiple', 'Múltiple', 'De ' + MIN_PLAYERS + ' a ' + MAX_PLAYERS + ' jugadores.' + (reto ? ' A su ritmo.' : ''), 'SEQMulti.startPick()');
     return h + '<div class="seq-m-opts">' + one + multi + '</div>';
@@ -127,7 +140,7 @@
       var p = H.player(f.player), picked = chosen.indexOf(p.id) >= 0, full = !picked && chosen.length >= MAX_PLAYERS - 1;
       return '<div class="history-item seq-d-row seq-pl-row seq-m-friend' + (picked ? ' seq-m-on' : '') + (full ? ' seq-d-off' : '') + '" role="checkbox" aria-checked="' + (picked ? 'true' : 'false') + '"' + (full ? ' aria-disabled="true"' : ' tabindex="0" onclick="SEQMulti.toggle(\'' + p.id + '\')" onkeydown="if(event.key===\'Enter\')SEQMulti.toggle(\'' + p.id + '\')"') + '>' +
         H.who(p, reto ? '' : '<span class="seq-d-on">● En línea</span>') + '<div class="history-item-score seq-m-check">' + (picked ? H.ico('correcto') : '') + '</div></div>';
-    }).join('') + '</div>' : '<p class="stats-section-sub">Nadie está en línea ahora mismo. Un duelo en directo necesita a todos a la vez.</p>';
+    }).join('') + '</div>' : '<p class="stats-section-sub">No tienes amigos en línea.</p>';
     if (off.length) h += '<h3 class="seq-d-h3">Sin conexión (' + num(off.length) + ')</h3><div class="history-list">' + off.map(function (f) {
       return '<div class="history-item seq-d-row seq-pl-row seq-d-off" aria-disabled="true">' + H.who(H.player(f.player), 'Sin conexión') + '</div>';
     }).join('') + '</div>';

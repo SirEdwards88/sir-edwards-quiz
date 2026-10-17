@@ -527,9 +527,9 @@
   }
   // 2.1: en Duelo online se elige antes el modo (clásico o apuestas); el servidor lo valida.
   function pick(kind, modo) {
-    // 2.4: con el Duelo múltiple activo, tras elegir clásico o apuestas se elige «1 vs 1» o «Múltiple».
-    if (kind === 'duel' && features().multi_duel && window.SEQMulti) { S.pickKind = 'duel'; S.pickModo = modo === 'stakes' ? 'stakes' : 'classic'; S.screen = 'pickkind'; render(); refreshSummary(); return; }
-    if (kind === 'reto' && features().multi_reto && window.SEQMulti) { S.pickKind = 'reto'; S.pickModo = 'classic'; S.screen = 'pickkind'; render(); refreshSummary(); return; }
+    // 2.4: tras elegir clásico o apuestas se elige «1 vs 1» o «Múltiple» (si el servidor aún no lo tiene, «Múltiple» sale apagado).
+    if (kind === 'duel' && window.SEQMulti) { S.pickKind = 'duel'; S.pickModo = modo === 'stakes' ? 'stakes' : 'classic'; S.screen = 'pickkind'; render(); refreshSummary(); return; }
+    if (kind === 'reto' && window.SEQMulti) { S.pickKind = 'reto'; S.pickModo = 'classic'; S.screen = 'pickkind'; render(); refreshSummary(); return; }
     pick1v1(kind, modo);
   }
   function pick1v1(kind, modo) { S.pickRivals = null; S.pickKind = kind === 'duel' ? 'duel' : 'reto'; S.pickModo = modo === 'stakes' ? 'stakes' : 'classic'; S.screen = 'pick'; render(); refreshSummary(); watchPresence(); }
@@ -718,7 +718,7 @@
       h += on.length ? '<div class="history-list">' + on.map(function (f) {
         var p = player(f.player);
         return '<div class="history-item seq-d-row seq-pl-row" onclick="SEQDuels.create(\'' + p.id + '\')">' + who(p, '<span class="seq-d-on">● En línea</span>') + '<div class="history-item-score">Retar ›</div></div>';
-      }).join('') + '</div>' : '<p class="stats-section-sub">Nadie está en línea ahora mismo. Un duelo en directo necesita a los dos a la vez. Prueba con un Reto: cada uno juega cuando pueda.</p><button class="btn btn-secondary" onclick="SEQDuels.open(\'retos\')">' + ico('retos') + 'Ir a Retos</button>';
+      }).join('') + '</div>' : '<p class="stats-section-sub">No tienes amigos en línea. Prueba con un Reto.</p><button class="btn btn-secondary" onclick="SEQDuels.open(\'retos\')">' + ico('retos') + 'Ir a Retos</button>';
       if (off.length) h += '<h3 class="seq-d-h3">Sin conexión (' + num(off.length) + ')</h3><div class="history-list">' + off.map(function (f) {
         return '<div class="history-item seq-d-row seq-pl-row seq-d-off" aria-disabled="true">' + who(player(f.player), 'Sin conexión') + '</div>';
       }).join('') + '</div>';

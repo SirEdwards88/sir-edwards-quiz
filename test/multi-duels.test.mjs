@@ -22,7 +22,7 @@ function load() {
     resultSoundOnce() {}, xpFor: (_k, _d, a) => 10 * num(a), syncXpOnce() {}, xpChipHtml: (x) => '<xp>' + x + '</xp>',
     render() {}, refresh() {}, open: (a, b) => calls.push(['open', a, b]), apply: (d) => calls.push(['apply', d.id]),
     act: (m, p, b, then) => { calls.push([m, p, b]); then && then({ id: 'NNNNNNNNNN' }); }, pick1v1: (k, m) => calls.push(['pick1v1', k, m]), pickModeMulti: (ids) => calls.push(['pickModeMulti', ids]),
-    modeLine: () => '<mode>', retoModeName: (x) => 'Modo ' + (x && x.modo), left: () => '2 d 23 h',
+    features: () => ({ multi_duel: true, multi_reto: true }), modeLine: () => '<mode>', retoModeName: (x) => 'Modo ' + (x && x.modo), left: () => '2 d 23 h',
   };
   const ctx = vm.createContext({ SEQDuels: { _h: H }, Math, String, Number, Object, isFinite, console });
   ctx.window = ctx;
@@ -52,12 +52,12 @@ test('resultado y frases: gana el primero, pierden los demás, y el margen elige
   const { M } = load(), C = M.core;
   const cl = (...p) => p.map(([pos, pts, me, name], i) => ({ id: 'JJJJJJJJJ' + i, display_name: name || 'J' + i, posicion: pos, puntuacion: pts, es_yo: !!me }));
   // Gano con 15 frente a 9: victoria, ventaja 6 sobre el segundo.
-  assert.deepEqual({ ...C.outcome({ mi_posicion: 1, mi_puntuacion: 15, clasificacion: cl([1, 15, true], [2, 9], [3, 4]) }, false) }, { res: 'win', margin: 6, pos: 1, winner: '' });
+  assert.deepEqual({ ...C.outcome({ mi_posicion: 1, mi_puntuacion: 15, clasificacion: cl([1, 15, true], [2, 9], [3, 4]) }, false) }, { res: 'win', margin: 6, pos: 1, n: 3, winner: '' });
   // Empato en cabeza: empate.
   assert.equal(C.outcome({ mi_posicion: 1, mi_puntuacion: 12, clasificacion: cl([1, 12, true], [1, 12], [3, 5]) }, false).res, 'draw');
   // Segundo de cuatro con 10 frente a 16: derrota (no hay «puesto medio»), distancia 6 y nombre del ganador.
   const l = C.outcome({ mi_posicion: 2, mi_puntuacion: 10, clasificacion: cl([1, 16, false, 'Ana'], [2, 10, true], [3, 8], [4, 2]) }, false);
-  assert.deepEqual({ ...l }, { res: 'loss', margin: 6, pos: 2, winner: 'Ana' });
+  assert.deepEqual({ ...l }, { res: 'loss', margin: 6, pos: 2, n: 4, winner: 'Ana' });
   assert.equal(C.outcome({ mi_posicion: 4, mi_puntuacion: 2, clasificacion: [] }, true).res, 'gone');
   assert.equal(C.categoryTitle({ res: 'win', margin: 9 }), 'Victoria aplastante'); assert.equal(C.categoryTitle({ res: 'win', margin: 1 }), 'Victoria por la mínima');
   assert.equal(C.categoryTitle({ res: 'loss', margin: 5 }), 'Derrota clara'); assert.equal(C.categoryTitle({ res: 'loss', margin: 12 }), 'Derrota sin paliativos');
@@ -154,7 +154,7 @@ test('no toca el 1 vs 1: el módulo no registra estadísticas ni logros y duels.
   assert.ok(!/registerOnlineDuelResult|recordDuel/.test(code), 'el múltiple no cuenta para estadísticas de Duelo 1 vs 1');
   assert.ok(!/innerHTML\s*=/.test(code), 'el módulo devuelve HTML; nunca lo inserta él');
   const d = read('src/online/duels.js');
-  assert.match(d, /features\(\)\.multi_duel && window\.SEQMulti/);
+  assert.match(d, /kind === 'duel' && window\.SEQMulti/);
   assert.match(d, /'\/multi-duels\/'/);
   assert.ok(!/recordDuel\([^)]*multi/.test(d));
   const rec = d.match(/function recordResult\(d\) \{[\s\S]*?\n  \}/)[0];
@@ -234,5 +234,34 @@ test('Reto: el Reto múltiple no registra resultados de Duelo y duels.js lo enla
   const d = read('src/online/duels.js');
   assert.match(d, /\/multi-challenges\//); assert.match(d, /S\.isMulti = screen === 'mreto'/);
   assert.match(d, /if \(S\.isMulti\) \{ if \(d\.estado === 'aceptado'/, 'recordResult sale antes de registrar estadísticas');
-  assert.match(d, /features\(\)\.multi_reto && window\.SEQMulti/);
+  assert.match(d, /kind === 'reto' && window\.SEQMulti/);
+});
+
+test('elegir formato: si el servidor aún no tiene el múltiple, «1 vs 1» sigue ahí y «Múltiple» sale apagado', () => {
+  const { M, H, S } = load();
+  H.features = () => ({});
+  S.pickKind = 'duel'; S.pickModo = 'classic';
+  const h = M.render('pickkind', H);
+  assert.match(h, /1 vs 1/);
+  assert.match(h, /seq-d-off[^>]*>.*Múltiple/s);
+});
+
+test('frases del múltiple: ninguna repetida ni copiada del 1 vs 1, y las del puesto solo salen donde corresponden', () => {
+  const { M } = load(), C = M.core;
+  const src = fs.readFileSync(new URL('../src/online/multi-duels.js', import.meta.url), 'utf8');
+  const bag = src.slice(src.indexOf('var PHRASES = {'), src.indexOf('function hashStr'));
+  const all = [...bag.matchAll(/'((?:[^'\\]|\\.)+)'/g)].map((m) => m[1]).filter((t) => t.length > 25 && /[.]/.test(t));
+  assert.ok(all.length >= 80, 'hay banco: ' + all.length);
+  assert.equal(new Set(all).size, all.length, 'sin frases repetidas');
+  const oneVsOne = fs.readFileSync(new URL('../src/data/duel-phrases.js', import.meta.url), 'utf8');
+  for (const t of all) assert.ok(!oneVsOne.includes(t.replace(/\{nombre\}/g, '')), 'copiada del 1 vs 1: ' + t);
+  const ids = Array.from({ length: 60 }, (_, i) => 'S' + i);
+  const seen = (o) => new Set(ids.map((id) => C.phraseFor(o, id)));
+  // Tercero en una partida de tres (el último): nunca sale una frase de «último de cuatro»; con cuatro jugadores, sí puede.
+  for (const t of seen({ res: 'loss', margin: 5, pos: 3, n: 3, winner: 'Ana' })) assert.ok(!/Último puesto|cerrar la clasificación|podio intacto/.test(t), t);
+  assert.ok([...seen({ res: 'loss', margin: 5, pos: 4, n: 4, winner: 'Ana' })].some((t) => /Último puesto|cerrar la clasificación|podio intacto/.test(t)));
+  // Ganar o empatar nunca enseña frases de puesto ni de derrota.
+  for (const t of seen({ res: 'win', margin: 1, pos: 1, n: 4 })) assert.ok(!/Segundo|Tercer|Último|podio/i.test(t), t);
+  // Derrota aplastante: ninguna del puesto (no encajan con una paliza).
+  for (const t of seen({ res: 'loss', margin: 9, pos: 2, n: 4, winner: 'Ana' })) assert.ok(!/Segundo puesto|plata/.test(t), t);
 });
