@@ -122,7 +122,11 @@
     out += sectionImg('modes/suelto/duelo', 'Historial de duelos', v
       ? '<div class="stats-mini-grid">' + mini(dash(v.elo), 'ELO') + mini(dash(v.pico), 'Récord ELO') + mini(pct(v.porcentaje_victorias), '% Victorias') +
         mini(num(v.victorias), 'Victorias') + mini(num(v.derrotas), 'Derrotas') + mini(num(v.empates), 'Empates') + '</div>'
-      : empty('Ningún duelo puntuado todavía.'));
+      : empty('Ningún duelo 1 vs 1 todavía.'));
+    var mu = d.multi;
+    if (mu && num(mu.partidas) > 0) {
+      out += sectionImg('modes/suelto/duelo', 'Duelos múltiples', '<div class="stats-mini-grid">' + mini(num(mu.partidas), 'Partidas') + mini(num(mu.victorias), 'Victorias') + mini(pct(mu.porcentaje_victorias), '% Victorias') + mini(num(mu.abandonos), 'Abandonos') + '</div>');
+    }
     return out + '</div>';
   }
 

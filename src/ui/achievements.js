@@ -20,7 +20,7 @@
     { key: 'dominio', name: 'Dominio', ids: ['master_10', 'master_50', 'master_100', 'master_200', 'polimata', 'balanced_master'] },
     { key: 'errores', name: 'Aprender de los errores', ids: ['cleaner_5', 'cleaner_25', 'limpieza_general'] },
     { key: 'modos', name: 'Modos de juego', ids: ['surv_ameba', 'surv_humano', 'surv_derrame', 'sd_primer_riesgo', 'tt_15', 'tt_30', 'tt_50', 'sin_frenos', 'mental_calc_15', 'mental_calc_30', 'mental_calc_40'] },
-    { key: 'duelo', name: 'Duelo', ids: ['duel_primera_sangre', 'duel_victoria_inaugural', 'duel_por_los_pelos', 'duel_contra_las_cuerdas', 'duel_rey_del_empate', 'duel_cinco_victorias', 'duel_tres_al_hilo', 'duel_revancha', 'duel_otra_vez_tu', 'duel_sin_titubear', 'duel_apuestas_calculada', 'duel_apuestas_ultima_locura'] },
+    { key: 'duelo', name: 'Duelo', ids: ['duel_primera_sangre', 'duel_victoria_inaugural', 'duel_por_los_pelos', 'duel_contra_las_cuerdas', 'duel_rey_del_empate', 'duel_cinco_victorias', 'duel_tres_al_hilo', 'duel_revancha', 'duel_otra_vez_tu', 'duel_sin_titubear', 'duel_apuestas_calculada', 'duel_apuestas_ultima_locura', 'multi_mesa_completa', 'multi_contra_la_corriente', 'multi_entre_la_niebla', 'multi_alguien_tenia_que_perder', 'multi_costumbre_preocupante'] },
     { key: 'especial', name: 'Especiales', ids: ['noctambulo', 'diurno', 'mente_fracturada', 'medal_collector_10', 'medal_collector_20', 'medal_collector_30'] },
     { key: 'secretos', name: 'Secretos', ids: ['lucidez_mente_despierta', 'lucidez_conexiones_imposibles', 'lucidez_absoluta', 'all_medals_secret'] }
   ];
@@ -67,6 +67,7 @@
     duel_rey_del_empate: function (s) { return [n(s.duelStats && s.duelStats.draws), 3, 'empates']; },
     duel_cinco_victorias: function (s) { return [n(s.duelStats && s.duelStats.wins), 5, 'victorias']; },
     duel_tres_al_hilo: function (s) { return [n(s.duelStats && s.duelStats.bestWinStreak), 3, 'victorias seguidas']; },
+    multi_costumbre_preocupante: function (s) { return [n(s.duelStats && s.duelStats.multiWins), 5, 'victorias']; },
     duel_otra_vez_tu: function (s) { return [n(s.duelStats && s.duelStats.bestWinsVsRival), 3, 'victorias']; },
     medal_collector_10: function (s) { return [collectorCount(s), 10, 'logros']; },
     medal_collector_20: function (s) { return [collectorCount(s), 20, 'logros']; },

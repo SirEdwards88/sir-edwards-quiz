@@ -292,7 +292,7 @@ test('Estadísticas: solo un botón «Ver estadísticas de duelos»; al pulsarlo
 test('Estadísticas completas: ELO y rango, pico, posición, últimos duelos de ambos modos y cara a cara (sin duplicar el Historial)', () => {
   const { M } = load();
   const html = M._pure.fullStatsHtml(STATS);
-  for (const t of ['Pico de ELO', 'Posición global', 'Duelos con ELO', 'Últimos duelos', 'Cara a cara', 'Lord Sabelotodo', 'Clasificado']) assert.match(html, new RegExp(t));
+  for (const t of ['Récord ELO', 'Posición global', 'Duelos con ELO', 'Últimos duelos', 'Cara a cara', 'Lord Sabelotodo', 'Clasificado']) assert.match(html, new RegExp(t));
   assert.match(html, /1\.284/); assert.match(html, /lord_sabelotodo\.webp/);
   assert.equal(/Historial competitivo|% victorias|>Derrotas<|>Empates<|>Victorias<|Mejor racha|Racha actual|ELO actual/.test(html), false,
     'partidas, victorias, derrotas, empates y rachas ya están en «Historial de duelos»: no se repiten');
@@ -422,4 +422,19 @@ test('2.3: el duelo clásico usa el calendario dinámico del servidor (inicios) 
   const src = fs.readFileSync(new URL('../src/online/duels.js', import.meta.url), 'utf8');
   assert.match(src, /function classicWin\(d, now\)/);
   assert.match(src, /d\.inicios/);
+});
+
+test('Estadísticas: sección «Duelos múltiples» solo si hay partidas', () => {
+  const { M } = load();
+  const s = JSON.parse(JSON.stringify(STATS));
+  assert.doesNotMatch(M._pure.fullStatsHtml(s), /Múltiple/);
+  s.multi = { jugadas: 4, ganadas: 1, abandonos: 1, clasico: { jugadas: 3, ganadas: 1 }, apuestas: { jugadas: 1, ganadas: 0 } };
+  const h = M._pure.fullStatsHtml(s);
+  s.multi.historial = [{ duelo_id: 'a', modo: 'stakes', resultado: 'win', posicion: 1, jugadores: 4, mi_puntuacion: 9, fecha: 1760000000000 }, { duelo_id: 'b', modo: 'classic', resultado: 'abandono', posicion: 4, jugadores: 3, mi_puntuacion: 2, fecha: 1760000000000 }];
+  M.setStatsTab('multi');
+  const h2 = M._pure.fullStatsHtml(s);
+  M.setStatsTab('pvp');
+  assert.match(h2, /Últimos duelos/); assert.match(h2, /Victoria · 9 pts/); assert.match(h2, /Abandono/); assert.match(h2, /1\.º de 4/);
+  assert.match(h, /Múltiple/);
+  assert.match(h2, /25 %/); assert.match(h2, /Abandonos/);
 });

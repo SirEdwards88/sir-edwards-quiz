@@ -271,7 +271,7 @@
       (reto ? '' : '<div class="seq-m-unit">' + (d.modo === 'stakes' ? 'Puntos' : 'Aciertos') + '</div>') + '<div class="seq-m-rank" role="list">' + rows + '</div>' +
       '<div class="results-phrase-container ' + tone + '"><div class="results-mood-icon has-img"><img class="mood-img" src="' + moodSrc + '" alt="" draggable="false"></div>' +
       '<div class="results-category-title">' + esc(cat) + '</div>' +
-      '<div class="results-phrase duel-result-phrase">' + esc(phraseFor(o, d.id)) + '</div></div>' + chipsXp +
+      '<div class="results-phrase duel-result-phrase">' + esc(phraseFor(o, d.id)) + '</div></div>' + chipsXp + (reto || !H.medalsBlock ? '' : H.medalsBlock('multi:' + d.id)) +
       '<div class="results-lucidez-stamp show"><span class="stamp-badge tone-' + stamp[1] + '">' + stamp[0] + '</span></div>' +
       '<div class="results-actions">' +
       (!reto && d.soy === 'creador' ? '<button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="SEQMulti.action(\'rematch\')">' + H.ico('revancha') + 'Revancha</button>' : '') +

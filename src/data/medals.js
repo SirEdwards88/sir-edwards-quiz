@@ -90,6 +90,12 @@ const ALL_MEDALS = [
   { id: 'duel_sin_titubear', title: 'Sin Titubear', desc: 'Gana un duelo acertando todas las preguntas.', check: s => !!(s.duelStats && s.duelStats.perfectWon) },
   { id: 'duel_apuestas_ultima_locura', title: 'La Última Locura', desc: 'En un Duelo por Apuestas, elige Insensato en la ronda final (vale doble), acierta y gana.', check: s => !!(s.duelStats && s.duelStats.stakesLastMadness) },
   { id: 'duel_apuestas_calculada', title: 'Apuesta Calculada', desc: 'En un mismo Duelo por Apuestas, usa Cuerdo, Osado e Insensato.', check: s => !!(s.duelStats && s.duelStats.stakesAllThree) },
+  // DUELO MÚLTIPLE (2.4): los hitos los calcula el SERVIDOR (resultado.hitos de cada sala) y src/state/multi-result.js los registra.
+  { id: 'multi_mesa_completa', title: 'Mesa Completa', desc: 'Gana un duelo múltiple de cuatro jugadores en el que nadie abandone.', check: s => !!(s.duelStats && s.duelStats.multiMesaCompleta) },
+  { id: 'multi_contra_la_corriente', title: 'Contra la Corriente', desc: 'Gana un duelo múltiple habiendo ido en último lugar en algún momento, pasado el primer tercio de la partida.', check: s => !!(s.duelStats && s.duelStats.multiCorriente) },
+  { id: 'multi_entre_la_niebla', title: 'Entre la Niebla', desc: 'Gana un duelo múltiple por apuestas que se decida en las dos últimas rondas.', check: s => !!(s.duelStats && s.duelStats.multiNiebla) },
+  { id: 'multi_alguien_tenia_que_perder', title: 'Alguien Tenía Que Perder', desc: 'Termina un duelo múltiple en último lugar, sin abandonar.', check: s => !!(s.duelStats && s.duelStats.multiUltimo) },
+  { id: 'multi_costumbre_preocupante', title: 'Costumbre Preocupante', desc: 'Gana 5 duelos múltiples.', check: s => (s.duelStats && s.duelStats.multiWins || 0) >= 5 },
 
   // LUCIDEZ MENTAL: LOGROS SECRETOS
   // No otorgan Fragmentos de Mente (el modo ya está desbloqueado para

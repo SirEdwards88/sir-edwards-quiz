@@ -42,6 +42,7 @@ test('el objetivo de cada barra es exactamente el umbral de su logro', () => {
       else if (m.id === 'duel_cinco_victorias') s.duelStats.wins = v;
       else if (m.id === 'duel_otra_vez_tu') s.duelStats.bestWinsVsRival = v;
       else if (m.id === 'duel_tres_al_hilo') s.duelStats.bestWinStreak = v;
+      else if (m.id === 'multi_costumbre_preocupante') s.duelStats.multiWins = v;
       else { const k = Object.keys(field).find((p) => m.id.startsWith(p)); assert.ok(k, 'sin campo para ' + m.id); s[field[k]] = v; }
       return s;
     };

@@ -4,7 +4,7 @@
     "src/utils/answer-alias.js": "03aefa9d84d8a724",
     "src/utils/lucidez-select.js": "d64e741c92968981",
     "src/utils/mental-calc.js": "eba038f76a434779",
-    "src/utils/sync-merge.js": "1c40769956b6be3c"
+    "src/utils/sync-merge.js": "bbc4f0050252ac6c"
   },
   "watched": {
     "src/utils/sudden-progression.js": "d2586129d1166d82"
@@ -13,7 +13,7 @@
     "src/data/questions.js": "eac1ec93c47a507b",
     "src/data/questions-retired.js": "4e3c08fdf9db4039",
     "src/data/lucidez.js": "bcc72d3b85ecd70a",
-    "src/data/medals.js": "9336073b431363fb",
+    "src/data/medals.js": "559856c66fe8db6e",
     "src/data/avatars.js": "4d83f88c1aaef7b3"
   }
 }

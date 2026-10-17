@@ -37,12 +37,13 @@ const SEQSyncMerge = (function () {
     'noRepeatCatBestStreak', 'bestMentalCalcScore', 'mentalCalcBestStreak', 'bestMentalCalcCorrect',
     'mentalCalcTotalCorrect', 'bestMentalClassicCorrect', 'bestMentalClassicScore', 'bestLucidezScore', 'bestLucidezStreak', 'lucidezTotalCorrect',
     'duelStats.played', 'duelStats.wins', 'duelStats.losses', 'duelStats.draws',
-    'duelStats.bestWinStreak', 'duelStats.bestWinsVsRival'
+    'duelStats.bestWinStreak', 'duelStats.bestWinsVsRival', 'duelStats.multiWins'
   ];
   const OR_FIELDS = [
     'hasCompletedNightGame', 'lucidezPlayed', 'lucidezEverWon', 'lucidezEverPerfect',
     'duelStats.wonByOnePoint', 'duelStats.wonByTenPlus', 'duelStats.revengeWon',
-    'hasCompletedMorningGame', 'duelStats.comebackWon', 'duelStats.perfectWon', 'duelStats.stakesLastMadness', 'duelStats.stakesAllThree'
+    'hasCompletedMorningGame', 'duelStats.comebackWon', 'duelStats.perfectWon', 'duelStats.stakesLastMadness', 'duelStats.stakesAllThree',
+    'duelStats.multiMesaCompleta', 'duelStats.multiCorriente', 'duelStats.multiNiebla', 'duelStats.multiUltimo'
   ];
   const SET_FIELDS = { seenQuestionIds: 2000, notifiedModeUnlocks: 50, notifiedFragmentRewards: 10, duelPlayedCodes: 400 };
   const NEWSET_FIELDS = { encargosClaimed: { max: 120, re: /^\d{4}-W\d{2}(:b|:[mg]:[a-z_]{1,24})$/ } };

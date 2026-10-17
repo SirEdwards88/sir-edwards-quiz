@@ -250,7 +250,7 @@
         notifyLiveDuel();
         recordFromList(S.lists.duels, 'duel'); // solo los que este dispositivo vio en juego: nunca se recuentan antiguos
       }).catch(function () {}) : null,
-      f.multi_duel ? call('GET', '/multi-duels').then(function (d) { S.lists.multis = d.duels || []; }).catch(function () {}) : null,
+      f.multi_duel ? call('GET', '/multi-duels').then(function (d) { S.lists.multis = d.duels || []; recordMultiFromList(S.lists.multis); }).catch(function () {}) : null,
       f.multi_reto ? call('GET', '/multi-challenges').then(function (d) { S.lists.mretos = d.retos || []; }).catch(function () {}) : null,
       f.async_challenges ? call('GET', '/challenges').then(function (d) { S.lists.retos = d.challenges || []; recordFromList(S.lists.retos, 'reto'); }).catch(function () {}) : null,
     ]).then(function () { renderCards(); if (S.screen && S.screen !== 'duel' && S.screen !== 'reto' && S.screen !== 'multi') render(); });
@@ -318,6 +318,7 @@
   // 2.3: nivel con el que se entra a la partida, para avisar de la subida en la tarjeta final (src/ui/level-up.js).
   function markLevel(kind, id) { try { SEQLevelUp.markKey(kind + ':' + id); } catch (e) {} }
   function recordResult(d) {
+    if (d && S.screen === 'multi') { recordMulti(d); return; }
     if (!d || (S.screen !== 'duel' && S.screen !== 'reto')) return;
     var kind = S.screen;
     // 2.5: el Reto múltiple no cuenta para estadísticas ni logros de Duelo (solo XP, que da el servidor); sí avisa de la subida de nivel.
@@ -325,6 +326,25 @@
     if (kind === 'duel' && d.estado === 'en_curso') { markPlaying(kind, S.id); markLevel(kind, S.id); }
     if (kind === 'reto' && d.estado === 'aceptado' && d.yo && d.yo.empezado) { markPlaying(kind, S.id); markLevel(kind, S.id); }
     if (d.estado === 'completado') { recordDuel(d, S.id, kind); forgetPlaying(kind, S.id); }
+  }
+  // 2.4 Duelo múltiple: sus logros (medallas) salen de resultado.hitos, que calcula el servidor. Una sola vez por sala
+  // (src/state/multi-result.js lo controla). No cuenta para el ELO ni las estadísticas del 1 vs 1.
+  function recordMulti(d) {
+    try {
+      if (d.estado === 'en_curso') { markPlaying('multi', d.id); }
+      if (d.estado !== 'completado' || !d.resultado || !d.resultado.hitos || !window.SEQMultiResult) return;
+      var out = SEQMultiResult.register({ duelId: safeId(d.id), hitos: d.resultado.hitos });
+      if (out && out.medals && out.medals.length) { S.newMedals = S.newMedals || {}; S.newMedals['multi:' + d.id] = out.medals.map(function (m) { return m.id; }); }
+      forgetPlaying('multi', d.id);
+    } catch (e) {}
+  }
+  // Salas múltiples que este dispositivo vio en juego y ya terminaron (aunque no se reabrieran): se piden y se registran.
+  function recordMultiFromList(list) {
+    var playing = playingIds();
+    (list || []).forEach(function (x) {
+      if (!x || x.estado !== 'completado' || playing.indexOf(playKey('multi', x.id)) < 0) return;
+      call('GET', '/multi-duels/' + safeId(x.id)).then(function (d) { recordMulti(d); }).catch(function () {});
+    });
   }
   // Partidas que este dispositivo ha visto «en juego» (lo guarda index.html: duels.js no toca el almacenamiento).
   // Clave: el id del duelo, o «reto:<id>» para los retos.
@@ -1188,7 +1208,7 @@
     S: S, safeId: safeId, who: who, isOnline: isOnline, left: left, clock: clock, features: features, session: session,
     avatar: avatar, questionBlock: questionBlock, classicWin: classicWin, gameHeader: gameHeader, topbarShown: topbarShown,
     emptyState: emptyState, open: function (a, b) { open(a, b); }, refresh: function () { return refreshSummary(); },
-    resultSoundOnce: resultSoundOnce, xpFor: xpFor, syncXpOnce: syncXpOnce, xpChipHtml: xpChipHtml, act: act,
+    resultSoundOnce: resultSoundOnce, xpFor: xpFor, syncXpOnce: syncXpOnce, xpChipHtml: xpChipHtml, medalsBlock: medalsBlock, act: act,
     modeLine: function (d) { return '<p class="seq-d-mode-line">' + modeIco(retoMode(d)) + '<b>' + esc(retoModeName(d)) + '</b></p>'; }, retoModeName: retoModeName,
     render: function () { render(); }, pick1v1: function (k, m) { if (m === undefined && k !== 'reto' && k !== 'duel') { m = k; k = 'duel'; } pick1v1(k || 'duel', m); }, pickModeMulti: pickModeMulti, backToList: backToList,
     apply: function (d) { S.gotSeq = ++S.reqSeq; S.offset = num(d.server_now) - Date.now(); S.data = d; render(); schedule(); }

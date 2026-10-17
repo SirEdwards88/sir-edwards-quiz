@@ -97,7 +97,7 @@ function getDefaultStore() {
     // Prompt 4: revengeWon (logro «Revancha»), bestWinsVsRival (logro «¿Otra
     // vez tú?») y rivals ({[idRival]: {wins, losses}}, solo Duelo online, con
     // el ID estable del rival) viven dentro de duelStats, igual que el resto.
-    duelStats: { played: 0, wins: 0, losses: 0, draws: 0, currentWinStreak: 0, bestWinStreak: 0, wonByOnePoint: false, wonByTenPlus: false, revengeWon: false, comebackWon: false, perfectWon: false, stakesLastMadness: false, stakesAllThree: false, bestWinsVsRival: 0, rivals: {} },
+    duelStats: { played: 0, wins: 0, losses: 0, draws: 0, currentWinStreak: 0, bestWinStreak: 0, wonByOnePoint: false, wonByTenPlus: false, revengeWon: false, comebackWon: false, perfectWon: false, stakesLastMadness: false, stakesAllThree: false, multiWins: 0, multiMesaCompleta: false, multiCorriente: false, multiNiebla: false, multiUltimo: false, bestWinsVsRival: 0, rivals: {} },
     duelHistory: [],
     // 2.2 Encargos semanales: progreso de la semana en curso y claves de recompensa ya cobradas (ver src/state/encargos.js).
     encargos: null,
@@ -259,6 +259,11 @@ function sanitizeStore(s) {
   s.duelStats.perfectWon = asBoolean(s.duelStats.perfectWon);
   s.duelStats.stakesLastMadness = asBoolean(s.duelStats.stakesLastMadness);
   s.duelStats.stakesAllThree = asBoolean(s.duelStats.stakesAllThree);
+  s.duelStats.multiWins = asFiniteNonNegNumber(s.duelStats.multiWins);
+  s.duelStats.multiMesaCompleta = asBoolean(s.duelStats.multiMesaCompleta);
+  s.duelStats.multiCorriente = asBoolean(s.duelStats.multiCorriente);
+  s.duelStats.multiNiebla = asBoolean(s.duelStats.multiNiebla);
+  s.duelStats.multiUltimo = asBoolean(s.duelStats.multiUltimo);
   s.duelStats.bestWinsVsRival = asFiniteNonNegNumber(s.duelStats.bestWinsVsRival);
   const rawRivals = asPlainObject(s.duelStats.rivals);
   s.duelStats.rivals = {};

@@ -412,17 +412,50 @@
   // Detalle de Duelos (solo datos del SERVIDOR, que no están ya en «Historial de duelos»: las partidas, victorias,
   // derrotas, empates y la mejor racha de arriba son las del jugador y no se repiten aquí).
   // Cabecera: insignia de rango + ELO + rango + estado; debajo, tres datos: pico, posición global y duelos con ELO.
+  function multiStatsHtml(s, out) {
+    var m = s.multi || {};
+    if (num(m.jugadas) > 0) {
+      var mj = num(m.jugadas), mg = num(m.ganadas), cl = m.clasico || {}, ap = m.apuestas || {};
+      out += '<div class="seq-v21-grid">' + statCell('Partidas', mj) + statCell('Victorias', mg) +
+        statCell('% Victorias', String(Math.round((mg / mj) * 1000) / 10).replace('.', ',') + ' %') + '</div>' +
+        '<div class="history-list"><div class="history-item seq-v21-h2h"><span>Clásico</span><small>' + num(cl.jugadas) + ' partidas · ' + num(cl.ganadas) + (num(cl.ganadas) === 1 ? ' victoria' : ' victorias') + '</small></div>' +
+        '<div class="history-item seq-v21-h2h"><span>Apuestas</span><small>' + num(ap.jugadas) + ' partidas · ' + num(ap.ganadas) + (num(ap.ganadas) === 1 ? ' victoria' : ' victorias') + '</small></div>' +
+        (num(m.abandonos) ? '<div class="history-item seq-v21-h2h"><span>Abandonos</span><small>' + num(m.abandonos) + '</small></div>' : '') + '</div>';
+      var mh = m.historial || [];
+      if (mh.length) out += '<h4 class="seq-v21-h">Últimos duelos</h4><div class="history-list">' + mh.map(function (x) {
+        var res = x.resultado === 'win' ? 'Victoria' : x.resultado === 'abandono' ? 'Abandono' : 'Derrota';
+        var date = ''; try { date = new Date(num(x.fecha)).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }); } catch (er) {}
+        var pos = num(x.posicion) ? num(x.posicion) + '.º de ' + num(x.jugadores) + ' · ' : '';
+        return '<div class="history-item seq-v21-hrow ' + (x.resultado === 'win' ? 'w' : 'l') + '">' + modeIcon(x.modo) +
+          '<span class="seq-v21-hrow-body"><span class="seq-v21-hrow-top">' + res + ' · ' + num(x.mi_puntuacion) + ' pts</span>' +
+          '<small>' + (x.modo === 'stakes' ? 'Apuestas' : 'Clásico') + ' · ' + pos + esc(date) + '</small></span></div>';
+      }).join('') + '</div>';
+    } else out += '<p class="stats-section-sub">Todavía no has jugado ningún duelo múltiple.</p>';
+    return out;
+  }
+  function statsTabs(s) {
+    var m = s.multi;
+    if (!(hasMulti() || (m && num(m.jugadas) > 0))) return '';
+    return '<div class="seq-v21-scope seq-v21-calcsub" role="tablist" aria-label="Tipo de duelo">' + ['pvp', 'multi'].map(function (k) {
+      var sel = (S21.statsTab || 'pvp') === k;
+      return '<button type="button" role="tab" aria-selected="' + sel + '" class="seq-v21-scope-btn' + (sel ? ' sel' : '') + '" onclick="SEQDuels21.setStatsTab(\'' + k + '\')">' + DUEL_LABELS[k] + '</button>';
+    }).join('') + '</div>';
+  }
+  function setStatsTab(k) { S21.statsTab = k === 'multi' ? 'multi' : 'pvp'; renderStats(); }
   function fullStatsHtml(s) {
     var e = s.elo || {}, c = s.competitivo || {}, out = '<div class="seq-v21-full" id="seq-v21-full">';
+    var tabsHtml = statsTabs(s);
+    out += tabsHtml;
+    if (tabsHtml && S21.statsTab === 'multi') return multiStatsHtml(s, out) + '</div>';
     var total = num(e.colocacion_total) || 5;
     var state = e.en_colocacion ? 'En colocación · ' + Math.min(total, num(e.partidas_colocacion)) + '/' + total : 'Clasificado';
     out += '<div class="seq-v21-elocard">' + rankIcon(e.rango, 'seq-v21-elocard-ico') + '<div class="seq-v21-elocard-txt">' +
       '<span class="seq-v21-elocard-elo"><b>' + fmt(e.actual) + '</b> ELO</span><span class="seq-v21-elocard-rank">' + esc(rankName(e.rango)) + '</span>' +
       '<span class="seq-v21-elocard-state">' + state + '</span></div></div>';
-    out += '<div class="seq-v21-grid">' + statCell('Pico de ELO', fmt(e.peak)) + statCell('Posición global', e.posicion_global ? '#' + num(e.posicion_global) : '—') +
+    out += '<div class="seq-v21-grid">' + statCell('Récord ELO', fmt(e.peak)) + statCell('Posición global', e.posicion_global ? '#' + num(e.posicion_global) : '—') +
       statCell('Duelos con ELO', num(c.partidas)) + '</div>';
     var hist = s.historial || [];
-    out += '<h4 class="seq-v21-h">Últimos duelos</h4>' + (hist.length ? '<div class="history-list">' + hist.map(function (x) {
+    out += '<h4 class="seq-v21-h">Últimos duelos 1 vs 1</h4>' + (hist.length ? '<div class="history-list">' + hist.map(function (x) {
       var res = x.resultado === 'win' ? 'Victoria' : x.resultado === 'loss' ? 'Derrota' : 'Empate';
       var date = ''; try { date = new Date(num(x.fecha)).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }); } catch (er) {}
       var rv = x.rival || {};
@@ -430,7 +463,7 @@
         '<span class="seq-v21-hrow-body"><span class="seq-v21-hrow-top">' + esc(rv.display_name || 'Jugador') + ' · ' + res + ' ' + num(x.mi_puntuacion) + '—' + num(x.puntuacion_rival) + '</span>' +
         '<small>' + (modeKey(x.modo) === 'stakes' ? 'Apuestas' : 'Clásico') + ' · ' + fmt(x.elo_antes) + ' → ' + fmt(x.elo_despues) + ' · ' + esc(date) + '</small></span>' +
         '<b class="seq-v21-hrow-elo">' + signed(x.elo_cambio) + '</b></div>';
-    }).join('') + '</div>' : '<p class="stats-section-sub">Todavía no has jugado ningún duelo puntuado.</p>');
+    }).join('') + '</div>' : '<p class="stats-section-sub">Todavía no has jugado ningún duelo 1 vs 1.</p>');
     var h2h = s.head_to_head || [];
     if (h2h.length) {
       out += '<h4 class="seq-v21-h">Cara a cara</h4><div class="history-list">' + h2h.map(function (x) {
@@ -468,7 +501,7 @@
     modeButtons: modeButtons, modeBadge: modeBadge, scoreboard: scoreboard, modeIcon: modeIcon, rankIcon: rankIcon, eloBlock: eloBlock,
     play: play, tick: tick, stake: stake, answer: answer,
     renderRankings: renderRankings, rkIcon: rkIcon, loadRankings: loadRankings, setScope: setScope, setBoard: setBoard,
-    renderStats: renderStats, loadStats: loadStats, toggleStats: toggleStats, onStatsShown: onStatsShown,
+    renderStats: renderStats, loadStats: loadStats, toggleStats: toggleStats, setStatsTab: setStatsTab, onStatsShown: onStatsShown,
     invalidate: invalidate,
     _pure: { signed: signed, fmt: fmt, stakeKey: stakeKey, modeKey: modeKey, scoreboard: scoreboard, eloBlock: eloBlock, fullStatsHtml: fullStatsHtml }
   };

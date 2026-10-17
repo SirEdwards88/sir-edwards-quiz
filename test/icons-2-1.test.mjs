@@ -13,9 +13,9 @@ function medalIds() {
   vm.runInContext(read('src/data/medals.js').replace(/^const /gm, 'var ') + ';this.ids = ALL_MEDALS.map(m => m.id);', c);
   return Array.from(c.ids);
 }
-test('los 60 logros activos tienen su insignia (webp) y está en el service worker', () => {
+test('los 65 logros activos tienen su insignia (webp) y está en el service worker', () => {
   const ids = medalIds();
-  assert.equal(ids.length, 60);
+  assert.equal(ids.length, 65);
   for (const id of ids) {
     assert.ok(exists('assets/logros/' + id + '.webp'), 'falta la insignia de ' + id);
     assert.ok(sw.includes("'./assets/logros/" + id + ".webp'"), id + ' no está en el service worker');
