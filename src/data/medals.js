@@ -77,7 +77,7 @@ const ALL_MEDALS = [
   { id: 'duel_primera_sangre', title: 'Primera Sangre', desc: 'Completa tu primer duelo.', check: s => (s.duelStats && s.duelStats.played || 0) >= 1 },
   { id: 'duel_victoria_inaugural', title: 'Victoria Inaugural', desc: 'Gana tu primer duelo.', check: s => (s.duelStats && s.duelStats.wins || 0) >= 1 },
   { id: 'duel_por_los_pelos', title: 'Por los Pelos', desc: 'Gana un duelo por exactamente 1 punto.', check: s => !!(s.duelStats && s.duelStats.wonByOnePoint) },
-  { id: 'duel_contra_las_cuerdas', title: 'Contra las Cuerdas', desc: 'Gana un duelo después de haber ido al menos 3 puntos por detrás en algún momento.', check: s => !!(s.duelStats && s.duelStats.comebackWon) },
+  { id: 'duel_contra_las_cuerdas', title: 'Contra las Cuerdas', desc: 'Gana un duelo después de haber ido al menos 3 puntos por detrás en algún momento (6 en un Duelo por Apuestas).', check: s => !!(s.duelStats && s.duelStats.comebackWon) },
   { id: 'duel_rey_del_empate', title: 'El Rey del Empate', desc: 'Consigue 3 empates en duelos.', check: s => (s.duelStats && s.duelStats.draws || 0) >= 3 },
   // Ningún icono de logro se repite (test/achievements-view.test.mjs lo comprueba).
   { id: 'duel_cinco_victorias', title: 'Cinco Victorias', desc: 'Gana 5 duelos.', check: s => (s.duelStats && s.duelStats.wins || 0) >= 5 },
@@ -88,7 +88,7 @@ const ALL_MEDALS = [
   { id: 'duel_tres_al_hilo', title: 'Caballero Invicto', desc: 'Gana 3 duelos consecutivos.', check: s => (s.duelStats && s.duelStats.bestWinStreak || 0) >= 3 },
   // Los cuatro siguientes los decide el SERVIDOR (resultado.hitos de cada duelo online): el cliente solo los registra.
   { id: 'duel_sin_titubear', title: 'Sin Titubear', desc: 'Gana un duelo acertando todas las preguntas.', check: s => !!(s.duelStats && s.duelStats.perfectWon) },
-  { id: 'duel_apuestas_ultima_locura', title: 'La Última Locura', desc: 'En un Duelo por Apuestas, elige Insensato en la ronda final, acierta y gana.', check: s => !!(s.duelStats && s.duelStats.stakesLastMadness) },
+  { id: 'duel_apuestas_ultima_locura', title: 'La Última Locura', desc: 'En un Duelo por Apuestas, elige Insensato en la ronda final (vale doble), acierta y gana.', check: s => !!(s.duelStats && s.duelStats.stakesLastMadness) },
   { id: 'duel_apuestas_calculada', title: 'Apuesta Calculada', desc: 'En un mismo Duelo por Apuestas, usa Cuerdo, Osado e Insensato.', check: s => !!(s.duelStats && s.duelStats.stakesAllThree) },
 
   // LUCIDEZ MENTAL: LOGROS SECRETOS

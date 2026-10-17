@@ -33,7 +33,8 @@
     pvp: { nombre: 'PvP', sub: 'Por ELO' },
     mental: { nombre: 'Cálculo Turbo', sub: 'Mejor puntuación' },
     fondo: { nombre: 'Cálculo de Fondo', sub: 'Más aciertos', unit: 'aciertos' },
-    timetrial: { nombre: 'Contrarreloj', sub: 'Mejor puntuación' }
+    timetrial: { nombre: 'Contrarreloj', sub: 'Mejor puntuación' },
+    multi: { nombre: 'Múltiple', sub: 'Victorias entre amigos', unit: 'victorias' }
   };
   var BOARD_ORDER = ['pvp', 'timetrial', 'mental', 'fondo'];
   var SCOPES = { friends: 'Amigos', global: 'Global' };
@@ -277,13 +278,13 @@
       if (window.SEQDuels._state().screen === 'rankings') window.SEQDuels.rerender();
     });
   }
-  function setScope(s) { if (SCOPES[s]) { S21.scope = s; loadRankings(); window.SEQDuels.rerender(); } }
-  function setBoard(b) { if (BOARDS[b]) { S21.board = b; if (isCalc(b)) S21.calcSub = b; loadRankings(); window.SEQDuels.rerender(); } }
+  function setScope(s) { if (SCOPES[s] && !(s === 'global' && S21.board === 'multi')) { S21.scope = s; loadRankings(); window.SEQDuels.rerender(); } }
+  function setBoard(b) { if (BOARDS[b]) { S21.board = b; if (isCalc(b)) S21.calcSub = b; if (isDuelBoard(b)) S21.duelSub = b; if (b === 'multi') S21.scope = 'friends'; loadRankings(); window.SEQDuels.rerender(); } }
   // Ámbito: selector de dos posiciones, solo texto (los iconos los llevan los rankings; aquí serían ruido).
   function scopeTabs() {
     return '<div class="seq-v21-scope" role="tablist" aria-label="Ámbito">' + ['friends', 'global'].map(function (k) {
-      var sel = k === S21.scope;
-      return '<button type="button" role="tab" aria-selected="' + sel + '" class="seq-v21-scope-btn' + (sel ? ' sel' : '') + '" onclick="SEQDuels21.setScope(\'' + k + '\')">' + SCOPES[k] + '</button>';
+      var sel = k === S21.scope, off = k === 'global' && S21.board === 'multi';
+      return '<button type="button" role="tab" aria-selected="' + sel + '"' + (off ? ' disabled aria-disabled="true"' : '') + ' class="seq-v21-scope-btn' + (sel ? ' sel' : '') + '" onclick="SEQDuels21.setScope(\'' + k + '\')">' + SCOPES[k] + '</button>';
     }).join('') + '</div>';
   }
   // Tipo de ranking: tres medallones (PvP / Contrarreloj / Cálculo). Dentro de Cálculo, dos pestañas: Turbo y Fondo
@@ -293,8 +294,8 @@
   function boardTabs() {
     var tabs = [['pvp', 'PvP', 'pvp'], ['timetrial', 'Contrarreloj', 'timetrial'], ['calc', 'Cálculo', 'fondo']];
     return '<div class="seq-v21-boards" role="tablist" aria-label="Ranking">' + tabs.map(function (t) {
-      var sel = t[0] === 'calc' ? isCalc(S21.board) : S21.board === t[0];
-      var target = t[0] === 'calc' ? (S21.calcSub || 'mental') : t[0];
+      var sel = t[0] === 'calc' ? isCalc(S21.board) : t[0] === 'pvp' ? isDuelBoard(S21.board) : S21.board === t[0];
+      var target = t[0] === 'calc' ? (S21.calcSub || 'mental') : t[0] === 'pvp' ? (hasMulti() ? (S21.duelSub || 'pvp') : 'pvp') : t[0];
       return '<button type="button" role="tab" aria-selected="' + sel + '" class="seq-v21-board-btn' + (sel ? ' sel' : '') + '" onclick="SEQDuels21.setBoard(\'' + target + '\')">' +
         rkIcon(t[2]) + '<span>' + esc(t[1]) + '</span></button>';
     }).join('') + '</div>';
@@ -307,14 +308,26 @@
       return '<button type="button" role="tab" aria-selected="' + sel + '" class="seq-v21-scope-btn' + (sel ? ' sel' : '') + '" onclick="SEQDuels21.setBoard(\'' + k + '\')">' + esc(BOARDS[k].nombre) + '</button>';
     }).join('') + '</div>';
   }
+  // PvP lleva dos subpestañas (mismo selector de texto que Cálculo): «1 vs 1» (ELO) y «Múltiple» (victorias, solo amigos).
+  var DUEL_BOARDS = ['pvp', 'multi'], DUEL_LABELS = { pvp: '1 vs 1', multi: 'Múltiple' };
+  function isDuelBoard(b) { return DUEL_BOARDS.indexOf(b) >= 0; }
+  function hasMulti() { try { var f = window.SEQOnline && window.SEQOnline.session && window.SEQOnline.session(); return !!(f && f.features && f.features.multi_duel); } catch (e) { return false; } }
+  function duelTabs() {
+    if (!isDuelBoard(S21.board) || !hasMulti()) return '';
+    return '<div class="seq-v21-scope seq-v21-calcsub" role="tablist" aria-label="Tipo de duelo">' + DUEL_BOARDS.map(function (k) {
+      var sel = k === S21.board;
+      return '<button type="button" role="tab" aria-selected="' + sel + '" class="seq-v21-scope-btn' + (sel ? ' sel' : '') + '" onclick="SEQDuels21.setBoard(\'' + k + '\')">' + DUEL_LABELS[k] + '</button>';
+    }).join('') + '</div>';
+  }
+  function isMulti(b) { return b === 'multi'; }
   function isPvp(b) { return b === 'pvp'; }
   // Posición «oficial» de una fila: en PvP, quien está en colocación todavía no tiene puesto.
   // 2.3: pulsar a un jugador abre su ficha. Solo con un ID válido (10 caracteres A-Z/0-9); si no, la fila no es pulsable.
   function tapOf(r) { return r && typeof r.id === 'string' && /^[0-9A-Z]{10}$/.test(r.id) ? ' role="button" tabindex="0" onclick="SEQProfile.open(\'' + r.id + '\')" onkeydown="if(event.key===\'Enter\')SEQProfile.open(\'' + r.id + '\')"' : ''; }
   function placeOf(r, b) { return isPvp(b) && r.en_colocacion ? null : (r.rank != null ? num(r.rank) : null); }
   function unitOf(b) { return (BOARDS[b] && BOARDS[b].unit) || 'pts'; }
-  function valueHtml(r, b) { return isPvp(b) ? fmt(r.elo) + '<small>ELO</small>' : fmt(r.score) + '<small>' + unitOf(b) + '</small>'; }
-  function subOf(r, b) { return isPvp(b) ? (r.en_colocacion ? 'En colocación' : esc(rankName(r.rango))) : ''; }
+  function valueHtml(r, b) { if (isMulti(b)) return fmt(r.victorias) + '<small>' + (num(r.victorias) === 1 ? 'victoria' : 'victorias') + '</small>'; return isPvp(b) ? fmt(r.elo) + '<small>ELO</small>' : fmt(r.score) + '<small>' + unitOf(b) + '</small>'; }
+  function subOf(r, b) { if (isMulti(b)) return num(r.partidas) + (num(r.partidas) === 1 ? ' partida' : ' partidas') + ' · ' + num(r.porcentaje) + '%'; return isPvp(b) ? (r.en_colocacion ? 'En colocación' : esc(rankName(r.rango))) : ''; }
   function avatarOf(r) { return window.SEQAvatars ? window.SEQAvatars.avatarHTML(r.avatar) : ''; }
   function medalImg(n, cls) {
     return PODIUM_MEDAL[n] ? '<img class="' + cls + '" src="assets/ui/' + PODIUM_MEDAL[n] + '.webp" alt="" draggable="false" onerror="this.remove()">' : '';
@@ -349,6 +362,10 @@
   function meCard(d, b) {
     var me = d.me; if (!me) return '';
     var pvp = isPvp(b);
+    if (isMulti(b)) {
+      if (me.rank == null) return '';
+      return '<div class="seq-v21-me"><span class="seq-v21-me-pos"><small>#</small>' + num(me.rank) + '</span><div class="seq-v21-me-txt"><span class="seq-v21-me-lbl">Tu posición</span><b>' + fmt(me.victorias) + ' ' + (num(me.victorias) === 1 ? 'victoria' : 'victorias') + '</b><small>' + subOf(me, b) + '</small></div></div>';
+    }
     if (!pvp && me.score == null) return '';
     var place = pvp && me.en_colocacion ? null : (me.rank ? num(me.rank) : null);
     var detail = pvp
@@ -362,7 +379,7 @@
   function renderRankings() {
     var h = H();
     var d = S21.rankings[rankKey()], b = S21.board;
-    var out = h.header('Rankings', 'El Salón de la Fama', h.back) + '<div class="seq-v21-rkscreen">' + scopeTabs() + boardTabs() + calcTabs();
+    var out = h.header('Rankings', 'El Salón de la Fama', h.back) + '<div class="seq-v21-rkscreen">' + scopeTabs() + boardTabs() + duelTabs() + calcTabs();
     if (S21.rankErr) return out + rkNote(S21.rankErr) + '</div>';
     if (!d) return out + '<p class="seq-v21-rk-loading">Cargando…</p></div>';
     out += '<p class="seq-v21-rk-sub"><span>' + esc(BOARDS[b].sub) + '</span></p>';
@@ -370,7 +387,7 @@
     // «Tu posición» solo aparece si no se te ve ya en el ranking (podio o lista, donde sales marcado): así no se repite el dato.
     var meListed = rows.some(function (r) { return r && r.is_me; });
     if (!meListed) out += meCard(d, b);
-    if (!rows.length) return out + rkNote(isPvp(b) ? 'Aún no hay duelos puntuados. Juega uno y aparecerás aquí.' : 'Todavía nadie tiene puntuación en este ranking.') + '</div>';
+    if (!rows.length) return out + rkNote(isMulti(b) ? 'Aún no hay duelos múltiples terminados entre tus amigos. Reúne a tres y empiecen.' : isPvp(b) ? 'Aún no hay duelos puntuados. Juega uno y aparecerás aquí.' : 'Todavía nadie tiene puntuación en este ranking.') + '</div>';
     // Podio: puestos 1, 2 y 3 tal como los da el servidor; el resto (y quien está en colocación) va en la lista.
     var top = {}, rest = [];
     rows.forEach(function (r) { var p = placeOf(r, b); if (p && p <= 3 && !top[p]) top[p] = r; else rest.push(r); });

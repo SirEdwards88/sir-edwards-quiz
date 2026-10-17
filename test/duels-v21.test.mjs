@@ -147,8 +147,8 @@ test('apuesta y respuesta: solo se envían claves/opciones (nunca resultados) y 
 
 test('Rankings: dos ámbitos, cuatro tableros exactos, sin ranking universal ni emojis como iconografía', () => {
   const { M, win } = load();
-  assert.deepEqual(Object.keys(M.BOARDS), ['pvp', 'mental', 'fondo', 'timetrial']);
-  assert.deepEqual(Object.values(M.BOARDS).map((b) => b.nombre), ['PvP', 'Cálculo Turbo', 'Cálculo de Fondo', 'Contrarreloj']);
+  assert.deepEqual(Object.keys(M.BOARDS), ['pvp', 'mental', 'fondo', 'timetrial', 'multi']);
+  assert.deepEqual(Object.values(M.BOARDS).map((b) => b.nombre), ['PvP', 'Cálculo Turbo', 'Cálculo de Fondo', 'Contrarreloj', 'Múltiple']);
   assert.equal(/universal|todos los rankings/i.test(SRC), false);
   win.SEQDuels._h.call = () => new Promise(() => {});
   const html = M.renderRankings();
@@ -162,6 +162,26 @@ test('Rankings: dos ámbitos, cuatro tableros exactos, sin ranking universal ni 
   assert.equal(/\p{Extended_Pictographic}/u.test(sinAtributos), false, 'ningún emoji como iconografía visible');
   for (const id of ['pvp', 'fondo', 'timetrial']) assert.match(html, new RegExp('assets/duelos/rankings/' + id + '\\.webp'));
   assert.equal(/rankings\/(friends|global)\.webp/.test(html), false, 'el ámbito es un selector de texto, sin iconos');
+});
+
+test('Rankings: PvP lleva subpestañas 1 vs 1 / Múltiple solo si el servidor tiene el múltiple; Múltiple es solo de amigos', () => {
+  const sin = load();
+  sin.win.SEQDuels._h.call = () => new Promise(() => {});
+  assert.equal(/Múltiple/.test(sin.M.renderRankings().replace(/<[^>]*>/g, '')), false, 'sin el flag no se ve la subpestaña');
+  const { M, win } = load({ session: { features: { classic_duel: true, multi_duel: true } } });
+  const llamadas = [];
+  win.SEQDuels._h.call = (m, u) => { llamadas.push(u); return new Promise(() => {}); };
+  const pvp = M.renderRankings().replace(/<[^>]*>/g, '');
+  assert.match(pvp, /1 vs 1/); assert.match(pvp, /Múltiple/);
+  win.SEQDuels21.setScope('global');
+  win.SEQDuels21.setBoard('multi');
+  assert.ok(llamadas.some((u) => /scope=friends&board=multi/.test(u)), 'Múltiple se pide siempre con amigos');
+  const html = M.renderRankings();
+  assert.match(html, /disabled[^>]*>Global/, 'Global desactivado en Múltiple');
+  win.SEQDuels21.setScope('global');
+  assert.equal(llamadas.some((u) => /scope=global&board=multi/.test(u)), false);
+  win.SEQDuels21.setBoard('pvp');
+  assert.match(M.renderRankings(), /aria-selected="true"[^>]*>1 vs 1/);
 });
 
 test('Rankings: el seleccionado se reconoce (aria-selected y clase); el ámbito es un selector de texto', () => {

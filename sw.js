@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 368;
+const CACHE_VERSION = 369;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -280,6 +280,11 @@ const APP_SHELL = [
   './assets/logros/duel_revancha.webp',
   './assets/logros/duel_rey_del_empate.webp',
   './assets/logros/duel_victoria_inaugural.webp',
+  './assets/logros/multi_mesa_completa.webp',
+  './assets/logros/multi_contra_la_corriente.webp',
+  './assets/logros/multi_entre_la_niebla.webp',
+  './assets/logros/multi_alguien_tenia_que_perder.webp',
+  './assets/logros/multi_costumbre_preocupante.webp',
   './assets/logros/first_game.webp',
   './assets/logros/games_10.webp',
   './assets/logros/games_20.webp',
@@ -518,8 +523,8 @@ const ASSET_REVS = {
   './assets/duelos/apuestas/insensato.webp': '628352d0',
   './assets/duelos/apuestas/osado.webp': 'a6d8261b',
   './assets/duelos/estadisticas.webp': '947e443b',
-  './assets/duelos/formato/multiple.webp': 'a1882ac3',
-  './assets/duelos/formato/uno-contra-uno.webp': '746d567d',
+  './assets/duelos/formato/multiple.webp': '3e06736e',
+  './assets/duelos/formato/uno-contra-uno.webp': '0765638a',
   './assets/duelos/modos/classic.webp': '683e5674',
   './assets/duelos/modos/stakes.webp': '2b319ce8',
   './assets/duelos/rangos/caballero_del_dato.webp': '099a63ba',
@@ -589,6 +594,11 @@ const ASSET_REVS = {
   './assets/logros/mental_calc_30.webp': 'c4971c24',
   './assets/logros/mental_calc_40.webp': '31dfcebd',
   './assets/logros/mente_fracturada.webp': 'b2be2d01',
+  './assets/logros/multi_alguien_tenia_que_perder.webp': 'ddc6a35e',
+  './assets/logros/multi_contra_la_corriente.webp': 'e81680ee',
+  './assets/logros/multi_costumbre_preocupante.webp': 'dd9003ab',
+  './assets/logros/multi_entre_la_niebla.webp': '0d4722cb',
+  './assets/logros/multi_mesa_completa.webp': '28e64b2b',
   './assets/logros/noctambulo.webp': '010d7158',
   './assets/logros/polimata.webp': '9cf89b5e',
   './assets/logros/sd_primer_riesgo.webp': '28591db4',
