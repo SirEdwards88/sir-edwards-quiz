@@ -114,7 +114,7 @@
       m.main = m.versus.me + ' — ' + m.versus.them;
       m.mainLabel = '';
       if (Array.isArray(o.ranking) && o.ranking.length >= 2) {
-        // Duelo / Reto múltiple: clasificación de 3 o 4 jugadores en lugar del cara a cara.
+        // Duelo / Reto todos contra todos: clasificación de 3 o 4 jugadores en lugar del cara a cara.
         m.versus = null; m.main = '';
         m.pill = m.variant === 'reto' ? 'RETO' + (o.modeLabel ? ' · ' + String(o.modeLabel).toUpperCase() : '') : 'DUELO ' + String(o.modeLabel || '').toUpperCase();
         m.unit = o.unit ? String(o.unit).toUpperCase().slice(0, 12) : '';
@@ -437,7 +437,7 @@
     }
   }
 
-  // Clasificación de un Duelo / Reto múltiple: una fila por jugador (puesto, avatar, nombre y puntos).
+  // Clasificación de un Duelo / Reto todos contra todos: una fila por jugador (puesto, avatar, nombre y puntos).
   function drawRanking(ctx, theme, model, avatars, y) {
     var list = model.ranking, rh = 88, gap = 12, x0 = 110, w = W - 220;
     if (model.unit) { ctx.fillStyle = theme.accent; ctx.textAlign = 'right'; ctx.font = '700 22px ' + SANS; var uw = model.unit.split('').reduce(function (a, c) { return a + ctx.measureText(c).width + 4; }, -4); spaced(ctx, model.unit, x0 + w - 12 - uw / 2, y - 12, 4); }
@@ -550,7 +550,7 @@
     d = d || {};
     var head, remark;
     if (d.online && d.online.ranking) {
-      head = 'Sir Edwards Quiz · ' + (d.online.kind === 'reto' ? 'Reto múltiple' : 'Duelo múltiple') + ': ' + (d.online.place ? d.online.place + 'º de ' + d.online.ranking.length : 'clasificación') + '.';
+      head = 'Sir Edwards Quiz · ' + (d.online.kind === 'reto' ? 'Reto todos contra todos' : 'Duelo todos contra todos') + ': ' + (d.online.place ? d.online.place + 'º de ' + d.online.ranking.length : 'clasificación') + '.';
       remark = d.online.result === 'win' ? 'Victoria. Sir Edwards asiente con discreción.'
         : d.online.result === 'loss' ? 'Derrota. Sir Edwards prefiere mirar hacia otro lado.'
         : 'Empate en cabeza. Nadie se salva.';

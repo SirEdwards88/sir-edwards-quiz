@@ -58,10 +58,10 @@
           'Si aciertas, sumas esa cifra; si fallas, la restas, sin bajar de 0. Si no eliges a tiempo, se aplica Cuerdo. ' +
           'Las dos últimas rondas valen el doble y hay niebla: dejas de ver la puntuación de los rivales.')) +
       sec('assets/modes/retos.webp', 'Retos', 'Retas a un amigo y cada uno juega su parte por separado, sin coincidir, dentro del plazo de 3 días.') +
-      sec('assets/duelos/formato/uno-contra-uno.webp', '1 vs 1 o Múltiple', 'Contra un amigo, o contra dos o tres a la vez. Gana quien más sume.') +
+      sec('assets/duelos/formato/uno-contra-uno.webp', '1 vs 1 o Todos contra todos', 'Contra un amigo, o contra dos o tres a la vez. Gana quien más sume.') +
       '<div class="dh-notes">' +
         '<p><b>Lo que cuenta.</b> El 1 vs 1 y los Retos suman para tus estadísticas y logros, y el Duelo online 1 vs 1 también para el ELO. ' +
-          'El Múltiple tiene sus propias estadísticas y logros, pero no mueve el ELO. Ganar por abandono no cuenta; abandonar sí es derrota.</p>' +
+          'Todos contra todos tiene sus propias estadísticas y logros, pero no mueve el ELO. Ganar por abandono no cuenta; abandonar sí es derrota.</p>' +
         '<p><b>No te vayas a mitad.</b> A los 60 s sin conexión pierdes por abandono.</p>' +
       '</div></div>';
   }

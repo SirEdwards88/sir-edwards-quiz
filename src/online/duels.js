@@ -262,7 +262,7 @@
     if (!active()) return;
     stopTimers();
     try { if (typeof closeDuelPanels === 'function') closeDuelPanels(); } catch (e) {}
-    // 2.5: «mreto» = Reto múltiple; se comporta como un Reto (mismo reloj, sondeo y partida) con otra ruta y otras pantallas.
+    // 2.5: «mreto» = Reto todos contra todos; se comporta como un Reto (mismo reloj, sondeo y partida) con otra ruta y otras pantallas.
     S.isMulti = screen === 'mreto'; if (S.isMulti) screen = 'reto';
     S.screen = screen; S.id = id ? safeId(id) : null; S.data = null; S.msg = ''; S.lastIdx = -1; S.shown = null; S.streak = 0;
     var home = $('duel-home'); if (home) home.style.display = 'none';
@@ -321,13 +321,13 @@
     if (d && S.screen === 'multi') { recordMulti(d); return; }
     if (!d || (S.screen !== 'duel' && S.screen !== 'reto')) return;
     var kind = S.screen;
-    // 2.5: el Reto múltiple no cuenta para estadísticas ni logros de Duelo (solo XP, que da el servidor); sí avisa de la subida de nivel.
+    // 2.5: el Reto todos contra todos no cuenta para estadísticas ni logros de Duelo (solo XP, que da el servidor); sí avisa de la subida de nivel.
     if (S.isMulti) { if (d.estado === 'aceptado' && d.yo && d.yo.empezado) markLevel('mreto', S.id); return; }
     if (kind === 'duel' && d.estado === 'en_curso') { markPlaying(kind, S.id); markLevel(kind, S.id); }
     if (kind === 'reto' && d.estado === 'aceptado' && d.yo && d.yo.empezado) { markPlaying(kind, S.id); markLevel(kind, S.id); }
     if (d.estado === 'completado') { recordDuel(d, S.id, kind); forgetPlaying(kind, S.id); }
   }
-  // 2.4 Duelo múltiple: sus logros (medallas) salen de resultado.hitos, que calcula el servidor. Una sola vez por sala
+  // 2.4 Duelo todos contra todos: sus logros (medallas) salen de resultado.hitos, que calcula el servidor. Una sola vez por sala
   // (src/state/multi-result.js lo controla). No cuenta para el ELO ni las estadísticas del 1 vs 1.
   function recordMulti(d) {
     try {
@@ -386,7 +386,7 @@
         }
       else if (d.estado === 'pendiente') wait = POLL_WAIT_MS;
     } else if (S.screen === 'multi') {
-      // 2.4 Duelo múltiple: mismo ritmo que el clásico; ya respondida la pregunta en curso, cada segundo para pasar al instante.
+      // 2.4 Duelo todos contra todos: mismo ritmo que el clásico; ya respondida la pregunta en curso, cada segundo para pasar al instante.
       var rm = d.ronda, espM = d.modo === 'stakes' ? !!(rm && ((rm.fase === 'apuesta' && rm.mi_apuesta) || (rm.fase === 'pregunta' && rm.yo_respondi))) : !!S.shownAnswered;
       if (d.estado === 'en_curso' || d.estado === 'aceptado') wait = d.estado === 'en_curso' && espM ? 1000 : POLL_ACTIVE_MS;
       else if (d.estado === 'pendiente') wait = POLL_WAIT_MS;
@@ -523,7 +523,7 @@
       if (S.screen === 'retomode') render();
     }).catch(function (e) { say(errText(e), true); });
   }
-  // 2.5: Reto múltiple: tras elegir a los amigos (src/online/multi-duels.js), se elige el modo entre los que TODOS tienen desbloqueados.
+  // 2.5: Reto todos contra todos: tras elegir a los amigos (src/online/multi-duels.js), se elige el modo entre los que TODOS tienen desbloqueados.
   function pickModeMulti(ids) {
     ids = (ids || []).map(safeId).filter(Boolean); if (ids.length < 2) return;
     stopTimers();
@@ -547,7 +547,7 @@
   }
   // 2.1: en Duelo online se elige antes el modo (clásico o apuestas); el servidor lo valida.
   function pick(kind, modo) {
-    // 2.4: tras elegir clásico o apuestas se elige «1 vs 1» o «Múltiple» (si el servidor aún no lo tiene, «Múltiple» sale apagado).
+    // 2.4: tras elegir clásico o apuestas se elige «1 vs 1» o «Todos contra todos» (si el servidor aún no lo tiene, «Todos contra todos» sale apagado).
     if (kind === 'duel' && window.SEQMulti) { S.pickKind = 'duel'; S.pickModo = modo === 'stakes' ? 'stakes' : 'classic'; S.screen = 'pickkind'; render(); refreshSummary(); return; }
     if (kind === 'reto' && window.SEQMulti) { S.pickKind = 'reto'; S.pickModo = 'classic'; S.screen = 'pickkind'; render(); refreshSummary(); return; }
     pick1v1(kind, modo);
@@ -679,7 +679,7 @@
   var ONLINE_ACH_IMG = {
     online_perfecto: 'assets/logros/lucidez_absoluta.webp',
     reto_primero: 'assets/modes/suelto/retos.webp', duelo_empate: 'assets/modes/amigos.webp',
-    // Duelo múltiple (2.4): un archivo propio por logro; se sustituyen soltando uno con el mismo nombre.
+    // Duelo todos contra todos (2.4): un archivo propio por logro; se sustituyen soltando uno con el mismo nombre.
     multi_mesa_completa: 'assets/logros/multi_mesa_completa.webp', multi_contra_la_corriente: 'assets/logros/multi_contra_la_corriente.webp',
     multi_entre_la_niebla: 'assets/logros/multi_entre_la_niebla.webp', multi_alguien_tenia_que_perder: 'assets/logros/multi_alguien_tenia_que_perder.webp',
     multi_costumbre_preocupante: 'assets/logros/multi_costumbre_preocupante.webp'
@@ -716,7 +716,7 @@
     if (kind === 'duel' && window.SEQDuels21) h += SEQDuels21.modeButtons();
     else h += '<button class="btn btn-primary" style="width:100%;margin:10px 0;" onclick="SEQDuels.pick(\'' + kind + '\')">' + (kind === 'duel' ? ico('duelo') + 'Retar a un amigo ahora' : ico('retos') + 'Crear reto') + '</button>';
     if (!list) return h + '<p class="stats-section-sub">Cargando…</p>';
-    // 2.4: las salas múltiples comparten lista con los duelos 1 vs 1 (cada una con su fila), por fecha.
+    // 2.4: las salas todos contra todos comparten lista con los duelos 1 vs 1 (cada una con su fila), por fecha.
     if (kind === 'duel' && window.SEQMulti && S.lists.multis && S.lists.multis.length) list = list.concat(S.lists.multis).sort(function (a, b) { return num(b.creado_at) - num(a.creado_at); });
     if (kind === 'reto' && window.SEQMulti && S.lists.mretos && S.lists.mretos.length) list = list.concat(S.lists.mretos).sort(function (a, b) { return num(b.creado_at) - num(a.creado_at); });
     var act_ = list.filter(function (x) { return ['pendiente', 'aceptado', 'en_curso'].indexOf(x.estado) >= 0; });
@@ -811,7 +811,7 @@
   function renderRetoMode() {
     var rid = safeId(S.pickRival), fl = S.lists.friends, name = 'tu amigo', multi = !!(S.pickRivals && S.pickRivals.length);
     (fl && fl.friends || []).forEach(function (f) { var p = player(f.player); if (p.id === rid) name = p.name; });
-    var h = header('Elige el modo', multi ? 'Reto múltiple · ' + (S.pickRivals.length + 1) + ' jugadores' : 'Reto a ' + name, backToList);
+    var h = header('Elige el modo', multi ? 'Reto todos contra todos · ' + (S.pickRivals.length + 1) + ' jugadores' : 'Reto a ' + name, backToList);
     h += multi ? '<p class="stats-section-sub">Todos jugaréis exactamente la misma partida. Solo aparecen los modos que todos tenéis desbloqueados.</p>' : '<p class="stats-section-sub">Los dos jugaréis exactamente la misma partida. Solo aparecen los modos que los dos tenéis desbloqueados.</p>';
     var list = S.lists.retoModes;
     if (!list) return h + '<p class="stats-section-sub">Cargando…</p>';
@@ -1068,7 +1068,7 @@
   }
   function renderReto() {
     var d = S.data;
-    var h = gameHeader(ico('retos') + (S.isMulti ? 'Reto múltiple' : 'Reto'), "SEQDuels.open('retos')");
+    var h = gameHeader(ico('retos') + (S.isMulti ? 'Reto todos contra todos' : 'Reto'), "SEQDuels.open('retos')");
     if (!d) return h + '<p class="stats-section-sub">Cargando…</p>';
     if (S.isMulti) {
       var mh = window.SEQMulti ? SEQMulti.renderMReto(d, HELPERS, h) : '';

@@ -151,7 +151,7 @@ test('acciones: solo nombres conocidos y ruta propia /multi-duels', () => {
 });
 test('no toca el 1 vs 1: el módulo no registra estadísticas ni logros y duels.js solo delega', () => {
   const code = SRC.replace(/^\s*\/\/.*$/gm, '');
-  assert.ok(!/registerOnlineDuelResult|recordDuel/.test(code), 'el múltiple no cuenta para estadísticas de Duelo 1 vs 1');
+  assert.ok(!/registerOnlineDuelResult|recordDuel/.test(code), 'el todos contra todos no cuenta para estadísticas de Duelo 1 vs 1');
   assert.ok(!/innerHTML\s*=/.test(code), 'el módulo devuelve HTML; nunca lo inserta él');
   const d = read('src/online/duels.js');
   assert.match(d, /kind === 'duel' && window\.SEQMulti/);
@@ -170,7 +170,7 @@ test('cableado: script en index.html, en el shell sin conexión y aviso de invit
   const p = C.pendingFrom([], [], m);
   assert.deepEqual(Array.from(p.map((x) => x.kind + ':' + x.id + ':' + x.name)), ['multi:MMMMMMMMMM:Ana']);
   assert.equal(C.dotCount([], [], m), 1);
-  assert.match(C.textFor(p).title, /Ana te invita a un duelo múltiple/);
+  assert.match(C.textFor(p).title, /Ana te invita a un duelo todos contra todos/);
   assert.equal(C.pendingFrom([], []).length, 0, 'sin tercer argumento sigue igual');
 });
 test('compartir: texto plano con la clasificación y sin HTML', () => {
@@ -180,13 +180,13 @@ test('compartir: texto plano con la clasificación y sin HTML', () => {
   assert.equal(M.shareText({}), '');
 });
 
-// ---- Reto múltiple (2.5) ----
+// ---- Reto todos contra todos (2.5) ----
 const mreto = (o = {}) => ({
   id: 'RRRRRRRRRR', tipo: 'reto_multi', estado: 'pendiente', soy: 'creador', modo: 'estandar', nivel: null, n_preguntas: 20, server_now: 5000, expira_at: 9000,
   jugadores: [J(0, 'Edu', { estado: 'aceptado', empezado: false, terminado: false }), J(1, 'Ana', { estado: 'invitado', es_creador: false, empezado: false, terminado: false }), J(2, 'Luis', { estado: 'invitado', es_creador: false, empezado: false, terminado: false })],
   yo: { invitacion: 'aceptado', empezado: false, terminado: false, aciertos: 0, actual: null }, resultado: null, ...o,
 });
-test('Reto: elegir «1 vs 1 / Múltiple» y los amigos (todos, sin exigir presencia); sigue al modo', () => {
+test('Reto: elegir «1 vs 1 / Todos contra todos» y los amigos (todos, sin exigir presencia); sigue al modo', () => {
   const { M, H, S, calls } = load();
   S.pickKind = 'reto';
   let h = M.render('pickkind', H);
@@ -218,7 +218,7 @@ test('Reto: final con clasificación (también quien no jugó), sin revancha, y 
   assert.ok(!/rematch/.test(h), 'sin revancha'); assert.match(h, /Volver a Retos/);
   assert.match(M.renderMReto(mreto({ estado: 'cancelado', motivo_fin: 'todos_rechazan' }), H, ''), /rechazaron/);
   assert.match(M.renderMReto(mreto({ estado: 'expirado' }), H, ''), /Caducado/);
-  assert.match(M.shareText(mreto({ resultado: { clasificacion: [c(0, 1, 15)] } })), /^Reto múltiple en SirEdwards Quiz/);
+  assert.match(M.shareText(mreto({ resultado: { clasificacion: [c(0, 1, 15)] } })), /^Reto todos contra todos en SirEdwards Quiz/);
 });
 test('Reto: filas de la lista y recuento de pendientes', () => {
   const { M, H } = load();
@@ -230,20 +230,20 @@ test('Reto: filas de la lista y recuento de pendientes', () => {
   assert.equal(M.pendingCountMReto([{ mi_estado: 'invitado', estado: 'pendiente' }, { mi_estado: 'aceptado', estado: 'aceptado', yo: { terminado: false } }, { mi_estado: 'aceptado', estado: 'aceptado', yo: { terminado: true } }, { mi_estado: 'rechazado', estado: 'aceptado' }, { mi_estado: 'invitado', estado: 'completado' }]), 2);
   assert.equal(M.pendingCountMReto(null), 0);
 });
-test('Reto: el Reto múltiple no registra resultados de Duelo y duels.js lo enlaza a su ruta', () => {
+test('Reto: el Reto todos contra todos no registra resultados de Duelo y duels.js lo enlaza a su ruta', () => {
   const d = read('src/online/duels.js');
   assert.match(d, /\/multi-challenges\//); assert.match(d, /S\.isMulti = screen === 'mreto'/);
   assert.match(d, /if \(S\.isMulti\) \{ if \(d\.estado === 'aceptado'/, 'recordResult sale antes de registrar estadísticas');
   assert.match(d, /kind === 'reto' && window\.SEQMulti/);
 });
 
-test('elegir formato: si el servidor aún no tiene el múltiple, «1 vs 1» sigue ahí y «Múltiple» sale apagado', () => {
+test('elegir formato: si el servidor aún no tiene el todos contra todos, «1 vs 1» sigue ahí y «Todos contra todos» sale apagado', () => {
   const { M, H, S } = load();
   H.features = () => ({});
   S.pickKind = 'duel'; S.pickModo = 'classic';
   const h = M.render('pickkind', H);
   assert.match(h, /1 vs 1/);
-  assert.match(h, /seq-d-off[^>]*>.*Múltiple/s);
+  assert.match(h, /seq-d-off[^>]*>.*Todos contra todos/s);
 });
 
 test('frases del múltiple: ninguna repetida ni copiada del 1 vs 1, y las del puesto solo salen donde corresponden', () => {

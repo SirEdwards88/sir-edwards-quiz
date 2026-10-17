@@ -163,7 +163,7 @@
     }).catch(function (e) { c.st.sending = false; delete ST.sent[k]; c.h.say(c.h.errText(e), true); window.SEQDuels.reload(); });
   }
 
-  // ---- 1 vs 1 por apuestas: misma pantalla que el múltiple, con dos jugadores ------------------------------
+  // ---- 1 vs 1 por apuestas: misma pantalla que el todos contra todos, con dos jugadores ------------------------------
   // El servidor del 1 vs 1 manda la partida en su forma de siempre (mi_apuesta / apuesta_rival…); aquí solo se REORDENA a la forma
   // del múltiple para pintarla con las mismas piezas. No se calcula nada: lo que no llegó (niebla) sigue sin pintarse.
   function fromDuel(d, h) {

@@ -123,10 +123,10 @@
     var mu = d.multi || {}, hasMu = num(mu.partidas) > 0, on = false;
     try { var ss = window.SEQOnline && window.SEQOnline.session && window.SEQOnline.session(); on = !!(ss && ss.features && ss.features.classic_duel); } catch (e) {}
     var showTabs = on || hasMu || !!v, tab = showTabs && (P.tab === 'multi' || (!v && hasMu)) ? 'multi' : 'pvp';
-    var tabs = showTabs ? '<div class="seq-v21-scope seq-v21-calcsub" role="tablist" aria-label="Tipo de duelo">' + [['pvp', '1 vs 1'], ['multi', 'Múltiple']].map(function (t) {
+    var tabs = showTabs ? '<div class="seq-v21-scope seq-v21-calcsub" role="tablist" aria-label="Tipo de duelo">' + [['pvp', '1 vs 1'], ['multi', 'Todos contra todos']].map(function (t) {
       return '<button type="button" role="tab" aria-selected="' + (tab === t[0]) + '" class="seq-v21-scope-btn' + (tab === t[0] ? ' sel' : '') + '" onclick="SEQProfile.setTab(\'' + t[0] + '\')">' + t[1] + '</button>';
     }).join('') + '</div>' : '';
-    var body = tab === 'multi' && !hasMu ? empty('Ningún duelo múltiple todavía.') : tab === 'multi'
+    var body = tab === 'multi' && !hasMu ? empty('Ningún duelo todos contra todos todavía.') : tab === 'multi'
       ? '<div class="stats-mini-grid">' + mini(num(mu.partidas), 'Partidas') + mini(num(mu.victorias), 'Victorias') + mini(Math.max(0, num(mu.partidas) - num(mu.victorias) - num(mu.abandonos)), 'Derrotas') + mini(num(mu.abandonos), 'Abandonos') + mini(pct(mu.porcentaje_victorias), '% Victorias') + '</div>'
       : v ? '<div class="stats-mini-grid">' + mini(dash(v.elo), 'ELO') + mini(dash(v.pico), 'Récord ELO') + mini(pct(v.porcentaje_victorias), '% Victorias') +
         mini(num(v.victorias), 'Victorias') + mini(num(v.derrotas), 'Derrotas') + mini(num(v.empates), 'Empates') + '</div>'

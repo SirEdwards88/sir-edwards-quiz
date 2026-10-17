@@ -29,13 +29,13 @@
     var out = [];
     (Array.isArray(duels) ? duels : []).forEach(function (d) { if (d && d.estado === 'pendiente' && d.soy === 'rival' && ID_RE.test(String(d.id))) out.push(item('duel', d)); });
     (Array.isArray(retos) ? retos : []).forEach(function (r) { if (r && r.estado === 'pendiente' && r.soy === 'rival' && ID_RE.test(String(r.id))) out.push(item('reto', r)); });
-    // 2.4: invitaciones a un duelo múltiple (el anfitrión es el primero de la lista que no soy yo).
+    // 2.4: invitaciones a un duelo todos contra todos (el anfitrión es el primero de la lista que no soy yo).
     (Array.isArray(multis) ? multis : []).forEach(function (m) {
       if (!m || m.estado !== 'pendiente' || m.mi_estado !== 'invitado' || !ID_RE.test(String(m.id))) return;
       var host = (Array.isArray(m.jugadores) ? m.jugadores : []).filter(function (j) { return j && !j.es_yo; })[0] || {};
       out.push({ kind: 'multi', id: String(m.id), name: String(host.display_name || 'Un amigo').slice(0, 24), avatar: host.avatar });
     });
-    // 2.5: invitaciones a un reto múltiple (mientras el reto siga abierto).
+    // 2.5: invitaciones a un reto todos contra todos (mientras el reto siga abierto).
     (Array.isArray(mretos) ? mretos : []).forEach(function (m) {
       if (!m || (m.estado !== 'pendiente' && m.estado !== 'aceptado') || m.mi_estado !== 'invitado' || !ID_RE.test(String(m.id))) return;
       var host = (Array.isArray(m.jugadores) ? m.jugadores : []).filter(function (j) { return j && !j.es_yo; })[0] || {};
@@ -72,8 +72,8 @@
   function textFor(list, rnd) {
     if (list.length === 1) {
       var i = list[0];
-      if (i.kind === 'mreto') return { title: i.name + ' te invita a un reto múltiple', sub: pickSub('mreto', rnd) };
-      if (i.kind === 'multi') return { title: i.name + ' te invita a un duelo múltiple', sub: pickSub('multi', rnd) };
+      if (i.kind === 'mreto') return { title: i.name + ' te invita a un reto todos contra todos', sub: pickSub('mreto', rnd) };
+      if (i.kind === 'multi') return { title: i.name + ' te invita a un duelo todos contra todos', sub: pickSub('multi', rnd) };
       return i.kind === 'duel'
         ? { title: i.name + ' te reta a un duelo', sub: pickSub('duel', rnd) }
         : { title: i.name + ' te ha retado', sub: pickSub('reto', rnd) };

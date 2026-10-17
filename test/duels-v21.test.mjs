@@ -47,7 +47,7 @@ test('nombres EXACTOS de apuestas y modos; nada de los nombres antiguos', () => 
   assert.equal(M.MODES.classic.nombre, 'Duelo clásico');
   assert.equal(M.MODES.stakes.nombre, 'Duelo por apuestas');
   assert.equal(Object.keys(M.MODES).length, 2, 'exactamente dos modos');
-  for (const old of ['Seguro', 'Riesgo', 'Todo']) assert.equal(SRC.includes("nombre: '" + old), false);
+  for (const old of ['Seguro', 'Riesgo', 'Todo']) assert.equal(SRC.includes("nombre: '" + old + "'"), false);
 });
 
 test('rangos: solo 5; iconos como assets independientes y sin emoji de respaldo', () => {
@@ -148,7 +148,7 @@ test('apuesta y respuesta: solo se envían claves/opciones (nunca resultados) y 
 test('Rankings: dos ámbitos, cuatro tableros exactos, sin ranking universal ni emojis como iconografía', () => {
   const { M, win } = load();
   assert.deepEqual(Object.keys(M.BOARDS), ['pvp', 'mental', 'fondo', 'timetrial', 'multi']);
-  assert.deepEqual(Object.values(M.BOARDS).map((b) => b.nombre), ['PvP', 'Cálculo Turbo', 'Cálculo de Fondo', 'Contrarreloj', 'Múltiple']);
+  assert.deepEqual(Object.values(M.BOARDS).map((b) => b.nombre), ['PvP', 'Cálculo Turbo', 'Cálculo de Fondo', 'Contrarreloj', 'Todos contra todos']);
   assert.equal(/universal|todos los rankings/i.test(SRC), false);
   win.SEQDuels._h.call = () => new Promise(() => {});
   const html = M.renderRankings();
@@ -164,20 +164,20 @@ test('Rankings: dos ámbitos, cuatro tableros exactos, sin ranking universal ni 
   assert.equal(/rankings\/(friends|global)\.webp/.test(html), false, 'el ámbito es un selector de texto, sin iconos');
 });
 
-test('Rankings: PvP lleva subpestañas 1 vs 1 / Múltiple solo si el servidor tiene el múltiple; Múltiple es solo de amigos', () => {
+test('Rankings: PvP lleva subpestañas 1 vs 1 / Todos contra todos solo si el servidor tiene el todos contra todos; Todos contra todos es solo de amigos', () => {
   const sin = load();
   sin.win.SEQDuels._h.call = () => new Promise(() => {});
-  assert.equal(/Múltiple/.test(sin.M.renderRankings().replace(/<[^>]*>/g, '')), false, 'sin el flag no se ve la subpestaña');
+  assert.equal(/Todos contra todos/.test(sin.M.renderRankings().replace(/<[^>]*>/g, '')), false, 'sin el flag no se ve la subpestaña');
   const { M, win } = load({ session: { features: { classic_duel: true, multi_duel: true } } });
   const llamadas = [];
   win.SEQDuels._h.call = (m, u) => { llamadas.push(u); return new Promise(() => {}); };
   const pvp = M.renderRankings().replace(/<[^>]*>/g, '');
-  assert.match(pvp, /1 vs 1/); assert.match(pvp, /Múltiple/);
+  assert.match(pvp, /1 vs 1/); assert.match(pvp, /Todos contra todos/);
   win.SEQDuels21.setScope('global');
   win.SEQDuels21.setBoard('multi');
-  assert.ok(llamadas.some((u) => /scope=friends&board=multi/.test(u)), 'Múltiple se pide siempre con amigos');
+  assert.ok(llamadas.some((u) => /scope=friends&board=multi/.test(u)), 'Todos contra todos se pide siempre con amigos');
   const html = M.renderRankings();
-  assert.match(html, /disabled[^>]*>Global/, 'Global desactivado en Múltiple');
+  assert.match(html, /disabled[^>]*>Global/, 'Global desactivado en Todos contra todos');
   win.SEQDuels21.setScope('global');
   assert.equal(llamadas.some((u) => /scope=global&board=multi/.test(u)), false);
   win.SEQDuels21.setBoard('pvp');
@@ -424,11 +424,11 @@ test('2.3: el duelo clásico usa el calendario dinámico del servidor (inicios) 
   assert.match(src, /d\.inicios/);
 });
 
-test('Estadísticas: pestaña «Múltiple» siempre visible; vacía dice que no hay partidas', () => {
+test('Estadísticas: pestaña «Todos contra todos» siempre visible; vacía dice que no hay partidas', () => {
   const { M } = load();
   const s = JSON.parse(JSON.stringify(STATS));
-  assert.match(M._pure.fullStatsHtml(s), /Múltiple/);
-  M.setStatsTab('multi'); assert.match(M._pure.fullStatsHtml(s), /Todavía no has jugado ningún duelo múltiple/); M.setStatsTab('pvp');
+  assert.match(M._pure.fullStatsHtml(s), /Todos contra todos/);
+  M.setStatsTab('multi'); assert.match(M._pure.fullStatsHtml(s), /Todavía no has jugado ningún duelo todos contra todos/); M.setStatsTab('pvp');
   s.multi = { jugadas: 4, ganadas: 1, abandonos: 1, clasico: { jugadas: 3, ganadas: 1 }, apuestas: { jugadas: 1, ganadas: 0 } };
   const h = M._pure.fullStatsHtml(s);
   s.multi.historial = [{ duelo_id: 'a', modo: 'stakes', resultado: 'win', posicion: 1, jugadores: 4, mi_puntuacion: 9, fecha: 1760000000000 }, { duelo_id: 'b', modo: 'classic', resultado: 'abandono', posicion: 4, jugadores: 3, mi_puntuacion: 2, fecha: 1760000000000 }];
@@ -436,6 +436,6 @@ test('Estadísticas: pestaña «Múltiple» siempre visible; vacía dice que no 
   const h2 = M._pure.fullStatsHtml(s);
   M.setStatsTab('pvp');
   assert.match(h2, /Últimos duelos/); assert.match(h2, /Victoria · 9 pts/); assert.match(h2, /Abandono/); assert.match(h2, /1\.º de 4/);
-  assert.match(h, /Múltiple/);
+  assert.match(h, /Todos contra todos/);
   assert.match(h2, /25 %/); assert.match(h2, /Abandonos/);
 });

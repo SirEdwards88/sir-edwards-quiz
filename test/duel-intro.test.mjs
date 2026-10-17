@@ -34,7 +34,7 @@ test('quien ya usó los duelos nunca se bloquea (ayuda vista, historial o desblo
 test('la ayuda lleva el texto nuevo y no el viejo; la presentación avisa y se despide', () => {
   const { M } = load();
   const h = M.helpHtml();
-  for (const t of ['Jugáis a la vez', 'Cuerdo (±1)', 'Insensato (±3)', 'valen el doble', 'dentro del plazo de 3 días', 'El Múltiple tiene sus propias estadísticas y logros']) assert.ok(h.includes(t), t);
+  for (const t of ['Jugáis a la vez', 'Cuerdo (±1)', 'Insensato (±3)', 'valen el doble', 'dentro del plazo de 3 días', 'Todos contra todos tiene sus propias estadísticas y logros']) assert.ok(h.includes(t), t);
   for (const t of ['En directo', 'cuando quiera', 'Sir Edwards ya sabe']) assert.ok(!h.includes(t), t);
   assert.match(SRC, /Dije que no habría tutorial/);
   assert.match(SRC, /no me dejes mal/i);

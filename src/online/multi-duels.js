@@ -3,7 +3,7 @@
 // Módulo aparte para no engordar duels.js: este archivo solo PINTA y manda acciones. El servidor (/multi-duels) es la única
 // autoridad de preguntas, tiempos, corrección, puntos y clasificación; aquí no se calcula nada de eso.
 // Se apoya en duels.js (estado S, sondeo, reloj, respuesta, bloque de pregunta) a través de los ayudantes `H` que éste le pasa:
-// pantallas 'pickkind' (1 vs 1 / Múltiple), 'multipick' (elegir 2 o 3 amigos) y 'multi' (sala, partida y final).
+// pantallas 'pickkind' (1 vs 1 / Todos contra todos), 'multipick' (elegir 2 o 3 amigos) y 'multi' (sala, partida y final).
 // No cuenta para ELO, estadísticas ni logros del Duelo 1 vs 1 (no se llama a registerOnlineDuelResult).
 // Todo texto que viene del servidor pasa por H.esc() / H.player() y los números por H.num().
 //
@@ -91,7 +91,7 @@
     return list[hashStr(seedId + ':' + key + ':' + o.pos) % list.length].replace(/\{nombre\}/g, name);
   }
 
-  // En partida el múltiple no se anuncia: título y botón de salida iguales a los del 1 vs 1.
+  // En partida el todos contra todos no se anuncia: título y botón de salida iguales a los del 1 vs 1.
   function isReto(d) { return !!(d && d.tipo === 'reto_multi'); }
   // El Duelo no lleva título arriba (la tarjeta ya dice si es clásico o por apuestas); el Reto sí.
   function gameTitle(d) { return isReto(d) ? H.ico('retos') + 'Reto' : ''; }
@@ -119,17 +119,17 @@
     var one = card('uno-contra-uno', '1 vs 1', reto ? 'Un amigo, a su ritmo.' : 'Un amigo, cara a cara.', 'SEQMulti.one()');
     var ft = (H.features && H.features()) || {}, served = reto ? ft.multi_reto : ft.multi_duel;
     var multi = !served
-      ? card('multiple', 'Múltiple', 'Muy pronto.', '', true)
+      ? card('multiple', 'Todos contra todos', 'Muy pronto.', '', true)
       : (stakes && !STAKES_READY)
-      ? card('multiple', 'Múltiple', 'Muy pronto. Sir Edwards aún afila las apuestas.', '', true)
-      : card('multiple', 'Múltiple', 'De ' + MIN_PLAYERS + ' a ' + MAX_PLAYERS + ' jugadores.' + (reto ? ' A su ritmo.' : ''), 'SEQMulti.startPick()');
+      ? card('multiple', 'Todos contra todos', 'Muy pronto. Sir Edwards aún afila las apuestas.', '', true)
+      : card('multiple', 'Todos contra todos', 'De ' + MIN_PLAYERS + ' a ' + MAX_PLAYERS + ' jugadores.' + (reto ? ' A su ritmo.' : ''), 'SEQMulti.startPick()');
     return h + '<div class="seq-m-opts">' + one + multi + '</div>';
   }
 
   function renderPickPlayers() {
     var s = S(), fl = s.lists.friends, chosen = sel();
     var reto = s.pickKind === 'reto';
-    var h = H.header('Elige a tus rivales', reto ? 'Reto múltiple' : (s.pickModo === 'stakes' ? 'Duelo por apuestas' : 'Duelo clásico') + ' · múltiple', function () { s.screen = 'pickkind'; H.render(); });
+    var h = H.header('Elige a tus rivales', reto ? 'Reto todos contra todos' : (s.pickModo === 'stakes' ? 'Duelo por apuestas' : 'Duelo clásico') + ' · todos contra todos', function () { s.screen = 'pickkind'; H.render(); });
     h += reto ? '<p class="stats-section-sub">Elige a ' + (MIN_PLAYERS - 1) + ' o ' + (MAX_PLAYERS - 1) + ' amigos. Tienen 3 días para jugar.</p>'
       : '<p class="stats-section-sub">Elige a ' + (MIN_PLAYERS - 1) + ' o ' + (MAX_PLAYERS - 1) + ' amigos en línea.</p>';
     if (!fl) return h + '<p class="stats-section-sub">Cargando…</p>';
@@ -188,7 +188,7 @@
         return h;
       }
       if (mine.estado === 'invitado') {
-        return h + box + '<div class="duel-result-title">Te invitan a un duelo múltiple</div><p class="duel-result-hint">Caduca en <span id="seq-d-count"></span></p>' + playersList(d) +
+        return h + box + '<div class="duel-result-title">Te invitan a un duelo todos contra todos</div><p class="duel-result-hint">Caduca en <span id="seq-d-count"></span></p>' + playersList(d) +
           '<button class="btn btn-primary" style="width:100%;" onclick="SEQMulti.action(\'accept\')">Aceptar</button>' +
           '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQMulti.action(\'reject\')">Rechazar</button></div>';
       }
@@ -280,7 +280,7 @@
     return head + h;
   }
 
-  // ---- Reto múltiple (2.5): pantallas de la sala; la partida de cada uno es la misma de un Reto 1 vs 1 (duels.js) ----
+  // ---- Reto todos contra todos (2.5): pantallas de la sala; la partida de cada uno es la misma de un Reto 1 vs 1 (duels.js) ----
   function retoStatus(j, d) {
     if (j.estado === 'rechazado') return 'Ha rechazado';
     if (j.estado === 'invitado') return 'Sin responder';
@@ -300,7 +300,7 @@
     if (d.estado === 'completado' || d.estado === 'cancelado' || d.estado === 'expirado') return renderEnd(d, true);
     var now = H.serverNow(), y = d.yo || {}, creator = d.soy === 'creador', cad = H.left(num(d.expira_at) - now);
     var box = '<div class="duel-result-box duel-result-neutral">', host = (d.jugadores || []).filter(function (j) { return j.es_creador; })[0] || {};
-    var h = head + '<p class="stats-section-sub seq-d-vs">Reto múltiple · ' + num((d.jugadores || []).length) + ' jugadores</p>' + H.modeLine(d);
+    var h = head + '<p class="stats-section-sub seq-d-vs">Reto todos contra todos · ' + num((d.jugadores || []).length) + ' jugadores</p>' + H.modeLine(d);
     var btns = '<button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.retoAction(\'accept\')">Aceptar</button> <button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.retoAction(\'reject\')">Rechazar</button>';
     if (y.invitacion === 'rechazado') return h + box + '<div class="duel-result-title">Has rechazado este reto</div><p class="duel-result-hint">Sir Edwards toma nota. Los demás siguen sin ti.</p>' + retoPlayers(d) + '</div>';
     if (y.invitacion === 'invitado') {
@@ -334,15 +334,15 @@
     var js = (x.jugadores || []).filter(function (j) { return !j.es_yo; });
     var p = H.player(js[0] || {}), id = H.safeId(x.id), n = (x.jugadores || []).length;
     var who = { name: p.name + (js.length > 1 ? ' +' + (js.length - 1) : ''), avatar: p.avatar, id: p.id };
-    var sub = 'Reto múltiple · ' + n + ' jugadores', btns = '';
+    var sub = 'Reto todos contra todos · ' + n + ' jugadores', btns = '';
     if (x.mi_estado === 'invitado' && (x.estado === 'pendiente' || x.estado === 'aceptado')) {
-      sub = '¡Te han retado a un reto múltiple!';
+      sub = '¡Te han retado a un reto todos contra todos!';
       btns = '<button class="btn btn-primary seq-d-sm" onclick="event.stopPropagation();SEQDuels.listAction(\'mreto\',\'' + id + '\',\'accept\')">Aceptar</button> <button class="btn btn-secondary seq-d-sm" onclick="event.stopPropagation();SEQDuels.listAction(\'mreto\',\'' + id + '\',\'reject\')">Rechazar</button>';
-    } else if (x.estado === 'pendiente') sub = 'Reto múltiple · esperando respuestas';
-    else if (x.estado === 'aceptado') sub = x.yo && x.yo.terminado ? 'Reto múltiple · esperando a los demás' : '¡Te toca jugar!';
-    else if (x.estado === 'completado' && x.resultado) sub = 'Múltiple · ' + ordinal(x.resultado.mi_posicion) + ' de ' + num(x.resultado.n_jugadores) + ' · ' + num(x.resultado.mi_puntuacion) + ' aciertos';
-    else if (x.estado === 'cancelado') sub = 'Reto múltiple · cancelado';
-    else if (x.estado === 'expirado') sub = 'Reto múltiple · caducado';
+    } else if (x.estado === 'pendiente') sub = 'Reto todos contra todos · esperando respuestas';
+    else if (x.estado === 'aceptado') sub = x.yo && x.yo.terminado ? 'Reto todos contra todos · esperando a los demás' : '¡Te toca jugar!';
+    else if (x.estado === 'completado' && x.resultado) sub = 'Todos contra todos · ' + ordinal(x.resultado.mi_posicion) + ' de ' + num(x.resultado.n_jugadores) + ' · ' + num(x.resultado.mi_puntuacion) + ' aciertos';
+    else if (x.estado === 'cancelado') sub = 'Reto todos contra todos · cancelado';
+    else if (x.estado === 'expirado') sub = 'Reto todos contra todos · caducado';
     if (x.modo && x.estado !== 'completado') sub = H.retoModeName(x) + ' · ' + sub;
     return '<div class="history-item seq-d-row seq-pl-row" onclick="SEQDuels.open(\'mreto\',\'' + id + '\')">' + H.who(who, esc(sub)) + (btns ? '<div class="seq-pl-act seq-pl-act-full">' + btns + '</div>' : '') + '</div>';
   }
@@ -353,16 +353,16 @@
     var js = (x.jugadores || []).filter(function (j) { return !j.es_yo; });
     var p = H.player(js[0] || {}), id = H.safeId(x.id), n = (x.jugadores || []).length;
     var name = { name: p.name + (js.length > 1 ? ' +' + (js.length - 1) : ''), avatar: p.avatar, id: p.id };
-    var sub = 'Múltiple · ' + n + ' jugadores', btns = '';
+    var sub = 'Todos contra todos · ' + n + ' jugadores', btns = '';
     if (x.estado === 'pendiente' && x.mi_estado === 'invitado') {
-      sub = '¡Te invitan a un duelo múltiple!';
+      sub = '¡Te invitan a un duelo todos contra todos!';
       btns = '<button class="btn btn-primary seq-d-sm" onclick="event.stopPropagation();SEQMulti.listAction(\'' + id + '\',\'accept\')">Aceptar</button> <button class="btn btn-secondary seq-d-sm" onclick="event.stopPropagation();SEQMulti.listAction(\'' + id + '\',\'reject\')">Rechazar</button>';
-    } else if (x.estado === 'pendiente') sub = 'Múltiple · esperando invitados';
-    else if (x.estado === 'aceptado') sub = 'Múltiple · sala de espera';
-    else if (x.estado === 'en_curso') sub = 'Múltiple · en juego';
-    else if (x.estado === 'completado' && x.resultado) sub = 'Múltiple · ' + ordinal(x.resultado.mi_posicion) + ' de ' + num(x.resultado.n_jugadores) + ' · ' + num(x.resultado.mi_puntuacion) + (x.modo === 'stakes' ? ' puntos' : ' aciertos');
-    else if (x.estado === 'cancelado') sub = 'Múltiple · cancelado';
-    else if (x.estado === 'expirado') sub = 'Múltiple · caducado';
+    } else if (x.estado === 'pendiente') sub = 'Todos contra todos · esperando invitados';
+    else if (x.estado === 'aceptado') sub = 'Todos contra todos · sala de espera';
+    else if (x.estado === 'en_curso') sub = 'Todos contra todos · en juego';
+    else if (x.estado === 'completado' && x.resultado) sub = 'Todos contra todos · ' + ordinal(x.resultado.mi_posicion) + ' de ' + num(x.resultado.n_jugadores) + ' · ' + num(x.resultado.mi_puntuacion) + (x.modo === 'stakes' ? ' puntos' : ' aciertos');
+    else if (x.estado === 'cancelado') sub = 'Todos contra todos · cancelado';
+    else if (x.estado === 'expirado') sub = 'Todos contra todos · caducado';
     return '<div class="history-item seq-d-row seq-pl-row" onclick="SEQDuels.open(\'multi\',\'' + id + '\')">' + H.who({ name: name.name, avatar: name.avatar, id: name.id }, esc(sub)) + (btns ? '<div class="seq-pl-act seq-pl-act-full">' + btns + '</div>' : '') + '</div>';
   }
 
@@ -412,7 +412,7 @@
   function shareText(d) {
     var r = d && d.resultado; if (!r || !r.clasificacion) return '';
     var rows = r.clasificacion.map(function (x) { return ordinal(x.posicion) + ' ' + String(x.display_name || 'Jugador') + ' · ' + (Math.floor(Number(x.puntuacion)) || 0); });
-    return (d.tipo === 'reto_multi' ? 'Reto múltiple' : 'Duelo múltiple') + ' en SirEdwards Quiz' + (d.modo === 'stakes' ? ' (por apuestas)' : '') + '\n' + rows.join('\n') + '\nSir Edwards lo ha visto todo.';
+    return (d.tipo === 'reto_multi' ? 'Reto todos contra todos' : 'Duelo todos contra todos') + ' en SirEdwards Quiz' + (d.modo === 'stakes' ? ' (por apuestas)' : '') + '\n' + rows.join('\n') + '\nSir Edwards lo ha visto todo.';
   }
   // Datos para la imagen de compartir (SEQShareCard): clasificación, frase y desenlace que ya decidió el servidor.
   function shareInput(d, helpers) {

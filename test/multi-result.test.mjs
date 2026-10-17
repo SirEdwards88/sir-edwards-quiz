@@ -1,4 +1,4 @@
-// Duelo múltiple: el registro de logros (src/state/multi-result.js) anota los hitos del SERVIDOR una sola vez por sala,
+// Duelo todos contra todos: el registro de logros (src/state/multi-result.js) anota los hitos del SERVIDOR una sola vez por sala,
 // no toca las estadísticas del 1 vs 1 y las medallas del múltiple se consiguen con ellos.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

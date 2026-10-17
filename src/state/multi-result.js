@@ -1,6 +1,6 @@
-// Duelo múltiple (2.4): registro de logros al terminar una sala.
+// Duelo todos contra todos (2.4): registro de logros al terminar una sala.
 // El SERVIDOR calcula los hitos de cada sala terminada (resultado.hitos: victoria, mesa_completa, corriente, niebla, ultimo);
-// aquí solo se anotan en el progreso (una sola vez por sala) para evaluar las medallas del Duelo múltiple, igual que
+// aquí solo se anotan en el progreso (una sola vez por sala) para evaluar las medallas del Duelo todos contra todos, igual que
 // registerOnlineDuelResult hace con el 1 vs 1. NO toca las estadísticas, el ELO ni los logros del 1 vs 1.
 // Usa las funciones globales de index.html (store, checkMedalsAndGetNew, checkFragmentRewardsAndGetNew, saveStore).
 (function () {

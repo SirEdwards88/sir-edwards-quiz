@@ -34,7 +34,7 @@
     mental: { nombre: 'Cálculo Turbo', sub: 'Mejor puntuación' },
     fondo: { nombre: 'Cálculo de Fondo', sub: 'Más aciertos', unit: 'aciertos' },
     timetrial: { nombre: 'Contrarreloj', sub: 'Mejor puntuación' },
-    multi: { nombre: 'Múltiple', sub: 'Victorias entre amigos', unit: 'victorias' }
+    multi: { nombre: 'Todos contra todos', sub: 'Victorias entre amigos', unit: 'victorias' }
   };
   var BOARD_ORDER = ['pvp', 'timetrial', 'mental', 'fondo'];
   var SCOPES = { friends: 'Amigos', global: 'Global' };
@@ -308,8 +308,8 @@
       return '<button type="button" role="tab" aria-selected="' + sel + '" class="seq-v21-scope-btn' + (sel ? ' sel' : '') + '" onclick="SEQDuels21.setBoard(\'' + k + '\')">' + esc(BOARDS[k].nombre) + '</button>';
     }).join('') + '</div>';
   }
-  // PvP lleva dos subpestañas (mismo selector de texto que Cálculo): «1 vs 1» (ELO) y «Múltiple» (victorias, solo amigos).
-  var DUEL_BOARDS = ['pvp', 'multi'], DUEL_LABELS = { pvp: '1 vs 1', multi: 'Múltiple' };
+  // PvP lleva dos subpestañas (mismo selector de texto que Cálculo): «1 vs 1» (ELO) y «Todos contra todos» (victorias, solo amigos).
+  var DUEL_BOARDS = ['pvp', 'multi'], DUEL_LABELS = { pvp: '1 vs 1', multi: 'Todos contra todos' };
   function isDuelBoard(b) { return DUEL_BOARDS.indexOf(b) >= 0; }
   function hasMulti() { try { var f = window.SEQOnline && window.SEQOnline.session && window.SEQOnline.session(); return !!(f && f.features && f.features.multi_duel); } catch (e) { return false; } }
   function duelTabs() {
@@ -387,7 +387,7 @@
     // «Tu posición» solo aparece si no se te ve ya en el ranking (podio o lista, donde sales marcado): así no se repite el dato.
     var meListed = rows.some(function (r) { return r && r.is_me; });
     if (!meListed) out += meCard(d, b);
-    if (!rows.length) return out + rkNote(isMulti(b) ? 'Aún no hay duelos múltiples terminados entre tus amigos. Reúne a tres y empiecen.' : isPvp(b) ? 'Aún no hay duelos puntuados. Juega uno y aparecerás aquí.' : 'Todavía nadie tiene puntuación en este ranking.') + '</div>';
+    if (!rows.length) return out + rkNote(isMulti(b) ? 'Aún no hay duelos todos contra todos terminados entre tus amigos. Reúne a tres y empiecen.' : isPvp(b) ? 'Aún no hay duelos puntuados. Juega uno y aparecerás aquí.' : 'Todavía nadie tiene puntuación en este ranking.') + '</div>';
     // Podio: puestos 1, 2 y 3 tal como los da el servidor; el resto (y quien está en colocación) va en la lista.
     var top = {}, rest = [];
     rows.forEach(function (r) { var p = placeOf(r, b); if (p && p <= 3 && !top[p]) top[p] = r; else rest.push(r); });
@@ -428,7 +428,7 @@
           '<span class="seq-v21-hrow-body"><span class="seq-v21-hrow-top">' + res + ' · ' + num(x.mi_puntuacion) + ' pts</span>' +
           '<small>' + (x.modo === 'stakes' ? 'Apuestas' : 'Clásico') + ' · ' + pos + esc(date) + '</small></span></div>';
       }).join('') + '</div>';
-    } else out += '<p class="stats-section-sub">Todavía no has jugado ningún duelo múltiple.</p>';
+    } else out += '<p class="stats-section-sub">Todavía no has jugado ningún duelo todos contra todos.</p>';
     return out;
   }
   function statsTabs(s) {

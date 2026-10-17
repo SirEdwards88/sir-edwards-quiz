@@ -835,6 +835,7 @@
 .seq-empty-img { display: block; width: min(56%, 200px); height: auto; margin: 8px auto 10px; filter: drop-shadow(0 6px 10px rgba(0,0,0,.4)); }
 
 .seq-v21-calcsub { margin-top: -4px; }
+.seq-v21-calcsub .seq-v21-scope-btn { font-size: 15px; letter-spacing: 0; white-space: nowrap; padding-left: 4px; padding-right: 4px; }
 
 /* ===== 2.3: ficha de jugador (src/online/player-profile.js). Misma estética que los Rankings: tarjeta dorada, iconos de ranking, insignia de rango ===== */
 .seq-pl-tap { display: flex; flex: 1 1 150px; min-width: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
@@ -1015,7 +1016,7 @@
 #seq-duel-root .seq-m-row .seq-m-pts { font-size: 22px; font-weight: 900; font-variant-numeric: tabular-nums; color: var(--text); }
 [data-theme="dark"] #seq-duel-root .seq-m-row.first, [data-theme="dark"] #seq-duel-root .seq-m-chip.me { border-color: #e8c874; }
 
-/* 2.4 Duelo múltiple por apuestas (src/online/multi-stakes.js) */
+/* 2.4 Duelo todos contra todos por apuestas (src/online/multi-stakes.js) */
 .seq-m-locks { display: flex; justify-content: center; gap: 12px; margin: 14px 0 4px; }
 .seq-m-lock { position: relative; display: inline-flex; flex-direction: column; align-items: center; gap: 3px; width: 64px; opacity: .55; }
 .seq-m-lock.on { opacity: 1; }
