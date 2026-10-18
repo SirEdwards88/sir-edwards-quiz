@@ -127,6 +127,14 @@
 :root:not([data-theme="dark"]) .home-small-card p,
 :root:not([data-theme="dark"]) .home-small-sub,
 :root:not([data-theme="dark"]) .settings-note { color: var(--lr-sub); }
+/* «✓ DISPONIBLE» con el color de su modo, como en oscuro (la regla de arriba lo dejaba gris) */
+:root:not([data-theme="dark"]) .mode-standard p.mode-subtitle { color: #2563eb; }
+:root:not([data-theme="dark"]) .mode-review p.mode-subtitle { color: #0f766e; }
+:root:not([data-theme="dark"]) .mode-survival p.mode-subtitle { color: #b45309; }
+:root:not([data-theme="dark"]) .mode-sudden p.mode-subtitle { color: #b91c1c; }
+:root:not([data-theme="dark"]) .mode-timetrial p.mode-subtitle { color: #be185d; }
+:root:not([data-theme="dark"]) .mode-mentalcalc p.mode-subtitle { color: #14532d; }
+:root:not([data-theme="dark"]) .mode-lucidez p.mode-subtitle { color: #6d28d9; }
 
 /* Barras de progreso: más definidas sobre el papel */
 :root:not([data-theme="dark"]) .progress-bar { background: #e6dcc3; box-shadow: inset 0 1px 2px rgba(74, 48, 8, .18); }
