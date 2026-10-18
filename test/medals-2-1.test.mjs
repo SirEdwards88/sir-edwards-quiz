@@ -62,8 +62,8 @@ test('Fragmentos: exactamente 15, todos activos, con las altas y bajas pedidas',
   const f = J(c.FRAGMENT_MEDAL_IDS);
   assert.equal(f.length, 15); assert.equal(new Set(f).size, 15);
   for (const id of f) assert.ok(ids(c).includes(id), 'no activo: ' + id);
-  for (const id of ['streak_20', 'duel_contra_las_cuerdas', 'diurno', 'games_50', 'level_20', 'master_100', 'cleaner_25', 'sd_primer_riesgo', 'tt_30', 'mental_calc_30', 'correct_800', 'sharp_eye', 'duel_cinco_victorias', 'surv_humano', 'duel_apuestas_calculada']) assert.ok(f.includes(id), id);
-  for (const id of ['medal_collector_30', 'ultimo_cerebro', 'duel_sin_titubear', 'sin_frenos', 'surv_derrame', 'world_citizen', 'duel_revancha', 'streak_30', 'duel_apuestas_ultima_locura', 'duel_tres_al_hilo']) assert.equal(f.includes(id), false, id);
+  for (const id of ['streak_20', 'multi_entre_la_niebla', 'diurno', 'games_50', 'level_20', 'master_100', 'cleaner_25', 'sd_primer_riesgo', 'tt_30', 'mental_calc_30', 'correct_800', 'sharp_eye', 'duel_cinco_victorias', 'surv_humano', 'duel_apuestas_calculada']) assert.ok(f.includes(id), id);
+  for (const id of ['duel_contra_las_cuerdas', 'medal_collector_30', 'ultimo_cerebro', 'duel_sin_titubear', 'sin_frenos', 'surv_derrame', 'world_citizen', 'duel_revancha', 'streak_30', 'duel_apuestas_ultima_locura', 'duel_tres_al_hilo']) assert.equal(f.includes(id), false, id);
 });
 
 test('avatares: cada uno ligado a su logro, sin Fragmento donde no toca', () => {

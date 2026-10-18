@@ -21,6 +21,7 @@
   var TIMED_MODES = ['timetrial', 'mental_calc'];
 
   var timer = null, busy = false, lastCheck = 0, fails = 0, hideT = null, deferT = null;
+  var reminded = false;
   var queue = [];               // avisos pendientes de enseñar (si no era buen momento)
 
   // ---- Lógica pura ------------------------------------------------------------------------
@@ -51,6 +52,17 @@
     (Array.isArray(retos) ? retos : []).forEach(function (r) { if (r && r.estado === 'aceptado' && r.yo && !r.yo.terminado) n++; });
     return n;
   }
+  // Retos que ya aceptaste (o te esperan) y aún no has jugado: se recuerdan UNA vez al abrir el juego, aunque ya los hubieras visto.
+  function waitingFrom(retos, mretos) {
+    var out = [];
+    (Array.isArray(retos) ? retos : []).forEach(function (r) { if (r && r.estado === 'aceptado' && r.yo && !r.yo.terminado && ID_RE.test(String(r.id))) { var i = item('reto', r); i.waiting = true; out.push(i); } });
+    (Array.isArray(mretos) ? mretos : []).forEach(function (m) {
+      if (!m || m.estado !== 'aceptado' || m.mi_estado !== 'aceptado' || !m.yo || m.yo.terminado || !ID_RE.test(String(m.id))) return;
+      var host = (Array.isArray(m.jugadores) ? m.jugadores : []).filter(function (j) { return j && !j.es_yo; })[0] || {};
+      out.push({ kind: 'mreto', id: String(m.id), name: String(host.display_name || 'Un amigo').slice(0, 24), avatar: host.avatar, waiting: true });
+    });
+    return out;
+  }
   function unseen(items, seen) { var s = Array.isArray(seen) ? seen : []; return items.filter(function (i) { return s.indexOf(i.kind + ':' + i.id) < 0; }); }
 
   // Texto del aviso (tono de Sir Edwards, neutro en género). El título es fijo y claro; el subtítulo rota sin repetir el último.
@@ -60,6 +72,7 @@
     duel: ['Toca para responder. El reloj corre.', 'Toca para responder. El tiempo tiene otros planes.', 'Toca para responder. Sesenta segundos, ni uno más.', 'El duelo no piensa esperar demasiado.', 'Toca para responder. La puntualidad importa.'],
     mreto: ['Toca para verlo. Tres o cuatro, cada uno a su hora.', 'Toca para responder. El plazo corre, la vergüenza también.', 'Más de un rival, un solo ganador. Sir Edwards aprueba.'],
     multi: ['Toca para verlo. Tres o cuatro, y un solo ganador.', 'Toca para responder. La sala no espera eternamente.', 'Más de un rival a la vez. Sir Edwards aprueba.'],
+    waiting: ['Toca para jugarlo. El plazo no es infinito.', 'Sigue sin jugar. Sir Edwards lo ha notado.', 'Tu reto espera. Con paciencia, pero espera.'],
     many: ['Toca para verlos. Sir Edwards espera.', 'Hay asuntos pendientes. Naturalmente.', 'Toca para verlos. Se han acumulado.']
   };
   var lastSub = {};
@@ -72,12 +85,14 @@
   function textFor(list, rnd) {
     if (list.length === 1) {
       var i = list[0];
+      if (i.waiting) return { title: 'Tienes un reto pendiente', sub: pickSub('waiting', rnd) };
       if (i.kind === 'mreto') return { title: i.name + ' te invita a un reto todos contra todos', sub: pickSub('mreto', rnd) };
       if (i.kind === 'multi') return { title: i.name + ' te invita a un duelo todos contra todos', sub: pickSub('multi', rnd) };
       return i.kind === 'duel'
         ? { title: i.name + ' te reta a un duelo', sub: pickSub('duel', rnd) }
         : { title: i.name + ' te ha retado', sub: pickSub('reto', rnd) };
     }
+    if (list.every(function (i) { return i.waiting; })) return { title: 'Tienes ' + list.length + ' retos pendientes', sub: pickSub('many', rnd) };
     return { title: 'Tienes ' + list.length + ' desafíos nuevos', sub: pickSub('many', rnd) };
   }
 
@@ -170,6 +185,11 @@
       if (failed && !got.duels && !got.retos) return;
       paintDot(dotCount(got.duels, got.retos, got.multis, got.mretos));
       var fresh = unseen(pendingFrom(got.duels, got.retos, got.multis, got.mretos), readSeen());
+      if (!reminded && !failed) {      // al abrir el juego: recuerda los retos que aceptaste y no has jugado
+        reminded = true;
+        var already = fresh.map(function (i) { return i.kind + ':' + i.id; });
+        fresh = fresh.concat(waitingFrom(got.retos, got.mretos).filter(function (i) { return already.indexOf(i.kind + ':' + i.id) < 0; }));
+      }
       queue = unseen(queue.concat(fresh), []).filter(function (i, k, a) { return a.findIndex(function (j) { return j.kind === i.kind && j.id === i.id; }) === k; });
       flush();
     }).catch(function () { busy = false; });
@@ -187,5 +207,5 @@
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
   }
 
-  window.SEQInbox = { core: { pendingFrom: pendingFrom, dotCount: dotCount, unseen: unseen, textFor: textFor, SUBS: SUBS }, check: check };
+  window.SEQInbox = { core: { pendingFrom: pendingFrom, waitingFrom: waitingFrom, dotCount: dotCount, unseen: unseen, textFor: textFor, SUBS: SUBS }, check: check };
 })();

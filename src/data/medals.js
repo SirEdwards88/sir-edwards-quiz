@@ -121,7 +121,7 @@ const ALL_MEDALS = [
 // RECOMPENSAS (única fuente): Fragmento de Mente = hitos importantes de progreso, habilidad o hazañas
 // excepcionales (15 en total, FRAGMENT_TOTAL); Avatar = logros con identidad. Se derivan de aquí.
 const MEDAL_REWARDS = {
-  fragment: ["games_50", "level_20", "master_100", "cleaner_25", "sd_primer_riesgo", "tt_30", "mental_calc_30", "correct_800", "sharp_eye", "diurno", "duel_cinco_victorias", "streak_20", "duel_contra_las_cuerdas", "surv_humano", "duel_apuestas_calculada"],
+  fragment: ["games_50", "level_20", "master_100", "cleaner_25", "sd_primer_riesgo", "tt_30", "mental_calc_30", "correct_800", "sharp_eye", "diurno", "duel_cinco_victorias", "streak_20", "multi_entre_la_niebla", "surv_humano", "duel_apuestas_calculada"],
   avatar: {
     medal_collector_30: 'avatar_siredwards_coleccionista',
     duel_revancha: 'avatar_siredwards_vengador',

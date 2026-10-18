@@ -63,3 +63,10 @@ test('presencia (Duelo online): solo se puede retar a quien esté en línea; sin
   // Los Retos (asíncronos) siguen sin exigir presencia.
   assert.match(d, /return h \+ '<div class="history-list">' \+ fl\.friends\.map\(function \(f\) \{\n      var p = player\(f\.player\);\n      return '<div class="history-item seq-d-row seq-pl-row" onclick="SEQDuels\.create/);
 });
+
+test('waitingFrom: al abrir recuerda los retos aceptados sin jugar, aunque ya se hubieran visto', () => {
+  const w = C.waitingFrom([reto('ZZZZZZZZZ2', 'aceptado', 'rival', 'Eva', { terminado: false }), reto('ZZZZZZZZZ3', 'aceptado', 'rival', 'Eva', { terminado: true }), reto('ZZZZZZZZZ1', 'pendiente', 'rival', 'Pau')], null);
+  assert.deepEqual(Array.from(w.map((x) => x.kind + ':' + x.id)), ['reto:ZZZZZZZZZ2']);
+  assert.equal(C.textFor(w, () => 0).title, 'Tienes un reto pendiente');
+  assert.equal(C.waitingFrom(null, undefined).length, 0);
+});

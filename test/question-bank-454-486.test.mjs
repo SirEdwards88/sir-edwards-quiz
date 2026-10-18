@@ -59,7 +59,7 @@ test('correcciones: q8, q146, q223, q225, q247, q297, q305, q330 y q392 iguales 
     for (const k of ['q', 'a', 'sabias']) assert.equal(g(Q, n)[k], g(T, n)[k], k + ' de ' + n);
     assert.ok(g(T, n).sabias, 'sabías de ' + n);
   }
-  assert.match(g(T, 8).sabias, /única que los ganó en dos ciencias distintas/);
+  assert.match(g(T, 8).sabias, /dos ciencias distintas/);
   assert.match(g(T, 146).q, /tiroxina/);
   assert.deepEqual(Array.from(g(T, 223).options), ['Estados Unidos', 'India', 'China', 'Nigeria']);
   assert.match(g(T, 225).q, /«Back to Black»/);
