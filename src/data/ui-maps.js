@@ -31,6 +31,9 @@ const RESULT_MOOD_ICONS = {
   timetrial: 'modo-contrarreloj', review: 'modo-repaso', mentalcalc: 'modo-calculo'
 };;
 
+// Supervivencia: 4 vidas (se pueden fallar tres; el cuarto fallo termina la partida).
+const SURVIVAL_LIVES = 4;
+
 const SURVIVAL_TIER_RATIOS = {
   ameba: { facil: 0.7, medio: 0.3 },
   humano: { facil: 0.3, medio: 0.6, dificil: 0.1 },

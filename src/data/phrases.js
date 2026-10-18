@@ -124,7 +124,7 @@ const SURVIVAL_FAIL_PHRASES = {
     "Tu resultado tiene una virtud: deja muy poco espacio para la interpretación.",
     "Una racha de errores tan constante merece, al menos, un estudio.",
     "El problema no era la última pregunta. El problema era todo lo anterior.",
-    "Has perdido. Si buscas consuelo, quizá hoy no sea el mejor día para buscarlo.",
+    "Has perdido. Si buscas consuelo, quizá hoy no sea el mejor día para hacerlo.",
     "Has durado lo que dura una ilusión: poco, y con final previsible.",
     "Caer tan pronto exige un talento que no sabía que existiera.",
     "No te preocupes: sobrevivir no era lo tuyo. El resto tampoco parecía serlo."

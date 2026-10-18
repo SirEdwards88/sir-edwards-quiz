@@ -18,26 +18,32 @@
         10: { img: 'barbilla', phrases: [
           'Diez. Esto podría acabar bien. La perspectiva me inquieta.',
           'Diez preguntas y ni una ambulancia. Seguiré mirando.',
-          'Diez. Una hazaña modesta, pero no pienso arruinártela. Todavía.',
-          'Diez. Aún no hay nada que reprocharte. El tiempo es paciente.',
-          'Diez. Has superado la introducción. Ahora empieza el interrogatorio.',
-          'Diez. Quedan treinta, y estos primeros solo sirven para que te confíes.'
+          'Diez. Aún caminas como si conocieras el terreno.',
+          'Diez. La confianza inicial suele tener una autonomía limitada.',
+          'Diez preguntas superadas. El equipaje aún parece ligero.',
+          'Diez. Todavía tienes ese aire de quien ha leído el folleto.',
+          'Primera decena cumplida. Tu optimismo aún no paga alquiler.',
+          'Diez. Queda mucho por delante; por suerte, todavía no te has enterado.'
         ] },
         20: { img: 'monoculo', phrases: [
-          'La mitad. Si llegas a cuarenta, fingiré que siempre confié en ti.',
           'Veinte. Esto empieza a parecer talento. O una casualidad extraordinaria.',
-          'La mitad del camino. Ahora llega la parte en la que dudas de todo.',
-          'Veinte. A partir de aquí, cada fallo duele más. La elegancia es opcional.',
-          'Veinte. La confianza está bien; la memoria sería preferible.',
-          'Sin cronómetro y sin excusas: veinte preguntas más. Respira, aunque no te vaya a servir.'
+          'Mitad del camino. Tu entusiasmo ha solicitado una excedencia.',
+          'Veinte preguntas. El cansancio ya conoce tu nombre. Qué indiscreción.',
+          'Media travesía. Tu obstinación empieza a merecer un estudio clínico.',
+          'Veinte. Ya no avanzas con elegancia, pero avanzas.',
+          'La mitad. Hasta las malas decisiones necesitan descansar. Tú, al parecer, no.',
+          'Veinte. Si llegas a cuarenta, fingiré que siempre confié en ti.',
+          'Veinte. Ya no se trata de saber, sino de seguir en pie.'
         ] },
         30: { img: 'manos', phrases: [
-          'Treinta. Si vas a cometer un error, te agradecería que esperases diez preguntas.',
           'Treinta. No descorches nada: aún puedes convertir el mérito en anécdota.',
-          'Treinta. La meta está a la vista. Procura no tropezar con ella.',
-          'Treinta. Cuando termines, te perdonaré varios defectos. Los más llevaderos.',
-          'Treinta. Ya puedes empezar a sentirte competente. Yo esperaré al final.',
-          'Treinta. Casi puedo oler el final. Tú también, supongo.'
+          'Treinta. Casi puedo oler el final. Tú también, supongo.',
+          'Treinta preguntas superadas. Tu instinto de supervivencia empieza a resultar indecoroso.',
+          'Última decena. Retirarse ahora sería una forma de sinceridad.',
+          'Treinta respuestas. El final se acerca; tu dignidad lo hace a otro ritmo.',
+          'Quedan diez. A estas alturas, ya no es resistencia: es costumbre.',
+          'Treinta. Has convertido la terquedad en un método de transporte.',
+          'Treinta. Diez más y tendré que reconocerte algo. Aún no sé el qué.'
         ] }
       }
     },
@@ -45,19 +51,24 @@
       total: 25,
       at: {
         13: { img: 'monoculo', phrases: [
-          'Trece. Sigues con vida. Qué detalle por tu parte.',
-          'La mitad. Ahora empieza la parte divertida. Para mí.',
-          'Trece y ningún error. Un comportamiento muy poco humano.',
-          'Trece. Quedan doce, y ninguna admite un fallo. Admiro tu optimismo.',
-          'Trece. No pienso felicitarte todavía; tengo una reputación que mantener.',
-          'Trece sin caer. La superstición se queda sin argumentos.'
+          'Trece. Un pequeño descuido adquiriría proporciones históricas.',
+          'Trece respuestas. No confundas familiaridad con certeza.',
+          'Trece. La distancia entre el acierto y el desastre cabe en una palabra.',
+          'Trece respuestas. La certeza también sabe imitar al error.',
+          'Trece. El margen de interpretación acaba de desaparecer.',
+          'Trece respuestas. La duda no es un defecto; ignorarla sí.',
+          'Trece. Hasta la respuesta correcta puede esconder una mala razón.',
+          'Trece. Hasta ahora has acertado. Es lo único que se te va a exigir.'
         ] },
         20: { img: 'manos', phrases: [
-          'Veinte. La gloria está cerca. La muerte también.',
-          'Cinco preguntas. Has llegado demasiado lejos para morir de forma tan vulgar.',
-          'Veinte. No arruines mi apuesta.',
           'Veinte. Un solo error y todo esto habrá sido un precioso ensayo.',
-          'Veinte. Llega hasta el final y podrás presumir. Con moderación.'
+          'Veinte. Cinco respuestas separan el criterio del ridículo.',
+          'Veinte preguntas. La exactitud ya no admite interpretaciones benévolas.',
+          'Veinte. El desenlace se acerca con una discreción admirable.',
+          'Veinte respuestas. Ahora, hasta una coma puede resultar decisiva.',
+          'Veinte. La intuición es un testigo poco fiable bajo juramento.',
+          'Veinte respuestas. La precisión es ahora una cuestión de carácter.',
+          'Veinte. Cinco respuestas más y empezaré a tomarte en serio.'
         ] }
       }
     }

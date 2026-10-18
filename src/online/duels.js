@@ -90,7 +90,7 @@
   // Nombre, icono y reglas de cada modo. Las reglas las APLICA el servidor; aquí solo se explican.
   var RETO_MODE_UI = {
     estandar: { nombre: 'Estándar', icono: 'estandar', reglas: '20 preguntas · 20 s cada una' },
-    supervivencia: { nombre: 'Supervivencia', icono: 'supervivencia', reglas: 'Hasta 40 preguntas · 3 vidas · 20 s cada una' },
+    supervivencia: { nombre: 'Supervivencia', icono: 'supervivencia', reglas: 'Hasta 40 preguntas · 4 vidas · 20 s cada una' },
     muerte_subita: { nombre: 'Muerte Súbita', icono: 'muerte-subita', reglas: '25 preguntas cada vez más difíciles · un fallo y fuera' },
     contrarreloj: { nombre: 'Contrarreloj', icono: 'contrarreloj', reglas: '60 s · +3 s por acierto, −3 s por fallo' },
     calculo_mental: { nombre: 'Cálculo Turbo', icono: 'calculo-turbo', reglas: '60 s de operaciones · +4 s por acierto, −3 s por fallo' },
