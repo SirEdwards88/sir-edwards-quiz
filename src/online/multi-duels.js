@@ -122,6 +122,8 @@
       ? card('multiple', 'Todos contra todos', 'Muy pronto.', '', true)
       : (stakes && !STAKES_READY)
       ? card('multiple', 'Todos contra todos', 'Muy pronto. Sir Edwards aún afila las apuestas.', '', true)
+      : (S().lists && S().lists.friends && S().lists.friends.friends.length < MIN_PLAYERS - 1)
+      ? card('multiple', 'Todos contra todos', 'Necesitas al menos ' + (MIN_PLAYERS - 1) + ' amigos para jugar este modo.', '', true)
       : card('multiple', 'Todos contra todos', 'De ' + MIN_PLAYERS + ' a ' + MAX_PLAYERS + ' jugadores.' + (reto ? ' A su ritmo.' : ''), 'SEQMulti.startPick()');
     return h + '<div class="seq-m-opts">' + one + multi + '</div>';
   }

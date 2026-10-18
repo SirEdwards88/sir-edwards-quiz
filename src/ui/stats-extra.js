@@ -71,7 +71,7 @@
       var spec = specialty(values);
       box.innerHTML = radarSvg(values) + (anyAnswered
         ? (spec ? '<p class="radar-note">Tu especialidad: <b><img class="cat-img" src="' + spec.img + '" alt=""> ' + spec.label + '</b></p>'
-                : '<p class="radar-note">Sigue jugando: con unas partidas más se verá tu especialidad.</p>')
+                : '')
         : '<p class="radar-note">Juega unas partidas y aquí aparecerá la forma de tu conocimiento.</p>');
     } catch (e) { /* nunca debe romper Estadísticas */ }
     try { dossier(); dominio(); } catch (e) {}

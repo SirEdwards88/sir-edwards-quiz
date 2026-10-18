@@ -20,7 +20,7 @@ test('son 100, con IDs 504-603 seguidos, y no se toca ninguna anterior', () => {
 });
 
 test('Lucidez: solo las 7 de respuesta corta jugables están en Lucidez (mismo texto y respuesta, sin opciones)', () => {
-  const NQ = Q.filter((q) => q.n >= 504);
+  const NQ = Q.filter((q) => q.n >= 504 && q.n <= 603);
   assert.deepEqual(Array.from(NQ, (q) => q.n), [545, 558, 560, 566, 571, 585, 590]);
   for (const q of NQ) {
     const t = T.find((x) => x.n === q.n);

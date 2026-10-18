@@ -19,7 +19,7 @@ test('son 50, con IDs 604-653 seguidos, y no se toca ninguna anterior', () => {
 });
 
 test('no se copian al banco de Lucidez (todas son de opciones)', () => {
-  assert.equal(Q.filter((q) => q.n >= 604).length, 0);
+  assert.equal(Q.filter((q) => q.n >= 604 && q.n <= 653).length, 0);
 });
 
 test('formato: 4 opciones distintas con la respuesta entre ellas, categoría y dificultad válidas y un «Sabías que» de hasta 140 caracteres', () => {
