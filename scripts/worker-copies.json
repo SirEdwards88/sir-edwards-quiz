@@ -10,10 +10,10 @@
     "src/utils/sudden-progression.js": "d2586129d1166d82"
   },
   "data": {
-    "src/data/questions.js": "4bd06415db729f71",
+    "src/data/questions.js": "aa8f907c249a1452",
     "src/data/questions-retired.js": "4e3c08fdf9db4039",
     "src/data/lucidez.js": "bcc72d3b85ecd70a",
     "src/data/medals.js": "a0df70642fac81e3",
-    "src/data/avatars.js": "4d83f88c1aaef7b3"
+    "src/data/avatars.js": "b6da9ce1f2d10f9a"
   }
 }

@@ -51,7 +51,7 @@
     { id: 'sello', value: 'sello', short: 'Sello', src: ASSET_DIR + 'sello.png', label: 'Sello de lacre', base: true },
     { id: 'gramofono', value: 'gramofono', short: 'Gramófono', src: ASSET_DIR + 'gramofono.png', label: 'Gramófono', base: true },
     // Los id avatar_siredwards_coleccionista, _imparable y _medianoche se CONSERVAN (están guardados en perfiles y el Worker los valida),
-    // pero su arte es ahora un personaje propio (urraca, carnero y murciélago) en vez de más variantes de Sir Edwards; se nombran por su logro.
+    // pero su arte es ahora un personaje propio (zorro, carnero y murciélago) en vez de más variantes de Sir Edwards; se nombran por su logro.
     // 2.1: avatares que se GANAN con un logro (`medal` = ID del logro; la recompensa se define en MEDAL_REWARDS, medals.js).
     // El servidor solo deja elegirlos a quien tiene el logro. Cualquiera los VE en el perfil de otro jugador.
     { id: 'avatar_siredwards_imparable', value: 'avatar_siredwards_imparable', short: 'Imparable', src: ASSET_DIR + 'avatar_siredwards_imparable.png', label: 'Imparable', base: false, medal: 'streak_30' },
