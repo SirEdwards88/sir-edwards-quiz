@@ -458,7 +458,7 @@
       var rv = x.rival || {};
       return '<div class="history-item seq-v21-hrow ' + (x.resultado === 'win' ? 'w' : x.resultado === 'loss' ? 'l' : 'd') + '">' + modeIcon(x.modo) +
         '<span class="seq-v21-hrow-body"><span class="seq-v21-hrow-top">' + esc(rv.display_name || 'Jugador') + ' · ' + res + ' ' + num(x.mi_puntuacion) + '—' + num(x.puntuacion_rival) + '</span>' +
-        '<small>' + (modeKey(x.modo) === 'stakes' ? 'Apuestas' : 'Clásico') + ' · ' + fmt(x.elo_antes) + ' → ' + fmt(x.elo_despues) + ' · ' + esc(date) + '</small></span>' +
+        '<small>' + (String(x.modo || '').indexOf('reto_') === 0 ? 'Reto' : modeKey(x.modo) === 'stakes' ? 'Apuestas' : 'Clásico') + ' · ' + fmt(x.elo_antes) + ' → ' + fmt(x.elo_despues) + ' · ' + esc(date) + '</small></span>' +
         '<b class="seq-v21-hrow-elo">' + signed(x.elo_cambio) + '</b></div>';
     }).join('') + '</div>' : '<p class="stats-section-sub">Todavía no has jugado ningún duelo 1 vs 1.</p>');
     var h2h = s.head_to_head || [];

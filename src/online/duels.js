@@ -1016,7 +1016,7 @@
     // La XP son 10 por ACIERTO (no por puntos): en apuestas se cuentan los aciertos reales, no el marcador.
     var hits = stakes ? (d.yo.respuestas || []).filter(function (a) { return a.es_correcta; }).length : mine;
     var xpGain = xpFor(kind, d, hits); syncXpOnce(kind, d, xpGain);
-    var eloHtml = kind === 'duel' && r.elo && window.SEQDuels21 ? SEQDuels21.eloBlock(r.elo) : '';
+    var eloHtml = (kind === 'duel' || kind === 'reto') && r.elo && window.SEQDuels21 ? SEQDuels21.eloBlock(r.elo) : '';
     var chips = '<div class="results-mode-chips show">' + (res === 'draw' ? '' : '<span class="result-chip"><span class="result-chip-icon">' + ico(res === 'win' ? 'copa' : 'duelo') + '</span><span class="result-chip-value">' + (res === 'win' ? '+' : '−') + diff + '</span><span class="result-chip-label">' + diffWord + '</span></span>') + xpChipHtml(xpGain) + '</div>';
     var stamp = ({ win: ['VICTORIA', 'gold'], loss: ['DERROTA', 'fail'], draw: ['EMPATE', 'ok'] })[res];
     var h = '<div class="results-card seq-d-results seq-d-final duel-result-box ' + cls + '" data-tier="' + (res === 'win' ? 'oro' : res === 'loss' ? 'derrota' : 'azul') + '">' +

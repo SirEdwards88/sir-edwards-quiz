@@ -91,8 +91,8 @@
       sec('assets/modes/retos.webp', 'Retos', 'Retas a un amigo y cada uno juega su parte por separado, sin coincidir, dentro del plazo de 3 días.') +
       sec('assets/duelos/formato/uno-contra-uno.webp', '1 vs 1 o Todos contra todos', 'Contra un amigo, o contra dos o tres a la vez. Gana quien más sume.') +
       '<div class="dh-notes">' +
-        '<p><b>Lo que cuenta.</b> El 1 vs 1 y los Retos suman para tus estadísticas y logros, y el Duelo online 1 vs 1 también para el ELO. ' +
-          'Todos contra todos tiene sus propias estadísticas y logros, pero no mueve el ELO. Ganar por abandono no cuenta; abandonar sí es derrota.</p>' +
+        '<p><b>Lo que cuenta.</b> Los duelos y retos 1 vs 1 suman para tus estadísticas, logros y ELO. ' +
+          'Todos contra todos lleva sus propias estadísticas y logros, aparte. Ganar por abandono no cuenta; abandonar sí es derrota.</p>' +
         '<p><b>No te vayas a mitad.</b> A los 60 s sin conexión pierdes por abandono.</p>' +
       '</div></div>';
   }
