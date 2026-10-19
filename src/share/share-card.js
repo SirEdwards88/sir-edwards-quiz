@@ -90,7 +90,7 @@
   //   modeName, scoreStr, accuracy, streak            — lastResultShareData
   //   characterState: 'victory'|'defeat'|undefined    — RESULT_CHARACTER_TONES[tono en pantalla]
   //   lucidez: { failed, perfect, phase }             — solo Lucidez en solitario
-  //   duel: { role, result, myScore, opponentScore, code, score, totalQ, modeLabel } — Duelo por código
+  //   duel: { role:'joiner', result, myScore, opponentScore, modeLabel }
   //   online: { kind:'duel'|'reto', result, myScore, opponentScore, modeLabel, rival:{name,avatar} }
   //   player: { name, avatar }                        — sesión, si existe
   function buildModel(input) {
@@ -99,7 +99,7 @@
     var accuracy = clampInt(input.accuracy);
     var streak = clampInt(input.streak);
     var m = { variant: 'standard', mode: null, outcome: null, title: 'RESULTADO', pill: '', character: 'draw', player: player,
-              main: '', mainLabel: 'ACIERTOS', secondary: '', versus: null, code: null, phrase: '' };
+              main: '', mainLabel: 'ACIERTOS', secondary: '', versus: null, phrase: '' };
 
     var o = input.online, d = input.duel;
     if (o) {
@@ -128,17 +128,11 @@
     if (d) {
       m.variant = 'duel';
       m.pill = 'DUELO' + (d.modeLabel ? ' · ' + String(d.modeLabel).toUpperCase() : '');
-      if (d.role === 'creator') {
-        m.outcome = 'created'; m.title = 'TE RETO A UN DUELO'; m.character = 'hat';
-        m.main = String(input.scoreStr || (clampInt(d.score) + '/' + clampInt(d.totalQ)));
-        m.mainLabel = 'MI PUNTUACIÓN'; m.code = d.code ? String(d.code) : null;
-      } else {
-        m.outcome = d.result === 'win' || d.result === 'loss' ? d.result : 'draw';
-        m.title = outcomeTitle(m.outcome);
-        m.character = m.outcome === 'win' ? 'victory' : m.outcome === 'loss' ? 'defeat' : 'draw';
-        m.versus = { me: clampInt(d.myScore), them: clampInt(d.opponentScore), rival: null };
-        m.main = m.versus.me + ' — ' + m.versus.them; m.mainLabel = '';
-      }
+      m.outcome = d.result === 'win' || d.result === 'loss' ? d.result : 'draw';
+      m.title = outcomeTitle(m.outcome);
+      m.character = m.outcome === 'win' ? 'victory' : m.outcome === 'loss' ? 'defeat' : 'draw';
+      m.versus = { me: clampInt(d.myScore), them: clampInt(d.opponentScore), rival: null };
+      m.main = m.versus.me + ' — ' + m.versus.them; m.mainLabel = '';
       return m;
     }
 
@@ -511,10 +505,9 @@
         drawCharacter(ctx, charImg, { y: 480, w: 540, h: 380 }, theme);
         drawVersus(ctx, theme, model, { me: meImg, rival: rivalImg }, (model.player || model.versus.rival) ? 1010 : 1060);
         }
-        if (model.code) { /* solo el creador de un duelo por código; ver rama siguiente */ }
       } else {
         var big = model.character === 'hat';
-        if (model.phrase && !model.code) {
+        if (model.phrase) {
           // Con frase: el personaje cede altura según las líneas de la frase; debajo, jugador y puntuación.
           var hasP = !!model.player;
           var L = phraseLayout(ctx, model.phrase);
@@ -528,15 +521,8 @@
           drawScore(ctx, theme, model, hasP ? 1128 : 1110, 88);
         } else {
         drawCharacter(ctx, charImg, big ? { y: 500, w: 520, h: 330 } : { y: 476, w: 600, h: 420 }, theme);
-        var hasChip = drawPlayerChip(ctx, theme, model.player, meImg, model.code ? 930 : 950);
-        drawScore(ctx, theme, model, model.code ? (hasChip ? 1085 : 1070) : (hasChip ? 1112 : 1090));
-        }
-        if (model.code) {
-          ctx.font = '800 40px ui-monospace, Menlo, Consolas, monospace';
-          var cw = ctx.measureText(model.code).width + 70;
-          roundRect(ctx, CX - cw / 2, 1150, cw, 66, 33); ctx.fillStyle = 'rgba(255,255,255,.08)'; ctx.fill();
-          ctx.lineWidth = 2; ctx.strokeStyle = theme.ring; ctx.stroke();
-          ctx.fillStyle = BRAND.cream; ctx.fillText(model.code, CX, 1194);
+        var hasChip = drawPlayerChip(ctx, theme, model.player, meImg, 950);
+        drawScore(ctx, theme, model, hasChip ? 1112 : 1090);
         }
       }
       drawFooter(ctx, theme, r[6] || null);

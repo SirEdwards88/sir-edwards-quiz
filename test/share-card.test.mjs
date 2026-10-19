@@ -42,9 +42,7 @@ test('Lucidez: personaje según la fase alcanzada y textos ya existentes', () =>
   assert.deepEqual([win.variant, win.character, win.title, win.outcome], ['lucidez', 'enigma', 'ENIGMA RESUELTO', 'win']);
   assert.equal(l({ failed: false, perfect: true, phase: 'final' }).title, 'LUCIDEZ ABSOLUTA');
 });
-test('Duelo por código: creador (código) y quien se une (ganador ya decidido)', () => {
-  const c = build({ ...base, duel: { role: 'creator', code: 'K7P2QX', score: 21, totalQ: 30, modeLabel: 'Estándar' } });
-  assert.deepEqual([c.variant, c.title, c.code, c.pill], ['duel', 'TE RETO A UN DUELO', 'K7P2QX', 'DUELO · ESTÁNDAR']);
+test('Duelo con desenlace ya decidido', () => {
   const w = build({ ...base, duel: { role: 'joiner', result: 'win', myScore: 22, opponentScore: 17 } });
   assert.deepEqual([w.title, w.character, w.main, w.versus.rival], ['VICTORIA', 'victory', '22 — 17', null]);
   assert.equal(build({ ...base, duel: { role: 'joiner', result: 'loss', myScore: 1, opponentScore: 2 } }).character, 'defeat');
