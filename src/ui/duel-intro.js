@@ -64,6 +64,15 @@
     [K_UNLOCKED, K_ANNOUNCED, K_INTRO, K_HELP].forEach(function (k) { delete mem[k]; try { localStorage.removeItem(k); } catch (e) {} });
   }
 
+  // Entrar con una cuenta distinta de la que había enlazada en este dispositivo: las marcas de Duelo eran de la cuenta anterior.
+  // Se borran y la puerta se recalcula solo con el progreso que quede en el dispositivo; si ese progreso ya abre Duelo
+  // (nivel 5 o duelos jugados), se anota en silencio para no anunciar como nuevo un modo que ya estaba abierto.
+  function onAccountSwitch() {
+    resetLocal();
+    var g = gate(typeof store === 'object' ? store : null);
+    if (g.open) { set(K_UNLOCKED, '1'); set(K_ANNOUNCED, '1'); }
+  }
+
   // ---- Tarjeta de ayuda -------------------------------------------------------------------------------------------------
   function sec(img, title, body, extra) {
     return '<section class="dh-sec"><img class="dh-ico" src="' + img + '" alt="" draggable="false"><div class="dh-txt"><h3>' + title + '</h3><p>' + body + '</p></div>' + (extra ? '<div class="dh-subs">' + extra + '</div>' : '') + '</section>';
@@ -170,7 +179,7 @@
   try { document.addEventListener('DOMContentLoaded', function () { fillHelp(); refresh(); }); } catch (e) {}
 
   window.SEQDuelIntro = {
-    gate: gate, takeNewUnlock: takeNewUnlock, resetLocal: resetLocal, intercept: intercept, refresh: refresh, introIfNeeded: introIfNeeded, fillHelp: fillHelp, helpHtml: helpHtml,
+    gate: gate, takeNewUnlock: takeNewUnlock, resetLocal: resetLocal, onAccountSwitch: onAccountSwitch, intercept: intercept, refresh: refresh, introIfNeeded: introIfNeeded, fillHelp: fillHelp, helpHtml: helpHtml,
     NEED_LEVEL: NEED_LEVEL
   };
 })();

@@ -491,6 +491,7 @@
         syncNow('login');
       } else {
         var otherBefore = !!(sync && sync.playerId !== data.player.id);
+        if (otherBefore) { try { SEQDuelIntro.onAccountSwitch(); SEQDuelIntro.refresh(); } catch (e) {} }
         var hasLocal = hasLocalProgress();
         var hasOnline = progressHasData(data.progress);
         loginHadProgress = hasOnline; // para no dar la bienvenida de «nuevo aspirante» a quien ya jugaba en otro dispositivo
