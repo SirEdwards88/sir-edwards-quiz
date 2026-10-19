@@ -11,11 +11,11 @@
 
   var DIR = 'assets/modes/';
   var BY_MODE = { play: 'estandar', review: 'repaso', survival: 'supervivencia', sudden_death: 'muerte-subita',
-    timetrial: 'contrarreloj', mental_calc: 'calculo', lucidez_mental: 'secreto' };
+    timetrial: 'contrarreloj', mental_calc: 'calculo', lucidez_mental: 'secreto', duelo: 'duelo' };
   var BY_TIER = { ameba: 'ameba', humano: 'humano', derrame: 'derrame' };
   // El historial guarda el nombre visible del modo, no su clave.
   var BY_NAME = { 'Modo Estándar': 'play', 'Repaso': 'review', 'Supervivencia': 'survival', 'Muerte Súbita': 'sudden_death',
-    'Contrarreloj': 'timetrial', 'Cálculo Mental': 'mental_calc', 'Cálculo Turbo': 'mental_calc', 'Lucidez Mental': 'lucidez_mental' };
+    'Contrarreloj': 'timetrial', 'Cálculo Mental': 'mental_calc', 'Cálculo Turbo': 'mental_calc', 'Lucidez Mental': 'lucidez_mental', 'Duelo': 'duelo' };
 
   function src(mode, tier, variant) {
     var n = (mode === 'survival' && BY_TIER[tier]) || BY_MODE[mode] || BY_MODE[BY_NAME[mode]];

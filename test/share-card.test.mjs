@@ -76,5 +76,5 @@ test('Duelo todos contra todos: la clasificación sustituye al cara a cara y la 
   assert.equal(m.ranking.length, 3);
   assert.equal(m.pill, 'DUELO POR APUESTAS');
   assert.equal(m.unit, 'PUNTOS');
-  assert.match(win.SEQShareCard.shareText({ online: { kind: 'duel', result: 'win', place: 1, ranking: [1, 2, 3] } }), /Duelo todos contra todos: 1º de 3/);
+  assert.match(win.SEQShareCard.shareText({ online: { kind: 'duel', result: 'win', place: 1, ranking: [1, 2, 3] } }), /Duelo todos contra todos: 1\.º de 3/);
 });

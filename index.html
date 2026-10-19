@@ -49,21 +49,21 @@
 <!-- Tipografía: Playfair Display para el "display" institucional (nombre de la
      app / títulos), Inter para toda la interfaz funcional. Alojadas en la propia app
      (styles/fonts.css, assets/fonts/): funcionan sin conexión y no dependen de Google. -->
-<link rel="stylesheet" href="styles/fonts.css?v=380">
+<link rel="stylesheet" href="styles/fonts.css?v=381">
 <link rel="preload" href="assets/fonts/inter-latin.woff" as="font" type="font/woff" crossorigin>
-<link rel="stylesheet" href="styles/main.css?v=380">
+<link rel="stylesheet" href="styles/main.css?v=381">
 <!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
-<link rel="stylesheet" href="styles/online.css?v=380">
-<link rel="stylesheet" href="styles/results-frame.css?v=380">
-<link rel="stylesheet" href="styles/visual-2-3.css?v=380">
-<link rel="stylesheet" href="styles/light-refresh.css?v=380">
-<link rel="stylesheet" href="styles/encargos.css?v=380">
-<link rel="stylesheet" href="styles/encargos-intro.css?v=380">
-<link rel="stylesheet" href="styles/duel-intro.css?v=380">
-<link rel="stylesheet" href="styles/sir-events.css?v=380">
-<link rel="stylesheet" href="styles/reward-toast.css?v=380">
-<link rel="stylesheet" href="styles/theme.css?v=380">
-<link rel="stylesheet" href="styles/privacy.css?v=380">
+<link rel="stylesheet" href="styles/online.css?v=381">
+<link rel="stylesheet" href="styles/results-frame.css?v=381">
+<link rel="stylesheet" href="styles/visual-2-3.css?v=381">
+<link rel="stylesheet" href="styles/light-refresh.css?v=381">
+<link rel="stylesheet" href="styles/encargos.css?v=381">
+<link rel="stylesheet" href="styles/encargos-intro.css?v=381">
+<link rel="stylesheet" href="styles/duel-intro.css?v=381">
+<link rel="stylesheet" href="styles/sir-events.css?v=381">
+<link rel="stylesheet" href="styles/reward-toast.css?v=381">
+<link rel="stylesheet" href="styles/theme.css?v=381">
+<link rel="stylesheet" href="styles/privacy.css?v=381">
 
 </head>
 <body class="on-home">
@@ -738,7 +738,7 @@ try {
           <div class="lucidez-enigma-note" id="lucidez-enigma-note">Una sola respuesta</div>
         </div>
         <div class="q-box">
-          <span id="q-text">Cargando pregunta...</span>
+          <span id="q-text">Cargando pregunta…</span>
         </div>
 
         <input type="text" id="ans-input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-label="Tu respuesta" placeholder="Escribe tu respuesta…" />
@@ -1135,6 +1135,7 @@ try {
               <li>En las apuestas, las dos últimas rondas valen el doble y se juegan con niebla.</li>
               <li>Ranking, estadísticas y 5 logros nuevos para los Duelos todos contra todos.</li>
               <li>30 preguntas nuevas, de las que Sir Edwards no espera fallos: las fáciles, por fin, en buena compañía.</li>
+              <li>Duelo se desbloquea ahora con aviso y confeti, como merece cualquier modo nuevo. Y unas erratas, por fin, en el paredón.</li>
             </ul>
           </div>
         </div>
@@ -1153,56 +1154,56 @@ try {
 <!-- Fase 2: datos y constantes extraidos a modulos, cargados como scripts
      clasicos (no ES Modules) para conservar el scope global compartido con
      el script principal, sin convertir todavia la app a ES Modules. -->
-<script src="src/data/ui-maps.js?v=380"></script>
-<script src="src/data/questions.js?v=380"></script>
-<script src="src/data/questions-retired.js?v=380"></script>
-<script src="src/data/phrases.js?v=380"></script>
-<script src="src/data/duel-phrases.js?v=380"></script>
-<script src="src/data/lucidez.js?v=380"></script>
-<script src="src/data/medals.js?v=380"></script>
+<script src="src/data/ui-maps.js?v=381"></script>
+<script src="src/data/questions.js?v=381"></script>
+<script src="src/data/questions-retired.js?v=381"></script>
+<script src="src/data/phrases.js?v=381"></script>
+<script src="src/data/duel-phrases.js?v=381"></script>
+<script src="src/data/lucidez.js?v=381"></script>
+<script src="src/data/medals.js?v=381"></script>
 <!-- Prompt 3 — Fase C: sistema de avatares compartido (window.SEQAvatars). Debe
      cargarse antes de src/online/online.js y src/online/duels.js: ambos lo
      consumen en vez de mantener cada uno su propia copia de la lista. -->
-<script src="src/data/avatars.js?v=380"></script>
-<script src="src/share/share-card.js?v=380"></script>
+<script src="src/data/avatars.js?v=381"></script>
+<script src="src/share/share-card.js?v=381"></script>
 
 <!-- Fase 3 (Lote 3A): motor de coincidencia de respuestas extraido a
      src/utils/matching.js, mismo criterio que la Fase 2 (script clasico,
      sin ES Modules todavia). -->
-<script src="src/utils/matching.js?v=380"></script>
-<script src="src/utils/answer-alias.js?v=380"></script>
-<script src="src/utils/lucidez-select.js?v=380"></script>
-<script src="src/state/lucidez-bag.js?v=380"></script>
-<script src="src/state/timetrial-bag.js?v=380"></script>
-<script src="src/utils/encargos-core.js?v=380"></script>
-<script src="src/utils/encargos-progress.js?v=380"></script>
-<script src="src/state/encargos.js?v=380"></script>
-<script src="src/data/encargos-phrases.js?v=380"></script>
-<script src="src/ui/encargos-ui.js?v=380"></script>
-<script src="src/data/named-phrases.js?v=380"></script>
-<script src="src/utils/named-phrases.js?v=380"></script>
-<script src="src/utils/encargos-intro-core.js?v=380"></script>
-<script src="src/data/encargos-intro-phrases.js?v=380"></script>
-<script src="src/ui/encargos-intro.js?v=380"></script>
-<script src="src/ui/duel-intro.js?v=380"></script>
-<script src="src/data/home-quotes.js?v=380"></script>
-<script src="src/ui/home-quote.js?v=380"></script>
-<script src="src/utils/sir-events.js?v=380"></script>
-<script src="src/ui/sir-events-ui.js?v=380"></script>
-<script src="src/state/sir-events.js?v=380"></script>
-<script src="src/utils/sudden-progression.js?v=380"></script>
-<script src="src/utils/mental-calc.js?v=380"></script>
-<script src="src/utils/mental-classic.js?v=380"></script>
-<script src="src/ui/mental-classic-ui.js?v=380"></script>
-<script src="src/ui/mental-menu.js?v=380"></script>
-<script src="src/ui/level-up.js?v=380"></script>
+<script src="src/utils/matching.js?v=381"></script>
+<script src="src/utils/answer-alias.js?v=381"></script>
+<script src="src/utils/lucidez-select.js?v=381"></script>
+<script src="src/state/lucidez-bag.js?v=381"></script>
+<script src="src/state/timetrial-bag.js?v=381"></script>
+<script src="src/utils/encargos-core.js?v=381"></script>
+<script src="src/utils/encargos-progress.js?v=381"></script>
+<script src="src/state/encargos.js?v=381"></script>
+<script src="src/data/encargos-phrases.js?v=381"></script>
+<script src="src/ui/encargos-ui.js?v=381"></script>
+<script src="src/data/named-phrases.js?v=381"></script>
+<script src="src/utils/named-phrases.js?v=381"></script>
+<script src="src/utils/encargos-intro-core.js?v=381"></script>
+<script src="src/data/encargos-intro-phrases.js?v=381"></script>
+<script src="src/ui/encargos-intro.js?v=381"></script>
+<script src="src/ui/duel-intro.js?v=381"></script>
+<script src="src/data/home-quotes.js?v=381"></script>
+<script src="src/ui/home-quote.js?v=381"></script>
+<script src="src/utils/sir-events.js?v=381"></script>
+<script src="src/ui/sir-events-ui.js?v=381"></script>
+<script src="src/state/sir-events.js?v=381"></script>
+<script src="src/utils/sudden-progression.js?v=381"></script>
+<script src="src/utils/mental-calc.js?v=381"></script>
+<script src="src/utils/mental-classic.js?v=381"></script>
+<script src="src/ui/mental-classic-ui.js?v=381"></script>
+<script src="src/ui/mental-menu.js?v=381"></script>
+<script src="src/ui/level-up.js?v=381"></script>
 
 <!-- Fase 3 (Lote 3B): nucleo algoritmico de Duelo extraido a
      src/utils/duel.js, mismo criterio que el resto (script clasico, sin
      ES Modules todavia). Las dependencias compartidas con otros modos
      (arrangeStandardBlock, generateLucidezMentalOp)
      permanecen en este script principal, sin moverse en este lote. -->
-<script src="src/utils/duel.js?v=380"></script>
+<script src="src/utils/duel.js?v=381"></script>
 
 <!-- Fase 3 (Lote 3C): defaults, migracion y saneamiento del Store
      extraidos a src/utils/store.js, mismo criterio que el resto (script
@@ -1214,59 +1215,59 @@ try {
      getLevelData) y las 8 funciones de persistencia real (loadStore,
      saveStore, exportProgress...) permanecen en este script principal,
      sin moverse en este lote. -->
-<script src="src/utils/store.js?v=380"></script>
+<script src="src/utils/store.js?v=381"></script>
 
 <!-- Fase 4B: fachada de estado de solo lectura (getStore/getCurrentGame),
      mismo criterio que el resto (script clasico, sin ES Modules todavia).
      No copia, no transforma, no cachea. Ver src/state/read-facade.js. -->
-<script src="src/state/read-facade.js?v=380"></script>
+<script src="src/state/read-facade.js?v=381"></script>
 
-<script src="src/utils/streak-xp.js?v=380"></script>
+<script src="src/utils/streak-xp.js?v=381"></script>
 <!-- Fase 4C: helpers minimos de escritura (pushCapped, resetStreak) para
      eliminar 2 duplicaciones reales concretas -- no un sistema de
      mutaciones. Ver src/state/write-helpers.js y CHANGELOG_FASE4C.md. -->
-<script src="src/state/write-helpers.js?v=380"></script>
+<script src="src/state/write-helpers.js?v=381"></script>
 
 <!-- v1.4: capa online (cuenta Google, sincronización, migración, ranking).
      config.js es PÚBLICO (URL del Worker + Client ID de Google); si está
      vacío, la capa online queda desactivada y la app es idéntica a la v1.3.
      online.js solo usa el store/funciones del juego en tiempo de ejecución. -->
-<script src="src/ui/install-app.js?v=380"></script>
-<script src="src/share/invite.js?v=380"></script>
-<script src="src/ui/reward-toast.js?v=380"></script>
-<script src="src/ui/privacy.js?v=380"></script>
-<script src="src/ui/a11y.js?v=380"></script>
-<script src="src/ui/back-nav.js?v=380"></script>
-<script src="src/ui/game-fx.js?v=380"></script>
-<script src="src/ui/last-life.js?v=380"></script>
-<script src="src/ui/hitos.js?v=380"></script>
-<script src="src/ui/achievements.js?v=380"></script>
-<script src="src/ui/stats-extra.js?v=380"></script>
-<script src="src/ui/name-prompt.js?v=380"></script>
-<script src="src/ui/intro.js?v=380"></script>
-<script src="src/ui/mode-badges.js?v=380"></script>
-<script src="src/ui/lucidez-ui.js?v=380"></script>
-<script src="src/ui/sabias.js?v=380"></script>
-<script src="src/ui/icons.js?v=380"></script>
-<script src="src/online/config.js?v=380"></script>
+<script src="src/ui/install-app.js?v=381"></script>
+<script src="src/share/invite.js?v=381"></script>
+<script src="src/ui/reward-toast.js?v=381"></script>
+<script src="src/ui/privacy.js?v=381"></script>
+<script src="src/ui/a11y.js?v=381"></script>
+<script src="src/ui/back-nav.js?v=381"></script>
+<script src="src/ui/game-fx.js?v=381"></script>
+<script src="src/ui/last-life.js?v=381"></script>
+<script src="src/ui/hitos.js?v=381"></script>
+<script src="src/ui/achievements.js?v=381"></script>
+<script src="src/ui/stats-extra.js?v=381"></script>
+<script src="src/ui/name-prompt.js?v=381"></script>
+<script src="src/ui/intro.js?v=381"></script>
+<script src="src/ui/mode-badges.js?v=381"></script>
+<script src="src/ui/lucidez-ui.js?v=381"></script>
+<script src="src/ui/sabias.js?v=381"></script>
+<script src="src/ui/icons.js?v=381"></script>
+<script src="src/online/config.js?v=381"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
-<script src="src/utils/sync-merge.js?v=380"></script>
-<script src="src/online/data-sync.js?v=380"></script>
-<script src="src/online/online.js?v=380"></script>
+<script src="src/utils/sync-merge.js?v=381"></script>
+<script src="src/online/data-sync.js?v=381"></script>
+<script src="src/online/online.js?v=381"></script>
 <!-- v1.5: Amigos, Duelo online y Retos. El servidor decide preguntas, tiempo, aciertos y ganador. -->
-<script src="src/state/result-heard.js?v=380"></script>
-<script src="src/state/multi-result.js?v=380"></script>
-<script src="src/online/duels.js?v=380"></script>
+<script src="src/state/result-heard.js?v=381"></script>
+<script src="src/state/multi-result.js?v=381"></script>
+<script src="src/online/duels.js?v=381"></script>
 <!-- 2.1: Duelo por apuestas, ELO PvP, Rankings y estadísticas de Duelos (solo presentación; decide el servidor) -->
-<script src="src/online/duels-v21.js?v=380"></script>
-<script src="src/online/multi-duels.js?v=380"></script>
-<script src="src/online/multi-stakes.js?v=380"></script>
+<script src="src/online/duels-v21.js?v=381"></script>
+<script src="src/online/multi-duels.js?v=381"></script>
+<script src="src/online/multi-stakes.js?v=381"></script>
 <!-- 2.3: ficha pública de un jugador (resumen, récords, PvP y solicitud de amistad) -->
-<script src="src/online/player-profile.js?v=380"></script>
-<script src="src/online/inbox.js?v=380"></script>
-<script src="src/online/push.js?v=380"></script>
+<script src="src/online/player-profile.js?v=381"></script>
+<script src="src/online/inbox.js?v=381"></script>
+<script src="src/online/push.js?v=381"></script>
 <!-- Audio: sonidos del juego (src/audio/audio.js) -->
-<script src="src/audio/audio.js?v=380"></script>
+<script src="src/audio/audio.js?v=381"></script>
 
 <script>
 function closeWelcomeModal() {
@@ -1357,8 +1358,6 @@ function generateResultImage() {
   const { modeName, scoreStr, accuracy, streak } = lastResultShareData;
   const P = SHARE_IMAGE_PALETTE;
   const tier = getResultTier(accuracy);
-  const duel = null; // el Duelo por código ya no existe; la tarjeta de duelos online la genera share-card.js
-  const duelModeLabel = null;
 
   // La frase final es la que el jugador está viendo AHORA MISMO en la
   // tarjeta de resultados: se lee directamente del DOM en lugar de
@@ -1434,11 +1433,9 @@ function generateResultImage() {
   ctx.fillRect(-6, -6, 12, 12);
   ctx.restore();
 
-  // Pastilla con el nombre del modo. En Duelo se sustituye por la
-  // identidad "DUELO · <modo>" (misma etiqueta que ya usa el resto de
-  // la app en #results-duel-box), para que se reconozca de un vistazo.
+  // Pastilla con el nombre del modo.
   ctx.font = '700 26px Inter, system-ui, sans-serif';
-  const modeLabel = duel ? `DUELO · ${duelModeLabel}`.toUpperCase() : (modeName || '').toUpperCase();
+  const modeLabel = (modeName || '').toUpperCase();
   const modePillW = ctx.measureText(modeLabel).width + 64;
   const modePillH = 50;
   const modePillY = 198;
@@ -1461,8 +1458,7 @@ function generateResultImage() {
   const phraseBoxHeight = 60 + phraseLines.length * phraseLineHeight;
 
   const hasStreak = !!(streak && streak > 0);
-  const duelBlockHeight = duel ? (duel.role === 'creator' ? 200 : 176) : 0;
-  const cardH = 470 + phraseBoxHeight + duelBlockHeight;
+  const cardH = 470 + phraseBoxHeight;
 
   // Tarjeta blanca con sombra suave.
   ctx.save();
@@ -1592,44 +1588,6 @@ function generateResultImage() {
     ctx.fillText(line, W / 2, ly);
     ly += phraseLineHeight;
   });
-
-  // Bloque de Duelo (auditoría v1.1, punto 5): reutiliza el espacio ya
-  // reservado en duelBlockHeight, justo debajo de la frase. Creador ve su
-  // código para compartir; quien se unió ve el marcador comparado y el
-  // desenlace, igual que ya muestra #results-duel-box en la propia web.
-  if (duel) {
-    let dy = ly + 26;
-    ctx.font = '800 22px Inter, system-ui, sans-serif';
-    ctx.fillStyle = P.sub;
-    drawLetterSpacedText(ctx, duel.role === 'creator' ? 'TU CÓDIGO DE DUELO' : 'RESULTADO DEL DUELO', W / 2, dy, 3);
-    dy += 40;
-
-    if (duel.role === 'creator') {
-      ctx.font = '800 35px ui-monospace, "SFMono-Regular", Menlo, monospace';
-      const codeLabel = duel.code || '';
-      const codePillW = ctx.measureText(codeLabel).width + 60;
-      const codePillH = 66;
-      drawRoundedRect(ctx, W / 2 - codePillW / 2, dy, codePillW, codePillH, codePillH / 2);
-      ctx.fillStyle = P.accentSoft;
-      ctx.fill();
-      ctx.fillStyle = P.accent;
-      ctx.fillText(codeLabel, W / 2, dy + 44);
-      dy += codePillH + 34;
-      ctx.font = '600 23px Inter, system-ui, sans-serif';
-      ctx.fillStyle = P.sub;
-      ctx.fillText('Comparte el código para que te reten', W / 2, dy);
-    } else {
-      ctx.font = '900 56px Inter, system-ui, sans-serif';
-      ctx.fillStyle = P.text;
-      ctx.fillText(`${duel.myScore} — ${duel.opponentScore}`, W / 2, dy + 40);
-      dy += 68;
-      const resultLabels = { win: 'VICTORIA', loss: 'DERROTA', draw: 'EMPATE' };
-      const resultColors = { win: P.gold, loss: P.sub, draw: P.accent };
-      ctx.font = '800 26px Inter, system-ui, sans-serif';
-      ctx.fillStyle = resultColors[duel.result] || P.accent;
-      drawLetterSpacedText(ctx, resultLabels[duel.result] || '', W / 2, dy, 3);
-    }
-  }
 
   // La frase final es el cierre emocional de la tarjeta: no se añade
   // ningún lema debajo. Solo un pequeño destello dorado centrado, el
@@ -1986,7 +1944,7 @@ const UNLOCKABLE_MODES = [
   { id: 'sudden_death', name: 'Muerte Súbita', desc: '25 preguntas, dificultad creciente. Un fallo y pierdes.', check: s => (s.unlockedMedals || []).includes('surv_ameba') },
   { id: 'mental_calc', name: 'Cálculo Turbo', desc: 'Resuelve tantas operaciones matemáticas como puedas en 60 segundos.', check: s => (s.unlockedMedals || []).includes('tt_15') },
   { id: 'mental_classic', name: 'Cálculo de Fondo', desc: 'Una vida y 20 s por operación. Las rachas devuelven vidas.', check: s => (s.unlockedMedals || []).includes('tt_15') },
-  { id: 'timetrial', name: 'Contrarreloj', desc: 'Acierta el máximo posible en 60s.', check: s => getLevelData(s.xp) >= 10 },
+  { id: 'timetrial', name: 'Contrarreloj', desc: 'Acierta el máximo posible en 60 s.', check: s => getLevelData(s.xp) >= 10 },
   { id: 'lucidez_mental', name: 'Lucidez Mental', desc: 'Tres fases. Un enigma final. Tu mente será puesta a prueba. ¿Estás preparado para llegar hasta el final?', check: s => getFragmentCount(s) >= FRAGMENT_TARGET }
 ];
 
@@ -3082,6 +3040,8 @@ function checkModeUnlocksAndGetNew() {
       newlyUnlocked.push(m);
     }
   });
+  // Duelo se abre por nivel (src/ui/duel-intro.js): se celebra igual que un modo nuevo.
+  try { const d = SEQDuelIntro.takeNewUnlock(); if (d) newlyUnlocked.push(d); } catch (e) {}
   return newlyUnlocked;
 }
 
@@ -7314,7 +7274,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const isIOS = /iPad|iPhone|iPod/.test(ua) || (ua.includes('Macintosh') && 'ontouchend' in document);
   const isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua);
   if (isIOS && isSafari && !isStandaloneDisplay()) {
-    pendingPwaHint = { text: 'Toca el icono de compartir de Safari y elige "Añadir a pantalla de inicio" para instalar Sir Edwards.', action: false };
+    pendingPwaHint = { text: 'Toca el icono de compartir de Safari y elige «Añadir a pantalla de inicio» para instalar Sir Edwards.', action: false };
     maybeShowPwaHint();
   }
 });
@@ -7334,6 +7294,6 @@ window.addEventListener('appinstalled', () => {
   hidePwaHint();
 });
 </script>
-<script src="src/ui/resume-clock.js?v=380"></script>
+<script src="src/ui/resume-clock.js?v=381"></script>
 </body>
 </html>

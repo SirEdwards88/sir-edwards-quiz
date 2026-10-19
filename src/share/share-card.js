@@ -550,7 +550,7 @@
     d = d || {};
     var head, remark;
     if (d.online && d.online.ranking) {
-      head = 'Sir Edwards Quiz · ' + (d.online.kind === 'reto' ? 'Reto todos contra todos' : 'Duelo todos contra todos') + ': ' + (d.online.place ? d.online.place + 'º de ' + d.online.ranking.length : 'clasificación') + '.';
+      head = 'Sir Edwards Quiz · ' + (d.online.kind === 'reto' ? 'Reto todos contra todos' : 'Duelo todos contra todos') + ': ' + (d.online.place ? d.online.place + '.º de ' + d.online.ranking.length : 'clasificación') + '.';
       remark = d.online.result === 'win' ? 'Victoria. Sir Edwards asiente con discreción.'
         : d.online.result === 'loss' ? 'Derrota. Sir Edwards prefiere mirar hacia otro lado.'
         : 'Empate en cabeza. Nadie se salva.';

@@ -11,7 +11,8 @@
 
   var NEED_LEVEL = 5;
   var K_UNLOCKED = 'siredwards_quiz_duel_unlocked';
-  var K_INTRO = 'siredwards_quiz_duel_intro_seen';
+  var K_ANNOUNCED = 'siredwards_quiz_duel_unlock_announced';
+  var K_INTRO ='siredwards_quiz_duel_intro_seen';
   var K_HELP = 'siredwards_quiz_v1_1_duel_help_seen';   // clave histórica del aviso de ayuda
   var mem = {};
 
@@ -40,6 +41,21 @@
     var g = gate(st);
     if (g.open && get(K_UNLOCKED) !== '1') set(K_UNLOCKED, '1');
     return g;
+  }
+
+  // Aviso de «modo nuevo» al abrirse Duelo por nivel: se devuelve UNA vez {id, name} para que checkModeUnlocksAndGetNew
+  // (index.html) lo trate como cualquier modo desbloqueado (tarjeta flotante, confeti y sonido). Quien ya tenía Duelo
+  // abierto (marca local, ayuda vista o duelos jugados) queda anotado en silencio y no recibe aviso retroactivo.
+  function takeNewUnlock() {
+    if (get(K_ANNOUNCED) === '1') return null;
+    var st = null; try { st = typeof store === 'object' ? store : null; } catch (e) {}
+    st = st || {};
+    var ds = st.duelStats || {};
+    var used = get(K_HELP) === '1' || get(K_UNLOCKED) === '1' || num(ds.played) > 0 || num(ds.multiWins) > 0;
+    if (used) { set(K_ANNOUNCED, '1'); return null; }
+    if (levelOf(st.xp) < NEED_LEVEL) return null;
+    set(K_ANNOUNCED, '1'); set(K_UNLOCKED, '1');
+    return { id: 'duelo', name: 'Duelo', badge: 'Duelo' };
   }
 
   // ---- Tarjeta de ayuda -------------------------------------------------------------------------------------------------
@@ -148,7 +164,7 @@
   try { document.addEventListener('DOMContentLoaded', function () { fillHelp(); refresh(); }); } catch (e) {}
 
   window.SEQDuelIntro = {
-    gate: gate, intercept: intercept, refresh: refresh, introIfNeeded: introIfNeeded, fillHelp: fillHelp, helpHtml: helpHtml,
+    gate: gate, takeNewUnlock: takeNewUnlock, intercept: intercept, refresh: refresh, introIfNeeded: introIfNeeded, fillHelp: fillHelp, helpHtml: helpHtml,
     NEED_LEVEL: NEED_LEVEL
   };
 })();

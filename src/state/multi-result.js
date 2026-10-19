@@ -6,6 +6,8 @@
 (function () {
   'use strict';
 
+  function fragLabel(n) { return n + (Number(n) === 1 ? ' Fragmento' : ' Fragmentos'); }
+
   function register(info) {
     if (!info || !info.duelId || !info.hitos || typeof info.hitos !== 'object') return null;
     if (typeof store === 'undefined' || typeof checkMedalsAndGetNew !== 'function') return null;
@@ -30,10 +32,10 @@
     // aviso flotante (src/ui/reward-toast.js); el premio por Fragmentos, si toca, va después.
     if (medals.length && typeof SEQRewardToast !== 'undefined') {
       SEQRewardToast.announceNow(medals);
-      if (reward && typeof showInfoToast === 'function') setTimeout(function () { showInfoToast(reward.fragments + ' Fragmentos: ' + reward.text, 'copa'); }, 4600);
+      if (reward && typeof showInfoToast === 'function') setTimeout(function () { showInfoToast(fragLabel(reward.fragments) + ': ' + reward.text, 'copa'); }, 4600);
     } else {
       var parts = medals.map(function (m) { return m.title; });
-      if (reward) parts.push(reward.fragments + ' Fragmentos: ' + reward.text);
+      if (reward) parts.push(fragLabel(reward.fragments) + ': ' + reward.text);
       if (parts.length && typeof showInfoToast === 'function') showInfoToast('Desbloqueado: ' + parts.join(' · '), 'copa');
     }
     return { medals: medals, reward: reward };
