@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 389;
+const CACHE_VERSION = 390;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -760,7 +760,7 @@ const ASSET_REVS = {
   './assets/ui/sombrero-aplastado.webp': 'bd1a6ce9',
   './assets/ui/sombrero-laurel.webp': '12dbb7f8',
   './assets/ui/sombrero-mediocre.webp': '02513cbd',
-  './assets/ui/sombrero-saludo.webp': 'b56f688a',
+  './assets/ui/sombrero-saludo.webp': '7d193989',
   './assets/ui/suspenso.webp': '582fd4c7',
   './assets/ui/tarjeta/sello-record.webp': '5e2ca086',
   './assets/ui/tiempo.webp': '47ba95ec',
