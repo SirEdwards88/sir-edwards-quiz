@@ -80,7 +80,12 @@
   function modeEmblem(m) {
     return '<span class="seq-v21-ico seq-v21-ico-mode" aria-hidden="true"><img src="assets/modes/emblema/' + (modeKey(m) === 'stakes' ? 'duelo-apuestas' : 'duelo-clasico') + '.webp" alt="" draggable="false" onerror="this.remove()"></span>';
   }
-  function modeIcon(m) { m = modeKey(m); return icon('modos', m, 'seq-v21-ico-mode'); }
+  // 2.5: los Retos (modo «reto» o «reto_*») llevan su propio icono; el resto, el del formato del Duelo.
+  function isReto(m) { return String(m || '').indexOf('reto') === 0; }
+  function modeIcon(m) {
+    if (isReto(m)) return '<span class="seq-v21-ico seq-v21-ico-mode" aria-hidden="true"><img src="assets/modes/retos.webp" alt="" draggable="false"></span>';
+    m = modeKey(m); return icon('modos', m, 'seq-v21-ico-mode');
+  }
   // Medallón de «estadísticas de duelos» (libro de cuentas con pluma): assets/duelos/estadisticas.webp. Si falta, el del Duelo clásico.
   function statsIcon() {
     return '<span class="seq-v21-ico seq-v21-ico-stats" aria-hidden="true"><img src="' + ICON_DIR + 'estadisticas.webp" alt="" draggable="false" ' +
@@ -418,7 +423,8 @@
       var mj = num(m.jugadas), mg = num(m.ganadas), cl = m.clasico || {}, ap = m.apuestas || {};
       out += '<div class="seq-v21-grid" style="grid-template-columns:repeat(2,1fr)">' + statCell('Victorias', mg) + statCell('Derrotas', Math.max(0, mj - mg - num(m.abandonos))) + statCell('Abandonos', num(m.abandonos)) + statCell('% Victorias', String(Math.round((mg / mj) * 1000) / 10).replace('.', ',') + ' %') + '</div>' +
         '<div class="history-list"><div class="history-item seq-v21-h2h"><span>Clásico</span><small>' + num(cl.jugadas) + ' partidas · ' + num(cl.ganadas) + (num(cl.ganadas) === 1 ? ' victoria' : ' victorias') + '</small></div>' +
-        '<div class="history-item seq-v21-h2h"><span>Apuestas</span><small>' + num(ap.jugadas) + ' partidas · ' + num(ap.ganadas) + (num(ap.ganadas) === 1 ? ' victoria' : ' victorias') + '</small></div></div>';
+        '<div class="history-item seq-v21-h2h"><span>Apuestas</span><small>' + num(ap.jugadas) + ' partidas · ' + num(ap.ganadas) + (num(ap.ganadas) === 1 ? ' victoria' : ' victorias') + '</small></div>' +
+        (m.retos && num(m.retos.jugadas) > 0 ? '<div class="history-item seq-v21-h2h"><span>Retos</span><small>' + num(m.retos.jugadas) + ' partidas · ' + num(m.retos.ganadas) + (num(m.retos.ganadas) === 1 ? ' victoria' : ' victorias') + '</small></div>' : '') + '</div>';
       var mh = m.historial || [];
       if (mh.length) out += '<h4 class="seq-v21-h">Últimos duelos</h4><div class="history-list">' + mh.map(function (x) {
         var res = x.resultado === 'win' ? 'Victoria' : x.resultado === 'abandono' ? 'Abandono' : 'Derrota';
@@ -426,7 +432,7 @@
         var pos = num(x.posicion) ? num(x.posicion) + '.º de ' + num(x.jugadores) + ' · ' : '';
         return '<div class="history-item seq-v21-hrow ' + (x.resultado === 'win' ? 'w' : 'l') + '">' + modeIcon(x.modo) +
           '<span class="seq-v21-hrow-body"><span class="seq-v21-hrow-top">' + res + ' · ' + num(x.mi_puntuacion) + ' pts</span>' +
-          '<small>' + (x.modo === 'stakes' ? 'Apuestas' : 'Clásico') + ' · ' + pos + esc(date) + '</small></span></div>';
+          '<small>' + (isReto(x.modo) ? 'Reto' : x.modo === 'stakes' ? 'Apuestas' : 'Clásico') + ' · ' + pos + esc(date) + '</small></span></div>';
       }).join('') + '</div>';
     } else out += '<p class="stats-section-sub">Todavía no has jugado ningún duelo todos contra todos.</p>';
     return out;
@@ -458,7 +464,7 @@
       var rv = x.rival || {};
       return '<div class="history-item seq-v21-hrow ' + (x.resultado === 'win' ? 'w' : x.resultado === 'loss' ? 'l' : 'd') + '">' + modeIcon(x.modo) +
         '<span class="seq-v21-hrow-body"><span class="seq-v21-hrow-top">' + esc(rv.display_name || 'Jugador') + ' · ' + res + ' ' + num(x.mi_puntuacion) + '—' + num(x.puntuacion_rival) + '</span>' +
-        '<small>' + (String(x.modo || '').indexOf('reto_') === 0 ? 'Reto' : modeKey(x.modo) === 'stakes' ? 'Apuestas' : 'Clásico') + ' · ' + fmt(x.elo_antes) + ' → ' + fmt(x.elo_despues) + ' · ' + esc(date) + '</small></span>' +
+        '<small>' + (isReto(x.modo) ? 'Reto' : modeKey(x.modo) === 'stakes' ? 'Apuestas' : 'Clásico') + ' · ' + fmt(x.elo_antes) + ' → ' + fmt(x.elo_despues) + ' · ' + esc(date) + '</small></span>' +
         '<b class="seq-v21-hrow-elo">' + signed(x.elo_cambio) + '</b></div>';
     }).join('') + '</div>' : '<p class="stats-section-sub">Todavía no has jugado ningún duelo 1 vs 1.</p>');
     var h2h = s.head_to_head || [];
