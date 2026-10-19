@@ -582,6 +582,7 @@
         S.streak = r.es_correcta ? S.streak + 1 : 0;
         setVerdict(!!r.es_correcta, r.respuesta_correcta);
         sfx(!!r.es_correcta);
+        retoFx(!!r.es_correcta);
       }
       setTimeout(load, S.screen === 'reto' ? 700 : 300);
     }).catch(function (e) { S.sending = false; say(errText(e), true); setTimeout(load, 600); });
@@ -599,10 +600,13 @@
         S.streak = r.es_correcta ? S.streak + 1 : 0;
         setVerdict(!!r.es_correcta, r.respuesta_correcta);
         sfx(!!r.es_correcta);
+        retoFx(!!r.es_correcta);
       }
       setTimeout(load, 900);
     }).catch(function (e) { S.sending = false; say(errText(e), true); setTimeout(load, 600); });
   }
+  // Retos con reloj: aviso «±N SEGUNDOS» (src/online/reto-fx.js).
+  function retoFx(ok) { try { if (S.screen === 'reto' && S.data && window.SEQRetoFX) SEQRetoFX.timeChange(S.data.modo, ok); } catch (e) {} }
   // Acierto / fallo con el mismo componente que la partida normal (.feedback.ok /
   // .feedback.bad), con texto propio de duelo. Se construye con textContent.
   // 2.2: el texto lo rota SEQDuelPhrases.verdict (estable por pregunta); estos son los de reserva.
@@ -1087,11 +1091,13 @@
     if (d.estado === 'aceptado') {
       var y = d.yo, rv = d.rival_estado;
       var rs = '<p class="history-item-sub seq-d-rival">' + p.avatar + ' ' + p.name + ': ' + (rv.terminado ? 'ya ha jugado (verás su marca al terminar tú)' : rv.empezado ? 'jugando…' : 'aún no ha jugado') + '</p>';
-      if (y.terminado) { syncXpOnce('reto', d, xpFor('reto', d, y.aciertos)); return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Tu parte está hecha: ' + num(y.aciertos) + (d.modo && d.modo !== 'estandar' ? (num(y.aciertos) === 1 ? ' acierto' : ' aciertos') : '/' + num(d.n_preguntas || 20)) + '</div><p class="duel-result-hint">' + (xpFor('reto', d, y.aciertos) ? '+' + xpFor('reto', d, y.aciertos) + ' XP ya en tu cuenta. ' : '') + 'Cuando ' + p.name + ' juegue verás el resultado. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.reload()">Actualizar</button></div>' }
+      if (y.terminado) { try { if (window.SEQRetoFX) SEQRetoFX.onFinished(d); } catch (e) {} syncXpOnce('reto', d, xpFor('reto', d, y.aciertos)); return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Tu parte está hecha: ' + num(y.aciertos) + (d.modo && d.modo !== 'estandar' ? (num(y.aciertos) === 1 ? ' acierto' : ' aciertos') : '/' + num(d.n_preguntas || 20)) + '</div><p class="duel-result-hint">' + (xpFor('reto', d, y.aciertos) ? '+' + xpFor('reto', d, y.aciertos) + ' XP ya en tu cuenta. ' : '') + 'Cuando ' + p.name + ' juegue verás el resultado. Plazo: ' + esc(left(num(d.expira_at) - now)) + '.</p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.reload()">Actualizar</button></div>' }
       if (!y.empezado) return h + rs + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Tu turno, aspirante.</div><p class="duel-result-hint">Te quedan ' + esc(left(num(d.expira_at) - now)) + ' para jugar tu parte. Una vez empieces, no hay pausa.</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.retoAction(\'start\')">Jugar mi parte</button></div>';
       if (!y.actual) return h + '<p class="stats-section-sub">Cargando…</p>';
+      try { if (window.SEQRetoFX) SEQRetoFX.onQuestion(d); } catch (e) {}
       return playScreen('reto', d, y.actual.indice, y.actual.pregunta, null);
     }
+    try { if (window.SEQRetoFX) SEQRetoFX.onFinished(d); } catch (e) {}
     return h + resultBlock(d, 'reto');
   }
 
