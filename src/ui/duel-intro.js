@@ -58,6 +58,12 @@
     return { id: 'duelo', name: 'Duelo', badge: 'Duelo' };
   }
 
+  // Empezar de cero («Reiniciar progreso» o «Empezar de cero» al entrar con una cuenta): las marcas de Duelo son locales y
+  // van aparte del progreso, así que se borran a la vez; si no, Duelo se quedaba abierto en un dispositivo recién reiniciado.
+  function resetLocal() {
+    [K_UNLOCKED, K_ANNOUNCED, K_INTRO, K_HELP].forEach(function (k) { delete mem[k]; try { localStorage.removeItem(k); } catch (e) {} });
+  }
+
   // ---- Tarjeta de ayuda -------------------------------------------------------------------------------------------------
   function sec(img, title, body, extra) {
     return '<section class="dh-sec"><img class="dh-ico" src="' + img + '" alt="" draggable="false"><div class="dh-txt"><h3>' + title + '</h3><p>' + body + '</p></div>' + (extra ? '<div class="dh-subs">' + extra + '</div>' : '') + '</section>';
@@ -164,7 +170,7 @@
   try { document.addEventListener('DOMContentLoaded', function () { fillHelp(); refresh(); }); } catch (e) {}
 
   window.SEQDuelIntro = {
-    gate: gate, takeNewUnlock: takeNewUnlock, intercept: intercept, refresh: refresh, introIfNeeded: introIfNeeded, fillHelp: fillHelp, helpHtml: helpHtml,
+    gate: gate, takeNewUnlock: takeNewUnlock, resetLocal: resetLocal, intercept: intercept, refresh: refresh, introIfNeeded: introIfNeeded, fillHelp: fillHelp, helpHtml: helpHtml,
     NEED_LEVEL: NEED_LEVEL
   };
 })();

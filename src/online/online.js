@@ -723,6 +723,7 @@
           localStorage.removeItem('siredwards_quiz_v1_0_data');
           localStorage.removeItem('siredwards_quiz_encargos_intro_seen');
           localStorage.removeItem('siredwards_quiz_encargos_monday_week');
+          try { SEQDuelIntro.resetLocal(); } catch (e) {}
           if (window.SEQDataSync) window.SEQDataSync.reset();
           sync = newSyncState(account.player.id, 'skipped', { xp: 0, games: 0, correct: 0, wrong: 0 }, sync.seen || emptySeen());
           saveSync();
