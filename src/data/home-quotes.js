@@ -7,7 +7,7 @@ const HOME_QUOTES = [
   '«La mente es como un músculo. Cuanto más la ejercitas, más fuerte se vuelve.»',
   '«Se aprende más de un error que de diez aciertos. De ahí tu enorme potencial.»',
   '«Lo difícil de hoy es lo fácil de mañana. Siempre que mañana vuelvas.»',
-  '«El talento abre la puerta. La constancia es la que se queda a vivir dentro.»',
+  '«El talento abre la puerta. La constancia evita que te echen de casa.»',
   '«Lo que se repasa se queda. Lo demás se marcha sin despedirse.»',
   '«No se trata de saberlo todo. Se trata de saber qué falta.»',
   '«Un día sin aprender nada es un día perdido. Hoy aún estás a tiempo.»',

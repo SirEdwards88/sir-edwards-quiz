@@ -13,7 +13,9 @@ const ENCARGOS_PHRASES = {
     'Los encargos siguen ahí. Son pacientes. Yo no tanto.',
     'Cero de cuatro. Una cifra pequeña, pero muy expresiva.',
     'Ni uno todavía. La semana es larga; mi memoria, más.',
-    'Cero encargos. Si esto es una estrategia, es muy discreta.'
+    'Cero encargos. Si esto es una estrategia, es muy discreta.',
+    'Cuatro encargos pendientes. Has decidido estudiarlos desde una distancia muy prudente.',
+    'Si tu plan es ignorar los encargos hasta que se rindan, te informo: son bastante tercos.'
   ],
 
   encargos_1: [
