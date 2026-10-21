@@ -6,28 +6,29 @@ const ENCARGOS_PHRASES = {
   encargos_0: [
     '¿Aún no has empezado? Qué conmovedora confianza en el futuro.',
     'Cero encargos. Al menos eres constante en algo.',
-    'Veo que has optado por contemplar los encargos antes de afrontarlos.',
+    'Los encargos no requieren contemplación. Aunque admito que es una forma cómoda de evitarlos.',
     'Todavía ninguno. No quisiera presionarte, pero la semana sí lo hará.',
     'Cuatro encargos te esperan. Tú, mientras tanto, esperas que se hagan solos.',
     'La semana avanza. Tus encargos, aparentemente, no.',
     'Los encargos siguen ahí. Son pacientes. Yo no tanto.',
     'Cero de cuatro. Una cifra pequeña, pero muy expresiva.',
-    'Ni uno todavía. La semana es larga; mi memoria, más.',
-    'Cero encargos. Si esto es una estrategia, es muy discreta.',
-    'Cuatro encargos pendientes. Has decidido estudiarlos desde una distancia muy prudente.',
+    'Ni uno todavía. No te preocupes: aún no he empezado a sacar conclusiones.',
+    'Cero encargos. Una estrategia impecable para no correr el riesgo de terminarlos.',
+    'Cuatro encargos pendientes. Tu cautela empieza a parecer una política de Estado.',
     'Si tu plan es ignorar los encargos hasta que se rindan, te informo: son bastante tercos.'
   ],
 
   encargos_1: [
     'Uno de cuatro. Extraordinario. La civilización avanza lentamente.',
+    'Uno de cuatro. No quisiera que el éxito se te subiera a la cabeza tan pronto.',
     'Un encargo saldado. Procura no agotarte con semejante hazaña.',
-    'Ya llevas uno. Empezaba a preguntarme si llegarías a hacerlo.',
+    'Ya llevas uno. Retiro la hipótesis de que la lista fuera puramente decorativa.',
     'Uno menos. A este ritmo, quizá llegues a terminar la semana.',
     'Un encargo hecho. Qué agradable verte cooperar por una vez.',
     'Uno hecho. Ya podemos hablar de progreso sin sonrojarnos demasiado.',
     'Un encargo menos. La lista empieza a mostrar signos de vida.',
     'Has cumplido una obligación. Procura no convertirlo en un acontecimiento.',
-    'Uno saldado. Retiro, con lentitud, una de mis muchas dudas.',
+    'Uno saldado. Mi confianza en ti sigue siendo una inversión de alto riesgo.',
     'Un encargo menos. Tres más, y no me hago ilusiones.'
   ],
 
@@ -35,11 +36,11 @@ const ENCARGOS_PHRASES = {
     'Dos de cuatro. Empiezas a parecer constante. Lo apunto a lápiz, por si acaso.',
     'La mitad está hecha. Intenta no confundirlo con una victoria.',
     'Dos encargos saldados. Voy a tener que tratarte con cierto respeto. Provisional.',
-    'Vas por la mitad. La otra mitad separa a quien persevera de quien solo promete.',
-    'Dos de cuatro. Incluso tú deberías reconocer el progreso.',
+    'Vas por la mitad. El desenlace decidirá si debo felicitarte o archivar el caso.',
+    'Dos de cuatro. No es motivo de celebración, pero tampoco de investigación.',
     'Dos de cuatro. A partir de aquí, las excusas pagan recargo.',
     'Dos menos. Admito que la situación mejora. No me hagas arrepentirme.',
-    'Mitad y mitad. Como todo lo tuyo, perfectamente equilibrado.',
+    'Mitad cumplida. La otra mitad decidirá si esto era progreso o decoración.',
     'Dos de cuatro. Ni te felicito ni te regaño: te observo.'
   ],
 
@@ -50,16 +51,16 @@ const ENCARGOS_PHRASES = {
     'Falta uno. Haz el favor de no convertir la recta final en tragedia.',
     'Tres de cuatro. Ya huele a aprobación. Procura que no sea un espejismo.',
     'Tres. Solo queda una oportunidad de arruinar una buena impresión.',
-    'Tres de cuatro. Terminar sería elegante. Esperar a que seas elegante ya es pedir demasiado.',
+    'Tres de cuatro. La elegancia consiste en terminar lo que se empieza.',
     'Tres saldados. Casi doy la semana por buena. Casi.',
     'Tres de cuatro. Pena que siempre quede uno que se hace el difícil.',
-    'Falta uno. Lo dejo a tu criterio, que es una forma de decir a tu riesgo.'
+    'Falta uno. Confío en tu criterio; así podré atribuirte el resultado.'
   ],
 
   encargos_4: [
     'Los cuatro. Magnífico. Por fin puedo fingir que estaba orgulloso de ti.',
-    'Semana saldada. Suficiente, que en este expediente ya es mucho decir.',
-    'Los cuatro completados. Un día para el calendario. Y para la sospecha.',
+    'Semana saldada. Por una vez, las cuentas cuadran sin intervención mía.',
+    'Los cuatro completados. Voy a dejar constancia de este fenómeno antes de que desaparezca.',
     'Todo hecho. Debo reconocerlo: has sido sorprendentemente útil.',
     'Cuatro de cuatro. Excelente. Ahora intenta no esperar un aplauso.',
     'Encargos completados. Me quedo sin nada que reprocharte, y eso me incomoda.',

@@ -11,18 +11,18 @@ const ENCARGOS_INTRO = {
   result: {
     buena: [
       'Vaya, vaya. Parece que tenemos a alguien con potencial.',
-      'Sorprendentemente decente.',
+      'Aceptable. No permitas que la palabra te impresione.',
       'Mejor de lo que cabía esperar. Y yo esperaba poco.',
       'No ha estado mal. Detesto decirlo, pero ahí queda.',
       'Una buena actuación. No arruines la estadística intentando repetirla.',
-      'Un resultado respetable. Lo pronuncio con cautela y sin testigos.',
+      'Un resultado respetable. Lo diré una sola vez, para que conserve su valor.',
       'Interesante. Casi creo que sabes lo que haces. Casi.'
     ],
     normal: [
       'Interesante. Hay material con el que trabajar.',
       'Digamos que ha sido… instructiva.',
       'Correcta. Que es, a veces, el insulto más educado.',
-      'Un comienzo. Hay tanto que corregir que elegir por dónde empezar ya sería un primer acierto.',
+      'Hay tanto por corregir que prefiero empezar por el principio. No quisiera abrumarte.',
       'Ha tenido sus momentos. Pocos, pero ha tenido.',
       'Has cumplido. No es una ovación, pero tampoco una llamada al servicio técnico.',
       'Ni lo uno ni lo otro. Una mediocridad con cierto estilo.'
@@ -30,17 +30,17 @@ const ENCARGOS_INTRO = {
     mala: [
       'Hum. Digamos que hay margen de mejora.',
       'Prefiero no comentar. Lo cual, viniendo de mí, es un comentario.',
-      'Lo he anotado todo. Con detalle. Con mucho detalle.',
+      'Lo he anotado todo. Incluso aquello que habría preferido no presenciar.',
       'No te preocupes: hay espacio de sobra en tu expediente.',
-      'Ha sido memorable, a su manera.',
-      'He visto comienzos peores. No muchos, y ninguno que recuerde con agrado.',
+      'Ha sido memorable. No necesariamente por las razones que convendría.',
+      'He visto comienzos peores. No recuerdo ninguno que merezca ser citado.',
       'Un debut que conviene no enseñar a nadie.'
     ],
     victoria: [
       'Has ganado. Tomo nota de tu crueldad.',
-      'Has ganado. Qué desconsiderado con tu rival.',
+      'Has ganado. Tu rival confiaba en ti para mantener cierta compostura.',
       'Has ganado. Un debut así invita a tomar precauciones.',
-      'Victoria. El debut ha empezado con demasiada soltura.',
+      'Victoria. No quisiera que confundieras un buen estreno con una tradición.',
       'Has ganado. Lo dejaré constar como una excepción razonable.',
       'Has ganado. Lo registro con una ceja ligeramente alzada.'
     ],
@@ -48,7 +48,7 @@ const ENCARGOS_INTRO = {
       'Has perdido. Lo he anotado, con la discreción debida.',
       'Derrota. Hay quien aprende a la primera y quien da más trabajo. Aún es pronto para saber cuál eres.',
       'Has perdido. Un estreno así deja material para meses. Qué generoso por tu parte.',
-      'Derrota. Empezar con margen de mejora es empezar con futuro. O con deudas.',
+      'Derrota. Al menos ya sabes qué resultado conviene evitar.',
       'Has perdido. Sucede en las mejores familias y en los peores momentos.',
       'Has perdido. Y yo que esperaba una sorpresa.'
     ],
@@ -58,14 +58,14 @@ const ENCARGOS_INTRO = {
       'Tablas. Nadie se lleva el mérito y nadie la culpa. Muy práctico.',
       'A la par. Con la sensación de haber visto media película.',
       'Empate: el único resultado que obliga a repetir para saber algo.',
-      'Ni victoria ni derrota. Un equilibrio impecable y bastante inútil.'
+      'Ni victoria ni derrota. La discreción del resultado contrasta con su falta de utilidad.'
     ],
     neutra: [
       'Lo he anotado. Lo anoto todo; no lo tomes como un cumplido.',
       'Sin comentarios. Que no es lo mismo que sin opinión.',
-      'Ha sido una partida. Es cuanto puedo certificar con honestidad.',
+      'Ha habido una partida. No quisiera comprometerme más allá de los hechos.',
       'Ni aplauso ni reproche. Una partida más para el registro.',
-      'Dato recibido. Mi opinión queda en suspenso, cosa que me ocurre poco.',
+      'Dato recibido. Mi veredicto sigue en paradero reservado.',
       'Registrada. Aún hace falta más material para formarme una idea.'
     ]
   },
@@ -84,24 +84,24 @@ const ENCARGOS_INTRO = {
         'Cuatro de cuatro la semana pasada.',
         'Repasé la semana pasada: los cuatro encargos, saldados.',
         'La semana pasada no me dejaste nada que reprochar. Qué descortesía.',
-        'Tres encargos y el Gran Encargo, todos cobrados. Lo he comprobado dos veces.',
+        'Tres encargos y el Gran Encargo, todos saldados. He buscado una irregularidad; sin éxito.',
         'Tu semana pasada cierra sin una sola mancha. Tendré que buscarlas en otra parte.',
         'Hiciste todo lo que te pedí. Todo. Aún me estoy recuperando.',
         'No quedó ni un encargo pendiente. Busqué con lupa y todo.',
         'Cuatro encargos entregados y ni una excusa. Qué desagradable de presenciar.',
-        'La semana pasada cerró sin deudas. Hasta el tintero está desconcertado.',
+        'La semana cerró sin deudas. El libro de cuentas parece decepcionado.',
         'Semana pasada: completa. Recibido con una mueca discreta.'
       ],
       reproche: [
-        'He revisado tu expediente de la semana pasada. Y lo he releído, por si acaso.',
+        'He revisado tu expediente semanal. No mejora con una segunda lectura.',
         'La semana pasada me debes unos cuantos encargos. Hoy empiezo a llevar la cuenta.',
         'Tus encargos anteriores quedaron sin saldar. Ya han echado raíces.',
-        'Tu semana pasada tiene huecos. Muchos, y elegantemente distribuidos.',
+        'Tu semana tiene más asuntos pendientes que una novela por entregas.',
         'Algunos encargos de la semana pasada quedaron pendientes. Yo no los terminaré por ti.',
-        'Tu semana pasada se quedó a medias. O a menos.',
+        'Tu semana quedó a medias. La otra mitad, por lo visto, tenía otros planes.',
         'Dejaste encargos por el camino. Allí se han quedado.',
         'No lo cumpliste todo, y yo me entero de todo. Una combinación incómoda.',
-        'La semana pasada quedó incompleta. La he sellado igualmente, por costumbre.',
+        'La semana quedó incompleta. La he archivado bajo «previsible».',
         'Sobre tu semana pasada, tengo opiniones. Ninguna favorable.'
       ],
       // Primera carta tras la semana de incorporación (que no se evalúa): ni aprobación ni reproche.
@@ -111,14 +111,14 @@ const ENCARGOS_INTRO = {
         'Lo de la semana pasada fue una presentación, no un examen. Disfrútalo mientras dure.',
         'La semana pasada contó como bienvenida. Nadie evaluó nada, ni yo.',
         'Tu primera semana quedó fuera de la evaluación, por cortesía de la casa.',
-        'La primera semana no se puntúa. Considérala un préstamo.',
+        'La primera semana no se puntúa. Considera que la casa te ha concedido crédito.',
         'Aquella primera semana fue un paseo por las instalaciones. Sin nota.'
       ],
       // Regreso tras varias semanas sin abrir Inicio: no se juzga una semana concreta, se recibe al que vuelve.
       ausencia: [
         'Vaya. Has vuelto. Empezaba a imaginarte en otro continente.',
         'Semanas sin noticias tuyas. Empezaba a acostumbrarme al silencio.',
-        'Tu expediente ha acumulado polvo. Es lo único que ha acumulado.',
+        'Tu expediente ha acumulado polvo. He estado a punto de catalogarlo como antigüedad.',
         'Qué ausencia tan notable. Es lo más notable que has hecho últimamente.',
         'Cuánto tiempo. No he contado las semanas. Bueno, sí las he contado.',
         'Reaparece quien ya figuraba en mi archivo de casos perdidos.'
@@ -132,40 +132,40 @@ const ENCARGOS_INTRO = {
         'Veamos si fue disciplina o simple suerte.',
         'Lo hiciste a propósito, ¿verdad? Detesto esa clase de ambición.',
         'Me cuesta encontrarte defectos. Dame tiempo; suelo lograrlo.',
-        'Ha sido competente. Sigo buscando la letra pequeña.',
+        'Competente, sin duda. Una palabra que rara vez me obliga a rectificar.',
         'Que no se te suba a la cabeza: hay sombreros que no admiten más volumen.',
-        'Te concedo un mérito. Uno. Del tamaño de una miga.',
+        'Te concedo un mérito. No quisiera que el gesto se interpretara como entusiasmo.',
         'No esperes aplausos. El mejor elogio que doy es seguir vigilándote.',
-        'Esta semana subo el listón, por si acaso te lo habías creído.'
+        'Esta semana subiré el listón. No quisiera que te instalaras en la comodidad.'
       ],
       reproche: [
         'Digamos que esta semana tendrás ocasión de mejorar mi opinión. Más abajo ya no puede estar.',
         'Yo no olvido nada. Es mi principal defecto y mi única virtud.',
         'No me sorprende. Tampoco me ha hecho gracia.',
-        'Otra semana, otra oportunidad. Intenta que esta no quede en el mismo cajón.',
+        'Otra semana, otra oportunidad. Sería agradable que esta tuviera un desenlace distinto.',
         'Prefiero pensar que fue falta de tiempo. La alternativa te deja peor.',
         'Podría fingir que lo entiendo, pero entonces ambos estaríamos mintiendo.',
         'No te lo reprocho. Bueno, sí. Es lo que mejor se me da.',
-        'El enfado es vulgar. Lo mío es algo más fino y más duradero, y lo practico con esmero.',
+        'No estoy enfadado. El enfado pasa; las anotaciones permanecen.',
         'Te concedo el beneficio de la duda. Con intereses.',
-        'Hay quien aprende de sus errores. Me consta que existen.',
+        'Dicen que los errores enseñan. Confío en que alguno de los tuyos tome la iniciativa.',
         'Podría ser peor. Siempre puede serlo; esa es la gracia de evaluarte.'
       ],
       incorporacion: [
         'A partir de hoy, tu expediente cuenta de verdad.',
         'Se acabó el periodo de cortesía. Empieza el de observación.',
         'Desde hoy cada encargo cuenta. Y cada excusa también.',
-        'Esta semana, por fin, hay algo que juzgar. Procuraré ser elocuente.',
+        'Esta semana tendré por fin resultados que comentar. Espero que me facilites el trabajo.',
         'La benevolencia inicial se agotó. La exigencia, en cambio, viene de serie.',
-        'Desde ahora los resultados se leen con lupa. Es pequeña, pero firme.'
+        'Desde ahora, cada resultado tendrá su lectura. Confío en que la tuya sea breve.'
       ],
       ausencia: [
         'Los encargos de las semanas perdidas han caducado, como las promesas de volver pronto.',
-        'No te preguntaré dónde estabas. Lo imagino, y no me convence.',
-        'Borrón y cuenta nueva. Solo esta vez, y solo porque me aburría.',
+        'No te preguntaré dónde estabas. La agenda, por fortuna, no exige explicaciones.',
+        'Borrón y cuenta nueva. El borrón es mío; la cuenta, naturalmente, tuya.',
         'Considera esto una segunda oportunidad. Las terceras no existen.',
         'Ni un reproche. Hoy. Guárdalo como se guarda un eclipse.',
-        'De vuelta, entonces. Lo digo con la misma sinceridad con que me despedí.'
+        'De vuelta, entonces. La casa recupera una de sus costumbres menos fiables.'
       ]
     },
     // 3) Cierre, común a las tres variantes: la semana que empieza.
@@ -173,22 +173,22 @@ const ENCARGOS_INTRO = {
       'La semana está lista. Caduca el domingo; mi paciencia, antes.',
       'Nuevos encargos. Procura no estrenarlos con excusas.',
       'Cada semana, todos prometen ser mejores. Veamos cuánto dura contigo.',
-      'Tres encargos y un Gran Encargo. Ya sabes cómo funciona esto.',
+      'Tres encargos y un Gran Encargo. La semana no se administrará sola.',
       'Ha llegado tu nueva tanda de obligaciones. De nada.',
       'Tengo trabajo para ti, y tú, por desgracia, tiempo libre.',
-      'Tus encargos ya están donde siempre. Yo, mientras tanto, afilaré el lápiz.',
+      'Tus encargos están preparados. He dejado las excusas fuera, para ahorrar espacio.',
       'Siete días por delante. Hay quien los aprovecha; hay quien los comenta.',
       'La semana empieza limpia. Tú decides cuánto tardas en mancharla.',
       'Hay encargos nuevos esperando. No tienen prisa; yo, en cambio, sí.',
       'Las semanas empiezan con propósitos y terminan con explicaciones.',
       'Una semana entera para demostrar algo. Elige qué.',
-      'Te observaré, como siempre. Con un interés estrictamente profesional.',
-      'Los encargos exigen algo más que buenas intenciones. Qué contrariedad.',
+      'Te seguiré de cerca. La discreción es una virtud que no siempre puedo permitirme.',
+      'Los buenos propósitos son encantadores. Lástima que no cuenten como encargos.',
       'El reloj ya corre. A mí no me preocupa; a ti debería.',
       'Hay una página en blanco con tu nombre. Procura que valga la tinta.',
       'Que nadie diga que no te avisé: tienes hasta el domingo.',
       'Los encargos no se completan solos. Lo he intentado, por si acaso.',
-      'Cuando quieras. Es decir, cuanto antes.'
+      'Cuando gustes. Aunque, de ser posible, antes de que tenga que volver a pedirlo.'
     ]
   }
 };

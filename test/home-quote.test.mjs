@@ -11,7 +11,7 @@ test('banco de diez citas: las dos de siempre y las nuevas, en el tono de Sir Ed
   const q = quotes();
   assert.equal(q.length, 10);
   assert.equal(new Set(q).size, q.length, 'sin repetidas');
-  assert.ok(q.includes('«La mente es como un músculo. Cuanto más la ejercitas, más fuerte se vuelve.»'));
+  assert.ok(q.includes('«La mente necesita ejercicio. La tuya agradecería empezar por el calentamiento.»'));
   assert.ok(q.includes('«Se aprende más de un error que de diez aciertos. De ahí tu enorme potencial.»'));
   for (const t of q) {
     assert.match(t, /^«[^«»]+»$/, 'comillas españolas: ' + t);
@@ -84,7 +84,7 @@ test('sin datos guardados, con datos corruptos o sin bolsa, no escribe ni rompe'
   for (const saved of [undefined, 'no es json', '"texto"']) {
     const t = load({ store, pickRotatingPhrase: (k, list) => list[0] }, saved);
     assert.doesNotThrow(() => t.H.refresh());
-    assert.equal(t.el.textContent, '«La mente es como un músculo. Cuanto más la ejercitas, más fuerte se vuelve.»');
+    assert.equal(t.el.textContent, '«La mente necesita ejercicio. La tuya agradecería empezar por el calentamiento.»');
     assert.equal(t.mem[KEY], saved);
   }
   const t = load({ store: {}, pickRotatingPhrase: (k, list) => list[0] }, '{"xp":1}');

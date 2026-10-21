@@ -74,7 +74,7 @@ const SEQSirEvents = (function () {
     '«Estoy aquí por si necesitas un testigo de tus errores. Soy muy puntual.»',
     '«Sigue, sigue. Fingiré que no estoy mirando.»',
     '«He visto cosas peores. También mejores. Hoy aún no me decido.»',
-    '«Qué concentración. Hasta parece que te importa.»',
+    '«Qué concentración. Procuraré no interrumpir el momento histórico.»',
     '«Pasaba por aquí. Mentira: vengo a ver cuánto aguantas.»',
     '«No me mires a mí. La pregunta es la que manda.»',
     '«Guardo silencio. Es lo más amable que sé ofrecerte.»',
@@ -100,7 +100,7 @@ const SEQSirEvents = (function () {
       '«Diez. Empiezo a tomarte en serio.»',
       '«Qué regularidad. Empieza a parecer un método.»',
       '«Diez seguidas. Qué inesperadamente competente.»',
-      '«Diez. El primer desastre empieza a hacerse esperar.»',
+      '«Diez seguidas. Estoy esperando el tropiezo con una paciencia que no pienso reconocer.»',
       '«Esto empieza a ser incómodo para mis teorías.»',
       '«Diez aciertos. Seguiré fingiendo que no estoy impresionado.»'],
     15: ['«Esto empieza a ponerse serio. Si aún no sudas, empieza.»',
@@ -127,7 +127,7 @@ const SEQSirEvents = (function () {
       '«Esto ya no es suerte.»',
       '«Creo que acabamos de encontrar un problema para tus rivales.»',
       '«Treinta. Voy a tener que retirar algunas de mis opiniones.»',
-      '«Hay que ser muy valiente para seguir ahora.»',
+      '«Treinta seguidas. A estas alturas, fallar sería casi una decisión narrativa.»',
       '«Treinta. Esto ya no necesita comentarios. Y eso me molesta.»',
       '«Treinta. Mis felicitaciones. No las malgastes.»',
       '«Treinta aciertos. Has sido impecable, y eso complica bastante mi trabajo.»',
@@ -209,7 +209,7 @@ const SEQSirEvents = (function () {
     '«El día acaba de empezar. No me estropees la mañana tan pronto.»',
     '«Cultura antes del desayuno. Sin café no pienses mucho, que se nota.»',
     '«He madrugado yo y has madrugado tú. Sospecho que ninguno de los dos tenía mejor plan.»',
-    '«Buenos días. Espero que tu cerebro haya llegado antes que tú.»',
+    '«Buenos días. Confío en que tus ideas hayan tenido tiempo de vestirse.»',
     '«A estas horas hasta las buenas decisiones cuestan. Te felicito por esta.»',
     '«A estas horas. Inquietante. Encomiable, no tanto.»',
     '«Café, luz y preguntas. Una combinación peligrosa para tu ego.»',
@@ -218,7 +218,7 @@ const SEQSirEvents = (function () {
     '«Mientras los demás buscan las zapatillas, tú buscas respuestas.»',
     '«Buenos días. Qué manera tan innecesariamente productiva de empezar el día.»',
     '«Madrugando para demostrar conocimientos. Cada cual con sus aficiones.»',
-    '«El día apenas empieza y ya aspiras a tener razón. Ambicioso.»'
+    '«El día apenas empieza. Espero que tus certezas hayan dormido lo suficiente.»'
   ];
   var DAY_RARE = [{ t: '«Son las siete de la mañana y ya estoy supervisando tu rendimiento. Qué vida tan plena.»', h: [7] }];
   var NIGHT_EARLY = [
@@ -232,15 +232,15 @@ const SEQSirEvents = (function () {
     '«Mañana habrá que madrugar. Pero eso será problema de tu yo futuro.»',
     '«Otra pregunta antes de dormir. Naturalmente.»',
     '«A estas horas incluso las buenas ideas parecen malas. Veremos las tuyas.»',
-    '«La noche avanza. Tu sentido común, aparentemente, no.»',
+    '«La noche avanza con puntualidad. Tu hora de retirarte sigue sin constar.»',
     '«Ya es mañana. Tú sigues aquí. Admirable o preocupante.»'
   ];
   var NIGHT_LATE = [
     '«¿Dormir? No. ¿Otra partida? Evidentemente.»',
-    '«A estas horas solo queda quien sigue despierto por convicción o por imprudencia.»',
+    '«A estas horas, seguir despierto ya es una decisión. Seguir acertando sería un argumento mejor.»',
     '«No preguntaré por qué sigues en pie. Tengo cierta dignidad.»',
     '«He venido a comprobar que no soy el único. Veo que no. Qué decepción.»',
-    '«A estas horas, la cultura general es un acto de rebeldía. O de insomnio. Yo apuesto por lo segundo.»',
+    '«A estas horas, la cultura general puede ser una afición o un síntoma. No haré preguntas.»',
     '«Las mejores ideas llegan de madrugada. Las peores, a juzgar por esta, también.»',
     '«Ya no es tarde. Es temprano. Y sigues aquí.»',
     '«Tu almohada debe de sentirse bastante ofendida.»',

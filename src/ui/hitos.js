@@ -23,11 +23,11 @@
           'Diez preguntas superadas. El equipaje aún parece ligero.',
           'Diez. Todavía tienes ese aire de quien ha leído el folleto.',
           'Primera decena cumplida. Tu optimismo aún no paga alquiler.',
-          'Diez. Queda mucho por delante; por suerte, todavía no te has enterado.'
+          'Diez. Queda camino por delante; no conviene gastar toda la confianza en el primer tramo.'
         ] },
         20: { img: 'monoculo', phrases: [
           'Veinte. Esto empieza a parecer talento. O una casualidad extraordinaria.',
-          'Mitad del camino. Tu entusiasmo ha solicitado una excedencia.',
+          'Veinte. La mitad queda atrás; tu entusiasmo parece haber tomado una ruta alternativa.',
           'Veinte preguntas. El cansancio ya conoce tu nombre. Qué indiscreción.',
           'Media travesía. Tu obstinación empieza a merecer un estudio clínico.',
           'Veinte. Ya no avanzas con elegancia, pero avanzas.',
@@ -37,7 +37,7 @@
         ] },
         30: { img: 'manos', phrases: [
           'Treinta. No descorches nada: aún puedes convertir el mérito en anécdota.',
-          'Treinta. Casi puedo oler el final. Tú también, supongo.',
+          'Treinta. El final ya se distingue en el horizonte. No te distraigas contemplándolo.',
           'Treinta preguntas superadas. Tu instinto de supervivencia empieza a resultar indecoroso.',
           'Última decena. Retirarse ahora sería una forma de sinceridad.',
           'Treinta respuestas. El final se acerca; tu dignidad lo hace a otro ritmo.',
@@ -58,7 +58,7 @@
           'Trece. El margen de interpretación acaba de desaparecer.',
           'Trece respuestas. La duda no es un defecto; ignorarla sí.',
           'Trece. Hasta la respuesta correcta puede esconder una mala razón.',
-          'Trece. Hasta ahora has acertado. Es lo único que se te va a exigir.'
+          'Trece. Has acertado todas hasta aquí. Mantenerlo es el único plan razonable.'
         ] },
         20: { img: 'manos', phrases: [
           'Veinte. Un solo error y todo esto habrá sido un precioso ensayo.',

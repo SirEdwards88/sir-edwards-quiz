@@ -13,7 +13,7 @@ const NAMED_PHRASES = {
   ],
   end_desastre: [
     'Derrota, {nombre}. Puedes culpar al azar; ya está acostumbrado.',
-    '{nombre}, tu derrota ha sido tan completa que me resulta casi entrañable.',
+    '{nombre}, el resultado ha sido concluyente. No en el sentido que habrías preferido.',
     '{nombre}, el resultado ha sido contundente. Desde aquí, lo único posible es mejorar, que es una forma elegante de decirlo.',
     'Mal día, {nombre}. Mañana las preguntas serán las mismas; tú, con suerte, mejor.'
   ],
@@ -39,7 +39,7 @@ const NAMED_PHRASES = {
   comeback: [
     '«Vaya, {nombre}. Había empezado a archivar tu expediente.»',
     '«{nombre}. Ha pasado tiempo. No preguntaré dónde estabas. Lo adivino.»',
-    '«Así que sigues por aquí, {nombre}. Mi libreta no te esperaba.»'
+    '«Así que has vuelto, {nombre}. Había empezado a disfrutar de la tranquilidad; qué inoportuno.»'
   ],
   day: [
     '«Buenos días, {nombre}. Hoy tu cerebro ha llegado a tiempo.»',
@@ -90,7 +90,7 @@ const NAMED_PHRASES = {
   duel_empate: [
     'Empate con {nombre}. Dos expedientes abiertos y ninguna conclusión satisfactoria.',
     '{nombre} no ha conseguido imponerse, y tú tampoco. Qué diplomacia tan improductiva.',
-    'Empate con {nombre}. Por una vez, nadie tendrá que fingir sorpresa.'
+    'Empate con {nombre}. Por una vez, el marcador ha conseguido dejaros a ambos sin réplica.'
   ]
 };
 
