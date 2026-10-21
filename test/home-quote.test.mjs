@@ -7,9 +7,9 @@ import vm from 'node:vm';
 const read = (p) => fs.readFileSync(new URL('../' + p, import.meta.url), 'utf8');
 const quotes = () => { const c = {}; vm.createContext(c); vm.runInContext(read('src/data/home-quotes.js') + '\nthis.Q = HOME_QUOTES;', c); return c.Q; };
 
-test('banco de diez citas: las dos de siempre y las nuevas, en el tono de Sir Edwards', () => {
+test('banco de nueve citas: las dos de siempre y las nuevas, en el tono de Sir Edwards', () => {
   const q = quotes();
-  assert.equal(q.length, 10);
+  assert.equal(q.length, 9);
   assert.equal(new Set(q).size, q.length, 'sin repetidas');
   assert.ok(q.includes('«La mente necesita ejercicio. La tuya agradecería empezar por el calentamiento.»'));
   assert.ok(q.includes('«Se aprende más de un error que de diez aciertos. De ahí tu enorme potencial.»'));
@@ -42,7 +42,7 @@ test('refresh pinta la que elige la bolsa (poolKey home_quote)', () => {
   const { H, el } = load({ store: {}, pickRotatingPhrase: (k, list) => { asked.push([k, list.length]); return list[2]; } });
   H.refresh();
   assert.equal(el.textContent, '«Lo difícil de hoy es lo fácil de mañana. Siempre que mañana vuelvas.»');
-  assert.deepEqual(asked, [['home_quote', 10]]);
+  assert.deepEqual(asked, [['home_quote', 9]]);
 });
 
 test('si falta la bolsa, el store o la elección falla, se conserva el texto de index.html', () => {

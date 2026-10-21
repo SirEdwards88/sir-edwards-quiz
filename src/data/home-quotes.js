@@ -7,11 +7,10 @@ const HOME_QUOTES = [
   '«La mente necesita ejercicio. La tuya agradecería empezar por el calentamiento.»',
   '«Se aprende más de un error que de diez aciertos. De ahí tu enorme potencial.»',
   '«Lo difícil de hoy es lo fácil de mañana. Siempre que mañana vuelvas.»',
-  '«El talento te consigue una entrevista. Lo demás conviene llevarlo preparado.»',
+  '«El talento te abre la puerta. Lo que digas al entrar corre de tu cuenta.»',
   '«Lo que se repasa se queda. Lo demás se marcha sin despedirse.»',
   '«No se trata de saberlo todo. Se trata de saber qué falta.»',
   '«Un día sin aprender nada es un día perdido. Hoy aún estás a tiempo.»',
   '«Quien no duda de lo que sabe nunca descubre lo que ignora.»',
-  '«El conocimiento se acumula despacio y se pierde deprisa. Conviene cuidarlo.»',
-  '«La curiosidad mantiene despierto el ingenio. Incluso fuera de temporada.»'
+  '«La curiosidad despierta el ingenio. Al tuyo le vendría bien un madrugón.»'
 ];

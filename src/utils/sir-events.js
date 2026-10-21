@@ -79,29 +79,27 @@ const SEQSirEvents = (function () {
     '«No me mires a mí. La pregunta es la que manda.»',
     '«Guardo silencio. Es lo más amable que sé ofrecerte.»',
     '«Una respuesta sensata. Anotaremos la fecha.»',
-    '«Todo en orden. Intenta no estropear mi informe.»',
-    '«Sigues aquí. Yo también. Esto empieza a parecer una costumbre.»',
-    '«Continúa. De momento no has estropeado nada. No arruinemos el momento.»'
+    '«Todo en orden. Intenta no estropearme el día.»',
+    '«Sigues aquí. Yo también. Esto empieza a parecer una costumbre.»'
   ];
   var VISIT_RARE = [
     '«No tengo nada que añadir. Francamente, me preocupa.»',
     '«Si estás leyendo esto, deberías estar mirando la pregunta.»',
     '«Esto es una aparición. No la desperdicies mirándome.»',
     '«Aparezco poco, y no es casualidad. Es administración del encanto.»',
-    '«Soy una ventana emergente con buenos modales. Sigue a lo tuyo.»',
+    '«Soy una interrupción con buenos modales. Sigue a lo tuyo.»',
     '«Existo en una pantalla y aun así tengo opiniones. Continúa.»',
     '«Este aviso se retira en unos segundos. La pregunta, no.»'
   ];
   var STREAK_PHRASES = {
     10: ['«Hmm… ya llevas unas cuantas. Sospecho de la suerte. Y de ti.»',
-      '«Eso empieza a parecer una racha. Y yo, a parecer incómodo.»',
+      '«Eso empieza a parecer una racha. Y yo, a perder la compostura.»',
       '«Diez aciertos. Voy a concederte un silencio de aprobación; no te acostumbres.»',
       '«Hoy los fallos parecen haberse tomado el día libre.»',
       '«Diez. Empiezo a tomarte en serio.»',
       '«Qué regularidad. Empieza a parecer un método.»',
       '«Diez seguidas. Qué inesperadamente competente.»',
       '«Diez seguidas. Estoy esperando el tropiezo con una paciencia que no pienso reconocer.»',
-      '«Esto empieza a ser incómodo para mis teorías.»',
       '«Diez aciertos. Seguiré fingiendo que no estoy impresionado.»'],
     15: ['«Esto empieza a ponerse serio. Si aún no sudas, empieza.»',
       '«¿Piensas parar en algún momento?»',
@@ -121,8 +119,7 @@ const SEQSirEvents = (function () {
       '«Voy a necesitar una página nueva.»',
       '«Veinte seguidas. Empiezo a reconsiderar algunas opiniones.»',
       '«Veinte. No quisiera decir «impresionante». Pero sería mentira.»',
-      '«Veinte. Procura disfrutarlo discretamente.»',
-      '«Veinte. Esto empieza a ser personalmente incómodo.»'],
+      '«Veinte. Procura disfrutarlo discretamente.»'],
     30: ['«Treinta. Bien. Ahora sí estoy impresionado, y detesto que se me note.»',
       '«Esto ya no es suerte.»',
       '«Creo que acabamos de encontrar un problema para tus rivales.»',
@@ -145,7 +142,7 @@ const SEQSirEvents = (function () {
       '«{n} seguidas, sacrificadas por una sola pregunta. Admirable.»',
       '«Lo estabas haciendo bien. Qué descuido tan puntual.»',
       '«Un fallo a tiempo. Qué considerado: así no te creces.»'],
-    mid: ['«{n} seguidas. Todo eso, derrotado por una sola pregunta.»',
+    mid: [
       '«{n}. Y ahora cero. Las matemáticas tienen un sentido del humor peculiar.»',
       '«Iba a felicitarte. Por fortuna, has evitado esa situación embarazosa.»',
       '«{n} aciertos seguidos y una pregunta para echarlo todo a perder. Eficiencia admirable.»',
@@ -179,26 +176,26 @@ const SEQSirEvents = (function () {
     high: ['«{n} seguidas. Voy a quedarme un rato; alguien debe vigilar este interrogatorio.»',
       '«He preparado té para situaciones menos delicadas. Qué desperdicio de previsión.»',
       '«Por mi parte, sigo aquí. Mi dimisión tendría un efecto teatral, pero sería prematura.»',
-      '«Hay tardes que exigen una paciencia extraordinaria. Esta, por lo visto, exige la mía.»',
+      '«Hay momentos que exigen una paciencia extraordinaria. Este, por lo visto, exige la mía.»',
       '«No he cerrado el libro. Sería una descortesía dejar el capítulo a medias.»',
       '«He archivado días mejores, desde luego. Pero este expediente aún no está cerrado.»']
   };
 
   // Récord personal ({n} = la racha nueva), regreso tras días y categoría débil ({cat} = su nombre): siempre en positivo o en tono de reproche suave.
   var RECORD = [
-    '«{n} seguidas. Tu mejor marca. Qué inoportuna mejora.»', '«Récord personal: {n}. Lo anoto en tinta discreta.»',
+    '«{n} seguidas. Tu mejor marca. Qué inoportuna mejora.»', 
     '«{n}. Mejor que nunca. Alguien ha estado practicando.»', '«Tu mejor racha hasta ahora: {n}. Procura que no sea el techo.»',
     '«Récord. {n} seguidas. Detesto tener que felicitarte.»', '«{n}. Superas tu marca anterior. Y mis expectativas, de paso.»'
   ];
   var COMEBACK = [
     '«De vuelta. Confiaba en que la ausencia hubiera sido de estudio. Veo que no.»', '«Así que sigues por aquí. Qué detalle avisar.»',
-    '«Ha pasado tiempo. Tu expediente ha criado polvo; tú, con suerte, conocimiento.»', '«Regresas sin avisar. No preguntaré dónde estabas. Lo adivino.»',
+    '«Ha pasado tiempo. Tu expediente ha criado polvo; tú, con suerte, conocimiento.»', 
     '«Mi silla favorita cogía polvo. Qué oportuno tu regreso.»', '«Días sin verte. Los he empleado en dudar de ti. Con método.»'
   ];
   var WEAK = [
     '«{cat}. Tu talón de Aquiles. Y has acertado. Lo anoto, con reservas.»', '«Has acertado en {cat}. Precisamente en esa. Casi parece que has estudiado.»',
     '«{cat} suele ser tu punto flaco. Hoy se ha portado. Interesante.»', '«Has acertado en {cat}. Un accidente afortunado, y ni siquiera se repetirá.»',
-    '«{cat}: has acertado. No cambiaré aún mi informe, pero dejaré de subrayarlo.»',
+    '«{cat}: has acertado. No cambiaré aún mi opinión, pero dejaré de subrayarla.»',
     '«La categoría {cat} te debe una disculpa. Tú todavía me debes varias.»',
     '«{cat}: tu categoría más débil. Una oportunidad más para que dejes de avergonzarte en ella.»'
   ];
@@ -211,14 +208,12 @@ const SEQSirEvents = (function () {
     '«He madrugado yo y has madrugado tú. Sospecho que ninguno de los dos tenía mejor plan.»',
     '«Buenos días. Confío en que tus ideas hayan tenido tiempo de vestirse.»',
     '«A estas horas hasta las buenas decisiones cuestan. Te felicito por esta.»',
-    '«A estas horas. Inquietante. Encomiable, no tanto.»',
-    '«Café, luz y preguntas. Una combinación peligrosa para tu ego.»',
+    '«Café, luz y preguntas. Una combinación peligrosa para tu vanidad.»',
     '«El mundo todavía se despereza y tú ya estás aquí.»',
     '«Una mente despierta a primera hora. Qué desconcertante.»',
     '«Mientras los demás buscan las zapatillas, tú buscas respuestas.»',
     '«Buenos días. Qué manera tan innecesariamente productiva de empezar el día.»',
-    '«Madrugando para demostrar conocimientos. Cada cual con sus aficiones.»',
-    '«El día apenas empieza. Espero que tus certezas hayan dormido lo suficiente.»'
+    '«Madrugando para demostrar conocimientos. Cada cual con sus aficiones.»'
   ];
   var DAY_RARE = [{ t: '«Son las siete de la mañana y ya estoy supervisando tu rendimiento. Qué vida tan plena.»', h: [7] }];
   var NIGHT_EARLY = [
@@ -232,7 +227,7 @@ const SEQSirEvents = (function () {
     '«Mañana habrá que madrugar. Pero eso será problema de tu yo futuro.»',
     '«Otra pregunta antes de dormir. Naturalmente.»',
     '«A estas horas incluso las buenas ideas parecen malas. Veremos las tuyas.»',
-    '«La noche avanza con puntualidad. Tu hora de retirarte sigue sin constar.»',
+    '«La noche avanza con puntualidad. Tu hora de retirarte, en cambio, no.»',
     '«Ya es mañana. Tú sigues aquí. Admirable o preocupante.»'
   ];
   var NIGHT_LATE = [

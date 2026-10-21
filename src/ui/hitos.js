@@ -19,15 +19,13 @@
           'Diez. Esto podría acabar bien. La perspectiva me inquieta.',
           'Diez preguntas y ni una ambulancia. Seguiré mirando.',
           'Diez. Aún caminas como si conocieras el terreno.',
-          'Diez. La confianza inicial suele tener una autonomía limitada.',
+          'Diez. La confianza inicial suele agotarse antes que el camino.',
           'Diez preguntas superadas. El equipaje aún parece ligero.',
           'Diez. Todavía tienes ese aire de quien ha leído el folleto.',
-          'Primera decena cumplida. Tu optimismo aún no paga alquiler.',
-          'Diez. Queda camino por delante; no conviene gastar toda la confianza en el primer tramo.'
+          'Primera decena cumplida. Tu optimismo aún no paga alquiler.'
         ] },
         20: { img: 'monoculo', phrases: [
           'Veinte. Esto empieza a parecer talento. O una casualidad extraordinaria.',
-          'Veinte. La mitad queda atrás; tu entusiasmo parece haber tomado una ruta alternativa.',
           'Veinte preguntas. El cansancio ya conoce tu nombre. Qué indiscreción.',
           'Media travesía. Tu obstinación empieza a merecer un estudio clínico.',
           'Veinte. Ya no avanzas con elegancia, pero avanzas.',
@@ -40,7 +38,6 @@
           'Treinta. El final ya se distingue en el horizonte. No te distraigas contemplándolo.',
           'Treinta preguntas superadas. Tu instinto de supervivencia empieza a resultar indecoroso.',
           'Última decena. Retirarse ahora sería una forma de sinceridad.',
-          'Treinta respuestas. El final se acerca; tu dignidad lo hace a otro ritmo.',
           'Quedan diez. A estas alturas, ya no es resistencia: es costumbre.',
           'Treinta. Has convertido la terquedad en un método de transporte.',
           'Treinta. Diez más y tendré que reconocerte algo. Aún no sé el qué.'
@@ -54,7 +51,6 @@
           'Trece. Un pequeño descuido adquiriría proporciones históricas.',
           'Trece respuestas. No confundas familiaridad con certeza.',
           'Trece. La distancia entre el acierto y el desastre cabe en una palabra.',
-          'Trece respuestas. La certeza también sabe imitar al error.',
           'Trece. El margen de interpretación acaba de desaparecer.',
           'Trece respuestas. La duda no es un defecto; ignorarla sí.',
           'Trece. Hasta la respuesta correcta puede esconder una mala razón.',
@@ -63,7 +59,6 @@
         20: { img: 'manos', phrases: [
           'Veinte. Un solo error y todo esto habrá sido un precioso ensayo.',
           'Veinte. Cinco respuestas separan el criterio del ridículo.',
-          'Veinte preguntas. La exactitud ya no admite interpretaciones benévolas.',
           'Veinte. El desenlace se acerca con una discreción admirable.',
           'Veinte respuestas. Ahora, hasta una coma puede resultar decisiva.',
           'Veinte. La intuición es un testigo poco fiable bajo juramento.',

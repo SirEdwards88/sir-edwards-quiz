@@ -19,18 +19,18 @@ const ENCARGOS_INTRO = {
       'Interesante. Casi creo que sabes lo que haces. Casi.'
     ],
     normal: [
-      'Interesante. Hay material con el que trabajar.',
+      'Hay material. No digo cuál, ni de qué calidad.',
       'Digamos que ha sido… instructiva.',
       'Correcta. Que es, a veces, el insulto más educado.',
       'Hay tanto por corregir que prefiero empezar por el principio. No quisiera abrumarte.',
       'Ha tenido sus momentos. Pocos, pero ha tenido.',
       'Has cumplido. No es una ovación, pero tampoco una llamada al servicio técnico.',
-      'Ni lo uno ni lo otro. Una mediocridad con cierto estilo.'
+      'Ni brilla ni ofende. Mediocridad con cierto estilo.'
     ],
     mala: [
-      'Hum. Digamos que hay margen de mejora.',
+      'Hum. Mucho por mejorar. Casi todo.',
       'Prefiero no comentar. Lo cual, viniendo de mí, es un comentario.',
-      'Lo he anotado todo. Incluso aquello que habría preferido no presenciar.',
+      'Lo he visto todo. Incluso lo que habría preferido no ver.',
       'No te preocupes: hay espacio de sobra en tu expediente.',
       'Ha sido memorable. No necesariamente por las razones que convendría.',
       'He visto comienzos peores. No recuerdo ninguno que merezca ser citado.',
@@ -39,9 +39,9 @@ const ENCARGOS_INTRO = {
     victoria: [
       'Has ganado. Tomo nota de tu crueldad.',
       'Has ganado. Tu rival confiaba en ti para mantener cierta compostura.',
-      'Has ganado. Un debut así invita a tomar precauciones.',
+      'Has ganado. Te ruego que no lo celebres delante del vencido.',
       'Victoria. No quisiera que confundieras un buen estreno con una tradición.',
-      'Has ganado. Lo dejaré constar como una excepción razonable.',
+      'Has ganado. Diré que fue mérito tuyo y no descuido ajeno.',
       'Has ganado. Lo registro con una ceja ligeramente alzada.'
     ],
     derrota: [
@@ -56,17 +56,16 @@ const ENCARGOS_INTRO = {
       'Un empate. Dos personas igual de convincentes. Es decir, nada.',
       'Empate. Dos voluntades y ninguna razón para levantar la copa.',
       'Tablas. Nadie se lleva el mérito y nadie la culpa. Muy práctico.',
-      'A la par. Con la sensación de haber visto media película.',
-      'Empate: el único resultado que obliga a repetir para saber algo.',
-      'Ni victoria ni derrota. La discreción del resultado contrasta con su falta de utilidad.'
+      'A la par. Con la sensación de haber visto media función.',
+      'Empate: el único resultado que obliga a repetir para saber algo.'
     ],
     neutra: [
       'Lo he anotado. Lo anoto todo; no lo tomes como un cumplido.',
       'Sin comentarios. Que no es lo mismo que sin opinión.',
       'Ha habido una partida. No quisiera comprometerme más allá de los hechos.',
-      'Ni aplauso ni reproche. Una partida más para el registro.',
+      'Ni gloria ni vergüenza. El día sigue su curso.',
       'Dato recibido. Mi veredicto sigue en paradero reservado.',
-      'Registrada. Aún hace falta más material para formarme una idea.'
+      'Nada que celebrar y nada que lamentar. Un resultado de sobremesa.'
     ]
   },
   // La carta son cuatro líneas: apertura fija («Es lunes.»), VEREDICTO sobre la semana pasada, COMENTARIO de Sir Edwards y CIERRE
@@ -82,36 +81,28 @@ const ENCARGOS_INTRO = {
     verdict: {
       aprobacion: [
         'Cuatro de cuatro la semana pasada.',
-        'Repasé la semana pasada: los cuatro encargos, saldados.',
         'La semana pasada no me dejaste nada que reprochar. Qué descortesía.',
-        'Tres encargos y el Gran Encargo, todos saldados. He buscado una irregularidad; sin éxito.',
         'Tu semana pasada cierra sin una sola mancha. Tendré que buscarlas en otra parte.',
         'Hiciste todo lo que te pedí. Todo. Aún me estoy recuperando.',
-        'No quedó ni un encargo pendiente. Busqué con lupa y todo.',
-        'Cuatro encargos entregados y ni una excusa. Qué desagradable de presenciar.',
         'La semana cerró sin deudas. El libro de cuentas parece decepcionado.',
-        'Semana pasada: completa. Recibido con una mueca discreta.'
+        'Cuatro de cuatro. He revisado el calendario por si era festivo.',
+        'Hiciste todo lo que se te pidió. Hay quien lo llama deber; tú, aparentemente, afición.'
       ],
       reproche: [
         'He revisado tu expediente semanal. No mejora con una segunda lectura.',
-        'La semana pasada me debes unos cuantos encargos. Hoy empiezo a llevar la cuenta.',
         'Tus encargos anteriores quedaron sin saldar. Ya han echado raíces.',
         'Tu semana tiene más asuntos pendientes que una novela por entregas.',
-        'Algunos encargos de la semana pasada quedaron pendientes. Yo no los terminaré por ti.',
         'Tu semana quedó a medias. La otra mitad, por lo visto, tenía otros planes.',
-        'Dejaste encargos por el camino. Allí se han quedado.',
         'No lo cumpliste todo, y yo me entero de todo. Una combinación incómoda.',
         'La semana quedó incompleta. La he archivado bajo «previsible».',
         'Sobre tu semana pasada, tengo opiniones. Ninguna favorable.'
       ],
       // Primera carta tras la semana de incorporación (que no se evalúa): ni aprobación ni reproche.
       incorporacion: [
-        'Tu primera semana fue de prueba. No cuenta, de momento.',
         'La semana pasada fue un ensayo. Se perdona; es lo que tiene empezar.',
         'Lo de la semana pasada fue una presentación, no un examen. Disfrútalo mientras dure.',
         'La semana pasada contó como bienvenida. Nadie evaluó nada, ni yo.',
         'Tu primera semana quedó fuera de la evaluación, por cortesía de la casa.',
-        'La primera semana no se puntúa. Considera que la casa te ha concedido crédito.',
         'Aquella primera semana fue un paseo por las instalaciones. Sin nota.'
       ],
       // Regreso tras varias semanas sin abrir Inicio: no se juzga una semana concreta, se recibe al que vuelve.
@@ -128,15 +119,12 @@ const ENCARGOS_INTRO = {
     comment: {
       aprobacion: [
         'Esta semana volveré a comprobarlo. Soy un hombre de costumbres inquisitivas.',
-        'Impecable. Qué incómodo, tener que respetarte.',
+        'Impecable. Respetarte me resulta laborioso.',
         'Veamos si fue disciplina o simple suerte.',
         'Lo hiciste a propósito, ¿verdad? Detesto esa clase de ambición.',
         'Me cuesta encontrarte defectos. Dame tiempo; suelo lograrlo.',
-        'Competente, sin duda. Una palabra que rara vez me obliga a rectificar.',
         'Que no se te suba a la cabeza: hay sombreros que no admiten más volumen.',
-        'Te concedo un mérito. No quisiera que el gesto se interpretara como entusiasmo.',
-        'No esperes aplausos. El mejor elogio que doy es seguir vigilándote.',
-        'Esta semana subiré el listón. No quisiera que te instalaras en la comodidad.'
+        'No esperes aplausos. El mejor elogio que doy es seguir vigilándote.'
       ],
       reproche: [
         'Digamos que esta semana tendrás ocasión de mejorar mi opinión. Más abajo ya no puede estar.',
@@ -154,10 +142,9 @@ const ENCARGOS_INTRO = {
       incorporacion: [
         'A partir de hoy, tu expediente cuenta de verdad.',
         'Se acabó el periodo de cortesía. Empieza el de observación.',
-        'Desde hoy cada encargo cuenta. Y cada excusa también.',
+        'Hasta hoy eras invitado. Desde hoy eres de la casa y respondes como tal.',
         'Esta semana tendré por fin resultados que comentar. Espero que me facilites el trabajo.',
-        'La benevolencia inicial se agotó. La exigencia, en cambio, viene de serie.',
-        'Desde ahora, cada resultado tendrá su lectura. Confío en que la tuya sea breve.'
+        'La benevolencia inicial se agotó. La exigencia, en cambio, es hereditaria.'
       ],
       ausencia: [
         'Los encargos de las semanas perdidas han caducado, como las promesas de volver pronto.',
@@ -171,7 +158,6 @@ const ENCARGOS_INTRO = {
     // 3) Cierre, común a las tres variantes: la semana que empieza.
     close: [
       'La semana está lista. Caduca el domingo; mi paciencia, antes.',
-      'Nuevos encargos. Procura no estrenarlos con excusas.',
       'Cada semana, todos prometen ser mejores. Veamos cuánto dura contigo.',
       'Tres encargos y un Gran Encargo. La semana no se administrará sola.',
       'Ha llegado tu nueva tanda de obligaciones. De nada.',
@@ -179,7 +165,6 @@ const ENCARGOS_INTRO = {
       'Tus encargos están preparados. He dejado las excusas fuera, para ahorrar espacio.',
       'Siete días por delante. Hay quien los aprovecha; hay quien los comenta.',
       'La semana empieza limpia. Tú decides cuánto tardas en mancharla.',
-      'Hay encargos nuevos esperando. No tienen prisa; yo, en cambio, sí.',
       'Las semanas empiezan con propósitos y terminan con explicaciones.',
       'Una semana entera para demostrar algo. Elige qué.',
       'Te seguiré de cerca. La discreción es una virtud que no siempre puedo permitirme.',

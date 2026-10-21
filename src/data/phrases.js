@@ -26,7 +26,7 @@ const END_PHRASES = {
   mediocre: { 
     title: "Mediocridad con modales", 
     phrases: [
-      "Ni fu ni fa. Un resultado ideal para opinar con aplomo sin que nadie pida pruebas.",
+      "Término medio. Ideal para opinar con aplomo sin que nadie pida pruebas.",
       "El triunfo de la mediocridad: saber lo justo para no asustar y callar lo justo para no molestar.",
       "Estás justo en ese tramo donde la gente te escucha por educación, no por interés.",
       "Has reunido el saber justo para pasar por persona informada. Enhorabuena, supongo.",
@@ -60,7 +60,6 @@ const END_PHRASES = {
       "Has pensado antes de responder. Confieso que el método tiene cierto porvenir.",
       "Bastante bien. Lo suficiente para que empiecen a creerte inteligente. No te emociones.",
       "Buen resultado. No temas: mi puesto sigue sin estar en peligro.",
-      "Sabes bastante. Una pena que la vida no funcione con preguntas tipo test.",
       "Notable. El tipo de resultado que suena mejor cuanto menos se examina.",
       "Muy buen resultado. Una rareza estadística que procuraré vigilar de cerca.",
       "Sabes más de lo que creía. No te preocupes: aún queda margen para decepcionarme.",
@@ -71,7 +70,7 @@ const END_PHRASES = {
       "Una actuación competente. Tendré que acostumbrarme.",
       "Has demostrado que, ocasionalmente, sabes de lo que hablas.",
       "Bien hecho. Te concedo el placer de tener razón hasta la próxima pregunta.",
-      "Notable. Ahora intenta no convertirlo en tu personalidad.",
+      "Notable. Ahora procura no sacarlo en cada conversación.",
       "Has conseguido impresionar ligeramente a un hombre muy difícil de impresionar."
     ] 
   },
@@ -81,12 +80,10 @@ const END_PHRASES = {
       "Muy cerca de la excelencia. La historia, por desgracia, solo recuerda el pleno.",
       "Rozar la gloria y ahogarse en la orilla. Tiene su elegancia, siempre que le pase a otro.",
       "Tan cerca del pleno que hasta duele. El «casi», por desgracia, no se enmarca.",
-      "Te ha faltado un suspiro para la perfección. Yo, por si acaso, lo habría contenido.",
-      "Casi perfecto. Un «casi» que tendrás que explicarle a tu orgullo.",
-      "Rozaste la perfección. El problema es que la perfección no firma acuerdos parciales.",
+      "Excelente. Que el pleno se te escape es, en el fondo, una cortesía a los demás.",
       "Has estado a un paso del pleno. Qué lástima que ese paso fuera precisamente el que no diste.",
       "Resultado excelente. La perfección, sin embargo, sigue exigiendo el último trámite.",
-      "Un resultado extraordinario. El 100% estaba ahí, mirándote. Tú miraste hacia otro lado un segundo.",
+      "Extraordinario. El 100% estaba ahí, mirándote. Tú miraste a otra parte un segundo.",
       "Has rozado la perfección. Por lo visto, no estaba de humor para visitas.",
       "Tan cerca de la perfección que hasta ella tendrá que reconocer el esfuerzo."
     ] 
@@ -100,10 +97,8 @@ const END_PHRASES = {
       "Pleno absoluto. Disfrútalo; no todos los días puedo fingir que me has sorprendido.",
       "Pleno. Exijo que revisen las preguntas: algo tan limpio no puede ser trabajo honrado.",
       "Pleno absoluto. Qué desagradable tener que admitir que has sido excelente.",
-      "20 de 20. No dejaré que se te suba a la cabeza; ya hay bastante orgullo en circulación.",
       "Impecable. Tendré que reconocerlo, aunque no mejore mi jornada.",
-      "Perfecto. Hoy, al parecer, has venido con los deberes hechos.",
-      "20 de 20. No tengo ninguna crítica, así que te criticaré a ti: tanto acierto resulta sospechoso."
+      "Perfecto. Hoy, al parecer, has venido con los deberes hechos."
     ] 
   }
 };;
@@ -114,11 +109,10 @@ const SURVIVAL_FAIL_PHRASES = {
     "Si hicieran un documental de esta partida, iría directo al género de comedia de terror.",
     "Tus respuestas han tenido una cualidad admirable: ninguna ha interrumpido el silencio con un acierto.",
     "Hoy el progreso intelectual ha hecho una pausa. Larga.",
-    "Tu cerebro ha elegido hoy una jornada de huelga. El momento, desde luego, es impecable.",
+    "Tu cerebro ha elegido hoy una jornada de huelga. Servicios mínimos: ninguno.",
     "La caída ha sido tan estrepitosa que hasta las neuronas supervivientes han pedido el traslado.",
     "Si la ignorancia diera calambre, ahora mismo estarías iluminando todo el país.",
     "Ni la selección natural encuentra una categoría adecuada para este resultado.",
-    "Cuarenta preguntas y una conclusión temprana: la prudencia también consiste en retirarse.",
     "Tu supervivencia terminó exactamente donde empezó a faltar el conocimiento.",
     "La esperanza era tuya. Yo me limité a no interferir en su caída.",
     "Tu resultado tiene una virtud: deja muy poco espacio para la interpretación.",
@@ -135,7 +129,6 @@ const SURVIVAL_FAIL_PHRASES = {
     "Fin del trayecto. Largo, trágico y, lamentablemente, presenciado por mí.",
     "Un esfuerzo encomiable para un resultado tan tristemente modesto.",
     "Te has detenido ante el último muro. Una pena que no aceptara negociaciones.",
-    "Has visto la victoria desde tan cerca que podrías describirla de memoria. Tocarla ya es otra cosa.",
     "Has perdido con excelentes modales. El marcador, por desgracia, carece de educación.",
     "Tuviste oportunidades. La última, en particular, esperaba algo más de ti.",
     "Estabas cerca de sobrevivir. Qué lástima que cerca no cuente.",
@@ -154,7 +147,6 @@ const SUDDEN_FAIL_PHRASES = {
     "Una oportunidad era todo lo que tenías. Y no ha sobrevivido a la experiencia.",
     "La eliminación ha llegado antes de que hubiera tiempo para presentar alegaciones.",
     "No ha sido una derrota. Ha sido una ejecución académica.",
-    "La muerte fue súbita. La preparación del desenlace, en cambio, ha sido minuciosa.",
     "Una sola oportunidad. Has conseguido que parezca una cláusula abusiva.",
     "Eliminación inmediata. Ni siquiera el juego ha pedido una segunda opinión.",
     "El margen de error era cero. Y tú has comprobado que lo decían en serio.",
@@ -167,9 +159,7 @@ const SUDDEN_FAIL_PHRASES = {
     "Había varias opciones. Has escogido la única que no deseaba ser elegida.",
     "No te faltó mucho. Te sobró una respuesta equivocada.",
     "Una respuesta distinta y esta frase sería otra. Yo, por mi parte, ya la tenía escrita.",
-    "Entre tantas respuestas, has escogido la que más deseaba evitarte. Un gesto casi personal.",
     "Has gastado tu única vida en esa respuesta. Espero que al menos te cayera simpática.",
-    "La eliminación es firme. La muerte súbita no suele aceptar reclamaciones.",
     "La partida terminó cuando decidiste confiar en esa respuesta. La confianza, al menos, fue absoluta."
   ]
 };;
@@ -199,7 +189,6 @@ const TIMETRIAL_END_PHRASES = {
     "Has ido rápido. No siempre en la dirección correcta.",
     "No ha sido brillante, pero al menos el reloj no se ha reído.",
     "Has mantenido el ritmo. En esta casa, terminar sin alarmar al servicio ya es una cortesía.",
-    "Has mantenido el tipo. Una expresión generosa para un resultado tan poco dado a los titulares.",
     "Ni brillante ni desastroso. El tipo de resultado que permite seguir con la conversación.",
     "El reloj ha terminado. Tu dignidad, por los pelos, también.",
     "Un ritmo competente. La palabra «competente» tendrá que bastar por hoy.",
@@ -210,19 +199,15 @@ const TIMETRIAL_END_PHRASES = {
     "El reloj ha perdido. Tú no.",
     "No sé qué has hecho, pero el reloj ha pedido que no se repita.",
     "Has ido tan deprisa que el tiempo ha tenido que comprobar sus propias cuentas.",
-    "Cuando hay conocimiento, el reloj empieza a parecer un detalle administrativo.",
     "Has respondido tan deprisa que he tenido que revisar si las preguntas eran las mismas.",
     "Se acabó el tiempo. Por una vez, también se acabaron las excusas.",
     "Velocidad y conocimiento, al parecer. No esperaba que ambos se presentaran juntos.",
     "El cronómetro marcaba segundos. Tú marcabas diferencias.",
-    "Has convertido la presión en un trámite. El cronómetro agradecería que no se lo contaras a sus colegas.",
     "El reloj corría contra ti. Mala elección por su parte.",
     "Velocidad, precisión y conocimiento. Casi parece que hubieras leído las instrucciones.",
     "Has terminado antes que el tiempo. Por supuesto.",
-    "El cronómetro pidió tensión. Tú le has ofrecido un espectáculo; la reverencia sobra.",
     "Has respondido tan deprisa que el tiempo ha empezado a sospechar de sus propias funciones.",
     "Has tratado el cronómetro como un mero trámite. Me temo que empieza a tomárselo como algo personal.",
-    "Has convertido la presión en una ventaja. Empiezo a preocuparme.",
     "Has respondido antes de que el cronómetro pudiera formular una queja. Un detalle de cortesía.",
     "Un ritmo excelente. El cronómetro está reconsiderando sus opciones."
   ]
@@ -237,12 +222,9 @@ const MENTAL_CALC_END_PHRASES = {
     "Tu cerebro ha solicitado una excedencia. La aritmética, en cambio, sigue de servicio.",
     "Los números siguen ahí. Tu capacidad para entenderlos, ni rastro.",
     "La cuenta daba un resultado. Tú has preferido otro, por originalidad.",
-    "La aritmética se ha impuesto. No ha sido una competición especialmente reñida.",
-    "Entre tú y los números ha hecho falta un mediador. Ninguno ha conseguido acercar posturas.",
     "Has calculado por intuición. Un método audaz, siempre que no se necesite el resultado correcto.",
     "Eran números, no jeroglíficos. Has complicado hasta lo obvio.",
     "La suma ha pedido explicaciones. Te recomiendo que respondas por escrito y con ayuda.",
-    "La calculadora no habría aceptado esa respuesta. Y tiene muy poca personalidad.",
     "La aritmética ha salido indemne. No puedo garantizar lo mismo de tu reputación como calculista."
   ],
   normal: [
@@ -252,13 +234,11 @@ const MENTAL_CALC_END_PHRASES = {
     "No has calculado: has abierto una negociación con los números y aceptado la primera oferta.",
     "No has derrotado a las matemáticas, pero has conseguido que te toleren.",
     "No ha sido bonito, pero el resultado puede defenderse sin llamar a un abogado.",
-    "Resultado aceptable. Las matemáticas han decidido no elevar una queja formal.",
     "Tu relación con la aritmética es cordial. No os invitaría a compartir vacaciones."
   ],
   bien: [
     "Has resuelto las cuentas. No habrá celebración oficial; procuraré que la noticia no se filtre.",
     "Los números te esperaban con malas intenciones. Se han ido con las manos vacías.",
-    "Operación completada con éxito. Voy a revisar el informe por si contiene una errata.",
     "Has hecho matemáticas por voluntad propia. No quisiera sacar conclusiones precipitadas, pero tomaré nota.",
     "Cálculo mental sin sudor. Si además lo has disfrutado, tendremos que revisar el reglamento.",
     "Las matemáticas te han dejado pasar. Me temo que ahora esperarán que vuelvas a hacerlo.",
@@ -267,7 +247,6 @@ const MENTAL_CALC_END_PHRASES = {
     "Los números han dejado de discutir contigo. No descarto que estén preparando una apelación.",
     "No necesitas calculadora. La calculadora te necesita a ti.",
     "Cálculo mental impecable. Ahora intenta hacerlo sin presumir.",
-    "Las matemáticas te han visto venir y han decidido no presentar resistencia. Una rendición inusual.",
     "Has hecho las cuentas de cabeza. La calculadora puede empezar a buscar trabajo.",
     "Los números han cooperado. No pienso preguntar qué les has prometido.",
     "Precisión admirable. Hasta los números se han puesto firmes, y no es lo habitual contigo.",
@@ -283,7 +262,6 @@ const LUCIDEZ_END_PHRASES = {
     'El conocimiento estaba ahí. La respuesta, aparentemente, estaba de vacaciones.',
     'Lucidez mental: temporalmente fuera de servicio.',
     'El umbral estaba delante de ti. Al parecer, también había una pared.',
-    'Tu cerebro tenía un plan. Lamentablemente, no era este.',
     'La respuesta correcta existía. Tú y ella decidisteis no conoceros.',
     'Has demostrado una gran capacidad para generar respuestas alternativas.',
     'Tu confianza era de 10/10. El resultado decidió ser más realista.',
@@ -292,17 +270,12 @@ const LUCIDEZ_END_PHRASES = {
     'Has llegado hasta el límite. El límite te ha mirado con cierta lástima.',
     'Has llegado muy lejos para caer justo al final. Un talento peculiar.',
     'La respuesta estaba al alcance. La lucidez, no.',
-    'El conocimiento te trajo hasta aquí. La sensatez, convocada tarde, no ha comparecido.',
-    'La presión ha hecho su trabajo. El tuyo, lamentablemente, quedó pendiente.',
     'No ha sido falta de conocimiento. Ha sido falta de cabeza, que es bastante más difícil de arreglar.',
     'Una duda. Una sola. Y has demostrado con ella de qué material estás hecho.',
     'Has llegado al umbral. Y has decidido admirarlo desde fuera.',
     'Tu confianza llegó hasta el final. Tus respuestas, no.',
     'Todo iba perfectamente. Entonces empezaste a responder.',
-    'Pedías cinco segundos más. Con cinco años tampoco habría salido nada decente.',
-    'La respuesta estaba en algún rincón de tu cabeza. El servicio de habitaciones no ha sabido localizarla.',
-    'La mente entendió la pregunta. La respuesta decidió independizarse.',
-    'La lucidez llegó tarde. No es grave; lo preocupante es que ya conoce el camino.'
+    'La respuesta estaba en algún rincón de tu cabeza. El servicio de habitaciones no ha sabido localizarla.'
   ],
   victoria: [
     'Lucidez Mental completada. La humildad puede esperar cinco minutos.',
@@ -310,19 +283,18 @@ const LUCIDEZ_END_PHRASES = {
     'Impecable. Cuesta no sentir cierta antipatía.',
     'Brillante. Voy a procurar que no se note cuánto me cuesta admitirlo.',
     'La lucidez es tuya. Por ahora.',
-    'Excelente. Ni un volantazo. Empiezo a sospechar que conocías el recorrido.',
+    'Excelente. Ni un tropiezo. Empiezo a sospechar que conocías el recorrido.',
     'Has demostrado lucidez aquí. Por prudencia, limitaré el certificado a estas instalaciones.',
     'Superado. Ya puedes decir «lo sabía» con cierta legitimidad.',
     'Has atravesado el límite. Intenta no mirar atrás: queda feo presumir.',
     'La mente no cedió. Tú tampoco.',
     'Has llegado al final con la cabeza fría. Tendré que averiguar en qué nevera la guardas.',
-    'Tres fases y un juicio final. La duda ha perdido, y tu ego ha ganado más de lo que merece.',
+    'Tres fases y un juicio final. La duda ha perdido; tu vanidad, de rebote, ha ganado.',
     'La presión aumentó. Tu lucidez también.',
     'Pensar bajo presión es poco habitual. Hacerlo bien y sin alboroto resulta casi descortés.',
     'No era solo conocimiento. Era sangre fría, que es más raro y menos agradecido.',
     'Has pensado antes de responder. No quisiera que el precedente sentara jurisprudencia.',
     'El último obstáculo ha caído. La corona es de cartón, pero luce.',
-    'Has llegado a una altura notable. Te ruego que no conviertas la vista en discurso.',
     'La puerta estaba cerrada. La respuesta era la llave. Lo difícil era recordar que la llevabas.',
     'Lucidez demostrada. Ahora procura no volverte insoportable.',
     'Has mantenido la lucidez bajo presión. Voy a fingir que no me ha impresionado.'
@@ -330,14 +302,13 @@ const LUCIDEZ_END_PHRASES = {
 };;
 
 const LUCIDEZ_PERFECT_PHRASES = [
-  '30/30. Queda probado que todo ese tiempo jugando al quiz servía de algo.',
+  '30/30. Queda probado que todo ese tiempo jugando no ha sido en balde.',
   '30/30. Esto ya no es lucidez: es una ofensa estadística.',
   '30/30. Ninguna duda pendiente. Me temo que tendré que conformarme con felicitarte.',
   '30/30. Ni un solo desvío. Me pregunto de dónde sacas la brújula.',
   '30/30. Tu cabeza ha trabajado con una diligencia impropia de alguien a quien suelo supervisar.',
   '30/30. Un resultado tan limpio que mi instinto de sospecha se ha quedado sin ocupación.',
   '30/30. O has estudiado, o alguien ha estado suplantando tu criterio habitual.',
-  '30/30. Ningún fallo, ninguna duda. Has dejado mi oficio reducido a la felicitación.',
   '30/30. La cúspide mental es tuya. Cuidado con la altura: se respira mal y se habla de más.',
   '30/30. Has dejado a la mente humana en muy buen lugar. A mí, en uno peor.',
   '30/30. Tu mente ha hablado y, para colmo, tenía razón.',
@@ -357,15 +328,13 @@ const SURVIVAL_WIN_PHRASES = [
   "Enhorabuena. El mundo sigue con sus asuntos, pero aquí podemos permitirnos una pausa.",
   "La prueba exigía conocimientos. Tú aportaste resistencia. Técnicamente, funcionó.",
   "Has llegado al final. Que nadie confunda la supervivencia con el talento. Yo, el primero.",
-  "Has llegado al final con vida. La estadística, que esperaba otra cosa, ha tomado nota.",
+  "Has llegado al final con vida. La estadística, que esperaba otra cosa, pide disculpas.",
   "Has sobrevivido. Descansa: mañana volverán las preguntas y fingirán no conocerte.",
   "Has sobrevivido. Contra todo pronóstico, incluido el mío.",
-  "Sigues en pie al final de la lista. Un golpe duro para mis predicciones.",
   "Has llegado al final. Una demostración de resistencia bastante inesperada.",
   "Victoria. Voy a tener que retirar un par de comentarios.",
   "Has sobrevivido. No necesariamente con elegancia, pero sí con resultados.",
-  "Una victoria merecida. Procura no convertirla en una leyenda personal.",
-  "Has aguantado hasta el final. Mis previsiones eran bastante menos optimistas."
+  "Una victoria merecida. Procura no convertirla en una leyenda personal."
 ];;
 
 const SUDDEN_WIN_PHRASES = [
@@ -377,14 +346,12 @@ const SUDDEN_WIN_PHRASES = [
   "La siguiente pregunta podía eliminarte. Decidiste eliminarla tú primero.",
   "Has llegado al final sin pestañear. La muerte súbita tendrá que esperar.",
   "Muerte súbita. Para alguien más.",
-  "Una vida, una oportunidad y ningún argumento que pueda utilizar contra ti. Qué contratiempo.",
   "No te has limitado a sobrevivir al límite: lo has dejado en ridículo.",
   "Eliminación evitada. Me temo que el suspense tendrá que buscar otro empleo.",
-  "Sin segunda oportunidad y sin necesitarla. Qué tedioso resulta que seas tan eficiente.",
-  "Una vida y todas las preguntas contestadas. Por fin, una relación sana con las consecuencias.",
+  "Sin segunda oportunidad y sin necesitarla. Tanta eficiencia roza la mala educación.",
+  "Una vida y todas las preguntas contestadas. Por fin, alguien que trata bien a las consecuencias.",
   "No has concedido al error ni una oportunidad. Empiezo a comprender por qué está tan resentido.",
-  "La muerte súbita esperaba una escena memorable. Tendrá que conformarse con tu ausencia de errores.",
-  "Veinticinco preguntas y una sola vida. Reconozco que has administrado ambas con insolente eficacia."
+  "La muerte súbita esperaba una escena memorable. Tendrá que conformarse con tu ausencia de errores."
 ];;
 
 const REVIEW_END_PHRASES = {
@@ -399,11 +366,9 @@ const REVIEW_END_PHRASES = {
       "Ayer te vencieron. Hoy, al menos, has aprendido a reconocer al enemigo.",
       "Tus errores están empezando a quedarse sin sitio donde esconderse.",
       "Tus tropiezos de antaño empiezan a dar fruto. Una cosecha bastante peculiar.",
-      "Cada acierto recuperado me deja menos munición. Qué descortesía.",
       "Tu memoria ha vuelto al trabajo. Sin disculpas, pero ha vuelto.",
       "Repasar hará que tus errores te preocupen menos. A mí me privará de un entretenimiento considerable.",
       "Hoy no has borrado errores. Los has convertido en respuestas.",
-      "Parece que tus antiguos tropiezos ya no recuerdan cómo ganarte.",
       "Volviste a por las preguntas que te derrotaron. Mala idea para ellas.",
       "Segunda oportunidad para ti. Última para ellas.",
       "Has vuelto al lugar de tus errores. Esta vez sabías dónde mirar.",
@@ -416,18 +381,16 @@ const REVIEW_END_PHRASES = {
       "Has aprendido lo que antes ignorabas. Una proeza menor, pero sin precedentes.",
       "Has vuelto sobre tus errores. Hoy han sido ellos quienes han tenido que estudiar.",
       "Has corregido el pasado con bastante elegancia. La misma que te faltó al cometerlo.",
-      "Las preguntas recordaban tu antiguo rendimiento. Error suyo.",
-      "El conocimiento también sabe vengarse. Hoy has tenido la cortesía de demostrarlo."
+      "Las preguntas recordaban tu antiguo rendimiento. Error suyo."
     ]
   },
   insuficiente: {
     title: 'Los errores resisten',
     phrases: [
       "Hay errores que ni se inmutan cuando apareces. Tienen motivos.",
-      "Algunas preguntas saben dónde encontrarte. No quisiera que empezaras a considerarlo una amistad.",
       "Quedan fallos por convertir en respuestas. Una cantidad que, por piedad, no voy a cuantificar.",
       "Nada grave: para esto se inventó el Repaso. Para los que no aprenden a la primera.",
-      "Hoy no las has dominado. Tampoco ellas a ti. Empate técnico.",
+      "Hoy no las has dominado. Tampoco ellas a ti. Tablas.",
       "Hay preguntas que te conocen demasiado bien. Te sugiero revisar qué les has contado.",
       "El error ha sobrevivido. Algún día os separaréis, pero no será hoy.",
       "Tus errores han solicitado revancha. Sería descortés hacerles esperar.",
@@ -437,8 +400,7 @@ const REVIEW_END_PHRASES = {
       "Hay cuentas pendientes. Qué tranquilidad saber que alguien lleva los libros.",
       "Ya sabes lo que ignoras. Ahora falta resolver el resto del inventario.",
       "Tus errores no han desaparecido. Solo han tomado posiciones.",
-      "Entre tú y tu memoria quedan asuntos pendientes. No hace falta que me invites a la conversación.",
-      "El Repaso ha detectado un inconveniente. Ha pedido que no lo llamemos pequeño.",
+      "El Repaso ha hallado un problema. Ha pedido que no lo llamemos pequeño.",
       "Algunas respuestas todavía necesitan que les presentes tus respetos."
     ]
   }

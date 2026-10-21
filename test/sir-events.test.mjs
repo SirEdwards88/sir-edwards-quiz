@@ -487,7 +487,7 @@ test('Muerte Súbita y Repaso: nunca «racha rota» (el fallo ya termina la part
 
 test('frases nuevas: récord, regreso y categoría débil, con sus marcas y en voz de Sir Edwards', () => {
   const ph = S.PHRASES;
-  assert.ok(ph.record.length >= 6 && ph.comeback.length >= 6 && ph.weak.length >= 5);
+  assert.ok(ph.record.length >= 5 && ph.comeback.length >= 5 && ph.weak.length >= 5);
   assert.ok(ph.record.every((t) => t.includes('{n}')) || ph.record.some((t) => t.includes('{n}')));
   assert.ok(ph.weak.every((t) => t.includes('{cat}')));
   [...ph.record, ...ph.comeback, ...ph.weak].forEach((t) => assert.ok(/^«.+»$/.test(t) && t.length < 100 && !/\p{Extended_Pictographic}/u.test(t) && !/\b(habéis|sabemos|queremos)\b/i.test(t), t));

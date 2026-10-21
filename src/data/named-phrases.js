@@ -5,8 +5,7 @@
 // Las claves son las de pickRotatingPhrase()/SEQSirEvents (poolKey). Las de eventos van entre «».
 const NAMED_PHRASES = {
   end_perfecto: [
-    '20 de 20, {nombre}. Lo anoto como milagro, hasta nueva orden.',
-    'Impecable, {nombre}. Qué inconveniente tener que darte la razón.',
+    '20 de 20, {nombre}. Lo declaro milagro, hasta nueva orden.',
     'Pleno. Enhorabuena, {nombre}. Cuesta encontrar algo que objetar.',
     'Perfecto, {nombre}. Debo reconocerlo: has sido irritantemente competente.',
     'Pleno, {nombre}. Anota la fecha: no creo que se repita.'
@@ -24,7 +23,9 @@ const NAMED_PHRASES = {
   ],
   sudden_win: [
     'Modo extremo, {nombre}. Una sola oportunidad y ninguna necesidad de repetirla.',
-    'Sin red y sin tropiezos, {nombre}. Por un momento, resulta razonable tomarte en serio.'
+    'Sin red y sin tropiezos, {nombre}. Por un momento, resulta razonable tomarte en serio.',
+    'Una sola vida, {nombre}, y ni un rasguño. Empiezo a sospechar que has ensayado.',
+    'Muerte Súbita superada, {nombre}. La muerte, de momento, tendrá que esperar su turno.'
   ],
   lucidez_perfecto: [
     '30/30, {nombre}. Hoy la mente no ha dejado ni una rendija.',
@@ -48,19 +49,20 @@ const NAMED_PHRASES = {
   ],
   streak_20: [
     '«Veinte seguidas, {nombre}. Ahora sí puedo llamarlo racha sin reservas.»',
-    '«Veinte, {nombre}. Mi escepticismo empieza a quedarse sin tinta.»',
-    '«Veinte, {nombre}. Esto merece tinta más seria.»'
+    '«Veinte, {nombre}. Mi escepticismo empieza a quedarse sin argumentos.»'
   ],
-  night_early: ['«La noche avanza, {nombre}. Tu criterio sigue bajo evaluación.»', '«Medianoche, {nombre}. Veamos qué clase de lucidez trae esta hora.»'],
+  night_early: ['«La noche avanza, {nombre}. Tu criterio sigue bajo evaluación.»', '«Medianoche, {nombre}. Veamos qué clase de lucidez trae esta hora.»', '«Entrada la noche, {nombre}. La prudencia se ha ido a dormir; tú, por lo visto, no.»', '«Otra partida a estas horas, {nombre}. Admiro la perseverancia; la cordura, menos.»'],
   night_late: ['«Madrugada, {nombre}. El sueño ha perdido otra votación.»', '«A estas horas, {nombre}, hasta tus aciertos parecen tener una coartada.»', '«Madrugada, {nombre}. A estas horas, hasta acertar tiene cierto mérito.»'],
   streak_30: [
     '«Treinta, {nombre}. Ya no puedo fingir que esto es casualidad.»',
-    '«Treinta seguidas, {nombre}. Me incomoda decirlo, pero estoy impresionado.»'
+    '«Treinta seguidas, {nombre}. Me cuesta decirlo, pero estoy impresionado.»',
+    '«Treinta seguidas, {nombre}. Retiro, con la boca pequeña, lo de «aficionado».»'
   ],
   // Hitos más altos (src/ui/hitos.js). Aquí van SIN «»: el bocadillo ya las pone.
   hito_survival_30: [
     'Treinta, {nombre}. Diez preguntas más y podremos llamar a esto una hazaña.',
-    'Treinta, {nombre}. Quedan diez. Distraerse ahora sería de mal gusto.'
+    'Treinta, {nombre}. Quedan diez. Distraerse ahora sería de mal gusto.',
+    'Treinta, {nombre}. Quedan diez preguntas para que esto deje de ser casualidad.'
   ],
   hito_sudden_death_20: [
     'Veinte, {nombre}. Quedan cinco. A estas alturas, hasta respirar parece una decisión estratégica.',
@@ -70,7 +72,8 @@ const NAMED_PHRASES = {
   // Resultado de Duelo/Reto: {nombre} es el del RIVAL (como en las de abandono). Sir Edwards habla al jugador y nombra al rival en tercera persona.
   duel_victoria_ajustada: [
     'Por un margen mínimo, {nombre} se ha quedado sin la última palabra. Disfruta de la tuya.',
-    '{nombre} ha estado a punto. Disfruta de la victoria antes de que lo intente otra vez.'
+    '{nombre} ha estado a punto. Disfruta de la victoria antes de que lo intente otra vez.',
+    '{nombre} ha perdido por muy poco. Lo cual, bien mirado, es perder igual.'
   ],
   duel_victoria_clara: [
     '{nombre} ha visto el resultado y ha preferido no hacer comentarios. Prudente.',
