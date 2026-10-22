@@ -6,7 +6,7 @@ const ENCARGOS_PHRASES = {
   encargos_0: [
     '¿Aún no has empezado? Qué conmovedora confianza en el futuro.',
     'Cero encargos. Al menos eres constante en algo.',
-    'Los encargos no requieren contemplación. Aunque admito que es una forma cómoda de evitarlos.',
+    'Los encargos no se contemplan, se cumplen. Admito que contemplarlos resulta más cómodo.',
     'Todavía ninguno. No quisiera presionarte, pero la semana sí lo hará.',
     'Cuatro encargos te esperan. Tú, mientras tanto, esperas que se hagan solos.',
     'La semana avanza. Tus encargos, aparentemente, no.',

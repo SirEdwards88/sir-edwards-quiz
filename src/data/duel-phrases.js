@@ -39,7 +39,6 @@
     "Victoria convincente. La suerte ha presentado su dimisión como coartada.",
     "Una victoria cómoda. Qué poco deportivo de tu parte.",
     "Has dejado suficiente distancia entre ambos como para cobrar peaje.",
-    "Victoria clara. El resultado parece bastante satisfecho con su trabajo.",
     "El duelo estuvo cerca de ser interesante. Luego apareciste tú."
   ],
   victoria_aplastante: [
@@ -97,7 +96,7 @@
     "Derrota contundente. Queda otra partida, si tu amor propio lo resiste.",
     "El duelo ha hablado con claridad. Y no precisamente a tu favor.",
     "Una diferencia considerable. Al menos ahora sabes exactamente cuánto te faltaba.",
-    "No ha sido una tragedia. Solo una diferencia clara, que es lo más fácil de diagnosticar.",
+    "No ha sido una tragedia. Solo una diferencia clara, de fácil diagnóstico.",
     "Has perdido con testigos, que es lo más cruel.",
     "Derrota. Si necesitas una excusa, tienes preguntas de sobra entre las que elegir."
   ],

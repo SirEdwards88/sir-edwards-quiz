@@ -78,7 +78,7 @@ const SEQSirEvents = (function () {
     '«Pasaba por aquí. Mentira: vengo a ver cuánto aguantas.»',
     '«No me mires a mí. La pregunta es la que manda.»',
     '«Guardo silencio. Es lo más amable que sé ofrecerte.»',
-    '«Una respuesta sensata. Anotaremos la fecha.»',
+    '«Una respuesta sensata. Avisaré a la prensa.»',
     '«Todo en orden. Intenta no estropearme el día.»',
     '«Sigues aquí. Yo también. Esto empieza a parecer una costumbre.»'
   ];
@@ -129,7 +129,7 @@ const SEQSirEvents = (function () {
       '«Treinta. Mis felicitaciones. No las malgastes.»',
       '«Treinta aciertos. Has sido impecable, y eso complica bastante mi trabajo.»',
       '«Treinta. Ya no puedo fingir que no sabes lo que haces.»',
-      '«Treinta. Qué inconveniente. Estaba disfrutando de subestimarte.»']
+      '«Treinta. Con lo que disfrutaba subestimándote.»']
   };
 
   // Racha rota: {n} es la racha real que acaba de perder (la sustituye evaluate; la bolsa rota por tramos guarda la plantilla).
@@ -154,7 +154,7 @@ const SEQSirEvents = (function () {
       '«{n} seguidas. Y una sola respuesta para recordarte quién manda aquí: el error.»',
       '«{n} seguidas. Habrá que estudiar este inesperado desenlace.»',
       '«{n} aciertos y un final para el archivo. Sección: tragedias.»',
-      '«Mi expediente conservará esos {n} aciertos. Y esta pregunta. Especialmente esta pregunta.»',
+      '«Conservaré esos {n} aciertos. Y esta pregunta. Especialmente esta pregunta.»',
       '«Una racha de {n} merece un pequeño funeral. Sin flores, por supuesto.»',
       '«{n}… y ahora el silencio. Un momento precioso.»',
       '«Casi pude respetarte. {n} seguidas. Casi.»']
@@ -178,7 +178,7 @@ const SEQSirEvents = (function () {
       '«Por mi parte, sigo aquí. Mi dimisión tendría un efecto teatral, pero sería prematura.»',
       '«Hay momentos que exigen una paciencia extraordinaria. Este, por lo visto, exige la mía.»',
       '«No he cerrado el libro. Sería una descortesía dejar el capítulo a medias.»',
-      '«He archivado días mejores, desde luego. Pero este expediente aún no está cerrado.»']
+      '«He visto días mejores, desde luego. Pero este aún no ha terminado.»']
   };
 
   // Récord personal ({n} = la racha nueva), regreso tras días y categoría débil ({cat} = su nombre): siempre en positivo o en tono de reproche suave.
@@ -193,7 +193,7 @@ const SEQSirEvents = (function () {
     '«Mi silla favorita cogía polvo. Qué oportuno tu regreso.»', '«Días sin verte. Los he empleado en dudar de ti. Con método.»'
   ];
   var WEAK = [
-    '«{cat}. Tu talón de Aquiles. Y has acertado. Lo anoto, con reservas.»', '«Has acertado en {cat}. Precisamente en esa. Casi parece que has estudiado.»',
+    '«{cat}. Tu talón de Aquiles. Has acertado. Lo admito, con reservas.»', '«Has acertado en {cat}. Precisamente en esa. Casi parece que has estudiado.»',
     '«{cat} suele ser tu punto flaco. Hoy se ha portado. Interesante.»', '«Has acertado en {cat}. Un accidente afortunado, y ni siquiera se repetirá.»',
     '«{cat}: has acertado. No cambiaré aún mi opinión, pero dejaré de subrayarla.»',
     '«La categoría {cat} te debe una disculpa. Tú todavía me debes varias.»'
@@ -222,7 +222,6 @@ const SEQSirEvents = (function () {
     '«Una partida nocturna. Excelente decisión cuestionable.»',
     '«Pasada la medianoche, la mente rinde menos. La tuya, probablemente, ya rendía poco.»',
     '«La noche es joven. Tu criterio, quizá menos.»',
-    '«Medianoche y todavía respondiendo. Qué disciplina tan discutible.»',
     '«Mañana habrá que madrugar. Pero eso será problema de tu yo futuro.»',
     '«Otra pregunta antes de dormir. Naturalmente.»',
     '«A estas horas incluso las buenas ideas parecen malas. Veremos las tuyas.»',

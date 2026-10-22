@@ -150,7 +150,7 @@ test('frases: todas en «tú», sin plurales, con comillas; las de hora concreta
       stripH.forEach(([pref, h]) => { if (ev.message.includes(pref.slice(1))) assert.equal(hour, h, ev.message + ' a las ' + hour); });
     }
   }
-  assert.ok(S.PHRASES.streak[30].includes('«Treinta. Qué inconveniente. Estaba disfrutando de subestimarte.»'));
+  assert.ok(S.PHRASES.streak[30].includes('«Treinta. Con lo que disfrutaba subestimándote.»'));
   assert.ok(![].concat(...Object.values(S.PHRASES.streak)).some((p) => p.includes('Imparable')), 'sin «Imparable»: suena a logro');
 });
 

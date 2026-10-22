@@ -22,9 +22,8 @@ const ENCARGOS_INTRO = {
       'Hay material. No digo cuál, ni de qué calidad.',
       'Digamos que ha sido… instructiva.',
       'Correcta. Que es, a veces, el insulto más educado.',
-      'Hay tanto por corregir que prefiero empezar por el principio. No quisiera abrumarte.',
       'Ha tenido sus momentos. Pocos, pero ha tenido.',
-      'Has cumplido. No es una ovación, pero tampoco una llamada al servicio técnico.',
+      'Has cumplido. No es una ovación, pero tampoco una queja formal.',
       'Ni brilla ni ofende. Mediocridad con cierto estilo.'
     ],
     mala: [
@@ -38,14 +37,13 @@ const ENCARGOS_INTRO = {
     ],
     victoria: [
       'Has ganado. Tomo nota de tu crueldad.',
-      'Has ganado. Tu rival confiaba en ti para mantener cierta compostura.',
       'Has ganado. Te ruego que no lo celebres delante del vencido.',
       'Victoria. No quisiera que confundieras un buen estreno con una tradición.',
       'Has ganado. Diré que fue mérito tuyo y no descuido ajeno.',
       'Has ganado. Lo registro con una ceja ligeramente alzada.'
     ],
     derrota: [
-      'Has perdido. Lo he anotado, con la discreción debida.',
+      'Has perdido. Lo olvidaré, con la debida discreción.',
       'Derrota. Hay quien aprende a la primera y quien da más trabajo. Aún es pronto para saber cuál eres.',
       'Has perdido. Un estreno así deja material para meses. Qué generoso por tu parte.',
       'Derrota. Al menos ya sabes qué resultado conviene evitar.',
@@ -143,8 +141,7 @@ const ENCARGOS_INTRO = {
         'A partir de hoy, tu expediente cuenta de verdad.',
         'Se acabó el periodo de cortesía. Empieza el de observación.',
         'Hasta hoy eras invitado. Desde hoy eres de la casa y respondes como tal.',
-        'Esta semana tendré por fin resultados que comentar. Espero que me facilites el trabajo.',
-        'La benevolencia inicial se agotó. La exigencia, en cambio, es hereditaria.'
+        'Esta semana tendré por fin resultados que comentar. Espero que me facilites el trabajo.'
       ],
       ausencia: [
         'Los encargos de las semanas perdidas han caducado, como las promesas de volver pronto.',
@@ -152,7 +149,7 @@ const ENCARGOS_INTRO = {
         'Borrón y cuenta nueva. El borrón es mío; la cuenta, naturalmente, tuya.',
         'Considera esto una segunda oportunidad. Las terceras no existen.',
         'Ni un reproche. Hoy. Guárdalo como se guarda un eclipse.',
-        'De vuelta, entonces. La casa recupera una de sus costumbres menos fiables.'
+        'De vuelta, entonces. La casa recupera a su visitante menos fiable.'
       ]
     },
     // 3) Cierre, común a las tres variantes: la semana que empieza.

@@ -13,12 +13,10 @@ const NAMED_PHRASES = {
   end_desastre: [
     'Derrota, {nombre}. Puedes culpar al azar; ya está acostumbrado.',
     '{nombre}, el resultado ha sido concluyente. No en el sentido que habrías preferido.',
-    '{nombre}, el resultado ha sido contundente. Desde aquí, lo único posible es mejorar, que es una forma elegante de decirlo.',
     'Mal día, {nombre}. Mañana las preguntas serán las mismas; tú, con suerte, mejor.'
   ],
   survival_win: [
     'Cuarenta preguntas, {nombre}. Has llegado al final y el expediente lo agradece.',
-    'Has llegado al final, {nombre}. La resistencia ha sido notable.',
     'Victoria, {nombre}. Hoy el resultado me deja poco margen para discutir.'
   ],
   sudden_win: [
@@ -35,7 +33,7 @@ const NAMED_PHRASES = {
   encargos_4: [
     'Los cuatro, {nombre}. El expediente luce mejor. Tú, igual que siempre.',
     'Semana saldada, {nombre}. El expediente puede descansar hasta el lunes.',
-    'Cuatro de cuatro, {nombre}. Una línea en tinta discreta debería bastar.'
+    'Cuatro de cuatro, {nombre}. Un aplauso discreto debería bastar.'
   ],
   comeback: [
     '«Vaya, {nombre}. Había empezado a archivar tu expediente.»',
@@ -91,7 +89,7 @@ const NAMED_PHRASES = {
     '{nombre} ha ganado con claridad. Lo elegante es felicitarle antes de que lo exija.'
   ],
   duel_empate: [
-    'Empate con {nombre}. Dos expedientes abiertos y ninguna conclusión satisfactoria.',
+    'Empate con {nombre}. Dos versiones y ninguna conclusión satisfactoria.',
     '{nombre} no ha conseguido imponerse, y tú tampoco. Qué diplomacia tan improductiva.',
     'Empate con {nombre}. Por una vez, el marcador ha conseguido dejaros a ambos sin réplica.'
   ]
