@@ -196,8 +196,7 @@ const SEQSirEvents = (function () {
     '«{cat}. Tu talón de Aquiles. Y has acertado. Lo anoto, con reservas.»', '«Has acertado en {cat}. Precisamente en esa. Casi parece que has estudiado.»',
     '«{cat} suele ser tu punto flaco. Hoy se ha portado. Interesante.»', '«Has acertado en {cat}. Un accidente afortunado, y ni siquiera se repetirá.»',
     '«{cat}: has acertado. No cambiaré aún mi opinión, pero dejaré de subrayarla.»',
-    '«La categoría {cat} te debe una disculpa. Tú todavía me debes varias.»',
-    '«{cat}: tu categoría más débil. Una oportunidad más para que dejes de avergonzarte en ella.»'
+    '«La categoría {cat} te debe una disculpa. Tú todavía me debes varias.»'
   ];
   var DAY = [
     '«Buenos días. Veamos qué estás tramando.»',

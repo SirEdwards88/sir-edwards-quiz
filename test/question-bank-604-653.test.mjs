@@ -14,8 +14,8 @@ const NEW = T.filter((q) => q.n >= 604 && q.n <= 653);
 const OLD = T.filter((q) => q.n < 604);
 
 test('son 50, con IDs 604-653 seguidos, y no se toca ninguna anterior', () => {
-  assert.deepEqual(Array.from(NEW, (q) => q.n), Array.from({ length: 50 }, (_, i) => 604 + i));
-  assert.equal(OLD.length, 600);
+  assert.deepEqual(Array.from(NEW, (q) => q.n), Array.from({ length: 50 }, (_, i) => 604 + i).filter((n) => n !== 637)); // la 637 se retiró en octubre de 2026
+  assert.equal(OLD.length, 593);
 });
 
 test('no se copian al banco de Lucidez (todas son de opciones)', () => {
@@ -35,9 +35,9 @@ test('formato: 4 opciones distintas con la respuesta entre ellas, categoría y d
   }
 });
 
-test('reparto: 12 fáciles, 32 medias y 6 difíciles; la respuesta cae en las cuatro posiciones casi por igual', () => {
+test('reparto: 12 fáciles, 32 medias y 5 difíciles (tras retirar la 637); la respuesta cae en las cuatro posiciones casi por igual', () => {
   const c = (f) => NEW.filter(f).length;
-  assert.deepEqual([c((q) => q.dif === 'facil'), c((q) => q.dif === 'medio'), c((q) => q.dif === 'dificil')], [12, 32, 6]);
+  assert.deepEqual([c((q) => q.dif === 'facil'), c((q) => q.dif === 'medio'), c((q) => q.dif === 'dificil')], [12, 32, 5]);
   for (let p = 0; p < 4; p++) assert.ok([12, 13].includes(c((q) => q.options.indexOf(q.a) === p)), 'posición ' + p);
 });
 
@@ -56,5 +56,5 @@ test('ninguna repite un enunciado ni una respuesta del banco anterior', () => {
   const norm = (s) => s.toLowerCase().replace(/[^a-záéíóúñü0-9 ]/g, '').trim();
   const qs = new Set(OLD.concat(Q.filter((q) => q.n < 604)).map((q) => norm(q.q)));
   for (const q of NEW) assert.ok(!qs.has(norm(q.q)), 'enunciado repetido en ' + q.n);
-  assert.equal(new Set(NEW.map((q) => norm(q.q))).size, 50);
+  assert.equal(new Set(NEW.map((q) => norm(q.q))).size, 49);
 });

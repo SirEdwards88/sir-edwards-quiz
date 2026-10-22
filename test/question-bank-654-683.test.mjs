@@ -11,14 +11,14 @@ vm.createContext(ctx);
 vm.runInContext(read('src/data/questions.js') + read('src/utils/matching.js') + read('src/utils/answer-alias.js') +
   ';this.T=TEST_QUESTIONS;this.Q=QUESTIONS;this.m=isMatchWithAlias;', ctx);
 const { T, Q } = ctx;
-const NEW = T.filter((q) => q.n >= 654);
+const NEW = T.filter((q) => q.n >= 654 && q.n <= 683); // 684-694 son las nuevas de octubre de 2026
 const OLD = T.filter((q) => q.n < 654);
 const CATS = ['historia', 'geografia', 'ciencia', 'arte_literatura', 'deporte', 'cultura_general'];
 const LZ = [661, 663, 664, 674, 679, 681];
 
-test('son 30, con IDs 654-683 seguidos, todas fáciles, y no se toca ninguna anterior', () => {
-  assert.deepEqual(Array.from(NEW, (q) => q.n), Array.from({ length: 30 }, (_, i) => 654 + i));
-  assert.equal(OLD.length, 650);
+test('son 27 (30 menos las 659, 669 y 682 retiradas en octubre de 2026), con IDs 654-683, todas fáciles, y no se toca ninguna anterior', () => {
+  assert.deepEqual(Array.from(NEW, (q) => q.n), Array.from({ length: 30 }, (_, i) => 654 + i).filter((n) => ![659, 669, 682].includes(n)));
+  assert.equal(OLD.length, 642);
   assert.ok(NEW.every((q) => q.dif === 'facil'));
 });
 
@@ -36,11 +36,11 @@ test('ninguna repite un enunciado ni una respuesta+tema del banco anterior', () 
   const norm = (s) => s.toLowerCase().replace(/[^a-záéíóúñü0-9 ]/g, '').trim();
   const qs = new Set(OLD.map((q) => norm(q.q)));
   for (const q of NEW) assert.ok(!qs.has(norm(q.q)), 'enunciado repetido en ' + q.n);
-  assert.equal(new Set(NEW.map((q) => norm(q.q))).size, 30);
+  assert.equal(new Set(NEW.map((q) => norm(q.q))).size, 27);
 });
 
-test('Lucidez: solo las 6 de respuesta corta (lz «B», fáciles, mismo texto y respuesta salvo la escrita, sin opciones)', () => {
-  const NQ = Q.filter((q) => q.n >= 654);
+test('Lucidez (hasta la 683): solo las 6 de respuesta corta (lz «B», fáciles, mismo texto y respuesta salvo la escrita, sin opciones)', () => {
+  const NQ = Q.filter((q) => q.n >= 654 && q.n <= 683);
   assert.deepEqual(Array.from(NQ, (q) => q.n).sort((a, b) => a - b), LZ);
   for (const q of NQ) {
     const t = T.find((x) => x.n === q.n);
