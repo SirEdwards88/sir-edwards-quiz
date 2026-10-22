@@ -29,7 +29,7 @@ test('ajustes aprobados: la 439 reconstruida, 424/434/435 en medio y las curiosi
   assert.deepEqual([424, 434, 435].map((n) => g(n).dif), ['medio', 'medio', 'medio']);
   assert.equal(g(452).dif, 'dificil');
   assert.match(g(425).sabias, /Rustichello/);
-  assert.match(g(444).sabias, /1839/);
+  assert.match(g(444).sabias, /graphein/);
   assert.ok(NEW_T.every((q) => q.sabias && q.sabias.length <= 140));
 });
 

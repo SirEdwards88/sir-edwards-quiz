@@ -16,7 +16,7 @@ const NEW_T = T.filter(inRange), NEW_Q = Q.filter(inRange);
 test('las 33 entran en los dos bancos, todas difíciles, con los mismos ID, texto y respuesta', () => {
   assert.equal(NEW_T.length, 33);
   assert.equal(NEW_Q.length, 33);
-  assert.ok(NEW_T.every((q) => q.dif === 'dificil'));
+  assert.ok(NEW_T.every((q) => q.dif !== 'facil')); // tras la auditoría de octubre de 2026, 4 pasaron a medio
   for (const q of NEW_Q) {
     const t = T.find((x) => x.n === q.n);
     assert.equal(q.q, t.q); assert.equal(q.a, t.a); assert.equal(q.cat, t.cat); assert.equal(q.dif, t.dif);
@@ -59,9 +59,9 @@ test('correcciones: q8, q146, q223, q225, q247, q297, q305, q330 y q392 iguales 
     for (const k of ['q', 'a', 'sabias']) assert.equal(g(Q, n)[k], g(T, n)[k], k + ' de ' + n);
     assert.ok(g(T, n).sabias, 'sabías de ' + n);
   }
-  assert.match(g(T, 8).sabias, /dos ciencias distintas/);
-  assert.match(g(T, 146).q, /tiroxina/);
-  assert.deepEqual(Array.from(g(T, 223).options), ['Estados Unidos', 'India', 'China', 'Nigeria']);
+  assert.match(g(T, 8).sabias, /única con Nobel en dos ciencias/);
+  assert.match(g(T, 146).q, /tiroides/);
+  assert.deepEqual(Array.from(g(T, 223).options), ['Nueva Delhi', 'Calcuta', 'Bombay', 'Madrás']);
   assert.match(g(T, 225).q, /«Back to Black»/);
   assert.match(g(T, 247).q, /ha ganado más títulos del Mundial de rugby masculino/);
   assert.match(g(T, 297).q, /ecuador y el meridiano de Greenwich/);

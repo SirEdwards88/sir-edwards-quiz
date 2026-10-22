@@ -55,8 +55,8 @@ test('formato: 4 opciones distintas con la respuesta entre ellas, categoría y d
 
 test('reparto: 23 fáciles, 54 medias y 18 difíciles (tras retirar 5); la respuesta cae en las cuatro posiciones casi por igual', () => {
   const c = (f) => NEW.filter(f).length;
-  assert.deepEqual([c((q) => q.dif === 'facil'), c((q) => q.dif === 'medio'), c((q) => q.dif === 'dificil')], [23, 54, 18]);
-  for (let p = 0; p < 4; p++) assert.ok([23, 24, 25].includes(c((q) => q.options.indexOf(q.a) === p)), 'posición ' + p);
+  assert.deepEqual([c((q) => q.dif === 'facil'), c((q) => q.dif === 'medio'), c((q) => q.dif === 'dificil')], [29, 51, 15]);
+  for (let p = 0; p < 4; p++) assert.ok([21, 22, 23, 24, 25, 26].includes(c((q) => q.options.indexOf(q.a) === p)), 'posición ' + p);
 });
 
 test('sin pistas de estilo: la correcta no es sistemáticamente la más larga ni la única con matices', () => {

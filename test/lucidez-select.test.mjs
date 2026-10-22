@@ -16,14 +16,14 @@ function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; le
 const RANK = { facil: 0, medio: 1, dificil: 2 };
 const count = (arr, f) => arr.filter(f).length;
 
-test('datos: 341 con lz (226 A, 115 B): 203 medias, 102 difíciles, 36 fáciles', () => {
+test('datos: 347 con lz (218 A, 129 B): 196 medias, 88 difíciles, 63 fáciles', () => {
   const lz = BANK.filter((q) => q.lz);
-  assert.equal(lz.length, 341);
-  assert.equal(count(lz, (q) => q.lz === 'A'), 226);
-  assert.equal(count(lz, (q) => q.lz === 'B'), 115);
-  assert.equal(count(lz, (q) => q.dif === 'medio'), 203);
-  assert.equal(count(lz, (q) => q.dif === 'dificil'), 102);
-  assert.equal(count(lz, (q) => q.dif === 'facil'), 36);
+  assert.equal(lz.length, 347);
+  assert.equal(count(lz, (q) => q.lz === 'A'), 218);
+  assert.equal(count(lz, (q) => q.lz === 'B'), 129);
+  assert.equal(count(lz, (q) => q.dif === 'medio'), 196);
+  assert.equal(count(lz, (q) => q.dif === 'dificil'), 88);
+  assert.equal(count(lz, (q) => q.dif === 'facil'), 63);
   assert.ok(BANK.every((q) => !q.lz || q.lz === 'A' || q.lz === 'B'));
   assert.ok(lz.every((q) => !(Array.isArray(q.options) && q.options.length)), 'Lucidez es de respuesta escrita: nada con opciones');
   assert.equal(new Set(BANK.map((q) => q.n)).size, BANK.length, 'ids únicos');

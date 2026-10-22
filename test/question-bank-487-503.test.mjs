@@ -16,7 +16,7 @@ const NEW_T = T.filter(inRange), NEW_Q = Q.filter(inRange);
 test('las 17 entran en los dos bancos, todas difíciles, con los mismos ID, texto y respuesta', () => {
   assert.equal(NEW_T.length, 17);
   assert.equal(NEW_Q.length, 17);
-  assert.ok(NEW_T.every((q) => q.dif === 'dificil'));
+  assert.ok(NEW_T.every((q) => q.dif !== 'facil')); // tras la auditoría de octubre de 2026, 3 pasaron a medio
   for (const q of NEW_Q) {
     const t = T.find((x) => x.n === q.n);
     assert.equal(q.q, t.q); assert.equal(q.a, t.a); assert.equal(q.cat, t.cat); assert.equal(q.dif, t.dif);

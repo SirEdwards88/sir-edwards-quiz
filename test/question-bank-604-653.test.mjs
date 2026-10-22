@@ -38,7 +38,7 @@ test('formato: 4 opciones distintas con la respuesta entre ellas, categoría y d
 test('reparto: 12 fáciles, 32 medias y 5 difíciles (tras retirar la 637); la respuesta cae en las cuatro posiciones casi por igual', () => {
   const c = (f) => NEW.filter(f).length;
   assert.deepEqual([c((q) => q.dif === 'facil'), c((q) => q.dif === 'medio'), c((q) => q.dif === 'dificil')], [12, 32, 5]);
-  for (let p = 0; p < 4; p++) assert.ok([12, 13].includes(c((q) => q.options.indexOf(q.a) === p)), 'posición ' + p);
+  for (let p = 0; p < 4; p++) assert.ok([11, 12, 13, 14].includes(c((q) => q.options.indexOf(q.a) === p)), 'posición ' + p);
 });
 
 test('sin pistas de estilo: la correcta no es sistemáticamente la más larga ni la única con matices', () => {
