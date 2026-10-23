@@ -47,7 +47,8 @@ test('cableado: script en index.html, en el shell sin conexión y sin tocar el s
   assert.match(read('index.html'), /src\/online\/inbox\.js\?v=\d+/);
   assert.match(read('sw.js'), /\.\/src\/online\/inbox\.js/);
   const src = read('src/online/inbox.js');
-  assert.ok(!/'POST'|'PUT'|'DELETE'|'PATCH'/.test(src), 'solo lecturas');
+  assert.ok(!/'PUT'|'DELETE'|'PATCH'/.test(src), 'solo lecturas, salvo responder una solicitud de amistad');
+  assert.deepEqual(src.match(/'POST'[^)]*\)/g).map((x) => x.replace(/\s+/g, ' ')), ["'POST', '/friends/requests/' + it.id + '/' + action)"], 'el único POST es aceptar/rechazar una solicitud');
   assert.match(src, /textContent = t\.title/); assert.ok(!/innerHTML = [^;]*\bname\b/.test(src.replace(/av\.innerHTML[^\n]*\n/g, '')), 'el nombre del rival nunca va por innerHTML');
 });
 
@@ -69,4 +70,23 @@ test('waitingFrom: al abrir recuerda los retos aceptados sin jugar, aunque ya se
   assert.deepEqual(Array.from(w.map((x) => x.kind + ':' + x.id)), ['reto:ZZZZZZZZZ2']);
   assert.equal(C.textFor(w, () => 0).title, 'Tienes un reto pendiente');
   assert.equal(C.waitingFrom(null, undefined).length, 0);
+});
+
+const sol = (fid, pid, name) => ({ friendship_id: fid, player: { id: pid, display_name: name, avatar: 'sombrero' } });
+test('amistad: las solicitudes recibidas cuentan en el punto y generan aviso propio', () => {
+  const reqs = [sol('AAAAAAAAA1', 'BBBBBBBBB1', 'Marta'), sol('mal', 'BBBBBBBBB2', 'X')];
+  const p = C.pendingFrom([], [], [], [], reqs);
+  assert.deepEqual(Array.from(p.map((x) => x.kind + ':' + x.id)), ['friend:AAAAAAAAA1']);
+  assert.equal(C.dotCount([], [], [], [], reqs), 1);
+  assert.equal(C.textFor(p).title, 'Marta quiere ser tu amigo');
+  assert.equal(C.textFor([p[0], p[0]]).title, 'Tienes 2 solicitudes de amistad');
+  assert.equal(C.dotCount([], [], [], []), 0);
+});
+test('textos: la invitación a duelo dura tres minutos, no sesenta segundos', () => {
+  assert.ok(!Array.from(C.SUBS.duel).some((t) => /sesenta/i.test(t)));
+  assert.ok(Array.from(C.SUBS.duel).some((t) => /tres minutos/i.test(t)));
+});
+test('amistad: responder desde el aviso no exige abrir Duelo (el aviso no llama a switchTab)', () => {
+  const src = read('src/online/inbox.js');
+  assert.match(src, /list\[0\]\.kind === 'friend'\) return;/);
 });

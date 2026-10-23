@@ -3,7 +3,7 @@
 // Solo avisa de «X te ha retado» y «X ha terminado»: nada de duelos en directo. Es opt-in:
 //  · Se activa solo desde Ajustes → Avisos (con un toque tuyo: el permiso nunca salta solo). No hay ofertas ni avisos insistentes.
 //  · Solo aparece si el servidor lo tiene encendido (session.features.push) y el navegador lo soporta (Android/Chrome; en iPhone, con la app instalada).
-//  · Horario de silencio 23:00–08:00 lo aplica el servidor con tu zona horaria.
+//  · Sin horario de silencio propio: de noche manda el «No molestar» de tu móvil.
 //  · Nada de esto toca la clave local de datos del juego.
 // La parte pura (urlKey, tzMinutes, linkId) se prueba en test/push.test.mjs.
 

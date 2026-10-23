@@ -811,6 +811,14 @@
 .inbox-title { font-size: 15px; font-weight: 800; line-height: 1.25; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .inbox-sub { font-size: 12.5px; font-style: italic; opacity: .85; line-height: 1.3; }
 .inbox-x { flex: 0 0 auto; width: 40px; background: none; border: 0; color: rgba(244, 236, 208, .7); font-size: 22px; cursor: pointer; border-radius: 0 14px 14px 0; }
+.inbox-banner.friend { flex-wrap: wrap; }
+.inbox-banner.friend .inbox-body { flex: 1 1 calc(100% - 40px); cursor: default; padding-bottom: 6px; }
+.inbox-banner.friend .inbox-title { white-space: normal; }
+.inbox-acts { flex: 1 0 100%; order: 3; display: flex; gap: 8px; padding: 0 14px 12px; }
+.inbox-acts[hidden] { display: none; }
+.inbox-acts button { flex: 1; min-height: 40px; border-radius: 10px; font: inherit; font-weight: 800; font-size: 14px; cursor: pointer; }
+.inbox-yes { background: linear-gradient(180deg, #e8c874, #c9a24a); color: #1a1a2e; border: 0; }
+.inbox-no { background: none; color: #f4ecd0; border: 1px solid rgba(244, 236, 208, .4); }
 .inbox-banner.compact .inbox-body { padding: 7px 4px 7px 12px; gap: 9px; }
 .inbox-banner.compact .inbox-av { width: 30px; height: 30px; }
 .inbox-banner.compact .inbox-title { font-size: 13.5px; }

@@ -639,7 +639,14 @@
     var el = $('seq-d-q'); var q = el ? String(el.value || '').trim().slice(0, 24) : '';
     S.search.q = q;
     if (!q) { S.search.results = null; render(); return; }
-    act('GET', '/players/search?q=' + encodeURIComponent(q), undefined, function (d) { S.search.results = d.players || []; render(); });
+    act('GET', '/players/search?q=' + encodeURIComponent(q), undefined, function (d) {
+      // Quien ya es amigo no sale entre los resultados a añadir.
+      var mine = {}; ((S.lists.friends && S.lists.friends.friends) || []).forEach(function (x) { if (x && x.player) mine[x.player.id] = 1; });
+      var all = d.players || [];
+      S.search.results = all.filter(function (x) { return !(x && mine[x.id]); });
+      S.search.hidden = all.length - S.search.results.length;
+      render();
+    });
   }
   function friendAdd(id) { id = safeId(id); if (!id) return; act('POST', '/friends/requests', { to: id }, function () { S.search.results = null; refreshSummary(); say('Solicitud enviada.'); }); }
   function friendResp(fid, action) { fid = safeId(fid); if (!fid) return; act('POST', '/friends/requests/' + fid + '/' + action, undefined, function () { refreshSummary(); }); }
@@ -772,7 +779,7 @@
       h += S.search.results.length ? '<div class="history-list">' + S.search.results.map(function (x) {
         var p = player(x);
         return '<div class="history-item seq-pl-row">' + '<div class="seq-pl-tap" onclick="SEQProfile.open(\'' + p.id + '\')">' + who(p, p.id) + '</div>' + '<div class="seq-pl-act"><button class="btn btn-primary seq-d-sm" onclick="SEQDuels.friendAdd(\'' + p.id + '\')">Añadir</button></div></div>';
-      }).join('') + '</div>' : '<p class="stats-section-sub">No se ha encontrado a nadie.</p>';
+      }).join('') + '</div>' : '<p class="stats-section-sub">' + (S.search.hidden ? 'Ya es tu amigo. Sir Edwards aprueba la elección.' : 'No se ha encontrado a nadie.') + '</p>';
     }
     if (!fl) return h + '<p class="stats-section-sub">Cargando…</p>';
     if (fl.incoming.length) {
