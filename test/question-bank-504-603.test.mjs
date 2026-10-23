@@ -13,7 +13,7 @@ vm.runInContext(read('src/data/questions.js') + read('src/utils/matching.js') + 
 const { T, Q } = ctx;
 const NEW = T.filter((q) => q.n >= 504 && q.n <= 603);
 const OLD = T.filter((q) => q.n < 504);
-const RET = [552, 577, 594, 597, 598]; // retiradas en octubre de 2026 (siguen resolviéndose en questions-retired.js)
+const RET = [552, 562, 577, 594, 597, 598]; // retiradas en octubre de 2026 (siguen resolviéndose en questions-retired.js)
 
 test('son 100, con IDs 504-603 seguidos, y no se toca ninguna anterior', () => {
   assert.deepEqual(Array.from(NEW, (q) => q.n), Array.from({ length: 100 }, (_, i) => 504 + i).filter((n) => !RET.includes(n)));
@@ -53,10 +53,10 @@ test('formato: 4 opciones distintas con la respuesta entre ellas, categoría y d
   }
 });
 
-test('reparto: 23 fáciles, 54 medias y 18 difíciles (tras retirar 5); la respuesta cae en las cuatro posiciones casi por igual', () => {
+test('reparto: 23 fáciles, 54 medias y 18 difíciles (tras retirar 6); la respuesta cae en las cuatro posiciones casi por igual', () => {
   const c = (f) => NEW.filter(f).length;
-  assert.deepEqual([c((q) => q.dif === 'facil'), c((q) => q.dif === 'medio'), c((q) => q.dif === 'dificil')], [29, 51, 15]);
-  for (let p = 0; p < 4; p++) assert.ok([21, 22, 23, 24, 25, 26].includes(c((q) => q.options.indexOf(q.a) === p)), 'posición ' + p);
+  assert.deepEqual([c((q) => q.dif === 'facil'), c((q) => q.dif === 'medio'), c((q) => q.dif === 'dificil')], [29, 51, 14]);
+  for (let p = 0; p < 4; p++) assert.ok([20, 21, 22, 23, 24, 25, 26].includes(c((q) => q.options.indexOf(q.a) === p)), 'posición ' + p);
 });
 
 test('sin pistas de estilo: la correcta no es sistemáticamente la más larga ni la única con matices', () => {
@@ -74,5 +74,5 @@ test('ninguna repite un enunciado ni una respuesta del banco anterior', () => {
   const norm = (s) => s.toLowerCase().replace(/[^a-záéíóúñü0-9 ]/g, '').trim();
   const qs = new Set(OLD.concat(Q.filter((q) => q.n < 504)).map((q) => norm(q.q)));
   for (const q of NEW) assert.ok(!qs.has(norm(q.q)), 'enunciado repetido en ' + q.n);
-  assert.equal(new Set(NEW.map((q) => norm(q.q))).size, 95);
+  assert.equal(new Set(NEW.map((q) => norm(q.q))).size, 94);
 });
