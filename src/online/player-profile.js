@@ -1,7 +1,7 @@
 // SirEdwards Quiz 2.3 — ficha pública de un jugador (resumen: precisión, récords por modo y PvP).
 //
 // Se abre desde Amigos, desde los Rankings y desde la búsqueda, y lleva las acciones de amistad (enviar solicitud,
-// aceptar/rechazar, cancelar, quitar de amigos). Solo presenta lo que devuelve el servidor en GET /players/:id (ver src/profile.js del
+// aceptar/rechazar, cancelar, eliminar amigo). Solo presenta lo que devuelve el servidor en GET /players/:id (ver src/profile.js del
 // backend). Un dato que falta llega como null y se muestra como «—», nunca como un cero inventado.
 // Estética: la de los Rankings (tarjeta dorada, iconos de ranking, insignia de rango); estilos .seq-pf* en styles/online.css.
 //
@@ -65,7 +65,7 @@
     act('POST', '/friends/requests/' + fid + '/' + action, undefined, null);
   }
 
-  // Quitar de amigos: dos toques (el primero pide confirmación y se desarma solo a los 4 s). No borra partidas ni estadísticas.
+  // Eliminar amigo: dos toques (el primero pide confirmación y se desarma solo a los 4 s). No borra partidas ni estadísticas.
   var rmTimer = 0;
   function remove() {
     var fid = P.data && P.data.amistad && P.data.amistad.estado === 'amigos' && safeId(P.data.amistad.friendship_id);
@@ -98,7 +98,7 @@
     else if (a.estado === 'recibida') b = '<div class="seq-pf-pair"><button class="btn btn-primary" onclick="SEQProfile.respond(\'accept\')">Aceptar</button><button class="btn btn-secondary" onclick="SEQProfile.respond(\'reject\')">Rechazar</button></div>';
     else if (a.estado === 'amigos') {
       b = '<div class="seq-pf-chip seq-pf-ok">' + (window.seqIco ? window.seqIco('correcto') : '') + 'Amigos</div>';
-      b += '<button class="btn btn-secondary seq-pf-quit" onclick="SEQProfile.remove()">' + (P.rm ? '¿Seguro? Pulsa otra vez para quitarlo' : 'Quitar de amigos') + '</button>';
+      b += '<button class="btn btn-secondary seq-pf-quit" onclick="SEQProfile.remove()">' + (P.rm ? '¿Seguro? Pulsa otra vez para eliminarlo' : 'Eliminar amigo') + '</button>';
     }
     return b ? '<div class="seq-pf-actions">' + b + '</div>' : '';
   }
@@ -127,7 +127,7 @@
     out += actions(a);
 
     out += sectionImg('ui/copa', 'Récords personales', r
-      ? '<div class="stats-extra-grid" id="extra-stats">' + extra('Cálculo Turbo', dash(r.calculo_turbo), modeImg('calculo-turbo'), 'puntos') + extra('Cálculo de Fondo', dash(r.calculo_fondo), modeImg('calculo-clasico'), 'aciertos') + extra('Contrarreloj', dash(r.contrarreloj), modeImg('contrarreloj'), 'puntos') + (lucOk && r.lucidez ? extra('Lucidez Mental', dash(r.lucidez, '/30'), modeImg('secreto'), 'mejor partida') : '') + '</div>'
+      ? '<div class="stats-extra-grid" id="extra-stats">' + extra('Cálculo Turbo', dash(r.calculo_turbo), modeImg('calculo-turbo'), 'puntos') + extra('Cálculo de Fondo', dash(r.calculo_fondo), modeImg('calculo-clasico'), 'aciertos') + extra('Contrarreloj', dash(r.contrarreloj), modeImg('contrarreloj'), 'puntos') + (r.lucidez ? (lucOk ? extra('Lucidez Mental', dash(r.lucidez, '/30'), modeImg('secreto'), 'mejor partida') : extra('Modo secreto', '???', modeImg('secreto'), '')) : '') + '</div>'
       : empty('Aún sin récords que presumir.'));
 
     var mu = d.multi || {}, hasMu = num(mu.partidas) > 0, on = false;
