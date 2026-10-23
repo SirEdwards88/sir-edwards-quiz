@@ -143,13 +143,14 @@ const SURVIVAL_FAIL_PHRASES = {
 
 const SUDDEN_FAIL_PHRASES = {
   desastre: [
-    "Una oportunidad era todo lo que tenías. Y no ha sobrevivido a la experiencia.",
     "La eliminación ha llegado antes de que hubiera tiempo para presentar alegaciones.",
     "No ha sido una derrota. Ha sido una ejecución académica.",
     "Una sola oportunidad. Has conseguido que parezca una cláusula abusiva.",
     "Eliminación inmediata. Ni siquiera el juego ha pedido una segunda opinión.",
     "El margen de error era cero. Y tú has comprobado que lo decían en serio.",
-    "Una vida. Un error. Una conclusión bastante previsible."
+    "Una vida. Un error. Una conclusión bastante previsible.",
+    "Breve. Concisa. Irrevocable. Has escrito el epitafio más corto de la casa.",
+    "El juego prometía emoción. Tú has preferido el desenlace."
   ],
   regular: [
     "Estabas a una buena respuesta de seguir en pie. Elegiste la otra.",
@@ -202,7 +203,6 @@ const TIMETRIAL_END_PHRASES = {
     "Se acabó el tiempo. Por una vez, tú no has necesitado más.",
     "Velocidad y conocimiento, al parecer. No esperaba que ambos se presentaran juntos.",
     "El cronómetro marcaba segundos. Tú marcabas diferencias.",
-    "El reloj corría contra ti. Mala elección por su parte.",
     "Velocidad, precisión y conocimiento. Casi parece que hubieras leído las instrucciones.",
     "Has terminado antes que el tiempo. Por supuesto.",
     "Has tratado el cronómetro como un mero trámite. Me temo que empieza a tomárselo como algo personal.",
@@ -226,20 +226,21 @@ const MENTAL_CALC_END_PHRASES = {
     "La aritmética ha salido indemne. No puedo garantizar lo mismo de tu reputación como calculista."
   ],
   normal: [
-    "Sumar, restar y seguir adelante. Una relación cordial, aunque sin grandes muestras de afecto.",
     "No sé cómo has llegado a ese resultado, pero las matemáticas han decidido no recurrir.",
     "Tu cerebro ha hecho horas extra. Espero que haya negociado una remuneración decente.",
     "No has calculado: has abierto una negociación con los números y aceptado la primera oferta.",
     "No has derrotado a las matemáticas, pero has conseguido que te toleren.",
     "No ha sido bonito, pero el resultado puede defenderse sin llamar a un abogado.",
-    "Tu relación con la aritmética es cordial. No os invitaría a compartir vacaciones."
+    "Tu relación con la aritmética es cordial. No os invitaría a compartir vacaciones.",
+    "Algunas cuentas salieron. Otras salieron de paseo.",
+    "Ni un desastre ni un cálculo digno de enmarcar. Las sumas, al menos, no se han quejado."
   ],
   bien: [
     "Has resuelto las cuentas. No habrá celebración oficial; procuraré que la noticia no se filtre.",
     "Los números te esperaban con malas intenciones. Se han ido con las manos vacías.",
     "Has hecho matemáticas por voluntad propia. No quisiera sacar conclusiones precipitadas, pero tomaré nota.",
     "Cálculo mental sin sudor. Si además lo has disfrutado, tendremos que revisar el reglamento.",
-    "Las matemáticas te han dejado pasar. Me temo que ahora esperarán que vuelvas a hacerlo.",
+    "Las matemáticas te han dejado pasar. Ahora esperarán que vuelvas a hacerlo.",
     "Resultado exacto. La precisión tiene algo de insolencia cuando se ejerce sin esfuerzo.",
     "Has convertido las operaciones en un trámite. Procura no solicitar que te las sellen.",
     "Los números han dejado de discutir contigo. No descarto que estén preparando una apelación.",
@@ -249,7 +250,7 @@ const MENTAL_CALC_END_PHRASES = {
     "Precisión admirable. Hasta los números se han puesto firmes, y no es lo habitual contigo.",
     "Has resuelto las cuentas antes de que pudieran convertirse en un problema.",
     "Has hecho que la aritmética parezca sencilla. Qué arrogancia tan justificada.",
-    "Correcto y rápido. Me temo que tendré que buscar otro defecto que señalar."
+    "Correcto y rápido. Tendré que buscar otro defecto que señalar."
   ]
 };;
 
@@ -321,7 +322,6 @@ const SURVIVAL_WIN_PHRASES = [
   "Victoria magistral. Un despliegue de intelecto que, con suerte, nunca tendrás que usar en la vida real.",
   "Victoria total. En algún lugar, un trofeo imaginario ensaya su discurso de bienvenida.",
   "Lo has conseguido. Ahora queda encontrar a alguien dispuesto a escucharlo.",
-  "Enhorabuena. El mundo sigue con sus asuntos, pero aquí podemos permitirnos una pausa.",
   "La prueba exigía conocimientos. Tú aportaste resistencia. Técnicamente, funcionó.",
   "Has llegado al final. Que nadie confunda la supervivencia con el talento. Yo, el primero.",
   "Has llegado al final con vida. La estadística, que esperaba otra cosa, pide disculpas.",
@@ -329,7 +329,8 @@ const SURVIVAL_WIN_PHRASES = [
   "Has sobrevivido. Contra todo pronóstico, incluido el mío.",
   "Victoria. Voy a tener que retirar un par de comentarios.",
   "Has sobrevivido. No necesariamente con elegancia, pero sí con resultados.",
-  "Una victoria merecida. Procura no convertirla en una leyenda personal."
+  "Una victoria merecida. Procura no convertirla en una leyenda personal.",
+  "Cuarenta preguntas y sigues en pie. Mis condolencias a quienes apostaron en contra."
 ];;
 
 const SUDDEN_WIN_PHRASES = [
@@ -342,7 +343,7 @@ const SUDDEN_WIN_PHRASES = [
   "Has llegado al final sin pestañear. La muerte súbita tendrá que esperar.",
   "Muerte súbita. Para alguien más.",
   "No te has limitado a sobrevivir al límite: lo has dejado en ridículo.",
-  "Eliminación evitada. Me temo que el suspense tendrá que buscar otro empleo.",
+  "Eliminación evitada. El suspense tendrá que buscar otro empleo.",
   "Sin segunda oportunidad y sin necesitarla. Tanta eficiencia roza la mala educación.",
   "Una vida y todas las preguntas contestadas. Por fin, alguien que cuida lo que tiene.",
   "No has concedido al error ni una oportunidad. Empiezo a comprender por qué está tan resentido.",
@@ -362,9 +363,7 @@ const REVIEW_END_PHRASES = {
       "Tus errores están empezando a quedarse sin sitio donde esconderse.",
       "Tus tropiezos de antaño empiezan a dar fruto. Una cosecha bastante peculiar.",
       "Tu memoria ha vuelto al trabajo. Sin disculpas, pero ha vuelto.",
-      "Repasar hará que tus errores te preocupen menos. A mí me privará de un entretenimiento considerable.",
       "Hoy no has borrado errores. Los has convertido en respuestas.",
-      "Volviste a por las preguntas que te derrotaron. Mala idea para ellas.",
       "Segunda oportunidad para ti. Última para ellas.",
       "Has vuelto al lugar de tus errores. Esta vez sabías dónde mirar.",
       "Has vuelto con los deberes hechos. Tus errores aún están intentando justificar la ausencia.",

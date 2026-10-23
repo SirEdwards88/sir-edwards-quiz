@@ -34,7 +34,6 @@
     "Victoria sin demasiadas complicaciones. Qué poco duró la resistencia.",
     "El duelo parecía prometedor. El marcador decidió contar otra historia.",
     "Resultado contundente. Las excusas tendrán que comparecer con cita previa.",
-    "Has ganado con claridad. Cualquier excusa llegará tarde y mal vestida.",
     "La diferencia empieza a ser incómoda. Para el rival, concretamente.",
     "Victoria convincente. La suerte ha presentado su dimisión como coartada.",
     "Una victoria cómoda. Qué poco deportivo de tu parte.",
@@ -64,8 +63,8 @@
     "Un punto. No parece gran cosa hasta que descubres que era el tuyo.",
     "Derrota por un punto. La diferencia cabe en una línea. El orgullo, de momento, no.",
     "Te ha faltado un punto. Qué generosa ha sido la victoria al dejarte tan cerca.",
-    "Has perdido por un margen minúsculo. Qué manera tan elegante de sufrir.",
-    "Perdiste por tan poco que el rival no sabe si celebrar o disculparse. Yo sí lo sé."
+    "Perdiste por tan poco que el rival no sabe si celebrar o disculparse. Yo sí lo sé.",
+    "Un solo punto. La derrota más pequeña posible, y aun así completa."
   ],
   derrota_2_3: [
     "Derrota ajustada. Ha faltado muy poco para ganar y exactamente lo suficiente para perder.",
@@ -74,7 +73,6 @@
     "Has estado cerca. Una expresión magnífica para describir a alguien que acaba de perder.",
     "Derrota ajustada. El rival no fue mucho mejor. Solo lo suficiente.",
     "Estuviste cerca de ganar. El resultado, por desgracia, sabe contar.",
-    "El rival ha ganado por poco. Lo suficiente para presumir, por desgracia.",
     "Te faltó muy poco. Lamentablemente, el reglamento no contempla los casi."
   ],
   derrota_aplastante: [
@@ -104,14 +102,14 @@
     "Empate. Ninguno ha conseguido imponerse. Qué equilibrio tan poco satisfactorio.",
     "Empate. Dos rivales, cero vencedores y una cantidad preocupante de orgullo intacto.",
     "Mismo resultado para ambos. Qué democrático. Qué poco emocionante.",
-    "Empate. Nadie gana, nadie pierde y nadie tiene demasiado que celebrar.",
     "Empate. Ambos han dedicado el mismo esfuerzo a dejar la cuestión sin resolver.",
     "Empate. Ninguno ha convencido al marcador de que merecía más.",
     "Un empate. La solución perfecta cuando ninguno ha hecho méritos suficientes para celebrar.",
     "Igualdad absoluta. Al menos nadie tendrá que explicar cómo terminó esto.",
     "Empate. Ni siquiera el resultado ha querido tomar partido.",
     "Igualdad hasta el final. Qué falta de consideración hacia el suspense.",
-    "Empate. El único resultado en el que ambos podéis reclamar la última palabra."
+    "Empate. El único resultado en el que ambos podéis reclamar la última palabra.",
+    "Empate. Todo el mundo puede decir que lo ha hecho bien; nadie, que lo ha hecho mejor."
   ]
 };
 
@@ -191,9 +189,9 @@
 
   // Duelos que terminan sin jugarse hasta el final (abandono o plazo vencido): una bolsa por situación. {nombre} es el del rival.
   var FORFEIT = {
-    yo_abandono: ['Retirarse a tiempo también es una estrategia; esta no lo fue.', 'Abandonaste, y el duelo siguió sin ti. Con una naturalidad sospechosa.', 'Retirada aceptada. Dejaré el motivo en blanco; la imaginación hará el resto.', 'Sir Edwards no concede prórrogas.', 'Cerrar la puerta a mitad del duelo no es elegante, pero sí rápido.'],
+    yo_abandono: ['Retirarse a tiempo también es una estrategia; esta no lo fue.', 'Abandonaste, y el duelo siguió sin ti. Con una naturalidad sospechosa.', 'Retirada aceptada. Dejaré el motivo en blanco; la imaginación hará el resto.', 'Sir Edwards no concede prórrogas.', 'Cerrar la puerta a mitad del duelo no es elegante, pero sí rápido.', 'Has abandonado con prisa. La derrota, en cambio, ha esperado con toda tranquilidad.'],
     rival_abandono: ['Victoria por abandono: la más cómoda y la menos épica.', '{nombre} ha abandonado el duelo. Tal vez el suspense le resultaba excesivo.', '{nombre} ha dejado la partida sin terminar. Tú, al menos, has tenido la cortesía de llegar al final.', '{nombre} ha preferido no conocer el resultado. Tú sí, y es favorable.', '{nombre} ha cedido antes del final. La victoria es tuya; la cortesía de ocultar la sonrisa, también.', '{nombre} ha desertado. Tomaremos su ausencia por un cumplido.'],
-    yo_no_jugue: ['El reto caducó contigo dentro, lo que tiene su mérito.', 'La puntualidad no es negociable, aunque tú lo hayas intentado.', 'El reto ha caducado. Tu puntualidad sigue siendo una obra de ficción.', 'El reloj no esperó, y yo tampoco.', 'Plazo agotado. Algunos retos no se pierden: se dejan morir con paciencia.'],
+    yo_no_jugue: ['El reto caducó contigo dentro, lo que tiene su mérito.', 'La puntualidad no es negociable, aunque tú lo hayas intentado.', 'El reto ha caducado. Tu puntualidad sigue siendo una obra de ficción.', 'El reloj no esperó, y yo tampoco.', 'Plazo agotado. Algunos retos no se pierden: se dejan morir con paciencia.', 'Un reto sin jugar es una victoria regalada. Generosidad no te falta.'],
     rival_no_jugo: ['Ganas por incomparecencia. Cuenta, aunque la épica haya tomado el día libre.', '{nombre} dejó caducar el reto. Victoria de oficio, sin aplausos.', 'El rival no se ha presentado. Celebra con discreción: has vencido a una ausencia.', 'Hay duelos que terminan antes de empezar. Este ha sido uno de ellos.', '{nombre} no ha respondido a tiempo. Victoria por silencio administrativo.', 'El reto ha vencido sin que {nombre} aparezca. Tu rival ha perdido contra el calendario.']
   };
   function forfeitFallback(list, seedId) {

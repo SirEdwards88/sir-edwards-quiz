@@ -108,7 +108,7 @@ const SEQSirEvents = (function () {
       '«Quince. Si fallas ahora, lo recordaré.»',
       '«Alguien se ha estudiado los apuntes.»',
       '«Quince. Esto ya requiere cierta explicación.»',
-      '«Quince seguidas. Voy a revisar mis notas.»',
+      '«Quince. Empiezo a necesitar sentarme.»',
       '«Quince. ¿Piensas dejarme sin críticas hoy?»',
       '«Quince. Muy bien. Ahora intenta no convertirlo en una casualidad.»'],
     20: ['«Veinte. He levantado la vista del periódico. Quedas advertido.»',
@@ -117,9 +117,9 @@ const SEQSirEvents = (function () {
       '«No quiero presionarte, pero ya sabes lo que cuesta caer desde veinte.»',
       '«Veinte sin fallar. Empiezo a medir mis palabras.»',
       '«Voy a necesitar una página nueva.»',
-      '«Veinte seguidas. Empiezo a reconsiderar algunas opiniones.»',
       '«Veinte. No quisiera decir «impresionante». Pero sería mentira.»',
-      '«Veinte. Procura disfrutarlo discretamente.»'],
+      '«Veinte. Procura disfrutarlo discretamente.»',
+      '«Veinte seguidas. Dime, ¿a quién has sobornado: a la memoria o a la suerte?»'],
     30: ['«Treinta. Bien. Ahora sí estoy impresionado, y detesto que se me note.»',
       '«Esto ya no es suerte.»',
       '«Creo que acabamos de encontrar un problema para tus rivales.»',
@@ -185,12 +185,14 @@ const SEQSirEvents = (function () {
   var RECORD = [
     '«{n} seguidas. Tu mejor marca. Qué inoportuna mejora.»', 
     '«{n}. Mejor que nunca. Alguien ha estado practicando.»', '«Tu mejor racha hasta ahora: {n}. Procura que no sea el techo.»',
-    '«Récord. {n} seguidas. Detesto tener que felicitarte.»', '«{n}. Superas tu marca anterior. Y mis expectativas, de paso.»'
+    '«Récord. {n} seguidas. Detesto tener que felicitarte.»', '«{n}. Superas tu marca anterior. Y mis expectativas, de paso.»',
+    '«Récord personal: {n}. Que conste que yo ya lo sospechaba. Mentira.»'
   ];
   var COMEBACK = [
     '«De vuelta. Confiaba en que la ausencia hubiera sido de estudio. Veo que no.»', '«Así que sigues por aquí. Qué detalle avisar.»',
-    '«Ha pasado tiempo. Tu expediente ha criado polvo; tú, con suerte, conocimiento.»', 
-    '«Mi silla favorita cogía polvo. Qué oportuno tu regreso.»', '«Días sin verte. Los he empleado en dudar de ti. Con método.»'
+    '«Ha pasado tiempo. Las preguntas no han cambiado. Tú, con suerte, sí.»', 
+    '«Mi silla favorita cogía polvo. Qué oportuno tu regreso.»', '«Días sin verte. Los he empleado en dudar de ti. Con método.»',
+    '«Regresas como los buenos reproches: tarde y sin avisar.»'
   ];
   var WEAK = [
     '«{cat}. Tu talón de Aquiles. Has acertado. Lo admito, con reservas.»', '«Has acertado en {cat}. Precisamente en esa. Casi parece que has estudiado.»',
@@ -214,7 +216,7 @@ const SEQSirEvents = (function () {
     '«Buenos días. Qué manera tan innecesariamente productiva de empezar el día.»',
     '«Madrugando para demostrar conocimientos. Cada cual con sus aficiones.»'
   ];
-  var DAY_RARE = [{ t: '«Son las siete de la mañana y ya estoy supervisando tu rendimiento. Qué vida tan plena.»', h: [7] }];
+  var DAY_RARE = [{ t: '«Son las siete de la mañana y ya estoy supervisando tu rendimiento. Qué vida tan plena.»', h: [7] }, '«Madrugar y, además, pensar. Alguien se toma la mañana en serio.»', '«A esta hora el cerebro aún está en la cama. El tuyo, al menos, ha avisado.»', '«Una mañana entera por delante. Procura no malgastarla con errores.»'];
   var NIGHT_EARLY = [
     '«La noche invita a reflexionar. Tú has elegido ponerla a prueba.»',
     '«¿Todavía jugando? Admirable falta de prudencia.»',
@@ -238,10 +240,14 @@ const SEQSirEvents = (function () {
     '«Ya no es tarde. Es temprano. Y sigues aquí.»',
     '«Tu almohada debe de sentirse bastante ofendida.»',
     '«La madrugada: donde la lucidez se acuesta y el insomnio toma el relevo.»',
-    '«Sigues en pie. Ya no sé quién vigila a quién.»'
+    '«Sigues en pie. Ya no sé quién vigila a quién.»',
+    '«A estas horas solo quedan los vigilantes y los obstinados. Me incluyo en lo primero.»'
   ];
   var NIGHT_RARE = [{ t: '«Las tres y pico. La hora oficial de las decisiones cuestionables.»', h: [3] },
-    { t: '«Son las tres de la mañana. Esto ya es personal.»', h: [3] }];
+    { t: '«Son las tres de la mañana. Esto ya es personal.»', h: [3] },
+    '«A estas horas hasta los relojes bostezan. Tú, en cambio, sigues contestando.»',
+    '«Quien acierta de madrugada merece respeto. Quien falla, también: al menos lo ha intentado.»',
+    '«La noche no perdona. Tú, por lo visto, tampoco: sigues aquí.»'];
 
   function isNight(hour) { return hour >= 0 && hour < 4; }
   function isDay(hour) { return hour >= 6 && hour < 10; }

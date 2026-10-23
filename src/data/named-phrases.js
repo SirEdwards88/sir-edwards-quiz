@@ -31,8 +31,8 @@ const NAMED_PHRASES = {
     'Perfecto, {nombre}. Hoy no queda ni un «casi» al que agarrarme.'
   ],
   encargos_4: [
-    'Los cuatro, {nombre}. El expediente luce mejor. Tú, igual que siempre.',
-    'Semana saldada, {nombre}. El expediente puede descansar hasta el lunes.',
+    'Los cuatro, {nombre}. La semana luce mejor. Tú, igual que siempre.',
+    'Semana saldada, {nombre}. Hasta el lunes, el reproche puede descansar.',
     'Cuatro de cuatro, {nombre}. Un aplauso discreto debería bastar.'
   ],
   comeback: [
@@ -47,10 +47,11 @@ const NAMED_PHRASES = {
   ],
   streak_20: [
     '«Veinte seguidas, {nombre}. Ahora sí puedo llamarlo racha sin reservas.»',
-    '«Veinte, {nombre}. Mi escepticismo empieza a quedarse sin argumentos.»'
+    '«Veinte, {nombre}. Mi escepticismo empieza a quedarse sin argumentos.»',
+    '«Veinte, {nombre}. Desde aquí, cada acierto es una obligación.»'
   ],
   night_early: ['«La noche avanza, {nombre}. Tu criterio sigue bajo evaluación.»', '«Medianoche, {nombre}. Veamos qué clase de lucidez trae esta hora.»', '«Entrada la noche, {nombre}. La prudencia se ha ido a dormir; tú, por lo visto, no.»', '«Otra partida a estas horas, {nombre}. Admiro la perseverancia; la cordura, menos.»'],
-  night_late: ['«Madrugada, {nombre}. El sueño ha perdido otra votación.»', '«A estas horas, {nombre}, hasta tus aciertos parecen tener una coartada.»', '«Madrugada, {nombre}. A estas horas, hasta acertar tiene cierto mérito.»'],
+  night_late: ['«Madrugada, {nombre}. El sueño ha perdido otra votación.»', '«A estas horas, {nombre}, hasta tus aciertos parecen tener una coartada.»', '«Madrugada, {nombre}. A estas horas, hasta acertar tiene cierto mérito.»', '«Las tantas, {nombre}. Si esto es insomnio, al menos es instructivo.»'],
   streak_30: [
     '«Treinta, {nombre}. Ya no puedo fingir que esto es casualidad.»',
     '«Treinta seguidas, {nombre}. Me cuesta decirlo, pero estoy impresionado.»',

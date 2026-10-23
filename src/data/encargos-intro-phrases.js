@@ -40,7 +40,7 @@ const ENCARGOS_INTRO = {
       'Has ganado. Te ruego que no lo celebres delante del vencido.',
       'Victoria. No quisiera que confundieras un buen estreno con una tradición.',
       'Has ganado. Diré que fue mérito tuyo y no descuido ajeno.',
-      'Has ganado. Lo registro con una ceja ligeramente alzada.'
+      'Has ganado. Lo celebro con una ceja ligeramente alzada.'
     ],
     derrota: [
       'Has perdido. Lo olvidaré, con la debida discreción.',
@@ -141,7 +141,8 @@ const ENCARGOS_INTRO = {
         'A partir de hoy, tu expediente cuenta de verdad.',
         'Se acabó el periodo de cortesía. Empieza el de observación.',
         'Hasta hoy eras invitado. Desde hoy eres de la casa y respondes como tal.',
-        'Esta semana tendré por fin resultados que comentar. Espero que me facilites el trabajo.'
+        'Esta semana tendré por fin resultados que comentar. Espero que me facilites el trabajo.',
+        'De hoy en adelante, los descuidos dejan de ser novedades.'
       ],
       ausencia: [
         'Los encargos de las semanas perdidas han caducado, como las promesas de volver pronto.',
@@ -165,9 +166,8 @@ const ENCARGOS_INTRO = {
       'Las semanas empiezan con propósitos y terminan con explicaciones.',
       'Una semana entera para demostrar algo. Elige qué.',
       'Te seguiré de cerca. La discreción es una virtud que no siempre puedo permitirme.',
-      'Los buenos propósitos son encantadores. Lástima que no cuenten como encargos.',
       'El reloj ya corre. A mí no me preocupa; a ti debería.',
-      'Hay una página en blanco con tu nombre. Procura que valga la tinta.',
+      'Hay una página en blanco con tu nombre. Rellénala antes del domingo.',
       'Que nadie diga que no te avisé: tienes hasta el domingo.',
       'Los encargos no se completan solos. Lo he intentado, por si acaso.',
       'Cuando gustes. Aunque, de ser posible, antes de que tenga que volver a pedirlo.'
