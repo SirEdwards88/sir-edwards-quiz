@@ -25,15 +25,15 @@ var SEQPrivacy = (function () {
         'Tu nombre visible y tu avatar (de una lista cerrada).',
         'Tu progreso, para sincronizarlo entre dispositivos: totales de XP, partidas y aciertos, logros, estadísticas por pregunta, preguntas falladas y vistas, historial reciente y ajustes.',
         'Tu actividad online: amistades, Duelos y Retos (resultados, respuestas, puntuación y valoración competitiva) y tu posición en el Ranking.',
-        'Si activas los avisos de Retos: los datos técnicos de la suscripción de tu navegador (necesarios para enviarte el aviso) y tu zona horaria, para no avisarte de madrugada.'
+        'Si activas los avisos (Retos y solicitudes de amistad): los datos técnicos de la suscripción de tu navegador (necesarios para enviarte el aviso) y tu zona horaria. No hay horario de silencio propio: para no recibir avisos de noche, usa «No molestar» de tu móvil.'
       ],
       '**Lo que ven otros jugadores.** Tu nombre visible, tu avatar y tus resultados de Duelo y Retos son visibles para tus amigos y rivales; tu posición y tu progreso, en el Ranking. El Ranking **no está verificado**: las cifras las declara cada dispositivo.'
     ] },
     { h: 'Para qué se usan', b: [
-      'Solo para el funcionamiento del juego: identificarte, sincronizar tu progreso, hacer funcionar Duelos, Retos, Amigos y Ranking, y enviarte los avisos de Retos que hayas activado. No hay publicidad, ni perfiles con fines comerciales, ni venta de datos, ni análisis de uso de terceros.'
+      'Solo para el funcionamiento del juego: identificarte, sincronizar tu progreso, hacer funcionar Duelos, Retos, Amigos y Ranking, y enviarte los avisos de Retos y de amistad que hayas activado. No hay publicidad, ni perfiles con fines comerciales, ni venta de datos, ni análisis de uso de terceros.'
     ] },
     { h: 'Base legal', b: [
-      'Prestar el servicio que has pedido al crear la cuenta (ejecución del contrato) y la seguridad básica del servicio, con un límite de peticiones frente a abusos (interés legítimo). Los avisos de Retos se basan en tu consentimiento: los activas tú y puedes desactivarlos cuando quieras.'
+      'Prestar el servicio que has pedido al crear la cuenta (ejecución del contrato) y la seguridad básica del servicio, con un límite de peticiones frente a abusos (interés legítimo). Los avisos se basan en tu consentimiento: los activas tú y puedes desactivarlos cuando quieras.'
     ] },
     { h: 'Con quién se comparten', b: [
       [

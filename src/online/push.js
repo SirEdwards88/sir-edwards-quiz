@@ -1,4 +1,4 @@
-// SirEdwards Quiz 2.3 — Avisos en el móvil (notificaciones push) para Retos.
+// SirEdwards Quiz 2.3 — Avisos en el móvil (notificaciones push) para Retos y solicitudes de amistad.
 //
 // Solo avisa de «X te ha retado» y «X ha terminado»: nada de duelos en directo. Es opt-in:
 //  · Se activa solo desde Ajustes → Avisos (con un toque tuyo: el permiso nunca salta solo). No hay ofertas ni avisos insistentes.
