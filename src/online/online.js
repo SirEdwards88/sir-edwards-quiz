@@ -353,6 +353,10 @@
     // Solo si el jugador ya decidió asociar su progreso a la cuenta (migration === 'done').
     function dataRound() {
       if (!window.SEQDataSync || !sync || sync.migration !== 'done' || !account) return Promise.resolve();
+      // Reseteo puntual de records de una cuenta (src/utils/records-reset.js): antes de sincronizar, para que el máximo no los devuelva.
+      try {
+        if (window.SEQRecordsReset && typeof store !== 'undefined' && window.SEQRecordsReset.run(store, account.player.id) && typeof saveStore === 'function') saveStore(false);
+      } catch (e) {}
       return window.SEQDataSync.run({
         api: api,
         playerId: account.player.id,
