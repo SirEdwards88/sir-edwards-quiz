@@ -531,7 +531,7 @@
   }
 
   // Texto que acompaña a la imagen al compartir. Puro (sin DOM); mismo tono que el resto del juego.
-  var SHARE_URL = 'https://siredwards88.github.io/sir-edwards-quiz/';
+  var SHARE_URL = 'https://siredwards88.github.io/sir-edwards-quiz/instalar.html';   // la misma página guiada que «Invitar a un amigo»
   function shareText(d) {
     d = d || {};
     var head, remark;

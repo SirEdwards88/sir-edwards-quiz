@@ -39,3 +39,8 @@ test('invitar: el enlace lleva a la página de instalación', () => {
   const { inv } = load({});
   assert.match(inv.URL, /\/instalar\.html$/);
 });
+
+test('compartir resultado y «Invitar a un amigo» llevan a la misma página de instalación', () => {
+  const card = fs.readFileSync(new URL('../src/share/share-card.js', import.meta.url), 'utf8');
+  assert.match(card, /var SHARE_URL = 'https:\/\/siredwards88\.github\.io\/sir-edwards-quiz\/instalar\.html'/);
+});
