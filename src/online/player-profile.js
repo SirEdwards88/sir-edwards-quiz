@@ -1,7 +1,7 @@
 // SirEdwards Quiz 2.3 — ficha pública de un jugador (resumen: precisión, récords por modo y PvP).
 //
 // Se abre desde Amigos, desde los Rankings y desde la búsqueda, y lleva las acciones de amistad (enviar solicitud,
-// aceptar/rechazar, cancelar). Solo presenta lo que devuelve el servidor en GET /players/:id (ver src/profile.js del
+// aceptar/rechazar, cancelar, quitar de amigos). Solo presenta lo que devuelve el servidor en GET /players/:id (ver src/profile.js del
 // backend). Un dato que falta llega como null y se muestra como «—», nunca como un cero inventado.
 // Estética: la de los Rankings (tarjeta dorada, iconos de ranking, insignia de rango); estilos .seq-pf* en styles/online.css.
 //
@@ -65,6 +65,20 @@
     act('POST', '/friends/requests/' + fid + '/' + action, undefined, null);
   }
 
+  // Quitar de amigos: dos toques (el primero pide confirmación y se desarma solo a los 4 s). No borra partidas ni estadísticas.
+  var rmTimer = 0;
+  function remove() {
+    var fid = P.data && P.data.amistad && P.data.amistad.estado === 'amigos' && safeId(P.data.amistad.friendship_id);
+    if (!fid) return;
+    if (!P.rm) {
+      P.rm = true; clearTimeout(rmTimer);
+      rmTimer = setTimeout(function () { P.rm = false; if (window.SEQDuels._state().screen === 'profile') window.SEQDuels.rerender(); }, 4000);
+      window.SEQDuels.rerender(); return;
+    }
+    P.rm = false; clearTimeout(rmTimer);
+    act('POST', '/friends/' + fid + '/remove', undefined, 'Ya no sois amigos.');
+  }
+
   function V21() { return window.SEQDuels21 || null; }
   // Misma estética que «Estadísticas»: expediente (.stats-dossier) y secciones con filete dorado (.stats-section).
   function sectionImg(img, title, body) {
@@ -78,17 +92,13 @@
   function empty(text) { return '<p class="seq-pf-empty">' + esc(text) + '</p>'; }
 
   function actions(a) {
-    var f = (window.SEQOnline && window.SEQOnline.session && (window.SEQOnline.session() || {}).features) || {};
-    var id = safeId(P.id), b = '';
+    var b = '';   // Retar a duelo o reto se hace desde Amigos (allí se comprueba que el amigo esté en línea), no desde la ficha.
     if (a.estado === 'ninguna') b = '<button class="btn btn-primary seq-pf-main" onclick="SEQProfile.request()">Enviar solicitud de amistad</button>';
     else if (a.estado === 'enviada') b = '<div class="seq-pf-chip seq-pf-wait"><span class="seq-pf-dot"></span>Solicitud enviada, esperando respuesta</div><button class="btn btn-secondary seq-pf-side" onclick="SEQProfile.respond(\'cancel\')">Cancelar</button>';
     else if (a.estado === 'recibida') b = '<div class="seq-pf-pair"><button class="btn btn-primary" onclick="SEQProfile.respond(\'accept\')">Aceptar</button><button class="btn btn-secondary" onclick="SEQProfile.respond(\'reject\')">Rechazar</button></div>';
     else if (a.estado === 'amigos') {
       b = '<div class="seq-pf-chip seq-pf-ok">' + (window.seqIco ? window.seqIco('correcto') : '') + 'Amigos</div>';
-      var pair = '';
-      if (f.classic_duel) pair += '<button class="btn btn-primary" onclick="SEQDuels.quick(\'duel\',\'' + id + '\')">Duelo online</button>';
-      if (f.async_challenges) pair += '<button class="btn btn-secondary" onclick="SEQDuels.quick(\'reto\',\'' + id + '\')">Retar</button>';
-      if (pair) b += '<div class="seq-pf-pair">' + pair + '</div>';
+      b += '<button class="btn btn-secondary seq-pf-quit" onclick="SEQProfile.remove()">' + (P.rm ? '¿Seguro? Pulsa otra vez para quitarlo' : 'Quitar de amigos') + '</button>';
     }
     return b ? '<div class="seq-pf-actions">' + b + '</div>' : '';
   }
@@ -135,5 +145,5 @@
     return out + '</div>';
   }
 
-  window.SEQProfile = { setTab: setTab, open: open, load: load, render: render, request: request, respond: respond, back: back, _state: function () { return P; } };
+  window.SEQProfile = { setTab: setTab, open: open, load: load, render: render, request: request, respond: respond, remove: remove, back: back, _state: function () { return P; } };
 })();

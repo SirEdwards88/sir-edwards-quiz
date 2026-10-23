@@ -1057,3 +1057,4 @@
 #seq-duel-root .seq-d-h3-hist { margin-top: 28px; color: var(--sub); font-size: 15px; }
 #seq-duel-root .seq-d-active .seq-d-turn { border-color: var(--se-gold, #c9992e); box-shadow: 0 0 0 1px rgba(201, 153, 46, .45), 0 4px 14px rgba(201, 153, 46, .12); }
 #seq-duel-root .seq-d-active .history-item:not(.seq-d-turn) { opacity: .82; }
+.seq-pf-quit { width: 100%; margin-top: 8px; opacity: .8; font-size: 13px; }
