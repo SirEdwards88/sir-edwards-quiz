@@ -99,3 +99,11 @@ test('cableado: scripts en index.html, sin rotar al navegar dentro de la app, ar
   const fallback = /<p class="home-quote">([^<]+)<\/p>/.exec(html);
   assert.ok(fallback && quotes().includes(fallback[1]), 'la cita fija de index.html debe ser una del banco');
 });
+
+test('volver a la app: la cita de Inicio y la frase de Encargos solo cambian tras 5 minutos o más fuera', () => {
+  for (const f of ['src/ui/home-quote.js', 'src/ui/encargos-ui.js']) {
+    const src = fs.readFileSync(new URL('../' + f, import.meta.url), 'utf8');
+    assert.match(src, /AWAY_MS = 5 \* 60 \* 1000/, f);
+    assert.match(src, /visibilityState === 'hidden'/, f);
+  }
+});

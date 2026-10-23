@@ -1,6 +1,6 @@
 // SirEdwards Quiz — Cita de Inicio (2.3): rota entre las de src/data/home-quotes.js. Script clásico.
 //
-// Cambia cada vez que se abre el juego: al cargar la app y cuando se vuelve a ella desde segundo plano (en el móvil, abrir una
+// Cambia cada vez que se abre el juego: al cargar la app y cuando se vuelve a ella tras 5 minutos o más en segundo plano (en el móvil, abrir una
 // PWA suele ser reanudarla, sin recargar). No cambia al moverse por las pantallas de dentro. Se elige con la bolsa barajada de
 // pickRotatingPhrase(), la misma del resto de frases: no se repite ninguna hasta agotarlas. Como abrir y cerrar sin jugar no
 // guarda nada, aquí se persiste SOLO la bolsa de esta cita (phraseBags/lastPhraseIndex de «home_quote») leyendo y reescribiendo
@@ -40,14 +40,20 @@ const SEQHomeQuote = (function () {
     } catch (e) {}
   }
 
+  // Una ausencia corta (contestar un mensaje, mirar una notificación) no cuenta como «volver a abrir»: hacen falta 5 minutos fuera.
+  var AWAY_MS = 5 * 60 * 1000, hiddenAt = 0;
+  function noteHidden() { if (!hiddenAt) hiddenAt = Date.now(); }
+  function longAway() { var t = hiddenAt; hiddenAt = 0; return !t || Date.now() - t >= AWAY_MS; }
+
   // Al volver a la app: solo si Inicio es lo que se ve, para no gastar una cita que nadie va a leer.
   function onReturn() {
+    if (!longAway()) return;
     try { var v = document.getElementById('view-home'); if (v && v.classList.contains('active')) refresh(); } catch (e) {}
   }
 
   if (typeof document !== 'undefined' && document.addEventListener) {
     document.addEventListener('DOMContentLoaded', refresh);   // al abrir, Inicio es la vista activa
-    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') onReturn(); });
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') noteHidden(); else if (document.visibilityState === 'visible') onReturn(); });
   }
   if (typeof window !== 'undefined' && window.addEventListener) {
     window.addEventListener('pageshow', function (e) { if (e && e.persisted) onReturn(); });

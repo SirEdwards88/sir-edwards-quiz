@@ -60,3 +60,17 @@ test('repintar la pantalla (sin visita nueva) no gasta frases; un cambio de esta
   const b = UI.phrase(view(2, false), false); // cambia el estado con la pantalla abierta
   assert.ok(PH.encargos_2.includes(b));
 });
+
+test('la frase cambia al abrir el juego (onOpen), no al entrar de nuevo en la pantalla', () => {
+  const { UI, store } = env();
+  const a = UI.phrase(view(1, false), false);              // primera visita tras abrir: elige una
+  const left = store.phraseBags.encargos_1.length;
+  for (let i = 0; i < 5; i++) assert.equal(UI.phrase(view(1, false), false), a, 'volver a la pantalla no cambia la frase');
+  assert.equal(store.phraseBags.encargos_1.length, left);
+  UI.onOpen();                                             // se vuelve a abrir el juego
+  UI.phrase(view(1, false), false);
+  assert.equal(store.phraseBags.encargos_1.length, left - 1, 'ahora sí se gasta otra de la bolsa');
+});
+test('cableado: entrar en Encargos ya no fuerza una frase nueva', () => {
+  assert.ok(!/SEQEncargosUI\.renderScreen\(true\)/.test(read('index.html')));
+});

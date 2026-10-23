@@ -29,9 +29,21 @@ const SEQEncargosUI = (function () {
     var n = (v.doneCount || 0) + (v.great && v.great.claimed ? 1 : 0);
     return Math.max(0, Math.min(4, n));
   }
-  // La frase se elige UNA vez por visita a la pantalla (y otra si el estado cambia mientras está abierta); repintar
-  // por un avance de progreso no gasta una frase de la bolsa. Rotan con pickRotatingPhrase (sin repetir hasta agotarlas).
+  // La frase se elige UNA vez por apertura del juego (y otra si el estado cambia); repintar o volver a la pantalla
+  // no gasta una frase de la bolsa. Rotan con pickRotatingPhrase (sin repetir hasta agotarlas).
   var shown = { state: -1, text: '' };
+  // Como la cita de Inicio: la frase cambia cada vez que se ABRE el juego (al cargar o al volver a la app tras 5 min o más fuera),
+  // no cada vez que se entra en la pantalla. Al volver a la app se olvida la mostrada: la próxima visita elige otra de la bolsa.
+  // Con 5 minutos o más fuera: una ausencia corta (un mensaje, una notificación) no cuenta como volver a abrir el juego.
+  var AWAY_MS = 5 * 60 * 1000, hiddenAt = 0;
+  function onOpen() { shown = { state: -1, text: '' }; }
+  function onReturn() { var t = hiddenAt; hiddenAt = 0; if (!t || Date.now() - t >= AWAY_MS) onOpen(); }
+  if (typeof document !== 'undefined' && document.addEventListener) {
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') { if (!hiddenAt) hiddenAt = Date.now(); } else if (document.visibilityState === 'visible') onReturn(); });
+  }
+  if (typeof window !== 'undefined' && window.addEventListener) {
+    window.addEventListener('pageshow', function (e) { if (e && e.persisted) onReturn(); });
+  }
   function phrase(v, fresh) {
     var st = stateOf(v);
     if (!fresh && shown.state === st && shown.text) return shown.text;
@@ -155,5 +167,5 @@ const SEQEncargosUI = (function () {
     if (!showing) next();
   }
 
-  return { renderHome: renderHome, renderScreen: renderScreen, toast: toast, timeLeftText: timeLeftText, phrase: phrase, stateOf: stateOf };
+  return { renderHome: renderHome, renderScreen: renderScreen, toast: toast, timeLeftText: timeLeftText, phrase: phrase, stateOf: stateOf, onOpen: onOpen };
 })();
