@@ -72,5 +72,5 @@ test('cableado: Repaso usa la tanda, el contador de la tarjeta sigue siendo el t
 });
 
 test('la tarjeta del modo explica las tandas de 20', () => {
-  assert.match(fs.readFileSync('index.html', 'utf8'), /Tus fallos, en tandas de hasta 20. Tres aciertos seguidos y la dominas y desaparece\./);
+  assert.match(fs.readFileSync('index.html', 'utf8'), /Tus fallos, de nuevo a examen, en tandas de hasta 20. Tres aciertos seguidos y desaparecen\./);
 });
