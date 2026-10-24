@@ -8,6 +8,7 @@ const SEQMentalClassic = (function () {
   var START_LIVES = 1;
   var LIFE_STREAKS = [8, 16, 24];    // racha en curso que concede una vida extra
   var MAX_LIVES = START_LIVES + LIFE_STREAKS.length;
+  var FAIL_PAUSE_MS = 2500;          // pausa tras un fallo: tiempo de leer la solución y el truco (un toque la salta)
   var TICK_FROM_S = 5;               // el tic-tac de urgencia solo suena en los últimos segundos de cada operación
 
   // Vidas que se ganan al llegar a esta racha (0 o 1). Se pasa la racha YA incrementada.
@@ -48,5 +49,5 @@ const SEQMentalClassic = (function () {
       remainingMs: valid ? remaining : OP_MS
     };
   }
-  return { isResumable: isResumable, pack: pack, unpack: unpack, OP_MS: OP_MS, START_LIVES: START_LIVES, LIFE_STREAKS: LIFE_STREAKS, MAX_LIVES: MAX_LIVES, TICK_FROM_S: TICK_FROM_S, lifeGain: lifeGain, isBetter: isBetter };
+  return { isResumable: isResumable, pack: pack, unpack: unpack, OP_MS: OP_MS, FAIL_PAUSE_MS: FAIL_PAUSE_MS, START_LIVES: START_LIVES, LIFE_STREAKS: LIFE_STREAKS, MAX_LIVES: MAX_LIVES, TICK_FROM_S: TICK_FROM_S, lifeGain: lifeGain, isBetter: isBetter };
 })();

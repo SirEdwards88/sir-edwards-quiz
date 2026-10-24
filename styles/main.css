@@ -5693,3 +5693,8 @@ h3.stats-h::before { display: none !important; content: none !important; }
   box-shadow:0 4px 12px rgba(0,0,0,.35);
 }
 .info-toast.centro .toast-ok:active{ transform:translateY(1px); }
+
+/* Cálculo de Fondo: truco mental bajo «Incorrecto. Era: X» (src/utils/mental-tips.js). Línea fina, rótulo pequeño y texto sobrio. */
+.feedback .mental-tip{ margin-top:10px; padding-top:9px; border-top:1px solid rgba(127,127,127,.35); display:flex; gap:8px; align-items:baseline; font-size:14px; line-height:1.4; }
+.feedback .mental-tip .mt-label{ flex-shrink:0; font-size:10.5px; font-weight:800; letter-spacing:.12em; opacity:.7; }
+.feedback .mental-tip .mt-text{ font-weight:600; }
