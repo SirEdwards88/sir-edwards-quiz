@@ -540,7 +540,7 @@
     try { if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect(); } catch (e) {}
     account = null; saveAccount(); ui.editing = false; ui.expired = false; ui.error = '';
     clearTimeout(timer); clearTimeout(retryTimer);
-    toast(pickOne(['Sesión cerrada. Tu progreso sigue en este dispositivo.', 'Sesión cerrada. Lo tuyo se queda en este dispositivo.']), 'sombrero');
+    toast('Sesión cerrada. Tu progreso sigue en este dispositivo.', 'sombrero');
     render();
   }
 
@@ -668,7 +668,7 @@
         // Quien recupera una cuenta con partidas no es nuevo: sin presentación de los Encargos y con la tira de Inicio ya visible.
         if (target.games > 0) { try { SEQEncargosIntro.markSeen(); SEQEncargosUI.renderHome(); } catch (e) {} }
         var m = $('seq-migrate-modal'); if (m) m.style.display = 'none';
-        toast(res.adjusted ? 'Progreso combinado (se ajustó algún valor imposible).' : 'Progreso combinado con tu cuenta. Sir Edwards ya lo ha ordenado.', 'correcto');
+        toast(res.adjusted ? 'Progreso combinado (se ajustó algún valor imposible).' : 'Progreso combinado con tu cuenta. Todo en su debido lugar.', 'correcto');
         scheduleSync(1800, 'merge'); // logros derivados que el juego desbloquea localmente al aplicar los totales
       })
       .catch(function (err) {
@@ -774,7 +774,7 @@
     ui.busy = true;
     api('PATCH', '/me', { display_name: name, avatar: ui.editAvatar }).then(function (d) {
       var pl = cleanPlayer(d && d.player); account.player.display_name = pl.display_name; account.player.avatar = pl.avatar; saveAccount();
-      ui.editing = false; toast(pickOne(['Perfil actualizado. Un poco de vanidad nunca viene mal.', 'Perfil actualizado. Sir Edwards aprueba el retoque.']), 'correcto');
+      ui.editing = false; toast(pickOne(['Perfil actualizado. Un poco de vanidad nunca viene mal.', 'Perfil actualizado. La presentación importa.']), 'correcto');
     }).catch(function (err) {
       if (authFailure(err)) return;
       toast(err && err.network ? 'Necesitas conexión para cambiar el perfil.' : ('No se pudo guardar: ' + (err && err.message ? err.message : 'error')), 'atencion');

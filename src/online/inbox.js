@@ -73,13 +73,13 @@
   // Texto del aviso (tono de Sir Edwards, neutro en género). El título es fijo y claro; el subtítulo rota sin repetir el último.
   // Reto: calma (hay 3 días de plazo). Duelo: prisa (la invitación caduca en 60 s). Varios: más seco.
   var SUBS = {
-    reto: ['Toca para verlo. Tres días no admiten excusas.', 'Toca para verlo. Tres días deberían bastar.', 'Un reto así merece, al menos, una mirada.', 'El reto ha llegado. Qué oportuno.', 'Alguien confía en ganarte. Admirable optimismo.', 'El reto espera. Tu orgullo, también.'],
-    duel: ['Toca para responder. El reloj corre.', 'Toca para responder. El tiempo tiene otros planes.', 'Toca para responder. Tres minutos, ni uno más.', 'El duelo no piensa esperar demasiado.', 'Toca para responder. La puntualidad importa.'],
+    reto: ['Tres días para responder. No dirás que te falta tiempo.', 'Toca para verlo. Tres días deberían bastar.', 'Un reto así merece, al menos, una mirada.', 'Alguien confía en ganarte. Admirable optimismo.', 'El reto espera. Tu orgullo, también.', 'Tres días parecen mucho. Es una impresión pasajera.'],
+    duel: ['Toca para responder. El reloj corre.', 'Toca para responder. El tiempo tiene otros planes.', 'Tres minutos para decidir. La cortesía tiene un límite.', 'El duelo no piensa esperar demasiado.'],
     mreto: ['Toca para verlo. Tres o cuatro, cada uno a su hora.', 'Toca para responder. El plazo corre, la vergüenza también.', 'Más de un rival, un solo ganador. Sir Edwards aprueba.'],
-    multi: ['Toca para verlo. Tres o cuatro, y un solo ganador.', 'Toca para responder. La sala no espera eternamente.', 'Más de un rival a la vez. Sir Edwards aprueba.', 'Hay sala, hay rivales. Falta quien ose entrar.'],
-    friend: ['Aceptar es gratis. Rechazar, también.', 'Una amistad nueva. Sir Edwards no promete que dure.', 'Tú decides. Sir Edwards solo toma nota.', 'Alguien te cree digno de su compañía. Sorprendente.'],
-    waiting: ['Toca para jugarlo. El plazo no es infinito.', 'Sigue sin jugar. Sir Edwards lo ha notado.', 'Tu reto espera. Con paciencia, pero espera.'],
-    many: ['Toca para verlos. Sir Edwards espera.', 'Hay asuntos pendientes. Naturalmente.', 'Toca para verlos. Se han acumulado.', 'Varios asuntos piden tu atención. Elige con criterio.']
+    multi: ['Toca para verlo. Tres o cuatro, y un solo ganador.', 'Toca para responder. La sala no espera eternamente.', 'Hay sala, hay rivales. Falta quien ose entrar.'],
+    friend: ['Aceptar es gratis. Rechazar, también.', 'Una amistad nueva. Sir Edwards no promete que dure.', 'La decisión es tuya. Por una vez, no hay respuesta incorrecta.', 'Alguien te cree digno de su compañía. Sorprendente.', 'Una propuesta sencilla. La diplomacia es toda tuya.'],
+    waiting: ['Toca para jugarlo. El plazo no es infinito.', 'Ese reto sigue intacto. Qué admirable constancia.', 'Tu reto espera. Con paciencia, pero espera.'],
+    many: ['Varios asuntos requieren tu atención. Qué día tan afortunado.', 'Hay asuntos pendientes. Naturalmente.', 'Toca para verlos. Se han acumulado.', 'Varios asuntos piden tu atención. Elige con criterio.']
   };
   var lastSub = {};
   function pickSub(kind, rnd) {
@@ -147,7 +147,7 @@
     var O = window.SEQOnline;
     if (!O || !O.api) return;
     O.api('POST', '/friends/requests/' + it.id + '/' + action).then(function () {
-      toast(action === 'accept' ? it.name + [' y tú ya sois amigos. Sir Edwards lo anota.', ' y tú, amigos. Rivales cuando toque, claro está.'][Math.floor(Math.random() * 2)] : ['Solicitud rechazada. Tus motivos, tuyos son.', 'Solicitud declinada. Gratis y sin consecuencias.'][Math.floor(Math.random() * 2)]);
+      toast(action === 'accept' ? it.name + [' y tú ya sois amigos. Procurad estar a la altura.', ' y tú, amigos. Rivales cuando toque, claro está.', ' y tú ya sois amigos. Que la competición no lo estropee.'][Math.floor(Math.random() * 3)] : ['Solicitud rechazada. Tus motivos, tuyos son.', 'Solicitud declinada. La diplomacia tiene sus formas.'][Math.floor(Math.random() * 2)]);
       try { if (window.SEQDuels && SEQDuels.refreshSummary) SEQDuels.refreshSummary(); } catch (e) {}
       lastCheck = 0; check(true);
     }, function () { toast('No se ha podido responder. Inténtalo de nuevo en un momento.'); });
@@ -212,7 +212,7 @@
       var friends = (d && d.friends || []).map(function (x) { return x.player && x.player.id; });
       var done = (Array.isArray(prev) ? prev : []).filter(function (o) { return o && friends.indexOf(o.id) >= 0; });
       localStorage.setItem(OUT_KEY, JSON.stringify(out.concat((Array.isArray(prev) ? prev : []).filter(function (o) { return o && friends.indexOf(o.id) < 0 && !out.some(function (q) { return q.id === o.id; }); })).slice(0, 40)));
-      if (done.length) toast(done.length === 1 ? String(done[0].name || 'Alguien').slice(0, 24) + ' te ha aceptado. Se admiten felicitaciones.' : done.length + ' personas te han aceptado. Alguien aquí cae bien.');
+      if (done.length) toast(done.length === 1 ? String(done[0].name || 'Alguien').slice(0, 24) + [' te ha aceptado. Se admiten felicitaciones.', ' te ha aceptado. Disimula la satisfacción.'][Math.floor(Math.random() * 2)] : done.length + ' personas te han aceptado. Tu popularidad resulta intrigante.');
     } catch (e) {}
   }
 

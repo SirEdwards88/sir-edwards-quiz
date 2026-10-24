@@ -115,7 +115,7 @@ function encargosSettle() {
 
 // Remate de Sir Edwards al saldar (sale al azar entre los de su tipo): m = un encargo, b = los de la semana, g = el Gran Encargo.
 const ENCARGOS_QUIPS = {
-  m: ['Sir Edwards asiente, a regañadientes.', 'Cumplido; no te acostumbres a los elogios.', 'Eficiencia sin aspavientos, como debe ser.'],
+  m: ['Cumplido; no te acostumbres a los elogios.', 'Eficiencia sin aspavientos, como debe ser.'],
   b: ['Sigo sin aplaudir.', 'La semana, por una vez, te debe algo.'],
   g: ['La ambición tiene sus recompensas.', 'Ahí va algo digno de mención.']
 };

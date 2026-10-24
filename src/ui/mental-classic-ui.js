@@ -21,7 +21,7 @@
 
   function start() {
     if (!(store.unlockedMedals || []).includes('tt_15')) {
-      showInfoToast('Cálculo de Fondo sigue cerrado. Antes necesitas el logro «Velocidad Mental». Ya llegarás, o no.', 'candado');
+      // Sin aviso: Fondo y Turbo se desbloquean con Cálculo mental, que es el único que muestra el candado.
       return;
     }
     confirmDiscardSavedGame(function () { startMentalCalcModeImpl('classic'); });

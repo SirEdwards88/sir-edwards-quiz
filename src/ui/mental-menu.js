@@ -8,7 +8,7 @@
 
   function open() {
     if (!unlocked()) {
-      showInfoToast('Cálculo mental sigue cerrado. Antes necesitas el logro «Velocidad Mental». Paciencia, mucha.', 'candado');
+      showInfoToast('Cálculo mental sigue cerrado. Antes necesitas el logro «Velocidad Mental». ' + ['Sin atajos.', 'Las prisas no sustituyen a los méritos.'][Math.floor(Math.random() * 2)], 'candado');
       return;
     }
     selectedPendingMode = 'mental';
