@@ -623,7 +623,6 @@
       host.innerHTML =
         '<p>' + text + '</p>' +
         '<div class="seq-sums">' + summaryHtml(ico('movil') + 'En este dispositivo', loc) + summaryHtml(ico('nube') + 'En tu cuenta', { xp: on.xp, games: on.games, medals: on.medals }) + '</div>' + warn +
-        '<p class="seq-note">Esta operación es segura y se puede repetir: nunca suma dos veces ni reduce nada.</p>' +
         '<div class="modal-warning-actions seq-actions">' +
         '<button class="btn btn-primary" id="seq-mig-primary" onclick="SEQOnline.doMerge()">' + primary + '</button>' +
         '<button class="btn btn-secondary" onclick="SEQOnline.skipMigration()">Ahora no</button></div>';
