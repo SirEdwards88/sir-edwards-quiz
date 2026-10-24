@@ -8,7 +8,7 @@
 
   function open() {
     if (!unlocked()) {
-      showInfoToast('Cálculo mental sigue cerrado. Antes, el logro «Velocidad Mental»: consigue al menos 15 aciertos en Contrarreloj.', 'candado');
+      showInfoToast('Cálculo mental sigue esperando a alguien más rápido. Logro pendiente: «Velocidad Mental» (15 aciertos en Contrarreloj).', 'candado');
       return;
     }
     selectedPendingMode = 'mental';
