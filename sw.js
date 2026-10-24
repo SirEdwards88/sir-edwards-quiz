@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 414;
+const CACHE_VERSION = 415;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -143,6 +143,8 @@ const APP_SHELL = [
   './assets/ui/pizarra-operaciones.webp',
   './assets/ui/cerebro-engranajes.webp',
   './assets/ui/sombrero-saludo.webp',
+  './assets/ui/sir-aviso.webp',
+  './assets/ui/sir-reto.webp',
   './assets/ui/sombrero-nombre.webp',
   './assets/ui/sombrero-laurel.webp',
   './assets/ui/bandera-blanca.webp',
@@ -760,6 +762,8 @@ const ASSET_REVS = {
   './assets/ui/regla-calculo.webp': '968d898c',
   './assets/ui/reloj-derretido.webp': '671f44b6',
   './assets/ui/revancha.webp': 'c7fc74b3',
+  './assets/ui/sir-aviso.webp': '70e4dbaf',
+  './assets/ui/sir-reto.webp': '801d3e4c',
   './assets/ui/sombrero-aplastado.webp': 'bd1a6ce9',
   './assets/ui/sombrero-laurel.webp': '12dbb7f8',
   './assets/ui/sombrero-mediocre.webp': '02513cbd',

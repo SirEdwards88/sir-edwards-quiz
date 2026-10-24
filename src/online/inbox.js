@@ -159,6 +159,8 @@
     b.querySelector('.inbox-sub').textContent = t.sub;
     var av = b.querySelector('.inbox-av');
     try { av.innerHTML = list.length === 1 && window.SEQAvatars ? SEQAvatars.avatarHTML(list[0].avatar) : ''; } catch (e) { av.innerHTML = ''; }
+    // Varias invitaciones a la vez (sin un único remitente): la cara de Sir Edwards retador.
+    if (!av.innerHTML && typeof seqIco === 'function') av.innerHTML = seqIco('sir-reto');
     av.hidden = !av.innerHTML;
     var fr = list.length === 1 && list[0].kind === 'friend';
     b.classList.toggle('compact', compact() && !fr);

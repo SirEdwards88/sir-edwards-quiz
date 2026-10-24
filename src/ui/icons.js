@@ -13,7 +13,8 @@
   // Iconos que no viven en assets/ui/.
   var PATHS = {
     bandera: 'assets/ui/bandera-blanca.webp',
-    sombrero: 'assets/ui/sombrero-saludo.webp',
+    sombrero: 'assets/ui/sir-aviso.webp', // aviso/notificación: cara de Sir Edwards (antes el sombrero levantado)
+    'sir-reto': 'assets/ui/sir-reto.webp', // avisos de Duelo y Reto
     amigos: 'assets/modes/amigos.webp',
     calculo: 'assets/modes/mini/calculo.webp',
     duelo: 'assets/modes/suelto/duelo.webp',
