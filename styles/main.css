@@ -5666,13 +5666,30 @@ h3.stats-h::before { display: none !important; content: none !important; }
 /* Con la tarjeta final en pantalla, «← Menú principal» de arriba sobra: ya está «Volver al Menú principal» abajo. */
 #view-game:has(#results-card[style*="display: block"]) #game-exit-btn { display: none; }
 
-/* Avisos de modo cerrado (icono «candado»): en medio de la pantalla, no abajo, y con el texto centrado en varias líneas. */
+/* Avisos de modo cerrado (icono «candado») y de repaso sin fallos (icono «escoba»): tarjeta oscura con filete dorado, en medio
+   de la pantalla, con el icono grande arriba y el mensaje centrado debajo. */
 .info-toast.centro{
   top:50%; bottom:auto;
   transform:translate(-50%,-46%) scale(.96);
-  width:min(340px, calc(100vw - 48px)); max-width:none;
-  padding:16px 20px; border-radius:20px;
-  text-align:center; justify-content:center; flex-direction:column; gap:8px;
+  width:min(330px, calc(100vw - 48px)); max-width:none;
+  padding:22px 22px 20px; border-radius:22px;
+  flex-direction:column; align-items:center; justify-content:center; gap:10px; text-align:center;
+  background:linear-gradient(180deg,#232d57,#182046); color:#fdf7ea;
+  border:1.5px solid rgba(232,200,116,.6);
+  box-shadow:0 18px 44px rgba(0,0,0,.5), inset 0 0 0 4px rgba(232,200,116,.07);
+  -webkit-backdrop-filter:none; backdrop-filter:none;
 }
 .info-toast.centro.show{ transform:translate(-50%,-50%) scale(1); }
-.info-toast.centro .toast-icon{ font-size:22px; }
+.info-toast.centro .toast-icon{ font-size:0; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+.info-toast.centro .toast-icon[hidden]{ display:none; }
+.info-toast.centro .toast-icon img{ width:64px; height:64px; object-fit:contain; }
+.info-toast.centro .toast-msg{ font-size:16px; line-height:1.4; font-weight:600; }
+.info-toast:not(.centro) .toast-ok{ display:none; }
+.info-toast.centro.show{ pointer-events:auto; }
+.info-toast.centro .toast-ok{
+  margin-top:6px; padding:8px 26px; border:0; border-radius:999px; cursor:pointer;
+  background:linear-gradient(180deg,#f0d484,#c9992e); color:#16244a;
+  font:800 13px/1 Inter, sans-serif; letter-spacing:.02em;
+  box-shadow:0 4px 12px rgba(0,0,0,.35);
+}
+.info-toast.centro .toast-ok:active{ transform:translateY(1px); }
