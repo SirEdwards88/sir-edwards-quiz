@@ -8,7 +8,7 @@ const SEQMentalClassic = (function () {
   var START_LIVES = 1;
   var LIFE_STREAKS = [8, 16, 24];    // racha en curso que concede una vida extra
   var MAX_LIVES = START_LIVES + LIFE_STREAKS.length;
-  var FAIL_PAUSE_MS = 2500;          // pausa tras un fallo: tiempo de leer la solución y el truco (un toque la salta)
+  var FAIL_PAUSE_MS = 4500;          // pausa tras un fallo: tiempo de leer la solución y el truco (un toque la salta)
   var TICK_FROM_S = 5;               // el tic-tac de urgencia solo suena en los últimos segundos de cada operación
 
   // Vidas que se ganan al llegar a esta racha (0 o 1). Se pasa la racha YA incrementada.

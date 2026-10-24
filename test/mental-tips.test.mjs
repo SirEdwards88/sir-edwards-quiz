@@ -106,7 +106,7 @@ test('el módulo está enlazado y solo Fondo lo usa', () => {
   assert.match(html, /Cada 8 aciertos, una vida extra \(máximo 4\)\. Tras cada fallo, un truco\./);
 });
 
-test('pausa tras fallo de 2,5 s', () => {
+test('pausa tras fallo de 4,5 s', () => {
   const C = vm.runInNewContext(read('src/utils/mental-classic.js') + '\nSEQMentalClassic', {});
-  assert.equal(C.FAIL_PAUSE_MS, 2500);
+  assert.equal(C.FAIL_PAUSE_MS, 4500);
 });
