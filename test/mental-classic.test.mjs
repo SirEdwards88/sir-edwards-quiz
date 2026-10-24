@@ -73,7 +73,7 @@ test('el récord de Fondo viaja por la sincronización y el ranking de Fondo exi
   }
   const rk = read('src/online/duels-v21.js');
   assert.match(rk, /fondo: \{ nombre: 'Cálculo de Fondo'/);
-  assert.ok(rk.includes("CALC_BOARDS = ['mental', 'fondo']"), 'Cálculo con dos subpestañas');
+  assert.ok(rk.includes("CALC_BOARDS = ['fondo', 'mental']"), 'Cálculo con dos subpestañas, Fondo primero');
   assert.match(read('index.html'), /data-mental="fondo"[\s\S]*data-mental="turbo"/, 'Fondo arriba, Turbo abajo');
 });
 

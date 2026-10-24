@@ -33,10 +33,10 @@
     pvp: { nombre: 'PvP', sub: 'Por ELO' },
     mental: { nombre: 'Cálculo Turbo', sub: 'Mejor puntuación' },
     fondo: { nombre: 'Cálculo de Fondo', sub: 'Más aciertos', unit: 'aciertos' },
-    timetrial: { nombre: 'Contrarreloj', sub: 'Mejor puntuación' },
+    timetrial: { nombre: 'Contrarreloj', sub: 'Más aciertos', unit: 'aciertos' },
     multi: { nombre: 'Todos contra todos', sub: 'Victorias entre amigos', unit: 'victorias' }
   };
-  var BOARD_ORDER = ['pvp', 'timetrial', 'mental', 'fondo'];
+  var BOARD_ORDER = ['pvp', 'timetrial', 'fondo', 'mental'];
   var SCOPES = { friends: 'Amigos', global: 'Global' };
 
   var S21 = {
@@ -294,13 +294,13 @@
   }
   // Tipo de ranking: tres medallones (PvP / Contrarreloj / Cálculo). Dentro de Cálculo, dos pestañas: Turbo y Fondo
   // (cada una es su propio ranking en el servidor: board=mental y board=fondo).
-  var CALC_BOARDS = ['mental', 'fondo'];
+  var CALC_BOARDS = ['fondo', 'mental'];
   function isCalc(b) { return CALC_BOARDS.indexOf(b) >= 0; }
   function boardTabs() {
     var tabs = [['pvp', 'PvP', 'pvp'], ['timetrial', 'Contrarreloj', 'timetrial'], ['calc', 'Cálculo', 'fondo']];
     return '<div class="seq-v21-boards" role="tablist" aria-label="Ranking">' + tabs.map(function (t) {
       var sel = t[0] === 'calc' ? isCalc(S21.board) : t[0] === 'pvp' ? isDuelBoard(S21.board) : S21.board === t[0];
-      var target = t[0] === 'calc' ? (S21.calcSub || 'mental') : t[0] === 'pvp' ? (hasMulti() ? (S21.duelSub || 'pvp') : 'pvp') : t[0];
+      var target = t[0] === 'calc' ? (S21.calcSub || 'fondo') : t[0] === 'pvp' ? (hasMulti() ? (S21.duelSub || 'pvp') : 'pvp') : t[0];
       return '<button type="button" role="tab" aria-selected="' + sel + '" class="seq-v21-board-btn' + (sel ? ' sel' : '') + '" onclick="SEQDuels21.setBoard(\'' + target + '\')">' +
         rkIcon(t[2]) + '<span>' + esc(t[1]) + '</span></button>';
     }).join('') + '</div>';

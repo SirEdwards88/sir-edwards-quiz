@@ -103,7 +103,7 @@ test('el módulo está enlazado y solo Fondo lo usa', () => {
   assert.match(html, /if \(classic && !currentGame\.isDuel && typeof SEQMentalTips !== 'undefined'\)/);
   assert.equal(M.FAMILIES === undefined, false);
   assert.ok(!/SEQMentalTips/.test(read('src/online/duels.js')) && !/SEQMentalTips/.test(read('src/online/online.js')));
-  assert.match(html, /Cada 8 aciertos, una vida extra \(máximo 4\)\. Tras cada fallo, un truco\./);
+  assert.match(html, /Cada 8 aciertos, una vida extra \(máximo 4\)\. Fallar, a veces, trae truco incluido\./);
 });
 
 test('pausa tras fallo de 4,5 s', () => {

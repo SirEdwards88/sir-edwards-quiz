@@ -127,7 +127,7 @@
     out += actions(a);
 
     out += sectionImg('ui/copa', 'Récords personales', r
-      ? '<div class="stats-extra-grid" id="extra-stats">' + extra('Cálculo Turbo', dash(r.calculo_turbo), modeImg('calculo-turbo'), 'puntos') + extra('Cálculo de Fondo', dash(r.calculo_fondo), modeImg('calculo-clasico'), 'aciertos') + extra('Contrarreloj', dash(r.contrarreloj), modeImg('contrarreloj'), 'puntos') + (r.lucidez ? (lucOk ? extra('Lucidez Mental', dash(r.lucidez, '/30'), modeImg('secreto'), 'mejor partida') : extra('Modo secreto', '???', modeImg('secreto'), '')) : '') + '</div>'
+      ? '<div class="stats-extra-grid" id="extra-stats">' + extra('Cálculo de Fondo', dash(r.calculo_fondo), modeImg('calculo-clasico'), 'aciertos') + extra('Cálculo Turbo', dash(r.calculo_turbo), modeImg('calculo-turbo'), 'puntos') + extra('Contrarreloj', dash(r.contrarreloj), modeImg('contrarreloj'), 'aciertos') + (r.lucidez ? (lucOk ? extra('Lucidez Mental', dash(r.lucidez, '/30'), modeImg('secreto'), 'mejor partida') : extra('Modo secreto', '???', modeImg('secreto'), '')) : '') + '</div>'
       : empty('Aún sin récords que presumir.'));
 
     var mu = d.multi || {}, hasMu = num(mu.partidas) > 0, on = false;

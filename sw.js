@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 427;
+const CACHE_VERSION = 428;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -629,9 +629,9 @@ const ASSET_REVS = {
   './assets/modes/ameba.webp': '9253546d',
   './assets/modes/amigos.webp': 'd908f9d6',
   './assets/modes/calculo-clasico.webp': 'd339c2c7',
-  './assets/modes/calculo-turbo.webp': '02134eda',
+  './assets/modes/calculo-turbo.webp': 'cb37e9d6',
   './assets/modes/calculo.webp': 'c0a2c952',
-  './assets/modes/contrarreloj.webp': '77bff741',
+  './assets/modes/contrarreloj.webp': 'a36cb781',
   './assets/modes/derrame.webp': '04ceb604',
   './assets/modes/duelo-online.webp': 'dde605d4',
   './assets/modes/duelo.webp': 'a4a67f60',
@@ -656,7 +656,7 @@ const ASSET_REVS = {
   './assets/modes/mini/ameba.webp': 'ec7aca36',
   './assets/modes/mini/calculo-clasico.webp': 'e3b6dba9',
   './assets/modes/mini/calculo.webp': '568f4aa7',
-  './assets/modes/mini/contrarreloj.webp': 'a8e1b08e',
+  './assets/modes/mini/contrarreloj.webp': '65ff62b2',
   './assets/modes/mini/derrame.webp': '16c006a7',
   './assets/modes/mini/duelo.webp': 'daf5b635',
   './assets/modes/mini/estandar.webp': '79121632',
@@ -674,9 +674,9 @@ const ASSET_REVS = {
   './assets/modes/secreto.webp': '52143f5e',
   './assets/modes/suelto/ameba.webp': 'df950cb2',
   './assets/modes/suelto/calculo-clasico.webp': '7c7c777e',
-  './assets/modes/suelto/calculo-turbo.webp': 'f1f9de56',
+  './assets/modes/suelto/calculo-turbo.webp': '5b9388ea',
   './assets/modes/suelto/calculo.webp': '8bcd1f43',
-  './assets/modes/suelto/contrarreloj.webp': 'ef766c64',
+  './assets/modes/suelto/contrarreloj.webp': 'c0a755c3',
   './assets/modes/suelto/derrame.webp': 'f5bb4ad6',
   './assets/modes/suelto/duelo.webp': 'ef6a0cf3',
   './assets/modes/suelto/estandar.webp': '99986f8f',

@@ -116,8 +116,8 @@
       box.id = 'best-mentalclassic-box';
       box.className = 'stat-extra stat-mentalcalc';
       box.innerHTML = '<span class="stat-extra-icon has-img" aria-hidden="true"><img class="mode-img mode-img-loose" src="assets/modes/suelto/calculo-clasico.webp" alt="" draggable="false"></span>' +
-        '<div><span class="stat-extra-label">Mejor Cálculo de Fondo</span><span class="stat-extra-value" id="best-mentalclassic"></span></div>';
-      turbo.parentNode.insertBefore(box, turbo.nextSibling);
+        '<div><span class="stat-extra-label">Mejor Cálculo de Fondo</span><span class="stat-extra-value" id="best-mentalclassic"></span><span class="stat-extra-context">aciertos</span></div>';
+      turbo.parentNode.insertBefore(box, turbo); // Fondo, el principal, antes que Turbo
     }
     box.style.display = '';
     var v = document.getElementById('best-mentalclassic');
