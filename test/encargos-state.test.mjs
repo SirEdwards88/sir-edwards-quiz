@@ -187,11 +187,11 @@ test('avisos: formato, y nada si no hay avance', () => {
   assert.equal(ctx.toasts.length, 0);
   const ms = missions(ctx);
   fill(ctx, ms[0]);
-  assert.deepEqual(JSON.parse(JSON.stringify(ctx.toasts[0])).main, 'Encargo saldado. +100 XP');
+  assert.match(JSON.parse(JSON.stringify(ctx.toasts[0])).main, /^Encargo saldado\. \+100 XP\. \S/);
   fill(ctx, ms[1]); fill(ctx, ms[2]);
-  assert.ok(ctx.toasts.some((t) => t.main === 'Encargos saldados. +250 XP. Sigo sin aplaudir.'));
+  assert.ok(ctx.toasts.some((t) => /^Encargos saldados\. \+250 XP\. \S/.test(t.main)));
   fill(ctx, great(ctx));
-  assert.ok(ctx.toasts.some((t) => t.main === 'Gran Encargo cobrado. +200 XP. Qué ambición.'));
+  assert.ok(ctx.toasts.some((t) => /^Gran Encargo cobrado\. \+200 XP\. \S/.test(t.main)));
 });
 
 test('aviso «Encargo avanzado» al terminar una partida con avance, un único aviso con título y avance', () => {

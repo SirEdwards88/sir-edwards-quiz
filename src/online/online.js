@@ -78,6 +78,7 @@
   function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
   function lsDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
   function ico(n, cls) { return window.seqIco ? window.seqIco(n, cls) : ''; }
+  function pickOne(list) { return list[Math.floor(Math.random() * list.length)]; }
   function toast(msg, icon) { try { if (typeof showInfoToast === 'function') showInfoToast(msg, icon); } catch (e) {} }
   // ¿Hay una partida REALMENTE a medias? hasSavedGame() ignora partidas ya terminadas/perdidas que aún dejan un `savedGame`
   // residual (p. ej. al cambiar el tema justo después de acabar): esas no deben bloquear la sincronización.
@@ -490,7 +491,7 @@
       var same = sync && sync.playerId === data.player.id;
       if (same && sync.migration !== 'pending') {
         // Misma cuenta que ya estaba enlazada en este dispositivo: se retoma sin volver a preguntar.
-        toast('Sesión iniciada', 'correcto');
+        toast(pickOne(['Sesión iniciada. Sir Edwards te reconoce.', 'Sesión iniciada. Adelante; la puerta ya estaba abierta.']), 'correcto');
         render();
         syncNow('login');
       } else {
@@ -504,7 +505,7 @@
         saveSync();
         if (!hasLocal && !hasOnline) {
           sync.migration = 'done'; saveSync();
-          toast('Sesión iniciada', 'correcto');
+          toast(pickOne(['Sesión iniciada. Sir Edwards te reconoce.', 'Sesión iniciada. Adelante; la puerta ya estaba abierta.']), 'correcto');
         } else {
           openMigration(data.progress);
         }
@@ -539,7 +540,7 @@
     try { if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect(); } catch (e) {}
     account = null; saveAccount(); ui.editing = false; ui.expired = false; ui.error = '';
     clearTimeout(timer); clearTimeout(retryTimer);
-    toast('Sesión cerrada. Tu progreso sigue en este dispositivo.', 'sombrero');
+    toast(pickOne(['Sesión cerrada. Tu progreso sigue en este dispositivo.', 'Sesión cerrada. Lo tuyo se queda en este dispositivo.']), 'sombrero');
     render();
   }
 
@@ -667,7 +668,7 @@
         // Quien recupera una cuenta con partidas no es nuevo: sin presentación de los Encargos y con la tira de Inicio ya visible.
         if (target.games > 0) { try { SEQEncargosIntro.markSeen(); SEQEncargosUI.renderHome(); } catch (e) {} }
         var m = $('seq-migrate-modal'); if (m) m.style.display = 'none';
-        toast(res.adjusted ? 'Progreso combinado (se ajustó algún valor imposible).' : 'Progreso combinado con tu cuenta', 'correcto');
+        toast(res.adjusted ? 'Progreso combinado (se ajustó algún valor imposible).' : 'Progreso combinado con tu cuenta. Sir Edwards ya lo ha ordenado.', 'correcto');
         scheduleSync(1800, 'merge'); // logros derivados que el juego desbloquea localmente al aplicar los totales
       })
       .catch(function (err) {
@@ -773,7 +774,7 @@
     ui.busy = true;
     api('PATCH', '/me', { display_name: name, avatar: ui.editAvatar }).then(function (d) {
       var pl = cleanPlayer(d && d.player); account.player.display_name = pl.display_name; account.player.avatar = pl.avatar; saveAccount();
-      ui.editing = false; toast('Perfil actualizado', 'correcto');
+      ui.editing = false; toast(pickOne(['Perfil actualizado. Un poco de vanidad nunca viene mal.', 'Perfil actualizado. Sir Edwards aprueba el retoque.']), 'correcto');
     }).catch(function (err) {
       if (authFailure(err)) return;
       toast(err && err.network ? 'Necesitas conexión para cambiar el perfil.' : ('No se pudo guardar: ' + (err && err.message ? err.message : 'error')), 'atencion');

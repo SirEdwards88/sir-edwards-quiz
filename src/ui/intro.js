@@ -18,10 +18,18 @@
   var decided = false;
   // Aviso de quien vuelve con su cuenta en un dispositivo nuevo (una vez por dispositivo: se elige al azar).
   var RETURN_LINES = ['Vaya, de vuelta. Tu progreso te esperaba. Tus excusas, también.',
-    'Vaya, de vuelta. Qué persistencia tan difícil de justificar.',
-    'Has regresado. Debo admitir que esperaba que al menos fingieras tener otras aficiones.',
+    'De nuevo por aquí. Qué persistencia tan difícil de justificar.',
+    'Has vuelto. Por un instante, confié en que tuvieras otros pasatiempos.',
     'Otra vez tú. Al menos eres constante.',
-    'De vuelta. Tus errores estaban empezando a aburrirse sin ti.'];
+    'Tus errores llevaban un rato sin compañía. Qué alivio para ellos.',
+    'Puntual no, pero presente. Sir Edwards ha visto cortesías peores.',
+    'Ah, el aspirante. Estaba a punto de dar tu silla por vacante.',
+    'Pasa, pasa. El té se ha enfriado; las preguntas, no.',
+    'Sin cita previa y con aplomo. Sir Edwards te recibe.',
+    'Otro día, otra oportunidad de decepcionarme con elegancia.',
+    'La casa vuelve a estar concurrida. En fin, tampoco exageremos.',
+    'Tu regreso. Qué sorpresa tan perfectamente evitable.',
+    'Tu regreso altera muy poco la tranquilidad de esta casa.'];
 
   function get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }

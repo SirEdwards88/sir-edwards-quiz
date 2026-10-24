@@ -113,18 +113,25 @@ function encargosSettle() {
   return events;
 }
 
-function encargosToastText(ev) {
-  if (ev.kind === 'm') return 'Encargo saldado. +' + ev.xp + ' XP';
-  if (ev.kind === 'b') return 'Encargos saldados. +' + ev.xp + ' XP. Sigo sin aplaudir.';
-  return 'Gran Encargo cobrado. +' + ev.xp + ' XP. Qué ambición.';
+// Remate de Sir Edwards al saldar (sale al azar entre los de su tipo): m = un encargo, b = los de la semana, g = el Gran Encargo.
+const ENCARGOS_QUIPS = {
+  m: ['Sir Edwards asiente, a regañadientes.', 'Cumplido; no te acostumbres a los elogios.', 'Eficiencia sin aspavientos, como debe ser.'],
+  b: ['Sigo sin aplaudir.', 'La semana, por una vez, te debe algo.'],
+  g: ['La ambición tiene sus recompensas.', 'Ahí va algo digno de mención.']
+};
+function encargosQuip(kind) { const l = ENCARGOS_QUIPS[kind] || ENCARGOS_QUIPS.g; return l[Math.floor(Math.random() * l.length)]; }
+function encargosToastText(ev, quip) {
+  const k = ev.kind === 'm' ? 'Encargo saldado' : ev.kind === 'b' ? 'Encargos saldados' : 'Gran Encargo cobrado';
+  return k + '. +' + ev.xp + ' XP. ' + quip;
 }
 function encargosToastEvents(events) {
   if (!events.length || typeof SEQEncargosUI === 'undefined') return;
   events.forEach(function (ev) {
-    const o = ev.kind === 'm' ? { kicker: 'Encargo saldado', name: ev.title, aux: '+' + ev.xp + ' XP' }
-      : ev.kind === 'b' ? { kicker: 'Encargos saldados', name: ev.title, aux: '+' + ev.xp + ' XP', quip: 'Sigo sin aplaudir.' }
-      : { kicker: 'Gran Encargo cobrado', name: ev.title, aux: '+' + ev.xp + ' XP', quip: 'Qué ambición.' };
-    SEQEncargosUI.toast(encargosToastText(ev), ev.kind === 'g' ? 'great' : 'done', ev.title, o);
+    const q = encargosQuip(ev.kind);
+    const o = ev.kind === 'm' ? { kicker: 'Encargo saldado', name: ev.title, aux: '+' + ev.xp + ' XP', quip: q }
+      : ev.kind === 'b' ? { kicker: 'Encargos saldados', name: ev.title, aux: '+' + ev.xp + ' XP', quip: q }
+      : { kicker: 'Gran Encargo cobrado', name: ev.title, aux: '+' + ev.xp + ' XP', quip: q };
+    SEQEncargosUI.toast(encargosToastText(ev, q), ev.kind === 'g' ? 'great' : 'done', ev.title, o);
   });
 }
 
