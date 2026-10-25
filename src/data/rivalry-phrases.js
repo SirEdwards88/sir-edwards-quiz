@@ -8,61 +8,65 @@
     // Ganas tras 2 o más derrotas seguidas contra él.
     win_remontada: [
       'Por fin. {rival} ya se estaba acostumbrando a ganarte.',
-      'Primera victoria tras una racha negra frente a {rival}. La dignidad vuelve del exilio.',
+      '{rival} te tenía en el bolsillo. Hoy el bolsillo tenía un agujero.',
       'Ha costado, pero {rival} ya no puede decir que contigo es coser y cantar.',
-      '{rival} se había hecho a la idea de que perdías siempre. Detalle corregido.',
-      'Se acabó la sequía contra {rival}. Celébralo con la discreción que te queda.',
-      'Después de varias derrotas, una victoria. En contabilidad se llama ajuste.'
+      '{rival} ya daba por hecho que perdías. Detalle corregido.',
+      'Contra {rival} el viento por fin sopla a tu favor. Sujétate el sombrero.',
+      'Tras las últimas derrotas, una victoria. En contabilidad se llama ajuste.'
     ],
     // Ganas con 3 o más victorias seguidas contra él.
     win_racha: [
-      'Otra victoria sobre {rival}. Esto ya no es un duelo, es una costumbre.',
-      '{rival} sigue sin encontrar la manera de ganarte. Empiezo a compadecerlo.',
-      'Racha contra {rival}. Le quedan pocas excusas y ninguna buena.',
-      'Ya van varias seguidas a {rival}. Que pida la revancha o que cambie de pasatiempo.',
-      '{rival} vuelve a caer. A estas alturas, el resultado es más tradición que noticia.',
-      'Otra vez por delante de {rival}. Su paciencia merece una medalla; la tuya, de momento, no.'
+      'Esto contra {rival} ya no es un duelo, es una costumbre.',
+      '{rival} sigue sin encontrar la manera de ganarte. Mi más sentido pésame.',
+      'Contra {rival} ya no compites, ejerces. Es casi una profesión.',
+      'Si {rival} busca la receta para ganarte, que no la pida aquí.',
+      'Una más al marcador. {rival} no debería tomárselo a mal: es estadística.',
+      '{rival} merece una medalla por su paciencia. Tú, de momento, solo un aplauso discreto.'
     ],
-    // Ganas justo después de haber perdido el duelo anterior contra él.
+    // Ganas justo después de haber perdido el duelo anterior contra él (de los últimos 7 días).
     win_revancha: [
-      'Revancha cobrada. {rival} disfrutó de su victoria exactamente una partida.',
-      'La derrota anterior queda saldada. Con intereses, cortesía de la casa.',
+      'Revancha cobrada. {rival} disfrutó de su victoria exactamente un duelo.',
+      'El orgullo herido es un gran entrenador. {rival} acaba de comprobarlo.',
       '{rival} ganó el último duelo, pero este es tuyo. Cuentas en paz, por ahora.',
-      'Cuentas saldadas con {rival}. Hasta que alguien vuelva a confiarse.',
-      'Aquella derrota ante {rival} ya es historia. Esta victoria, también, y es tuya.'
+      'Un tropiezo con {rival} y a la siguiente, corregido. Se llama aprender.',
+      'La derrota ante {rival} ya es historia. Archívala entre las anécdotas.',
+      '{rival} apenas tuvo tiempo de presumir. Qué eficiencia la tuya.'
     ],
     // Ganas y la serie queda igualada (con al menos 4 duelos jugados).
     win_igualados: [
-      'Contra {rival} vais igualados. Es otra forma de decir que ninguno ha demostrado nada.',
-      'Serie igualada con {rival}. La rivalidad empieza a ser interesante, para mi desgracia.',
-      'Entre {rival} y tú, todo igual. Ahora a ver quién se pone nervioso primero.',
+      'Con {rival} la balanza está en el centro. El siguiente duelo pesa más de lo que parece.',
+      'Serie igualada con {rival}. Por fin esto tiene argumento.',
+      'Entre {rival} y tú, empate a victorias. A ver quién se pone nervioso primero.',
       'El historial contra {rival} está en tablas. Alguien tendrá que hacer algo al respecto.',
-      'Igualados con {rival} en el cómputo total. Qué considerado por vuestra parte.'
+      'Cómputo total con {rival}: empate. Qué considerado por vuestra parte.',
+      '{rival} y tú, mano a mano. Alguien debería ir preparando el discurso de victoria.'
     ],
     // Pierdes con 3 o más derrotas seguidas contra él.
     loss_racha: [
-      '{rival} te gana otra vez. A estas alturas ya no es mala suerte, es una relación.',
-      'Varias derrotas seguidas contra {rival}. Empiezo a pensar que te tiene aprendido.',
-      '{rival} suma otra. Tu historial contra él ya se lee como un parte médico.',
+      '{rival} te dedica otra victoria. Qué detalle por su parte.',
+      'Varias derrotas seguidas contra {rival}. Empiezo a pensar que te tiene calado.',
+      '{rival} suma otra. Tu historial ya se lee como una tragedia en varios actos.',
       'Racha adversa frente a {rival}. Quizá convenga cambiar de táctica. O de rival.',
-      'Otra derrota ante {rival}. Persistir es admirable; con resultados, ya sería un lujo.',
-      '{rival} te gana con una comodidad que da pena ajena. La tuya.'
+      'A {rival} le salen las cosas y a ti, de momento, solo las excusas.',
+      'Ganarte se le ha vuelto a {rival} un acto reflejo.'
     ],
     // Pierdes tras llevar 2 o más victorias seguidas contra él.
     loss_cae_racha: [
       'Se acabó la racha contra {rival}. Duró lo que duran estas cosas.',
-      '{rival} corta tus victorias seguidas. La suerte no es eterna, y tú tampoco.',
-      'Tu racha frente a {rival} ha terminado. Fue bonito mientras la ignoraba.',
-      '{rival} te corta la racha. Presume de las anteriores; esta la guardaré discretamente.',
-      'Fin de la racha sobre {rival}. Que sirva de aviso para tu orgullo.'
+      'Las rachas, como los helados, se derriten. La tuya con {rival} acaba de hacerlo.',
+      'Tu racha frente a {rival} ha terminado. Guarda los discursos de victoria.',
+      '{rival} te corta la racha. Presume de las anteriores; esta me la callo.',
+      'Fin de la racha sobre {rival}. Que sirva de aviso para tu orgullo.',
+      'La racha contra {rival} ha pasado a mejor vida. Un minuto de silencio.'
     ],
     // Pierdes y la serie queda igualada (con al menos 4 duelos jugados).
     loss_igualados: [
       '{rival} empata la serie contigo. Era evidente que alguien tenía que arruinar la ventaja.',
       'Serie en tablas con {rival}. La ventaja era bonita mientras duró.',
-      'Tras esta derrota, tú y {rival} estáis igualados. Aprovecha la humildad.',
-      'La serie contra {rival} vuelve a estar igualada. Un empate que, para ti, sabe a derrota.',
-      'Igualados otra vez con {rival}. Lo que se gana a plazos, se pierde de golpe.'
+      'Con {rival} se acabaron los privilegios. El equilibrio es una cosa muy incómoda.',
+      'La serie contra {rival} queda igualada. Un empate que, para ti, sabe a derrota.',
+      'Igualados con {rival}. Lo que se gana a plazos, se pierde de golpe.',
+      'Con {rival} estáis a la par. La ventaja era un préstamo, y toca devolverlo.'
     ]
   };
 
