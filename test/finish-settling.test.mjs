@@ -104,7 +104,8 @@ test('empezar otra partida con una ya decidida la cierra y muestra su resultado,
 });
 
 test('el texto del error extra de Lucidez explica lo que hace', () => {
-  assert.ok(html.includes('Error extra perdonado: cuenta para el mínimo de la fase, pero no suma punto.'));
-  assert.ok(html.includes('Error extra perdonado: no te cuesta una vida.'));
+  // Ahora lo dice un aviso grande («ESCUDO USADO», como los ±segundos) en vez de una línea pequeña bajo la pregunta.
+  assert.ok(html.includes('ESCUDO USADO') && html.includes('playLucidezShieldFX()'));
+  assert.ok(!html.includes('Error extra perdonado: no te cuesta una vida.'));
   assert.ok(!html.includes('Error extra: no cuenta. Era:'));
 });

@@ -643,6 +643,16 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   animation: ttChangeDown 800ms ease-out forwards;
 }
 
+/* Escudo de Lucidez gastado: mismo aviso, en dorado Sir Edwards. */
+.timetrial-change.show.lucidez-shield-fx {
+  display: flex; align-items: center; gap: 10px;
+  background: linear-gradient(180deg, #e9c46a, #c9a03a);
+  color: #2a1a00; text-shadow: none;
+  box-shadow: inset 0 0 0 2px rgba(60,40,0,.25), inset 0 1px 0 rgba(255,255,255,.35), 0 12px 30px rgba(201,160,58,.5);
+  animation: ttChangeUp 1000ms ease-out forwards;
+}
+.timetrial-change.lucidez-shield-fx .se-ico, .timetrial-change.lucidez-shield-fx svg, .timetrial-change.lucidez-shield-fx img { width: 30px; height: 30px; }
+
 @keyframes ttChangeUp {
   0%   { opacity: 0; transform: translate(-50%,-50%) scale(.7); }
   15%  { opacity: 1; transform: translate(-50%,-50%) scale(1.15); }
