@@ -5700,9 +5700,11 @@ h3.stats-h::before { display: none !important; content: none !important; }
 .feedback .mental-tip .mt-text{ font-weight:600; }
 
 /* Lucidez: escudo a elección (se activa antes de responder; solo Fases I a III) */
-.lucidez-shield-row { display: flex; justify-content: center; margin: 4px 0 8px; }
-.lucidez-shield-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: .9rem; border-radius: 999px; background: transparent; color: var(--text-muted, #94a3b8); border: 1px solid rgba(148,163,184,.45); }
+.lucidez-shield-row { display: block; margin: 6px 0 10px; }
+.lucidez-shield-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; font-size: 1rem; font-weight: 700; border-radius: 12px; background: rgba(212,160,23,.10); color: #fde68a; border: 1.5px solid rgba(212,160,23,.6); }
 .lucidez-shield-btn[hidden] { display: none; }
-.lucidez-shield-btn.is-armed { color: #fde68a; border-color: #d4a017; background: rgba(212,160,23,.14); }
+.lucidez-shield-btn.is-armed { background: linear-gradient(180deg,#e9c46a,#c9a03a); color: #1f2937; border-color: #e9c46a; }
 .card:not(.lucidez-fase-1):not(.lucidez-fase-2):not(.lucidez-fase-3) .lucidez-shield-row,
 .card.lucidez-enigma-final .lucidez-shield-row { display: none; }
+[data-theme="light"] .lucidez-shield-btn { color: #6b4a00; background: rgba(184,134,11,.10); border-color: #b8860b; }
+[data-theme="light"] .lucidez-shield-btn.is-armed { color: #1f2937; background: linear-gradient(180deg,#e9c46a,#c9a03a); border-color: #b8860b; }
