@@ -214,5 +214,5 @@
     return forfeitFallback(list, String(seed == null ? '' : seed) + (ok ? '+' : '-'));
   }
 
-  window.SEQDuelPhrases = { PHRASES: PHRASES, FORFEIT: FORFEIT, VERDICT_OK: VERDICT_OK, VERDICT_BAD: VERDICT_BAD, pick: pick, pickRotating: pickRotating, pickForfeit: pickForfeit, verdict: verdict, poolKey: poolKey };
+  window.SEQDuelPhrases = { PHRASES: PHRASES, FORFEIT: FORFEIT, VERDICT_OK: VERDICT_OK, VERDICT_BAD: VERDICT_BAD, pick: pick, pickRotating: pickRotating, pickForfeit: pickForfeit, verdict: verdict, bag: memoPick, poolKey: poolKey };
 })();

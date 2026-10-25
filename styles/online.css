@@ -1058,3 +1058,18 @@
 #seq-duel-root .seq-d-active .seq-d-turn { border-color: var(--se-gold, #c9992e); box-shadow: 0 0 0 1px rgba(201, 153, 46, .45), 0 4px 14px rgba(201, 153, 46, .12); }
 #seq-duel-root .seq-d-active .history-item:not(.seq-d-turn) { opacity: .82; }
 .seq-pf-quit { width: 100%; margin-top: 8px; opacity: .8; font-size: 13px; }
+
+/* 2.5 — Serie entre dos jugadores (resultado del duelo y ficha): marcador «Yo 2 – 4 Rival» y las últimas partidas en V/D/E. */
+#seq-duel-root .seq-d-serie { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 12px 0 16px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.12); }
+#seq-duel-root .seq-d-serie-score { display: flex; align-items: baseline; justify-content: center; gap: 12px; width: 100%; }
+#seq-duel-root .seq-d-serie-score b { font-size: 24px; font-weight: 900; color: #f6e6b8; white-space: nowrap; }
+#seq-duel-root .seq-d-serie-n { flex: 1 1 0; min-width: 0; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; opacity: .85; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#seq-duel-root .seq-d-serie-score .seq-d-serie-n:first-child { text-align: right; }
+#seq-duel-root .seq-d-serie-score .seq-d-serie-n:last-child { text-align: left; }
+#seq-duel-root .seq-d-serie-d { font-size: 12px; opacity: .7; margin-top: -4px; }
+#seq-duel-root .seq-d-serie-dots { display: inline-flex; gap: 4px; }
+#seq-duel-root .seq-d-serie-dots i { font-style: normal; font-size: 11px; font-weight: 800; width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; border: 1px solid currentColor; }
+#seq-duel-root .seq-d-serie-dots .sd-w { color: #e7c667; background: rgba(231,198,103,.16); }
+#seq-duel-root .seq-d-serie-dots .sd-l { color: #d98a8a; background: rgba(217,138,138,.12); }
+#seq-duel-root .seq-d-serie-dots .sd-d { color: #9fb0d8; background: rgba(159,176,216,.12); }
+#seq-duel-root .seq-pf-serie { border-top: 0; margin: 4px 0 0; padding-top: 0; }

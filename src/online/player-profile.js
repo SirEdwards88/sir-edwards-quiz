@@ -130,6 +130,12 @@
       ? '<div class="stats-extra-grid" id="extra-stats">' + extra('Contrarreloj', dash(r.contrarreloj), modeImg('contrarreloj'), 'aciertos') + extra('Cálculo de Fondo', dash(r.calculo_fondo), modeImg('calculo-clasico'), 'aciertos') + extra('Cálculo Turbo', dash(r.calculo_turbo), modeImg('calculo-turbo'), 'puntos') + (r.lucidez ? (lucOk ? extra('Lucidez Mental', dash(r.lucidez, '/30'), modeImg('secreto'), 'mejor partida') : extra('Modo secreto', '???', modeImg('secreto'), '')) : '') + '</div>'
       : empty('Aún sin récords que presumir.'));
 
+    var cc = d.cara_a_cara && window.SEQRivalry ? SEQRivalry.summary(d.cara_a_cara) : null;
+    if (cc) {
+      var myName = ''; try { myName = (window.SEQOnline.session() || {}).display_name; } catch (e) {}
+      out += sectionImg('ui/copa', 'Vuestros duelos', SEQRivalry.html(cc, myName, p.name, esc).replace('class="seq-d-serie"', 'class="seq-d-serie seq-pf-serie"'));
+    }
+
     var mu = d.multi || {}, hasMu = num(mu.partidas) > 0, on = false;
     try { var ss = window.SEQOnline && window.SEQOnline.session && window.SEQOnline.session(); on = !!(ss && ss.features && ss.features.classic_duel); } catch (e) {}
     var showTabs = on || hasMu || !!v, tab = showTabs && (P.tab === 'multi' || (!v && hasMu)) ? 'multi' : 'pvp';

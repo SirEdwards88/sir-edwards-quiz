@@ -930,6 +930,8 @@
     if (d.motivo_fin === 'abandono') return SEQDuelPhrases.pickForfeit(d.yo && d.yo.abandonado ? 'yo_abandono' : 'rival_abandono', player(d.rival).name, S.id || d.id);
     if (d.motivo_fin === 'no_jugado') return SEQDuelPhrases.pickForfeit(res === 'win' ? 'rival_no_jugo' : 'yo_no_jugue', player(d.rival).name, S.id || d.id);
     if (d.motivo_fin && d.motivo_fin !== 'normal') return '';
+    // 2.5: si la serie contra este rival da pie (racha, revancha cobrada, igualados…), manda la frase con contexto.
+    if (window.SEQRivalry) { var rp = SEQRivalry.phrase(r.serie, res, player(d.rival).name, d.id); if (rp) return rp; }
     return SEQDuelPhrases.pickRotating(res, num(r.mi_puntuacion) - num(r.puntuacion_rival), S.id || d.id, player(d.rival).name);
   }
   // Marca de cada respuesta en el repaso del duelo: acierto, fallo o sin responder (iconos ilustrados).
@@ -986,6 +988,13 @@
     if (!rows) return '';
     return '<div class="session-medals-box" style="display:block;"><div class="session-medals-title">' + ico('copa') + '¡Nuevo(s) Logro(s) Desbloqueado(s)!</div><div class="session-medals-list">' + rows + '</div></div>';
   }
+  // 2.5: marcador de la serie «Edu 2 – 4 Bruno» y las últimas partidas (V/D/E), solo desde el 2.º duelo entre los dos.
+  function serieHtml(serie, rivalName) {
+    var sm = window.SEQRivalry ? SEQRivalry.summary(serie) : null;
+    if (!sm) return '';
+    var me = (session() || {}).display_name || 'Tú';
+    return window.SEQRivalry.html(sm, me, rivalName, esc);
+  }
   function resultBlock(d, kind) {
     var r = d.resultado, p = player(d.rival);
     if (!r) {
@@ -1035,7 +1044,7 @@
       '<div class="results-mood-icon has-img"><img class="mood-img" src="' + moodSrc + '" alt="" draggable="false"></div>' +
       '<div class="results-category-title">' + esc(cat) + '</div>' +
       (phrase ? '<div class="results-phrase duel-result-phrase">' + esc(phrase) + '</div>' : '') +
-      (note ? '<p class="duel-result-hint">' + esc(note) + '</p>' : '') + '</div>' +
+      (note ? '<p class="duel-result-hint">' + esc(note) + '</p>' : '') + serieHtml(r.serie, p.name) + '</div>' +
       (eloHtml || chips) +
       '<div class="results-lucidez-stamp show"><span class="stamp-badge tone-' + stamp[1] + '">' + stamp[0] + '</span></div>';
     var hEnd = '</div>';
