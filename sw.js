@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 434;
+const CACHE_VERSION = 436;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -477,7 +477,7 @@ const ASSET_REVS = {
   './assets/audio/secret.mp3': 'fe9a2e00',
   './assets/audio/win.mp3': '59d1eef1',
   './assets/audio/wrong.mp3': '738c1d1c',
-  './assets/avatars/avatar_siredwards_coleccionista.png': 'c5f44b3d',
+  './assets/avatars/avatar_siredwards_coleccionista.png': '1969288f',
   './assets/avatars/avatar_siredwards_imparable.png': '221ca0dc',
   './assets/avatars/avatar_siredwards_insensato.png': 'e93833f7',
   './assets/avatars/avatar_siredwards_medianoche.png': '1e74df22',
