@@ -35,10 +35,44 @@
     return equal ? 'loss_igualados' : null;
   }
 
+  // Con qué probabilidad sale la frase de rivalidad cuando su situación se cumple; si no sale, se sigue con las frases de siempre.
+  // Las situaciones raras y significativas salen siempre; las que saltan con facilidad contra un rival habitual, solo a veces.
+  var PROB = { win_remontada: 1, loss_racha: 1, win_racha: 0.75, loss_cae_racha: 0.75, win_igualados: 0.75, win_revancha: 0.5, loss_igualados: 0.5 };
+
+  // Número entre 0 y 1 que sale del identificador del duelo y de la situación (hash FNV-1a con mezcla final): siempre el mismo para
+  // el mismo duelo, así que reabrir el resultado no cambia la decisión y no hace falta guardar nada. Los identificadores reales son
+  // 10 caracteres aleatorios de un alfabeto de 32 (newId del servidor); la mezcla final reparte bien incluso identificadores
+  // parecidos (los de las pruebas) y no depende de ningún patrón.
+  function unit(gameId, key) {
+    var str = String(gameId) + ':' + String(key), h = 2166136261 >>> 0;
+    for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+    h ^= h >>> 16; h = Math.imul(h, 2246822507) >>> 0;
+    h ^= h >>> 13; h = Math.imul(h, 3266489909) >>> 0;
+    h ^= h >>> 16;
+    return (h >>> 0) / 4294967296;
+  }
+  function accepts(key, gameId) { var p = PROB[key]; return typeof p === 'number' && unit(gameId, key) < p; }
+
+  // La partida ya tiene frase asignada (memoria de las últimas 40, la comparte con las frases de siempre)? Devuelve su clave o ''.
+  function assigned(gameId) {
+    try {
+      var memo = typeof store === 'object' && store && store.duelPhraseByGame, m = memo && memo[String(gameId)];
+      return m && typeof m.k === 'string' ? m.k : '';
+    } catch (e) { return ''; }
+  }
+
   // La frase (ya con el nombre del rival) o '' si no toca ninguna con contexto. Estable por partida y sin repetirse en la bolsa.
+  // Orden: 1) la partida ya tenía frase (la que fuera: se respeta); 2) se elige UNA situación por prioridad; 3) se sortea con su
+  // probabilidad; 4) solo si sale, se saca de la bolsa de ese grupo (si no sale, la bolsa no se toca y siguen las frases de siempre).
   function phrase(serie, res, rivalName, gameId) {
-    var key = context(serie, res, gameId), P = window.SEQRivalryPhrases, D = window.SEQDuelPhrases;
-    if (!key || !P || !P.PHRASES[key] || !D || typeof D.bag !== 'function') return '';
+    var P = window.SEQRivalryPhrases, D = window.SEQDuelPhrases;
+    if (!P || !D || typeof D.bag !== 'function') return '';
+    var had = assigned(gameId);
+    if (had && had.indexOf('rival_') !== 0) return '';          // ya tenía una frase de siempre (o con nombre): no se cambia
+    var key = context(serie, res, gameId);
+    if (had) key = had.slice(6);                                  // ya tenía su frase de rivalidad: se repite tal cual
+    else if (!key || !accepts(key, gameId)) return '';
+    if (!P.PHRASES[key]) return '';
     var list = P.PHRASES[key], name = rivalName || 'tu rival';
     var text = D.bag('rival_' + key, list, gameId, function () { return list[0]; });
     return String(text || '').replace(/\{rival\}/g, name);
@@ -70,5 +104,5 @@
       '<div class="seq-d-serie-dots">' + dots + '</div></div>';
   }
 
-  window.SEQRivalry = { context: context, phrase: phrase, summary: summary, html: html };
+  window.SEQRivalry = { context: context, phrase: phrase, summary: summary, html: html, accepts: accepts, unit: unit, PROB: PROB };
 })();
