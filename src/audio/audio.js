@@ -92,8 +92,25 @@ function playSound(type) {
   if (type === 'ok' && playSample('correct', 0.9)) return;
   if (type === 'lose') { if (!playJingle('lose')) playLoseFallback(); return; }
   if (type === 'win') { if (!playJingle('win')) playWinFanfare(); return; }
+  if (type === 'shield') { playShieldChime(); return; }
   if (type === 'eye' && playJingle('secret')) return;
   try { const ctx = getAudioCtx(); const osc = ctx.createOscillator(); const gain = ctx.createGain(); osc.connect(gain); gain.connect(ctx.destination); const now = ctx.currentTime; if (type === 'ok') { osc.frequency.setValueAtTime(523.25, now); osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); gain.gain.setValueAtTime(0.15, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15); osc.start(now); osc.stop(now + 0.15); } else if (type === 'bad') { osc.type = 'sawtooth'; osc.frequency.setValueAtTime(180, now); osc.frequency.exponentialRampToValueAtTime(110, now + 0.2); gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2); osc.start(now); osc.stop(now + 0.2); } else if (type === 'win') { const notes = [523.25, 659.25, 783.99, 1046.50]; notes.forEach((freq, i) => { const o = ctx.createOscillator(); const g = ctx.createGain(); o.type = 'triangle'; o.connect(g); g.connect(ctx.destination); o.frequency.setValueAtTime(freq, now + i * 0.08); g.gain.setValueAtTime(0.15, now + i * 0.08); g.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.25); o.start(now + i * 0.08); o.stop(now + i * 0.08 + 0.25); }); } else if (type === 'eye') { /* Sonido propio para el logro secreto "Lucidez Absoluta": un acorde grave y disonante que se abre hacia un armónico agudo, distinto del "win" habitual. */ const notes = [220, 261.63, 415.30, 880]; notes.forEach((freq, i) => { const o = ctx.createOscillator(); const g = ctx.createGain(); o.type = i === notes.length - 1 ? 'sine' : 'triangle'; o.connect(g); g.connect(ctx.destination); const start = now + i * 0.12; o.frequency.setValueAtTime(freq, start); g.gain.setValueAtTime(0.001, start); g.gain.exponentialRampToValueAtTime(0.12, start + 0.05); g.gain.exponentialRampToValueAtTime(0.01, start + 0.5); o.start(start); o.stop(start + 0.5); }); } } catch(e) {} 
+}
+// Escudo de Lucidez gastado: arpa ascendente de cinco notas (el fallo no cuesta nada).
+function playShieldChime() {
+  try {
+    const ctx = getAudioCtx(), now = ctx.currentTime;
+    [392.00, 493.88, 587.33, 783.99, 987.77].forEach(function (f, i) {
+      const st = now + i * 0.06;
+      [[1, 0.17], [2, 0.08], [3, 0.04]].forEach(function (h) {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'sine'; o.connect(g); g.connect(ctx.destination);
+        o.frequency.setValueAtTime(f * h[0], st);
+        g.gain.setValueAtTime(0.001, st); g.gain.exponentialRampToValueAtTime(h[1], st + 0.006); g.gain.exponentialRampToValueAtTime(0.005, st + 0.7 / h[0]);
+        o.start(st); o.stop(st + 0.75 / h[0]);
+      });
+    });
+  } catch (e) {}
 }
 // Variante de playSound('ok') que hace evolucionar el mismo motivo musical
 // según la racha de aciertos consecutivos (answerStreak / currentGame.streak

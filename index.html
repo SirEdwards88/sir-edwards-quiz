@@ -49,21 +49,21 @@
 <!-- Tipografía: Playfair Display para el "display" institucional (nombre de la
      app / títulos), Inter para toda la interfaz funcional. Alojadas en la propia app
      (styles/fonts.css, assets/fonts/): funcionan sin conexión y no dependen de Google. -->
-<link rel="stylesheet" href="styles/fonts.css?v=445">
+<link rel="stylesheet" href="styles/fonts.css?v=446">
 <link rel="preload" href="assets/fonts/inter-latin.woff" as="font" type="font/woff" crossorigin>
-<link rel="stylesheet" href="styles/main.css?v=445">
+<link rel="stylesheet" href="styles/main.css?v=446">
 <!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
-<link rel="stylesheet" href="styles/online.css?v=445">
-<link rel="stylesheet" href="styles/results-frame.css?v=445">
-<link rel="stylesheet" href="styles/visual-2-3.css?v=445">
-<link rel="stylesheet" href="styles/light-refresh.css?v=445">
-<link rel="stylesheet" href="styles/encargos.css?v=445">
-<link rel="stylesheet" href="styles/encargos-intro.css?v=445">
-<link rel="stylesheet" href="styles/duel-intro.css?v=445">
-<link rel="stylesheet" href="styles/sir-events.css?v=445">
-<link rel="stylesheet" href="styles/reward-toast.css?v=445">
-<link rel="stylesheet" href="styles/theme.css?v=445">
-<link rel="stylesheet" href="styles/privacy.css?v=445">
+<link rel="stylesheet" href="styles/online.css?v=446">
+<link rel="stylesheet" href="styles/results-frame.css?v=446">
+<link rel="stylesheet" href="styles/visual-2-3.css?v=446">
+<link rel="stylesheet" href="styles/light-refresh.css?v=446">
+<link rel="stylesheet" href="styles/encargos.css?v=446">
+<link rel="stylesheet" href="styles/encargos-intro.css?v=446">
+<link rel="stylesheet" href="styles/duel-intro.css?v=446">
+<link rel="stylesheet" href="styles/sir-events.css?v=446">
+<link rel="stylesheet" href="styles/reward-toast.css?v=446">
+<link rel="stylesheet" href="styles/theme.css?v=446">
+<link rel="stylesheet" href="styles/privacy.css?v=446">
 
 </head>
 <body class="on-home">
@@ -745,6 +745,8 @@ try {
 
         <div id="feedback" class="feedback" aria-live="polite"></div>
 
+        <div class="lucidez-shield-row"><button type="button" class="btn lucidez-shield-btn" id="lucidez-shield-btn" hidden aria-pressed="false" onpointerdown="event.preventDefault()" onclick="toggleLucidezShield()"></button></div>
+
         <div class="actions">
           <button class="btn btn-primary" id="btn-check" onclick="checkAnswer()">Comprobar</button>
           <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()" style="display:none">Siguiente →</button>
@@ -1147,61 +1149,61 @@ try {
 <!-- Fase 2: datos y constantes extraidos a modulos, cargados como scripts
      clasicos (no ES Modules) para conservar el scope global compartido con
      el script principal, sin convertir todavia la app a ES Modules. -->
-<script src="src/data/ui-maps.js?v=445"></script>
-<script src="src/data/questions.js?v=445"></script>
-<script src="src/data/questions-retired.js?v=445"></script>
-<script src="src/data/phrases.js?v=445"></script>
-<script src="src/data/duel-phrases.js?v=445"></script>
-<script src="src/data/rivalry-phrases.js?v=445"></script>
-<script src="src/utils/rivalry.js?v=445"></script>
-<script src="src/data/lucidez.js?v=445"></script>
-<script src="src/data/medals.js?v=445"></script>
+<script src="src/data/ui-maps.js?v=446"></script>
+<script src="src/data/questions.js?v=446"></script>
+<script src="src/data/questions-retired.js?v=446"></script>
+<script src="src/data/phrases.js?v=446"></script>
+<script src="src/data/duel-phrases.js?v=446"></script>
+<script src="src/data/rivalry-phrases.js?v=446"></script>
+<script src="src/utils/rivalry.js?v=446"></script>
+<script src="src/data/lucidez.js?v=446"></script>
+<script src="src/data/medals.js?v=446"></script>
 <!-- Prompt 3 — Fase C: sistema de avatares compartido (window.SEQAvatars). Debe
      cargarse antes de src/online/online.js y src/online/duels.js: ambos lo
      consumen en vez de mantener cada uno su propia copia de la lista. -->
-<script src="src/data/avatars.js?v=445"></script>
-<script src="src/share/share-card.js?v=445"></script>
+<script src="src/data/avatars.js?v=446"></script>
+<script src="src/share/share-card.js?v=446"></script>
 
 <!-- Fase 3 (Lote 3A): motor de coincidencia de respuestas extraido a
      src/utils/matching.js, mismo criterio que la Fase 2 (script clasico,
      sin ES Modules todavia). -->
-<script src="src/utils/matching.js?v=445"></script>
-<script src="src/utils/review-batch.js?v=445"></script>
-<script src="src/utils/records-reset.js?v=445"></script>
-<script src="src/utils/answer-alias.js?v=445"></script>
-<script src="src/utils/lucidez-select.js?v=445"></script>
-<script src="src/state/lucidez-bag.js?v=445"></script>
-<script src="src/state/timetrial-bag.js?v=445"></script>
-<script src="src/utils/encargos-core.js?v=445"></script>
-<script src="src/utils/encargos-progress.js?v=445"></script>
-<script src="src/state/encargos.js?v=445"></script>
-<script src="src/data/encargos-phrases.js?v=445"></script>
-<script src="src/ui/encargos-ui.js?v=445"></script>
-<script src="src/data/named-phrases.js?v=445"></script>
-<script src="src/utils/named-phrases.js?v=445"></script>
-<script src="src/utils/encargos-intro-core.js?v=445"></script>
-<script src="src/data/encargos-intro-phrases.js?v=445"></script>
-<script src="src/ui/encargos-intro.js?v=445"></script>
-<script src="src/ui/duel-intro.js?v=445"></script>
-<script src="src/data/home-quotes.js?v=445"></script>
-<script src="src/ui/home-quote.js?v=445"></script>
-<script src="src/utils/sir-events.js?v=445"></script>
-<script src="src/ui/sir-events-ui.js?v=445"></script>
-<script src="src/state/sir-events.js?v=445"></script>
-<script src="src/utils/sudden-progression.js?v=445"></script>
-<script src="src/utils/mental-calc.js?v=445"></script>
-<script src="src/utils/mental-classic.js?v=445"></script>
-<script src="src/utils/mental-tips.js?v=445"></script>
-<script src="src/ui/mental-classic-ui.js?v=445"></script>
-<script src="src/ui/mental-menu.js?v=445"></script>
-<script src="src/ui/level-up.js?v=445"></script>
+<script src="src/utils/matching.js?v=446"></script>
+<script src="src/utils/review-batch.js?v=446"></script>
+<script src="src/utils/records-reset.js?v=446"></script>
+<script src="src/utils/answer-alias.js?v=446"></script>
+<script src="src/utils/lucidez-select.js?v=446"></script>
+<script src="src/state/lucidez-bag.js?v=446"></script>
+<script src="src/state/timetrial-bag.js?v=446"></script>
+<script src="src/utils/encargos-core.js?v=446"></script>
+<script src="src/utils/encargos-progress.js?v=446"></script>
+<script src="src/state/encargos.js?v=446"></script>
+<script src="src/data/encargos-phrases.js?v=446"></script>
+<script src="src/ui/encargos-ui.js?v=446"></script>
+<script src="src/data/named-phrases.js?v=446"></script>
+<script src="src/utils/named-phrases.js?v=446"></script>
+<script src="src/utils/encargos-intro-core.js?v=446"></script>
+<script src="src/data/encargos-intro-phrases.js?v=446"></script>
+<script src="src/ui/encargos-intro.js?v=446"></script>
+<script src="src/ui/duel-intro.js?v=446"></script>
+<script src="src/data/home-quotes.js?v=446"></script>
+<script src="src/ui/home-quote.js?v=446"></script>
+<script src="src/utils/sir-events.js?v=446"></script>
+<script src="src/ui/sir-events-ui.js?v=446"></script>
+<script src="src/state/sir-events.js?v=446"></script>
+<script src="src/utils/sudden-progression.js?v=446"></script>
+<script src="src/utils/mental-calc.js?v=446"></script>
+<script src="src/utils/mental-classic.js?v=446"></script>
+<script src="src/utils/mental-tips.js?v=446"></script>
+<script src="src/ui/mental-classic-ui.js?v=446"></script>
+<script src="src/ui/mental-menu.js?v=446"></script>
+<script src="src/ui/level-up.js?v=446"></script>
 
 <!-- Fase 3 (Lote 3B): nucleo algoritmico de Duelo extraido a
      src/utils/duel.js, mismo criterio que el resto (script clasico, sin
      ES Modules todavia). Las dependencias compartidas con otros modos
      (arrangeStandardBlock, generateLucidezMentalOp)
      permanecen en este script principal, sin moverse en este lote. -->
-<script src="src/utils/duel.js?v=445"></script>
+<script src="src/utils/duel.js?v=446"></script>
 
 <!-- Fase 3 (Lote 3C): defaults, migracion y saneamiento del Store
      extraidos a src/utils/store.js, mismo criterio que el resto (script
@@ -1213,60 +1215,60 @@ try {
      getLevelData) y las 8 funciones de persistencia real (loadStore,
      saveStore, exportProgress...) permanecen en este script principal,
      sin moverse en este lote. -->
-<script src="src/utils/store.js?v=445"></script>
+<script src="src/utils/store.js?v=446"></script>
 
 <!-- Fase 4B: fachada de estado de solo lectura (getStore/getCurrentGame),
      mismo criterio que el resto (script clasico, sin ES Modules todavia).
      No copia, no transforma, no cachea. Ver src/state/read-facade.js. -->
-<script src="src/state/read-facade.js?v=445"></script>
+<script src="src/state/read-facade.js?v=446"></script>
 
-<script src="src/utils/streak-xp.js?v=445"></script>
+<script src="src/utils/streak-xp.js?v=446"></script>
 <!-- Fase 4C: helpers minimos de escritura (pushCapped, resetStreak) para
      eliminar 2 duplicaciones reales concretas -- no un sistema de
      mutaciones. Ver src/state/write-helpers.js y CHANGELOG_FASE4C.md. -->
-<script src="src/state/write-helpers.js?v=445"></script>
+<script src="src/state/write-helpers.js?v=446"></script>
 
 <!-- v1.4: capa online (cuenta Google, sincronización, migración, ranking).
      config.js es PÚBLICO (URL del Worker + Client ID de Google); si está
      vacío, la capa online queda desactivada y la app es idéntica a la v1.3.
      online.js solo usa el store/funciones del juego en tiempo de ejecución. -->
-<script src="src/ui/install-app.js?v=445"></script>
-<script src="src/share/invite.js?v=445"></script>
-<script src="src/ui/reward-toast.js?v=445"></script>
-<script src="src/ui/privacy.js?v=445"></script>
-<script src="src/ui/a11y.js?v=445"></script>
-<script src="src/ui/back-nav.js?v=445"></script>
-<script src="src/ui/game-fx.js?v=445"></script>
-<script src="src/ui/last-life.js?v=445"></script>
-<script src="src/ui/hitos.js?v=445"></script>
-<script src="src/ui/achievements.js?v=445"></script>
-<script src="src/ui/stats-extra.js?v=445"></script>
-<script src="src/ui/name-prompt.js?v=445"></script>
-<script src="src/ui/intro.js?v=445"></script>
-<script src="src/ui/mode-badges.js?v=445"></script>
-<script src="src/ui/lucidez-ui.js?v=445"></script>
-<script src="src/ui/sabias.js?v=445"></script>
-<script src="src/ui/icons.js?v=445"></script>
-<script src="src/online/config.js?v=445"></script>
+<script src="src/ui/install-app.js?v=446"></script>
+<script src="src/share/invite.js?v=446"></script>
+<script src="src/ui/reward-toast.js?v=446"></script>
+<script src="src/ui/privacy.js?v=446"></script>
+<script src="src/ui/a11y.js?v=446"></script>
+<script src="src/ui/back-nav.js?v=446"></script>
+<script src="src/ui/game-fx.js?v=446"></script>
+<script src="src/ui/last-life.js?v=446"></script>
+<script src="src/ui/hitos.js?v=446"></script>
+<script src="src/ui/achievements.js?v=446"></script>
+<script src="src/ui/stats-extra.js?v=446"></script>
+<script src="src/ui/name-prompt.js?v=446"></script>
+<script src="src/ui/intro.js?v=446"></script>
+<script src="src/ui/mode-badges.js?v=446"></script>
+<script src="src/ui/lucidez-ui.js?v=446"></script>
+<script src="src/ui/sabias.js?v=446"></script>
+<script src="src/ui/icons.js?v=446"></script>
+<script src="src/online/config.js?v=446"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
-<script src="src/utils/sync-merge.js?v=445"></script>
-<script src="src/online/data-sync.js?v=445"></script>
-<script src="src/online/online.js?v=445"></script>
+<script src="src/utils/sync-merge.js?v=446"></script>
+<script src="src/online/data-sync.js?v=446"></script>
+<script src="src/online/online.js?v=446"></script>
 <!-- v1.5: Amigos, Duelo online y Retos. El servidor decide preguntas, tiempo, aciertos y ganador. -->
-<script src="src/state/result-heard.js?v=445"></script>
-<script src="src/state/multi-result.js?v=445"></script>
-<script src="src/online/reto-fx.js?v=445"></script>
-<script src="src/online/duels.js?v=445"></script>
+<script src="src/state/result-heard.js?v=446"></script>
+<script src="src/state/multi-result.js?v=446"></script>
+<script src="src/online/reto-fx.js?v=446"></script>
+<script src="src/online/duels.js?v=446"></script>
 <!-- 2.1: Duelo por apuestas, ELO PvP, Rankings y estadísticas de Duelos (solo presentación; decide el servidor) -->
-<script src="src/online/duels-v21.js?v=445"></script>
-<script src="src/online/multi-duels.js?v=445"></script>
-<script src="src/online/multi-stakes.js?v=445"></script>
+<script src="src/online/duels-v21.js?v=446"></script>
+<script src="src/online/multi-duels.js?v=446"></script>
+<script src="src/online/multi-stakes.js?v=446"></script>
 <!-- 2.3: ficha pública de un jugador (resumen, récords, PvP y solicitud de amistad) -->
-<script src="src/online/player-profile.js?v=445"></script>
-<script src="src/online/inbox.js?v=445"></script>
-<script src="src/online/push.js?v=445"></script>
+<script src="src/online/player-profile.js?v=446"></script>
+<script src="src/online/inbox.js?v=446"></script>
+<script src="src/online/push.js?v=446"></script>
 <!-- Audio: sonidos del juego (src/audio/audio.js) -->
-<script src="src/audio/audio.js?v=445"></script>
+<script src="src/audio/audio.js?v=446"></script>
 
 <script>
 function closeWelcomeModal() {
@@ -1990,7 +1992,59 @@ function getLucidezBonusLives(s = store) {
 function tryForgiveLucidezError(g = currentGame) {
   if (!g || g.isDuel || !(g.lucidezForgiveLeft > 0)) return false;
   g.lucidezForgiveLeft--;
+  if (typeof playSound === 'function') playSound('shield'); // sonido propio: el fallo no cuesta nada
   return true;
+}
+// Insignia fija en la cabecera de las fases: escudo y errores extra que quedan (nada si no hay).
+function lucidezExtraBadge(g = currentGame) {
+  const n = g && g.mode === 'lucidez_mental' && !g.isDuel ? (g.lucidezForgiveLeft || 0) : 0;
+  return n > 0 ? ` <span class="lucidez-extra-badge" title="${n === 1 ? '1 error extra' : n + ' errores extra'}">· ${seqIco('escudo')}×${n}</span>` : '';
+}
+// Escudo a elección (Fases I a III): se activa ANTES de responder; si se falla con él, el error se perdona; si se responde sin él, cuenta como fallo.
+// El escudo se desactiva solo en cada pregunta nueva. En el enigma final sigue siendo automático.
+function syncLucidezShield(newQuestion) {
+  const btn = document.getElementById('lucidez-shield-btn');
+  if (!btn) return;
+  const g = currentGame;
+  if (newQuestion && g) g.lucidezShieldArmed = false;
+  const n = g && g.mode === 'lucidez_mental' && !g.isDuel ? (g.lucidezForgiveLeft || 0) : 0;
+  // La insignia de la cabecera se refresca al gastar el escudo sin esperar a la pregunta siguiente.
+  const lbl = document.getElementById('game-progress-lbl'), p3 = document.getElementById('lucidez-extra');
+  if (p3) p3.innerHTML = lucidezExtraBadge();
+  else if (lbl) { lbl.querySelectorAll('.lucidez-extra-badge').forEach(el => el.remove()); lbl.insertAdjacentHTML('beforeend', lucidezExtraBadge()); }
+  btn.hidden = n <= 0;
+  const on = !!(g && g.lucidezShieldArmed);
+  btn.classList.toggle('is-armed', on);
+  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  btn.innerHTML = `${seqIco('escudo')}${on ? 'Escudo activado' : 'Usar escudo'} · ×${n}`;
+}
+function toggleLucidezShield() {
+  if (!currentGame || currentGame.answered || !(currentGame.lucidezForgiveLeft > 0)) return;
+  currentGame.lucidezShieldArmed = !currentGame.lucidezShieldArmed;
+  syncLucidezShield(false);
+}
+// Se llama solo al fallar: gasta el escudo únicamente si estaba activado.
+function useLucidezShield() {
+  const armed = !!currentGame.lucidezShieldArmed;
+  currentGame.lucidezShieldArmed = false;
+  const ok = armed && tryForgiveLucidezError();
+  syncLucidezShield(false);
+  return ok;
+}
+// Lucidez va sin botón «Siguiente»: tras comprobar, pasa sola a la pregunta siguiente (rápido si aciertas; si fallas, un instante para ver la solución, y un toque en el aviso la salta).
+let lucidezAdvanceTimer = null;
+function lucidezAutoAdvance(wasCorrect) {
+  const nextBtn = document.getElementById('btn-next');
+  if (nextBtn) nextBtn.style.display = 'none';
+  const idx = currentGame.currentIdx, fb = document.getElementById('feedback');
+  clearTimeout(lucidezAdvanceTimer);
+  const go = () => {
+    clearTimeout(lucidezAdvanceTimer);
+    if (fb) fb.onclick = null;
+    if (currentGame && currentGame.mode === 'lucidez_mental' && currentGame.answered && currentGame.currentIdx === idx) nextQuestion();
+  };
+  lucidezAdvanceTimer = setTimeout(go, wasCorrect ? 600 : 1500);
+  if (fb && !wasCorrect) fb.onclick = go;
 }
 function lucidezForgiveNote(g = currentGame) {
   return g.lucidezForgiveLeft > 0 ? ` · ${seqIco('escudo')}Errores extra restantes: ${g.lucidezForgiveLeft}` : ` · ${seqIco('escudo')}Sin errores extra`;
@@ -3768,6 +3822,7 @@ function cancelLucidezRevealTimeout() {
 }
 
 function renderLucidezQuestion(preserveAnswered = false, isResume = false) {
+  syncLucidezShield(!preserveAnswered);
   cancelLucidezRevealTimeout();
   const idx = currentGame.currentIdx;
   const phase = getLucidezPhase(idx);
@@ -3803,7 +3858,7 @@ function renderLucidezQuestion(preserveAnswered = false, isResume = false) {
       lucidezRevealQText();
       document.getElementById('q-text').textContent = q.q;
       resetLucidezAnswerUI(preserveAnswered);
-      document.getElementById('game-progress-lbl').textContent = `FASE I · ${idx + 1}/10`;
+      document.getElementById('game-progress-lbl').innerHTML = `FASE I · ${idx + 1}/10${lucidezExtraBadge()}`;
       document.getElementById('bar-fill').style.width = ((idx / 30) * 100) + '%';
       currentGame.answered = preserveAnswered ? !!currentGame.answered : false;
       setTimeout(() => document.getElementById('ans-input').focus(), 50);
@@ -3870,7 +3925,7 @@ function renderLucidezPhase2Calc(preserveAnswered = false, item, isResume = fals
   const btnNext = document.getElementById('btn-next');
   hideChoiceOptions();
 
-  document.getElementById('game-progress-lbl').innerHTML = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)} · ${localIdx + 1}/10`;
+  document.getElementById('game-progress-lbl').innerHTML = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)} · ${localIdx + 1}/10${lucidezExtraBadge()}`;
   document.getElementById('bar-fill').style.width = ((currentGame.currentIdx / 30) * 100) + '%';
 
   if (currentGame.answered) {
@@ -3937,7 +3992,7 @@ function renderLucidezPhase2Question(preserveAnswered = false, item, isResume = 
   const btnNext = document.getElementById('btn-next');
   hideChoiceOptions();
 
-  document.getElementById('game-progress-lbl').innerHTML = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)} · ${localIdx + 1}/10`;
+  document.getElementById('game-progress-lbl').innerHTML = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)} · ${localIdx + 1}/10${lucidezExtraBadge()}`;
   document.getElementById('bar-fill').style.width = ((currentGame.currentIdx / 30) * 100) + '%';
 
   if (currentGame.answered) {
@@ -4025,11 +4080,15 @@ function updateLucidezPhase3Header() {
     const chip = document.getElementById('lucidez-p3-timer-chip');
     const timerNum = document.getElementById('lucidez-p3-timer-num');
     if (!chip || !timerNum) {
-      lbl.innerHTML = `FASE III · ${localIdx + 1}/9 <span id="lucidez-p3-timer-chip" class="lucidez-timer-chip${low ? ' lucidez-timer-low' : ''}">${seqIco('tiempo')}<span id="lucidez-p3-timer-num">${lucidezPhase3SecondsLeft}</span>s</span>`;
+      lbl.innerHTML = `FASE III · <span id="lucidez-p3-count">${localIdx + 1}/${LUCIDEZ_PHASE3_TOTAL}</span> <span id="lucidez-p3-timer-chip" class="lucidez-timer-chip${low ? ' lucidez-timer-low' : ''}">${seqIco('tiempo')}<span id="lucidez-p3-timer-num">${lucidezPhase3SecondsLeft}</span>s</span><span id="lucidez-extra">${lucidezExtraBadge()}</span>`;
     } else {
       chip.classList.toggle('lucidez-timer-low', low);
       timerNum.textContent = lucidezPhase3SecondsLeft;
     }
+    const cnt = document.getElementById('lucidez-p3-count');
+    if (cnt) cnt.textContent = `${localIdx + 1}/${LUCIDEZ_PHASE3_TOTAL}`;
+    const ex = document.getElementById('lucidez-extra');
+    if (ex) ex.innerHTML = lucidezExtraBadge();
   }
   if (bar) bar.style.width = ((currentGame.currentIdx / 30) * 100) + '%';
 }
@@ -4117,7 +4176,7 @@ function checkLucidezAnswer() {
   const statKey = lucidezStatKey(q.n);
   const user = document.getElementById('ans-input').value;
   const correct = isMatchWithAlias(user, q);
-  const forgiven = !correct && tryForgiveLucidezError();
+  const forgiven = !correct && useLucidezShield();
 
   // Duelo: las preguntas de un duelo vienen de una cola con semilla
   // ajena a la bolsa personal, así que no deben tocar las estadísticas
@@ -4190,7 +4249,7 @@ function checkLucidezAnswer() {
   }
 
   document.getElementById('btn-check').style.display = 'none';
-  document.getElementById('btn-next').style.display = 'inline-block';
+  lucidezAutoAdvance(correct);
   saveStore();
 }
 
@@ -4202,7 +4261,7 @@ function checkLucidezPhase2Answer(item) {
   // Validación estricta: parseFloat() aceptaría "25abc" como 25, así que
   // exigimos que la cadena completa sea un número válido (sin restos de texto).
   const correct = raw !== '' && /^-?\d+(\.\d+)?$/.test(raw) && Number.isFinite(userVal) && userVal === op.answer;
-  const forgiven = !correct && tryForgiveLucidezError();
+  const forgiven = !correct && useLucidezShield();
   currentGame.answered = true;
 
   const fb = document.getElementById('feedback');
@@ -4240,9 +4299,9 @@ function checkLucidezPhase2Answer(item) {
     return;
   }
 
-  document.getElementById('btn-next').style.display = 'inline-block';
+  lucidezAutoAdvance(correct);
   const localIdx = currentGame.currentIdx - 10;
-  document.getElementById('game-progress-lbl').innerHTML = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)} · ${localIdx + 1}/10`;
+  document.getElementById('game-progress-lbl').innerHTML = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)} · ${localIdx + 1}/10${lucidezExtraBadge()}`;
   saveStore();
 }
 
@@ -4255,7 +4314,7 @@ function checkLucidezPhase2QuestionAnswer(q) {
   const statKey = lucidezStatKey(q.n);
   const user = document.getElementById('ans-input').value;
   const correct = isMatchWithAlias(user, q);
-  const forgiven = !correct && tryForgiveLucidezError();
+  const forgiven = !correct && useLucidezShield();
 
   const isDuelGame = !!currentGame.isDuel;
   if (!isDuelGame && !forgiven) {
@@ -4309,9 +4368,9 @@ function checkLucidezPhase2QuestionAnswer(q) {
     return;
   }
 
-  document.getElementById('btn-next').style.display = 'inline-block';
+  lucidezAutoAdvance(correct);
   const localIdx = currentGame.currentIdx - 10;
-  document.getElementById('game-progress-lbl').innerHTML = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)} · ${localIdx + 1}/10`;
+  document.getElementById('game-progress-lbl').innerHTML = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)} · ${localIdx + 1}/10${lucidezExtraBadge()}`;
   saveStore();
 }
 
@@ -4619,8 +4678,8 @@ let lucidezPhase3EndTime = 0;
 // Marca de tiempo absoluta del bloqueo de 3s de Fase II (lectura antes de
 // poder responder). Ver renderLucidezPhase2Calc/Question.
 let lucidezPhase2RevealEndTime = 0;
-// Tiempo de la Fase III de Lucidez Mental (2.1: de 45 a 120 s). El Worker tiene el mismo valor en LUCIDEZ_RETO.p3.clock (src/reto-modes.js).
-const LUCIDEZ_PHASE3_SECONDS = 120;
+// Tiempo de la Fase III de Lucidez Mental (2.1: de 45 a 120 s; 2.4: 90 s). El Worker tiene el mismo valor en LUCIDEZ_RETO.p3.clock (src/reto-modes.js).
+const LUCIDEZ_PHASE3_SECONDS = 90;
 let lucidezPhase3SecondsLeft = LUCIDEZ_PHASE3_SECONDS;
 let lucidezFinalTimer = null;
 let lucidezFinalEndTime = 0;
@@ -4644,7 +4703,7 @@ function applyCurrentGameTheme() {
 function clearCardThemeClasses() {
   const container = document.getElementById('main-card-container');
   if (container) {
-    container.classList.remove('theme-standard', 'theme-review', 'theme-survival', 'theme-sudden', 'theme-timetrial', 'theme-mentalcalc', 'theme-lucidez', 'theme-duel', 'lucidez-fase-2', 'lucidez-fase-3', 'lucidez-enigma-final');
+    container.classList.remove('theme-standard', 'theme-review', 'theme-survival', 'theme-sudden', 'theme-timetrial', 'theme-mentalcalc', 'theme-lucidez', 'theme-duel', 'lucidez-fase-1', 'lucidez-fase-2', 'lucidez-fase-3', 'lucidez-enigma-final');
   }
   const overlay = document.getElementById('lucidez-story-overlay');
   if (overlay) overlay.classList.remove('show');
@@ -5947,6 +6006,18 @@ function nextQuestion() {
     // aciertos exigido antes de dejar pasar a la fase siguiente. Si no se
     // alcanza, la partida termina aquí mismo aunque queden vidas (Fase I)
     // o tiempo en el reloj (Fase III): no se renderiza la fase siguiente.
+    // Si ya es imposible llegar al mínimo con las preguntas que quedan, la partida termina aquí (no en Duelo/Retos, que los corrige el servidor).
+    if (!currentGame.isDuel) {
+      const i = currentGame.currentIdx;
+      if (i > 0 && i < LUCIDEZ_PHASE1_TOTAL && (currentGame.phase1Correct || 0) + (LUCIDEZ_PHASE1_TOTAL - i) < LUCIDEZ_PHASE1_MIN) {
+        finishLucidezMode(true, false, { phase: 1, achieved: currentGame.phase1Correct || 0, min: LUCIDEZ_PHASE1_MIN, total: LUCIDEZ_PHASE1_TOTAL });
+        return;
+      }
+      if (i > 20 && i < 20 + LUCIDEZ_PHASE3_TOTAL && (currentGame.phase3Correct || 0) + (20 + LUCIDEZ_PHASE3_TOTAL - i) < LUCIDEZ_PHASE3_MIN) {
+        finishLucidezMode(true, false, { phase: 3, achieved: currentGame.phase3Correct || 0, min: LUCIDEZ_PHASE3_MIN, total: LUCIDEZ_PHASE3_TOTAL });
+        return;
+      }
+    }
     if (currentGame.currentIdx === LUCIDEZ_PHASE1_TOTAL && (currentGame.phase1Correct || 0) < LUCIDEZ_PHASE1_MIN) {
       finishLucidezMode(true, false, { phase: 1, achieved: currentGame.phase1Correct || 0, min: LUCIDEZ_PHASE1_MIN, total: LUCIDEZ_PHASE1_TOTAL });
       return;
@@ -7303,6 +7374,6 @@ window.addEventListener('appinstalled', () => {
   hidePwaHint();
 });
 </script>
-<script src="src/ui/resume-clock.js?v=445"></script>
+<script src="src/ui/resume-clock.js?v=446"></script>
 </body>
 </html>

@@ -5698,3 +5698,11 @@ h3.stats-h::before { display: none !important; content: none !important; }
 .feedback .mental-tip{ margin-top:10px; padding-top:9px; border-top:1px solid rgba(127,127,127,.35); display:flex; gap:8px; align-items:baseline; font-size:14px; line-height:1.4; }
 .feedback .mental-tip .mt-label{ flex-shrink:0; font-size:10.5px; font-weight:800; letter-spacing:.12em; opacity:.7; }
 .feedback .mental-tip .mt-text{ font-weight:600; }
+
+/* Lucidez: escudo a elección (se activa antes de responder; solo Fases I a III) */
+.lucidez-shield-row { display: flex; justify-content: center; margin: 4px 0 8px; }
+.lucidez-shield-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: .9rem; border-radius: 999px; background: transparent; color: var(--text-muted, #94a3b8); border: 1px solid rgba(148,163,184,.45); }
+.lucidez-shield-btn[hidden] { display: none; }
+.lucidez-shield-btn.is-armed { color: #fde68a; border-color: #d4a017; background: rgba(212,160,23,.14); }
+.card:not(.lucidez-fase-1):not(.lucidez-fase-2):not(.lucidez-fase-3) .lucidez-shield-row,
+.card.lucidez-enigma-final .lucidez-shield-row { display: none; }
