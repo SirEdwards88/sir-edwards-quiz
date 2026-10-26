@@ -130,7 +130,16 @@
     if (decided) return;
     decided = true;
     // Un respiro tras cerrar la pantalla de cuenta para que el mensaje no «pise» la transición.
-    setTimeout(function () { try { decide(); } catch (e) { /* nunca debe impedir jugar */ } }, 350);
+    // Si al entrar se abre «Tu progreso y tu cuenta» (cuenta nueva en un dispositivo con progreso), se espera a que se resuelva:
+    // una pantalla cada vez (cuenta → progreso → nombre → bienvenida), nunca una encima de otra.
+    var waited = 0;
+    function go() {
+      var mig = document.getElementById('seq-migrate-modal');
+      var busy = mig && mig.style.display && mig.style.display !== 'none';
+      if (busy && waited < 600000) { waited += 400; setTimeout(go, 400); return; }
+      try { decide(); } catch (e) { /* nunca debe impedir jugar */ }
+    }
+    setTimeout(go, 350);
   }
 
   // Al cerrar la bienvenida (closeWelcomeModal en index.html): el nombre ya se preguntó antes; no queda nada pendiente.
