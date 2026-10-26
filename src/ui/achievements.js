@@ -19,9 +19,9 @@
     { key: 'aciertos', name: 'Aciertos', ids: ['correct_100', 'correct_400', 'correct_800'] },
     { key: 'dominio', name: 'Dominio', ids: ['master_10', 'master_50', 'master_100', 'master_200', 'polimata', 'balanced_master'] },
     { key: 'errores', name: 'Aprender de los errores', ids: ['cleaner_5', 'cleaner_25', 'limpieza_general'] },
-    { key: 'modos', name: 'Modos de juego', ids: ['surv_ameba', 'surv_humano', 'surv_derrame', 'sd_primer_riesgo', 'tt_15', 'tt_30', 'tt_50', 'sin_frenos', 'mental_calc_15', 'mental_calc_30', 'mental_calc_40'] },
+    { key: 'modos', name: 'Modos de juego', ids: ['surv_ameba', 'surv_humano', 'surv_derrame', 'sd_quince', 'sd_veinte', 'sd_primer_riesgo', 'tt_15', 'tt_30', 'tt_50', 'sin_frenos', 'mental_calc_15', 'mental_calc_30', 'mental_calc_40'] },
     { key: 'duelo', name: 'Duelo', ids: ['duel_primera_sangre', 'duel_victoria_inaugural', 'duel_por_los_pelos', 'duel_contra_las_cuerdas', 'duel_rey_del_empate', 'duel_cinco_victorias', 'duel_tres_al_hilo', 'duel_revancha', 'duel_otra_vez_tu', 'duel_sin_titubear', 'duel_apuestas_calculada', 'duel_apuestas_ultima_locura', 'multi_mesa_completa', 'multi_contra_la_corriente', 'multi_entre_la_niebla', 'multi_alguien_tenia_que_perder', 'multi_costumbre_preocupante'] },
-    { key: 'especial', name: 'Especiales', ids: ['noctambulo', 'diurno', 'mente_fracturada', 'medal_collector_10', 'medal_collector_20', 'medal_collector_30'] },
+    { key: 'especial', name: 'Especiales', ids: ['noctambulo', 'diurno', 'mente_fracturada', 'encargos_semana_completa', 'medal_collector_10', 'medal_collector_20', 'medal_collector_30'] },
     { key: 'secretos', name: 'Secretos', ids: ['lucidez_mente_despierta', 'lucidez_conexiones_imposibles', 'lucidez_absoluta', 'all_medals_secret'] }
   ];
 
@@ -34,6 +34,7 @@
     return (s.unlockedMedals || []).filter(function (id) { return skip.indexOf(id) === -1 && isActiveMedalId(id); }).length;
   }
   var PROGRESS = {
+    lucidez_conexiones_imposibles: function (s) { return [s.lucidezTotalCorrect || 0, 5]; },
     games_5: function (s) { return [n(s.gamesPlayed), 5, 'partidas']; },
     games_10: function (s) { return [n(s.gamesPlayed), 10, 'partidas']; },
     games_20: function (s) { return [n(s.gamesPlayed), 20, 'partidas']; },
@@ -57,6 +58,8 @@
     master_200: function (s) { return [safe(function () { return getMasteredCount(s); }), 200, 'dominadas']; },
     cleaner_5: function (s) { return [n(s.errorsCleaned), 5, 'superadas']; },
     cleaner_25: function (s) { return [n(s.errorsCleaned), 25, 'superadas']; },
+    sd_quince: function (s) { return [n(s.suddenBestSurvived), 15, 'preguntas']; },
+    sd_veinte: function (s) { return [n(s.suddenBestSurvived), 20, 'preguntas']; },
     tt_15: function (s) { return [n(s.maxTimeTrialScore), 15, 'aciertos']; },
     tt_30: function (s) { return [n(s.maxTimeTrialScore), 30, 'aciertos']; },
     tt_50: function (s) { return [n(s.maxTimeTrialScore), 50, 'aciertos']; },
@@ -94,9 +97,19 @@
   function esc(v) { return String(v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   var openState = {};
 
+  // Con Lucidez Mental desbloqueada, sus 3 logros secretos se desvelan (nombre y requisito). «Todos los logros» sigue oculto.
+  function lucidezOpen(s) {
+    try { return getFragmentCount(s) >= FRAGMENT_TARGET; } catch (e) { return false; }
+  }
+  function isHidden(m, s, unlocked) {
+    if (!m.secret || unlocked) return false;
+    if (/^lucidez_/.test(m.id) && lucidezOpen(s)) return false;
+    return true;
+  }
+
   function row(m, s, unlocked) {
     var frag = false; try { frag = FRAGMENT_MEDAL_IDS.indexOf(m.id) !== -1; } catch (e) {}
-    if (m.secret && !unlocked) {
+    if (isHidden(m, s, unlocked)) {
       return '<div class="ach-row is-secret"><div class="ach-ico"><img class="ach-secret-img" src="assets/ui/logros/silueta-secreta.webp" alt="" draggable="false"></div><div class="ach-body"><div class="ach-title">???</div>' +
         '<div class="ach-desc">Logro secreto</div></div></div>';
     }
@@ -132,7 +145,8 @@
       var sorted = g.list.slice().sort(function (a, b) {
         var ua = got.indexOf(a.id) !== -1, ub = got.indexOf(b.id) !== -1;
         if (ua !== ub) return ua ? -1 : 1;
-        if (a.secret !== b.secret) return a.secret ? 1 : -1;
+        var ha = isHidden(a, s, false), hb = isHidden(b, s, false);
+        if (ha !== hb) return ha ? 1 : -1;
         var pa = PROGRESS[a.id] ? PROGRESS[a.id](s) : null, pb = PROGRESS[b.id] ? PROGRESS[b.id](s) : null;
         return (pb ? pb[0] / pb[1] : 0) - (pa ? pa[0] / pa[1] : 0);
       });

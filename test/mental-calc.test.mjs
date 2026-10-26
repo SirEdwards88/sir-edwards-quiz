@@ -154,7 +154,7 @@ test('puntuación existente: puntos base 10/20/35, bonus de velocidad y de racha
   assert.equal(M.basePoints(5), 10); assert.equal(M.basePoints(20), 10);
   assert.equal(M.basePoints(45), 20); assert.equal(M.basePoints(75), 35); assert.equal(M.basePoints(100), 35);
   let prev = 0; for (let d = 0; d <= 100; d++) { const p = M.basePoints(d); assert.ok(p >= prev && p >= 10 && p <= 35); prev = p; }
-  assert.match(html, /const speedBonus = Math\.max\(0, Math\.round\(\(6000 - Math\.min\(elapsedMs, 6000\)\) \* 3 \/ 1000\)\);/);
+  assert.match(html, /const speedWindowMs = 4000 \+ opDifficulty \* 100;/); assert.match(html, /const speedBonus = Math\.max\(0, Math\.round\(\(speedWindowMs - Math\.min\(elapsedMs, speedWindowMs\)\) \* 18 \/ speedWindowMs\)\);/);
   assert.match(html, /const streakBonus = Math\.min\(currentGame\.streak, 20\) \* 2;/);
   assert.match(html, /MENTALCALC_START_MS = 60000/); assert.match(html, /MENTALCALC_MAX_MS = 90000/);
   assert.match(html, /MENTALCALC_BONUS_MS = 4000/); assert.match(html, /mentalCalcEndTime \+ MENTALCALC_BONUS_MS/); assert.ok(!/mentalCalcEndTime \+ 2000/.test(html), 'ya no es +2 s'); assert.ok(!/MENTALCALC_BONUS_MS = 3000/.test(html), 'ya no es +3 s'); assert.match(html, /mentalCalcEndTime -= 3000/);

@@ -82,8 +82,16 @@ const SEQEncargosIntro = (function () {
     return last === null ? 0 : core().weeksAway(idx, last);
   }
 
+  var retryTimer = null, retries = 0;
+  function scheduleRetry() {
+    if (retryTimer || retries >= 20) return;   // hasta ~1 minuto; después, la próxima visita a Inicio
+    retries++;
+    retryTimer = setTimeout(function () { retryTimer = null; onHome(true); }, 3000);
+  }
+
   // Al llegar a Inicio (switchTab) y, una vez, al arrancar. Se espera un instante a que Inicio se asiente y se vuelve a comprobar.
-  function onHome() {
+  function onHome(isRetry) {
+    if (isRetry !== true) retries = 0;
     if (!core() || typeof ENCARGOS_INTRO === 'undefined') return;
     setTimeout(function () {
       try {
@@ -95,8 +103,12 @@ const SEQEncargosIntro = (function () {
         var now = new Date(), idx = SEQEncargos.weekIndexAt(now.getTime()), weekId = SEQEncargos.weekIdOf(idx);
         // Semana de incorporación: la de la gran presentación (sale de su fecha). No se evalúa ni recibe carta.
         var introWeek = introWeekId();
-        if (core().shouldShowMonday({ seen: true, introWeek: introWeek, weekId: weekId, lastShown: get(K_MONDAY),
-          onHome: base.onHome, inGame: base.inGame, blocked: base.blocked })) startMonday(weekId, SEQEncargos.weekIdOf(idx - 1), introWeek, now.getDay() === 1, awayWeeks(idx, introWeek));
+        var ctx = { seen: true, introWeek: introWeek, weekId: weekId, lastShown: get(K_MONDAY), onHome: base.onHome, inGame: base.inGame, blocked: false };
+        if (!core().shouldShowMonday(ctx)) return;
+        // Tocaba carta pero hay algo delante (modal, otra escena, app en segundo plano): se reintenta sola en unos segundos.
+        if (base.blocked) { scheduleRetry(); return; }
+        retries = 0;
+        startMonday(weekId, SEQEncargos.weekIdOf(idx - 1), introWeek, now.getDay() === 1, awayWeeks(idx, introWeek));
       } catch (e) { /* nunca debe impedir jugar */ }
     }, 700);
   }
@@ -350,5 +362,10 @@ if (typeof document !== 'undefined') {
     // La tira de Inicio se pinta ya al abrir la app (Inicio es la vista activa sin pasar por switchTab).
     try { SEQEncargosUI.renderHome(); } catch (e) {}
     setTimeout(function () { try { preview ? SEQEncargosIntro.replay() : SEQEncargosIntro.onHome(); } catch (e) {} }, 3500);
+    // App instalada: al volver del segundo plano (otro día, otra semana) no hay recarga ni cambio de pestaña; se vuelve a comprobar.
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden || preview) return;
+      setTimeout(function () { try { SEQEncargosIntro.onHome(); } catch (e) {} }, 1200);
+    });
   });
 }

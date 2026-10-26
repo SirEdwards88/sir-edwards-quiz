@@ -49,21 +49,21 @@
 <!-- Tipografía: Playfair Display para el "display" institucional (nombre de la
      app / títulos), Inter para toda la interfaz funcional. Alojadas en la propia app
      (styles/fonts.css, assets/fonts/): funcionan sin conexión y no dependen de Google. -->
-<link rel="stylesheet" href="styles/fonts.css?v=451">
+<link rel="stylesheet" href="styles/fonts.css?v=462">
 <link rel="preload" href="assets/fonts/inter-latin.woff" as="font" type="font/woff" crossorigin>
-<link rel="stylesheet" href="styles/main.css?v=451">
+<link rel="stylesheet" href="styles/main.css?v=462">
 <!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
-<link rel="stylesheet" href="styles/online.css?v=451">
-<link rel="stylesheet" href="styles/results-frame.css?v=451">
-<link rel="stylesheet" href="styles/visual-2-3.css?v=451">
-<link rel="stylesheet" href="styles/light-refresh.css?v=451">
-<link rel="stylesheet" href="styles/encargos.css?v=451">
-<link rel="stylesheet" href="styles/encargos-intro.css?v=451">
-<link rel="stylesheet" href="styles/duel-intro.css?v=451">
-<link rel="stylesheet" href="styles/sir-events.css?v=451">
-<link rel="stylesheet" href="styles/reward-toast.css?v=451">
-<link rel="stylesheet" href="styles/theme.css?v=451">
-<link rel="stylesheet" href="styles/privacy.css?v=451">
+<link rel="stylesheet" href="styles/online.css?v=462">
+<link rel="stylesheet" href="styles/results-frame.css?v=462">
+<link rel="stylesheet" href="styles/visual-2-3.css?v=462">
+<link rel="stylesheet" href="styles/light-refresh.css?v=462">
+<link rel="stylesheet" href="styles/encargos.css?v=462">
+<link rel="stylesheet" href="styles/encargos-intro.css?v=462">
+<link rel="stylesheet" href="styles/duel-intro.css?v=462">
+<link rel="stylesheet" href="styles/sir-events.css?v=462">
+<link rel="stylesheet" href="styles/reward-toast.css?v=462">
+<link rel="stylesheet" href="styles/theme.css?v=462">
+<link rel="stylesheet" href="styles/privacy.css?v=462">
 
 </head>
 <body class="on-home">
@@ -1150,61 +1150,62 @@ try {
 <!-- Fase 2: datos y constantes extraidos a modulos, cargados como scripts
      clasicos (no ES Modules) para conservar el scope global compartido con
      el script principal, sin convertir todavia la app a ES Modules. -->
-<script src="src/data/ui-maps.js?v=451"></script>
-<script src="src/data/questions.js?v=451"></script>
-<script src="src/data/questions-retired.js?v=451"></script>
-<script src="src/data/phrases.js?v=451"></script>
-<script src="src/data/duel-phrases.js?v=451"></script>
-<script src="src/data/rivalry-phrases.js?v=451"></script>
-<script src="src/utils/rivalry.js?v=451"></script>
-<script src="src/data/lucidez.js?v=451"></script>
-<script src="src/data/medals.js?v=451"></script>
+<script src="src/data/ui-maps.js?v=462"></script>
+<script src="src/data/questions.js?v=462"></script>
+<script src="src/data/questions-retired.js?v=462"></script>
+<script src="src/data/phrases.js?v=462"></script>
+<script src="src/data/duel-phrases.js?v=462"></script>
+<script src="src/data/rivalry-phrases.js?v=462"></script>
+<script src="src/utils/rivalry.js?v=462"></script>
+<script src="src/data/lucidez.js?v=462"></script>
+<script src="src/data/medals.js?v=462"></script>
 <!-- Prompt 3 — Fase C: sistema de avatares compartido (window.SEQAvatars). Debe
      cargarse antes de src/online/online.js y src/online/duels.js: ambos lo
      consumen en vez de mantener cada uno su propia copia de la lista. -->
-<script src="src/data/avatars.js?v=451"></script>
-<script src="src/share/share-card.js?v=451"></script>
+<script src="src/data/avatars.js?v=462"></script>
+<script src="src/share/share-card.js?v=462"></script>
 
 <!-- Fase 3 (Lote 3A): motor de coincidencia de respuestas extraido a
      src/utils/matching.js, mismo criterio que la Fase 2 (script clasico,
      sin ES Modules todavia). -->
-<script src="src/utils/matching.js?v=451"></script>
-<script src="src/utils/review-batch.js?v=451"></script>
-<script src="src/utils/records-reset.js?v=451"></script>
-<script src="src/utils/answer-alias.js?v=451"></script>
-<script src="src/utils/lucidez-select.js?v=451"></script>
-<script src="src/state/lucidez-bag.js?v=451"></script>
-<script src="src/state/timetrial-bag.js?v=451"></script>
-<script src="src/utils/encargos-core.js?v=451"></script>
-<script src="src/utils/encargos-progress.js?v=451"></script>
-<script src="src/state/encargos.js?v=451"></script>
-<script src="src/data/encargos-phrases.js?v=451"></script>
-<script src="src/ui/encargos-ui.js?v=451"></script>
-<script src="src/data/named-phrases.js?v=451"></script>
-<script src="src/utils/named-phrases.js?v=451"></script>
-<script src="src/utils/encargos-intro-core.js?v=451"></script>
-<script src="src/data/encargos-intro-phrases.js?v=451"></script>
-<script src="src/ui/encargos-intro.js?v=451"></script>
-<script src="src/ui/duel-intro.js?v=451"></script>
-<script src="src/data/home-quotes.js?v=451"></script>
-<script src="src/ui/home-quote.js?v=451"></script>
-<script src="src/utils/sir-events.js?v=451"></script>
-<script src="src/ui/sir-events-ui.js?v=451"></script>
-<script src="src/state/sir-events.js?v=451"></script>
-<script src="src/utils/sudden-progression.js?v=451"></script>
-<script src="src/utils/mental-calc.js?v=451"></script>
-<script src="src/utils/mental-classic.js?v=451"></script>
-<script src="src/utils/mental-tips.js?v=451"></script>
-<script src="src/ui/mental-classic-ui.js?v=451"></script>
-<script src="src/ui/mental-menu.js?v=451"></script>
-<script src="src/ui/level-up.js?v=451"></script>
+<script src="src/utils/matching.js?v=462"></script>
+<script src="src/utils/review-batch.js?v=462"></script>
+<script src="src/utils/records-reset.js?v=462"></script>
+<script src="src/utils/answer-alias.js?v=462"></script>
+<script src="src/utils/lucidez-select.js?v=462"></script>
+<script src="src/state/lucidez-bag.js?v=462"></script>
+<script src="src/state/timetrial-bag.js?v=462"></script>
+<script src="src/utils/encargos-core.js?v=462"></script>
+<script src="src/utils/encargos-progress.js?v=462"></script>
+<script src="src/state/encargos.js?v=462"></script>
+<script src="src/data/encargos-phrases.js?v=462"></script>
+<script src="src/ui/encargos-ui.js?v=462"></script>
+<script src="src/data/named-phrases.js?v=462"></script>
+<script src="src/utils/named-phrases.js?v=462"></script>
+<script src="src/utils/encargos-intro-core.js?v=462"></script>
+<script src="src/data/encargos-intro-phrases.js?v=462"></script>
+<script src="src/ui/encargos-intro.js?v=462"></script>
+<script src="src/ui/lucidez-unlock.js?v=462"></script>
+<script src="src/ui/duel-intro.js?v=462"></script>
+<script src="src/data/home-quotes.js?v=462"></script>
+<script src="src/ui/home-quote.js?v=462"></script>
+<script src="src/utils/sir-events.js?v=462"></script>
+<script src="src/ui/sir-events-ui.js?v=462"></script>
+<script src="src/state/sir-events.js?v=462"></script>
+<script src="src/utils/sudden-progression.js?v=462"></script>
+<script src="src/utils/mental-calc.js?v=462"></script>
+<script src="src/utils/mental-classic.js?v=462"></script>
+<script src="src/utils/mental-tips.js?v=462"></script>
+<script src="src/ui/mental-classic-ui.js?v=462"></script>
+<script src="src/ui/mental-menu.js?v=462"></script>
+<script src="src/ui/level-up.js?v=462"></script>
 
 <!-- Fase 3 (Lote 3B): nucleo algoritmico de Duelo extraido a
      src/utils/duel.js, mismo criterio que el resto (script clasico, sin
      ES Modules todavia). Las dependencias compartidas con otros modos
      (arrangeStandardBlock, generateLucidezMentalOp)
      permanecen en este script principal, sin moverse en este lote. -->
-<script src="src/utils/duel.js?v=451"></script>
+<script src="src/utils/duel.js?v=462"></script>
 
 <!-- Fase 3 (Lote 3C): defaults, migracion y saneamiento del Store
      extraidos a src/utils/store.js, mismo criterio que el resto (script
@@ -1216,60 +1217,60 @@ try {
      getLevelData) y las 8 funciones de persistencia real (loadStore,
      saveStore, exportProgress...) permanecen en este script principal,
      sin moverse en este lote. -->
-<script src="src/utils/store.js?v=451"></script>
+<script src="src/utils/store.js?v=462"></script>
 
 <!-- Fase 4B: fachada de estado de solo lectura (getStore/getCurrentGame),
      mismo criterio que el resto (script clasico, sin ES Modules todavia).
      No copia, no transforma, no cachea. Ver src/state/read-facade.js. -->
-<script src="src/state/read-facade.js?v=451"></script>
+<script src="src/state/read-facade.js?v=462"></script>
 
-<script src="src/utils/streak-xp.js?v=451"></script>
+<script src="src/utils/streak-xp.js?v=462"></script>
 <!-- Fase 4C: helpers minimos de escritura (pushCapped, resetStreak) para
      eliminar 2 duplicaciones reales concretas -- no un sistema de
      mutaciones. Ver src/state/write-helpers.js y CHANGELOG_FASE4C.md. -->
-<script src="src/state/write-helpers.js?v=451"></script>
+<script src="src/state/write-helpers.js?v=462"></script>
 
 <!-- v1.4: capa online (cuenta Google, sincronización, migración, ranking).
      config.js es PÚBLICO (URL del Worker + Client ID de Google); si está
      vacío, la capa online queda desactivada y la app es idéntica a la v1.3.
      online.js solo usa el store/funciones del juego en tiempo de ejecución. -->
-<script src="src/ui/install-app.js?v=451"></script>
-<script src="src/share/invite.js?v=451"></script>
-<script src="src/ui/reward-toast.js?v=451"></script>
-<script src="src/ui/privacy.js?v=451"></script>
-<script src="src/ui/a11y.js?v=451"></script>
-<script src="src/ui/back-nav.js?v=451"></script>
-<script src="src/ui/game-fx.js?v=451"></script>
-<script src="src/ui/last-life.js?v=451"></script>
-<script src="src/ui/hitos.js?v=451"></script>
-<script src="src/ui/achievements.js?v=451"></script>
-<script src="src/ui/stats-extra.js?v=451"></script>
-<script src="src/ui/name-prompt.js?v=451"></script>
-<script src="src/ui/intro.js?v=451"></script>
-<script src="src/ui/mode-badges.js?v=451"></script>
-<script src="src/ui/lucidez-ui.js?v=451"></script>
-<script src="src/ui/sabias.js?v=451"></script>
-<script src="src/ui/icons.js?v=451"></script>
-<script src="src/online/config.js?v=451"></script>
+<script src="src/ui/install-app.js?v=462"></script>
+<script src="src/share/invite.js?v=462"></script>
+<script src="src/ui/reward-toast.js?v=462"></script>
+<script src="src/ui/privacy.js?v=462"></script>
+<script src="src/ui/a11y.js?v=462"></script>
+<script src="src/ui/back-nav.js?v=462"></script>
+<script src="src/ui/game-fx.js?v=462"></script>
+<script src="src/ui/last-life.js?v=462"></script>
+<script src="src/ui/hitos.js?v=462"></script>
+<script src="src/ui/achievements.js?v=462"></script>
+<script src="src/ui/stats-extra.js?v=462"></script>
+<script src="src/ui/name-prompt.js?v=462"></script>
+<script src="src/ui/intro.js?v=462"></script>
+<script src="src/ui/mode-badges.js?v=462"></script>
+<script src="src/ui/lucidez-ui.js?v=462"></script>
+<script src="src/ui/sabias.js?v=462"></script>
+<script src="src/ui/icons.js?v=462"></script>
+<script src="src/online/config.js?v=462"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
-<script src="src/utils/sync-merge.js?v=451"></script>
-<script src="src/online/data-sync.js?v=451"></script>
-<script src="src/online/online.js?v=451"></script>
+<script src="src/utils/sync-merge.js?v=462"></script>
+<script src="src/online/data-sync.js?v=462"></script>
+<script src="src/online/online.js?v=462"></script>
 <!-- v1.5: Amigos, Duelo online y Retos. El servidor decide preguntas, tiempo, aciertos y ganador. -->
-<script src="src/state/result-heard.js?v=451"></script>
-<script src="src/state/multi-result.js?v=451"></script>
-<script src="src/online/reto-fx.js?v=451"></script>
-<script src="src/online/duels.js?v=451"></script>
+<script src="src/state/result-heard.js?v=462"></script>
+<script src="src/state/multi-result.js?v=462"></script>
+<script src="src/online/reto-fx.js?v=462"></script>
+<script src="src/online/duels.js?v=462"></script>
 <!-- 2.1: Duelo por apuestas, ELO PvP, Rankings y estadísticas de Duelos (solo presentación; decide el servidor) -->
-<script src="src/online/duels-v21.js?v=451"></script>
-<script src="src/online/multi-duels.js?v=451"></script>
-<script src="src/online/multi-stakes.js?v=451"></script>
+<script src="src/online/duels-v21.js?v=462"></script>
+<script src="src/online/multi-duels.js?v=462"></script>
+<script src="src/online/multi-stakes.js?v=462"></script>
 <!-- 2.3: ficha pública de un jugador (resumen, récords, PvP y solicitud de amistad) -->
-<script src="src/online/player-profile.js?v=451"></script>
-<script src="src/online/inbox.js?v=451"></script>
-<script src="src/online/push.js?v=451"></script>
+<script src="src/online/player-profile.js?v=462"></script>
+<script src="src/online/inbox.js?v=462"></script>
+<script src="src/online/push.js?v=462"></script>
 <!-- Audio: sonidos del juego (src/audio/audio.js) -->
-<script src="src/audio/audio.js?v=451"></script>
+<script src="src/audio/audio.js?v=462"></script>
 
 <script>
 function closeWelcomeModal() {
@@ -1941,6 +1942,8 @@ let store = getDefaultStore();
 
 // Modos que se desbloquean con el progreso. Se usan para detectar cuándo
 // avisar al jugador (al final de la partida) de que ha desbloqueado uno nuevo.
+// OJO: los logros mental_calc_30 y mental_calc_40 piden 25 y 35 aciertos (no 30 ni 40; ver src/data/medals.js).
+// No se renombran sus ids: viajan en el sync de la v2.0 y se perdería progreso guardado.
 const UNLOCKABLE_MODES = [
   { id: 'survival', name: 'Supervivencia', desc: 'Sobrevive 40 preguntas con 4 vidas.', check: s => (s.standardGamesCount || 0) >= 5 },
   { id: 'sudden_death', name: 'Muerte Súbita', desc: '25 preguntas, dificultad creciente. Un fallo y pierdes.', check: s => (s.unlockedMedals || []).includes('surv_ameba') },
@@ -2123,6 +2126,7 @@ function appendFragmentRewardToResults() {
   box.style.display = 'block';
   list.innerHTML += fragmentRewardItemHtml(t);
   saveStore(false);
+  try { SEQRewardToast.announceTier(t); } catch (e) {}
 }
 
 // Resultado de un Duelo online (ID estable del rival). Lo llama src/online/duels.js al ver el
@@ -3448,7 +3452,7 @@ let lastResultShareData = null;
 
 function updateAnswerStreak(isCorrect, q = null) {
   // 2.0: Repaso es para estudiar errores, no para competir: aquí NO hay racha (ni aviso, ni bonus de XP,
-  // ni récords ni logros de racha). Los aciertos siguen contando para limpiar errores y para el XP base.
+  // ni récords ni logros de racha). Los aciertos solo cuentan para limpiar errores: Repaso no da XP.
   if (currentGame && currentGame.mode === 'review') {
     answerStreak = 0;
     store.currentStreak = 0;
@@ -4595,6 +4599,7 @@ function finishLucidezMode(failed, timedOut = false, phaseInsufficient = null) {
   if (!isDuelGame) { try { SEQEncargosIntro.noteGame({ mode: 'lucidez_mental', failed: !!failed }); } catch (e) {} }
   const newMedalsUnlocked = isDuelGame ? [] : checkMedalsAndGetNew();
   const newModesUnlocked = isDuelGame ? [] : checkModeUnlocksAndGetNew();
+  try { SEQLucidezUnlock.gate(newModesUnlocked); } catch (e) {} // sonidos de la tarjeta en espera hasta el aviso solemne de Lucidez
   clearSavedGame();
   saveStore(false);
 
@@ -4661,15 +4666,18 @@ function revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newMod
   const modeUnlockList = document.getElementById('session-mode-unlock-list');
   modeUnlockBox.style.display = 'none';
   modeUnlockList.innerHTML = '';
-  if (newModesUnlocked.length > 0) {
-    if (typeof showModeUnlockToast === 'function') {
-      showModeUnlockToast(newModesUnlocked.map(mode => ({ name: mode.name })));
+  // Lucidez Mental: aviso solemne (src/ui/lucidez-unlock.js) y, al cerrarlo, el flujo de siempre.
+  const afterModeReveal = () => {
+    if (newModesUnlocked.length > 0) {
+      if (typeof showModeUnlockToast === 'function') {
+        showModeUnlockToast(newModesUnlocked.map(mode => ({ name: mode.name, extra: (window.SEQLucidezUnlock && SEQLucidezUnlock.isUnlock([mode])) ? SEQLucidezUnlock.TOAST_EXTRA : '' })));
+      }
+      launchConfetti();
+      playSound('win');
     }
-    launchConfetti();
-    playSound('win');
-  }
-
-  try { SEQRewardToast.announce(newMedalsUnlocked, newModesUnlocked.length > 0); } catch (e) {}
+    try { SEQRewardToast.announce(newMedalsUnlocked, newModesUnlocked.length > 0); } catch (e) {}
+  };
+  try { SEQLucidezUnlock.run(newModesUnlocked, afterModeReveal); } catch (e) { afterModeReveal(); }
 
   const medalsBox = document.getElementById('session-medals-box');
   const medalsList = document.getElementById('session-medals-list');
@@ -5366,9 +5374,12 @@ function checkMentalCalcAnswer(timedOut = false) {
     }
 
     const basePoints = Number.isFinite(currentMentalOp.difficulty) ? SEQMentalCalc.basePoints(currentMentalOp.difficulty) : { easy: 10, medium: 20, hard: 35 }[currentMentalOp.tier];
-    // Bonus de velocidad continuo: crece de forma progresiva según el
-    // tiempo de respuesta, hasta un máximo de +18 puntos a velocidad máxima.
-    const speedBonus = Math.max(0, Math.round((6000 - Math.min(elapsedMs, 6000)) * 3 / 1000));
+    // Bonus de velocidad continuo: crece de forma progresiva según el tiempo de respuesta, hasta +18 a velocidad máxima.
+    // La ventana de velocidad crece con la dificultad (unos 5,5 s en una fácil, 10 s en una de 60 y 13 s en una de 90),
+    // para que las operaciones difíciles también premien la rapidez. El máximo sigue siendo +18.
+    const opDifficulty = Number.isFinite(currentMentalOp.difficulty) ? currentMentalOp.difficulty : ({ easy: 14, medium: 33, hard: 60 }[currentMentalOp.tier] || 14);
+    const speedWindowMs = 4000 + opDifficulty * 100;
+    const speedBonus = Math.max(0, Math.round((speedWindowMs - Math.min(elapsedMs, speedWindowMs)) * 18 / speedWindowMs));
     const streakBonus = Math.min(currentGame.streak, 20) * 2;
     const pointsWon = basePoints + speedBonus + streakBonus;
     currentGame.score += pointsWon;
@@ -5902,6 +5913,7 @@ function checkAnswer() {
   }
   currentGame.answered = true;
   const fb = document.getElementById('feedback');
+  fb.onclick = null; // por si quedó un «toque para seguir» de un fallo anterior
   fb.style.display = 'block';
   if (isChoice) markChoiceButtons(q.a);
 
@@ -6065,6 +6077,7 @@ function checkAnswer() {
         currentGame.survivalFailed = true;
         saveStore();
         scheduleModeFinish(() => finishGame(true, true), 1500);
+        fb.onclick = () => { fb.onclick = null; flushPendingModeFinish(); }; // un toque en el aviso pasa ya al resultado
         return;
       }
 
@@ -6073,11 +6086,13 @@ function checkAnswer() {
       document.getElementById('btn-check').style.display = 'none';
       document.getElementById('btn-next').style.display = 'none';
       saveStore();
-      setTimeout(() => {
-        if (currentGame.mode === 'survival' && currentGame.answered && !currentGame.survivalFailed) {
-          nextQuestion();
-        }
-      }, 2000);
+      // Un toque en el aviso salta la espera (igual que en Cálculo de Fondo).
+      const seguirSurv = () => {
+        clearTimeout(seguirSurvTimer); fb.onclick = null;
+        if (currentGame.mode === 'survival' && currentGame.answered && !currentGame.survivalFailed) nextQuestion();
+      };
+      const seguirSurvTimer = setTimeout(seguirSurv, 2000);
+      fb.onclick = seguirSurv;
       return;
     }
 
@@ -6091,6 +6106,7 @@ function checkAnswer() {
       currentGame.suddenDeathFailed = true;
       saveStore();
       scheduleModeFinish(() => finishGame(true, false), 1500);
+      fb.onclick = () => { fb.onclick = null; flushPendingModeFinish(); }; // un toque en el aviso pasa ya al resultado
       return;
     }
   }
@@ -6258,6 +6274,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   if (!isDuelGame && currentGame.mode !== 'review') { try { SEQEncargosIntro.noteGame({ mode: currentGame.mode, score: currentGame.mode === 'mental_calc' ? currentGame.correct : currentGame.score, total: totalQ, failed: !!(isGameOverDueToFailure || isSurvivalFailure) }); } catch (e) {} }
   const newMedalsUnlocked = isDuelGame ? [] : checkMedalsAndGetNew();
   const newModesUnlocked = isDuelGame ? [] : checkModeUnlocksAndGetNew();
+  try { SEQLucidezUnlock.gate(newModesUnlocked); } catch (e) {} // sonidos de la tarjeta en espera hasta el aviso solemne de Lucidez
   clearSavedGame();
   saveStore(false);
   updateResumeButton();
@@ -6448,15 +6465,18 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
   // Los modos se celebran arriba: popup + confeti. No se repiten abajo.
   modeUnlockBox.style.display = 'none';
   modeUnlockList.innerHTML = '';
-  if (newModesUnlocked.length > 0) {
-    if (typeof showModeUnlockToast === 'function') {
-      showModeUnlockToast(newModesUnlocked.map(mode => ({ name: mode.name })));
+  // Lucidez Mental: aviso solemne (src/ui/lucidez-unlock.js) y, al cerrarlo, el flujo de siempre.
+  const afterModeReveal = () => {
+    if (newModesUnlocked.length > 0) {
+      if (typeof showModeUnlockToast === 'function') {
+        showModeUnlockToast(newModesUnlocked.map(mode => ({ name: mode.name, extra: (window.SEQLucidezUnlock && SEQLucidezUnlock.isUnlock([mode])) ? SEQLucidezUnlock.TOAST_EXTRA : '' })));
+      }
+      launchConfetti();
+      playSound('win');
     }
-    launchConfetti();
-    playSound('win');
-  }
-
-  try { SEQRewardToast.announce(newMedalsUnlocked, newModesUnlocked.length > 0); } catch (e) {}
+    try { SEQRewardToast.announce(newMedalsUnlocked, newModesUnlocked.length > 0); } catch (e) {}
+  };
+  try { SEQLucidezUnlock.run(newModesUnlocked, afterModeReveal); } catch (e) { afterModeReveal(); }
 
   const medalsBox = document.getElementById('session-medals-box');
   const medalsList = document.getElementById('session-medals-list');
@@ -7060,9 +7080,10 @@ function showModeUnlockToast(modes){
   }
   if (modes.length === 1) {
     t.classList.remove('mode-unlock-toast-multi');
-    t.innerHTML='<span class="toast-icon"></span><span><span class="toast-small">¡NUEVO MODO DESBLOQUEADO!</span><span class="toast-name"></span></span>';
+    t.innerHTML='<span class="toast-icon"></span><span><span class="toast-small">¡NUEVO MODO DESBLOQUEADO!</span><span class="toast-name"></span><span class="toast-extra"></span></span>';
     t.querySelector('.toast-icon').textContent = '';
     t.querySelector('.toast-name').textContent = modes[0].name || 'Nuevo modo';
+    t.querySelector('.toast-extra').textContent = modes[0].extra || '';
     // 2.0: la insignia ilustrada del modo en lugar del emoji (src de una tabla fija, nunca datos del jugador).
     const badgeSrc = window.SEQModeBadges ? SEQModeBadges.src(modes[0].badge || modes[0].name) : '';
     if (badgeSrc) t.querySelector('.toast-icon').innerHTML = '<img class="toast-badge" src="' + badgeSrc + '" alt="" draggable="false">';
@@ -7075,7 +7096,7 @@ function showModeUnlockToast(modes){
   }
   t.classList.add('show');
   clearTimeout(window.__modeUnlockToastTimer);
-  const duration = modes.length > 1 ? 4500 : 3500;
+  const duration = (modes.length > 1 || (modes[0] && modes[0].extra)) ? 4500 : 3500;
   window.__modeUnlockToastTimer=setTimeout(()=>t.classList.remove('show'),duration);
 }
 
@@ -7477,6 +7498,6 @@ window.addEventListener('appinstalled', () => {
   hidePwaHint();
 });
 </script>
-<script src="src/ui/resume-clock.js?v=451"></script>
+<script src="src/ui/resume-clock.js?v=462"></script>
 </body>
 </html>

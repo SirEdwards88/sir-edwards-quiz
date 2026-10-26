@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 451;
+const CACHE_VERSION = 462;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -317,6 +317,9 @@ const APP_SHELL = [
   './assets/logros/noctambulo.webp',
   './assets/logros/polimata.webp',
   './assets/logros/sd_primer_riesgo.webp',
+  './assets/logros/sd_quince.webp',
+  './assets/logros/sd_veinte.webp',
+  './assets/logros/encargos_semana_completa.webp',
   './assets/logros/sharp_eye.webp',
   './assets/logros/sin_frenos.webp',
   './assets/logros/sin_preferencias.webp',
@@ -387,6 +390,7 @@ const APP_SHELL = [
   './src/utils/encargos-intro-core.js',
   './src/data/encargos-intro-phrases.js',
   './src/ui/encargos-intro.js',
+  './src/ui/lucidez-unlock.js',
   './src/ui/duel-intro.js',
   './src/data/home-quotes.js',
   './src/ui/home-quote.js',
@@ -582,6 +586,7 @@ const ASSET_REVS = {
   './assets/logros/duel_sin_titubear.webp': '3afcf40e',
   './assets/logros/duel_tres_al_hilo.webp': 'cf6d35d9',
   './assets/logros/duel_victoria_inaugural.webp': '79b1d6a3',
+  './assets/logros/encargos_semana_completa.webp': '030b36e6',
   './assets/logros/first_game.webp': 'e9a0ca9f',
   './assets/logros/games_10.webp': '3d35025d',
   './assets/logros/games_20.webp': '89433df0',
@@ -614,6 +619,8 @@ const ASSET_REVS = {
   './assets/logros/noctambulo.webp': '010d7158',
   './assets/logros/polimata.webp': '9cf89b5e',
   './assets/logros/sd_primer_riesgo.webp': '28591db4',
+  './assets/logros/sd_quince.webp': '77072ad6',
+  './assets/logros/sd_veinte.webp': 'e943f4a3',
   './assets/logros/sharp_eye.webp': '364d44ca',
   './assets/logros/sin_frenos.webp': '8fc08093',
   './assets/logros/sin_preferencias.webp': '49606e4f',

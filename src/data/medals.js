@@ -39,8 +39,10 @@ const ALL_MEDALS = [
   { id: 'surv_derrame', title: 'Cerebro en Llamas', desc: 'Gana Supervivencia en Modo Derrame Cerebral.', check: s => (s.survivalDerrameWins || 0) >= 1 },
 
   // MUERTE SÚBITA
-  // Objetivo binario (lo consigues o mueres): un único logro, no hitos
-  // intermedios ni una variante "perfección" redundante con ganar el modo.
+  // Hitos de preguntas sobrevividas (15 y 20) además de ganar el modo (25). El de 20 da el Fragmento de Mente.
+  // Quien ya ganó el modo (suddenWins) los tiene aunque su récord se guardase antes de existir suddenBestSurvived.
+  { id: 'sd_quince', title: 'Sin Pestañear', desc: 'Sobrevive 15 preguntas en una partida de Muerte Súbita.', check: s => (s.suddenBestSurvived || 0) >= 15 || (s.suddenWins || 0) >= 1 },
+  { id: 'sd_veinte', title: 'Pulso de Hierro', desc: 'Sobrevive 20 preguntas en una partida de Muerte Súbita.', check: s => (s.suddenBestSurvived || 0) >= 20 || (s.suddenWins || 0) >= 1 },
   { id: 'sd_primer_riesgo', title: 'Primer riesgo', desc: 'Gana una partida de Muerte Súbita.', check: s => (s.suddenWins || 0) >= 1 },
 
   // CONTRARRELOJ
@@ -105,6 +107,14 @@ const ALL_MEDALS = [
   { id: 'lucidez_conexiones_imposibles', title: 'Conexiones Imposibles', desc: 'Resuelve correctamente 5 acertijos de Lucidez Mental.', secret: true, check: s => (s.lucidezTotalCorrect || 0) >= 5 },
   { id: 'lucidez_absoluta', title: 'Lucidez Absoluta', desc: 'Consigue una partida perfecta de Lucidez Mental: 30/30.', secret: true, check: s => !!s.lucidezEverPerfect },
 
+  // ENCARGOS
+  // Los tres encargos y el Gran Encargo cobrados en una misma semana (claves '<semana>:m:<id>' y '<semana>:g:<id>' de store.encargosClaimed).
+  { id: 'encargos_semana_completa', title: 'Semana Saldada', desc: 'Completa los tres encargos y el Gran Encargo de una misma semana.', check: s => {
+    const w = {};
+    (s.encargosClaimed || []).forEach(k => { const m = /^(\d{4}-W\d{2}):([mg]):/.exec(String(k)); if (m) { const o = w[m[1]] || (w[m[1]] = { m: 0, g: 0 }); o[m[2]]++; } });
+    return Object.keys(w).some(k => w[k].m >= 3 && w[k].g >= 1);
+  } },
+
   // SECRETO FINAL
   {
     id: 'all_medals_secret',
@@ -121,7 +131,7 @@ const ALL_MEDALS = [
 // RECOMPENSAS (única fuente): Fragmento de Mente = hitos importantes de progreso, habilidad o hazañas
 // excepcionales (15 en total, FRAGMENT_TOTAL); Avatar = logros con identidad. Se derivan de aquí.
 const MEDAL_REWARDS = {
-  fragment: ["games_50", "level_20", "master_100", "cleaner_25", "sd_primer_riesgo", "tt_30", "mental_calc_30", "correct_800", "sharp_eye", "diurno", "duel_cinco_victorias", "streak_20", "multi_entre_la_niebla", "surv_humano", "duel_apuestas_calculada"],
+  fragment: ["games_50", "level_20", "master_100", "cleaner_25", "sd_veinte", "tt_30", "mental_calc_30", "correct_800", "sharp_eye", "diurno", "duel_cinco_victorias", "streak_20", "multi_entre_la_niebla", "surv_humano", "duel_apuestas_calculada"],
   avatar: {
     medal_collector_30: 'avatar_siredwards_coleccionista',
     duel_revancha: 'avatar_siredwards_vengador',

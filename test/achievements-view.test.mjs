@@ -38,6 +38,8 @@ test('el objetivo de cada barra es exactamente el umbral de su logro', () => {
       else if (m.id === 'sharp_eye') s.hardBestStreak = v;
       else if (m.id === 'sin_preferencias') s.noRepeatCatBestStreak = v;
       else if (m.id === 'sin_frenos') s.timeTrialBestStreak = v;
+      else if (m.id.startsWith('sd_')) s.suddenBestSurvived = v;
+      else if (m.id === 'lucidez_conexiones_imposibles') s.lucidezTotalCorrect = v;
       else if (m.id === 'duel_rey_del_empate') s.duelStats.draws = v;
       else if (m.id === 'duel_cinco_victorias') s.duelStats.wins = v;
       else if (m.id === 'duel_otra_vez_tu') s.duelStats.bestWinsVsRival = v;

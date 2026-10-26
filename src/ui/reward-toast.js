@@ -88,5 +88,40 @@
     setTimeout(function () { pend--; show(medals); }, 600);
   }
 
-  window.SEQRewardToast = { announce: announce, announceNow: announceNow, cards: cards, busy: busy };
+  // Ventaja de Lucidez (12 y 15 Fragmentos): aviso flotante propio, además de la línea de la tarjeta final.
+  // Espera a que no haya otro aviso (modo nuevo, solemne de Lucidez, logros) y a que lleve libre un rato, para no pisarlos.
+  var tierTimer = null;
+  function tierBusy() {
+    return busy() || !!document.querySelector('.mode-unlock-toast.show') || !!document.querySelector('.lucidez-unlock-overlay');
+  }
+  function tierHTML(t) {
+    var reward = t.bonus >= 2 ? '+2 errores extra en total' : '+1 error extra en Lucidez';
+    return '<span class="reward-toast-ico"><img class="ach-img" src="assets/ui/fragmento.webp" alt="" draggable="false"></span><span class="reward-toast-body">' +
+      '<span class="reward-toast-kicker">¡Ventaja de Lucidez desbloqueada!</span>' +
+      '<span class="reward-toast-name">' + esc(t.fragments) + ' Fragmentos de Mente</span>' +
+      '<span class="reward-toast-reward">' + esc(reward) + '</span></span>';
+  }
+  function announceTier(t) {
+    if (!t || !t.fragments) return;
+    var free = 0, tries = 0;
+    clearInterval(tierTimer);
+    tierTimer = setInterval(function () {
+      tries++;
+      var card = document.getElementById('results-card');
+      if (!card || !card.offsetParent || tries > 60) { clearInterval(tierTimer); return; } // salió de la tarjeta final
+      free = tierBusy() ? 0 : free + 1;
+      if (free < 4) return; // ~1,6 s libre seguidos
+      clearInterval(tierTimer);
+      var el = document.querySelector('.reward-toast');
+      if (!el) { el = document.createElement('div'); el.className = 'reward-toast'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+      el.classList.remove('reward-toast-group');
+      el.innerHTML = tierHTML(t);
+      void el.offsetWidth;
+      el.classList.add('show');
+      clearTimeout(window.__rewardToastTimer);
+      window.__rewardToastTimer = setTimeout(function () { el.classList.remove('show'); }, 4200);
+    }, 400);
+  }
+
+  window.SEQRewardToast = { announce: announce, announceNow: announceNow, announceTier: announceTier, cards: cards, busy: busy };
 })();
