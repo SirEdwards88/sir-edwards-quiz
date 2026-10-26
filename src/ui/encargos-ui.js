@@ -125,7 +125,8 @@ const SEQEncargosUI = (function () {
   // Prioridad de avisos: modo nuevo, luego logro con recompensa, y al final los Encargos. Esperan a que esos acaben.
   function otherToastBusy() {
     try {
-      if (document.querySelector('.mode-unlock-toast.show')) return true;
+      if (document.querySelector('.mode-unlock-toast.show') || document.querySelector('.lucidez-unlock-overlay')) return true;
+      if (typeof SEQLucidezUnlock !== 'undefined' && SEQLucidezUnlock.active && SEQLucidezUnlock.active()) return true;
       return typeof SEQRewardToast !== 'undefined' && SEQRewardToast.busy && SEQRewardToast.busy();
     } catch (e) { return false; }
   }

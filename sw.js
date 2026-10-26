@@ -38,7 +38,8 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 467;
+// Desde la 2.0 el historial de cambios de cada versión vive en git; aquí solo se sube CACHE_VERSION (scripts/bump-version.mjs).
+const CACHE_VERSION = 469;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -824,7 +825,8 @@ async function cacheAssets() {
 self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const code = await caches.open(CACHE_NAME);
-    await code.addAll(SHELL_URLS);
+    // cache: 'reload' salta la caché HTTP de GitHub Pages (max-age=600): el shell nuevo nunca se instala con un index.html viejo.
+    await code.addAll(SHELL_URLS.map((u) => new Request(u, { cache: 'reload' })));
     // Imágenes: tolerante y con tope de tiempo. Lo que no llegue se descarga la primera vez que se use.
     try { await Promise.race([cacheAssets(), new Promise((resolve) => setTimeout(resolve, 30000))]); } catch (e) { /* no bloquea la instalación */ }
   })());
@@ -848,6 +850,8 @@ self.addEventListener('activate', (event) => {
           .map((key) => caches.delete(key))
       )
     ).then(() => self.clients.claim())
+     // Imágenes y sonidos que no llegaron en la instalación (red lenta): se completan ahora; cacheAssets solo baja lo que falta.
+     .then(() => cacheAssets().catch(() => {}))
   );
 });
 

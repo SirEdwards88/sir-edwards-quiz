@@ -33,7 +33,7 @@ test('dos cachés: código versionado y imágenes estables; la instalación de i
   assert.ok(!/startsWith\('sedq-assets'/.test(sw), 'la limpieza de versiones viejas no toca la caché estable');
   assert.match(sw, /key\.startsWith\('sedq-shell-'\)/);
   const install = sw.slice(sw.indexOf("addEventListener('install'"), sw.indexOf("addEventListener('activate'"));
-  assert.match(install, /code\.addAll\(SHELL_URLS\)/, 'el código sí es imprescindible');
+  assert.match(install, /code\.addAll\(SHELL_URLS\.map\(\(u\) => new Request\(u, \{ cache: 'reload' \}\)\)\)/, 'el código sí es imprescindible y salta la caché HTTP');
   assert.ok(!/addAll\(ASSET_URLS/.test(sw), 'las imágenes no van en un addAll de todo o nada');
   assert.match(install, /try \{ await Promise\.race\(\[cacheAssets\(\)/, 'imágenes: dentro de try y con tope de tiempo');
   assert.match(sw, /cache: 'reload'/, 'nunca guarda una copia vieja de la caché HTTP');

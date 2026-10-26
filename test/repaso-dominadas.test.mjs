@@ -10,5 +10,5 @@ test('Repaso: la tarjeta final muestra «Preguntas dominadas» (solo en Repaso)'
   assert.match(html, /res-mastered-value'\); if \(mv\) mv\.textContent = String\(currentGame\.masteredCount \|\| 0\)/);
   assert.match(css, /\.metric-box-wide \{ grid-column: 1 \/ -1; \}/);
   assert.match(css, /#results-card \.metric-box\.metric-box-wide \{ display: none !important; \}/);
-  assert.match(css, /\.card\.theme-review #results-card \.metric-box\.metric-box-wide \{ display: flex !important; \}/);
+  assert.match(css, /\.card\.theme-review #results-card \.metric-box\.metric-box-wide \{ display: flex !important; flex-direction: column; align-items: center; justify-content: center; \}/);
 });

@@ -223,7 +223,14 @@
     try {
       if (gamesAdded > 0 && n(store.gamesPlayed) >= 5 && n(store.standardGamesCount) < 5) store.standardGamesCount = 5;
       if (typeof checkMedalsAndGetNew === 'function') checkMedalsAndGetNew();
-      if (typeof checkModeUnlocksAndGetNew === 'function') checkModeUnlocksAndGetNew();
+      if (typeof checkModeUnlocksAndGetNew === 'function') {
+        // Si el 10.º Fragmento llega por sincronización, Lucidez no se da por avisada: la celebra el próximo fin de partida.
+        var nm = checkModeUnlocksAndGetNew();
+        if (Array.isArray(nm) && nm.some(function (m) { return m && m.id === 'lucidez_mental'; }) && Array.isArray(store.notifiedModeUnlocks)) {
+          store.notifiedModeUnlocks = store.notifiedModeUnlocks.filter(function (id) { return id !== 'lucidez_mental'; });
+        }
+      }
+      if (typeof checkFragmentRewardsAndGetNew === 'function') checkFragmentRewardsAndGetNew(); // hitos 12/15 ya vistos en otro dispositivo
     } catch (e) {}
     applying = true;
     try { if (typeof saveStore === 'function') saveStore(false); } catch (e) {} finally { applying = false; }

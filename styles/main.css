@@ -5775,4 +5775,4 @@ h3.stats-h::before { display: none !important; content: none !important; }
    !important porque en móvil #results-card .metric-box fuerza display:flex!important. */
 .metric-box-wide { grid-column: 1 / -1; }
 #results-card .metric-box.metric-box-wide { display: none !important; }
-.card.theme-review #results-card .metric-box.metric-box-wide { display: flex !important; }
+.card.theme-review #results-card .metric-box.metric-box-wide { display: flex !important; flex-direction: column; align-items: center; justify-content: center; }

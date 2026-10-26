@@ -55,6 +55,9 @@
     try { encargosOnGameEnd('mental_calc', g.correct, totalQ); } catch (e) {}
     try { SEQEncargosIntro.noteGame({ mode: 'mental_calc', score: g.correct, total: totalQ, failed: false }); } catch (e) {}
     var newMedals = checkMedalsAndGetNew();
+    // Como en el resto de modos: modo nuevo (Lucidez, con su pantalla solemne), avisos de recompensa y hitos de Fragmentos.
+    var newModes = checkModeUnlocksAndGetNew();
+    try { SEQLucidezUnlock.gate(newModes); } catch (e) {}
     clearSavedGame();
     saveStore(false);
     updateResumeButton();
@@ -100,8 +103,18 @@
           '</div><div class="session-medal-desc">' + m.desc + '</div></div></div>';
       }).join('');
     } else if (m2) m2.style.display = 'none';
-    if (!recordSoundPlayed) playSound(r.category !== 'mal' ? 'win' : 'lose');
+    appendFragmentRewardToResults();
+    if (!recordSoundPlayed && !newModes.length) playSound(r.category !== 'mal' ? 'win' : 'lose');
     if (newMedals.some(function (m) { return m.secret; })) playSound('eye');
+    var afterReveal = function () {
+      if (newModes.length) {
+        showModeUnlockToast(newModes.map(function (m) { return { name: m.name, extra: SEQLucidezUnlock.isUnlock([m]) ? SEQLucidezUnlock.TOAST_EXTRA : '' }; }));
+        launchConfetti();
+        playSound('win');
+      }
+      try { SEQRewardToast.announce(newMedals, newModes.length > 0); } catch (e) {}
+    };
+    try { SEQLucidezUnlock.run(newModes, afterReveal); } catch (e) { afterReveal(); }
   }
 
   // Estadísticas > Récords personales: fila propia del Fondo (aciertos, no puntos), junto a la de Turbo.

@@ -7,6 +7,7 @@
 
 (function () {
   'use strict';
+  var root = window;
 
   function rewardsOf(medals, all) {
     var out = { avatars: 0, fragments: 0, medals: [] };
@@ -77,7 +78,7 @@
       var card = document.getElementById('results-card');
       if (!card || !card.offsetParent) return;
       show(medals);
-    }, hadNewModes ? 3900 : 900);
+    }, hadNewModes ? 4800 : 900);
   }
 
   // Duelos y Retos: la tarjeta final ya muestra la lista de logros; aquí solo el aviso de los que dan recompensa.
@@ -92,7 +93,8 @@
   // Espera a que no haya otro aviso (modo nuevo, solemne de Lucidez, logros) y a que lleve libre un rato, para no pisarlos.
   var tierTimer = null;
   function tierBusy() {
-    return busy() || !!document.querySelector('.mode-unlock-toast.show') || !!document.querySelector('.lucidez-unlock-overlay');
+    return busy() || !!document.querySelector('.mode-unlock-toast.show') || !!document.querySelector('.lucidez-unlock-overlay') ||
+      !!(root.SEQLucidezUnlock && root.SEQLucidezUnlock.active && root.SEQLucidezUnlock.active());
   }
   function tierHTML(t) {
     var reward = t.bonus >= 2 ? '+2 errores extra en total' : '+1 error extra en Lucidez';
