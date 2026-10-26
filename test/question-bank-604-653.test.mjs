@@ -3,6 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
+import { sabiasOk } from './_sabias.mjs';
 
 const read = (p) => fs.readFileSync(new URL('../' + p, import.meta.url), 'utf8');
 const ctx = {};
@@ -15,7 +16,7 @@ const OLD = T.filter((q) => q.n < 604);
 
 test('son 50, con IDs 604-653 seguidos, y no se toca ninguna anterior', () => {
   assert.deepEqual(Array.from(NEW, (q) => q.n), Array.from({ length: 50 }, (_, i) => 604 + i).filter((n) => n !== 637)); // la 637 se retiró en octubre de 2026
-  assert.equal(OLD.length, 592);
+  assert.equal(OLD.length, 591);
 });
 
 test('no se copian al banco de Lucidez (todas son de opciones)', () => {
@@ -30,7 +31,7 @@ test('formato: 4 opciones distintas con la respuesta entre ellas, categoría y d
     assert.ok(q.options.includes(q.a), '' + q.n);
     assert.ok(cats.includes(q.cat), '' + q.n);
     assert.ok(['facil', 'medio', 'dificil'].includes(q.dif), '' + q.n);
-    assert.ok(q.sabias && q.sabias.length <= 140, 'sabías de ' + q.n + ': ' + (q.sabias || '').length);
+    assert.ok(q.sabias && sabiasOk(q), 'sabías de ' + q.n + ': ' + (q.sabias || '').length);
     assert.ok(q.q.length <= 130, 'enunciado largo en ' + q.n);
   }
 });

@@ -13,13 +13,13 @@ const { T, Q, RT, RQ } = ctx;
 const CATS = ['historia', 'geografia', 'ciencia', 'arte_literatura', 'deporte', 'cultura_general'];
 const by = (a, k) => a.reduce((m, x) => ((m[x[k]] = (m[x[k]] || 0) + 1), m), {});
 
-test('el banco de test tiene 700 preguntas, sin IDs repetidos, de 1 a 715 con solo 15 huecos (3 de la 2.2 y 12 de octubre de 2026)', () => {
+test('el banco de test tiene 700 preguntas, sin IDs repetidos, de 1 a 716 con solo 16 huecos (3 de la 2.2 y 13 de octubre de 2026)', () => {
   assert.equal(T.length, 700);
   const ids = T.map((q) => q.n);
   assert.equal(new Set(ids).size, 700);
-  const missing = Array.from({ length: 715 }, (_, i) => i + 1).filter((n) => !ids.includes(n));
-  assert.deepEqual(missing, [90, 91, 137, 197, 393, 552, 562, 577, 594, 597, 598, 637, 659, 669, 682]);
-  assert.equal(Math.max(...ids), 715);
+  const missing = Array.from({ length: 716 }, (_, i) => i + 1).filter((n) => !ids.includes(n));
+  assert.deepEqual(missing, [90, 91, 137, 197, 212, 393, 552, 562, 577, 594, 597, 598, 637, 659, 669, 682]);
+  assert.equal(Math.max(...ids), 716);
 });
 
 test('reparto por dificultad y categorías: solo las seis oficiales', () => {
@@ -47,7 +47,7 @@ test('las tres sustituciones: los nuevos están, los antiguos ya no están en ni
 });
 
 test('las retiradas siguen resolviéndose por ID (duelos y retos creados antes de la 2.2)', () => {
-  assert.deepEqual(Array.from(RT, (q) => q.n), [90, 91, 197, 137, 393, 552, 577, 594, 597, 598, 637, 659, 669, 682, 562]);
+  assert.deepEqual(Array.from(RT, (q) => q.n), [90, 91, 197, 137, 393, 552, 577, 594, 597, 598, 637, 659, 669, 682, 562, 212]);
   assert.deepEqual(Array.from(RQ, (q) => q.n), [90, 91, 197, 393]);
   for (const q of RT) assert.ok(Array.isArray(q.options) && q.options.includes(q.a), 'retirada ' + q.n + ' sin opciones');
   assert.equal(RT.find((q) => q.n === 90).a, 'El canal de Suez');
@@ -56,12 +56,12 @@ test('las retiradas siguen resolviéndose por ID (duelos y retos creados antes d
 });
 
 test('el banco de Lucidez: medias/difíciles hasta la 503, las fáciles de la criba (23 y 7) y solo las nuevas de la 504 en adelante que se pueden jugar (con lz); comparte texto y respuesta', () => {
-  assert.equal(Q.length, 366);
+  assert.equal(Q.length, 367);
   const faciles = Q.filter((q) => q.dif === 'facil');
-  assert.equal(faciles.length, 65);
+  assert.equal(faciles.length, 66);
   assert.equal(faciles.filter((q) => q.n < 424).length, 50);
   assert.equal(faciles.filter((q) => q.n >= 424 && q.n < 654).length, 9);
-  assert.equal(faciles.filter((q) => q.n >= 654).length, 6);
+  assert.equal(faciles.filter((q) => q.n >= 654).length, 7);
   assert.ok(faciles.filter((q) => q.lz).every((q) => q.lz === 'B'));
   const expected = T.filter((q) => q.dif !== 'facil' && (q.n < 504 || (q.n < 654 && Q.some((x) => x.n === q.n && x.lz)))).map((q) => q.n).concat(faciles.map((q) => q.n), [685, 689, 694]).sort((a, b) => a - b);
   assert.ok(Q.filter((q) => q.n >= 504).every((q) => q.lz), 'las nuevas sin lz no se copian a Lucidez');

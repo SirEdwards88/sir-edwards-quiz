@@ -3,6 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
+import { sabiasOk } from './_sabias.mjs';
 
 const read = (p) => fs.readFileSync(new URL('../' + p, import.meta.url), 'utf8');
 const ctx = {};
@@ -28,9 +29,9 @@ test('ajustes aprobados: la 439 reconstruida, 424/434/435 en medio y las curiosi
   assert.equal(g(439).a, 'Parásitos');
   assert.deepEqual([424, 434, 435].map((n) => g(n).dif), ['medio', 'medio', 'medio']);
   assert.equal(g(452).dif, 'dificil');
-  assert.match(g(425).sabias, /Rustichello/);
+  assert.match(g(425).sabias, /Gran Kan/);
   assert.match(g(444).sabias, /graphein/);
-  assert.ok(NEW_T.every((q) => q.sabias && q.sabias.length <= 140));
+  assert.ok(NEW_T.every((q) => sabiasOk(q)));
 });
 
 test('Lucidez: 28 elegibles (432 y 451 no, por admitir otras respuestas válidas); las fáciles y las menos canónicas pesan 1', () => {

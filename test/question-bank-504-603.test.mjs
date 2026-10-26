@@ -4,6 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
+import { sabiasOk } from './_sabias.mjs';
 
 const read = (p) => fs.readFileSync(new URL('../' + p, import.meta.url), 'utf8');
 const ctx = {};
@@ -17,7 +18,7 @@ const RET = [552, 562, 577, 594, 597, 598]; // retiradas en octubre de 2026 (sig
 
 test('son 100, con IDs 504-603 seguidos, y no se toca ninguna anterior', () => {
   assert.deepEqual(Array.from(NEW, (q) => q.n), Array.from({ length: 100 }, (_, i) => 504 + i).filter((n) => !RET.includes(n)));
-  assert.equal(OLD.length, 498);
+  assert.equal(OLD.length, 497);
 });
 
 test('Lucidez: solo las 7 de respuesta corta jugables están en Lucidez (mismo texto y respuesta, sin opciones)', () => {
@@ -48,7 +49,7 @@ test('formato: 4 opciones distintas con la respuesta entre ellas, categoría y d
     assert.ok(q.options.includes(q.a), '' + q.n);
     assert.ok(cats.includes(q.cat), '' + q.n);
     assert.ok(['facil', 'medio', 'dificil'].includes(q.dif), '' + q.n);
-    assert.ok(q.sabias && q.sabias.length <= 140, 'sabías de ' + q.n + ': ' + (q.sabias || '').length);
+    assert.ok(q.sabias && sabiasOk(q), 'sabías de ' + q.n + ': ' + (q.sabias || '').length);
     assert.ok(q.q.length <= 130, 'enunciado largo en ' + q.n);
   }
 });

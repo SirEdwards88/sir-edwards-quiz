@@ -3,6 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
+import { sabiasOk } from './_sabias.mjs';
 
 const read = (p) => fs.readFileSync(new URL('../' + p, import.meta.url), 'utf8');
 const ctx = {};
@@ -29,7 +30,7 @@ test('formato: 4 opciones distintas con la respuesta entre ellas y una curiosida
     assert.equal(q.options.length, 4, '' + q.n);
     assert.equal(new Set(q.options).size, 4, '' + q.n);
     assert.ok(q.options.includes(q.a), '' + q.n);
-    assert.ok(q.sabias && q.sabias.length <= 140, 'sabías de ' + q.n);
+    assert.ok(q.sabias && sabiasOk(q), 'sabías de ' + q.n);
   }
 });
 

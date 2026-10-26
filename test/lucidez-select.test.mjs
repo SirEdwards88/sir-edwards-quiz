@@ -16,14 +16,14 @@ function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; le
 const RANK = { facil: 0, medio: 1, dificil: 2 };
 const count = (arr, f) => arr.filter(f).length;
 
-test('datos: 347 con lz (218 A, 129 B): 196 medias, 88 difíciles, 63 fáciles', () => {
+test('datos: 348 con lz (218 A, 130 B): 196 medias, 88 difíciles, 64 fáciles', () => {
   const lz = BANK.filter((q) => q.lz);
-  assert.equal(lz.length, 347);
+  assert.equal(lz.length, 348);
   assert.equal(count(lz, (q) => q.lz === 'A'), 218);
-  assert.equal(count(lz, (q) => q.lz === 'B'), 129);
+  assert.equal(count(lz, (q) => q.lz === 'B'), 130);
   assert.equal(count(lz, (q) => q.dif === 'medio'), 196);
   assert.equal(count(lz, (q) => q.dif === 'dificil'), 88);
-  assert.equal(count(lz, (q) => q.dif === 'facil'), 63);
+  assert.equal(count(lz, (q) => q.dif === 'facil'), 64);
   assert.ok(BANK.every((q) => !q.lz || q.lz === 'A' || q.lz === 'B'));
   assert.ok(lz.every((q) => !(Array.isArray(q.options) && q.options.length)), 'Lucidez es de respuesta escrita: nada con opciones');
   assert.equal(new Set(BANK.map((q) => q.n)).size, BANK.length, 'ids únicos');

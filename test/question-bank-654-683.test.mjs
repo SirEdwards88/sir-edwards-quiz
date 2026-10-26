@@ -4,6 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
+import { sabiasOk } from './_sabias.mjs';
 
 const read = (p) => fs.readFileSync(new URL('../' + p, import.meta.url), 'utf8');
 const ctx = {};
@@ -18,7 +19,7 @@ const LZ = [661, 663, 664, 674, 679, 681];
 
 test('son 27 (30 menos las 659, 669 y 682 retiradas en octubre de 2026), con IDs 654-683, todas fáciles, y no se toca ninguna anterior', () => {
   assert.deepEqual(Array.from(NEW, (q) => q.n), Array.from({ length: 30 }, (_, i) => 654 + i).filter((n) => ![659, 669, 682].includes(n)));
-  assert.equal(OLD.length, 641);
+  assert.equal(OLD.length, 640);
   assert.ok(NEW.every((q) => q.dif === 'facil'));
 });
 
@@ -28,7 +29,7 @@ test('formato: 4 opciones distintas con la respuesta entre ellas, categoría vá
     assert.equal(new Set(q.options).size, 4, '' + q.n);
     assert.ok(q.options.includes(q.a), '' + q.n);
     assert.ok(CATS.includes(q.cat), '' + q.n);
-    assert.ok(q.sabias && q.sabias.length <= 140, 'sabías ' + q.n);
+    assert.ok(q.sabias && sabiasOk(q), 'sabías ' + q.n);
   }
 });
 

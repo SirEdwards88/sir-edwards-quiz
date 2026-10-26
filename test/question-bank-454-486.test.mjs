@@ -3,6 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
+import { sabiasOk } from './_sabias.mjs';
 
 const read = (p) => fs.readFileSync(new URL('../' + p, import.meta.url), 'utf8');
 const ctx = {};
@@ -29,7 +30,7 @@ test('formato: 4 opciones distintas con la respuesta entre ellas y una curiosida
     assert.equal(q.options.length, 4, '' + q.n);
     assert.equal(new Set(q.options).size, 4, '' + q.n);
     assert.ok(q.options.includes(q.a), '' + q.n);
-    assert.ok(q.sabias && q.sabias.length <= 140, 'sabías de ' + q.n);
+    assert.ok(q.sabias && sabiasOk(q), 'sabías de ' + q.n);
   }
 });
 
@@ -59,7 +60,7 @@ test('correcciones: q8, q146, q223, q225, q247, q297, q305, q330 y q392 iguales 
     for (const k of ['q', 'a', 'sabias']) assert.equal(g(Q, n)[k], g(T, n)[k], k + ' de ' + n);
     assert.ok(g(T, n).sabias, 'sabías de ' + n);
   }
-  assert.match(g(T, 8).sabias, /única con Nobel en dos ciencias/);
+  assert.match(g(T, 8).sabias, /radiactividad/);
   assert.match(g(T, 146).q, /tiroides/);
   assert.deepEqual(Array.from(g(T, 223).options), ['Nueva Delhi', 'Calcuta', 'Bombay', 'Madrás']);
   assert.match(g(T, 225).q, /«Back to Black»/);
