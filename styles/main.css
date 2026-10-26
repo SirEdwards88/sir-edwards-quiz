@@ -5770,3 +5770,9 @@ h3.stats-h::before { display: none !important; content: none !important; }
 
 /* Lucidez Mental: sin nivel ni XP en pantalla (modo secreto; la cabecera de fase y el umbral cuentan lo que importa). */
 .card.theme-lucidez .game-level-inline { display: none; }
+
+/* Repaso: «Preguntas dominadas» a todo el ancho bajo Aciertos y Efectividad; solo existe en la tarjeta de Repaso.
+   !important porque en móvil #results-card .metric-box fuerza display:flex!important. */
+.metric-box-wide { grid-column: 1 / -1; }
+#results-card .metric-box.metric-box-wide { display: none !important; }
+.card.theme-review #results-card .metric-box.metric-box-wide { display: flex !important; }
