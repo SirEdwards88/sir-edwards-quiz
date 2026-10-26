@@ -35,7 +35,7 @@ const SEQSyncMerge = (function () {
     'standardGamesCount', 'errorsCleaned', 'survivalAmebaWins', 'survivalHumanoWins', 'survivalDerrameWins',
     'suddenWins', 'maxTimeTrialScore', 'standardBestStreak', 'timeTrialBestStreak', 'hardBestStreak',
     'noRepeatCatBestStreak', 'bestMentalCalcScore', 'mentalCalcBestStreak', 'bestMentalCalcCorrect',
-    'mentalCalcTotalCorrect', 'bestMentalClassicCorrect', 'bestMentalClassicScore', 'bestLucidezScore', 'bestLucidezStreak', 'lucidezTotalCorrect',
+    'mentalCalcTotalCorrect', 'bestMentalClassicCorrect', 'bestMentalClassicScore', 'bestLucidezScore', 'bestLucidezStreak', 'lucidezTotalCorrect', 'suddenBestSurvived',
     'duelStats.played', 'duelStats.wins', 'duelStats.losses', 'duelStats.draws',
     'duelStats.bestWinStreak', 'duelStats.bestWinsVsRival', 'duelStats.multiWins'
   ];
@@ -46,6 +46,8 @@ const SEQSyncMerge = (function () {
     'duelStats.multiMesaCompleta', 'duelStats.multiCorriente', 'duelStats.multiNiebla', 'duelStats.multiUltimo'
   ];
   const SET_FIELDS = { seenQuestionIds: 2000, notifiedModeUnlocks: 50, notifiedFragmentRewards: 10, duelPlayedCodes: 400 };
+  // Valores admitidos en listas con un conjunto cerrado (notifiedFragmentRewards: hitos de Fragmentos, 1..15).
+  const SET_ITEM_RULES = { notifiedFragmentRewards: function (x) { return typeof x === 'number' && x >= 1 && x <= 15; } };
   const NEWSET_FIELDS = { encargosClaimed: { max: 120, re: /^\d{4}-W\d{2}(:b|:[mg]:[a-z_]{1,24})$/ } };
   const HIST_FIELDS = { gameHistory: 5, duelHistory: 30 };
   // campo -> {claves permitidas de cada entrada, patrón de la clave}
@@ -147,6 +149,7 @@ const SEQSyncMerge = (function () {
       f[k].forEach(function (x) {
         const c = cleanSetItem(x);
         if (c === undefined) return;
+        if (SET_ITEM_RULES[k] && !SET_ITEM_RULES[k](c)) return;
         const key = typeof c + ':' + c;
         if (seen[key]) return;
         seen[key] = true; list.push(c);
