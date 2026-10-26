@@ -1157,17 +1157,18 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   margin-bottom: 8px;
 }
 .lucidez-story-overlay .lucidez-story-sub {
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: 600;
   max-width: 320px;
   line-height: 1.35;
   text-wrap: balance;
   font-style: italic;
-  color: #ddd6fe;
-  opacity: .9;
+  color: #ede9fe;
+  opacity: 1;
 }
 .lucidez-story-overlay .lucidez-story-rule {
-  margin-top: 8px; max-width: 320px; font-size: 14px; line-height: 1.35; font-weight: 700; text-wrap: balance;
-  color: #fde68a; letter-spacing: .01em;
+  margin-top: 8px; max-width: 320px; font-size: 15px; line-height: 1.4; font-weight: 600; font-style: italic; text-wrap: balance;
+  color: #ddd6fe; opacity: .92;
 }
 .lucidez-story-overlay .lucidez-story-rule:empty { display: none; }
 .lucidez-story-overlay.tone-fail { background: radial-gradient(circle at 50% 40%, #44198a, #0f0a19 92%); }
@@ -5764,3 +5765,6 @@ h3.stats-h::before { display: none !important; content: none !important; }
 
 @keyframes seClockPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 .card.theme-timetrial #game-progress-lbl { font-size: .86em; }
+
+/* Lucidez Mental: sin nivel ni XP en pantalla (modo secreto; la cabecera de fase y el umbral cuentan lo que importa). */
+.card.theme-lucidez .game-level-inline { display: none; }
