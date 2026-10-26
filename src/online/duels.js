@@ -584,7 +584,15 @@
         sfx(!!r.es_correcta);
         retoFx(!!r.es_correcta);
       }
-      setTimeout(load, S.screen === 'reto' ? 700 : 300);
+      // Reto de Supervivencia: tras un fallo se deja más tiempo para leer la respuesta correcta (2 s) y un toque en el aviso
+      // salta la espera, como en la Supervivencia de Jugar. Ojo: la pregunta siguiente cuenta sus 20 s desde que el servidor
+      // recibe la respuesta, así que esa espera sale del tiempo de la siguiente.
+      var slowFail = S.screen === 'reto' && d.modo === 'supervivencia' && !r.es_correcta && S.shown === sh;
+      var waitT = setTimeout(load, slowFail ? 2000 : (S.screen === 'reto' ? 700 : 300));
+      if (slowFail) {
+        var vEl = $('seq-d-verdict');
+        if (vEl) { vEl.style.cursor = 'pointer'; vEl.onclick = function () { vEl.onclick = null; clearTimeout(waitT); load(); }; }
+      }
     }).catch(function (e) { S.sending = false; say(errText(e), true); setTimeout(load, 600); });
   }
   // Respuesta escrita (Retos por modo): se envía el texto tal cual; corrige el servidor.
