@@ -38,7 +38,7 @@
 // styles/main.css, src/data/medals.js, src/utils/store.js y src/online/duels.js (ya en el shell).
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
-const CACHE_VERSION = 462;
+const CACHE_VERSION = 464;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -599,7 +599,7 @@ const ASSET_REVS = {
   './assets/logros/limpieza_general.webp': 'd9d69359',
   './assets/logros/lucidez_absoluta.webp': '6fe28412',
   './assets/logros/lucidez_conexiones_imposibles.webp': '8539b929',
-  './assets/logros/lucidez_mente_despierta.webp': '19d64b82',
+  './assets/logros/lucidez_mente_despierta.webp': '49b755b5',
   './assets/logros/master_10.webp': '321f8d97',
   './assets/logros/master_100.webp': '6720bc63',
   './assets/logros/master_200.webp': '6a4b5d80',
