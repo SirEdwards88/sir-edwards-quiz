@@ -49,21 +49,21 @@
 <!-- Tipografía: Playfair Display para el "display" institucional (nombre de la
      app / títulos), Inter para toda la interfaz funcional. Alojadas en la propia app
      (styles/fonts.css, assets/fonts/): funcionan sin conexión y no dependen de Google. -->
-<link rel="stylesheet" href="styles/fonts.css?v=448">
+<link rel="stylesheet" href="styles/fonts.css?v=449">
 <link rel="preload" href="assets/fonts/inter-latin.woff" as="font" type="font/woff" crossorigin>
-<link rel="stylesheet" href="styles/main.css?v=448">
+<link rel="stylesheet" href="styles/main.css?v=449">
 <!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
-<link rel="stylesheet" href="styles/online.css?v=448">
-<link rel="stylesheet" href="styles/results-frame.css?v=448">
-<link rel="stylesheet" href="styles/visual-2-3.css?v=448">
-<link rel="stylesheet" href="styles/light-refresh.css?v=448">
-<link rel="stylesheet" href="styles/encargos.css?v=448">
-<link rel="stylesheet" href="styles/encargos-intro.css?v=448">
-<link rel="stylesheet" href="styles/duel-intro.css?v=448">
-<link rel="stylesheet" href="styles/sir-events.css?v=448">
-<link rel="stylesheet" href="styles/reward-toast.css?v=448">
-<link rel="stylesheet" href="styles/theme.css?v=448">
-<link rel="stylesheet" href="styles/privacy.css?v=448">
+<link rel="stylesheet" href="styles/online.css?v=449">
+<link rel="stylesheet" href="styles/results-frame.css?v=449">
+<link rel="stylesheet" href="styles/visual-2-3.css?v=449">
+<link rel="stylesheet" href="styles/light-refresh.css?v=449">
+<link rel="stylesheet" href="styles/encargos.css?v=449">
+<link rel="stylesheet" href="styles/encargos-intro.css?v=449">
+<link rel="stylesheet" href="styles/duel-intro.css?v=449">
+<link rel="stylesheet" href="styles/sir-events.css?v=449">
+<link rel="stylesheet" href="styles/reward-toast.css?v=449">
+<link rel="stylesheet" href="styles/theme.css?v=449">
+<link rel="stylesheet" href="styles/privacy.css?v=449">
 
 </head>
 <body class="on-home">
@@ -640,6 +640,7 @@ try {
       <div id="lucidez-phase-subtitle" class="lucidez-phase-subtitle"></div>
 
       <div class="progress-bar"><div id="bar-fill" class="bar-fill"></div></div>
+      <div class="lucidez-marks" id="lucidez-marks" aria-live="polite"></div>
 
       <!-- Overlay narrativo de Lucidez Mental: transición al enigma final y desenlace -->
       <div id="lucidez-story-overlay" class="lucidez-story-overlay">
@@ -647,6 +648,7 @@ try {
           <div class="lucidez-story-icon" id="lucidez-story-icon"></div>
           <div class="lucidez-story-title" id="lucidez-story-title"></div>
           <div class="lucidez-story-sub" id="lucidez-story-sub"></div>
+          <div class="lucidez-story-rule" id="lucidez-story-rule"></div>
           <!-- Sir Edwards 2.0 (Prompt 1.5, corrección): retrato como remate
                visual DEBAJO del título/frase (título → frase → personaje),
                nunca antes. Solo en las 4 transiciones de entrada de fase
@@ -738,6 +740,7 @@ try {
         <div class="q-box">
           <span id="q-text">Cargando pregunta…</span>
         </div>
+        <div class="lz-reveal" id="lz-reveal" hidden><div class="lz-reveal-fill" id="lz-reveal-fill"></div><span class="lz-reveal-lbl">Memoriza</span></div>
 
         <input type="text" id="ans-input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-label="Tu respuesta" placeholder="Escribe tu respuesta…" />
 
@@ -1149,61 +1152,61 @@ try {
 <!-- Fase 2: datos y constantes extraidos a modulos, cargados como scripts
      clasicos (no ES Modules) para conservar el scope global compartido con
      el script principal, sin convertir todavia la app a ES Modules. -->
-<script src="src/data/ui-maps.js?v=448"></script>
-<script src="src/data/questions.js?v=448"></script>
-<script src="src/data/questions-retired.js?v=448"></script>
-<script src="src/data/phrases.js?v=448"></script>
-<script src="src/data/duel-phrases.js?v=448"></script>
-<script src="src/data/rivalry-phrases.js?v=448"></script>
-<script src="src/utils/rivalry.js?v=448"></script>
-<script src="src/data/lucidez.js?v=448"></script>
-<script src="src/data/medals.js?v=448"></script>
+<script src="src/data/ui-maps.js?v=449"></script>
+<script src="src/data/questions.js?v=449"></script>
+<script src="src/data/questions-retired.js?v=449"></script>
+<script src="src/data/phrases.js?v=449"></script>
+<script src="src/data/duel-phrases.js?v=449"></script>
+<script src="src/data/rivalry-phrases.js?v=449"></script>
+<script src="src/utils/rivalry.js?v=449"></script>
+<script src="src/data/lucidez.js?v=449"></script>
+<script src="src/data/medals.js?v=449"></script>
 <!-- Prompt 3 — Fase C: sistema de avatares compartido (window.SEQAvatars). Debe
      cargarse antes de src/online/online.js y src/online/duels.js: ambos lo
      consumen en vez de mantener cada uno su propia copia de la lista. -->
-<script src="src/data/avatars.js?v=448"></script>
-<script src="src/share/share-card.js?v=448"></script>
+<script src="src/data/avatars.js?v=449"></script>
+<script src="src/share/share-card.js?v=449"></script>
 
 <!-- Fase 3 (Lote 3A): motor de coincidencia de respuestas extraido a
      src/utils/matching.js, mismo criterio que la Fase 2 (script clasico,
      sin ES Modules todavia). -->
-<script src="src/utils/matching.js?v=448"></script>
-<script src="src/utils/review-batch.js?v=448"></script>
-<script src="src/utils/records-reset.js?v=448"></script>
-<script src="src/utils/answer-alias.js?v=448"></script>
-<script src="src/utils/lucidez-select.js?v=448"></script>
-<script src="src/state/lucidez-bag.js?v=448"></script>
-<script src="src/state/timetrial-bag.js?v=448"></script>
-<script src="src/utils/encargos-core.js?v=448"></script>
-<script src="src/utils/encargos-progress.js?v=448"></script>
-<script src="src/state/encargos.js?v=448"></script>
-<script src="src/data/encargos-phrases.js?v=448"></script>
-<script src="src/ui/encargos-ui.js?v=448"></script>
-<script src="src/data/named-phrases.js?v=448"></script>
-<script src="src/utils/named-phrases.js?v=448"></script>
-<script src="src/utils/encargos-intro-core.js?v=448"></script>
-<script src="src/data/encargos-intro-phrases.js?v=448"></script>
-<script src="src/ui/encargos-intro.js?v=448"></script>
-<script src="src/ui/duel-intro.js?v=448"></script>
-<script src="src/data/home-quotes.js?v=448"></script>
-<script src="src/ui/home-quote.js?v=448"></script>
-<script src="src/utils/sir-events.js?v=448"></script>
-<script src="src/ui/sir-events-ui.js?v=448"></script>
-<script src="src/state/sir-events.js?v=448"></script>
-<script src="src/utils/sudden-progression.js?v=448"></script>
-<script src="src/utils/mental-calc.js?v=448"></script>
-<script src="src/utils/mental-classic.js?v=448"></script>
-<script src="src/utils/mental-tips.js?v=448"></script>
-<script src="src/ui/mental-classic-ui.js?v=448"></script>
-<script src="src/ui/mental-menu.js?v=448"></script>
-<script src="src/ui/level-up.js?v=448"></script>
+<script src="src/utils/matching.js?v=449"></script>
+<script src="src/utils/review-batch.js?v=449"></script>
+<script src="src/utils/records-reset.js?v=449"></script>
+<script src="src/utils/answer-alias.js?v=449"></script>
+<script src="src/utils/lucidez-select.js?v=449"></script>
+<script src="src/state/lucidez-bag.js?v=449"></script>
+<script src="src/state/timetrial-bag.js?v=449"></script>
+<script src="src/utils/encargos-core.js?v=449"></script>
+<script src="src/utils/encargos-progress.js?v=449"></script>
+<script src="src/state/encargos.js?v=449"></script>
+<script src="src/data/encargos-phrases.js?v=449"></script>
+<script src="src/ui/encargos-ui.js?v=449"></script>
+<script src="src/data/named-phrases.js?v=449"></script>
+<script src="src/utils/named-phrases.js?v=449"></script>
+<script src="src/utils/encargos-intro-core.js?v=449"></script>
+<script src="src/data/encargos-intro-phrases.js?v=449"></script>
+<script src="src/ui/encargos-intro.js?v=449"></script>
+<script src="src/ui/duel-intro.js?v=449"></script>
+<script src="src/data/home-quotes.js?v=449"></script>
+<script src="src/ui/home-quote.js?v=449"></script>
+<script src="src/utils/sir-events.js?v=449"></script>
+<script src="src/ui/sir-events-ui.js?v=449"></script>
+<script src="src/state/sir-events.js?v=449"></script>
+<script src="src/utils/sudden-progression.js?v=449"></script>
+<script src="src/utils/mental-calc.js?v=449"></script>
+<script src="src/utils/mental-classic.js?v=449"></script>
+<script src="src/utils/mental-tips.js?v=449"></script>
+<script src="src/ui/mental-classic-ui.js?v=449"></script>
+<script src="src/ui/mental-menu.js?v=449"></script>
+<script src="src/ui/level-up.js?v=449"></script>
 
 <!-- Fase 3 (Lote 3B): nucleo algoritmico de Duelo extraido a
      src/utils/duel.js, mismo criterio que el resto (script clasico, sin
      ES Modules todavia). Las dependencias compartidas con otros modos
      (arrangeStandardBlock, generateLucidezMentalOp)
      permanecen en este script principal, sin moverse en este lote. -->
-<script src="src/utils/duel.js?v=448"></script>
+<script src="src/utils/duel.js?v=449"></script>
 
 <!-- Fase 3 (Lote 3C): defaults, migracion y saneamiento del Store
      extraidos a src/utils/store.js, mismo criterio que el resto (script
@@ -1215,60 +1218,60 @@ try {
      getLevelData) y las 8 funciones de persistencia real (loadStore,
      saveStore, exportProgress...) permanecen en este script principal,
      sin moverse en este lote. -->
-<script src="src/utils/store.js?v=448"></script>
+<script src="src/utils/store.js?v=449"></script>
 
 <!-- Fase 4B: fachada de estado de solo lectura (getStore/getCurrentGame),
      mismo criterio que el resto (script clasico, sin ES Modules todavia).
      No copia, no transforma, no cachea. Ver src/state/read-facade.js. -->
-<script src="src/state/read-facade.js?v=448"></script>
+<script src="src/state/read-facade.js?v=449"></script>
 
-<script src="src/utils/streak-xp.js?v=448"></script>
+<script src="src/utils/streak-xp.js?v=449"></script>
 <!-- Fase 4C: helpers minimos de escritura (pushCapped, resetStreak) para
      eliminar 2 duplicaciones reales concretas -- no un sistema de
      mutaciones. Ver src/state/write-helpers.js y CHANGELOG_FASE4C.md. -->
-<script src="src/state/write-helpers.js?v=448"></script>
+<script src="src/state/write-helpers.js?v=449"></script>
 
 <!-- v1.4: capa online (cuenta Google, sincronización, migración, ranking).
      config.js es PÚBLICO (URL del Worker + Client ID de Google); si está
      vacío, la capa online queda desactivada y la app es idéntica a la v1.3.
      online.js solo usa el store/funciones del juego en tiempo de ejecución. -->
-<script src="src/ui/install-app.js?v=448"></script>
-<script src="src/share/invite.js?v=448"></script>
-<script src="src/ui/reward-toast.js?v=448"></script>
-<script src="src/ui/privacy.js?v=448"></script>
-<script src="src/ui/a11y.js?v=448"></script>
-<script src="src/ui/back-nav.js?v=448"></script>
-<script src="src/ui/game-fx.js?v=448"></script>
-<script src="src/ui/last-life.js?v=448"></script>
-<script src="src/ui/hitos.js?v=448"></script>
-<script src="src/ui/achievements.js?v=448"></script>
-<script src="src/ui/stats-extra.js?v=448"></script>
-<script src="src/ui/name-prompt.js?v=448"></script>
-<script src="src/ui/intro.js?v=448"></script>
-<script src="src/ui/mode-badges.js?v=448"></script>
-<script src="src/ui/lucidez-ui.js?v=448"></script>
-<script src="src/ui/sabias.js?v=448"></script>
-<script src="src/ui/icons.js?v=448"></script>
-<script src="src/online/config.js?v=448"></script>
+<script src="src/ui/install-app.js?v=449"></script>
+<script src="src/share/invite.js?v=449"></script>
+<script src="src/ui/reward-toast.js?v=449"></script>
+<script src="src/ui/privacy.js?v=449"></script>
+<script src="src/ui/a11y.js?v=449"></script>
+<script src="src/ui/back-nav.js?v=449"></script>
+<script src="src/ui/game-fx.js?v=449"></script>
+<script src="src/ui/last-life.js?v=449"></script>
+<script src="src/ui/hitos.js?v=449"></script>
+<script src="src/ui/achievements.js?v=449"></script>
+<script src="src/ui/stats-extra.js?v=449"></script>
+<script src="src/ui/name-prompt.js?v=449"></script>
+<script src="src/ui/intro.js?v=449"></script>
+<script src="src/ui/mode-badges.js?v=449"></script>
+<script src="src/ui/lucidez-ui.js?v=449"></script>
+<script src="src/ui/sabias.js?v=449"></script>
+<script src="src/ui/icons.js?v=449"></script>
+<script src="src/online/config.js?v=449"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
-<script src="src/utils/sync-merge.js?v=448"></script>
-<script src="src/online/data-sync.js?v=448"></script>
-<script src="src/online/online.js?v=448"></script>
+<script src="src/utils/sync-merge.js?v=449"></script>
+<script src="src/online/data-sync.js?v=449"></script>
+<script src="src/online/online.js?v=449"></script>
 <!-- v1.5: Amigos, Duelo online y Retos. El servidor decide preguntas, tiempo, aciertos y ganador. -->
-<script src="src/state/result-heard.js?v=448"></script>
-<script src="src/state/multi-result.js?v=448"></script>
-<script src="src/online/reto-fx.js?v=448"></script>
-<script src="src/online/duels.js?v=448"></script>
+<script src="src/state/result-heard.js?v=449"></script>
+<script src="src/state/multi-result.js?v=449"></script>
+<script src="src/online/reto-fx.js?v=449"></script>
+<script src="src/online/duels.js?v=449"></script>
 <!-- 2.1: Duelo por apuestas, ELO PvP, Rankings y estadísticas de Duelos (solo presentación; decide el servidor) -->
-<script src="src/online/duels-v21.js?v=448"></script>
-<script src="src/online/multi-duels.js?v=448"></script>
-<script src="src/online/multi-stakes.js?v=448"></script>
+<script src="src/online/duels-v21.js?v=449"></script>
+<script src="src/online/multi-duels.js?v=449"></script>
+<script src="src/online/multi-stakes.js?v=449"></script>
 <!-- 2.3: ficha pública de un jugador (resumen, récords, PvP y solicitud de amistad) -->
-<script src="src/online/player-profile.js?v=448"></script>
-<script src="src/online/inbox.js?v=448"></script>
-<script src="src/online/push.js?v=448"></script>
+<script src="src/online/player-profile.js?v=449"></script>
+<script src="src/online/inbox.js?v=449"></script>
+<script src="src/online/push.js?v=449"></script>
 <!-- Audio: sonidos del juego (src/audio/audio.js) -->
-<script src="src/audio/audio.js?v=448"></script>
+<script src="src/audio/audio.js?v=449"></script>
 
 <script>
 function closeWelcomeModal() {
@@ -1997,6 +2000,18 @@ function tryForgiveLucidezError(g = currentGame) {
   return true;
 }
 // Insignia fija en la cabecera de las fases: escudo y errores extra que quedan (nada si no hay).
+// Fase II: barra «Memoriza» que se vacía durante los 3 s en que el enunciado está a la vista (ms = 0 la oculta).
+function lucidezRevealBar(ms) {
+  const box = document.getElementById('lz-reveal'), fill = document.getElementById('lz-reveal-fill');
+  if (!box || !fill) return;
+  if (!(ms > 0)) { box.hidden = true; return; }
+  box.hidden = false;
+  fill.style.transition = 'none';
+  fill.style.width = Math.min(100, (ms / 3000) * 100) + '%';
+  void fill.offsetWidth;
+  fill.style.transition = 'width ' + ms + 'ms linear';
+  fill.style.width = '0%';
+}
 function lucidezExtraBadge(g = currentGame) {
   const n = g && g.mode === 'lucidez_mental' && !g.isDuel ? (g.lucidezForgiveLeft || 0) : 0;
   return n > 0 ? ` <span class="lucidez-extra-badge" title="${n === 1 ? '1 error extra' : n + ' errores extra'}">· ${seqIco('escudo')}×${n}</span>` : '';
@@ -2018,6 +2033,7 @@ function syncLucidezShield(newQuestion) {
     if (cur && curN !== n) { if (n > 0) cur.outerHTML = lucidezExtraBadge().trim(); else cur.remove(); }
   }
   btn.hidden = n <= 0;
+  btn.disabled = !!(g && g.answered);
   const on = !!(g && g.lucidezShieldArmed);
   btn.classList.toggle('is-armed', on);
   btn.setAttribute('aria-pressed', on ? 'true' : 'false');
@@ -2041,6 +2057,7 @@ let lucidezAdvanceTimer = null;
 function lucidezAutoAdvance(wasCorrect) {
   const nextBtn = document.getElementById('btn-next');
   if (nextBtn) nextBtn.style.display = 'none';
+  syncLucidezShield(false); // contestada: el escudo queda atenuado hasta la pregunta siguiente
   const idx = currentGame.currentIdx, fb = document.getElementById('feedback');
   clearTimeout(lucidezAdvanceTimer);
   const go = () => {
@@ -2050,6 +2067,33 @@ function lucidezAutoAdvance(wasCorrect) {
   };
   lucidezAdvanceTimer = setTimeout(go, wasCorrect ? 600 : 1500);
   if (fb && !wasCorrect) fb.onclick = go;
+}
+// Barra de umbral (Fases I y III): una marca por pregunta (acierto, escudo o fallo) y cuánto falta para el mínimo.
+function renderLucidezMarks() {
+  const box = document.getElementById('lucidez-marks');
+  if (!box) return;
+  const g = currentGame;
+  const phase = g && g.mode === 'lucidez_mental' ? getLucidezPhase(Math.min(g.currentIdx || 0, 29)) : null;
+  if (phase !== 1 && phase !== 3) { box.innerHTML = ''; return; }
+  const total = phase === 1 ? LUCIDEZ_PHASE1_TOTAL : LUCIDEZ_PHASE3_TOTAL;
+  const min = phase === 1 ? LUCIDEZ_PHASE1_MIN : LUCIDEZ_PHASE3_MIN;
+  const marks = (g.lzMarks && g.lzMarks[phase === 1 ? 'p1' : 'p3']) || [];
+  const local = phase === 1 ? g.currentIdx : g.currentIdx - 20;
+  let hits = 0, segs = '';
+  for (let i = 0; i < total; i++) {
+    const m = marks[i];
+    if (m === 'ok' || m === 'shield') hits++;
+    segs += '<span class="lz-seg' + (m ? ' lz-' + m : (i === local && !g.answered ? ' lz-now' : '')) + '"></span>';
+  }
+  const reached = hits >= min;
+  box.innerHTML = '<div class="lz-segs" role="img" aria-label="' + hits + ' de ' + min + ' aciertos necesarios">' + segs + '</div>' +
+    '<div class="lz-need' + (reached ? ' lz-reached' : '') + '">' + (reached ? 'Mínimo superado · ' + hits + ' aciertos' : 'Aciertos ' + hits + ' · necesitas ' + min) + '</div>';
+}
+function lucidezMark(phase, idx, result) {
+  if (!currentGame.lzMarks) currentGame.lzMarks = { p1: [], p3: [] };
+  const key = phase === 1 ? 'p1' : 'p3';
+  currentGame.lzMarks[key][phase === 1 ? idx : idx - 20] = result;
+  renderLucidezMarks();
 }
 function lucidezForgiveNote(g = currentGame) {
   return g.lucidezForgiveLeft > 0 ? ` · ${seqIco('escudo')}Errores extra restantes: ${g.lucidezForgiveLeft}` : ` · ${seqIco('escudo')}Sin errores extra`;
@@ -2536,6 +2580,7 @@ function restoreSavedGame() {
       revealTimeout: null,
       phase1Correct: Number(saved.phase1Correct) || 0,
       phase3Correct: Number(saved.phase3Correct) || 0,
+      lzMarks: (function (m) { const ok = (v) => (v === 'ok' || v === 'shield' || v === 'bad') ? v : null; const arr = (x, n) => Array.isArray(x) ? x.slice(0, n).map(ok) : []; return { p1: arr(m && m.p1, 10), p3: arr(m && m.p3, 9) }; })(saved.lzMarks),
       // Duelo: si no se restauran estos campos, un duelo de Lucidez
       // Mental reanudado tras cerrar la app terminaría contabilizándose
       // como una partida normal (sin código ni comparación de marcador),
@@ -3605,7 +3650,8 @@ function openLucidezMentalModeImpl() {
     lucidezForgiveLeft: getLucidezBonusLives(store),
     revealTimeout: null,
     phase1Correct: 0, // aciertos en la Fase I: exige LUCIDEZ_PHASE1_MIN de LUCIDEZ_PHASE1_TOTAL
-    phase3Correct: 0  // aciertos en la Fase III: exige LUCIDEZ_PHASE3_MIN de LUCIDEZ_PHASE3_TOTAL
+    phase3Correct: 0, // aciertos en la Fase III: exige LUCIDEZ_PHASE3_MIN de LUCIDEZ_PHASE3_TOTAL
+    lzMarks: { p1: [], p3: [] } // resultado de cada pregunta de las Fases I y III ('ok' | 'shield' | 'bad'), para la barra de umbral
   };
 
   saveStore();
@@ -3707,6 +3753,8 @@ function resetLucidezAnswerUI(preserveAnswered) {
   document.getElementById('btn-next').style.display = wasAnswered ? 'inline-block' : 'none';
 }
 
+// La regla de cada fase, dicha por Sir Edwards (las cifras salen de las constantes del modo, así que no se desfasan).
+function lucidezPhaseRule(phase) { return ''; }
 // Textos narrativos de cada fase (identidad de Lucidez Mental).
 
 
@@ -3774,7 +3822,7 @@ function setLucidezStoryCharacter(characterKey) {
 // 1-2 segundos, tal y como pide la propuesta de UX. `characterKey` (opcional)
 // solo lo pasan las 4 transiciones de entrada de fase (ver renderLucidezQuestion);
 // el resto de llamadas (desenlaces) no lo pasan y el retrato permanece oculto.
-function showLucidezStoryOverlay(icon, title, sub, toneClass, durationMs, callback, characterKey) {
+function showLucidezStoryOverlay(icon, title, sub, toneClass, durationMs, callback, characterKey, rule) {
   const overlay = document.getElementById('lucidez-story-overlay');
   if (!overlay) { if (callback) callback(); return; }
   // Solo puede haber una transición narrativa pendiente a la vez: si quedaba
@@ -3785,6 +3833,7 @@ function showLucidezStoryOverlay(icon, title, sub, toneClass, durationMs, callba
   document.getElementById('lucidez-story-icon').innerHTML = icon ? '<img class="lucidez-story-img" src="' + SEQIcons.src(icon) + '" alt="" draggable="false">' : '';
   document.getElementById('lucidez-story-title').textContent = title;
   document.getElementById('lucidez-story-sub').textContent = sub || '';
+  const ruleEl = document.getElementById('lucidez-story-rule'); if (ruleEl) ruleEl.textContent = rule || '';
   setLucidezStoryCharacter(characterKey);
   try { if (typeof playLucidezChapterSound === 'function') playLucidezChapterSound(characterKey); } catch (e) {}
   overlay.className = 'lucidez-story-overlay show' + (toneClass ? ' ' + toneClass : '') + (characterKey ? ' has-character' : '');
@@ -3828,6 +3877,8 @@ function cancelLucidezRevealTimeout() {
 
 function renderLucidezQuestion(preserveAnswered = false, isResume = false) {
   syncLucidezShield(!preserveAnswered);
+  lucidezRevealBar(0);
+  renderLucidezMarks();
   cancelLucidezRevealTimeout();
   const idx = currentGame.currentIdx;
   const phase = getLucidezPhase(idx);
@@ -3848,7 +3899,7 @@ function renderLucidezQuestion(preserveAnswered = false, isResume = false) {
     // Capítulo nuevo: al entrar en la Fase II (y solo entonces, nunca al
     // reanudar una partida guardada) mostramos la transición narrativa.
     if (idx === 10 && !isResume) {
-      showLucidezStoryOverlay(LUCIDEZ_PHASE_COPY[2].icon, LUCIDEZ_PHASE_COPY[2].label, LUCIDEZ_PHASE_COPY[2].sub, '', 3300, enterPhase2, 'phase2');
+      showLucidezStoryOverlay(LUCIDEZ_PHASE_COPY[2].icon, LUCIDEZ_PHASE_COPY[2].label, LUCIDEZ_PHASE_COPY[2].sub, '', 3800, enterPhase2, 'phase2', lucidezPhaseRule(2));
     } else {
       enterPhase2();
     }
@@ -3863,7 +3914,7 @@ function renderLucidezQuestion(preserveAnswered = false, isResume = false) {
       lucidezRevealQText();
       document.getElementById('q-text').textContent = q.q;
       resetLucidezAnswerUI(preserveAnswered);
-      document.getElementById('game-progress-lbl').innerHTML = `FASE I · ${idx + 1}/10${lucidezExtraBadge()}`;
+      document.getElementById('game-progress-lbl').innerHTML = `FASE I${lucidezExtraBadge()}`;
       document.getElementById('bar-fill').style.width = ((idx / 30) * 100) + '%';
       currentGame.answered = preserveAnswered ? !!currentGame.answered : false;
       setTimeout(() => document.getElementById('ans-input').focus(), 50);
@@ -3871,7 +3922,7 @@ function renderLucidezQuestion(preserveAnswered = false, isResume = false) {
     // La transición inicial se muestra solo al comenzar una partida nueva,
     // nunca al reanudarla.
     if (idx === 0 && !isResume) {
-      showLucidezStoryOverlay(LUCIDEZ_PHASE_COPY[1].icon, LUCIDEZ_PHASE_COPY[1].label, LUCIDEZ_PHASE_COPY[1].sub, '', 3000, enterPhase1, 'phase1');
+      showLucidezStoryOverlay(LUCIDEZ_PHASE_COPY[1].icon, LUCIDEZ_PHASE_COPY[1].label, LUCIDEZ_PHASE_COPY[1].sub, '', 3500, enterPhase1, 'phase1', lucidezPhaseRule(1));
     } else {
       enterPhase1();
     }
@@ -3895,7 +3946,7 @@ function renderLucidezQuestion(preserveAnswered = false, isResume = false) {
     // reanudar) mostramos la transición narrativa antes de arrancar el
     // temporizador de la Fase III.
     if (idx === 20 && !isResume) {
-      showLucidezStoryOverlay(LUCIDEZ_PHASE_COPY[3].icon, LUCIDEZ_PHASE_COPY[3].label, LUCIDEZ_PHASE_COPY[3].sub, '', 3700, enterPhase3, 'phase3');
+      showLucidezStoryOverlay(LUCIDEZ_PHASE_COPY[3].icon, LUCIDEZ_PHASE_COPY[3].label, LUCIDEZ_PHASE_COPY[3].sub, '', 4200, enterPhase3, 'phase3', lucidezPhaseRule(3));
     } else {
       enterPhase3();
     }
@@ -3930,7 +3981,7 @@ function renderLucidezPhase2Calc(preserveAnswered = false, item, isResume = fals
   const btnNext = document.getElementById('btn-next');
   hideChoiceOptions();
 
-  document.getElementById('game-progress-lbl').innerHTML = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)} · ${localIdx + 1}/10${lucidezExtraBadge()}`;
+  document.getElementById('game-progress-lbl').innerHTML = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)}${lucidezExtraBadge()}`;
   document.getElementById('bar-fill').style.width = ((currentGame.currentIdx / 30) * 100) + '%';
 
   if (currentGame.answered) {
@@ -3946,7 +3997,7 @@ function renderLucidezPhase2Calc(preserveAnswered = false, item, isResume = fals
   }
 
   lucidezRevealQText();
-  document.getElementById('q-text').innerHTML = seqIco('calculo', 'seq-ico-lg') + escapeHtml(String(op.text));
+  document.getElementById('q-text').innerHTML = escapeHtml(String(op.text));
   input.value = '';
   input.style.display = 'none';
   fb.style.display = 'none';
@@ -3964,6 +4015,7 @@ function renderLucidezPhase2Calc(preserveAnswered = false, item, isResume = fals
   } else {
     lucidezPhase2RevealEndTime = Date.now() + 3000;
   }
+  lucidezRevealBar(revealDelay);
 
   // gameIdAtSchedule es la segunda barrera (igual que showLucidezStoryOverlay):
   // si para cuando este timeout dispara currentGame ya pertenece a otra
@@ -3972,6 +4024,7 @@ function renderLucidezPhase2Calc(preserveAnswered = false, item, isResume = fals
   const gameIdAtSchedule = currentGame.lucidezGameId;
   currentGame.revealTimeout = setTimeout(() => {
     if (currentGame.mode !== 'lucidez_mental' || currentGame.lucidezGameId !== gameIdAtSchedule || getLucidezPhase(currentGame.currentIdx) !== 2) return;
+    lucidezRevealBar(0);
     lucidezRevealQText();
     document.getElementById('q-text').textContent = '¿Cuál es el resultado?';
     input.style.display = '';
@@ -3997,7 +4050,7 @@ function renderLucidezPhase2Question(preserveAnswered = false, item, isResume = 
   const btnNext = document.getElementById('btn-next');
   hideChoiceOptions();
 
-  document.getElementById('game-progress-lbl').innerHTML = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)} · ${localIdx + 1}/10${lucidezExtraBadge()}`;
+  document.getElementById('game-progress-lbl').innerHTML = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)}${lucidezExtraBadge()}`;
   document.getElementById('bar-fill').style.width = ((currentGame.currentIdx / 30) * 100) + '%';
 
   if (currentGame.answered) {
@@ -4029,12 +4082,14 @@ function renderLucidezPhase2Question(preserveAnswered = false, item, isResume = 
   } else {
     lucidezPhase2RevealEndTime = Date.now() + 3000;
   }
+  lucidezRevealBar(revealDelay);
 
   // Ver comentario equivalente en renderLucidezPhase2Calc: gameIdAtSchedule
   // es la segunda barrera, igual que showLucidezStoryOverlay.
   const gameIdAtSchedule = currentGame.lucidezGameId;
   currentGame.revealTimeout = setTimeout(() => {
     if (currentGame.mode !== 'lucidez_mental' || currentGame.lucidezGameId !== gameIdAtSchedule || getLucidezPhase(currentGame.currentIdx) !== 2) return;
+    lucidezRevealBar(0);
     lucidezRevealQText();
     document.getElementById('q-text').textContent = 'Responde:';
     input.style.display = '';
@@ -4085,9 +4140,10 @@ function updateLucidezPhase3Header() {
     const chip = document.getElementById('lucidez-p3-timer-chip');
     const timerNum = document.getElementById('lucidez-p3-timer-num');
     if (!chip || !timerNum) {
-      lbl.innerHTML = `FASE III · <span id="lucidez-p3-count">${localIdx + 1}/${LUCIDEZ_PHASE3_TOTAL}</span> <span id="lucidez-p3-timer-chip" class="lucidez-timer-chip${low ? ' lucidez-timer-low' : ''}">${seqIco('tiempo')}<span id="lucidez-p3-timer-num">${lucidezPhase3SecondsLeft}</span>s</span><span id="lucidez-extra">${lucidezExtraBadge()}</span>`;
+      lbl.innerHTML = `FASE III <span id="lucidez-p3-timer-chip" class="lucidez-timer-chip${low ? ' lucidez-timer-low' : (lucidezPhase3SecondsLeft <= 20 ? ' lucidez-timer-warn' : '')}">${seqIco('tiempo')}<span id="lucidez-p3-timer-num">${lucidezPhase3SecondsLeft}</span>s</span><span id="lucidez-extra">${lucidezExtraBadge()}</span>`;
     } else {
       chip.classList.toggle('lucidez-timer-low', low);
+      chip.classList.toggle('lucidez-timer-warn', !low && lucidezPhase3SecondsLeft <= 20);
       timerNum.textContent = lucidezPhase3SecondsLeft;
     }
     const cnt = document.getElementById('lucidez-p3-count');
@@ -4222,8 +4278,8 @@ function checkLucidezAnswer() {
     // suma aciertos (score), ni penaliza tiempo, ni toca estadísticas.
     if (phase === 1) currentGame.phase1Correct = (currentGame.phase1Correct || 0) + 1;
     if (phase === 3) currentGame.phase3Correct = (currentGame.phase3Correct || 0) + 1;
-    fb.className = 'feedback bad';
-    fb.innerHTML = `${seqIco('escudo')}Era: <b>${escapeHtml(String(q.a))}</b>`;
+    fb.className = 'feedback forgiven';
+    fb.innerHTML = `${seqIco('escudo')}Perdonado. Era: <b>${escapeHtml(String(q.a))}</b>`;
   } else {
     updateAnswerStreak(false, q);
     playSound('bad');
@@ -4254,6 +4310,7 @@ function checkLucidezAnswer() {
   }
 
   document.getElementById('btn-check').style.display = 'none';
+  lucidezMark(phase, idx, correct ? 'ok' : (forgiven ? 'shield' : 'bad'));
   lucidezAutoAdvance(correct);
   saveStore();
 }
@@ -4284,8 +4341,8 @@ function checkLucidezPhase2Answer(item) {
     fb.className = 'feedback ok';
     fb.innerHTML = `${seqIco('correcto')}¡Correcto! Era ${op.answer}.`;
   } else if (forgiven) {
-    fb.className = 'feedback bad';
-    fb.innerHTML = `${seqIco('escudo')}Era: <b>${escapeHtml(String(op.answer))}</b> · ${renderLivesHearts(currentGame.lucidezLives, 2)}`;
+    fb.className = 'feedback forgiven';
+    fb.innerHTML = `${seqIco('escudo')}Perdonado. Era: <b>${escapeHtml(String(op.answer))}</b> · ${renderLivesHearts(currentGame.lucidezLives, 2)}`;
   } else {
     updateAnswerStreak(false);
     playSound('bad');
@@ -4306,7 +4363,7 @@ function checkLucidezPhase2Answer(item) {
 
   lucidezAutoAdvance(correct);
   const localIdx = currentGame.currentIdx - 10;
-  document.getElementById('game-progress-lbl').innerHTML = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)} · ${localIdx + 1}/10${lucidezExtraBadge()}`;
+  document.getElementById('game-progress-lbl').innerHTML = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)}${lucidezExtraBadge()}`;
   saveStore();
 }
 
@@ -4349,8 +4406,8 @@ function checkLucidezPhase2QuestionAnswer(q) {
     fb.className = 'feedback ok';
     fb.innerHTML = `${seqIco('correcto')}¡Correcto! (Era: <b>${escapeHtml(String(q.a))}</b>)`;
   } else if (forgiven) {
-    fb.className = 'feedback bad';
-    fb.innerHTML = `${seqIco('escudo')}Era: <b>${escapeHtml(String(q.a))}</b> · ${renderLivesHearts(currentGame.lucidezLives, 2)}`;
+    fb.className = 'feedback forgiven';
+    fb.innerHTML = `${seqIco('escudo')}Perdonado. Era: <b>${escapeHtml(String(q.a))}</b> · ${renderLivesHearts(currentGame.lucidezLives, 2)}`;
   } else {
     updateAnswerStreak(false, q);
     playSound('bad');
@@ -4375,7 +4432,7 @@ function checkLucidezPhase2QuestionAnswer(q) {
 
   lucidezAutoAdvance(correct);
   const localIdx = currentGame.currentIdx - 10;
-  document.getElementById('game-progress-lbl').innerHTML = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)} · ${localIdx + 1}/10${lucidezExtraBadge()}`;
+  document.getElementById('game-progress-lbl').innerHTML = `FASE II · ${renderLivesHearts(currentGame.lucidezLives, 2)}${lucidezExtraBadge()}`;
   saveStore();
 }
 
@@ -4552,7 +4609,7 @@ function revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newMod
   document.getElementById('res-percentage-label').textContent = 'Lucidez alcanzada';
 
   // Sin categoryText: el sello de abajo (ENIGMA RESUELTO / LUCIDEZ ABSOLUTA /
-  // ENIGMA SIN RESOLVER) ya da ese remate, así que repetirlo aquí como
+  // ENIGMA SIN RESOLVER / LA MENTE HA CEDIDO) ya da ese remate, así que repetirlo aquí como
   // subtítulo sería la misma información dos veces.
   let phrase, tone;
   if (failed) {
@@ -4575,7 +4632,9 @@ function revealLucidezResults(failed, isPerfect, score, totalQ, accuracy, newMod
   { const rc = document.getElementById('results-card'); if (rc) rc.dataset.tier = tone === 'fail' ? 'derrota' : 'secreto'; }
 
   if (failed) {
-    renderLucidezStamp('ENIGMA SIN RESOLVER', 'fail');
+    // Solo se llega al enigma desde la Fase III: si caes antes, el desenlace es «LA MENTE HA CEDIDO» (igual que en la tarjeta de compartir).
+    const failPhase = phaseInsufficient ? phaseInsufficient.phase : getLucidezPhase(Math.min(currentGame.currentIdx || 0, 29));
+    renderLucidezStamp(failPhase === 'final' ? 'ENIGMA SIN RESOLVER' : 'LA MENTE HA CEDIDO', 'fail');
   } else if (isPerfect) {
     renderLucidezStamp('LUCIDEZ ABSOLUTA', 'perfect');
   } else {
@@ -4706,6 +4765,7 @@ function applyCurrentGameTheme() {
 }
 
 function clearCardThemeClasses() {
+  if (typeof lucidezRevealBar === 'function') lucidezRevealBar(0);
   const container = document.getElementById('main-card-container');
   if (container) {
     container.classList.remove('theme-standard', 'theme-review', 'theme-survival', 'theme-sudden', 'theme-timetrial', 'theme-mentalcalc', 'theme-lucidez', 'theme-duel', 'lucidez-fase-1', 'lucidez-fase-2', 'lucidez-fase-3', 'lucidez-enigma-final');
@@ -5155,6 +5215,14 @@ function runMentalCalcTimer(classic) {
   mentalCalcTimer = setInterval(updateTimer, 100);
 }
 
+// Reloj con zonas (Contrarreloj, Cálculo y Fase III de Lucidez): normal, ámbar al acercarse y rojo con pulso al final.
+function setClockZone(id, secondsLeft, amberAt, redAt) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const zone = secondsLeft <= redAt ? 'red' : (secondsLeft <= amberAt ? 'amber' : '');
+  if (el.dataset.zone !== zone) { if (zone) el.dataset.zone = zone; else delete el.dataset.zone; }
+}
+
 function updateMentalCalcHeader() {
   const lbl = document.getElementById('game-progress-lbl');
   const bar = document.getElementById('bar-fill');
@@ -5168,14 +5236,16 @@ function updateMentalCalcHeader() {
     if (!timerNum) {
       lbl.dataset.mcKey = mcKey;
       lbl.innerHTML = (isMentalClassicGame()
-        ? `FONDO · ${SEQMentalClassicUI.livesHtml(currentGame.lives)} · `
-        : 'TURBO · ') +
-        `${seqIco('tiempo')}<span id="mc-timer-num">${mentalCalcSecondsLeft}</span>s · <span id="mc-pts-num">${currentGame.score}</span> pts`;
+        ? `FONDO ${SEQMentalClassicUI.livesHtml(currentGame.lives)} `
+        : 'TURBO ') +
+        `<span class="se-clock" id="mc-clock">${seqIco('tiempo')}<span id="mc-timer-num">${mentalCalcSecondsLeft}</span>s</span> · <span id="mc-pts-num">${currentGame.score}</span> pts`;
     } else {
       timerNum.textContent = mentalCalcSecondsLeft;
       const ptsNum = document.getElementById('mc-pts-num');
       if (ptsNum) ptsNum.textContent = currentGame.score;
     }
+    // Fondo da 20 s por operación: sus zonas son 10 s y 5 s; Turbo da 60 s en total: 20 s y 10 s.
+    setClockZone('mc-clock', mentalCalcSecondsLeft, isMentalClassicGame() ? 10 : 20, isMentalClassicGame() ? 5 : 10);
   }
   // La racha se muestra en la misma píldora "Racha" que el resto de
   // modos, en vez de ir embebida en el texto de la cabecera.
@@ -5487,12 +5557,13 @@ function updateTimeTrialHeader() {
     // la animación a mitad de camino.
     let timerNum = document.getElementById('tt-timer-num');
     if (!timerNum) {
-      lbl.innerHTML = `CONTRARRELOJ · ${seqIco('tiempo')}<span id="tt-timer-num">${timeTrialSecondsLeft}</span>s · <span id="tt-score-num">${currentGame.score}</span> aciertos`;
+      lbl.innerHTML = `CONTRARRELOJ <span class="se-clock" id="tt-clock">${seqIco('tiempo')}<span id="tt-timer-num">${timeTrialSecondsLeft}</span>s</span> · <span id="tt-score-num">${currentGame.score}</span> pts`;
     } else {
       timerNum.textContent = timeTrialSecondsLeft;
       const ttScore = document.getElementById('tt-score-num');
       if (ttScore) ttScore.textContent = currentGame.score;
     }
+    setClockZone('tt-clock', timeTrialSecondsLeft, 20, 10);
   }
   if (bar) {
     const remainingMs = Math.max(0, timeTrialEndTime - Date.now());
@@ -7390,6 +7461,6 @@ window.addEventListener('appinstalled', () => {
   hidePwaHint();
 });
 </script>
-<script src="src/ui/resume-clock.js?v=448"></script>
+<script src="src/ui/resume-clock.js?v=449"></script>
 </body>
 </html>
