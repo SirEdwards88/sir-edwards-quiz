@@ -276,6 +276,13 @@
   }
 
   // ---- Sincronización -----------------------------------------------------------
+  // Lo que el Worker ha recibido y no ha devuelto (p. ej. un logro nuevo antes de redesplegar el Worker, o una racha que recorta):
+  // no se reenvía en bucle. Solo en memoria: al reabrir la app se vuelve a intentar una vez.
+  var ignored = { medals: [], best: 0 };
+  function noteIgnored(pending, prog) {
+    (pending.medals || []).forEach(function (id) { if ((prog.medals || []).indexOf(id) === -1 && ignored.medals.indexOf(id) === -1) ignored.medals.push(id); });
+    if (n(pending.best_streak) > n(prog.best_streak)) ignored.best = Math.max(ignored.best, n(pending.best_streak));
+  }
   function computeDelta() {
     var t = localTotals();
     var delta = {};
@@ -284,8 +291,8 @@
       if (t[k] < sync.base[k]) sync.base[k] = t[k]; // reinicio/importación de copia antigua: se re-baselinea (nunca envía negativos)
       delta[k] = t[k] - sync.base[k];
     });
-    var medalsNew = t.medals.some(function (id) { return sync.seen.medals.indexOf(id) === -1; });
-    var bestNew = t.best_streak > sync.seen.best;
+    var medalsNew = t.medals.some(function (id) { return sync.seen.medals.indexOf(id) === -1 && ignored.medals.indexOf(id) === -1; });
+    var bestNew = t.best_streak > Math.max(sync.seen.best, ignored.best);
     var weekly = unconfirmedWeekly();
     var any = delta.xp > 0 || delta.games > 0 || delta.correct > 0 || delta.wrong > 0 || medalsNew || bestNew || weekly.length > 0;
     return { totals: t, delta: delta, any: any, weekly: weekly };
@@ -308,6 +315,7 @@
   function authFailure(err) {
     if (err && err.status === 401) {
       account = null; saveAccount(); ui.expired = true; ui.error = '';
+      setMsg('Tu sesión ha caducado. Inicia sesión de nuevo: tu progreso local sigue aquí y se retomará tu cuenta.'); // también en el gate, que tapa Ajustes
       return true;
     }
     return false;
@@ -355,7 +363,9 @@
       var body = { match_id: pending.matchId, delta: pending.delta, best_streak: pending.best_streak, medals: pending.medals };
       if (pending.weekly && pending.weekly.length) body.weekly = pending.weekly;
       return api('POST', '/progress/sync', body).then(function (res) {
-        var r = applySyncResult(pending, cleanProgress(res && res.progress));
+        var prog = cleanProgress(res && res.progress);
+        var r = applySyncResult(pending, prog);
+        noteIgnored(pending, prog);
         confirmWeekly(pending.weekly);
         sync.pending = null;
         sync.lastSyncAt = Date.now();
@@ -415,6 +425,7 @@
       // «Restaurar / combinar progreso», que reenvía los TOTALES (máximo por contador) y re-baselina.
       ui.error = 'El servidor no aceptó una sincronización (' + (err && err.code ? err.code : 'error') + '). Pulsa «Restaurar / combinar progreso».';
       sync.pending = null; sync.needsMerge = true; sync.rejected = err && err.code ? err.code : 'error'; saveSync();
+      if (mergeTries < 3) { mergeTries++; setTimeout(function () { if (mergeDue()) doMerge(); }, 800); } // el servidor rechazó el lote: se reenvían los totales (máximo por contador)
     }).then(function () {
       ui.syncing = false; render();
     });
@@ -471,7 +482,7 @@
     if (navigator.onLine === false) { setMsg('Necesitas conexión para iniciar sesión.'); return; }
     var primary = slots[0];
     if (!force && primary.firstChild && gis.nonce && Date.now() - gis.at < NONCE_FRESH_MS) return; // ya pintado y vigente
-    if (force !== true) setMsg(''); // al renovar tras un fallo se conserva el aviso («había caducado…»)
+    if (force !== true && !ui.expired) setMsg(''); // al renovar tras un fallo se conserva el aviso («había caducado…»)
     Promise.all([loadGis(), getNonce(force === true)]).then(function (r) {
       var nonce = r[1];
       // initialize() se vuelve a llamar con cada nonce nuevo (Google usa el último).
@@ -490,7 +501,6 @@
   }
   var nonceTimer = null;
   var loginHadProgress = false;
-  var lastMigOnline = null; // progreso online mostrado en el último aviso de migración (lo usa skipMigration)
 
   function onCredential(resp) {
     if (!resp || !resp.credential) { setMsg('No se recibió la credencial de Google.'); return; }
@@ -504,7 +514,7 @@
       ui.nonceFails = 0;
       saveAccount();
       ui.expired = false; ui.error = ''; ui.editing = false;
-      var same = sync && sync.playerId === data.player.id;
+      var same = !!(sync && sync.playerId === data.player.id);
       if (same && sync.migration !== 'pending') {
         // Misma cuenta que ya estaba enlazada en este dispositivo: se retoma sin volver a preguntar.
         toast(pickOne(['Sesión iniciada. Sir Edwards te reconoce.', 'Sesión iniciada. Adelante; la puerta ya estaba abierta.']), 'correcto');
@@ -519,12 +529,15 @@
         sync = newSyncState(data.player.id, 'pending', baseFromLocal(), seenFrom(data.progress));
         sync.otherAccountBefore = otherBefore;
         saveSync();
+        // Cada cuenta con su progreso, sin combinar: lo que hay en el móvil es de otra cuenta (o de la cuenta, que manda) y se descarta.
+        // Única excepción: progreso de antes de existir las cuentas (nunca enlazado) en una cuenta vacía: pasa a ser de esa cuenta.
+        if (!same && hasLocal && (otherBefore || hasOnline)) { wipeLocalForOtherAccount(hasOnline, data.progress); return; } // recarga: tras ella, init() carga la cuenta
+        if (otherBefore) wipeLocalEncargos();
         if (!hasLocal && !hasOnline) {
-          if (otherBefore) wipeLocalEncargos();
           sync.migration = 'done'; saveSync();
           toast(pickOne(['Sesión iniciada. Sir Edwards te reconoce.', 'Sesión iniciada. Adelante; la puerta ya estaba abierta.']), 'correcto');
         } else {
-          openMigration(data.progress);
+          setTimeout(function () { doMerge(); }, 0);
         }
         render();
       }
@@ -552,9 +565,24 @@
     }).then(function () { ui.busy = false; });
   }
 
+  // Cerrar sesión: antes se sube lo pendiente. Si algo no se puede subir (sin conexión), se avisa: al entrar con otra cuenta en este móvil se perdería.
   function signOut() {
+    if (!account || !sync || !hasUnsynced()) { doSignOut(); return; }
+    var ask = function () {
+      showAppConfirm({
+        title: 'Cerrar sesión',
+        message: 'Hay progreso que aún no se ha subido a tu cuenta (sin conexión). Si entras con otra cuenta en este móvil, se perderá.',
+        confirmLabel: 'Cerrar sesión igual',
+        onConfirm: doSignOut
+      });
+    };
+    syncNow('manual').then(function () { if (hasUnsynced()) ask(); else doSignOut(); }, ask);
+  }
+  function doSignOut() {
     // Cerrar sesión NO elimina la cuenta ni borra nada local: solo descarta el token.
     try { if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect(); } catch (e) {}
+    // Las notificaciones push de esta cuenta no deben seguir llegando a este móvil si entra otra (sin bloquear si falla).
+    try { if (account) api('DELETE', '/me/push').catch(function () {}); } catch (e) {}
     account = null; saveAccount(); ui.editing = false; ui.expired = false; ui.error = '';
     clearTimeout(timer); clearTimeout(retryTimer);
     toast('Sesión cerrada. Tu progreso sigue en este dispositivo.', 'sombrero');
@@ -568,7 +596,7 @@
       message: 'Se cerrará tu sesión aquí y en cualquier otro dispositivo donde hayas entrado. No se borra nada: podrás volver a iniciar sesión.',
       confirmLabel: 'Cerrar en todos',
       onConfirm: function () {
-        api('POST', '/auth/logout-all').then(function () { signOut(); }).catch(function (err) {
+        api('POST', '/auth/logout-all').then(function () { doSignOut(); }).catch(function (err) {
           if (authFailure(err)) { render(); return; }
           toast(err && err.network ? 'Necesitas conexión para cerrar todas las sesiones.' : 'No se pudo completar la operación.', 'atencion');
         });
@@ -608,57 +636,36 @@
     });
   }
 
-  // ---- Migración / combinación ---------------------------------------------------------
-  function summaryHtml(title, t) {
-    return '<div class="seq-sum"><div class="seq-sum-title">' + title + '</div>' +
-      '<div>Nivel <b>' + levelOf(t.xp) + '</b> · <b>' + t.xp + '</b> XP</div>' +
-      '<div><b>' + t.games + '</b> partidas · <b>' + t.medals.length + '</b> logros</div></div>';
-  }
-  function openMigration(onlineProgress) {
-    if (!$('seq-migrate-modal')) return;
-    var open = function (online) {
-      var loc = localTotals();
-      var on = { xp: n(online.xp), games: n(online.games), medals: online.medals || [] };
-      var hasLocal = hasLocalProgress(), hasOnline = progressHasData(online);
-      var title, text, primary;
-      if (hasLocal && !hasOnline) {
-        title = 'Guardar tu progreso en la cuenta';
-        text = 'Tienes progreso en este dispositivo. Puedes asociarlo a tu cuenta para no perderlo y llevarlo a cualquier dispositivo. Si prefieres no hacerlo, este dispositivo empezará de cero.';
-        primary = 'Asociar mi progreso a la cuenta';
-      } else if (!hasLocal && hasOnline) {
-        title = 'Recuperar el progreso de tu cuenta';
-        text = 'Tu cuenta ya tiene progreso guardado. Puedes traerlo a este dispositivo.';
-        primary = 'Recuperar progreso de la cuenta';
-      } else {
-        title = 'Combinar tu progreso';
-        text = 'Hay progreso en este dispositivo y en tu cuenta. Al combinar se conserva <b>el valor más alto de cada contador</b> y <b>todos los logros de ambos lados</b>. No se borra nada en ningún sitio.';
-        primary = 'Combinar progreso';
-      }
-      var warn = (sync && sync.otherAccountBefore) ? '<p class="seq-warn">' + ico('atencion') + 'Este dispositivo estuvo enlazado a otra cuenta. Combina solo si el progreso de aquí es tuyo.</p>' : '';
-      lastMigOnline = online;
-      var host = $('seq-migrate-body');
-      host.innerHTML =
-        '<p>' + text + '</p>' +
-        '<div class="seq-sums">' + summaryHtml(ico('movil') + 'En este dispositivo', loc) + summaryHtml(ico('nube') + 'En tu cuenta', { xp: on.xp, games: on.games, medals: on.medals }) + '</div>' + warn +
-        '<div class="modal-warning-actions seq-actions">' +
-        '<button class="btn btn-primary" id="seq-mig-primary" onclick="SEQOnline.doMerge()">' + primary + '</button>' +
-        '<button class="btn btn-secondary" onclick="SEQOnline.skipMigration()">Ahora no</button></div>';
-      $('seq-migrate-modal').style.display = 'flex';
-    };
-    if (onlineProgress) return open(onlineProgress);
-    // Abierto desde Ajustes: pedimos el estado actual de la cuenta.
-    api('GET', '/me').then(function (d) { refreshFeatures(d); open(cleanProgress(d && d.progress)); }).catch(function (err) {
-      if (authFailure(err)) { render(); return; }
-      toast(err && err.network ? 'Necesitas conexión para migrar.' : 'No se pudo consultar la cuenta.', 'atencion');
-    });
-  }
-  function closeMigration() { var m = $('seq-migrate-modal'); if (m) m.style.display = 'none'; render(); }
+  // ---- Unión automática con la cuenta -------------------------------------------------------
+  // Sin preguntas y sin combinar: cada cuenta con su progreso. Al entrar con una cuenta distinta de la del móvil, lo local era de
+  // la anterior (que ya lo tiene en el servidor) y se descarta; la cuenta nueva carga el suyo (vacío si es nueva).
+  // doMerge() es solo el mecanismo (POST /progress/merge) para cargar el progreso de la cuenta con el móvil vacío, o reenviar
+  // los totales de la propia cuenta si el servidor rechazó una sincronización.
+  var mergeTries = 0, mergeTimer = null;
 
+  function wipeLocalForOtherAccount(hasOnline, progress) {
+    try {
+      // Se vacía la partida en memoria para que 'pagehide' no vuelva a guardar el progreso ajeno al recargar.
+      if (typeof currentGame !== 'undefined') currentGame = { mode: 'play', queue: [], currentIdx: 0, score: 0, answered: false, totalQuestionsToPlay: 30, lives: 3 };
+      if (typeof store !== 'undefined' && store) store.savedGame = null;
+      localStorage.removeItem('siredwards_quiz_v1_0_data');
+      localStorage.removeItem('siredwards_quiz_encargos_intro_seen');
+      localStorage.removeItem('siredwards_quiz_encargos_monday_week');
+      try { SEQDuelIntro.resetLocal(); } catch (e) {}
+      if (window.SEQDataSync) window.SEQDataSync.reset();
+      sync = newSyncState(account.player.id, 'pending', { xp: 0, games: 0, correct: 0, wrong: 0 }, seenFrom(progress));
+      sync.otherAccountBefore = true;
+      saveSync();
+      // Cuenta sin progreso: la bienvenida vuelve a salir como a un jugador nuevo.
+      if (!hasOnline) localStorage.removeItem('siredwards_quiz_v1_1_welcome_seen');
+    } catch (e) {}
+    location.reload();
+  }
 
   function doMerge(retried) {
     if (!account || !sync || ui.busy) return;
     ui.busy = true;
-    var btn = $('seq-mig-primary'); if (btn) { btn.disabled = true; btn.textContent = 'Combinando…'; }
+    clearTimeout(mergeTimer);
     var t = localTotals(), sentWeekly = unconfirmedWeekly();
     api('POST', '/progress/merge', { match_id: 'mig-' + newMatchId().slice(2), local: { xp: t.xp, games: t.games, correct: t.correct, wrong: t.wrong, best_streak: t.best_streak, medals: t.medals }, weekly: sentWeekly })
       .then(function (res) {
@@ -673,7 +680,9 @@
         // store queda por DEBAJO de la línea base y el cliente re-baselinea hacia abajo (no envía nada):
         // se puede repetir la combinación. El orden inverso enviaría lo recién traído como si fuera
         // progreso nuevo y lo contaría dos veces en el servidor.
+        var other = !!(sync && sync.otherAccountBefore);
         sync = newSyncState(account.player.id, 'done', { xp: target.xp, games: target.games, correct: target.correct, wrong: target.wrong }, seenFrom(p));
+        sync.otherAccountBefore = other;
         confirmWeekly(sentWeekly);
         sync.lastSyncAt = Date.now();
         saveSync();
@@ -683,80 +692,28 @@
         afterLocalChange(gamesAdded);
         // Quien recupera una cuenta con partidas no es nuevo: sin presentación de los Encargos y con la tira de Inicio ya visible.
         if (target.games > 0) { try { SEQEncargosIntro.markSeen(); SEQEncargosUI.renderHome(); } catch (e) {} }
-        var m = $('seq-migrate-modal'); if (m) m.style.display = 'none';
-        toast(res.adjusted ? 'Progreso combinado (se ajustó algún valor imposible).' : 'Progreso combinado con tu cuenta. Todo en su debido lugar.', 'correcto');
+        mergeTries = 0;
+        toast(pickOne(['Sesión iniciada. Sir Edwards te reconoce.', 'Sesión iniciada. Adelante; la puerta ya estaba abierta.']), 'correcto');
         scheduleSync(1800, 'merge'); // logros derivados que el juego desbloquea localmente al aplicar los totales
       })
       .catch(function (err) {
-        if (authFailure(err)) { closeMigration(); return; }
+        if (authFailure(err)) return;
         if (err && err.status === 429 && retried !== true) {
           // El servidor limita la frecuencia (p. ej. justo después de una sincronización automática):
           // se reintenta una vez sola, en cuanto pase el plazo que indica el servidor.
-          if (btn) btn.textContent = 'Un momento…';
           setTimeout(function () { doMerge(true); }, Math.max(2, err.retryAfter || 2) * 1000);
           return;
         }
-        if (btn) { btn.disabled = false; btn.textContent = 'Reintentar'; }
-        toast(err && err.network ? 'Sin conexión: inténtalo de nuevo cuando vuelva Internet.' : 'No se pudo combinar' + (err && err.message ? ': ' + err.message : '.'), 'atencion');
+        // Sin aviso emergente: es automático. Ajustes lo dice y ofrece «Reintentar».
+        ui.error = (err && err.network) ? '' : 'No se pudo cargar tu progreso. Pulsa «Reintentar».';
+        // Se queda pendiente (Ajustes lo dice y tiene «Reintentar»); se reintenta solo unas pocas veces.
+        if (++mergeTries <= 5) mergeTimer = setTimeout(function () { if (navigator.onLine !== false) doMerge(); }, 30000);
       })
       .then(function () { ui.busy = false; render(); });
   }
 
-  // «Reiniciar progreso» con cuenta: el dispositivo vuelve a empezar de cero y, al recargar, se ofrece
-  // «Recuperar el progreso de tu cuenta». Se deja la sincronización en «pendiente» con línea base 0
-  // (si no, el cliente creería que el servidor ya tenía contado lo borrado y nunca lo devolvería) y se
-  // olvida el estado de la sincronización de datos (historial, estadísticas…).
-  function prepareLocalReset() {
-    if (!ENABLED || !account) return false;
-    sync = newSyncState(account.player.id, 'pending', { xp: 0, games: 0, correct: 0, wrong: 0 }, emptySeen());
-    sync.afterReset = true;
-    saveSync();
-    try { localStorage.removeItem('siredwards_quiz_v2_0_datasync'); } catch (e) {}
-    return true;
-  }
-
-  // «Ahora no»: al entrar con una cuenta, este dispositivo empieza de cero (el progreso local se borra, previa
-  // confirmación). La cuenta no se toca y «Restaurar / combinar progreso» (Ajustes) sigue disponible para recuperarla.
-  // Abierto desde Ajustes con la cuenta ya enlazada no hay decisión pendiente ni nada que borrar: solo cierra el aviso.
-  function skipMigration() {
-    if (!account || !sync) return;
-    var m = $('seq-migrate-modal');
-    if (sync.migration !== 'pending') { if (m) m.style.display = 'none'; render(); return; }
-    var hasOnline = progressHasData(lastMigOnline);
-    if (!hasLocalProgress()) {
-      wipeLocalEncargos();
-      sync = newSyncState(account.player.id, 'skipped', baseFromLocal(), sync.seen || emptySeen());
-      saveSync();
-      if (m) m.style.display = 'none';
-      render();
-      syncNow('skip');
-      return;
-    }
-    showAppConfirm({
-      title: 'Empezar de cero',
-      message: 'Se borrará el progreso de este dispositivo (nivel, XP, logros, estadísticas y partidas guardadas).' +
-        (hasOnline ? ' Tu cuenta conserva el suyo: podrás recuperarlo desde Ajustes.' : ' Esta cuenta empezará limpia.') +
-        ' Esta acción no se puede deshacer.',
-      confirmLabel: 'Sí, empezar de cero',
-      onConfirm: function () {
-        try {
-          // Se vacía la partida en memoria para que 'pagehide' no vuelva a guardar el progreso al recargar.
-          if (typeof currentGame !== 'undefined') currentGame = { mode: 'play', queue: [], currentIdx: 0, score: 0, answered: false, totalQuestionsToPlay: 30, lives: 3 };
-          if (typeof store !== 'undefined' && store) store.savedGame = null;
-          localStorage.removeItem('siredwards_quiz_v1_0_data');
-          localStorage.removeItem('siredwards_quiz_encargos_intro_seen');
-          localStorage.removeItem('siredwards_quiz_encargos_monday_week');
-          try { SEQDuelIntro.resetLocal(); } catch (e) {}
-          if (window.SEQDataSync) window.SEQDataSync.reset();
-          sync = newSyncState(account.player.id, 'skipped', { xp: 0, games: 0, correct: 0, wrong: 0 }, sync.seen || emptySeen());
-          saveSync();
-          // Cuenta sin progreso: la bienvenida vuelve a salir como a un jugador nuevo.
-          if (!hasOnline) localStorage.removeItem('siredwards_quiz_v1_1_welcome_seen');
-        } catch (e) {}
-        location.reload();
-      }
-    });
-  }
+  // ¿Hay una unión por hacer? (primer arranque con cuenta, unión a medias, o el servidor rechazó una sincronización)
+  function mergeDue() { return !!(account && sync && (sync.migration === 'pending' || sync.needsMerge)); }
 
   // ---- Perfil ---------------------------------------------------------------------------
   function toggleEdit() {
@@ -810,8 +767,8 @@
   // ---- Render de la interfaz -------------------------------------------------------------------
   function statusInfo() {
     if (!account) return ui.expired ? { cls: 'warn', text: 'Tu sesión ha caducado. Inicia sesión de nuevo: tu progreso local sigue aquí y se retomará tu cuenta.' } : null;
-    if (sync && sync.migration === 'pending') return { cls: 'warn', text: 'Falta decidir qué hacer con tu progreso local.' };
-    if (sync && sync.needsMerge) return { cls: 'bad', text: 'El servidor no aceptó tu última sincronización. Tu progreso local está intacto: pulsa «Restaurar / combinar progreso».' };
+    if (sync && sync.migration === 'pending') return ui.error ? { cls: 'bad', text: ui.error } : { cls: 'warn', text: 'Cargando tu progreso…' };
+    if (sync && sync.needsMerge) return { cls: 'bad', text: 'El servidor no aceptó tu última sincronización. Tu progreso local está intacto: pulsa «Reintentar».' };
     if (ui.syncing) return { cls: 'info', text: 'Sincronizando...' };
     if (navigator.onLine === false) return { cls: 'warn', text: hasUnsynced() ? 'Sin conexión. Los cambios se sincronizarán cuando vuelva Internet.' : 'Sin conexión. El juego funciona con normalidad.' };
     if (ui.error) return { cls: 'bad', text: ui.error };
@@ -874,8 +831,8 @@
       else html += '<p class="seq-status seq-' + st.cls + '" id="seq-status">' + esc(st.text) + '</p>';
     }
     // Acciones que solo aparecen cuando hacen falta.
-    if (sync && (sync.migration === 'pending' || sync.needsMerge)) {
-      html += '<div class="seq-btnrow"><button class="btn btn-primary" onclick="SEQOnline.openMigration()">' + (sync.migration === 'pending' ? '<span class="ui-line ui-line-arrow" aria-hidden="true"></span>Decidir sobre mi progreso local' : '<span class="ui-line ui-line-swap" aria-hidden="true"></span>Restaurar / combinar progreso') + '</button></div>';
+    if (mergeDue()) {
+      html += '<div class="seq-btnrow"><button class="btn btn-primary" onclick="SEQOnline.doMerge()"' + (ui.busy ? ' disabled' : '') + '>↻ Reintentar</button></div>';
     } else if (st && !quiet && navigator.onLine !== false) {
       html += '<div class="seq-btnrow"><button class="btn btn-primary" onclick="SEQOnline.syncNowUi()"' + (ui.syncing ? ' disabled' : '') + '>↻ Reintentar</button></div>';
     }
@@ -925,15 +882,13 @@
     if (!ENABLED) { render(); return; }
     loadState();
     render();
-    window.addEventListener('online', function () { retryStep = 0; render(); if (account) syncNow('online'); });
+    window.addEventListener('online', function () { retryStep = 0; render(); if (account && !midGame()) syncNow('online'); if (mergeDue()) doMerge();});
     window.addEventListener('offline', function () { render(); });
-    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && account) { render(); scheduleSync(1000, 'visible'); } });
-    if (account) scheduleSync(1500, 'startup');
-    if (account && sync && sync.migration === 'pending' && sync.afterReset) {
-      // Tras «Reiniciar progreso» con cuenta: se ofrece recuperar lo de la cuenta en cuanto haya conexión.
-      sync.afterReset = false; saveSync();
-      setTimeout(function () { if (navigator.onLine !== false) openMigration(); }, 1200);
-    }
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && account) { render(); if (!midGame()) scheduleSync(1000, 'visible'); } });
+    if (account && !midGame()) scheduleSync(1500, 'startup');
+    // Unión pendiente (primer arranque, cierre a medias; los dispositivos que quedaron en el antiguo «saltado» se cargan también): se hace sola.
+    if (account && sync && sync.migration === 'skipped') { sync.migration = 'pending'; saveSync(); }
+    if (account && sync && sync.migration === 'pending') setTimeout(function () { if (navigator.onLine !== false && mergeDue()) doMerge(); }, 800);
     // En el resto de casos, la decisión pendiente queda visible en Ajustes; no se fuerza al arrancar.
   }
 
@@ -947,7 +902,7 @@
     syncSoon: function () { if (ENABLED && account) scheduleSync(1500, 'duelxp'); },
     signOut: signOut, logoutAll: logoutAll, deleteAccount: deleteAccount,
     goToAccount: goToAccount,
-    openMigration: function () { openMigration(); }, prepareLocalReset: prepareLocalReset, accountHadProgress: function () { return loginHadProgress; }, hasAccount: function () { return !!(ENABLED && account); }, closeMigration: closeMigration, doMerge: doMerge, skipMigration: skipMigration,
+    accountHadProgress: function () { return loginHadProgress || !!(sync && account && progressHasData(sync.seen)); }, migrationPending: function () { return !!(ENABLED && account && sync && sync.migration === 'pending'); }, hasAccount: function () { return !!(ENABLED && account); }, doMerge: function () { mergeTries = 0; doMerge(); },
     rerenderAccount: function () { try { renderAccount(); } catch (e) {} },
     // 2.2: poner el nombre desde la pregunta de bienvenida (src/ui/name-prompt.js); no toca el avatar.
     setDisplayName: function (name) {

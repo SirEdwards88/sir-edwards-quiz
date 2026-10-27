@@ -32,7 +32,6 @@ test('el texto dice lo que el servidor guarda de verdad (sin correo ni nombre re
 });
 
 test('los botones que cita la política existen en Ajustes', () => {
-  assert.ok(html.includes('Descargar copia de seguridad'));
   assert.ok(read('src/online/online.js').includes('Eliminar mi cuenta online'));
 });
 

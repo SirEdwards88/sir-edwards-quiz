@@ -49,21 +49,21 @@
 <!-- Tipografía: Playfair Display para el "display" institucional (nombre de la
      app / títulos), Inter para toda la interfaz funcional. Alojadas en la propia app
      (styles/fonts.css, assets/fonts/): funcionan sin conexión y no dependen de Google. -->
-<link rel="stylesheet" href="styles/fonts.css?v=479">
+<link rel="stylesheet" href="styles/fonts.css?v=480">
 <link rel="preload" href="assets/fonts/inter-latin.woff" as="font" type="font/woff" crossorigin>
-<link rel="stylesheet" href="styles/main.css?v=479">
+<link rel="stylesheet" href="styles/main.css?v=480">
 <!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
-<link rel="stylesheet" href="styles/online.css?v=479">
-<link rel="stylesheet" href="styles/results-frame.css?v=479">
-<link rel="stylesheet" href="styles/visual-2-3.css?v=479">
-<link rel="stylesheet" href="styles/light-refresh.css?v=479">
-<link rel="stylesheet" href="styles/encargos.css?v=479">
-<link rel="stylesheet" href="styles/encargos-intro.css?v=479">
-<link rel="stylesheet" href="styles/duel-intro.css?v=479">
-<link rel="stylesheet" href="styles/sir-events.css?v=479">
-<link rel="stylesheet" href="styles/reward-toast.css?v=479">
-<link rel="stylesheet" href="styles/theme.css?v=479">
-<link rel="stylesheet" href="styles/privacy.css?v=479">
+<link rel="stylesheet" href="styles/online.css?v=480">
+<link rel="stylesheet" href="styles/results-frame.css?v=480">
+<link rel="stylesheet" href="styles/visual-2-3.css?v=480">
+<link rel="stylesheet" href="styles/light-refresh.css?v=480">
+<link rel="stylesheet" href="styles/encargos.css?v=480">
+<link rel="stylesheet" href="styles/encargos-intro.css?v=480">
+<link rel="stylesheet" href="styles/duel-intro.css?v=480">
+<link rel="stylesheet" href="styles/sir-events.css?v=480">
+<link rel="stylesheet" href="styles/reward-toast.css?v=480">
+<link rel="stylesheet" href="styles/theme.css?v=480">
+<link rel="stylesheet" href="styles/privacy.css?v=480">
 
 </head>
 <body class="on-home">
@@ -187,7 +187,7 @@
       <li><span aria-hidden="true"><img class="mode-img welcome-ico" src="assets/ui/copa.webp" alt="" draggable="false"></span><span>Logros, rachas y niveles, por si tu autoestima necesita testigos.</span></li>
       <li><span aria-hidden="true"><img class="mode-img welcome-ico" src="assets/modes/suelto/secreto.webp" alt="" draggable="false"></span><span>Un modo secreto. No preguntes. Encuéntralo.</span></li>
     </ul>
-    <p class="welcome-note" id="welcome-save-note">Tu progreso se guarda en este dispositivo: haz una copia de seguridad desde Ajustes de vez en cuando.</p>
+    <p class="welcome-note" id="welcome-save-note">Tu progreso se guarda en tu cuenta y te acompaña a cualquier dispositivo. Tus excusas, no.</p>
     <button class="btn btn-primary welcome-btn" onclick="welcomeNext()">Continuar</button>
     </div>
     <div id="welcome-step-2" hidden>
@@ -252,12 +252,6 @@
 
 <!-- v1.4: migración / combinación del progreso local con la cuenta online.
      Contenido y botones los pinta src/online/online.js (SEQOnline). -->
-<div id="seq-migrate-modal" class="modal-overlay" style="display:none;">
-  <div class="modal-card seq-modal-card" role="dialog" aria-modal="true" aria-labelledby="seq-migrate-title">
-    <h2 id="seq-migrate-title"><img class="seq-ico seq-ico-h" src="assets/ui/nube.webp" alt="" draggable="false">Tu progreso y tu cuenta</h2>
-    <div id="seq-migrate-body"></div>
-  </div>
-</div>
 
 <!-- v1.5 — Fase B (Prompt 3): gate de acceso obligatorio con cuenta.
      Se muestra ÚNICAMENTE cuando la capa online está activa y configurada
@@ -1000,27 +994,7 @@ try {
         </div>
       </div>
 
-      <!-- v2.0: con la cuenta online activa, TODOS los datos (progreso, historial, estadísticas, ajustes y
-           duelos) se sincronizan solos (src/online/data-sync.js) y el bloque de copia de seguridad manual
-           (#backup-group) se retira en applySyncCopy(). Sin capa online configurada (SEQOnline.enabled
-           = false) no hay sincronización posible, así que la copia manual se mantiene como única protección
-           para no dejar a nadie sin ninguna. -->
-      <div class="settings-section">
-        <h3 style="margin-top:0;">Progreso</h3>
-        <p class="settings-status"><span class="settings-status-dot"></span>Tu progreso está guardado</p>
-        <p class="settings-note" id="progress-save-note">Tu progreso se guarda automáticamente en este dispositivo, tengas o no cuenta.</p>
-        <div class="settings-group" id="backup-group">
-          <p class="settings-kicker">Copia de seguridad</p>
-          <p class="settings-note">Si tienes cuenta, ya sincronizas tu XP, tus partidas y tus logros en la nube. Esta copia conserva además tu historial completo y tus estadísticas detalladas: útil para no perder nada al cambiar de dispositivo o borrar datos del navegador, tengas o no cuenta.</p>
-          <div class="settings-backup-actions">
-            <button class="btn btn-secondary" onclick="exportProgress()">Descargar copia de seguridad</button>
-            <button class="btn btn-secondary" onclick="triggerImportProgress()">Restaurar copia de seguridad</button>
-            <input type="file" id="import-progress-input" accept="application/json,.json" style="display:none;" onchange="importProgress(event)">
-          </div>
-        </div>
-      </div>
-
-      <div class="settings-section">
+            <div class="settings-section">
         <h3 style="margin-top:0;">Privacidad</h3>
         <p class="settings-note">Qué guarda el juego, para qué y cómo borrarlo.</p>
         <button class="btn btn-secondary settings-btn-center" onclick="SEQPrivacy.open()">Política de privacidad</button>
@@ -1140,12 +1114,6 @@ try {
           </div>
         </div>
       </div>
-
-      <div class="settings-section settings-danger-zone">
-        <h3 style="margin-top:0; color: var(--danger-txt);"><img class="ui-btn-ico" src="assets/ui/cartel-peligro.webp" alt="" draggable="false">Zona de peligro</h3>
-        <p class="settings-note">Borra todo el progreso guardado en este dispositivo.</p>
-        <button class="btn btn-danger settings-btn-center" onclick="resetAppData()">Reiniciar progreso</button>
-      </div>
     </div>
 
   </div>
@@ -1154,63 +1122,63 @@ try {
 <!-- Fase 2: datos y constantes extraidos a modulos, cargados como scripts
      clasicos (no ES Modules) para conservar el scope global compartido con
      el script principal, sin convertir todavia la app a ES Modules. -->
-<script src="src/data/ui-maps.js?v=479"></script>
-<script src="src/data/questions.js?v=479"></script>
-<script src="src/data/questions-retired.js?v=479"></script>
-<script src="src/data/phrases.js?v=479"></script>
-<script src="src/data/duel-phrases.js?v=479"></script>
-<script src="src/data/rivalry-phrases.js?v=479"></script>
-<script src="src/utils/rivalry.js?v=479"></script>
-<script src="src/data/lucidez.js?v=479"></script>
-<script src="src/data/medals.js?v=479"></script>
+<script src="src/data/ui-maps.js?v=480"></script>
+<script src="src/data/questions.js?v=480"></script>
+<script src="src/data/questions-retired.js?v=480"></script>
+<script src="src/data/phrases.js?v=480"></script>
+<script src="src/data/duel-phrases.js?v=480"></script>
+<script src="src/data/rivalry-phrases.js?v=480"></script>
+<script src="src/utils/rivalry.js?v=480"></script>
+<script src="src/data/lucidez.js?v=480"></script>
+<script src="src/data/medals.js?v=480"></script>
 <!-- Prompt 3 — Fase C: sistema de avatares compartido (window.SEQAvatars). Debe
      cargarse antes de src/online/online.js y src/online/duels.js: ambos lo
      consumen en vez de mantener cada uno su propia copia de la lista. -->
-<script src="src/data/avatars.js?v=479"></script>
-<script src="src/share/share-card.js?v=479"></script>
+<script src="src/data/avatars.js?v=480"></script>
+<script src="src/share/share-card.js?v=480"></script>
 
 <!-- Fase 3 (Lote 3A): motor de coincidencia de respuestas extraido a
      src/utils/matching.js, mismo criterio que la Fase 2 (script clasico,
      sin ES Modules todavia). -->
-<script src="src/utils/matching.js?v=479"></script>
-<script src="src/utils/review-batch.js?v=479"></script>
-<script src="src/utils/records-reset.js?v=479"></script>
-<script src="src/utils/answer-alias.js?v=479"></script>
-<script src="src/utils/lucidez-select.js?v=479"></script>
-<script src="src/state/lucidez-bag.js?v=479"></script>
-<script src="src/state/timetrial-bag.js?v=479"></script>
-<script src="src/utils/encargos-core.js?v=479"></script>
-<script src="src/utils/encargos-progress.js?v=479"></script>
-<script src="src/state/encargos.js?v=479"></script>
-<script src="src/data/encargos-phrases.js?v=479"></script>
-<script src="src/ui/encargos-ui.js?v=479"></script>
-<script src="src/data/named-phrases.js?v=479"></script>
-<script src="src/utils/named-phrases.js?v=479"></script>
-<script src="src/utils/encargos-intro-core.js?v=479"></script>
-<script src="src/data/encargos-intro-phrases.js?v=479"></script>
-<script src="src/ui/encargos-intro.js?v=479"></script>
-<script src="src/ui/lucidez-unlock.js?v=479"></script>
-<script src="src/ui/advance.js?v=479"></script>
-<script src="src/ui/duel-intro.js?v=479"></script>
-<script src="src/data/home-quotes.js?v=479"></script>
-<script src="src/ui/home-quote.js?v=479"></script>
-<script src="src/utils/sir-events.js?v=479"></script>
-<script src="src/ui/sir-events-ui.js?v=479"></script>
-<script src="src/state/sir-events.js?v=479"></script>
-<script src="src/utils/sudden-progression.js?v=479"></script>
-<script src="src/utils/mental-calc.js?v=479"></script>
-<script src="src/utils/mental-classic.js?v=479"></script>
-<script src="src/utils/mental-tips.js?v=479"></script>
-<script src="src/ui/mental-classic-ui.js?v=479"></script>
-<script src="src/ui/mental-menu.js?v=479"></script>
-<script src="src/ui/level-up.js?v=479"></script>
+<script src="src/utils/matching.js?v=480"></script>
+<script src="src/utils/review-batch.js?v=480"></script>
+<script src="src/utils/records-reset.js?v=480"></script>
+<script src="src/utils/answer-alias.js?v=480"></script>
+<script src="src/utils/lucidez-select.js?v=480"></script>
+<script src="src/state/lucidez-bag.js?v=480"></script>
+<script src="src/state/timetrial-bag.js?v=480"></script>
+<script src="src/utils/encargos-core.js?v=480"></script>
+<script src="src/utils/encargos-progress.js?v=480"></script>
+<script src="src/state/encargos.js?v=480"></script>
+<script src="src/data/encargos-phrases.js?v=480"></script>
+<script src="src/ui/encargos-ui.js?v=480"></script>
+<script src="src/data/named-phrases.js?v=480"></script>
+<script src="src/utils/named-phrases.js?v=480"></script>
+<script src="src/utils/encargos-intro-core.js?v=480"></script>
+<script src="src/data/encargos-intro-phrases.js?v=480"></script>
+<script src="src/ui/encargos-intro.js?v=480"></script>
+<script src="src/ui/lucidez-unlock.js?v=480"></script>
+<script src="src/ui/advance.js?v=480"></script>
+<script src="src/ui/duel-intro.js?v=480"></script>
+<script src="src/data/home-quotes.js?v=480"></script>
+<script src="src/ui/home-quote.js?v=480"></script>
+<script src="src/utils/sir-events.js?v=480"></script>
+<script src="src/ui/sir-events-ui.js?v=480"></script>
+<script src="src/state/sir-events.js?v=480"></script>
+<script src="src/utils/sudden-progression.js?v=480"></script>
+<script src="src/utils/mental-calc.js?v=480"></script>
+<script src="src/utils/mental-classic.js?v=480"></script>
+<script src="src/utils/mental-tips.js?v=480"></script>
+<script src="src/ui/mental-classic-ui.js?v=480"></script>
+<script src="src/ui/mental-menu.js?v=480"></script>
+<script src="src/ui/level-up.js?v=480"></script>
 
 <!-- Fase 3 (Lote 3B): nucleo algoritmico de Duelo extraido a
      src/utils/duel.js, mismo criterio que el resto (script clasico, sin
      ES Modules todavia). Las dependencias compartidas con otros modos
      (arrangeStandardBlock, generateLucidezMentalOp)
      permanecen en este script principal, sin moverse en este lote. -->
-<script src="src/utils/duel.js?v=479"></script>
+<script src="src/utils/duel.js?v=480"></script>
 
 <!-- Fase 3 (Lote 3C): defaults, migracion y saneamiento del Store
      extraidos a src/utils/store.js, mismo criterio que el resto (script
@@ -1220,62 +1188,62 @@ try {
      proteger su comportamiento actual con tests, no purificarlas. Las
      dependencias compartidas (UNLOCKABLE_MODES, getFragmentCount,
      getLevelData) y las 8 funciones de persistencia real (loadStore,
-     saveStore, exportProgress...) permanecen en este script principal,
+     saveStore...) permanecen en este script principal,
      sin moverse en este lote. -->
-<script src="src/utils/store.js?v=479"></script>
+<script src="src/utils/store.js?v=480"></script>
 
 <!-- Fase 4B: fachada de estado de solo lectura (getStore/getCurrentGame),
      mismo criterio que el resto (script clasico, sin ES Modules todavia).
      No copia, no transforma, no cachea. Ver src/state/read-facade.js. -->
-<script src="src/state/read-facade.js?v=479"></script>
+<script src="src/state/read-facade.js?v=480"></script>
 
-<script src="src/utils/streak-xp.js?v=479"></script>
+<script src="src/utils/streak-xp.js?v=480"></script>
 <!-- Fase 4C: helpers minimos de escritura (pushCapped, resetStreak) para
      eliminar 2 duplicaciones reales concretas -- no un sistema de
      mutaciones. Ver src/state/write-helpers.js y CHANGELOG_FASE4C.md. -->
-<script src="src/state/write-helpers.js?v=479"></script>
+<script src="src/state/write-helpers.js?v=480"></script>
 
 <!-- v1.4: capa online (cuenta Google, sincronización, migración, ranking).
      config.js es PÚBLICO (URL del Worker + Client ID de Google); si está
      vacío, la capa online queda desactivada y la app es idéntica a la v1.3.
      online.js solo usa el store/funciones del juego en tiempo de ejecución. -->
-<script src="src/ui/install-app.js?v=479"></script>
-<script src="src/share/invite.js?v=479"></script>
-<script src="src/ui/reward-toast.js?v=479"></script>
-<script src="src/ui/privacy.js?v=479"></script>
-<script src="src/ui/a11y.js?v=479"></script>
-<script src="src/ui/back-nav.js?v=479"></script>
-<script src="src/ui/game-fx.js?v=479"></script>
-<script src="src/ui/last-life.js?v=479"></script>
-<script src="src/ui/hitos.js?v=479"></script>
-<script src="src/ui/achievements.js?v=479"></script>
-<script src="src/ui/stats-extra.js?v=479"></script>
-<script src="src/ui/name-prompt.js?v=479"></script>
-<script src="src/ui/intro.js?v=479"></script>
-<script src="src/ui/mode-badges.js?v=479"></script>
-<script src="src/ui/lucidez-ui.js?v=479"></script>
-<script src="src/ui/sabias.js?v=479"></script>
-<script src="src/ui/icons.js?v=479"></script>
-<script src="src/online/config.js?v=479"></script>
+<script src="src/ui/install-app.js?v=480"></script>
+<script src="src/share/invite.js?v=480"></script>
+<script src="src/ui/reward-toast.js?v=480"></script>
+<script src="src/ui/privacy.js?v=480"></script>
+<script src="src/ui/a11y.js?v=480"></script>
+<script src="src/ui/back-nav.js?v=480"></script>
+<script src="src/ui/game-fx.js?v=480"></script>
+<script src="src/ui/last-life.js?v=480"></script>
+<script src="src/ui/hitos.js?v=480"></script>
+<script src="src/ui/achievements.js?v=480"></script>
+<script src="src/ui/stats-extra.js?v=480"></script>
+<script src="src/ui/name-prompt.js?v=480"></script>
+<script src="src/ui/intro.js?v=480"></script>
+<script src="src/ui/mode-badges.js?v=480"></script>
+<script src="src/ui/lucidez-ui.js?v=480"></script>
+<script src="src/ui/sabias.js?v=480"></script>
+<script src="src/ui/icons.js?v=480"></script>
+<script src="src/online/config.js?v=480"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
-<script src="src/utils/sync-merge.js?v=479"></script>
-<script src="src/online/data-sync.js?v=479"></script>
-<script src="src/online/online.js?v=479"></script>
+<script src="src/utils/sync-merge.js?v=480"></script>
+<script src="src/online/data-sync.js?v=480"></script>
+<script src="src/online/online.js?v=480"></script>
 <!-- v1.5: Amigos, Duelo online y Retos. El servidor decide preguntas, tiempo, aciertos y ganador. -->
-<script src="src/state/result-heard.js?v=479"></script>
-<script src="src/state/multi-result.js?v=479"></script>
-<script src="src/online/reto-fx.js?v=479"></script>
-<script src="src/online/duels.js?v=479"></script>
+<script src="src/state/result-heard.js?v=480"></script>
+<script src="src/state/multi-result.js?v=480"></script>
+<script src="src/online/reto-fx.js?v=480"></script>
+<script src="src/online/duels.js?v=480"></script>
 <!-- 2.1: Duelo por apuestas, ELO PvP, Rankings y estadísticas de Duelos (solo presentación; decide el servidor) -->
-<script src="src/online/duels-v21.js?v=479"></script>
-<script src="src/online/multi-duels.js?v=479"></script>
-<script src="src/online/multi-stakes.js?v=479"></script>
+<script src="src/online/duels-v21.js?v=480"></script>
+<script src="src/online/multi-duels.js?v=480"></script>
+<script src="src/online/multi-stakes.js?v=480"></script>
 <!-- 2.3: ficha pública de un jugador (resumen, récords, PvP y solicitud de amistad) -->
-<script src="src/online/player-profile.js?v=479"></script>
-<script src="src/online/inbox.js?v=479"></script>
-<script src="src/online/push.js?v=479"></script>
+<script src="src/online/player-profile.js?v=480"></script>
+<script src="src/online/inbox.js?v=480"></script>
+<script src="src/online/push.js?v=480"></script>
 <!-- Audio: sonidos del juego (src/audio/audio.js) -->
-<script src="src/audio/audio.js?v=479"></script>
+<script src="src/audio/audio.js?v=480"></script>
 
 <script>
 function closeWelcomeModal() {
@@ -2853,132 +2821,6 @@ function saveStore(persistCurrentGame = true) {
   // v1.4: aviso a la capa online (no hace nada sin cuenta ni configuración).
   if (typeof SEQOnline !== 'undefined') SEQOnline.onLocalSave();
 }
-function resetAppData() {
-  const withAccount = typeof SEQOnline !== 'undefined' && SEQOnline.hasAccount && SEQOnline.hasAccount();
-  showAppConfirm({
-    message: withAccount
-      ? 'Se borrará el progreso de este dispositivo (nivel, XP, logros, estadísticas y partidas guardadas). Tu cuenta lo conserva todo: al volver podrás recuperarlo.'
-      : 'Esto borrará todo tu progreso (nivel, XP, logros, estadísticas y partidas guardadas) de este dispositivo. Esta acción no se puede deshacer.',
-    confirmLabel: 'Sí, reiniciar todo',
-    onConfirm: () => {
-      // Si hay una partida a medias en memoria (p. ej. saliste de una partida
-      // sin terminarla y luego viniste aquí), el listener de 'pagehide' de
-      // más abajo la detecta al recargar la página y la vuelve a guardar,
-      // deshaciendo el reinicio justo después de pedirlo. Vaciamos la partida
-      // en memoria antes de recargar para que eso no pueda pasar.
-      currentGame = { mode: 'play', queue: [], currentIdx: 0, score: 0, answered: false, totalQuestionsToPlay: 30, lives: 3 };
-      localStorage.removeItem('siredwards_quiz_v1_0_data');
-      // Empezar de cero también es volver a recibir la presentación de los Encargos (su marca es local y va aparte del progreso).
-      localStorage.removeItem('siredwards_quiz_encargos_intro_seen');
-      localStorage.removeItem('siredwards_quiz_encargos_monday_week');
-      try { SEQDuelIntro.resetLocal(); } catch (e) {}
-      if (withAccount) {
-        // Con cuenta: la sincronización queda lista para ofrecer «Recuperar el progreso de tu cuenta» al
-        // recargar, y no se repite la bienvenida (el jugador no es nuevo).
-        SEQOnline.prepareLocalReset();
-      } else {
-        localStorage.removeItem('siredwards_quiz_v1_1_welcome_seen');
-      }
-      location.reload();
-    }
-  });
-}
-
-// ====== COPIA DE SEGURIDAD DEL PROGRESO (sin cuenta ni servidor) ======
-// El progreso vive únicamente en localStorage de este navegador, así que
-// cambiar de dispositivo, borrar datos del navegador o usar incógnito lo
-// destruye. Exportar/importar un archivo .json resuelve el caso de uso
-// principal (mover el progreso a otro dispositivo o recuperarlo tras un
-// borrado accidental) sin necesitar cuentas, email ni backend.
-function exportProgress() {
-  try {
-    saveStore();
-    const payload = {
-      app: 'siredwards_quiz',
-      version: 'v' + APP_VERSION, // versión de la app en el momento de exportar (informativo)
-      saveVersion: SAVE_VERSION, // versión del FORMATO de progreso: la usa migrateStore() al restaurar
-      exportedAt: new Date().toISOString(),
-      data: store
-    };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    const dateStr = new Date().toISOString().slice(0, 10);
-    a.href = url;
-    a.download = `sir-edwards-quiz-progreso-${dateStr}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  } catch (e) {
-    showInfoToast('No se ha podido generar la copia de seguridad.', 'atencion');
-    console.warn('Error exportando el progreso.', e);
-  }
-}
-
-function triggerImportProgress() {
-  const input = document.getElementById('import-progress-input');
-  if (input) input.click();
-}
-
-function importProgress(event) {
-  const file = event.target.files && event.target.files[0];
-  event.target.value = ''; // permite volver a elegir el mismo archivo si hace falta
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = () => {
-    let parsed;
-    try {
-      parsed = JSON.parse(reader.result);
-    } catch (e) {
-      showInfoToast('El archivo no es una copia de seguridad válida (JSON ilegible).', 'atencion');
-      return;
-    }
-    // Aceptamos tanto el formato exportado ({app, data}) como un volcado
-    // directo del store, por si el archivo se editó a mano.
-    const incoming = parsed && parsed.data && typeof parsed.data === 'object' ? parsed.data : parsed;
-    if (!incoming || typeof incoming !== 'object' || typeof incoming.gamesPlayed !== 'number') {
-      showInfoToast('El archivo no parece una copia de seguridad de este juego.', 'atencion');
-      return;
-    }
-    // Si el backup no trae saveVersion propio (formatos exportados antes de
-    // que existiera este campo), usamos el del payload si lo hay.
-    if (typeof incoming.saveVersion !== 'number' && parsed && typeof parsed.saveVersion === 'number') {
-      incoming.saveVersion = parsed.saveVersion;
-    }
-
-    showAppConfirm({
-      message: 'Esto reemplazará el progreso actual de este dispositivo por el de la copia de seguridad.',
-      confirmLabel: 'Sí, restaurar',
-      onConfirm: () => applyImportedProgress(incoming, parsed)
-    });
-  };
-  reader.onerror = () => showInfoToast('No se ha podido leer el archivo seleccionado.', 'atencion');
-  reader.readAsText(file);
-}
-
-function applyImportedProgress(incoming, parsed) {
-    // Migramos el backup al formato actual (completa campos nuevos que no
-    // existían cuando se generó la copia y aplica cualquier migración de
-    // estructura necesaria) antes de guardarlo, para que un backup antiguo
-    // nunca deje a la partida con campos a medias.
-    const migrated = migrateStore(incoming);
-
-    // Vaciamos la partida en memoria antes de recargar, igual que en
-    // resetAppData(), para que 'pagehide' no la vuelva a guardar y pise
-    // los datos que acabamos de importar.
-    currentGame = { mode: 'play', queue: [], currentIdx: 0, score: 0, answered: false, totalQuestionsToPlay: 30, lives: 3 };
-    try {
-      localStorage.setItem('siredwards_quiz_v1_0_data', JSON.stringify(migrated));
-    } catch (e) {
-      showInfoToast('No se ha podido guardar el progreso importado en este dispositivo.', 'atencion');
-      console.warn('Error guardando el progreso importado.', e);
-      return;
-    }
-    location.reload();
-}
-
 function changeTheme(theme) { store.theme = theme; store.themeAuto = false; applyTheme(theme); updateThemeButtons(theme); saveStore(); }
 function changeSound(sound) { store.sound = sound; updateSoundButtons(sound); if (sound === 'off') { stopUrgencySound(); stopJingleNow(); } saveStore(); }
 
@@ -7280,23 +7122,8 @@ function showInfoToast(message, icon){
 // ============================================================
 const UPDATE_SEEN_KEY = 'siredwards_quiz_v1_3_update_seen';
 
-// v2.0: con la cuenta online activa, la sincronización completa sustituye a la copia de seguridad manual.
-function applySyncCopy() {
-  const online = typeof SEQOnline !== 'undefined' && SEQOnline.enabled === true;
-  if (!online) return; // sin capa online no hay sincronización: se mantiene la copia manual (textos por defecto)
-  const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
-  const backup = document.getElementById('backup-group');
-  if (backup) backup.remove();
-  // 2.0: con cuenta, el estado del guardado ya se ve en «Tu perfil» (arriba de Ajustes): la sección Progreso sobra.
-  const progressSection = document.getElementById('progress-save-note');
-  if (progressSection && progressSection.closest('.settings-section')) progressSection.closest('.settings-section').style.display = 'none';
-  setText('progress-save-note', 'Tu progreso, tu historial, tus estadísticas, tus ajustes y tus duelos se guardan en tu cuenta automáticamente y se recuperan al iniciar sesión en cualquier dispositivo.');
-  setText('welcome-save-note', 'Tu progreso se guarda en tu cuenta y te acompaña a cualquier dispositivo. Tus excusas, no.');
-}
-
 function applyAppVersionText() {
   document.title = 'SirEdwards Quiz: Test de Lucidez Mental v' + APP_VERSION;
-  applySyncCopy();
   const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
   setText('welcome-version', 'v' + APP_VERSION);
   setText('welcome-btn-version', 'v' + APP_VERSION);
@@ -7515,6 +7342,6 @@ window.addEventListener('appinstalled', () => {
   hidePwaHint();
 });
 </script>
-<script src="src/ui/resume-clock.js?v=479"></script>
+<script src="src/ui/resume-clock.js?v=480"></script>
 </body>
 </html>

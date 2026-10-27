@@ -34,7 +34,6 @@ test('combinar el progreso de una cuenta con partidas marca la presentación com
 });
 
 test('empezar de cero sigue olvidando la marca (reinicio, cuenta eliminada y «Empezar de cero»)', () => {
-  assert.match(read('index.html'), /removeItem\('siredwards_quiz_encargos_intro_seen'\)/);
   const online = read('src/online/online.js');
   assert.equal((online.match(/removeItem\('siredwards_quiz_encargos_intro_seen'\)/g) || []).length, 3);
 });

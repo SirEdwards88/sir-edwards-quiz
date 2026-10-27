@@ -130,12 +130,11 @@
     if (decided) return;
     decided = true;
     // Un respiro tras cerrar la pantalla de cuenta para que el mensaje no «pise» la transición.
-    // Si al entrar se abre «Tu progreso y tu cuenta» (cuenta nueva en un dispositivo con progreso), se espera a que se resuelva:
+    // Si al entrar hay que unir el progreso con la cuenta (es automático y dura un instante), se espera a que acabe:
     // una pantalla cada vez (cuenta → progreso → nombre → bienvenida), nunca una encima de otra.
     var waited = 0;
     function go() {
-      var mig = document.getElementById('seq-migrate-modal');
-      var busy = mig && mig.style.display && mig.style.display !== 'none';
+      var busy = !!(navigator.onLine !== false && window.SEQOnline && SEQOnline.migrationPending && SEQOnline.migrationPending());
       if (busy && waited < 600000) { waited += 400; setTimeout(go, 400); return; }
       try { decide(); } catch (e) { /* nunca debe impedir jugar */ }
     }

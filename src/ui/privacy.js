@@ -51,7 +51,6 @@ var SEQPrivacy = (function () {
       'Puedes acceder a tus datos, corregirlos, borrarlos, oponerte o pedir su portabilidad.',
       [
         '**Borrar tu cuenta online:** Ajustes → «Eliminar mi cuenta online».',
-        '**Copia de tu progreso:** Ajustes → «Descargar copia de seguridad» (archivo .json).',
         '**Cambiar tu nombre o avatar:** desde tu perfil.',
         '**Cualquier otra petición:** escribe a **' + CONTACT + '**.'
       ],
