@@ -124,7 +124,7 @@ const SEQSyncMerge = (function () {
       if (isObj(g.v.questionStreaks)) {
         const qs = {};
         Object.keys(g.v.questionStreaks).slice(0, 2500).forEach(function (k) {
-          if (/^[0-9]{1,6}$/.test(k)) qs[k] = Math.min(cleanNum(g.v.questionStreaks[k]), 1000);
+          if (/^L?[0-9]{1,6}$/.test(k)) qs[k] = Math.min(cleanNum(g.v.questionStreaks[k]), 1000); // «L…»: las de Lucidez Mental
         });
         v.questionStreaks = qs;
       }

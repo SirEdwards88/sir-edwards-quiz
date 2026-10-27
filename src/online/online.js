@@ -83,6 +83,14 @@
   // ¿Hay una partida REALMENTE a medias? hasSavedGame() ignora partidas ya terminadas/perdidas que aún dejan un `savedGame`
   // residual (p. ej. al cambiar el tema justo después de acabar): esas no deben bloquear la sincronización.
   function midGame() { try { return typeof hasSavedGame === 'function' ? hasSavedGame() : !!store.savedGame; } catch (e) { return false; } }
+  // Jugando AHORA: hay partida guardada y se está en la pantalla de juego sin resultados. Una partida guardada y dejada en Inicio
+  // no debe impedir sincronizar.
+  function playingNow() {
+    try {
+      var rc = document.getElementById('results-card');
+      return midGame() && document.body.classList.contains('in-game') && !(rc && rc.offsetParent !== null);
+    } catch (e) { return false; }
+  }
   function hasStore() { return typeof store !== 'undefined' && store && typeof store === 'object'; }
   function knownMedals() {
     var set = {};
@@ -213,7 +221,7 @@
             var err = new Error((data && data.error && data.error.message) || ('HTTP ' + res.status));
             err.status = res.status;
             err.code = data && data.error && data.error.code;
-            err.retryAfter = Number(res.headers.get('Retry-After')) || 0;
+            err.retryAfter = Number(res.headers.get('Retry-After')) || n(data && data.error && data.error.retry_after) || 0; // CORS oculta la cabecera: el cuerpo también lo trae
             throw err;
           }
           return data;
@@ -278,6 +286,7 @@
   // ---- Sincronización -----------------------------------------------------------
   // Lo que el Worker ha recibido y no ha devuelto (p. ej. un logro nuevo antes de redesplegar el Worker, o una racha que recorta):
   // no se reenvía en bucle. Solo en memoria: al reabrir la app se vuelve a intentar una vez.
+  var storeLost = false;
   var ignored = { medals: [], best: 0 };
   function noteIgnored(pending, prog) {
     (pending.medals || []).forEach(function (id) { if ((prog.medals || []).indexOf(id) === -1 && ignored.medals.indexOf(id) === -1) ignored.medals.push(id); });
@@ -288,8 +297,8 @@
     var delta = {};
     COUNTERS.forEach(function (c) {
       var k = c[0];
-      if (t[k] < sync.base[k]) sync.base[k] = t[k]; // reinicio/importación de copia antigua: se re-baselinea (nunca envía negativos)
-      delta[k] = t[k] - sync.base[k];
+      if (t[k] < sync.base[k]) storeLost = true; // el progreso local quedó por debajo de lo ya contabilizado (se perdió o falló el guardado): syncNow() lo repone desde la cuenta
+      delta[k] = Math.max(0, t[k] - sync.base[k]); // nunca negativos
     });
     var medalsNew = t.medals.some(function (id) { return sync.seen.medals.indexOf(id) === -1 && ignored.medals.indexOf(id) === -1; });
     var bestNew = t.best_streak > Math.max(sync.seen.best, ignored.best);
@@ -315,7 +324,7 @@
   function authFailure(err) {
     if (err && err.status === 401) {
       account = null; saveAccount(); ui.expired = true; ui.error = '';
-      setMsg('Tu sesión ha caducado. Inicia sesión de nuevo: tu progreso local sigue aquí y se retomará tu cuenta.'); // también en el gate, que tapa Ajustes
+      setMsg('Tu sesión ha caducado. Inicia sesión de nuevo con tu cuenta.'); // también en el gate, que tapa Ajustes
       return true;
     }
     return false;
@@ -342,6 +351,14 @@
     if (!ENABLED || !account || !sync || ui.syncing || !hasStore()) return Promise.resolve();
     if (sync.playerId !== account.player.id || sync.migration === 'pending' || sync.needsMerge) { render(); return Promise.resolve(); }
     if (typeof navigator !== 'undefined' && navigator.onLine === false) { render(); return Promise.resolve(); }
+    // Un temporizador (reintento, XP de Duelo, guardado al terminar) no debe lanzar el lote a media partida: se retrasa.
+    if (reason !== 'manual' && playingNow()) { scheduleSync(15000, reason); return Promise.resolve(); }
+    // Con el progreso local por debajo de lo ya contabilizado (se perdió o falló el guardado local), la cuenta repone el móvil
+    // en lugar de re-baselinear a la baja en silencio y dejarlo en nivel 1.
+    try {
+      computeDelta();
+      if (storeLost) { storeLost = false; sync.migration = 'pending'; sync.pending = null; saveSync(); render(); setTimeout(doMerge, 0); return Promise.resolve(); }
+    } catch (e) {}
     ui.syncing = true; ui.error = ''; render();
 
     var rounds = 0;
@@ -568,6 +585,7 @@
   // Cerrar sesión: antes se sube lo pendiente. Si algo no se puede subir (sin conexión), se avisa: al entrar con otra cuenta en este móvil se perdería.
   function signOut() {
     if (!account || !sync || !hasUnsynced()) { doSignOut(); return; }
+    var whenIdle = function (cb) { var k = 0; (function w() { if (!ui.syncing || ++k > 40) { cb(); return; } setTimeout(w, 500); })(); };
     var ask = function () {
       showAppConfirm({
         title: 'Cerrar sesión',
@@ -576,7 +594,7 @@
         onConfirm: doSignOut
       });
     };
-    syncNow('manual').then(function () { if (hasUnsynced()) ask(); else doSignOut(); }, ask);
+    whenIdle(function () { syncNow('manual').then(function () { if (hasUnsynced()) ask(); else doSignOut(); }, ask); });
   }
   function doSignOut() {
     // Cerrar sesión NO elimina la cuenta ni borra nada local: solo descarta el token.
@@ -649,6 +667,8 @@
       if (typeof currentGame !== 'undefined') currentGame = { mode: 'play', queue: [], currentIdx: 0, score: 0, answered: false, totalQuestionsToPlay: 30, lives: 3 };
       if (typeof store !== 'undefined' && store) store.savedGame = null;
       localStorage.removeItem('siredwards_quiz_v1_0_data');
+      // El store en memoria sigue siendo el de la cuenta anterior hasta recargar: si algo guardara en ese hueco, escribiría el progreso ajeno.
+      try { if (typeof getDefaultStore === 'function') store = getDefaultStore(); } catch (e) {}
       localStorage.removeItem('siredwards_quiz_encargos_intro_seen');
       localStorage.removeItem('siredwards_quiz_encargos_monday_week');
       try { SEQDuelIntro.resetLocal(); } catch (e) {}
@@ -669,11 +689,12 @@
     var t = localTotals(), sentWeekly = unconfirmedWeekly();
     api('POST', '/progress/merge', { match_id: 'mig-' + newMatchId().slice(2), local: { xp: t.xp, games: t.games, correct: t.correct, wrong: t.wrong, best_streak: t.best_streak, medals: t.medals }, weekly: sentWeekly })
       .then(function (res) {
-        var p = cleanProgress(res && res.progress), gamesAdded = 0, target = {};
+        var p = cleanProgress(res && res.progress), gamesAdded = 0, target = {}, played = {};
         COUNTERS.forEach(function (c) {
-          var sv = n(p[c[0]]), lv = n(store[c[1]]);
-          target[c[0]] = Math.max(sv, lv);
-          if (sv > lv && c[0] === 'games') gamesAdded = sv - lv;
+          var sv = n(p[c[0]]), sent = n(t[c[0]]), cur = n(store[c[1]]);
+          target[c[0]] = Math.max(sv, sent);                // lo contabilizado en la cuenta: lo que se envió o lo que tenía
+          played[c[0]] = Math.max(0, cur - sent);           // lo jugado mientras la petición volaba: sigue siendo delta pendiente
+          if (sv > sent && c[0] === 'games') gamesAdded = sv - sent;
         });
         // ORDEN IMPORTANTE (integridad ante cierres a mitad): primero se guarda el estado de sync con la
         // nueva línea base, y solo después se modifica el store. Si la app se cierra entre ambos pasos, el
@@ -686,7 +707,7 @@
         confirmWeekly(sentWeekly);
         sync.lastSyncAt = Date.now();
         saveSync();
-        COUNTERS.forEach(function (c) { store[c[1]] = target[c[0]]; });
+        COUNTERS.forEach(function (c) { store[c[1]] = target[c[0]] + played[c[0]]; });
         store.bestStreak = Math.max(n(store.bestStreak), n(p.best_streak));
         unionMedalsIntoStore(p.medals);
         afterLocalChange(gamesAdded);
@@ -766,7 +787,7 @@
 
   // ---- Render de la interfaz -------------------------------------------------------------------
   function statusInfo() {
-    if (!account) return ui.expired ? { cls: 'warn', text: 'Tu sesión ha caducado. Inicia sesión de nuevo: tu progreso local sigue aquí y se retomará tu cuenta.' } : null;
+    if (!account) return ui.expired ? { cls: 'warn', text: 'Tu sesión ha caducado. Inicia sesión de nuevo con tu cuenta.' } : null;
     if (sync && sync.migration === 'pending') return ui.error ? { cls: 'bad', text: ui.error } : { cls: 'warn', text: 'Cargando tu progreso…' };
     if (sync && sync.needsMerge) return { cls: 'bad', text: 'El servidor no aceptó tu última sincronización. Tu progreso local está intacto: pulsa «Reintentar».' };
     if (ui.syncing) return { cls: 'info', text: 'Sincronizando...' };
@@ -869,7 +890,7 @@
   function onLocalSave() {
     // Llamado al final de saveStore(). Barato: si no hay cuenta, no hace nada.
     if (!ENABLED || !account || applying) return;
-    try { if (hasStore() && midGame()) return; } catch (e) {} // a mitad de partida: se sincroniza al terminar
+    try { if (hasStore() && playingNow()) return; } catch (e) {} // a mitad de partida: se sincroniza al terminar
     scheduleSync(5000);
   }
   function onTabShown(tabId) {
@@ -882,10 +903,10 @@
     if (!ENABLED) { render(); return; }
     loadState();
     render();
-    window.addEventListener('online', function () { retryStep = 0; render(); if (account && !midGame()) syncNow('online'); if (mergeDue()) doMerge();});
+    window.addEventListener('online', function () { retryStep = 0; render(); if (account && !playingNow()) syncNow('online'); if (mergeDue()) doMerge();});
     window.addEventListener('offline', function () { render(); });
-    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && account) { render(); if (!midGame()) scheduleSync(1000, 'visible'); } });
-    if (account && !midGame()) scheduleSync(1500, 'startup');
+    document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible' && account) { render(); if (!playingNow()) scheduleSync(1000, 'visible'); } });
+    if (account && !playingNow()) scheduleSync(1500, 'startup');
     // Unión pendiente (primer arranque, cierre a medias; los dispositivos que quedaron en el antiguo «saltado» se cargan también): se hace sola.
     if (account && sync && sync.migration === 'skipped') { sync.migration = 'pending'; saveSync(); }
     if (account && sync && sync.migration === 'pending') setTimeout(function () { if (navigator.onLine !== false && mergeDue()) doMerge(); }, 800);

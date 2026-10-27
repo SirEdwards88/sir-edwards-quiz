@@ -31,7 +31,7 @@ test('una unión pendiente se completa sola al abrir la app y al volver la red',
   assert.match(online, /accountHadProgress: function \(\) \{ return loginHadProgress \|\| /);
 });
 test('sin sincronizar a mitad de partida y aviso de caducidad en el gate', () => {
-  assert.match(online, /if \(account && !midGame\(\)\) scheduleSync\(1500/);
+  assert.match(online, /if \(account && !playingNow\(\)\) scheduleSync\(1500/);
   assert.match(online, /Tu sesión ha caducado[^']*'\); \/\/ también en el gate/);
   assert.match(online, /!ui\.expired\) setMsg\(''\)/);
 });
@@ -41,4 +41,15 @@ test('cerrar sesión sube lo pendiente y avisa si no pudo, y da de baja el push'
 });
 test('el nombre y la bienvenida esperan a que se cargue la cuenta', () => {
   assert.match(read('src/ui/intro.js'), /SEQOnline\.migrationPending/);
+});
+
+test('auditoría 3, tanda 1 (cliente)', () => {
+  assert.match(online, /t\[k\] < sync\.base\[k\]\) storeLost = true/);                      // #5 store por debajo de la base: la cuenta repone
+  assert.match(online, /store = getDefaultStore\(\)/);                                    // #6 vaciar el store en memoria al cambiar de cuenta
+  assert.match(online, /played\[c\[0\]\] = Math\.max\(0, cur - sent\)/);                 // #10 lo jugado durante el vuelo
+  assert.match(online, /reason !== 'manual' && playingNow\(\)/);                          // #12 sin lote a media partida
+  assert.match(online, /data\.error\.retry_after/);                                        // #13 Retry-After del cuerpo
+  assert.match(online, /whenIdle\(function \(\) \{ syncNow\('manual'\)/);                   // #16 esperar al sync en curso
+  assert.ok(!/descarga una copia/.test(read('index.html')));                              // #17
+  assert.ok(!/se retomará tu cuenta/.test(online));                                       // #15
 });
