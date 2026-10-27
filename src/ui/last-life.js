@@ -38,9 +38,6 @@
   var lastKey = '';       // evita repetir el aviso de última pregunta si se vuelve a pintar la misma
   var timer = 0;
 
-  function reduced() {
-    try { return !!(root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; }
-  }
   function banner(title, sub, tone) {
     var host = root.document && root.document.getElementById('view-game');
     if (!host) return;
@@ -69,7 +66,7 @@
     var total = game.totalQuestionsToPlay;
     if (!isLastQuestion(game.mode, game.currentIdx, total)) { lastKey = ''; return; }
     var key = game.mode + ':' + game.currentIdx;
-    if (key === lastKey || reduced()) { lastKey = key; return; }
+    if (key === lastKey) { lastKey = key; return; }
     lastKey = key;
     if (last) banner('Una vida. Una pregunta.', 'No la desperdicies como las anteriores.', 'is-life');
     else { var qm = game.mode === 'sudden_death' ? 'sudden_death' : 'survival'; banner('Última pregunta', sub('lastq_' + qm, LASTQ_SUBS[qm]), 'is-last'); }
@@ -81,7 +78,7 @@
     armed = true;
     var lbl = root.document && root.document.getElementById('game-progress-lbl');
     if (lbl) lbl.classList.add('last-life');
-    if (!reduced() && !isLastQuestion(game.mode, game.currentIdx, game.totalQuestionsToPlay)) {
+    if (!isLastQuestion(game.mode, game.currentIdx, game.totalQuestionsToPlay)) {
       banner('Última vida', sub('lastlife_sub', LASTLIFE_SUBS), 'is-life');
     }
   }
@@ -90,7 +87,7 @@
   function onCorrect(game) {
     if (!game || !armed || !isLastLife(game.mode, game.lives)) return;
     armed = false;
-    if (!reduced() && !isLastQuestion(game.mode, game.currentIdx, game.totalQuestionsToPlay)) banner('Sigues con vida. Por ahora.', '', 'is-ok');
+    if (!isLastQuestion(game.mode, game.currentIdx, game.totalQuestionsToPlay)) banner('Sigues con vida. Por ahora.', '', 'is-ok');
   }
 
   function reset() { armed = false; lastKey = ''; }

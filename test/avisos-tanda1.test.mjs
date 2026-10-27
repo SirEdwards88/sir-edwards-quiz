@@ -30,3 +30,13 @@ test('enigma final: la solución se lee antes del overlay', () => {
 test('resultados retiran los avisos de racha y de vida', () => {
   assert.match(read('src/ui/game-fx.js'), /querySelectorAll\('\.fx-streak-banner, \.fx-lastlife-banner'\)/);
 });
+
+test('tanda 2: los avisos no dependen de «reducir movimiento» y los de Fragmentos/Encargos no se pisan', () => {
+  assert.doesNotMatch(read('src/ui/game-fx.js'), /!host \|\| reduce/);
+  assert.doesNotMatch(read('src/ui/last-life.js'), /reduced\(\)/);
+  assert.doesNotMatch(read('src/online/reto-fx.js'), /reduced\(\)/);
+  const rt = read('src/ui/reward-toast.js');
+  assert.match(rt, /tierWaiting/);
+  assert.match(rt, /encargos-toast\.show/);
+  assert.match(read('index.html'), /'copa'\), 4900\)/);
+});

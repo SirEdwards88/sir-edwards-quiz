@@ -68,7 +68,9 @@
   // hadNewModes: si acaba de salir el aviso de un modo nuevo, espera a que termine el suyo.
   var pend = 0;
   // true mientras haya un aviso de logro en pantalla o programado (los Encargos esperan a que acabe).
-  function busy() { return pend > 0 || !!document.querySelector('.reward-toast.show'); }
+  var tierWaiting = false; // el aviso de Ventaja de Lucidez espera su turno: los Encargos (y todo lo demás) esperan detrás
+  function baseBusy() { return pend > 0 || !!document.querySelector('.reward-toast.show'); }
+  function busy() { return baseBusy() || tierWaiting; }
   function announce(medals, hadNewModes) {
     if (!cards(medals).length) return;
     pend++;
@@ -93,7 +95,7 @@
   // Espera a que no haya otro aviso (modo nuevo, solemne de Lucidez, logros) y a que lleve libre un rato, para no pisarlos.
   var tierTimer = null;
   function tierBusy() {
-    return busy() || !!document.querySelector('.mode-unlock-toast.show') || !!document.querySelector('.lucidez-unlock-overlay') ||
+    return baseBusy() || !!document.querySelector('.encargos-toast.show') || !!document.querySelector('.mode-unlock-toast.show') || !!document.querySelector('.lucidez-unlock-overlay') ||
       !!(root.SEQLucidezUnlock && root.SEQLucidezUnlock.active && root.SEQLucidezUnlock.active());
   }
   function tierHTML(t) {
@@ -107,13 +109,15 @@
     if (!t || !t.fragments) return;
     var free = 0, tries = 0;
     clearInterval(tierTimer);
+    tierWaiting = true;
     tierTimer = setInterval(function () {
       tries++;
       var card = document.getElementById('results-card');
-      if (!card || !card.offsetParent || tries > 60) { clearInterval(tierTimer); return; } // salió de la tarjeta final
+      if (!card || !card.offsetParent || tries > 60) { clearInterval(tierTimer); tierWaiting = false; return; } // salió de la tarjeta final
       free = tierBusy() ? 0 : free + 1;
       if (free < 4) return; // ~1,6 s libre seguidos
       clearInterval(tierTimer);
+      tierWaiting = false;
       var el = document.querySelector('.reward-toast');
       if (!el) { el = document.createElement('div'); el.className = 'reward-toast'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
       el.classList.remove('reward-toast-group');

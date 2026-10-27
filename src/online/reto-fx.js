@@ -12,9 +12,6 @@
   var LOSS = 3;
   var chTimer = 0, flashTimer = 0, bannerTimer = 0, shownKeys = {};
 
-  function reduced() {
-    try { return !!(root.matchMedia && root.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; }
-  }
   function isClock(modo) { return !!BONUS[modo]; }
 
   // Aviso flotante de segundos + destello del número del reloj. `gain`: true si acertó.
@@ -39,7 +36,7 @@
   }
 
   function banner(title, sub, tone) {
-    var doc = root.document; if (!doc || !doc.body || reduced()) return;
+    var doc = root.document; if (!doc || !doc.body) return; // con «reducir movimiento» sale igual, sin animación (CSS)
     var old = doc.querySelector('.fx-lastlife-banner'); if (old) old.remove();
     clearTimeout(bannerTimer);
     var b = doc.createElement('div');

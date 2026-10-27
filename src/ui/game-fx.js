@@ -126,7 +126,7 @@
   }
   function streakBanner(n) {
     var host = $('view-game');
-    if (!host || reduce) return;
+    if (!host) return; // con «reducir movimiento» el aviso sale igual, sin animación (CSS): la información no se pierde
     var old = host.querySelector('.fx-streak-banner'); if (old) old.remove();
     var b = document.createElement('div');
     b.className = 'fx-streak-banner';
