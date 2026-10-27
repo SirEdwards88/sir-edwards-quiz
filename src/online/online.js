@@ -121,6 +121,15 @@
     var t = localTotals();
     return t.xp > 0 || t.games > 0 || t.correct > 0 || t.wrong > 0 || t.medals.length > 0;
   }
+  // Restos de Encargos de otra cuenta en un dispositivo sin XP, partidas ni logros: no los detecta hasLocalProgress(), se limpian aparte.
+  function wipeLocalEncargos() {
+    try {
+      if (typeof store === 'object' && store) { delete store.encargos; store.encargosClaimed = []; if (typeof saveStore === 'function') saveStore(false); }
+      localStorage.removeItem('siredwards_quiz_encargos_intro_seen');
+      localStorage.removeItem('siredwards_quiz_encargos_monday_week');
+      try { SEQEncargosUI.renderHome(); } catch (e) {}
+    } catch (e) {}
+  }
   function progressHasData(p) { return !!p && (n(p.xp) > 0 || n(p.games) > 0 || n(p.correct) > 0 || n(p.wrong) > 0 || (p.medals || []).length > 0); }
 
   // ---- Persistencia de cuenta / estado de sync ------------------------------
@@ -511,6 +520,7 @@
         sync.otherAccountBefore = otherBefore;
         saveSync();
         if (!hasLocal && !hasOnline) {
+          if (otherBefore) wipeLocalEncargos();
           sync.migration = 'done'; saveSync();
           toast(pickOne(['Sesión iniciada. Sir Edwards te reconoce.', 'Sesión iniciada. Adelante; la puerta ya estaba abierta.']), 'correcto');
         } else {
@@ -714,6 +724,7 @@
     if (sync.migration !== 'pending') { if (m) m.style.display = 'none'; render(); return; }
     var hasOnline = progressHasData(lastMigOnline);
     if (!hasLocalProgress()) {
+      wipeLocalEncargos();
       sync = newSyncState(account.player.id, 'skipped', baseFromLocal(), sync.seen || emptySeen());
       saveSync();
       if (m) m.style.display = 'none';
