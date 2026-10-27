@@ -203,6 +203,8 @@
     var vis = !!rc && rc.style.display !== 'none' && getComputedStyle(rc).display !== 'none';
     if (vis && !resultsVisible) {
       lastStreak = 0;
+      // Los avisos de racha y de vida viven en #view-game, como la tarjeta de resultados: no deben seguir encima de ella.
+      Array.prototype.forEach.call(document.querySelectorAll('.fx-streak-banner, .fx-lastlife-banner'), function (n) { n.remove(); });
       setTimeout(function () {
         // El porcentaje se lee ANTES de animar las cifras (la animación empieza escribiendo 0 %).
         var pct = parseInt(($('res-percentage-text') || {}).textContent, 10);
