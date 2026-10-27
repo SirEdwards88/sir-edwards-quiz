@@ -37,7 +37,7 @@ test('sin sincronizar a mitad de partida y aviso de caducidad en el gate', () =>
 });
 test('cerrar sesión sube lo pendiente y avisa si no pudo, y da de baja el push', () => {
   assert.match(online, /Cerrar sesión igual/);
-  assert.match(online, /api\('DELETE', '\/me\/push'\)/);
+  assert.match(online, /SEQPush\.disable\(\)/);
 });
 test('el nombre y la bienvenida esperan a que se cargue la cuenta', () => {
   assert.match(read('src/ui/intro.js'), /SEQOnline\.migrationPending/);

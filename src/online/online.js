@@ -600,11 +600,18 @@
     // Cerrar sesión NO elimina la cuenta ni borra nada local: solo descarta el token.
     try { if (window.google && google.accounts && google.accounts.id) google.accounts.id.disableAutoSelect(); } catch (e) {}
     // Las notificaciones push de esta cuenta no deben seguir llegando a este móvil si entra otra (sin bloquear si falla).
-    try { if (account) api('DELETE', '/me/push').catch(function () {}); } catch (e) {}
-    account = null; saveAccount(); ui.editing = false; ui.expired = false; ui.error = '';
-    clearTimeout(timer); clearTimeout(retryTimer);
-    toast('Sesión cerrada. Tu progreso sigue en este dispositivo.', 'sombrero');
-    render();
+    // SEQPush.disable() envía el endpoint en el cuerpo (un DELETE sin cuerpo da 415) y limpia el aviso local.
+    var pushOff = null, done = false;
+    try { if (account && window.SEQPush && SEQPush.disable) pushOff = Promise.race([SEQPush.disable(), new Promise(function (r) { setTimeout(r, 2500); })]); } catch (e) {}
+    function finish() {
+      if (done) return; done = true;
+      account = null; saveAccount(); ui.editing = false; ui.expired = false; ui.error = '';
+      clearTimeout(timer); clearTimeout(retryTimer);
+      toast('Sesión cerrada. Tu progreso sigue en este dispositivo.', 'sombrero');
+      render();
+    }
+    // La baja del push necesita el token: la cuenta se descarta cuando termina (tope de 2,5 s).
+    if (pushOff) pushOff.then(finish, finish); else finish();
   }
 
   function logoutAll() {

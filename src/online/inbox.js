@@ -139,7 +139,7 @@
       if (typeof switchTab === 'function') switchTab('duelo');
       if (!window.SEQDuels || !SEQDuels.open) return;
       if (list.length === 1) SEQDuels.open(list[0].kind, list[0].id);
-      else SEQDuels.open(list.every(function (i) { return i.kind === 'reto' || i.kind === 'mreto'; }) ? 'retos' : list.every(function (i) { return i.kind === 'duel' || i.kind === 'multi'; }) ? 'duels' : null);
+      else SEQDuels.open(list.every(function (i) { return i.kind === 'reto' || i.kind === 'mreto'; }) ? 'retos' : 'duels');   // lista mixta (o con solicitudes de amistad): siempre una pantalla que existe
     } catch (e) {}
   }
   function answer(it, action) {
@@ -242,6 +242,11 @@
         var already = fresh.map(function (i) { return i.kind + ':' + i.id; });
         fresh = fresh.concat(waitingFrom(got.retos, got.mretos).filter(function (i) { return already.indexOf(i.kind + ':' + i.id) < 0; }));
       }
+      // Los avisos en cola que ya no están pendientes (invitación caducada, reto vencido o respondido) se descartan.
+      var live = {};
+      pendingFrom(got.duels, got.retos, got.multis, got.mretos, got.requests).concat(waitingFrom(got.retos, got.mretos)).forEach(function (i) { live[i.kind + ':' + i.id] = 1; });
+      var loaded = { duel: got.duels, reto: got.retos, multi: got.multis, mreto: got.mretos, friend: got.requests };
+      queue = queue.filter(function (i) { return !loaded[i.kind] || live[i.kind + ':' + i.id]; });
       queue = unseen(queue.concat(fresh), []).filter(function (i, k, a) { return a.findIndex(function (j) { return j.kind === i.kind && j.id === i.id; }) === k; });
       flush();
     }).catch(function () { busy = false; });

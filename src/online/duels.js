@@ -259,7 +259,7 @@
   // ---- Navegación ------------------------------------------------------------
   function stopTimers() { clearTimeout(S.presT); S.presT = null; clearTimeout(S.pollT); S.pollT = null; clearInterval(S.tickT); S.tickT = null; urgencyStop(); }
   function open(screen, id) {
-    if (!active()) return;
+    if (!active() || !screen) return;     // sin pantalla no se oculta el hub (quedaba una vista en blanco)
     stopTimers();
     try { if (typeof closeDuelPanels === 'function') closeDuelPanels(); } catch (e) {}
     // 2.5: «mreto» = Reto todos contra todos; se comporta como un Reto (mismo reloj, sondeo y partida) con otra ruta y otras pantallas.
@@ -357,7 +357,9 @@
   function recordFromList(list, kind) {
     var playing = playingIds();
     (list || []).forEach(function (x) {
-      if (x && x.estado === 'completado' && playing.indexOf(playKey(kind, x.id)) >= 0) { recordDuel(x, x.id, kind); forgetPlaying(kind, x.id); }
+      if (!x || x.estado !== 'completado' || playing.indexOf(playKey(kind, x.id)) < 0) return;
+      // La lista no trae los hitos (solo el detalle): se pide el detalle para no perderlos. Si falla, se reintentará al abrir el hub.
+      call('GET', (kind === 'reto' ? '/challenges/' : '/duels/') + safeId(x.id)).then(function (d) { recordDuel(d, x.id, kind); forgetPlaying(kind, x.id); }).catch(function () {});
     });
   }
   function recordDuel(d, duelId, kind) {
@@ -1253,7 +1255,7 @@
   };
   window.SEQDuels = {
     shareResult: shareResultCard, leaveDuel: leaveDuel, answerText: answerText, createReto: createReto, pickMode: pickMode,
-    open: open, back: back, pick: pick, pick1v1: function (m) { pick1v1('duel', m); }, pickModeMulti: pickModeMulti, create: create, quick: quick,
+    open: open, back: back, refreshSummary: refreshSummary, pick: pick, pick1v1: function (m) { pick1v1('duel', m); }, pickModeMulti: pickModeMulti, create: create, quick: quick,
     duelAction: duelAction, retoAction: retoAction, listAction: listAction, answer: answer,
     doSearch: doSearch, friendAdd: friendAdd, friendResp: friendResp, reload: load,
     onAccountChange: onAccountChange, onShow: onShow,
