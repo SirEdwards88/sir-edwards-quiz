@@ -5791,3 +5791,12 @@ body.in-game { overscroll-behavior-y: none; }
 .section-back-btn, .section-help-btn, .home-info-btn { position: relative; }
 .section-back-btn::after, .section-help-btn::after, .home-info-btn::after { content: ''; position: absolute; inset: -5px; }
 
+
+/* Aviso de bloqueo con recuadro del logro que falta. */
+.info-toast.centro .toast-msg{ font-size:17px; line-height:1.35; font-weight:700; }
+.info-toast.centro .toast-detail{ display:flex; flex-direction:column; gap:3px; width:100%; padding:10px 12px; border-radius:14px; background:rgba(255,255,255,.06); border:1px solid rgba(232,200,116,.28); }
+.info-toast.centro .toast-detail[hidden]{ display:none; }
+.info-toast .toast-detail-label{ font:800 10.5px/1.2 Inter, sans-serif; letter-spacing:.14em; text-transform:uppercase; color:#e8c874; }
+.info-toast .toast-detail-title{ font:700 16px/1.25 'Playfair Display', serif; color:#fdf7ea; }
+.info-toast .toast-detail-desc{ font-size:13.5px; line-height:1.4; font-weight:400; color:rgba(253,247,234,.78); }
+.ach-unlocks { margin-top: 3px; font-size: 12px; font-weight: 700; letter-spacing: .02em; color: #c9992e; }

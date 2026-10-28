@@ -96,6 +96,8 @@
   }
   function esc(v) { return String(v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   var openState = {};
+  // Logros que abren un modo (se dice en su fila, para que se sepa para qué sirven).
+  var MODE_UNLOCKS = { surv_ameba: 'Muerte Súbita', tt_15: 'Cálculo Mental' };
 
   // Con Lucidez Mental desbloqueada, sus 3 logros secretos se desvelan (nombre y requisito). «Todos los logros» sigue oculto.
   function lucidezOpen(s) {
@@ -123,7 +125,7 @@
     var tag = (frag ? '<span class="ach-frag' + (unlocked ? ' got' : '') + '" title="' + (unlocked ? 'Fragmento obtenido' : 'Otorga un Fragmento de Mente') + '"><img src="assets/ui/fragmento.webp" alt="" draggable="false"></span>' : '') + avTag;
     return '<div class="ach-row ' + (unlocked ? 'is-done' : 'is-locked') + '">' +
       '<div class="ach-ico-wrap"><div class="ach-ico has-img">' + iconHTML(m) + (unlocked ? '<span class="ach-check" aria-hidden="true">✓</span>' : '') + '</div>' + (unlocked ? '' : '<img class="ach-lock" src="assets/ui/logros/candado.webp" alt="" draggable="false">') + '</div>' +
-      '<div class="ach-body"><div class="ach-title">' + esc(m.title) + tag + '</div><div class="ach-desc">' + esc(m.desc) + '</div>' + prog + '</div></div>';
+      '<div class="ach-body"><div class="ach-title">' + esc(m.title) + tag + '</div><div class="ach-desc">' + esc(m.desc) + '</div>' + (MODE_UNLOCKS[m.id] ? '<div class="ach-unlocks">' + (unlocked ? 'Modo desbloqueado: ' : 'Desbloquea el modo ') + esc(MODE_UNLOCKS[m.id]) + '</div>' : '') + prog + '</div></div>';
   }
 
   function render(container) {
