@@ -127,7 +127,7 @@
   function streakBanner(n) {
     var host = $('view-game');
     if (!host) return; // con «reducir movimiento» el aviso sale igual, sin animación (CSS): la información no se pierde
-    var old = host.querySelector('.fx-streak-banner'); if (old) old.remove();
+    var old = document.querySelector('.fx-streak-banner'); if (old) old.remove();
     var b = document.createElement('div');
     b.className = 'fx-streak-banner';
     b.setAttribute('aria-hidden', 'true');
@@ -142,12 +142,16 @@
       b.appendChild(chip);
     }
     // 2.0: sobre la cabecera de la partida (modo · contador), no encima del enunciado de la pregunta.
+    // El aviso es FIJO respecto a la pantalla (no a la vista): con el teclado abierto o la vista desplazada (el feedback se centra solo),
+    // la cabecera queda fuera de pantalla y el aviso, anclado a ella, no se veía. Si la cabecera no se ve, va arriba de lo visible.
+    var vh = window.innerHeight || 600, top = 96;
     var anchor = $('game-progress-lbl');
     if (anchor && anchor.getBoundingClientRect) {
-      var ar = anchor.getBoundingClientRect(), top = ar.top + ar.height / 2 - host.getBoundingClientRect().top;
-      if (isFinite(top) && top > 0) b.style.top = Math.max(34, Math.round(top)) + 'px'; // el centro del aviso (translate -50%)
+      var ar = anchor.getBoundingClientRect(), c = ar.top + ar.height / 2;
+      if (isFinite(c) && c >= 34 && c <= vh * 0.6) top = Math.round(c);
     }
-    host.appendChild(b);
+    b.style.top = Math.max(34, Math.min(top, Math.round(vh * 0.4))) + 'px';
+    document.body.appendChild(b);
     setTimeout(function () { b.remove(); }, 1500);
   }
   function onStreak() {

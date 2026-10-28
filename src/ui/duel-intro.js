@@ -73,6 +73,12 @@
     if (g.open) { set(K_UNLOCKED, '1'); set(K_ANNOUNCED, '1'); }
   }
 
+  // Tras traer el progreso de una cuenta: si ya abre Duelo, se anota como abierto y anunciado sin avisar (no es un modo nuevo).
+  function markOpenSilently() {
+    var g = gate(typeof store === 'object' ? store : null);
+    if (g.open) { set(K_UNLOCKED, '1'); set(K_ANNOUNCED, '1'); }
+  }
+
   // ---- Tarjeta de ayuda -------------------------------------------------------------------------------------------------
   function sec(img, title, body, extra) {
     return '<section class="dh-sec"><img class="dh-ico" src="' + img + '" alt="" draggable="false"><div class="dh-txt"><h3>' + title + '</h3><p>' + body + '</p></div>' + (extra ? '<div class="dh-subs">' + extra + '</div>' : '') + '</section>';
@@ -179,7 +185,7 @@
   try { document.addEventListener('DOMContentLoaded', function () { fillHelp(); refresh(); }); } catch (e) {}
 
   window.SEQDuelIntro = {
-    gate: gate, takeNewUnlock: takeNewUnlock, resetLocal: resetLocal, onAccountSwitch: onAccountSwitch, intercept: intercept, refresh: refresh, introIfNeeded: introIfNeeded, fillHelp: fillHelp, helpHtml: helpHtml,
+    gate: gate, takeNewUnlock: takeNewUnlock, resetLocal: resetLocal, onAccountSwitch: onAccountSwitch, markOpenSilently: markOpenSilently, intercept: intercept, refresh: refresh, introIfNeeded: introIfNeeded, fillHelp: fillHelp, helpHtml: helpHtml,
     NEED_LEVEL: NEED_LEVEL
   };
 })();

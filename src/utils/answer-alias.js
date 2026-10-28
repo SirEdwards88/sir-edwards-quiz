@@ -64,6 +64,11 @@ var SEQAnswerGuard = (function () {
     var rT = (rj || []).map(tok).filter(function (t) { return t.length; });
     var rN = (rj || []).map(function (r) { return tok(r).join(' '); }).filter(Boolean);
     var uJ = uT.join(' ');
+    // 3b. Escribir solo palabras de un distractor y ninguna de la respuesta no es una errata («Pentatlón» no vale para «Heptatlón»).
+    var candTok = [];
+    matched.forEach(function (x) { candTok = candTok.concat(tok(cands[x])); });
+    var onlyRej = uT.every(function (w) { return !strictTok(w, candTok); }) && rT.some(function (t) { return covers(uT, t); });
+    if (onlyRej) return false;
 
     for (var i = 0; i < matched.length; i++) {
       var cT = tok(cands[matched[i]]);

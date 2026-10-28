@@ -34,8 +34,8 @@ test('formato: 4 opciones distintas con la respuesta entre ellas y una curiosida
   }
 });
 
-test('Lucidez: 32 elegibles (la 461, SOS, tiene una respuesta demasiado larga); Big Ben y el Comité Noruego pesan 1', () => {
-  assert.deepEqual(Array.from(NEW_Q.filter((q) => !q.lz), (q) => q.n), [461]);
+test('Lucidez: 31 elegibles (la 461, SOS, tiene una respuesta demasiado larga; la 465 se retiró de Lucidez porque «3» valía por 3,05); Big Ben y el Comité Noruego pesan 1', () => {
+  assert.deepEqual(Array.from(NEW_Q.filter((q) => !q.lz), (q) => q.n), [461, 465]);
   assert.ok(NEW_Q.filter((q) => q.lz).every((q) => q.lz === 'A' || q.lz === 'B'));
   assert.deepEqual(Array.from(NEW_Q.filter((q) => q.lz === 'B'), (q) => q.n), [459, 480]);
   assert.deepEqual(Array.from(NEW_Q.find((q) => q.n === 454).par), [468]);
@@ -70,7 +70,8 @@ test('correcciones: q8, q146, q223, q225, q247, q297, q305, q330 y q392 iguales 
   assert.match(g(T, 305).sabias, /relatividad general/);
   assert.equal(g(T, 330).a, 'Pau Gasol');
   assert.ok(g(T, 330).options.includes('Pau Gasol'));
-  assert.ok(ctx.m('Gasol', g(Q, 330)));
+  assert.ok(!ctx.m('Gasol', g(Q, 330)), '«Gasol» a secas vale también por Marc: auditoría 5');
+  assert.ok(ctx.m('Pau', g(Q, 330)));
   assert.match(g(T, 392).q, /número atómico 54/);
   assert.ok(ctx.m('xenon', g(Q, 392)));
 });

@@ -534,7 +534,6 @@
       var same = !!(sync && sync.playerId === data.player.id);
       if (same && sync.migration !== 'pending') {
         // Misma cuenta que ya estaba enlazada en este dispositivo: se retoma sin volver a preguntar.
-        toast(pickOne(['Sesión iniciada. Sir Edwards te reconoce.', 'Sesión iniciada. Adelante; la puerta ya estaba abierta.']), 'correcto');
         render();
         syncNow('login');
       } else {
@@ -552,7 +551,6 @@
         if (otherBefore) wipeLocalEncargos();
         if (!hasLocal && !hasOnline) {
           sync.migration = 'done'; saveSync();
-          toast(pickOne(['Sesión iniciada. Sir Edwards te reconoce.', 'Sesión iniciada. Adelante; la puerta ya estaba abierta.']), 'correcto');
         } else {
           setTimeout(function () { doMerge(); }, 0);
         }
@@ -717,11 +715,12 @@
         COUNTERS.forEach(function (c) { store[c[1]] = target[c[0]] + played[c[0]]; });
         store.bestStreak = Math.max(n(store.bestStreak), n(p.best_streak));
         unionMedalsIntoStore(p.medals);
+        // Quien recupera su cuenta ya tenía Duelo abierto: se anota en silencio (sin la tarjeta de «modo nuevo» encima del nombre).
+        try { SEQDuelIntro.markOpenSilently(); } catch (e) {}
         afterLocalChange(gamesAdded);
         // Quien recupera una cuenta con partidas no es nuevo: sin presentación de los Encargos y con la tira de Inicio ya visible.
         if (target.games > 0) { try { SEQEncargosIntro.markSeen(); SEQEncargosUI.renderHome(); } catch (e) {} }
         mergeTries = 0;
-        toast(pickOne(['Sesión iniciada. Sir Edwards te reconoce.', 'Sesión iniciada. Adelante; la puerta ya estaba abierta.']), 'correcto');
         scheduleSync(1800, 'merge'); // logros derivados que el juego desbloquea localmente al aplicar los totales
       })
       .catch(function (err) {

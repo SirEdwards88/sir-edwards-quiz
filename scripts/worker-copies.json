@@ -1,7 +1,7 @@
 {
   "literal": {
     "src/utils/matching.js": "095f6b8efd6ad320",
-    "src/utils/answer-alias.js": "03aefa9d84d8a724",
+    "src/utils/answer-alias.js": "122b56f982a750c3",
     "src/utils/lucidez-select.js": "d64e741c92968981",
     "src/utils/mental-calc.js": "eba038f76a434779",
     "src/utils/sync-merge.js": "1a0cf809e0e30e26"
@@ -10,7 +10,7 @@
     "src/utils/sudden-progression.js": "d2586129d1166d82"
   },
   "data": {
-    "src/data/questions.js": "60efd8feb4570c61",
+    "src/data/questions.js": "fd192cd8c5043fb9",
     "src/data/questions-retired.js": "b6d5f9f2dc0ff231",
     "src/data/lucidez.js": "832d228ea210b462",
     "src/data/medals.js": "7df230d9f9a7776f",

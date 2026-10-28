@@ -5331,7 +5331,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
 
 /* Aviso de hito de racha. */
 #view-game { position: relative; }
-.fx-streak-banner { position: absolute; left: 50%; top: 150px; z-index: 30; pointer-events: none; display: flex; align-items: baseline; gap: 8px;
+.fx-streak-banner { position: fixed; left: 50%; top: 150px; z-index: 60; pointer-events: none; display: flex; align-items: baseline; gap: 8px;
   padding: 12px 22px; border-radius: 999px; background: linear-gradient(135deg, #16244a, #5b2e8f); color: #fdf7ea;
   border: 1.5px solid rgba(232,200,116,.7); box-shadow: 0 18px 40px rgba(22,36,74,.4); transform: translate(-50%, -50%);
   animation: fx-banner 1.5s cubic-bezier(.2,.9,.3,1.2) both; }
