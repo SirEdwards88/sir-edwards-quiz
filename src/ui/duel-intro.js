@@ -70,13 +70,15 @@
   function onAccountSwitch() {
     resetLocal();
     var g = gate(typeof store === 'object' ? store : null);
-    if (g.open) { set(K_UNLOCKED, '1'); set(K_ANNOUNCED, '1'); }
+    if (g.open) { set(K_UNLOCKED, '1'); set(K_ANNOUNCED, '1'); set(K_INTRO, '1'); }
   }
 
   // Tras traer el progreso de una cuenta: si ya abre Duelo, se anota como abierto y anunciado sin avisar (no es un modo nuevo).
   function markOpenSilently() {
     var g = gate(typeof store === 'object' ? store : null);
-    if (g.open) { set(K_UNLOCKED, '1'); set(K_ANNOUNCED, '1'); }
+    // Quien recupera una cuenta con Duelo abierto no es nuevo: tampoco se le repite la presentación de Sir Edwards, y la tarjeta se
+    // actualiza ya (antes seguía bloqueada hasta cambiar de pestaña, y al entrar salía la presentación otra vez).
+    if (g.open) { set(K_UNLOCKED, '1'); set(K_ANNOUNCED, '1'); set(K_INTRO, '1'); try { refresh(); } catch (e) {} }
   }
 
   // ---- Tarjeta de ayuda -------------------------------------------------------------------------------------------------
@@ -88,16 +90,17 @@
   }
   function helpHtml() {
     return '<div class="dh">' +
-      sec('assets/modes/amigos.webp', 'Amigos', 'Se juega con amigos de tu lista. Sí, hace falta tener amigos.') +
-      sec('assets/modes/duelo-online.webp', 'Duelo online', 'Jugáis a la vez, con dos modos.',
+      '<p class="dh-lead">Antes de retar a nadie, conviene saber a qué te enfrentas.</p>' +
+      sec('assets/modes/amigos.webp', 'Amigos', 'Se juega con amigos de tu lista. Sí, hace falta tener amigos. Sir Edwards no puede ayudarte con eso.') +
+      sec('assets/modes/duelo-online.webp', 'Duelo online', 'Jugáis a la vez, en directo, y no hay dónde esconderse. Dos modos:',
         sub('assets/duelos/modos/classic.webp', 'Clásico', 'Veinte preguntas; gana quien más acierte.') +
-        sub('assets/duelos/modos/stakes.webp', 'Con apuestas', 'Antes de cada pregunta eliges en secreto cuánto te fías de ti: Cuerdo (±1), Osado (±2) o Insensato (±3). ' +
-          'Si aciertas, sumas esa cifra; si fallas, la restas, sin bajar de 0. Si no eliges a tiempo, se aplica Cuerdo. ' +
-          'Las dos últimas rondas valen el doble y hay niebla: dejas de ver la puntuación de los rivales.')) +
-      sec('assets/modes/retos.webp', 'Retos', 'Retas a un amigo y cada uno juega su parte por separado, sin coincidir, dentro del plazo de 3 días.') +
+        sub('assets/duelos/modos/stakes.webp', 'Con apuestas', 'Eliges en secreto cuánto te fías de ti: Cuerdo (±1), Osado (±2) o Insensato (±3). ' +
+          'Aciertas, sumas; fallas, restas, sin bajar de 0. Si dudas demasiado, Sir Edwards elige Cuerdo por ti. ' +
+          'Las dos últimas rondas valen el doble y hay niebla: no ves la puntuación de los rivales.')) +
+      sec('assets/modes/retos.webp', 'Retos', 'Retas a un amigo y cada uno juega su parte por separado, cuando os venga bien, dentro del plazo de 3 días. Quien reta elige el modo.') +
       sec('assets/duelos/formato/uno-contra-uno.webp', '1 vs 1 o Todos contra todos', 'Contra un amigo, o contra dos o tres a la vez. Gana quien más sume.') +
       '<div class="dh-notes">' +
-        '<p><b>Lo que cuenta.</b> Los duelos y retos 1 vs 1 suman para tus estadísticas, logros y ELO. ' +
+        '<p><b>Lo que cuenta.</b> Los duelos y retos 1 vs 1 suman para tus estadísticas, logros y ELO: ganar lo sube, perder lo baja, y el ranking no perdona. ' +
           'Todos contra todos lleva sus propias estadísticas y logros, aparte. Ganar por abandono no cuenta; abandonar sí es derrota.</p>' +
         '<p><b>No te vayas a mitad.</b> A los 60 s sin conexión pierdes por abandono.</p>' +
       '</div></div>';
