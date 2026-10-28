@@ -26,11 +26,15 @@
 /* ---- Pantalla de Encargos ---- */
 #view-encargos .enc-scene { display: flex; align-items: flex-end; gap: 10px; margin: 6px 0 12px; }
 .enc-scene-img { width: 112px; height: auto; max-height: 130px; object-fit: contain; flex: 0 0 auto; }
+/* Frase de Sir Edwards: globo que destaca de las tarjetas. Claro: azul noche con borde dorado; oscuro: pergamino oscuro cálido. */
 .enc-bubble {
-  position: relative; flex: 1 1 auto; padding: 12px 14px; font-size: 13.5px; line-height: 1.4; font-style: italic;
-  background: var(--se-parch, #f4ecd8); color: #16244a; border: 1px solid var(--se-gold-hair, rgba(201,153,46,.45)); border-radius: 14px 14px 14px 4px;
+  position: relative; flex: 1 1 auto; padding: 14px 16px 14px 18px; font-size: 15px; line-height: 1.45; font-weight: 500; font-style: italic;
+  background: linear-gradient(180deg, #2c386a, #1a2146); color: #fdf7ea; border: 2px solid #c9992e; border-radius: 16px 16px 16px 4px;
+  box-shadow: 0 0 0 3px rgba(201, 153, 46, .12), 0 8px 20px rgba(0, 0, 0, .35);
 }
-[data-theme="dark"] .enc-bubble { color: #f1e7cf; }
+.enc-bubble::before { content: ''; position: absolute; left: -9px; bottom: 14px; width: 16px; height: 16px; background: #1f2851; border-left: 2px solid #c9992e; border-bottom: 2px solid #c9992e; transform: rotate(45deg); }
+[data-theme="dark"] .enc-bubble { background: linear-gradient(180deg, #4b4330, #383222); color: #f6e6b8; border-width: 1.5px; box-shadow: 0 6px 16px rgba(0, 0, 0, .4); }
+[data-theme="dark"] .enc-bubble::before { background: #3f3828; border-left-width: 1.5px; border-bottom-width: 1.5px; }
 .enc-meta { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; font-weight: 700; color: var(--sub); margin: 0 2px 10px; }
 .enc-list { display: grid; gap: 10px; margin-bottom: 14px; }
 .enc-card {
