@@ -5790,3 +5790,4 @@ body.in-game { overscroll-behavior-y: none; }
 /* Auditoría 7 (15): objetivos táctiles de 44 px sin cambiar el tamaño visual de los botones de cabecera. */
 .section-back-btn, .section-help-btn, .home-info-btn { position: relative; }
 .section-back-btn::after, .section-help-btn::after, .home-info-btn::after { content: ''; position: absolute; inset: -5px; }
+

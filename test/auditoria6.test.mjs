@@ -20,10 +20,11 @@ test('SW: okToCache, ?v= inmutable, sin Range, poda solo al activar, pushsubscri
   assert.match(sw, /'pushsubscriptionchange'/);
   assert.match(sw, /type === 'SKIP_WAITING'/);
 });
-test('index: copia del progreso ilegible, listener storage, aviso de versión y almacenamiento persistente (3, 4, 7, 13)', () => {
+test('index: copia del progreso ilegible, listener storage, búsqueda de versión y almacenamiento persistente (3, 4, 7, 13)', () => {
   assert.match(html, /siredwards_quiz_v1_0_data_corrupto_/);
   assert.match(html, /addEventListener\('storage'/);
-  assert.match(html, /postMessage\(\{ type: 'SKIP_WAITING' \}\)/);
+  assert.ok(!/location\.reload\(\); \}\);\n  navigator\.serviceWorker\.addEventListener\('message'/.test(html), 'sin recarga automática por controllerchange');
+  assert.match(html, /reg\.update\(\)/);
   assert.match(html, /navigator\.storage\.persist\(\)/);
   assert.ok(html.includes("localStorage.getItem('siredwards_quiz_v1_0_data')"), 'la clave de datos no cambia');
 });
