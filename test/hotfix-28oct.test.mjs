@@ -18,7 +18,7 @@ test('no hay toast «Sesión iniciada…» (se solapaba con la pestaña del nomb
 test('al recuperar una cuenta que ya abre Duelo se anota en silencio: takeNewUnlock no devuelve «modo nuevo»', () => {
   const ls = {};
   const win = {};
-  const ctx = { window: win, store: { xp: 800 }, localStorage: { getItem: (k) => (k in ls ? ls[k] : null), setItem: (k, v) => { ls[k] = String(v); }, removeItem: (k) => { delete ls[k]; } }, document: { addEventListener() {}, getElementById: () => null, querySelector: () => null }, Math, Number, isFinite };
+  const ctx = { window: win, store: { xp: 1400 }, localStorage: { getItem: (k) => (k in ls ? ls[k] : null), setItem: (k, v) => { ls[k] = String(v); }, removeItem: (k) => { delete ls[k]; } }, document: { addEventListener() {}, getElementById: () => null, querySelector: () => null }, Math, Number, isFinite };
   vm.createContext(ctx); vm.runInContext(read('src/ui/duel-intro.js'), ctx);
   const M = win.SEQDuelIntro;
   M.markOpenSilently();

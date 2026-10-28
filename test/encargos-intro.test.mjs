@@ -186,7 +186,7 @@ test('historial: sin los dos logros de Duelo en la 2.0, apuestas solo en la 2.1,
   assert.match(html, /<li>60 preguntas nuevas\. Más formas de fallar\.<\/li>/);
   const dh = read('src/ui/duel-intro.js');
   assert.match(dh, /Veinte preguntas; gana quien más acierte/);
-  assert.match(dh, /Eliges en secreto cuánto te fías de ti/);
+  assert.match(dh, /Antes de cada pregunta eliges en secreto/);
   assert.ok(!/dos logros de Duelo/.test(html));
   assert.match(html, /Sonidos, música en los menús y Sir Edwards opinando/);
 });

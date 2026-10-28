@@ -1,6 +1,6 @@
 // SirEdwards Quiz — Duelos: desbloqueo, presentación de Sir Edwards (primera vez) y tarjeta de ayuda. Script clásico.
 //
-//   · Desbloqueo: Duelo se abre al llegar al nivel 5 (700 XP). Quien ya usó los duelos (ayuda vista, historial de duelos o
+//   · Desbloqueo: Duelo se abre al llegar al nivel 7 (1.350 XP). Quien ya usó los duelos (ayuda vista, historial de duelos o
 //     desbloqueo anotado) no se vuelve a bloquear nunca. Marca local en localStorage; no toca el store ni el Worker.
 //   · Presentación: la primera vez que se entra en Duelo, Sir Edwards se presenta (tres pantallas). Sustituye al aviso de ayuda.
 //   · Ayuda: la tarjeta (?) de Duelo se pinta desde aquí (helpHtml), la misma que ve la presentación.
@@ -9,7 +9,7 @@
 (function () {
   'use strict';
 
-  var NEED_LEVEL = 5;
+  var NEED_LEVEL = 7;
   var K_UNLOCKED = 'siredwards_quiz_duel_unlocked';
   var K_ANNOUNCED = 'siredwards_quiz_duel_unlock_announced';
   var K_INTRO ='siredwards_quiz_duel_intro_seen';
@@ -66,7 +66,7 @@
 
   // Entrar con una cuenta distinta de la que había enlazada en este dispositivo: las marcas de Duelo eran de la cuenta anterior.
   // Se borran y la puerta se recalcula solo con el progreso que quede en el dispositivo; si ese progreso ya abre Duelo
-  // (nivel 5 o duelos jugados), se anota en silencio para no anunciar como nuevo un modo que ya estaba abierto.
+  // (nivel 7 o duelos jugados), se anota en silencio para no anunciar como nuevo un modo que ya estaba abierto.
   function onAccountSwitch() {
     resetLocal();
     var g = gate(typeof store === 'object' ? store : null);
@@ -94,9 +94,9 @@
       sec('assets/modes/amigos.webp', 'Amigos', 'Se juega con amigos de tu lista. Sí, hace falta tener amigos. Sir Edwards no puede ayudarte con eso.') +
       sec('assets/modes/duelo-online.webp', 'Duelo online', 'Jugáis a la vez, en directo, y no hay dónde esconderse. Dos modos:',
         sub('assets/duelos/modos/classic.webp', 'Clásico', 'Veinte preguntas; gana quien más acierte.') +
-        sub('assets/duelos/modos/stakes.webp', 'Con apuestas', 'Eliges en secreto cuánto te fías de ti: Cuerdo (±1), Osado (±2) o Insensato (±3). ' +
-          'Aciertas, sumas; fallas, restas, sin bajar de 0. Si dudas demasiado, Sir Edwards elige Cuerdo por ti. ' +
-          'Las dos últimas rondas valen el doble y hay niebla: no ves la puntuación de los rivales.')) +
+        sub('assets/duelos/modos/stakes.webp', 'Con apuestas', 'Antes de cada pregunta eliges en secreto cuánto te fías de ti: Cuerdo (±1), Osado (±2) o Insensato (±3). ' +
+          'Si aciertas, sumas esa cifra; si fallas, la restas, sin bajar de 0. Si no eliges a tiempo, se aplica Cuerdo. ' +
+          'Las dos últimas rondas valen el doble y hay niebla: dejas de ver la puntuación de los rivales.')) +
       sec('assets/modes/retos.webp', 'Retos', 'Retas a un amigo y cada uno juega su parte por separado, cuando os venga bien, dentro del plazo de 3 días. Quien reta elige el modo.') +
       sec('assets/duelos/formato/uno-contra-uno.webp', '1 vs 1 o Todos contra todos', 'Contra un amigo, o contra dos o tres a la vez. Gana quien más sume.') +
       '<div class="dh-notes">' +

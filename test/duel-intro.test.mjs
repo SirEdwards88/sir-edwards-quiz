@@ -13,13 +13,13 @@ function load(ls = {}) {
   return { M: win.SEQDuelIntro, ls };
 }
 
-test('bloqueado por debajo del nivel 5; se abre al llegar a 700 XP', () => {
+test('bloqueado por debajo del nivel 7; se abre al llegar a 1350 XP', () => {
   const { M } = load();
   assert.equal(M.gate({ xp: 0 }).open, false);
-  assert.equal(M.gate({ xp: 699 }).open, false);
-  assert.equal(M.gate({ xp: 700 }).open, true);
+  assert.equal(M.gate({ xp: 1349 }).open, false);
+  assert.equal(M.gate({ xp: 1350 }).open, true);
   const g = JSON.parse(JSON.stringify(M.gate({ xp: 250 })));
-  assert.equal(g.level, 3); assert.equal(g.needLevel, 5); assert.equal(g.missing, 450); assert.equal(g.needXp, 700);
+  assert.equal(g.level, 3); assert.equal(g.needLevel, 7); assert.equal(g.missing, 1100); assert.equal(g.needXp, 1350);
   assert.equal(M.gate({}).open, false);
   assert.equal(M.gate(null).open, false);
 });
