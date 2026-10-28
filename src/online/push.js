@@ -115,8 +115,8 @@
   function openReto(id) {
     if (!id) return;
     try {
-      if (typeof switchTab === 'function') switchTab('duelo');
-      if (window.SEQDuels && SEQDuels.open) SEQDuels.open('reto', id);
+      if (window.SEQDuels && SEQDuels.openGuarded) SEQDuels.openGuarded(function () { SEQDuels.open('reto', id); });
+      else { if (typeof switchTab === 'function') switchTab('duelo'); if (window.SEQDuels && SEQDuels.open) SEQDuels.open('reto', id); }
     } catch (e) {}
   }
   function fromHash() {

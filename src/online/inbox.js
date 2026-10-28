@@ -111,7 +111,7 @@
   }
 
   // ---- Cuándo es buen momento ------------------------------------------------------------
-  function inMatch() { var r = document.getElementById('seq-duel-root'); return !!(r && r.classList.contains('seq-d-playing')); }
+  function inMatch() { var r = document.getElementById('seq-duel-root'), v = document.getElementById('view-duelo'); return !!(r && r.classList.contains('seq-d-playing') && v && v.classList.contains('active')); }
   function inTimedGame() {
     try { return document.body.classList.contains('in-game') && typeof currentGame !== 'undefined' && TIMED_MODES.indexOf(currentGame.mode) >= 0; } catch (e) { return false; }
   }
@@ -136,10 +136,11 @@
     hide();
     if (list.length === 1 && list[0].kind === 'friend') return;     // la solicitud se responde en el propio aviso
     try {
-      if (typeof switchTab === 'function') switchTab('duelo');
       if (!window.SEQDuels || !SEQDuels.open) return;
-      if (list.length === 1) SEQDuels.open(list[0].kind, list[0].id);
-      else SEQDuels.open(list.every(function (i) { return i.kind === 'reto' || i.kind === 'mreto'; }) ? 'retos' : 'duels');   // lista mixta (o con solicitudes de amistad): siempre una pantalla que existe
+      SEQDuels.openGuarded(function () {
+        if (list.length === 1) SEQDuels.open(list[0].kind, list[0].id);
+        else SEQDuels.open(list.every(function (i) { return i.kind === 'reto' || i.kind === 'mreto'; }) ? 'retos' : 'duels');   // lista mixta (o con solicitudes de amistad): siempre una pantalla que existe
+      });
     } catch (e) {}
   }
   function answer(it, action) {
@@ -221,6 +222,7 @@
     var s = session(), f = s && s.features || {};
     if (busy || !s || !(f.classic_duel || f.async_challenges || f.multi_duel || f.multi_reto) || document.visibilityState === 'hidden' || navigator.onLine === false) return Promise.resolve();
     if (force !== true && Date.now() - lastCheck < MIN_GAP_MS) return Promise.resolve();
+    if (force !== true && inMatch()) return Promise.resolve();   // auditoría 4 (19): en plena partida no se gastan peticiones de la bandeja
     busy = true; lastCheck = Date.now();
     var got = { duels: null, retos: null, multis: null, mretos: null, requests: null }, failed = false;
     cycle++;

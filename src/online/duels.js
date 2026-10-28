@@ -216,7 +216,7 @@
     slot.innerHTML = h;
   }
   // El aviso «sin conexión» del hub se actualiza en cuanto cambia la red.
-  window.addEventListener('online', function () { renderCards(); });
+  window.addEventListener('online', function () { renderCards(); if (S.id && !S.data && (S.screen === 'duel' || S.screen === 'multi' || S.screen === 'reto')) load(); });
   window.addEventListener('offline', function () { renderCards(); });
   // Cabecera del hub (la usa también closeDuelPanels() en index.html). Solo se
   // aplica si el hub está a la vista: nunca pisa el título de un submenú abierto.
@@ -377,7 +377,11 @@
   function schedule(afterError) {
     clearTimeout(S.pollT);
     var d = S.data;
-    if (!d || document.visibilityState === 'hidden') return;
+    if (document.visibilityState === 'hidden') return;
+    if (!d) {   // auditoría 4 (15): la primera carga falló y no hay datos: se reintenta sola en vez de quedarse en «Cargando…»
+      if (afterError && S.id && (S.screen === 'duel' || S.screen === 'multi' || S.screen === 'reto')) S.pollT = setTimeout(load, 3000);
+      return;
+    }
     var wait = null;
     if (S.screen === 'duel') {
       if (d.estado === 'en_curso' || d.estado === 'aceptado') wait = POLL_ACTIVE_MS;
@@ -567,6 +571,19 @@
     }, PRESENCE_MS);
   }
 
+  // Auditoría 4 (11): si el envío falla por red se reintenta el MISMO cuerpo (el servidor es idempotente) hasta 3 veces;
+  // si no hay manera, se libera el DOM (S.lastHtml = null fuerza el repintado) para que los botones no queden muertos.
+  function postAnswer(sh, body, onOk, onSettled) {
+    function send(n) {
+      call('POST', path() + '/answer', body).then(function (r) { onOk(r); }).catch(function (e) {
+        if (e && e.network && n < 3 && S.shown === sh && S.id) { setTimeout(function () { if (S.shown === sh) send(n + 1); else S.sending = false; }, 1500); return; }
+        S.sending = false; S.shownAnswered = false; S.lastHtml = null;
+        say(errText(e), true); setTimeout(load, 600);
+        if (onSettled) onSettled();
+      });
+    }
+    send(1);
+  }
   // Respuesta: se envía el TEXTO de la opción elegida, contra la pregunta que
   // está PINTADA (S.shown), no contra la que "debería" tocar según el reloj.
   // El servidor corrige y, si la ventana ya se cerró, lo rechaza.
@@ -577,7 +594,7 @@
     var chosen = opts[num(optIdx)]; if (chosen == null) return;
     S.sending = true; S.shownAnswered = true; urgencyStop();
     markButtons(opts, chosen, null);
-    call('POST', path() + '/answer', { indice: sh.idx, respuesta: chosen }).then(function (r) {
+    postAnswer(sh, { indice: sh.idx, respuesta: chosen }, function (r) {
       S.sending = false;
       if (S.shown === sh) {
         markButtons(opts, chosen, r.respuesta_correcta);
@@ -595,7 +612,7 @@
         var vEl = $('seq-d-verdict');
         if (vEl) { vEl.style.cursor = 'pointer'; vEl.onclick = function () { vEl.onclick = null; clearTimeout(waitT); load(); }; }
       }
-    }).catch(function (e) { S.sending = false; say(errText(e), true); setTimeout(load, 600); });
+    });
   }
   // Respuesta escrita (Retos por modo): se envía el texto tal cual; corrige el servidor.
   function answerText() {
@@ -604,7 +621,7 @@
     var val = String(inp.value || '').trim().slice(0, 120); if (!val) { inp.focus(); return; }
     S.sending = true; S.shownAnswered = true; urgencyStop();
     inp.disabled = true; var btn = $('seq-d-send'); if (btn) btn.disabled = true;
-    call('POST', path() + '/answer', { indice: sh.idx, respuesta: val }).then(function (r) {
+    postAnswer(sh, { indice: sh.idx, respuesta: val }, function (r) {
       S.sending = false;
       if (S.shown === sh) {
         S.streak = r.es_correcta ? S.streak + 1 : 0;
@@ -613,7 +630,7 @@
         retoFx(!!r.es_correcta);
       }
       setTimeout(load, 900);
-    }).catch(function (e) { S.sending = false; say(errText(e), true); setTimeout(load, 600); });
+    }, function () { var i2 = $('seq-d-ans'); if (i2) i2.disabled = false; var b2 = $('seq-d-send'); if (b2) b2.disabled = false; });
   }
   // Retos con reloj: aviso «±N SEGUNDOS» (src/online/reto-fx.js).
   function retoFx(ok) { try { if (S.screen === 'reto' && S.data && window.SEQRetoFX) SEQRetoFX.timeChange(S.data.modo, ok); } catch (e) {} }
@@ -1206,7 +1223,27 @@
     render();
     if (S.screen === 'duel' || S.screen === 'reto' || S.screen === 'multi') load();
   }
+  // Auditoría 4 (14): al salir de la pestaña Duelo o ocultar la app se paran sondeo, ticker y sonido de urgencia. Se retoman
+  // con onShow()/visibilitychange (load() vuelve a programar todo). El servidor sigue contando el latido: 60 s fuera = ausencia.
+  function onHide() { clearTimeout(S.pollT); S.pollT = null; clearInterval(S.tickT); S.tickT = null; urgencyStop(); }
+  // ¿Hay una partida en directo a la vista o en marcha? (para no pisarla al abrir un aviso)
+  function isLive() { var d = S.data; return !!(d && (S.screen === 'duel' || S.screen === 'multi') && (d.estado === 'en_curso' || d.estado === 'aceptado') && S.tickT); }
+  // Auditoría 4 (17): abre Duelo y ejecuta fn solo si la pestaña se mostró de verdad (puede estar bloqueada por la intro) y, si hay un
+  // duelo en directo, tras confirmarlo (abrir otra pantalla detiene su sondeo y latido y a los 60 s cuenta como abandono).
+  function openGuarded(fn) {
+    function go() {
+      try { if (typeof switchTab === 'function') switchTab('duelo'); } catch (e) { return; }
+      var v = document.getElementById('view-duelo');
+      if (v && v.classList.contains('active')) fn();
+    }
+    if (isLive() && typeof showAppConfirm === 'function') {
+      showAppConfirm({ title: 'Duelo en marcha', message: 'Tienes un duelo en directo. Si lo dejas ahora, puedes perderlo por abandono.', confirmLabel: 'Dejarlo', onConfirm: go });
+      return;
+    }
+    go();
+  }
   document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') { clearInterval(S.tickT); S.tickT = null; urgencyStop(); }
     if (document.visibilityState === 'visible' && (S.screen === 'duel' || S.screen === 'reto' || S.screen === 'multi')) load();
     // Al volver a la app: refresco de los contadores (acotado por SUMMARY_MIN_MS).
     else if (document.visibilityState === 'visible' && !S.screen) summarySoon();
@@ -1258,7 +1295,7 @@
     open: open, back: back, refreshSummary: refreshSummary, pick: pick, pick1v1: function (m) { pick1v1('duel', m); }, pickModeMulti: pickModeMulti, create: create, quick: quick,
     duelAction: duelAction, retoAction: retoAction, listAction: listAction, answer: answer,
     doSearch: doSearch, friendAdd: friendAdd, friendResp: friendResp, reload: load,
-    onAccountChange: onAccountChange, onShow: onShow,
+    onAccountChange: onAccountChange, onShow: onShow, onHide: onHide, isLive: isLive, openGuarded: openGuarded,
     syncHubTopbar: syncHubTopbar,
     _state: function () { return S; }, _h: HELPERS, rerender: function () { render(); },
   };
