@@ -559,6 +559,13 @@
 @media (max-width:600px) and (max-height:800px) { #seq-duel-root .seq-d-results .results-character {width:66px!important; margin-bottom:6px!important;} }
 #view-game:has(#seq-duel-root .seq-d-results[style*="display: block"]) #game-exit-btn {display: none;}
 #seq-duel-root .seq-d-results .metric-box.metric-box-wide {display: none !important;}
+#seq-duel-root .seq-d-results .results-phrase-container {border:2px solid #c9992e!important;border-radius:18px!important;background:linear-gradient(180deg,#2c386a,#1a2146)!important;box-shadow:0 0 0 3px rgba(201,153,46,.14),0 10px 24px rgba(0,0,0,.35)!important}
+#seq-duel-root .seq-d-results .results-phrase {color:#fdf7ea!important;font-size:20px!important;line-height:1.4!important}
+#seq-duel-root .seq-d-results .results-category-title {color:#e8c874!important}
+#seq-duel-root .seq-d-results .results-phrase:not(:empty)::after {color:#e8c874!important;font-size:11.5px!important;letter-spacing:.2em!important}
+#seq-duel-root .seq-d-results .results-phrase-container::before, #seq-duel-root .seq-d-results .results-phrase-container::after {color:#c9992e!important;opacity:.7!important}
+#seq-duel-root .seq-d-results .results-phrase {font-family: 'Inter', system-ui, sans-serif !important; font-style: italic !important; font-weight: 600 !important;}
+#seq-duel-root .seq-d-results .results-phrase {font-size: 18.5px !important; line-height: 1.42 !important;}
 #seq-duel-root .seq-d-results .results-mood-icon.has-img {font-size: 0 !important; background: none !important; border: 0 !important; box-shadow: none !important; width: 72px !important; height: 72px !important;}
 #seq-duel-root .seq-d-results .results-mood-icon .mood-img {width: 72px; height: 72px; object-fit: contain; filter: drop-shadow(0 3px 6px rgba(0,0,0,.25));}
 /* ===== FIN DEL BLOQUE GENERADO ===== */
