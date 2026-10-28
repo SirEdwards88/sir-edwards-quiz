@@ -35,6 +35,7 @@ Igual con `src/utils/sync-merge.js`: debe ser el mismo texto que `src/sync-merge
 - «Lucidez Mental» es un modo secreto: no se nombra antes de desbloquearlo (10 Fragmentos de Mente). Textos misteriosos hasta entonces.
 - No existe el «Duelo por código» (retirado): solo Duelo online (en directo, con amigos, 20 preguntas) y Retos (asíncronos, con plazo,
   y con el modo que elija quien reta entre los que ambos tengan desbloqueados). Ambos exigen cuenta y cuentan para las estadísticas y logros de Duelo.
+- El lema público «Test de Lucidez Mental» (título, descripción, vistas previas, cabecera y `manifest.json`) es el título expreso del juego: es una excepción deliberada a la regla de no nombrar el modo secreto. No se cambia.
 - «Compartir resultado» es una acción secundaria y discreta.
 - Historial de versiones breve y en orden.
 - Bienvenida (primera vez, tras la cuenta) y aviso de novedades (al actualizar, lee la entrada del historial de la versión):

@@ -15,11 +15,11 @@ var SEQPrivacy = (function () {
       'SirEdwards Quiz lo desarrolla y mantiene **Sir Edwards**. Contacto para cualquier cuestión sobre tus datos: **' + CONTACT + '**.'
     ] },
     { h: 'Lo esencial', b: [
-      'Sir Edwards guarda lo mínimo. Puedes jugar sin cuenta: en ese caso tu progreso se queda en tu dispositivo y no se envía a ningún servidor. La cuenta es opcional para el progreso, pero necesaria para las funciones online (Duelos, Retos, Amigos y Ranking).'
+      'Sir Edwards guarda lo mínimo. Para jugar necesitas una cuenta de Google: sirve para sincronizar tu progreso entre dispositivos y para las funciones online (Duelos, Retos, Amigos y Ranking). Tu progreso también se guarda en tu dispositivo.'
     ] },
     { h: 'Qué datos se guardan', b: [
       '**En tu dispositivo (siempre).** Tu progreso: XP, nivel, partidas, aciertos y fallos, récords, logros, estadísticas por pregunta, historial reciente y ajustes (sonido, tema…). Vive en el almacenamiento local del navegador. Borrarlo o cambiar de navegador lo elimina.',
-      '**En nuestros servidores (solo si creas una cuenta).**',
+      '**En nuestros servidores (tu cuenta).**',
       [
         'Un identificador interno de jugador y el identificador que Google nos da para tu cuenta. **No recibimos ni guardamos tu correo ni tu nombre real**: tu nombre inicial es genérico («Jugador-xxxx») y lo eliges tú.',
         'Tu nombre visible y tu avatar (de una lista cerrada).',
@@ -45,7 +45,7 @@ var SEQPrivacy = (function () {
       'No cedemos datos a ningún otro tercero.'
     ] },
     { h: 'Cuánto tiempo se conservan', b: [
-      'Mientras exista tu cuenta. Si la eliminas, se borran de nuestros servidores tus datos de jugador, progreso, logros, amistades, valoración competitiva y suscripciones de avisos. Las copias que quedan en tus dispositivos son tuyas y se borran con «Reiniciar progreso» en Ajustes.'
+      'Mientras exista tu cuenta. Si la eliminas, se borran de nuestros servidores tus datos de jugador, progreso, logros, amistades, valoración competitiva y suscripciones de avisos. Al eliminar la cuenta también se borra el progreso guardado en el dispositivo desde el que lo haces. En tus otros dispositivos, bórralo desde los ajustes del navegador (datos del sitio).'
     ] },
     { h: 'Tus derechos y cómo ejercerlos', b: [
       'Puedes acceder a tus datos, corregirlos, borrarlos, oponerte o pedir su portabilidad.',

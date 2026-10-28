@@ -224,7 +224,7 @@ test('Reto: filas de la lista y recuento de pendientes', () => {
   const { M, H } = load();
   const row = (o) => M.rowReto({ id: 'RRRRRRRRRR', tipo: 'reto_multi', estado: 'pendiente', modo: 'estandar', mi_estado: 'invitado', yo: { terminado: false },
     jugadores: [J(0, 'Edu'), J(1, 'Ana'), J(2, 'Luis')].map((j, i) => ({ ...j, es_yo: i === 2 })), resultado: null, ...o }, H);
-  assert.match(row({}), /Te han retado/); assert.match(row({}), /listAction\('mreto','RRRRRRRRRR','accept'\)/); assert.match(row({}), /open\('mreto'/);
+  assert.match(row({}), /Te invitan a un reto/); assert.match(row({}), /listAction\('mreto','RRRRRRRRRR','accept'\)/); assert.match(row({}), /open\('mreto'/);
   assert.match(row({ mi_estado: 'aceptado', estado: 'aceptado' }), /Te toca jugar/);
   assert.match(row({ mi_estado: 'aceptado', estado: 'completado', resultado: { mi_posicion: 2, n_jugadores: 3, mi_puntuacion: 9 } }), /2\.º de 3 · 9 aciertos/);
   assert.equal(M.pendingCountMReto([{ mi_estado: 'invitado', estado: 'pendiente' }, { mi_estado: 'aceptado', estado: 'aceptado', yo: { terminado: false } }, { mi_estado: 'aceptado', estado: 'aceptado', yo: { terminado: true } }, { mi_estado: 'rechazado', estado: 'aceptado' }, { mi_estado: 'invitado', estado: 'completado' }]), 2);

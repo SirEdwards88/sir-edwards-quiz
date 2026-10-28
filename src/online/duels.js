@@ -100,7 +100,13 @@
   };
   var NIVEL_UI = { ameba: 'Nivel Ameba', humano: 'Humano Promedio', derrame: 'Derrame Cerebral' };
   var FASE_UI = { 1: 'FASE I', 2: 'FASE II', 3: 'FASE III', 4: 'ENIGMA' };
-  function retoMode(d) { return RETO_MODE_UI[d && d.modo] || RETO_MODE_UI.estandar; }
+  // El modo secreto no se nombra hasta tener los Fragmentos de Mente necesarios (como en player-profile.js).
+  function lucOk() { try { return typeof getFragmentCount === 'function' && getFragmentCount(getStore()) >= FRAGMENT_TARGET; } catch (e) { return false; } }
+  function retoMode(d) {
+    var m = RETO_MODE_UI[d && d.modo] || RETO_MODE_UI.estandar;
+    if (m === RETO_MODE_UI.lucidez && !lucOk()) return { nombre: 'Modo secreto', icono: m.icono, reglas: 'Un modo secreto' };
+    return m;
+  }
   function retoModeName(d) { return retoMode(d).nombre + (d && NIVEL_UI[d.nivel] ? ' · ' + NIVEL_UI[d.nivel] : ''); }
   // Emblema (sin aro ni disco) para la cabecera de la partida; modeIco, con su medallón, para listas y tarjetas.
   function modeEmblem(m) { return '<img class="seq-ico seq-d-mode-ico" src="assets/modes/emblema/' + m.icono + '.webp" alt="" draggable="false">'; }
@@ -165,7 +171,7 @@
       rate_limited: 'Demasiadas peticiones. Espera unos segundos.', reto_expired: 'El plazo del reto ha terminado.',
     };
     if (e && e.network) return map.network;
-    return map[c] || (e && e.message) || 'Algo ha fallado.';
+    return map[c] || 'Algo ha fallado. Inténtalo de nuevo en un momento.';
   }
 
   // ---- Tarjetas en el inicio de Duelo ---------------------------------------
@@ -212,7 +218,7 @@
     if (f.async_challenges) h += hubCard('retos', '<img class="mode-img" src="assets/modes/retos.webp" alt="" draggable="false">', 'Retos', 'Elige el modo y reta a un amigo. Cada uno juega cuando pueda.', "SEQDuels.open('retos')", pending(re, 'PENDIENTE', 'PENDIENTES'));
     h += hubCard('amigos', '<img class="mode-img" src="assets/modes/amigos.webp" alt="" draggable="false">', 'Amigos', 'Añade amigos y rétalos desde tu lista.', "SEQDuels.open('friends')", pending(fr, 'SOLICITUD', 'SOLICITUDES'));
     // 2.1: Rankings (PvP, Cálculo Mental y Contrarreloj; entre amigos o global). Pantalla propia, en src/online/duels-v21.js.
-    h += hubCard('rank', '<img class="mode-img" src="assets/modes/ranking.webp" alt="" draggable="false">', 'Rankings', 'PvP, Contrarreloj y Cálculo mental. Entre amigos o global.', "SEQDuels.open('rankings')", '');
+    h += hubCard('rank', '<img class="mode-img" src="assets/modes/ranking.webp" alt="" draggable="false">', 'Rankings', 'PvP, Contrarreloj y Cálculo. Entre amigos o global.', "SEQDuels.open('rankings')", '');
     slot.innerHTML = h;
   }
   // El aviso «sin conexión» del hub se actualiza en cuanto cambia la red.
@@ -838,7 +844,7 @@
     h += '<p class="stats-section-sub">Se calculan en el servidor a partir de tus duelos y retos terminados. Los logros de Duelo están en la pestaña Logros.</p>';
     if (!d) return h + '<p class="stats-section-sub">Cargando…</p>';
     var st = d.stats || { online: {}, retos: {} };
-    h += '<p class="history-item-sub seq-d-rival">Duelos online: ' + num(st.online.jugados) + ' jugados · ' + num(st.online.ganados) + ' ganados · Retos: ' + num(st.retos.jugados) + ' jugados · ' + num(st.retos.ganados) + ' ganados</p>';
+    h += '<p class="history-item-sub seq-d-rival">Duelo online: ' + num(st.online.jugados) + (num(st.online.jugados) === 1 ? ' jugado' : ' jugados') + ' · ' + num(st.online.ganados) + (num(st.online.ganados) === 1 ? ' ganado' : ' ganados') + '. Retos: ' + num(st.retos.jugados) + (num(st.retos.jugados) === 1 ? ' jugado' : ' jugados') + ' · ' + num(st.retos.ganados) + (num(st.retos.ganados) === 1 ? ' ganado' : ' ganados') + '.</p>';
     return h + '<div class="history-list">' + (d.achievements || []).map(function (a) {
       var goal = num(a.goal) || 1, prog = Math.min(num(a.progress), goal);
       return '<div class="history-item seq-d-ach' + (a.unlocked === true ? ' seq-d-ach-on' : '') + '"><div class="seq-d-ach-icon">' + achIcon(a) + '</div><div class="seq-d-ach-body"><div class="history-item-info">' + esc(a.title) + '</div><div class="history-item-sub">' + esc(a.desc) + '</div>' +
@@ -857,7 +863,7 @@
     return h + '<div class="history-list seq-d-modes">' + list.map(function (m) {
       // Solo ids conocidos (RETO_MODE_UI): nunca se pega en el onclick un texto arbitrario del servidor.
       var mid = m && Object.prototype.hasOwnProperty.call(RETO_MODE_UI, m.id) ? m.id : null, ui = mid ? RETO_MODE_UI[mid] : null; if (!ui) return '';
-      var row = '<div class="seq-d-mode-icon">' + modeIco(ui) + '</div><div class="seq-d-mode-body"><div class="history-item-info">' + esc(ui.nombre) + '</div>';
+      var row = '<div class="seq-d-mode-icon">' + modeIco(ui) + '</div><div class="seq-d-mode-body"><div class="history-item-info">' + esc(mid === 'lucidez' && !lucOk() ? 'Modo secreto' : ui.nombre) + '</div>';
       if (mid === 'supervivencia') {
         if (!S.pickSurvival) return '<div class="history-item seq-d-row seq-d-mode seq-d-m-' + mid + '" onclick="SEQDuels.createReto(\'supervivencia\')">' + row + '</div><div class="history-item-score">Elegir ›</div></div>';
         return '<div class="history-item seq-d-mode seq-d-m-' + mid + '">' + row + '<div class="seq-d-levels">' + ['ameba', 'humano', 'derrame'].map(function (lv) {
@@ -1014,7 +1020,7 @@
         (av ? '<div class="session-medal-fragment">Avatar desbloqueado</div>' : '') + '</div></div>';
     }).join('');
     if (!rows) return '';
-    return '<div class="session-medals-box" style="display:block;"><div class="session-medals-title">' + ico('copa') + '¡Nuevo(s) Logro(s) Desbloqueado(s)!</div><div class="session-medals-list">' + rows + '</div></div>';
+    return '<div class="session-medals-box" style="display:block;"><div class="session-medals-title">' + ico('copa') + (ids.length === 1 ? '¡Logro desbloqueado!' : '¡Logros desbloqueados!') + '</div><div class="session-medals-list">' + rows + '</div></div>';
   }
   // 2.5: marcador de la serie «Edu 2 – 4 Bruno» y las últimas partidas (V/D/E), solo desde el 2.º duelo entre los dos.
   function serieHtml(serie, rivalName) {
@@ -1025,15 +1031,18 @@
   }
   function resultBlock(d, kind) {
     var r = d.resultado, p = player(d.rival);
+    // Nombre en bruto: `p.name` ya viene escapado y los textos se escapan una sola vez al insertarlos.
+    var rawName = String((d.rival && d.rival.display_name) || 'Jugador').slice(0, 24);
+    var nk = kind === 'duel' ? 'duelo' : 'reto';
     if (!r) {
-      var why = { rechazado: p.name + ' ha rechazado el reto. Prudencia, lo llamará.', expirado: 'Se acabó el plazo y nadie jugó. Un duelo muy pacífico.', cancelado: d.motivo_fin === 'sin_listos' ? 'Ninguno marcó «Listo» a tiempo. Dos valientes, cero iniciativa.' : 'Duelo cancelado. Aquí no ha pasado nada.' }[d.estado] || '';
+      var why = { rechazado: rawName + ' ha rechazado el ' + nk + '. Prudencia, dicen.', expirado: 'Se acabó el plazo y nadie jugó. Un ' + nk + ' muy pacífico.', cancelado: d.motivo_fin === 'sin_listos' ? 'Ninguno marcó «Listo» a tiempo. Dos valientes, cero iniciativa.' : (kind === 'duel' ? 'Duelo' : 'Reto') + ' cancelado. Aquí no ha pasado nada.' }[d.estado] || '';
       return '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">' + esc(ESTADO[d.estado] || '') + '</div><p class="duel-result-hint">' + esc(why) + '</p></div>';
     }
     var res = r.ganador === 'yo' ? 'win' : r.ganador === 'rival' ? 'loss' : 'draw';
     resultSoundOnce(kind, d, res);
     var cls = res === 'win' ? 'duel-result-win' : res === 'loss' ? 'duel-result-loss' : 'duel-result-draw';
-    var note = d.motivo_fin === 'abandono' ? (d.yo && d.yo.abandonado ? 'Perdiste por abandono (más de 60 s sin conexión).' : p.name + ' abandonó la partida.')
-      : d.motivo_fin === 'no_jugado' ? (res === 'win' ? p.name + ' no jugó a tiempo.' : 'No jugaste a tiempo.') : '';
+    var note = d.motivo_fin === 'abandono' ? (d.yo && d.yo.abandonado ? 'Perdiste por abandono (más de 60 s sin conexión).' : rawName + ' abandonó la partida.')
+      : d.motivo_fin === 'no_jugado' ? (res === 'win' ? rawName + ' no jugó a tiempo.' : 'No jugaste a tiempo.') : '';
     var phrase = resultPhrase(d, r), me = session() || {};
     // 2.0: la misma tarjeta final que una partida en solitario (mismas piezas y estilos que #results-card):
     // Sir Edwards, el nombre del modo, el marcador Tú / rival en las dos casillas, el icono, el desenlace y su
@@ -1072,7 +1081,7 @@
       '<div class="results-mood-icon has-img"><img class="mood-img" src="' + moodSrc + '" alt="" draggable="false"></div>' +
       '<div class="results-category-title">' + esc(cat) + '</div>' +
       (phrase ? '<div class="results-phrase duel-result-phrase">' + esc(phrase) + '</div>' : '') +
-      (note ? '<p class="duel-result-hint">' + esc(note) + '</p>' : '') + serieHtml(r.serie, p.name) + '</div>' +
+      (note ? '<p class="duel-result-hint">' + esc(note) + '</p>' : '') + serieHtml(r.serie, rawName) + '</div>' +
       (eloHtml || chips) +
       '<div class="results-lucidez-stamp show"><span class="stamp-badge tone-' + stamp[1] + '">' + stamp[0] + '</span></div>';
     var hEnd = '</div>';
@@ -1081,7 +1090,7 @@
       h += '<div class="results-actions"><button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="SEQDuels.' + (kind === 'duel' ? 'duelAction' : 'retoAction') + '(\'rematch\')">' + ico('revancha') + 'Revancha</button>';
       // «Compartir» discreto, como en solitario; gana presencia cuando hay algo que presumir (una victoria).
       h += '<button class="btn btn-share' + (res === 'win' ? '' : ' btn-share-quiet') + '" onclick="SEQDuels.shareResult()">' + ico('compartir') + 'Compartir resultado</button>';
-      h += '<button type="button" class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.back()">Volver a Duelos</button></div>';
+      h += '<button type="button" class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.back()">' + (kind === 'duel' ? 'Volver a Duelos' : 'Volver a Retos') + '</button></div>';
     }
     return h + hEnd;
   }

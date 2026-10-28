@@ -204,11 +204,11 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
 
 /* Modal de Benvinguda */
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; justify-content: center; align-items: center; z-index: 1000; overflow-y: auto; }
-.modal-card { background: var(--card); border-radius: var(--radius-lg); padding: 28px; max-height: 85vh; overflow-y: auto; box-shadow: var(--shadow-elevated); border: 1px solid var(--color-border-accent); animation: fadeInScale 0.3s ease-out; }
+.modal-card { background: var(--card); border-radius: var(--radius-lg); padding: 28px; max-height: 85vh; max-height: 85dvh; overflow-y: auto; box-shadow: var(--shadow-elevated); border: 1px solid var(--color-border-accent); animation: fadeInScale 0.3s ease-out; }
 @media(max-width:600px){
   .home-subtitle > span:not(.home-sub-line):not(.home-sub-diamond){white-space:nowrap;font-size:10px;letter-spacing:1.05px;}
 
-  .modal-card { padding: 20px; max-height: 80vh; }
+  .modal-card { padding: 20px; max-height: 80vh; max-height: 80dvh; }
     }
 .modal-card:focus { outline: none; }   /* la tarjeta recibe el foco al abrir el modal (a11y.js) solo para anunciarse */
 .modal-card h2 { margin-top: 0; font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--brand-navy); display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
@@ -503,9 +503,9 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   align-items: center;
   box-shadow: 0 1px 3px rgba(0,0,0,.04);
 }
-.card.theme-standard #choice-options .choice-btn:hover:not(:disabled) {
+@media (hover:hover) and (pointer:fine){ .card.theme-standard #choice-options .choice-btn:hover:not(:disabled){
   box-shadow: 0 4px 14px rgba(37,99,235,.14);
-}
+} }
 .card.theme-standard #choice-options .choice-btn:active:not(:disabled) {
   transform: scale(.98);
 }
@@ -530,9 +530,9 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   align-items: center;
   box-shadow: 0 1px 3px rgba(0,0,0,.04);
 }
-.card.theme-survival #choice-options .choice-btn:hover:not(:disabled) {
+@media (hover:hover) and (pointer:fine){ .card.theme-survival #choice-options .choice-btn:hover:not(:disabled){
   box-shadow: 0 4px 14px rgba(245,158,11,.18);
-}
+} }
 .card.theme-survival #choice-options .choice-btn:active:not(:disabled) {
   transform: scale(.98);
 }
@@ -555,9 +555,9 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   align-items: center;
   box-shadow: 0 1px 3px rgba(0,0,0,.04);
 }
-.card.theme-sudden #choice-options .choice-btn:hover:not(:disabled) {
+@media (hover:hover) and (pointer:fine){ .card.theme-sudden #choice-options .choice-btn:hover:not(:disabled){
   box-shadow: 0 4px 14px rgba(220,38,38,.16);
-}
+} }
 .card.theme-sudden #choice-options .choice-btn:active:not(:disabled) {
   transform: scale(.98);
 }
@@ -580,9 +580,9 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   align-items: center;
   box-shadow: 0 1px 3px rgba(0,0,0,.04);
 }
-.card.theme-timetrial #choice-options .choice-btn:hover:not(:disabled) {
+@media (hover:hover) and (pointer:fine){ .card.theme-timetrial #choice-options .choice-btn:hover:not(:disabled){
   box-shadow: 0 4px 14px rgba(219,39,119,.16);
-}
+} }
 .card.theme-timetrial #choice-options .choice-btn:active:not(:disabled) {
   transform: scale(.98);
 }
@@ -1138,7 +1138,7 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   display: block;
   margin: 0 auto;
   max-width: min(78vw, 300px);
-  max-height: 46vh; max-height: 46dvh;
+  max-height: 46vh; max-height: 46dvh; max-height: 46dvh;
   width: auto;
   height: auto;
   object-fit: contain;
@@ -1202,9 +1202,9 @@ body { margin: 0; background-color: var(--bg); background-image: var(--ambient-g
   border:2px solid transparent;
   transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;
 }
-.mode-grid .mode-card:hover{
+@media (hover:hover) and (pointer:fine){ .mode-grid .mode-card:hover{
   transform:translateY(-4px);
-}
+} }
 .mode-card::after{
   content:'';
   position:absolute;
@@ -1291,7 +1291,7 @@ min-width:10px;
     linear-gradient(145deg,rgba(212,175,55,.08),var(--card) 60%);
   box-shadow:0 7px 22px rgba(212,175,55,.10);
 }
-.achievement-card.unlocked:hover{transform:translateY(-3px)}
+@media (hover:hover) and (pointer:fine){ .achievement-card.unlocked:hover{transform:translateY(-3px)} }
 .achievement-card.unlocked .achievement-icon{
   font-size:38px;
   width:66px;height:66px;
@@ -1385,7 +1385,7 @@ body.in-game .stats-badges { display: none; }
   margin-bottom: 10px;
   touch-action: manipulation;
 }
-.game-exit-btn:hover { background: var(--badge-bg); border-color: var(--color-border-accent); }
+@media (hover:hover) and (pointer:fine){ .game-exit-btn:hover{ background: var(--badge-bg); border-color: var(--color-border-accent); } }
 
 .progress-bar { height: 8px; background: var(--border); border-radius: var(--radius-pill); overflow: hidden; margin-bottom: 16px; }
 .bar-fill { height: 100%; width: 0%; background: var(--primary); transition: width 0.3s; }
@@ -1401,17 +1401,17 @@ input[type="text"]:focus, select:focus { border-color: var(--primary); }
 .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
 button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-soft); min-height: 48px; }
 .btn-primary { background: var(--primary); color: white; }
-.btn-primary:hover { background: var(--primary-hover); transform: var(--state-lift); }
+@media (hover:hover) and (pointer:fine){ .btn-primary:hover{ background: var(--primary-hover); transform: var(--state-lift); } }
 .card.theme-survival .btn-primary { background: #d97706; }
-.card.theme-survival .btn-primary:hover { background: #b45309; }
+@media (hover:hover) and (pointer:fine){ .card.theme-survival .btn-primary:hover{ background: #b45309; } }
 .card.theme-sudden .btn-primary { background: #dc2626; }
-.card.theme-sudden .btn-primary:hover { background: #b91c1c; }
-.card.theme-timetrial .btn-primary:hover { background: #be185d; }
+@media (hover:hover) and (pointer:fine){ .card.theme-sudden .btn-primary:hover{ background: #b91c1c; } }
+@media (hover:hover) and (pointer:fine){ .card.theme-timetrial .btn-primary:hover{ background: #be185d; } }
 
 .btn-secondary { background: var(--color-surface-interactive); color: var(--text); border: 1px solid var(--border); }
-.btn-secondary:hover { background: var(--badge-bg); border-color: var(--color-border-accent); }
+@media (hover:hover) and (pointer:fine){ .btn-secondary:hover{ background: var(--badge-bg); border-color: var(--color-border-accent); } }
 .btn-danger { background: var(--danger-bg); color: var(--danger-txt); border: 1px solid var(--border); }
-.btn-danger:hover { background: var(--danger-hover); }
+@media (hover:hover) and (pointer:fine){ .btn-danger:hover{ background: var(--danger-hover); } }
 /* Prompt 2 — Fase A: mismo micro-lift que btn-primary ya tenía, para que
    toda la familia de botones se sienta coherente. Solo en dispositivos con
    hover real (ratón), para no dejar un botón "levantado" tras un tap. */
@@ -1424,9 +1424,9 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
    la identidad de la tarjeta final), sin llegar a ser un botón primario
    llamativo. Contraste comprobado en claro y oscuro. */
 .btn-share { background: rgba(109,40,217,.07); color: var(--text); border: 1px solid rgba(109,40,217,.35); }
-.btn-share:hover { background: rgba(109,40,217,.13); border-color: rgba(109,40,217,.55); }
+@media (hover:hover) and (pointer:fine){ .btn-share:hover{ background: rgba(109,40,217,.13); border-color: rgba(109,40,217,.55); } }
 [data-theme="dark"] .btn-share { background: rgba(167,139,250,.12); border-color: rgba(167,139,250,.40); }
-[data-theme="dark"] .btn-share:hover { background: rgba(167,139,250,.18); border-color: rgba(167,139,250,.6); }
+@media (hover:hover) and (pointer:fine){ [data-theme="dark"] .btn-share:hover{ background: rgba(167,139,250,.18); border-color: rgba(167,139,250,.6); } }
 /* 2.0: «Compartir resultado» discreto (acción secundaria); sin btn-share-quiet recupera el aspecto destacado. */
 .results-actions .btn-share { width: 100%; margin-top: 10px; }
 .results-actions .btn-share.btn-share-quiet {
@@ -1434,12 +1434,12 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
   font-size: 14px; font-weight: 600; background: transparent; box-shadow: none;
   color: var(--color-text-muted); border-color: var(--border);
 }
-.results-actions .btn-share.btn-share-quiet:hover { background: var(--badge-bg); }
+@media (hover:hover) and (pointer:fine){ .results-actions .btn-share.btn-share-quiet:hover{ background: var(--badge-bg); } }
 /* En oscuro el botón discreto era casi invisible: relleno y borde violeta suaves, texto legible. */
 [data-theme="dark"] .results-actions .btn-share.btn-share-quiet {
   background: rgba(167,139,250,.16); border-color: rgba(167,139,250,.6); color: var(--text);
 }
-[data-theme="dark"] .results-actions .btn-share.btn-share-quiet:hover { background: rgba(167,139,250,.26); }
+@media (hover:hover) and (pointer:fine){ [data-theme="dark"] .results-actions .btn-share.btn-share-quiet:hover{ background: rgba(167,139,250,.26); } }
 
 .feedback { margin-top: 16px; padding: 14px; border-radius: var(--radius-sm); display: none; line-height: 1.45; font-size: 15px; }
 .feedback.ok { background: var(--ok-bg); color: var(--ok-txt); }
@@ -1463,7 +1463,7 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
   padding: 13px 14px; font-size: 14.5px; font-weight: 600; text-align: left; cursor: pointer;
   transition: all 0.15s; touch-action: manipulation; line-height: 1.3;
 }
-.choice-btn:hover:not(:disabled) { border-color: var(--primary); transform: translateY(-1px); }
+@media (hover:hover) and (pointer:fine){ .choice-btn:hover:not(:disabled){ border-color: var(--primary); transform: translateY(-1px); } }
 .choice-btn.selected { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 12%, var(--card)); }
 .choice-btn.correct { border-color: #16a34a; background: var(--ok-bg); color: var(--ok-txt); }
 .choice-btn.incorrect { border-color: #dc2626; background: var(--bad-bg); color: var(--bad-txt); }
@@ -1504,13 +1504,13 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
    que la interacción tipo test se sienta parte del tema de cada modo en
    vez de un componente genérico. Correcto/incorrecto quedan siempre en
    verde/rojo: ese significado es universal y no depende del modo. */
-.card.theme-survival .choice-btn:hover:not(:disabled) { border-color: #f59e0b; }
+@media (hover:hover) and (pointer:fine){ .card.theme-survival .choice-btn:hover:not(:disabled){ border-color: #f59e0b; } }
 .card.theme-survival .choice-btn.selected:not(.correct):not(.incorrect) { border-color: #f59e0b; background: color-mix(in srgb, #f59e0b 14%, var(--card)); }
-.card.theme-sudden .choice-btn:hover:not(:disabled) { border-color: #dc2626; }
+@media (hover:hover) and (pointer:fine){ .card.theme-sudden .choice-btn:hover:not(:disabled){ border-color: #dc2626; } }
 .card.theme-sudden .choice-btn.selected:not(.correct):not(.incorrect) { border-color: #dc2626; background: color-mix(in srgb, #dc2626 12%, var(--card)); }
-.card.theme-timetrial .choice-btn:hover:not(:disabled) { border-color: #db2777; }
+@media (hover:hover) and (pointer:fine){ .card.theme-timetrial .choice-btn:hover:not(:disabled){ border-color: #db2777; } }
 .card.theme-timetrial .choice-btn.selected:not(.correct):not(.incorrect) { border-color: #db2777; background: color-mix(in srgb, #db2777 12%, var(--card)); }
-.card.theme-review .choice-btn:hover:not(:disabled) { border-color: #0d9488; }
+@media (hover:hover) and (pointer:fine){ .card.theme-review .choice-btn:hover:not(:disabled){ border-color: #0d9488; } }
 .card.theme-review .choice-btn.selected:not(.correct):not(.incorrect) { border-color: #0d9488; background: color-mix(in srgb, #0d9488 12%, var(--card)); }
 .sabias-que-box {
   margin-top: 10px;
@@ -2137,7 +2137,7 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
 /* Lucidez Mental ocupa toda la anchura del menú: 3 columnas en escritorio, 2 en móvil */
 .modes-grid .mode-lucidez { grid-column: 1 / -1; }
 .mode-card { border: 2px solid var(--border); border-radius: var(--radius-md); padding: 16px; cursor: pointer; transition: all 0.2s; position: relative; }
-.mode-card:hover:not(.locked) { border-color: var(--primary); background: var(--badge-bg); }
+@media (hover:hover) and (pointer:fine){ .mode-card:hover:not(.locked){ border-color: var(--primary); background: var(--badge-bg); } }
 .mode-card.locked { opacity: 0.65; cursor: not-allowed; background: var(--badge-bg); border-style: dashed; }
 .mode-card p { color: var(--sub); }
 .mode-lock-badge{position:absolute;font-family:system-ui,sans-serif;}.mode-lock-badge.is-unlocked{color:#15803d;}
@@ -2343,7 +2343,7 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
 .settings-field-label { font-size: 13px; font-weight: 700; color: var(--sub); margin-bottom: 8px; }
 .segmented-control { display: flex; gap: 6px; flex-wrap: wrap; }
 .segmented-btn { flex: 1 1 auto; padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
-.segmented-btn:hover { background: var(--border); }
+@media (hover:hover) and (pointer:fine){ .segmented-btn:hover{ background: var(--border); } }
 .segmented-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
 .settings-danger-zone { box-shadow: inset 3px 0 0 0 var(--danger-txt); }
 /* Botones sueltos de Ajustes (Política de privacidad, Reiniciar progreso): centrados en su tarjeta. */
@@ -2370,7 +2370,7 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
  border:2px solid transparent;
   transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
 }
-.modes-grid .mode-card:hover{transform:translateY(-4px)}
+@media (hover:hover) and (pointer:fine){ .modes-grid .mode-card:hover{transform:translateY(-4px)} }
 .mode-card.mode-standard{border-color:rgba(37,99,235,.28);background:linear-gradient(145deg,rgba(37,99,235,.10),var(--card) 68%)}
 .mode-card.mode-review{border-color:rgba(13,148,136,.30);background:linear-gradient(145deg,rgba(13,148,136,.10),var(--card) 68%)}
 .mode-card.mode-survival{border-color:rgba(245,158,11,.34);background:linear-gradient(145deg,rgba(245,158,11,.12),var(--card) 68%)}
@@ -2395,13 +2395,13 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
   opacity:0; will-change:opacity;
   animation: lucidezCardGlow 3s ease-in-out infinite;
 }
-.mode-card.mode-lucidez:hover{ border-color:rgba(109,40,217,.60); }
+@media (hover:hover) and (pointer:fine){ .mode-card.mode-lucidez:hover{ border-color:rgba(109,40,217,.60); } }
 @keyframes lucidezCardGlow{
   0%,100%{ opacity:0; }
   50%{ opacity:1; }
 }
 [data-theme="dark"] .mode-card.mode-lucidez{ border-color:rgba(167,139,250,.32); }
-[data-theme="dark"] .mode-card.mode-lucidez:hover{ border-color:rgba(167,139,250,.60); }
+@media (hover:hover) and (pointer:fine){ [data-theme="dark"] .mode-card.mode-lucidez:hover{ border-color:rgba(167,139,250,.60); } }
 @media (prefers-reduced-motion: reduce){
   .mode-card.mode-lucidez::before{ animation:none; opacity:0; }
 }
@@ -2513,7 +2513,7 @@ box-sizing:border-box;
   transition:transform .2s ease,box-shadow .2s ease;
   box-sizing:border-box;
 }
-.medal-card.unlocked:hover{transform:translateY(-4px)}
+@media (hover:hover) and (pointer:fine){ .medal-card.unlocked:hover{transform:translateY(-4px)} }
 .medal-card .icon,.medal-card .medal-icon{
 margin:0 auto 12px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
@@ -3918,26 +3918,26 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   box-sizing:border-box;
   transform:none;
 }
-#menu-difficulty-modes .mode-card:hover{
+@media (hover:hover) and (pointer:fine){ #menu-difficulty-modes .mode-card:hover{
   transform:translateY(-2px) !important;
-}
+} }
 #menu-difficulty-modes .mode-card:active{
   transform:scale(.985) !important;
 }
 #menu-difficulty-modes.diff-survival .mode-card{
   border-color:rgba(245,158,11,.72);
 }
-#menu-difficulty-modes.diff-survival .mode-card:hover{
+@media (hover:hover) and (pointer:fine){ #menu-difficulty-modes.diff-survival .mode-card:hover{
   border-color:#f59e0b;
   box-shadow:0 9px 22px rgba(245,158,11,.16);
-}
+} }
 #menu-difficulty-modes.diff-sudden .mode-card{
   border-color:rgba(220,38,38,.72);
 }
-#menu-difficulty-modes.diff-sudden .mode-card:hover{
+@media (hover:hover) and (pointer:fine){ #menu-difficulty-modes.diff-sudden .mode-card:hover{
   border-color:#dc2626;
   box-shadow:0 9px 22px rgba(220,38,38,.16);
-}
+} }
 
 @media(max-width:600px){
   #menu-difficulty-modes .modes-grid{
@@ -4002,16 +4002,16 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   transition:transform .18s ease, background .18s ease;
 }
 
-#menu-difficulty-modes .mode-card:hover{
+@media (hover:hover) and (pointer:fine){ #menu-difficulty-modes .mode-card:hover{
   transform:var(--state-lift);
   border-color:rgba(245,158,11,.75) !important;
   box-shadow:var(--shadow-card) !important;
-}
+} }
 
-#menu-difficulty-modes .mode-card:hover::after{
+@media (hover:hover) and (pointer:fine){ #menu-difficulty-modes .mode-card:hover::after{
   transform:translate(3px,-53%);
   background:rgba(245,158,11,.22);
-}
+} }
 
 #menu-difficulty-modes .mode-card:active{
   transform:var(--state-press);
@@ -4334,7 +4334,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   background: #eef0f3;
 }
 [data-theme="dark"] .duel-mode-option.locked { background: var(--badge-bg); }
-.duel-mode-option.locked:hover { transform: none; box-shadow: var(--shadow-soft); }
+@media (hover:hover) and (pointer:fine){ .duel-mode-option.locked:hover{ transform: none; box-shadow: var(--shadow-soft); } }
 .duel-mode-option.locked .duel-mode-icon { background: #e4e6ea !important; filter: grayscale(1); }
 [data-theme="dark"] .duel-mode-option.locked .duel-mode-icon { background: var(--badge-bg) !important; }
 /* Acentos de color por modo: mismos tonos que ya usa .mode-card.mode-*
@@ -4627,7 +4627,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   padding: 0; flex-shrink: 0; margin-left: auto; touch-action: manipulation;
   transition: transform .15s ease, color .15s ease, border-color .15s ease;
 }
-.section-help-btn:hover { color: var(--duel-purple); border-color: var(--accent-purple-soft); }
+@media (hover:hover) and (pointer:fine){ .section-help-btn:hover{ color: var(--duel-purple); border-color: var(--accent-purple-soft); } }
 .section-help-btn:active { transform: scale(.92); }
 
 @media (max-width: 380px) {
@@ -4728,7 +4728,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   opacity: .75; margin-right: 8px; position: relative; top: -2px;
 }
 .settings-danger-zone { border-color: var(--danger-txt); border-style: dashed; opacity: .9; }
-.settings-danger-zone:hover { opacity: 1; }
+@media (hover:hover) and (pointer:fine){ .settings-danger-zone:hover{ opacity: 1; } }
 .settings-danger-zone h3::before { color: var(--danger-txt); opacity: .7; }
 
 /* Separación clara entre estadísticas generales y Duelo: más aire arriba
@@ -5073,7 +5073,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   min-height: 36px;
   cursor: pointer;
 }
-.pwa-install-hint-action:hover { background: var(--primary-hover); }
+@media (hover:hover) and (pointer:fine){ .pwa-install-hint-action:hover{ background: var(--primary-hover); } }
 .pwa-install-hint-dismiss {
   flex: 0 0 auto;
   border: none;
@@ -5309,7 +5309,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   width: 30px; height: 30px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
   font-size: 13px; font-weight: 800; color: var(--brand-navy, #16244a); background: var(--badge-bg); border: 1.5px solid var(--color-border-accent, rgba(201,153,46,.38));
   transition: background .15s, color .15s, border-color .15s; }
-#choice-options .choice-btn:hover:not(:disabled)::before { border-color: var(--accent-gold); }
+@media (hover:hover) and (pointer:fine){ #choice-options .choice-btn:hover:not(:disabled)::before{ border-color: var(--accent-gold); } }
 #choice-options .choice-btn:active:not(:disabled) { transform: translateY(1px) scale(.985); box-shadow: 0 0 0 rgba(0,0,0,0); }
 #choice-options .choice-btn.correct::before { content: '✓'; background: #16a34a; border-color: #16a34a; color: #fff; }
 #choice-options .choice-btn.incorrect::before { content: '✕'; background: #dc2626; border-color: #dc2626; color: #fff; }
@@ -5498,7 +5498,7 @@ h3.stats-h::before { display: none !important; content: none !important; }
 .ach-row.is-secret .ach-ico { background: none; border: 0; box-shadow: none; padding: 0; filter: none; opacity: 1; }
 
 /* ===== 2.0 — Bienvenida (primera vez) y novedades con voz de Sir Edwards ===================== */
-#welcome-modal .welcome-card { max-width: 440px; width: calc(100% - 32px); padding: 26px 22px 22px; max-height: 92vh; overflow-y: auto;
+#welcome-modal .welcome-card { max-width: 440px; width: calc(100% - 32px); padding: 26px 22px 22px; max-height: 92vh; max-height: 92dvh; overflow-y: auto;
   border: 1px solid rgba(201,153,46,.55); box-shadow: 0 0 0 4px var(--card), 0 0 0 5px rgba(201,153,46,.35), 0 18px 40px rgba(0,0,0,.28); text-align: center; }
 #welcome-modal .welcome-kicker { font: 800 11px var(--font-ui); letter-spacing: 2.6px; text-transform: uppercase; color: var(--accent-gold-strong, #92400e); }
 #welcome-modal .welcome-rule { width: 56px; height: 1px; margin: 12px auto 16px; background: linear-gradient(90deg, transparent, #c9992e, transparent); }
@@ -5518,7 +5518,7 @@ h3.stats-h::before { display: none !important; content: none !important; }
 /* En móvil la tarjeta se ancla arriba en vez de centrarse: con el teclado abierto el campo del nombre queda a la vista. */
 @media (max-width: 600px) { #name-modal { align-items: flex-start; padding-top: max(20px, 5vh); } }
 #name-modal [hidden] { display: none !important; }
-#name-modal .welcome-card { max-width: 440px; width: calc(100% - 32px); padding: 26px 22px 22px; max-height: 92vh; overflow-y: auto;
+#name-modal .welcome-card { max-width: 440px; width: calc(100% - 32px); padding: 26px 22px 22px; max-height: 92vh; max-height: 92dvh; overflow-y: auto;
   border: 1px solid rgba(201,153,46,.55); box-shadow: 0 0 0 4px var(--card), 0 0 0 5px rgba(201,153,46,.35), 0 18px 40px rgba(0,0,0,.28); text-align: center; }
 #name-modal .welcome-kicker { font: 800 11px var(--font-ui); letter-spacing: 2.6px; text-transform: uppercase; color: var(--accent-gold-strong, #92400e); }
 #name-modal .welcome-rule { width: 56px; height: 1px; margin: 12px auto 12px; background: linear-gradient(90deg, transparent, #c9992e, transparent); }
@@ -5556,7 +5556,7 @@ h3.stats-h::before { display: none !important; content: none !important; }
 .update-recap li { margin: 0 !important; line-height: 1.4; }
 .update-recap-v { display: inline-block; min-width: 34px; padding: 1px 6px; margin-right: 4px; border-radius: 6px; font: 800 11px var(--font-ui); text-align: center; color: #fff7d6; background: #1c2340; border: 1px solid #c9992e; vertical-align: 1px; }
 .update-recap-now { font: 800 10.5px var(--font-ui) !important; letter-spacing: 1.6px; text-transform: uppercase; color: var(--sub) !important; margin: 12px 0 4px !important; }
-#update-modal .modal-card.has-recap { padding: 18px 18px 16px; max-height: 94vh; overflow-y: auto; }
+#update-modal .modal-card.has-recap { padding: 18px 18px 16px; max-height: 94vh; max-height: 94dvh; overflow-y: auto; }
 #update-modal .modal-card.has-recap h2 { margin-bottom: 6px; }
 #update-modal .modal-card.has-recap #update-modal-list { font-size: 14px; line-height: 1.35; margin: 0 0 12px; }
 #update-modal .modal-card.has-recap #update-modal-list li { margin-bottom: 3px; }
@@ -5786,3 +5786,7 @@ h3.stats-h::before { display: none !important; content: none !important; }
 /* Auditoría 7 (19): sin recarga por arrastre vertical en la PWA instalada; en partida, tampoco rebote. */
 html, body { overscroll-behavior-y: contain; }
 body.in-game { overscroll-behavior-y: none; }
+
+/* Auditoría 7 (15): objetivos táctiles de 44 px sin cambiar el tamaño visual de los botones de cabecera. */
+.section-back-btn, .section-help-btn, .home-info-btn { position: relative; }
+.section-back-btn::after, .section-help-btn::after, .home-info-btn::after { content: ''; position: absolute; inset: -5px; }

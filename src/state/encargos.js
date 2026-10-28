@@ -115,11 +115,16 @@ function encargosSettle() {
 
 // Remate de Sir Edwards al saldar (sale al azar entre los de su tipo): m = un encargo, b = los de la semana, g = el Gran Encargo.
 const ENCARGOS_QUIPS = {
-  m: ['Cumplido; no te acostumbres a los elogios.', 'Eficiencia sin aspavientos, como debe ser.'],
-  b: ['Sigo sin aplaudir.', 'La semana, por una vez, te debe algo.'],
-  g: ['La ambición tiene sus recompensas.', 'Ahí va algo digno de mención.']
+  m: ['Cumplido; no te acostumbres a los elogios.', 'Eficiencia sin aspavientos, como debe ser.', 'Anotado. Sin fanfarrias.', 'Saldado. Empiezo a perder motivos para quejarme.'],
+  b: ['Sigo sin aplaudir.', 'La semana, por una vez, te debe algo.', 'Semana en orden. Qué poco común.', 'Todo cobrado. Hasta el lunes, la paz.'],
+  g: ['La ambición tiene sus recompensas.', 'Ahí va algo digno de mención.', 'Eso sí ha tenido mérito. Lo digo una vez.', 'El Gran Encargo, cobrado. Tomo nota con mi mejor pluma.']
 };
-function encargosQuip(kind) { const l = ENCARGOS_QUIPS[kind] || ENCARGOS_QUIPS.g; return l[Math.floor(Math.random() * l.length)]; }
+function encargosQuip(kind) {
+  const l = ENCARGOS_QUIPS[kind] || ENCARGOS_QUIPS.g;
+  // Con bolsa (sin repetir hasta agotar) cuando existe pickRotatingPhrase; si no, al azar.
+  try { if (typeof pickRotatingPhrase === 'function' && typeof store === 'object' && store) { const t = pickRotatingPhrase('encargos_quip_' + kind, l); if (t) return t; } } catch (e) {}
+  return l[Math.floor(Math.random() * l.length)];
+}
 function encargosToastText(ev, quip) {
   const k = ev.kind === 'm' ? 'Encargo saldado' : ev.kind === 'b' ? 'Encargos saldados' : 'Gran Encargo cobrado';
   return k + '. +' + ev.xp + ' XP. ' + quip;

@@ -182,7 +182,7 @@ const SEQEncargosIntro = (function () {
         '<img class="enc-intro-img" alt="" draggable="false" decoding="async">' +
         '<img class="enc-intro-sil" alt="" draggable="false" decoding="async"></div></div>' +
       '<div class="enc-intro-paper"></div><div class="enc-intro-blink"></div>' +
-      '<div class="enc-intro-title" aria-hidden="true"><div class="t1">SIR EDWARDS</div><div class="t2">Evaluador oficial de tu lucidez</div></div>' +
+      '<div class="enc-intro-title" aria-hidden="true"><div class="t1">SIR EDWARDS</div><div class="t2">Evaluador oficial de tus facultades</div></div>' +
       '<p class="enc-intro-caption" aria-live="polite"></p>' +
       '<div class="enc-intro-hint" aria-hidden="true">Toca para continuar</div>' +
       '<div class="enc-intro-final"><div class="enc-intro-dossier"><div class="k">ENCARGOS</div><div class="m">Tu expediente queda oficialmente abierto.</div>' +

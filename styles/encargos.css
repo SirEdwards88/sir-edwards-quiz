@@ -101,6 +101,6 @@
 
 /* Avisos de modo nuevo, logro con recompensa y Encargos: algo más cerca del centro, para que se vean al mirar el resultado. */
 @media (max-width: 600px) {
-  .mode-unlock-toast, .reward-toast, .encargos-toast { top: clamp(80px, 17vh, 160px) !important; }
+  .mode-unlock-toast, .reward-toast, .encargos-toast { top: calc(clamp(80px, 17vh, 160px) + env(safe-area-inset-top, 0px)) !important; }   /* auditoría 7 (8): suma la zona segura */
   .encargos-toast { width: calc(100vw - 24px); min-width: 0; }
 }

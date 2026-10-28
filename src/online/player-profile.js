@@ -120,8 +120,8 @@
       '<div class="stats-level-widget-info"><div class="stats-level-widget-top">NIVEL ' + (lp ? num(lp.level) : '—') + (rank ? ' · <span class="seq-pf-rk">' + rank + '</span>' : '') + '</div>' +
       '<div class="progress-bar stats-level-widget-bar"><div class="bar-fill" style="width:' + (lp ? lp.progressPct : 0) + '%"></div></div>' +
       '<div class="stats-level-widget-xp">' + num(d.xp) + ' XP</div></div>' + badge + '</div>' +
-      (g ? '<div class="dossier-tiles"><div class="dossier-tile"><div class="dossier-tile-label">Precisión</div><div class="dossier-tile-value">' + pct(g.precision) + '</div><div class="dossier-tile-sub">' + dash(g.partidas) + ' partidas · ' + dash(g.logros) + ' logros</div></div>' +
-        '<div class="dossier-tile"><div class="dossier-tile-label">Mejor racha</div><div class="dossier-tile-value">' + dash(g.mejor_racha) + '</div><div class="dossier-tile-sub">aciertos seguidos</div></div></div>' : '') +
+      (g ? '<div class="dossier-tiles"><div class="dossier-tile"><div class="dossier-tile-label">Precisión</div><div class="dossier-tile-value">' + pct(g.precision) + '</div><div class="dossier-tile-sub">' + dash(g.partidas) + (num(g.partidas) === 1 ? ' partida' : ' partidas') + ' · ' + dash(g.logros) + (num(g.logros) === 1 ? ' logro' : ' logros') + '</div></div>' +
+        '<div class="dossier-tile"><div class="dossier-tile-label">Mejor racha</div><div class="dossier-tile-value">' + dash(g.mejor_racha) + '</div><div class="dossier-tile-sub">' + (num(g.mejor_racha) === 1 ? 'acierto seguido' : 'aciertos seguidos') + '</div></div></div>' : '') +
       '</div>';
     if (!g) out += empty('Sin partidas registradas. Un misterio con encanto.');
     out += actions(a);
@@ -133,7 +133,7 @@
     var cc = d.cara_a_cara && window.SEQRivalry ? SEQRivalry.summary(d.cara_a_cara) : null;
     if (cc) {
       var myName = ''; try { myName = (window.SEQOnline.session() || {}).display_name; } catch (e) {}
-      out += sectionImg('ui/copa', 'Vuestros duelos', SEQRivalry.html(cc, myName, p.name, esc).replace('class="seq-d-serie"', 'class="seq-d-serie seq-pf-serie"'));
+      out += sectionImg('ui/copa', 'Vuestros duelos', SEQRivalry.html(cc, myName, String(d.display_name || 'Jugador').slice(0, 24), esc).replace('class="seq-d-serie"', 'class="seq-d-serie seq-pf-serie"'));
     }
 
     var mu = d.multi || {}, hasMu = num(mu.partidas) > 0, on = false;

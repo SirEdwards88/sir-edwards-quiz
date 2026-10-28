@@ -50,7 +50,7 @@ const NAMED_PHRASES = {
     '«Veinte, {nombre}. Mi escepticismo empieza a quedarse sin argumentos.»',
     '«Veinte, {nombre}. Desde aquí, cada acierto es una obligación.»'
   ],
-  night_early: ['«La noche avanza, {nombre}. Tu criterio sigue bajo evaluación.»', '«Medianoche, {nombre}. Veamos qué clase de lucidez trae esta hora.»', '«Entrada la noche, {nombre}. La prudencia se ha ido a dormir; tú, por lo visto, no.»', '«Otra partida a estas horas, {nombre}. Admiro la perseverancia; la cordura, menos.»'],
+  night_early: ['«La noche avanza, {nombre}. Tu criterio sigue bajo evaluación.»', '«Medianoche, {nombre}. Veamos qué clase de criterio trae esta hora.»', '«Entrada la noche, {nombre}. La prudencia se ha ido a dormir; tú, por lo visto, no.»', '«Otra partida a estas horas, {nombre}. Admiro la perseverancia; la cordura, menos.»'],
   night_late: ['«Madrugada, {nombre}. El sueño ha perdido otra votación.»', '«A estas horas, {nombre}, hasta tus aciertos parecen tener una coartada.»', '«Madrugada, {nombre}. A estas horas, hasta acertar tiene cierto mérito.»', '«Las tantas, {nombre}. Si esto es insomnio, al menos es instructivo.»'],
   streak_30: [
     '«Treinta, {nombre}. Ya no puedo fingir que esto es casualidad.»',

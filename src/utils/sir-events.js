@@ -239,7 +239,7 @@ const SEQSirEvents = (function () {
     '«Las mejores ideas llegan de madrugada. Las peores, a juzgar por esta, también.»',
     '«Ya no es tarde. Es temprano. Y sigues aquí.»',
     '«Tu almohada debe de sentirse bastante ofendida.»',
-    '«La madrugada: donde la lucidez se acuesta y el insomnio toma el relevo.»',
+    '«La madrugada: donde el juicio se acuesta y el insomnio toma el relevo.»',
     '«Sigues en pie. Ya no sé quién vigila a quién.»',
     '«A estas horas solo quedan los vigilantes y los obstinados. Me incluyo en lo primero.»'
   ];

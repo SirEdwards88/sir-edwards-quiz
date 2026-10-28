@@ -440,7 +440,7 @@
       // lote de forma definitiva. NO se descarta el progreso: la línea base no se mueve (el delta sigue siendo
       // "no confirmado"), se marca `needsMerge` y se deja de reintentar en bucle hasta que el usuario pulse
       // «Restaurar / combinar progreso», que reenvía los TOTALES (máximo por contador) y re-baselina.
-      ui.error = 'El servidor no aceptó una sincronización (' + (err && err.code ? err.code : 'error') + '). Pulsa «Restaurar / combinar progreso».';
+      ui.error = 'El servidor no ha aceptado la última sincronización. Tu progreso local está intacto: pulsa «Reintentar».';
       sync.pending = null; sync.needsMerge = true; sync.rejected = err && err.code ? err.code : 'error'; saveSync();
       if (mergeTries < 3) { mergeTries++; setTimeout(function () { if (mergeDue()) doMerge(); }, 800); } // el servidor rechazó el lote: se reenvían los totales (máximo por contador)
     }).then(function () {
@@ -513,7 +513,7 @@
       clearTimeout(nonceTimer);
       nonceTimer = setTimeout(function () { if (!account) ensureGisButton(true); }, NONCE_FRESH_MS + 1000);
     }).catch(function (err) {
-      setMsg(err && err.network === undefined && err.status ? 'No se pudo preparar el inicio de sesión. Inténtalo de nuevo más tarde.' : 'No se pudo cargar el inicio de sesión de Google. Comprueba tu conexión e inténtalo de nuevo.');
+      setMsg(err && err.network === undefined && err.status ? 'No se ha podido preparar el inicio de sesión. Inténtalo de nuevo más tarde.' : 'No se ha podido cargar el acceso con Google. Comprueba tu conexión.');
     });
   }
   var nonceTimer = null;
@@ -563,7 +563,7 @@
         // Se renueva el nonce volviendo a llamar a initialize(). Si Google ignorase la re-inicialización (no
         // verificado con Google real), dos fallos seguidos indican que hay que reabrir la app.
         setMsg(ui.nonceFails >= 2
-          ? 'No se pudo renovar el inicio de sesión. Cierra y vuelve a abrir la app e inténtalo de nuevo.'
+          ? 'No se ha podido renovar el inicio de sesión. Cierra y vuelve a abrir la app e inténtalo de nuevo.'
           : 'El inicio de sesión había caducado. Pulsa de nuevo el botón de Google.');
         if (ui.nonceFails < 3) ensureGisButton(true);
         return;
@@ -575,8 +575,8 @@
       // obligatoria). Deja claro que no se completó el acceso y que se puede
       // reintentar, sin sonar alarmista ni cerrar sesión ni tocar el progreso.
       setMsg(err && err.network
-        ? 'No hemos podido conectar para completar el acceso. Comprueba tu conexión y vuelve a intentarlo.'
-        : ('No hemos podido completar el acceso' + (err && err.message ? ': ' + err.message : '.') + ' Vuelve a intentarlo.'));
+        ? 'No se ha podido conectar para completar el acceso. Comprueba tu conexión y vuelve a intentarlo.'
+        : 'No se ha podido completar el acceso. Vuelve a intentarlo en un momento.');
     }).then(function () { ui.busy = false; });
   }
 
@@ -621,7 +621,7 @@
       onConfirm: function () {
         api('POST', '/auth/logout-all').then(function () { doSignOut(); }).catch(function (err) {
           if (authFailure(err)) { render(); return; }
-          toast(err && err.network ? 'Necesitas conexión para cerrar todas las sesiones.' : 'No se pudo completar la operación.', 'atencion');
+          toast(err && err.network ? 'Necesitas conexión para cerrar todas las sesiones.' : 'No se han podido cerrar las sesiones. Inténtalo de nuevo en un momento.', 'atencion');
         });
       }
     });
@@ -632,7 +632,7 @@
     var id = account.player.id;
     showAppConfirm({
       title: 'Eliminar cuenta online',
-      message: 'Se borrará tu cuenta, tu perfil y tu progreso guardados en el servidor, y también el progreso de este dispositivo (nivel, XP, logros y estadísticas). Esta acción no se puede deshacer.',
+      message: 'Se borrarán tu cuenta, tu perfil y tu progreso, en el servidor y en este dispositivo. No se puede deshacer.',
       confirmLabel: 'Eliminar cuenta',
       onConfirm: function () {
         api('DELETE', '/me', { confirm: id }).then(function () {
@@ -653,7 +653,7 @@
           location.reload();
         }).catch(function (err) {
           if (authFailure(err)) { render(); return; }
-          toast(err && err.network ? 'Necesitas conexión para eliminar la cuenta.' : 'No se pudo eliminar la cuenta.', 'atencion');
+          toast(err && err.network ? 'Necesitas conexión para eliminar la cuenta.' : 'No se ha podido eliminar la cuenta. Inténtalo de nuevo en un momento.', 'atencion');
         });
       }
     });
@@ -732,7 +732,7 @@
           return;
         }
         // Sin aviso emergente: es automático. Ajustes lo dice y ofrece «Reintentar».
-        ui.error = (err && err.network) ? '' : 'No se pudo cargar tu progreso. Pulsa «Reintentar».';
+        ui.error = (err && err.network) ? '' : 'No se ha podido cargar tu progreso. Pulsa «Reintentar».';
         // Se queda pendiente (Ajustes lo dice y tiene «Reintentar»); se reintenta solo unas pocas veces.
         if (++mergeTries <= 5) mergeTimer = setTimeout(function () { if (navigator.onLine !== false) doMerge(); }, 30000);
       })
@@ -778,7 +778,7 @@
       ui.editing = false; toast(pickOne(['Perfil actualizado. Un poco de vanidad nunca viene mal.', 'Perfil actualizado. La presentación importa.']), 'correcto');
     }).catch(function (err) {
       if (authFailure(err)) return;
-      toast(err && err.network ? 'Necesitas conexión para cambiar el perfil.' : ('No se pudo guardar: ' + (err && err.message ? err.message : 'error')), 'atencion');
+      toast(err && err.network ? 'Necesitas conexión para cambiar el perfil.' : 'No se ha podido guardar el perfil. Inténtalo de nuevo.', 'atencion');
     }).then(function () { ui.busy = false; render(); });
   }
   function copyId() {

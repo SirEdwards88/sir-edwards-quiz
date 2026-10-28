@@ -1,6 +1,6 @@
 /* SirEdwards Quiz — Política de privacidad (src/ui/privacy.js). Solo presentación. */
 #privacy-modal { z-index: 1100; }
-#privacy-modal .modal-card { max-width: 520px; width: calc(100% - 24px); max-height: 88vh; padding: 22px 20px 18px; text-align: left; }
+#privacy-modal .modal-card { max-width: 520px; width: calc(100% - 24px); max-height: 88vh; max-height: 88dvh; padding: 22px 20px 18px; text-align: left; }
 #privacy-modal h2 { margin: 0 0 4px; }
 #privacy-modal .privacy-date { font-size: 12px; color: var(--sub); margin: 0 0 4px; }
 #privacy-modal h3 { font-size: 15px; margin: 16px 0 6px; color: var(--text); }

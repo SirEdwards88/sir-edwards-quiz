@@ -140,7 +140,7 @@ const ENCARGOS_INTRO = {
       incorporacion: [
         'A partir de hoy, tu expediente cuenta de verdad.',
         'Se acabó el periodo de cortesía. Empieza el de observación.',
-        'Hasta hoy eras invitado. Desde hoy eres de la casa y respondes como tal.',
+        'Hasta hoy venías de visita. Desde hoy eres de la casa y respondes como tal.',
         'Esta semana tendré por fin resultados que comentar. Espero que me facilites el trabajo.',
         'De hoy en adelante, los descuidos dejan de ser novedades.'
       ],

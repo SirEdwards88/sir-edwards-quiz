@@ -106,7 +106,7 @@ const SURVIVAL_FAIL_PHRASES = {
   desastre: [
     "Con este resultado, hasta llegar a la pregunta diez parecía un objetivo ambicioso.",
     "Si hicieran un documental de esta partida, iría directo al género de comedia de terror.",
-    "Tus respuestas han tenido una cualidad admirable: ninguna ha interrumpido el silencio con un acierto.",
+    "Tus respuestas han tenido una cualidad admirable: casi ninguna ha interrumpido el silencio con un acierto.",
     "Hoy el progreso intelectual ha hecho una pausa. Larga.",
     "Tu cerebro ha elegido hoy una jornada de huelga. Servicios mínimos: ninguno.",
     "La caída ha sido tan estrepitosa que hasta las neuronas supervivientes han pedido el traslado.",

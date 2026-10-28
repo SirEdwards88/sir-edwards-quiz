@@ -25,7 +25,7 @@ const SEQNamePrompt = (function () {
     if (s.length > MAX) return { ok: false, msg: 'Máximo ' + MAX + ' caracteres. Sir Edwards tiene memoria, no paciencia.' };
     if (!/[\p{L}]/u.test(s)) return { ok: false, msg: 'Incluye alguna letra, que esto no es una matrícula.' };
     if (/https?:|www\.|@|\.(com|es|net|org)\b|[<>{}\[\]\\\/]/i.test(s)) return { ok: false, msg: 'Eso no es un nombre, es un código. Prueba con algo que pueda pronunciar sin reírme.' };
-    if (isDefaultName(s)) return { ok: false, msg: 'Ese nombre lo ha puesto el sistema, no tú. Prueba con uno que te represente, o al menos inventado con ganas.' };
+    if (isDefaultName(s)) return { ok: false, msg: 'Ese nombre lo puso el sistema, no tú. Elige uno que sea tuyo.' };
     return { ok: true, name: s };
   }
 

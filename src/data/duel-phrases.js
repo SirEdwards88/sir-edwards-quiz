@@ -207,8 +207,8 @@
   }
 
   // Veredicto de cada pregunta del Duelo (se lee unas 20 veces por duelo): estable por pregunta (mismo texto al repintar).
-  var VERDICT_OK = ['Punto para ti. Anótalo en un sitio visible: no abundan.', 'Anotado. Sin aspavientos.', 'Correcto. Procura que no se te suba.', 'Acierto. Aprovecha, que no se repetirá a menudo.', 'Este te lo concedo.', 'Punto tuyo. La suerte, de momento, te sonríe con cautela.'];
-  var VERDICT_BAD = ['Esta se te escapa, qué sorpresa. Era: ', 'Fallo, como cabía esperar. Era: ', 'Esa no. Era: ', 'Una lástima, aunque no para mí. Era: ', 'Eso no puntúa. Era: ', 'Otro más para la colección. Era: ', 'Ni de casualidad. Era: ', 'Un error de manual. Era: ', 'Cuesta equivocarse con tanto aplomo. Era: '];
+  var VERDICT_OK = ['Acierto. Anótalo en un sitio visible: no abundan.', 'Anotado. Sin aspavientos.', 'Correcto. Procura que no se te suba.', 'Acierto. Aprovecha, que no se repetirá a menudo.', 'Este te lo concedo.', 'Acierto tuyo. La suerte, de momento, te sonríe con cautela.', 'Bien. No me hagas elogiarte dos veces.', 'Esa sí. Tómalo como un accidente feliz.', 'Acierto. Apunta la hora.', 'Correcto. Sin más comentarios.'];
+  var VERDICT_BAD = ['Esta se te escapa, qué sorpresa. Era: ', 'Fallo, como cabía esperar. Era: ', 'Esa no. Era: ', 'Una lástima, aunque no para mí. Era: ', 'Eso no puntúa. Era: ', 'Otro más para la colección. Era: ', 'Ni de casualidad. Era: ', 'Un error de manual. Era: ', 'Cuesta equivocarse con tanto aplomo. Era: ', 'Ni cerca. Era: ', 'Una pena, y además instructiva. Era: ', 'No era esa. Era: '];
   function verdict(ok, seed) {
     var list = ok ? VERDICT_OK : VERDICT_BAD;
     return forfeitFallback(list, String(seed == null ? '' : seed) + (ok ? '+' : '-'));

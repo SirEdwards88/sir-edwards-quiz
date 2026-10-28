@@ -11,7 +11,7 @@
 }
 .sir-event.show { opacity: 1; }
 .sir-event-img {
-  position: relative; z-index: 1; display: block; width: min(62vw, 250px); height: auto; max-height: 34vh; object-fit: contain; margin-bottom: -3px;
+  position: relative; z-index: 1; display: block; width: min(62vw, 250px); height: auto; max-height: 34vh; max-height: 34dvh; object-fit: contain; margin-bottom: -3px;
   filter: drop-shadow(0 10px 22px rgba(0,0,0,.55)); transform: translateY(14px) scale(.97); transition: transform .5s cubic-bezier(.2,.9,.3,1.1);
 }
 .sir-event.show .sir-event-img { transform: none; }

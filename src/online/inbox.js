@@ -101,7 +101,7 @@
     }
     if (list.every(function (i) { return i.kind === 'friend'; })) return { title: 'Tienes ' + list.length + ' solicitudes de amistad', sub: pickSub('friend', rnd) };
     if (list.every(function (i) { return i.waiting; })) return { title: 'Tienes ' + list.length + ' retos pendientes', sub: pickSub('many', rnd) };
-    return { title: 'Tienes ' + list.length + ' desafíos nuevos', sub: pickSub('many', rnd) };
+    return { title: 'Tienes ' + list.length + ' avisos nuevos', sub: pickSub('many', rnd) };
   }
 
   // ---- Estado en este dispositivo --------------------------------------------------------

@@ -330,8 +330,8 @@
   // 2.3: pulsar a un jugador abre su ficha. Solo con un ID válido (10 caracteres A-Z/0-9); si no, la fila no es pulsable.
   function tapOf(r) { return r && typeof r.id === 'string' && /^[0-9A-Z]{10}$/.test(r.id) ? ' role="button" tabindex="0" onclick="SEQProfile.open(\'' + r.id + '\')" onkeydown="if(event.key===\'Enter\')SEQProfile.open(\'' + r.id + '\')"' : ''; }
   function placeOf(r, b) { return isPvp(b) && r.en_colocacion ? null : (r.rank != null ? num(r.rank) : null); }
-  function unitOf(b) { return (BOARDS[b] && BOARDS[b].unit) || 'pts'; }
-  function valueHtml(r, b) { if (isMulti(b)) return fmt(r.victorias) + '<small>' + (num(r.victorias) === 1 ? 'victoria' : 'victorias') + '</small>'; return isPvp(b) ? fmt(r.elo) + '<small>ELO</small>' : fmt(r.score) + '<small>' + unitOf(b) + '</small>'; }
+  function unitOf(b, v) { var u = (BOARDS[b] && BOARDS[b].unit) || 'pts'; return u === 'aciertos' && num(v) === 1 ? 'acierto' : u; }
+  function valueHtml(r, b) { if (isMulti(b)) return fmt(r.victorias) + '<small>' + (num(r.victorias) === 1 ? 'victoria' : 'victorias') + '</small>'; return isPvp(b) ? fmt(r.elo) + '<small>ELO</small>' : fmt(r.score) + '<small>' + unitOf(b, r.score) + '</small>'; }
   function subOf(r, b) { if (isMulti(b)) return num(r.partidas) + (num(r.partidas) === 1 ? ' partida' : ' partidas') + ' · ' + num(r.porcentaje) + '%'; return isPvp(b) ? (r.en_colocacion ? 'En colocación' : esc(rankName(r.rango))) : ''; }
   function avatarOf(r) { return window.SEQAvatars ? window.SEQAvatars.avatarHTML(r.avatar) : ''; }
   function medalImg(n, cls) {
@@ -377,7 +377,7 @@
       ? esc(rankName(me.rango)) + (me.en_colocacion ? ' · colocación ' + num(me.partidas_colocacion) + '/' + (num(me.colocacion_total) || 5) : '')
       : esc(BOARDS[b].sub);
     return '<div class="seq-v21-me"><span class="seq-v21-me-pos' + (place ? '' : ' none') + '">' + (place ? '<small>#</small>' + place : '—') + '</span>' +
-      '<div class="seq-v21-me-txt"><span class="seq-v21-me-lbl">Tu posición</span><b>' + (pvp ? fmt(me.elo) + ' ELO' : fmt(me.score) + ' ' + unitOf(b)) + '</b><small>' + detail + '</small></div>' +
+      '<div class="seq-v21-me-txt"><span class="seq-v21-me-lbl">Tu posición</span><b>' + (pvp ? fmt(me.elo) + ' ELO' : fmt(me.score) + ' ' + unitOf(b, me.score)) + '</b><small>' + detail + '</small></div>' +
       (pvp ? rankIcon(me.rango, 'seq-v21-me-badge') : '') + '</div>';
   }
   function rkNote(text) { return '<div class="seq-v21-rk-note"><p>' + esc(text) + '</p></div>'; }
@@ -422,9 +422,9 @@
     if (num(m.jugadas) > 0) {
       var mj = num(m.jugadas), mg = num(m.ganadas), cl = m.clasico || {}, ap = m.apuestas || {};
       out += '<div class="seq-v21-grid" style="grid-template-columns:repeat(2,1fr)">' + statCell('Victorias', mg) + statCell('Derrotas', Math.max(0, mj - mg - num(m.abandonos))) + statCell('Abandonos', num(m.abandonos)) + statCell('% Victorias', String(Math.round((mg / mj) * 1000) / 10).replace('.', ',') + ' %') + '</div>' +
-        '<div class="history-list"><div class="history-item seq-v21-h2h"><span>Clásico</span><small>' + num(cl.jugadas) + ' partidas · ' + num(cl.ganadas) + (num(cl.ganadas) === 1 ? ' victoria' : ' victorias') + '</small></div>' +
-        '<div class="history-item seq-v21-h2h"><span>Apuestas</span><small>' + num(ap.jugadas) + ' partidas · ' + num(ap.ganadas) + (num(ap.ganadas) === 1 ? ' victoria' : ' victorias') + '</small></div>' +
-        (m.retos && num(m.retos.jugadas) > 0 ? '<div class="history-item seq-v21-h2h"><span>Retos</span><small>' + num(m.retos.jugadas) + ' partidas · ' + num(m.retos.ganadas) + (num(m.retos.ganadas) === 1 ? ' victoria' : ' victorias') + '</small></div>' : '') + '</div>';
+        '<div class="history-list"><div class="history-item seq-v21-h2h"><span>Clásico</span><small>' + num(cl.jugadas) + (num(cl.jugadas) === 1 ? ' partida' : ' partidas') + ' · ' + num(cl.ganadas) + (num(cl.ganadas) === 1 ? ' victoria' : ' victorias') + '</small></div>' +
+        '<div class="history-item seq-v21-h2h"><span>Apuestas</span><small>' + num(ap.jugadas) + (num(ap.jugadas) === 1 ? ' partida' : ' partidas') + ' · ' + num(ap.ganadas) + (num(ap.ganadas) === 1 ? ' victoria' : ' victorias') + '</small></div>' +
+        (m.retos && num(m.retos.jugadas) > 0 ? '<div class="history-item seq-v21-h2h"><span>Retos</span><small>' + num(m.retos.jugadas) + (num(m.retos.jugadas) === 1 ? ' partida' : ' partidas') + ' · ' + num(m.retos.ganadas) + (num(m.retos.ganadas) === 1 ? ' victoria' : ' victorias') + '</small></div>' : '') + '</div>';
       var mh = m.historial || [];
       if (mh.length) out += '<h4 class="seq-v21-h">Últimos duelos</h4><div class="history-list">' + mh.map(function (x) {
         var res = x.resultado === 'win' ? 'Victoria' : x.resultado === 'abandono' ? 'Abandono' : 'Derrota';
@@ -470,7 +470,7 @@
     var h2h = s.head_to_head || [];
     if (h2h.length) {
       out += '<h4 class="seq-v21-h">Cara a cara</h4><div class="history-list">' + h2h.map(function (x) {
-        return '<div class="history-item seq-v21-h2h"><span>' + esc((x.rival || {}).display_name || 'Jugador') + '</span><small>' + num(x.partidas) + ' partidas · ' + num(x.victorias) + 'V · ' + num(x.derrotas) + 'D · ' + num(x.empates) + 'E</small></div>';
+        return '<div class="history-item seq-v21-h2h"><span>' + esc((x.rival || {}).display_name || 'Jugador') + '</span><small>' + num(x.partidas) + (num(x.partidas) === 1 ? ' partida' : ' partidas') + ' · ' + num(x.victorias) + 'V · ' + num(x.derrotas) + 'D · ' + num(x.empates) + 'E</small></div>';
       }).join('') + '</div>';
     }
     return out + '</div>';

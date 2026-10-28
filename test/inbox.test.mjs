@@ -33,7 +33,7 @@ test('unseen: cada desafío avisa una sola vez', () => {
 });
 test('textFor: título fijo y claro; subtítulo que rota sin repetirse seguido; sin emojis, corto y sin prisa en los retos', () => {
   const one = C.textFor([{ kind: 'reto', id: 'x', name: 'Marta' }]), duelT = C.textFor([{ kind: 'duel', id: 'x', name: 'Marta' }]), many = C.textFor([{}, {}, {}]);
-  assert.match(one.title, /Marta te ha retado/); assert.match(duelT.title, /Marta te reta a un duelo/); assert.match(many.title, /3 desafíos/);
+  assert.match(one.title, /Marta te ha retado/); assert.match(duelT.title, /Marta te reta a un duelo/); assert.match(many.title, /3 avisos/);
   for (const [k, list] of Object.entries(C.SUBS)) {
     assert.ok(list.length >= 3 && new Set(list).size === list.length, k);
     for (const t of list) { assert.ok(t.length <= 62, t); assert.ok(!/\p{Extended_Pictographic}/u.test(t), t); }

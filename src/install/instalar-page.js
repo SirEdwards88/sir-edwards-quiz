@@ -21,7 +21,7 @@
     if (state === 'ready') return 'Un toque y queda en tu pantalla de inicio.';
     if (state === 'ios') return plat && plat.safari ? 'En iPhone se hace desde el menú de Safari. Sigue los tres pasos de abajo.'
       : 'En iPhone se instala desde Safari. Abre esta página allí y sigue los tres pasos de abajo.';
-    if (state === 'manual') return 'Abre el menú del navegador (⋮) y elige «Instalar aplicación» o «Añadir a pantalla de inicio». Si no aparece, ya está instalada o este navegador no lo permite.';
+    if (state === 'manual') return 'Menú del navegador (⋮) y «Instalar aplicación». Si no aparece, ya la tienes o tu navegador no puede.';
     return 'Preparando la instalación…';
   }
 
