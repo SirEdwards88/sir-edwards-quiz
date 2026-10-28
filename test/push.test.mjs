@@ -29,7 +29,7 @@ test('service worker: manejadores push y notificationclick, sin duplicar con la 
   assert.match(sw, /addEventListener\('push'/);
   assert.match(sw, /addEventListener\('notificationclick'/);
   assert.match(sw, /visibilityState === 'visible'/);
-  assert.match(sw, /openWindow\('\.\/' \+ \(id \? '#reto=' \+ id : ''\)\)/);
+  assert.match(sw, /openWindow\('\.\/' \+ \(id \? '#reto=' \+ id : \(amigos \? '#amigos' : ''\)\)\)/);
   assert.match(sw, /'\.\/src\/online\/push\.js'/);
 });
 

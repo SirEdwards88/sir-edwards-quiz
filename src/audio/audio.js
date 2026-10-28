@@ -81,11 +81,12 @@ function stopJingleNow() {
   jingle = null;
 }
 // El navegador solo deja crear/usar el audio tras un toque: se precargan las muestras en el primer toque.
-['pointerdown', 'keydown', 'touchstart'].forEach((ev) => document.addEventListener(ev, function once() {
+['pointerdown', 'keydown', 'touchstart', 'touchend', 'click'].forEach((ev) => document.addEventListener(ev, function once() {
   document.removeEventListener(ev, once, true);
   try { if (!store || store.sound !== 'off') loadSamples(); } catch (e) { loadSamples(); }
 }, true));
-function getAudioCtx() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); return audioCtx; }
+// Auditoría 6 (12): 'interrupted' (iOS tras una llamada) también se reanuda, no solo 'suspended'.
+function getAudioCtx() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state !== 'running') audioCtx.resume(); return audioCtx; }
 function playSound(type) { 
   if (store.sound === 'off') return;
   if (type === 'bad' && playSample('wrong', 0.85)) return;

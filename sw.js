@@ -39,7 +39,7 @@
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
 // Desde la 2.0 el historial de cambios de cada versión vive en git; aquí solo se sube CACHE_VERSION (scripts/bump-version.mjs).
-const CACHE_VERSION = 484;
+const CACHE_VERSION = 485;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -802,7 +802,7 @@ const ASSET_URLS = APP_SHELL.filter(isAsset);                              // im
 const assetRequest = (u) => new Request(u + '?r=' + ASSET_REVS[u]);
 
 // Guarda las imágenes que falten (con 6 descargas a la vez) y retira las que ya no tocan. Nunca lanza error: devuelve cuántas fallaron.
-async function cacheAssets() {
+async function cacheAssets(prune) {
   const cache = await caches.open(ASSET_CACHE);
   const wanted = ASSET_URLS.filter((u) => ASSET_REVS[u]).map((u) => [u, assetRequest(u)]);
   const queue = [];
@@ -818,8 +818,11 @@ async function cacheAssets() {
     }
   };
   await Promise.all([worker(), worker(), worker(), worker(), worker(), worker()]);
-  const keep = new Set(wanted.map(([, req]) => req.url));
-  for (const k of await cache.keys()) { if (/\?r=/.test(k.url) && !keep.has(k.url)) await cache.delete(k); }
+  // Auditoría 6 (14): la poda solo al activar (con el SW viejo ya sin pestañas), no al instalar.
+  if (prune) {
+    const keep = new Set(wanted.map(([, req]) => req.url));
+    for (const k of await cache.keys()) { if (/\?r=/.test(k.url) && !keep.has(k.url)) await cache.delete(k); }
+  }
   return failed;
 }
 
@@ -852,11 +855,28 @@ self.addEventListener('activate', (event) => {
       )
     ).then(() => self.clients.claim())
      // Imágenes y sonidos que no llegaron en la instalación (red lenta): se completan ahora; cacheAssets solo baja lo que falta.
-     .then(() => cacheAssets().catch(() => {}))
+     .then(() => cacheAssets(true).catch(() => {}))
   );
 });
 
 const SCOPE_PATH = new URL('./', self.location).pathname;
+
+// ¿Vale esta respuesta para guardarla? Sin 206, sin redirecciones ni respuestas opacas, y un .js/.css con su tipo (un portal cautivo
+// responde 200 con HTML a cualquier URL y no debe sustituir a la copia buena).
+function okToCache(res, url) {
+  if (!res || !res.ok || res.status === 206 || res.type !== 'basic' || res.redirected) return false;
+  const ct = (res.headers && res.headers.get('content-type')) || '';
+  if (/\.js$/.test(url.pathname) && !/javascript|ecmascript/.test(ct)) return false;
+  if (/\.css$/.test(url.pathname) && !/css/.test(ct)) return false;
+  return true;
+}
+// Reintento acotado (cada 6 h como mucho, desde una navegación) de las imágenes que no llegaron en la instalación.
+let lastRefill = 0;
+function refill() {
+  if (Date.now() - lastRefill < 6 * 3600 * 1000) return Promise.resolve();
+  lastRefill = Date.now();
+  return cacheAssets(false).catch(() => {});
+}
 
 self.addEventListener('fetch', (event) => {
   const req = event.request;
@@ -873,18 +893,24 @@ self.addEventListener('fetch', (event) => {
   // siempre el index.html más reciente en vez de quedarse pegado a una
   // versión vieja cacheada.
   if (req.mode === 'navigate') {
-    event.respondWith(
-      fetch(req)
-        .then((res) => {
-          // Solo se guarda una página correcta: un 404/500 de la red no puede sustituir a la copia buena de sin conexión.
-          if (res && res.ok) {
-            const copy = res.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
-          }
-          return res;
-        })
-        .catch(() => caches.match(req).then((res) => res || caches.match('./index.html')))
-    );
+    // Auditoría 6 (1, 2, 5, 17): la red se revalida (cache: 'no-cache', nunca el HTML de 10 min de la caché HTTP), solo se guarda una
+    // página que sea de verdad la app (un portal wifi con 200 no pisa la copia buena), con clave fija y, si la red no contesta en
+    // 4 s, se enseña la copia (la descarga sigue y la refresca para la próxima).
+    const net = fetch(req.url, { cache: 'no-cache', redirect: 'manual', credentials: 'same-origin' }).then(async (res) => {
+      if (res && res.ok && res.type === 'basic') {
+        const copy = res.clone();
+        let isApp = false;
+        try { isApp = (await res.clone().text()).includes('siredwards_quiz_v1_0_data'); } catch (e) {}
+        if (isApp) (await caches.open(CACHE_NAME)).put('./index.html', copy);
+      }
+      return res;
+    });
+    event.waitUntil(net.catch(() => {}).then(() => refill()));
+    event.respondWith((async () => {
+      const timer = new Promise((resolve) => setTimeout(() => resolve(null), 4000));
+      try { const first = await Promise.race([net, timer]); if (first) return first; } catch (e) { /* sin red: copia */ }
+      return (await caches.match('./index.html')) || net.catch(() => caches.match('./index.html'));
+    })());
     return;
   }
 
@@ -907,12 +933,16 @@ self.addEventListener('fetch', (event) => {
   // Resto de recursos propios (CSS/JS/iconos/manifest): caché primero para
   // que el juego cargue rápido y funcione razonablemente sin conexión, con
   // red como respaldo y actualización silenciosa de la caché.
+  // Auditoría 6 (6, 16, 1): la música se pide por partes (Range) y la gestiona el navegador; los archivos con ?v= son inmutables
+  // (caché primero puro, sin red cuando hay copia); y solo se guarda una respuesta que parezca lo que es (JS/CSS con su tipo).
+  if (req.headers.has('range')) return;
+  const versioned = url.searchParams.has('v');
   event.respondWith(
     caches.match(req).then((cached) => {
+      if (cached && versioned) return cached;
       const network = fetch(req)
         .then((res) => {
-          // 206 = trozo de un archivo (la música se pide por partes): la caché no admite respuestas parciales.
-          if (res && res.ok && res.status !== 206) {
+          if (okToCache(res, url)) {
             const copy = res.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
           }
@@ -931,32 +961,45 @@ self.addEventListener('push', (event) => {
   try { d = event.data ? event.data.json() : {}; } catch (e) { d = {}; }
   const title = String(d.t || 'Sir Edwards').slice(0, 80);
   const m = /reto=([0-9A-Z]{10})/.exec(String(d.url || ''));
+  const amigos = /amigos=1/.test(String(d.url || ''));   // auditoría 4 (29): las pushes de amistad llevan a Amigos
   event.waitUntil((async () => {
     const wins = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
     if (wins.some((c) => c.visibilityState === 'visible')) {
-      wins.forEach((c) => c.postMessage({ type: 'seq-push', id: m ? m[1] : null }));
+      wins.forEach((c) => c.postMessage({ type: 'seq-push', id: m ? m[1] : null, amigos }));
       return;
     }
     await self.registration.showNotification(title, {
       body: String(d.b || '').slice(0, 160),
       badge: './icons/badge-96.png',
-      tag: String(d.tag || 'seq'), renotify: false, data: { id: m ? m[1] : null },
+      tag: String(d.tag || 'seq'), renotify: true, data: { id: m ? m[1] : null, amigos },
     });
+  })());
+});
+
+// Auditoría 6 (7): la página pide activar la versión que espera (tras confirmar el aviso de novedades).
+self.addEventListener('message', (event) => { if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting(); });
+
+// Auditoría 6 (10): el navegador rotó la suscripción push: se renueva y se avisa a la página para que la registre en el Worker.
+self.addEventListener('pushsubscriptionchange', (event) => {
+  event.waitUntil((async () => {
+    try { await self.registration.pushManager.subscribe(event.oldSubscription ? event.oldSubscription.options : { userVisibleOnly: true }); } catch (e) {}
+    (await self.clients.matchAll({ type: 'window', includeUncontrolled: true })).forEach((c) => c.postMessage({ type: 'seq-push-resub' }));
   })());
 });
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   const id = event.notification.data && event.notification.data.id;
+  const amigos = !!(event.notification.data && event.notification.data.amigos);
   event.waitUntil((async () => {
     const wins = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
     const win = wins[0];
     if (win) {
       try { await win.focus(); } catch (e) {}
-      win.postMessage({ type: 'seq-push', id: id || null, open: true });
+      win.postMessage({ type: 'seq-push', id: id || null, open: true, amigos });
       return;
     }
-    await self.clients.openWindow('./' + (id ? '#reto=' + id : ''));
+    await self.clients.openWindow('./' + (id ? '#reto=' + id : (amigos ? '#amigos' : '')));
   })());
 });
 

@@ -106,7 +106,22 @@
     if (!available() || !isOn()) return;
     if (Date.now() - (Number(ls(SYNC_KEY)) || 0) < DAY) return;
     subscription().then(function (x) {
-      if (!x.sub) { ls(ON_KEY, null); paint(); return; }
+      if (!x.sub) {
+        // Suscripción caducada o rotada por el navegador: con el permiso aún concedido se renueva (auditoría 6, 10); solo se apaga si no hay manera.
+        if (Notification.permission !== 'granted') { ls(ON_KEY, null); paint(); return; }
+        return SEQOnline.api('GET', '/push/key').then(function (k) { return x.reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: urlKey(k.key) }); })
+          .then(function (sub) { return post(sub); }).then(function () { ls(SYNC_KEY, String(Date.now())); })
+          .catch(function () { ls(ON_KEY, null); paint(); });
+      }
+      return post(x.sub).then(function () { ls(SYNC_KEY, String(Date.now())); });
+    }).catch(function () {});
+  }
+
+  // Auditoría 6 (10): el navegador rotó la suscripción: se vuelve a registrar la que haya ahora (sin esperar al reintento diario).
+  function resubscribe() {
+    if (!available() || !isOn()) return;
+    subscription().then(function (x) {
+      if (!x.sub) return;
       return post(x.sub).then(function () { ls(SYNC_KEY, String(Date.now())); });
     }).catch(function () {});
   }
@@ -119,7 +134,11 @@
       else { if (typeof switchTab === 'function') switchTab('duelo'); if (window.SEQDuels && SEQDuels.open) SEQDuels.open('reto', id); }
     } catch (e) {}
   }
+  function openAmigos() {
+    try { if (window.SEQDuels && SEQDuels.openGuarded) SEQDuels.openGuarded(function () { SEQDuels.open('friends'); }); } catch (e) {}
+  }
   function fromHash() {
+    if (/^#amigos$/.test(location.hash || '')) { try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} var t0 = 0; (function w() { if (session() && window.SEQDuels) openAmigos(); else if (++t0 < 40) setTimeout(w, 500); })(); return; }
     var id = linkId(location.hash);
     if (!id) return;
     try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
@@ -127,8 +146,9 @@
     (function wait() { if (session() && window.SEQDuels) openReto(id); else if (++tries < 40) setTimeout(wait, 500); })();
   }
 
+  var paintT = null;
   function start() {
-    paint(); setInterval(paint, 4000);
+    paint(); paintT = setInterval(paint, 4000);
     setTimeout(resync, 6000);
     fromHash();
     window.addEventListener('hashchange', fromHash);
@@ -137,6 +157,7 @@
         var d = ev && ev.data;
         if (!d || d.type !== 'seq-push') return;
         if (d.open && d.id && ID_RE.test(String(d.id))) openReto(d.id);
+        else if (d.open && d.amigos) openAmigos();
         else if (window.SEQInbox) SEQInbox.check(true);         // app a la vista: que lo recoja el aviso interno
       });
     }
@@ -145,5 +166,5 @@
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
   }
 
-  window.SEQPush = { enable: enable, disable: disable, paint: paint, core: { urlKey: urlKey, tzMinutes: tzMinutes, linkId: linkId } };
+  window.SEQPush = { resubscribe: resubscribe, enable: enable, disable: disable, paint: paint, core: { urlKey: urlKey, tzMinutes: tzMinutes, linkId: linkId } };
 })();

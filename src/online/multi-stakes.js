@@ -192,5 +192,5 @@
   function playDuel(d, h) { return play(fromDuel(d, h), h, function (v) { return window.SEQMulti && SEQMulti.board ? SEQMulti.board(v, h) : ''; }); }
   function tickDuel(d, now) { var h = H(); if (h) tick(fromDuel(d, h), now); }
 
-  window.SEQMultiStakes = { playDuel: playDuel, tickDuel: tickDuel, play: play, tick: tick, stake: stake, answer: answer, core: { STAKES: STAKES, mult: mult } };
+  window.SEQMultiStakes = { resetStreak: function () { ST.streak = 0; }, playDuel: playDuel, tickDuel: tickDuel, play: play, tick: tick, stake: stake, answer: answer, core: { STAKES: STAKES, mult: mult } };
 })();

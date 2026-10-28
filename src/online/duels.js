@@ -265,6 +265,7 @@
     // 2.5: «mreto» = Reto todos contra todos; se comporta como un Reto (mismo reloj, sondeo y partida) con otra ruta y otras pantallas.
     S.isMulti = screen === 'mreto'; if (S.isMulti) screen = 'reto';
     S.screen = screen; S.id = id ? safeId(id) : null; S.data = null; S.msg = ''; S.lastIdx = -1; S.shown = null; S.streak = 0;
+    try { if (window.SEQDuels21) SEQDuels21.resetStreak(); if (window.SEQMultiStakes) SEQMultiStakes.resetStreak(); } catch (e) {}   // auditoría 4 (37): la racha de aciertos no pasa de una partida a otra
     var home = $('duel-home'); if (home) home.style.display = 'none';
     var root = $('seq-duel-root'); if (root) root.style.display = 'block';
     render();
@@ -369,7 +370,7 @@
       var draw = r.empate === true || (g == null && num(r.mi_puntuacion) === num(r.puntuacion_rival));
       var res = g === 'yo' ? 'win' : g === 'rival' ? 'loss' : (draw ? 'draw' : null);
       if (!rid || !id || !res || typeof registerOnlineDuelResult !== 'function') return;
-      var out = registerOnlineDuelResult({ duelId: id, rivalId: rid, result: res, myScore: num(r.mi_puntuacion), opponentScore: num(r.puntuacion_rival), forfeit: d.motivo_fin === 'abandono' || d.motivo_fin === 'no_jugado', abandoned: d.motivo_fin === 'abandono', hitos: kind === 'duel' && r.hitos && typeof r.hitos === 'object' ? r.hitos : null, stakes: kind === 'duel' && d.modo === 'stakes' });
+      var out = registerOnlineDuelResult({ duelId: id, rivalId: rid, result: res, myScore: num(r.mi_puntuacion), opponentScore: num(r.puntuacion_rival), forfeit: d.motivo_fin === 'abandono' || d.motivo_fin === 'no_jugado', abandoned: d.motivo_fin === 'abandono', hitos: kind === 'duel' && r.hitos && typeof r.hitos === 'object' ? r.hitos : null, stakes: kind === 'duel' && d.modo === 'stakes', marginOk: (kind === 'duel' && d.modo !== 'stakes') || (kind === 'reto' && (!d.modo || d.modo === 'estandar')) });
       if (out && out.medals && out.medals.length) { S.newMedals = S.newMedals || {}; S.newMedals[id] = out.medals.map(function (m) { return m.id; }); }
     } catch (e) {}
   }

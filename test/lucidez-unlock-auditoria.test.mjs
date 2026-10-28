@@ -47,7 +47,7 @@ test('v467 revisión: arranque con concesión de logros, sync sin gastar Lucidez
   assert.match(html, /try \{ if \(checkMedalsAndGetNew\(\)\.length\) saveStore\(false\); \} catch \(e\) \{\}\s*\n\s*updateBadges\(\);/);
   assert.match(online, /notifiedModeUnlocks = store\.notifiedModeUnlocks\.filter\(function \(id\) \{ return id !== 'lucidez_mental'; \}\)/);
   assert.match(online, /checkFragmentRewardsAndGetNew\(\)/);
-  assert.match(sw, /\.then\(\(\) => cacheAssets\(\)\.catch\(\(\) => \{\}\)\)/);
+  assert.match(sw, /\.then\(\(\) => cacheAssets\(true\)\.catch\(\(\) => \{\}\)\)/);
   const fondo = read('src/ui/mental-classic-ui.js');
   assert.match(fondo, /SEQLucidezUnlock\.gate\(newModes\)/);
   assert.match(fondo, /SEQLucidezUnlock\.run\(newModes, afterReveal\)/);

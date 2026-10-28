@@ -502,7 +502,7 @@
   window.SEQDuels21 = {
     STAKES: STAKES, MODES: MODES, RANK_IDS: RANK_IDS, BOARDS: BOARDS,
     modeButtons: modeButtons, modeBadge: modeBadge, scoreboard: scoreboard, modeIcon: modeIcon, rankIcon: rankIcon, eloBlock: eloBlock,
-    play: play, tick: tick, stake: stake, answer: answer,
+    resetStreak: function () { S21.streak = 0; }, play: play, tick: tick, stake: stake, answer: answer,
     renderRankings: renderRankings, rkIcon: rkIcon, loadRankings: loadRankings, setScope: setScope, setBoard: setBoard,
     renderStats: renderStats, loadStats: loadStats, toggleStats: toggleStats, setStatsTab: setStatsTab, onStatsShown: onStatsShown,
     invalidate: invalidate,
