@@ -120,7 +120,7 @@
       '<h2 id="duel-lock-title">Aún no.</h2>' +
       '<p class="dl-lead">Un duelo exige cierta dignidad. Alcanza el nivel ' + g.needLevel + ' y hablamos.</p>' +
       '<div class="dl-prog"><div class="dl-bar"><div class="dl-fill" style="width:' + pct + '%"></div></div>' +
-      '<div class="dl-lv-row"><span>Nivel ' + g.level + '</span><span>Nivel ' + g.needLevel + '</span></div></div>' +
+      '<div class="dl-lv-row dl-lv-count">' + g.level + ' / ' + g.needLevel + '</div></div>' +
       '<button type="button" class="btn btn-primary dl-ok" data-autofocus>Entendido</button></div>';
     m.addEventListener('click', function (e) { if (e.target === m) closeLock(); });
     m.querySelector('button').addEventListener('click', closeLock);

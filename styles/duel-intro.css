@@ -55,3 +55,4 @@
 @media (prefers-reduced-motion: reduce) { .dint, .dint-card { animation: none; } }
 :root:not([data-theme="dark"]) .dint { background: radial-gradient(ellipse at 50% 30%, rgba(201, 153, 46, .22), transparent 60%), rgba(30, 24, 12, .72); }
 .dh-lead { margin: 0 0 6px; font-family: var(--font-display, "Playfair Display", serif); font-style: italic; font-size: 15px; color: var(--sub); }
+.dl-lv-count { justify-content: center; font-size: 15px; font-weight: 700; letter-spacing: .02em; color: #f0d484; }
