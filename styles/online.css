@@ -44,7 +44,7 @@
 .seq-edit { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
 .seq-input { width: 100%; box-sizing: border-box; padding: 12px 14px; font: inherit; font-size: 16px; border-radius: 12px; border: 2px solid var(--border); background: var(--card); color: var(--text); }
 .seq-input:focus { outline: none; border-color: var(--primary); }
-.seq-avatars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 6px 0 4px; }
+.seq-avatars { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 6px 0 4px; }
 .seq-av-btn { font-size: 24px; padding: 10px 4px 8px; border-radius: 12px; border: 2px solid var(--border); background: var(--card); cursor: pointer; }
 .seq-av-btn.sel { border-color: var(--primary); background: var(--badge-bg); }
 
@@ -92,7 +92,7 @@
 .seq-duel-root { padding-bottom: 24px; }
 .seq-d-h3 { font-size: 15px; margin: 18px 0 8px; color: var(--sub); }
 .seq-d-row { cursor: pointer; gap: 10px; }
-.seq-d-sm { padding: 6px 12px; min-height: 0; font-size: 13px; }
+.seq-d-sm { padding: 6px 12px; min-height: 44px; font-size: 13px; }   /* auditoría 7 (13): objetivo táctil de 44 px */
 .seq-d-search { display: flex; gap: 8px; margin: 10px 0; }
 .seq-d-search input { flex: 1; min-width: 0; }
 .seq-d-vs { margin: 4px 0 10px; font-weight: 700; }
@@ -633,7 +633,7 @@
 .seq-v21-reveal-side { display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 13px; }
 .seq-v21-reveal-side small { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--sub); font-weight: 800; }
 .seq-v21-reveal-vs { font-size: 12px; color: var(--sub); font-weight: 800; }
-.seq-v21-resolved { display: grid; gap: 8px; }
+.seq-v21-resolved { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
 .seq-v21-res-row { display: flex; align-items: center; gap: 8px; padding: 10px 12px; background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; }
 .seq-v21-res-row span { width: 42px; font-size: 11px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; color: var(--sub); }
 .seq-v21-res-row b:last-child { margin-left: auto; font-size: 17px; }
@@ -678,7 +678,7 @@
 
 /* ===== 2.1 pulido: elección de modo, Rankings, botón de estadísticas y pista de avatar bloqueado ===== */
 /* Elección de modo: mismas tarjetas que los modos normales, con el medallón grande */
-.seq-v21-modes { display: grid; gap: 12px; margin: 12px 0 16px; }
+.seq-v21-modes { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin: 12px 0 16px; }
 .seq-v21-modecard { display: flex; align-items: center; gap: 16px; padding: 16px; }
 .seq-v21-modecard-classic { border-color: var(--accent-purple-soft, var(--border)); background: linear-gradient(145deg, var(--accent-purple-soft, transparent), var(--card) 70%); }
 .seq-v21-modecard-stakes { border-color: var(--se-gold, var(--border)); background: linear-gradient(145deg, rgba(180, 120, 20, .16), var(--card) 70%); }
@@ -751,7 +751,7 @@
 .seq-v21-pod.me .seq-v21-pod-name { color: var(--accent-gold-strong, #92400e); }
 .seq-v21-pod.me .seq-v21-pod-step { border-color: var(--se-gold, var(--primary)); }
 /* Lista (del 4.º en adelante y quienes están en colocación): posición → jugador → insignia → puntuación */
-.seq-v21-rklist { display: grid; gap: 8px; }
+.seq-v21-rklist { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; }
 .seq-v21-rk { display: flex; align-items: center; gap: 12px; min-height: 62px; padding: 8px 14px 8px 12px; background: var(--card); border: 1.5px solid var(--border); border-radius: 16px; }
 .seq-v21-rk.me { border-color: var(--se-gold, var(--primary)); background: linear-gradient(135deg, color-mix(in srgb, var(--se-gold, var(--primary)) 14%, var(--card)), var(--card) 80%); }
 .seq-v21-pos { flex: 0 0 auto; width: 30px; text-align: center; font-family: var(--font-ui); font-weight: 900; font-size: 19px; color: var(--sub); }
@@ -787,7 +787,7 @@
 .seq-v21-elocard-rank { font-family: var(--font-display, inherit); font-weight: 700; font-size: 17px; color: var(--accent-gold-strong, #92400e); }
 .seq-v21-elocard-state { font-size: 12px; color: var(--sub); }
 /* Pista de avatar bloqueado */
-.seq-av-btn.seq-av-locked .seq-av-name { white-space: nowrap; font-size: 11px; letter-spacing: -.1px; }
+.seq-av-btn.seq-av-locked .seq-av-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; letter-spacing: -.1px; }
 .seq-av-btn.seq-av-locked { cursor: pointer; }
 .seq-av-btn.seq-av-locked.hint { opacity: .9; filter: grayscale(.6); outline: 2px dashed var(--se-gold, var(--primary)); outline-offset: 1px; }
 .seq-av-hint { margin: 8px 2px 4px; padding: 8px 12px; font-size: 13px; font-weight: 700; line-height: 1.35; border-radius: 12px; border: 1.5px solid var(--se-gold, var(--border)); background: color-mix(in srgb, var(--se-gold, var(--primary)) 9%, var(--card)); }
@@ -1017,6 +1017,7 @@
 #seq-duel-root .seq-m-row { display: grid; grid-template-columns: 38px 40px 1fr auto; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 14px; background: var(--card); border: 1.5px solid var(--border); text-align: left; }
 #seq-duel-root .seq-m-row.first { border-color: #c9992e; box-shadow: 0 0 0 1px rgba(201, 153, 46, .45), 0 6px 16px rgba(0, 0, 0, .16); }
 #seq-duel-root .seq-m-row.me .seq-m-rname { color: #c9992e; }
+:root:not([data-theme="dark"]) #seq-duel-root .seq-m-row.me .seq-m-rname, :root:not([data-theme="dark"]) #seq-duel-root .seq-m-row.first .seq-m-rpos, :root:not([data-theme="dark"]) #seq-duel-root .seq-m-row.first .seq-m-pts { color: var(--accent-gold-text); }   /* auditoría 7 (27): contraste en tema claro */
 #seq-duel-root .seq-m-row.gone { opacity: .6; }
 #seq-duel-root .seq-m-rpos { font-family: var(--font-display); font-size: 18px; font-weight: 800; color: var(--text); }
 #seq-duel-root .seq-m-row.first .seq-m-rpos, #seq-duel-root .seq-m-row.first .seq-m-pts { color: #c9992e; }
@@ -1026,7 +1027,7 @@
 [data-theme="dark"] #seq-duel-root .seq-m-row.first, [data-theme="dark"] #seq-duel-root .seq-m-chip.me { border-color: #e8c874; }
 
 /* 2.4 Duelo todos contra todos por apuestas (src/online/multi-stakes.js) */
-.seq-m-locks { display: flex; justify-content: center; gap: 12px; margin: 14px 0 4px; }
+.seq-m-locks { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 14px 0 4px; }
 .seq-m-lock { position: relative; display: inline-flex; flex-direction: column; align-items: center; gap: 3px; width: 64px; opacity: .55; }
 .seq-m-lock.on { opacity: 1; }
 .seq-m-lock .seq-pl-av, .seq-m-lock img, .seq-m-lock > * { max-width: 40px; max-height: 40px; }

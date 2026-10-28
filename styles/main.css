@@ -166,7 +166,8 @@
    Foco consistente en Light/Dark, sin depender del outline azul por
    defecto del navegador, que rompe con el resto del sistema visual. */
 :focus-visible {
-  outline: none;
+  outline: 3px solid var(--primary);   /* auditoría 7 (5): un contorno real; el box-shadow lo anulan reglas más específicas */
+  outline-offset: 2px;
   box-shadow: var(--focus-ring);
   border-radius: var(--radius-sm);
 }
@@ -197,7 +198,7 @@ button:disabled, .btn:disabled, [aria-disabled="true"] {
   }
 }
 * { box-sizing: border-box; font-family: var(--font-ui); }
-body { margin: 0; background-color: var(--bg); background-image: var(--ambient-gold-glow); background-repeat: no-repeat; color: var(--text); min-height: 100vh; display: flex; justify-content: center; position: relative; transition: background-color 0.3s, color 0.3s; }
+body { margin: 0; background-color: var(--bg); background-image: var(--ambient-gold-glow); background-repeat: no-repeat; color: var(--text); min-height: 100vh; min-height: 100dvh; display: flex; justify-content: center; position: relative; transition: background-color 0.3s, color 0.3s; }
 .app { width: min(820px, 100%); }
 .card { background-color: var(--card); background-image: var(--card-ambient-glow); background-repeat: no-repeat; border-radius: var(--radius-lg); padding: 24px; box-shadow: 0 10px 30px #00000012; position: relative; overflow: hidden; transition: background-color 0.3s, color 0.3s, border-color 0.3s; }
 
@@ -1391,7 +1392,7 @@ body.in-game .stats-badges { display: none; }
 
 .q-box { font-size: 20px; font-weight: 700; line-height: 1.35; margin: 16px 0; display: flex; justify-content: space-between; gap: 10px; }
 
-input[type="text"], select { width: 100%; padding: 13px; border: 2px solid var(--border); background: var(--card); color: var(--text); border-radius: var(--radius-sm); font-size: 15px; outline: none; margin-bottom: 12px; }
+input[type="text"], select { width: 100%; padding: 13px; border: 2px solid var(--border); background: var(--card); color: var(--text); border-radius: var(--radius-sm); font-size: 16px; outline: none; margin-bottom: 12px; }
 input[type="text"]:focus, select:focus { border-color: var(--primary); }
 #duel-join-code-input:focus { border-color: var(--accent-blue); }
 .card.theme-survival input[type="text"]:focus { border-color: #f59e0b; }
@@ -2500,7 +2501,7 @@ box-sizing:border-box;
 .performance-bars{display:flex;align-items:flex-end;gap:7px;height:96px;padding:0 3px 3px;border-bottom:1px solid var(--border)}
 .performance-bar{flex:1;max-width:70px;margin:auto;min-height:6px;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,#2563eb,#60a5fa);position:relative}
 .performance-bar span{position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);font-size:9px;font-weight:900;white-space:nowrap}
-.performance-labels{display:flex;gap:7px;margin-top:6px}.performance-labels span{flex:1;text-align:center;font-size:9px;opacity:.5}
+.performance-labels{display:flex;gap:7px;margin-top:6px}.performance-labels span{flex:1;text-align:center;font-size:9px;color:var(--sub)}
 @media(max-width:760px){.stats-extra-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:460px){.stats-extra-grid{grid-template-columns:1fr}.stat-extra{padding:12px}}
 
@@ -4530,7 +4531,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   align-items: center; justify-content: center;
 }
 
-.home-small-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 22px; }
+.home-small-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 22px; }
 .home-small-card {
   background: linear-gradient(180deg, #f4ecd8, #e8dcc0); text-align: center;
   border: 1px solid var(--color-border-accent); border-radius: var(--radius-md);
@@ -5342,7 +5343,7 @@ body.keyboard-open .feedback{margin-top:6px!important;padding:9px!important;font
   30% { transform: translate(-50%, -50%) scale(1); } 80% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -75%) scale(.95); } }
 
 /* Canvas de chispas/confeti: por encima de todo, nunca captura toques. */
-.fx-canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999; }
+.fx-canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; height: 100dvh; pointer-events: none; z-index: 9999; }
 
 /* Resultados: cifras grandes con entrada, sin cambiar sus valores. */
 .results-card .metric-value { font-variant-numeric: tabular-nums; }
@@ -5705,7 +5706,7 @@ h3.stats-h::before { display: none !important; content: none !important; }
 .info-toast:not(.centro) .toast-ok{ display:none; }
 .info-toast.centro.show{ pointer-events:auto; }
 .info-toast.centro .toast-ok{
-  margin-top:6px; padding:8px 26px; border:0; border-radius:999px; cursor:pointer;
+  margin-top:6px; padding:8px 26px; min-height:44px; border:0; border-radius:999px; cursor:pointer;
   background:linear-gradient(180deg,#f0d484,#c9992e); color:#16244a;
   font:800 13px/1 Inter, sans-serif; letter-spacing:.02em;
   box-shadow:0 4px 12px rgba(0,0,0,.35);
@@ -5754,7 +5755,7 @@ h3.stats-h::before { display: none !important; content: none !important; }
 .game-hud #game-progress-lbl.se-onerow { white-space: nowrap !important; }
 .se-clock[data-zone="amber"], #game-progress-lbl .lucidez-timer-chip.lucidez-timer-warn { background: none; border: 0; color: #b45309; }
 [data-theme="dark"] .se-clock[data-zone="amber"], [data-theme="dark"] #game-progress-lbl .lucidez-timer-chip.lucidez-timer-warn { color: #fcd34d; }
-.se-clock[data-zone="red"], #game-progress-lbl .lucidez-timer-chip.lucidez-timer-low { background: none; border: 0; color: #dc2626; animation: seClockPulse .8s ease-in-out infinite; }
+.se-clock[data-zone="red"], #game-progress-lbl .lucidez-timer-chip.lucidez-timer-low { background: none; border: 0; color: #b91c1c; animation: seClockPulse .8s ease-in-out infinite; }
 [data-theme="dark"] .se-clock[data-zone="red"], [data-theme="dark"] #game-progress-lbl .lucidez-timer-chip.lucidez-timer-low { color: #fca5a5; }
 @media (prefers-reduced-motion: reduce) { .se-clock[data-zone="red"] { animation: none; } }
 
@@ -5776,3 +5777,12 @@ h3.stats-h::before { display: none !important; content: none !important; }
 .metric-box-wide { grid-column: 1 / -1; }
 #results-card .metric-box.metric-box-wide { display: none !important; }
 .card.theme-review #results-card .metric-box.metric-box-wide { display: flex !important; flex-direction: column; align-items: center; justify-content: center; }
+
+/* Auditoría 7 (10): partida en horizontal con poco alto (≤520 px): respuestas en dos columnas. */
+@media (orientation: landscape) and (max-height: 520px) {
+  #choice-options, .seq-d-choices { grid-template-columns: 1fr 1fr; }
+}
+
+/* Auditoría 7 (19): sin recarga por arrastre vertical en la PWA instalada; en partida, tampoco rebote. */
+html, body { overscroll-behavior-y: contain; }
+body.in-game { overscroll-behavior-y: none; }

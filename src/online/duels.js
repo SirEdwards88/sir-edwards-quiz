@@ -802,7 +802,7 @@
   function renderFriends() {
     var fl = S.lists.friends, me = session() || {}, f = features();
     var h = header('Amigos', 'Añade amigos y rétalos', back);
-    h += '<div class="seq-d-search"><input type="text" id="seq-d-q" maxlength="24" autocomplete="off" placeholder="Nombre o ID de tu amigo" onkeydown="if(event.key===\'Enter\')SEQDuels.doSearch()" /><button class="btn btn-primary" onclick="SEQDuels.doSearch()">Buscar</button></div>';
+    h += '<div class="seq-d-search"><input type="text" id="seq-d-q" maxlength="24" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search" placeholder="Nombre o ID de tu amigo" onkeydown="if(event.key===\'Enter\')SEQDuels.doSearch()" /><button class="btn btn-primary" onclick="SEQDuels.doSearch()">Buscar</button></div>';
     if (S.search.results) {
       h += S.search.results.length ? '<div class="history-list">' + S.search.results.map(function (x) {
         var p = player(x);

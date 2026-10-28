@@ -5,7 +5,7 @@
 // Script clásico, sin dependencias.
 (function () {
   'use strict';
-  var SEL = '.home-big-card[onclick], .mode-card[onclick]';
+  var SEL = '.home-big-card[onclick], .mode-card[onclick], .history-item[onclick], .seq-pl-tap[onclick], .seq-d-mode[onclick]';
   function enhance(root) {
     var els = (root || document).querySelectorAll(SEL);
     for (var i = 0; i < els.length; i++) {

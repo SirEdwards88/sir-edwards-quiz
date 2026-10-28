@@ -831,7 +831,7 @@
     if (ui.editing) {
       html += '<div class="seq-edit"><div class="seq-edit-head"><div class="seq-avatar seq-avatar-lg">' + (window.SEQAvatars ? window.SEQAvatars.avatarHTML(ui.editAvatar || av) : av) + '</div>' +
         '<div class="seq-edit-head-txt"><label class="settings-field-label" for="seq-name-input">Tu nombre</label>' +
-        '<input id="seq-name-input" class="seq-input" type="text" maxlength="24" value="' + esc(ui.editName != null ? ui.editName : p.display_name) + '" autocomplete="off"></div></div>' +
+        '<input id="seq-name-input" class="seq-input" type="text" maxlength="24" value="' + esc(ui.editName != null ? ui.editName : p.display_name) + '" autocomplete="off" autocapitalize="words" spellcheck="false" enterkeyhint="done" onkeydown="if(event.key===\'Enter\')SEQOnline.saveProfile()"></div></div>' +
         '<p class="settings-kicker seq-av-kicker">Elige tu emblema</p>' +
         '<div class="seq-avatars" role="group" aria-label="Avatar">' +
         AVATARS.map(function (a) {

@@ -142,3 +142,10 @@
   .home-encargos.is-reveal::after { animation: none; }
 }
 
+
+/* Auditoría 7 (9): carta de los lunes en horizontal bajo (el botón no debe quedar fuera de pantalla). */
+@media (max-height: 480px) {
+  .enc-monday-img { height: 96px; margin-top: -20px; }
+  .enc-monday-lines { min-height: 0; }
+  .enc-intro--monday { overflow-y: auto; }
+}

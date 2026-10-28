@@ -307,7 +307,7 @@
   box-shadow: none;
 }
 /* «En línea»: el verde de modo oscuro (#5fd08b) casi no se leía sobre papel claro. */
-:root:not([data-theme="dark"]) .seq-d-on { color: #17803f; }
+:root:not([data-theme="dark"]) .seq-d-on { color: #146c37; }
 
 /* Rankings (claro): los escalones del podio eran beige sobre beige; algo más de dorado y filete firme para que se lean como peldaños. */
 :root:not([data-theme="dark"]) .seq-v21-pod-step {
