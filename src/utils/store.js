@@ -214,8 +214,8 @@ function sanitizeStore(s) {
   // directamente basura en cualquiera de ellos).
   s.standardGamesCount = asFiniteNonNegNumber(s.standardGamesCount);
   s.errorsCleaned = asFiniteNonNegNumber(s.errorsCleaned);
-  s.sirAnswered = asFiniteNonNegNumber(s.sirAnswered);   // 2.5: preguntas de Sir Edwards (solo alimentan sus dos logros)
-  s.sirCorrect = asFiniteNonNegNumber(s.sirCorrect);
+  s.sirAnswered = Math.floor(asFiniteNonNegNumber(s.sirAnswered));   // 2.5: preguntas de Sir Edwards (solo alimentan sus dos logros)
+  s.sirCorrect = Math.floor(asFiniteNonNegNumber(s.sirCorrect));
   s.survivalAmebaWins = asFiniteNonNegNumber(s.survivalAmebaWins);
   s.survivalHumanoWins = asFiniteNonNegNumber(s.survivalHumanoWins);
   s.survivalDerrameWins = asFiniteNonNegNumber(s.survivalDerrameWins);

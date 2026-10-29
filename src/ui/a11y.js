@@ -89,5 +89,12 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', watchModals);
   else watchModals();
 
-  window.SEQA11y = { enhance: enhance, syncModals: syncModals };
+  // Para los modales que se crean DESPUÉS de la carga (p. ej. la tarjeta de Sir Edwards): los vigila igual que a los demás.
+  function watch(m) {
+    if (!m || m.classList.contains('auth-gate')) return;
+    if (typeof MutationObserver !== 'undefined') new MutationObserver(syncModals).observe(m, { attributes: true, attributeFilter: ['style', 'class'] });
+    syncModals();
+  }
+
+  window.SEQA11y = { enhance: enhance, syncModals: syncModals, watch: watch };
 })();

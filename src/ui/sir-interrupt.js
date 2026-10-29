@@ -98,6 +98,7 @@ const SEQSirInterrupt = (function () {
       '</div>';
     document.body.appendChild(el);
     el.querySelector('#sir-int-go').addEventListener('click', close);
+    try { if (typeof SEQA11y !== 'undefined' && SEQA11y.watch) SEQA11y.watch(el); } catch (e) {}   // foco dentro, Tab atrapado y foco devuelto (src/ui/a11y.js)
     return el;
   }
 

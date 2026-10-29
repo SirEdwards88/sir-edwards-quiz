@@ -19,7 +19,7 @@ test('datos: ids únicos, opciones y reacciones completas, textos cortos', () =>
   assert.equal(new Set(Q.map((q) => q.id)).size, Q.length);
   for (const q of Q) {
     assert.ok(['trap', 'opinion'].includes(q.kind), q.id);
-    assert.ok(q.q.length <= 120, q.id + ' enunciado largo');
+    assert.ok(q.q.length <= 90, q.id + ' enunciado largo');
     assert.ok(q.options.length >= 2 && q.options.length <= 4, q.id);
     assert.equal(new Set(q.options).size, q.options.length, q.id + ' opciones repetidas');
     for (const o of q.options) assert.ok(o.length <= 40, q.id + ' opción larga: ' + o);
@@ -103,7 +103,7 @@ test('opciones: las de trampa se barajan (la correcta cambia de sitio); las de o
 });
 
 test('corrección: trampa acierta/falla; opinión no tiene mala; índice raro no rompe', () => {
-  const trap = Q.find((q) => q.id === 'sq06'), op = Q.find((q) => q.id === 'sq14');
+  const trap = Q.find((q) => q.id === 'sq29'), op = Q.find((q) => q.id === 'sq14');
   assert.deepEqual({ ...C.grade(trap, 1) }, { correct: true, reaction: trap.right });
   assert.deepEqual({ ...C.grade(trap, 0) }, { correct: false, reaction: trap.wrong });
   assert.deepEqual({ ...C.grade(op, 2) }, { correct: null, reaction: op.reactions[2] });
@@ -189,4 +189,41 @@ test('solapes: con la tarjeta abierta, eventos, Encargos, bandeja y nextQuestion
   assert.match(read('src/ui/encargos-ui.js'), /SEQSirInterrupt\.isOpen\(\)\) return true/);
   assert.match(read('src/online/inbox.js'), /SEQSirInterrupt\.isOpen\(\)/);
   assert.match(read('index.html'), /function nextQuestion\(\) \{\n  if \(SEQSirInterrupt\.isOpen\(\)\) return;/);
+});
+
+// ---- Parche 2.5: foco, aviso de conexión, tope de carga de Google y contadores enteros ----
+test('foco: la tarjeta de Sir Edwards se registra en a11y.js (foco dentro, Tab atrapado, foco devuelto)', () => {
+  assert.match(read('src/ui/a11y.js'), /window\.SEQA11y = \{[^}]*watch: watch/);
+  assert.match(read('src/ui/sir-interrupt.js'), /SEQA11y\.watch\(el\)/);
+  // simulación: a11y.js vigila el overlay creado tras la carga y lo trata como el modal de arriba
+  let observed = null;
+  const mk = () => ({ style: { display: 'none' }, classList: { contains: () => false }, querySelector: () => null, querySelectorAll: () => [], contains: () => false, hasAttribute: () => false, setAttribute() {} });
+  const m = mk();
+  const c = {
+    console, getComputedStyle: (e) => ({ display: e.style.display }),
+    MutationObserver: function (cb) { this.observe = (n) => { observed = n; }; },
+    document: { readyState: 'complete', querySelectorAll: () => [], addEventListener() {}, activeElement: null, contains: () => true, body: {} }
+  };
+  c.window = c; vm.createContext(c);
+  vm.runInContext(read('src/ui/a11y.js'), c);
+  c.SEQA11y.watch(m);
+  assert.equal(observed, m, 'el overlay nuevo se observa');
+});
+
+test('conexión: el aviso y «Reintentar» se limpian si vuelve la red con el botón ya pintado; Google tiene tope de carga; el Worker sin red no culpa a Google', () => {
+  const src = read('src/online/online.js');
+  assert.match(src, /clearGateNotice\(\); return; \}/);
+  assert.match(src, /function clearGateNotice\(\) \{[\s\S]*?showGateRetry\(false\);/);
+  assert.match(src, /GIS_TIMEOUT_MS = 12000/);
+  assert.match(src, /err && err\.network \? MSG_NET : err && err\.status \? MSG_SERVER : MSG_LOAD/);
+  assert.doesNotMatch(src.match(/var MSG_NET = '([^']*)'/)[1], /Google/);
+});
+
+test('contadores de Sir Edwards: enteros ≥ 0 (sin decimales, negativos ni NaN)', () => {
+  const c = { console, localStorage: { getItem() { return null; }, setItem() {} } };
+  vm.createContext(c); vm.runInContext(read('src/utils/store.js'), c);
+  const out = (a, b) => Array.from(vm.runInContext('(()=>{const s=getDefaultStore();s.sirAnswered=' + a + ';s.sirCorrect=' + b + ';sanitizeStore(s);return [s.sirAnswered,s.sirCorrect]})()', c));
+  assert.deepEqual(out('4.7', '-3'), [4, 0]);
+  assert.deepEqual(out('NaN', "'7.9'"), [0, 7]);
+  assert.deepEqual(out('5', '20'), [5, 20]);
 });

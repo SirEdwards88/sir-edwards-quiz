@@ -449,17 +449,20 @@
   }
 
   // ---- Inicio de sesión (Google Identity Services) ---------------------------------
+  var GIS_TIMEOUT_MS = 12000;   // 2.5: si el script de Google se queda colgado, el gate no se queda mudo (mensaje + «Reintentar»)
   function loadGis() {
     return new Promise(function (resolve, reject) {
       if (window.google && google.accounts && google.accounts.id) return resolve();
+      var timer = setTimeout(function () { var e = document.getElementById('seq-gis-script'); if (e && !(window.google && google.accounts)) e.remove(); reject(new Error('gis')); }, GIS_TIMEOUT_MS);
+      var done = function () { clearTimeout(timer); resolve(); };
       var existing = document.getElementById('seq-gis-script');
-      if (existing) { existing.addEventListener('load', resolve); existing.addEventListener('error', function () { reject(new Error('gis')); }); return; }
+      if (existing) { existing.addEventListener('load', done); existing.addEventListener('error', function () { clearTimeout(timer); reject(new Error('gis')); }); return; }
       var s = document.createElement('script');
       s.id = 'seq-gis-script';
       s.src = 'https://accounts.google.com/gsi/client';
       s.async = true; s.defer = true;
-      s.onload = function () { resolve(); };
-      s.onerror = function () { var e = document.getElementById('seq-gis-script'); if (e) e.remove(); reject(new Error('gis')); };
+      s.onload = done;
+      s.onerror = function () { clearTimeout(timer); var e = document.getElementById('seq-gis-script'); if (e) e.remove(); reject(new Error('gis')); };
       document.head.appendChild(s);
     });
   }
@@ -498,7 +501,7 @@
     if (!ENABLED || account || !slots.length) return;
     if (navigator.onLine === false) { setMsg(MSG_OFFLINE); showGateRetry(true); return; }
     var primary = slots[0];
-    if (!force && primary.firstChild && gis.nonce && Date.now() - gis.at < NONCE_FRESH_MS) return; // ya pintado y vigente
+    if (!force && primary.firstChild && gis.nonce && Date.now() - gis.at < NONCE_FRESH_MS) { clearGateNotice(); return; } // ya pintado y vigente (y si volvió la red, fuera el aviso)
     if (force !== true && !ui.expired) setMsg(''); // al renovar tras un fallo se conserva el aviso («había caducado…»)
     showGateRetry(false);
     Promise.all([loadGis(), getNonce(force === true)]).then(function (r) {
@@ -514,7 +517,7 @@
       clearTimeout(nonceTimer);
       nonceTimer = setTimeout(function () { if (!account) ensureGisButton(true); }, NONCE_FRESH_MS + 1000);
     }).catch(function (err) {
-      setMsg(err && err.network === undefined && err.status ? MSG_SERVER : MSG_LOAD);
+      setMsg(err && err.network ? MSG_NET : err && err.status ? MSG_SERVER : MSG_LOAD);   // el Worker sin red no es culpa de Google
       showGateRetry(true);
     });
   }
@@ -522,6 +525,12 @@
   var MSG_OFFLINE = 'Sin conexión. Hasta la elegancia necesita internet.';
   var MSG_LOAD = 'Google no contesta. Qué falta de modales. Revisa tu conexión y reinténtalo.';
   var MSG_SERVER = 'Algo falla al otro lado. Por una vez, no es culpa tuya. Reinténtalo.';
+  var MSG_NET = 'El servidor no contesta. Revisa tu conexión y reinténtalo.';
+  // Quita el aviso de fallo de acceso y «Reintentar» si siguen a la vista y ya no corresponden (p. ej. volvió la red con el botón de Google ya pintado).
+  function clearGateNotice() {
+    if (ui.msg === MSG_OFFLINE || ui.msg === MSG_LOAD || ui.msg === MSG_SERVER || ui.msg === MSG_NET) setMsg('');
+    showGateRetry(false);
+  }
   function showGateRetry(on) { var b = $('seq-gate-retry'); if (b) b.hidden = !on; }
   function retryGate() {
     if (!ENABLED || account) return;
