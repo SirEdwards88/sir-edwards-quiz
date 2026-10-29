@@ -65,3 +65,4 @@
 @keyframes sirStageShake { 0%, 100% { transform: none; } 20% { transform: translateX(-7px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(3px); } }
 @media (max-height: 700px) { .sir-int-stage-img { max-height: 28dvh; } .sir-int-seal { font-size: 25px; } .sir-int-say { font-size: 17px; min-height: 2.9em; } }
 @media (prefers-reduced-motion: reduce) { .sir-int, .sir-int-card { transition: none; } .sir-int-stage-img, .sir-int-stage.is-wrong .sir-int-stage-img { animation: none; } .sir-int-stage-fig::before { animation: none; opacity: 1; } .sir-int-seal { animation: none; opacity: 1; } }
+.sir-int-hl { font-style: normal; font-weight: 800; font-size: 1.14em; color: #f6d37a; background: none; padding: 0 1px; text-shadow: 0 0 14px rgba(246, 211, 122, .55); letter-spacing: .2px; }

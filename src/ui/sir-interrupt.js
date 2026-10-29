@@ -213,18 +213,34 @@ const SEQSirInterrupt = (function () {
     node.classList.remove('stage-on');
     var card = node.querySelector('.sir-int-card'); if (card) card.classList.remove('fx-right', 'fx-wrong', 'is-out');
     var st = node.querySelector('#sir-int-stage'); if (st) { st.hidden = true; st.className = 'sir-int-stage'; }
-    ['#sir-int-verdict', '#sir-int-say'].forEach(function (id) { var x = node.querySelector(id); if (x) x.textContent = ''; });
+    ['#sir-int-verdict'].forEach(function (id) { var x = node.querySelector(id); if (x) x.textContent = ''; });
+    var sy = node.querySelector('#sir-int-say'); if (sy) sy.innerHTML = '';
     var r = node.querySelector('#sir-int-react'); if (r) r.textContent = '';
     var go = node.querySelector('#sir-int-go'); if (go) go.hidden = true;
   }
   function endTyping() {
     clearInterval(typeT); typeT = null;
     try { if (typeof stopQuillSound === 'function') stopQuillSound(); } catch (e) {}   // frase completa (o tocada para saltarla): la pluma calla
-    if (typing) { var say = el && el.querySelector('#sir-int-say'); if (say) say.textContent = typing.text; typing = null; }
+    if (typing) { var say = el && el.querySelector('#sir-int-say'); if (say) say.innerHTML = sayHTML(typing.text, typing.text.length, typing.range); typing = null; }
     var node = el; if (!node) return;
     var st = node.querySelector('#sir-int-stage'); if (st) st.classList.add('is-done');
     var go = node.querySelector('#sir-int-go');
     if (go && go.hidden) { go.hidden = false; try { go.focus({ preventScroll: true }); } catch (e) {} }
+  }
+  // Frase de Sir Edwards con la respuesta resaltada: `range` = [inicio, fin) dentro del texto; `upto` = cuántos caracteres se ven ya.
+  function hlRange(q, text) {
+    var low = String(text).toLowerCase();
+    for (var i = 0; q && q.hl && i < q.hl.length; i++) {
+      var at = low.indexOf(String(q.hl[i]).toLowerCase());
+      if (at >= 0) return [at, at + q.hl[i].length];
+    }
+    return null;
+  }
+  function sayHTML(text, upto, range) {
+    var t = String(text).slice(0, upto);
+    if (!range || range[0] >= t.length) return esc(t);
+    var e = Math.min(range[1], t.length);
+    return esc(t.slice(0, range[0])) + '<mark class="sir-int-hl">' + esc(t.slice(range[0], e)) + '</mark>' + esc(t.slice(e));
   }
   function skipTyping() { if (typing) endTyping(); }
 
@@ -240,14 +256,15 @@ const SEQSirInterrupt = (function () {
     try { if (typeof playSirVerdictSound === 'function') playSirVerdictSound(g.correct === true ? 'ok' : g.correct === false ? 'bad' : 'note'); } catch (e) {}
     try { if (g.correct === false && navigator.vibrate) navigator.vibrate([40, 40, 80]); } catch (e) {}
     var say = node.querySelector('#sir-int-say'), text = String(g.reaction || '');
-    if (reduced()) { say.textContent = text; st.classList.add('is-done'); var go = node.querySelector('#sir-int-go'); go.hidden = false; try { go.focus({ preventScroll: true }); } catch (e) {} return; }
-    typing = { text: text, i: 0 };
+    var range = g.correct === null ? null : hlRange(current, text);
+    if (reduced()) { say.innerHTML = sayHTML(text, text.length, range); st.classList.add('is-done'); var go = node.querySelector('#sir-int-go'); go.hidden = false; try { go.focus({ preventScroll: true }); } catch (e) {} return; }
+    typing = { text: text, i: 0, range: range };
     var step = Math.max(14, Math.min(30, Math.floor(1500 / Math.max(1, text.length))));
     stageT = setTimeout(function () {                // el sello cae primero; después empieza a escribir
       try { if (typeof startQuillSound === 'function') startQuillSound(step * text.length / 1000 + 0.1); } catch (e) {}
       typeT = setInterval(function () {
         if (!typing) return;
-        typing.i++; say.textContent = typing.text.slice(0, typing.i);
+        typing.i++; say.innerHTML = sayHTML(typing.text, typing.i, typing.range);
         if (typing.i >= typing.text.length) endTyping();
       }, step);
     }, 650);

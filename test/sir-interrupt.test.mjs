@@ -289,3 +289,12 @@ test('desenlace: escena en grande con sello y frase; sonido propio en audio.js',
   assert.match(ui, /stopQuillSound\(/);
   assert.match(read('styles/sir-interrupt.css'), /\.sir-int\.stage-on/);
 });
+
+test('respuesta resaltada: cada trampa tiene un fragmento `hl` que aparece en su frase de acierto y en la de fallo', () => {
+  for (const q of Q.filter((x) => x.kind === 'trap')) {
+    assert.ok(Array.isArray(q.hl) && q.hl.length >= 1, q.id);
+    for (const text of [q.right, q.wrong]) {
+      assert.ok(q.hl.some((h) => text.toLowerCase().includes(h.toLowerCase())), q.id + ' sin respuesta resaltable en: ' + text);
+    }
+  }
+});
