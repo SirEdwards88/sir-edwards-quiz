@@ -208,6 +208,7 @@ const SEQSirInterrupt = (function () {
   function reduced() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } }
   function resetStage(node) {
     clearTimeout(stageT); clearInterval(typeT); stageT = typeT = typing = null;
+    try { if (typeof stopQuillSound === 'function') stopQuillSound(); } catch (e) {}
     node = node || el; if (!node) return;
     node.classList.remove('stage-on');
     var card = node.querySelector('.sir-int-card'); if (card) card.classList.remove('fx-right', 'fx-wrong', 'is-out');
@@ -218,6 +219,7 @@ const SEQSirInterrupt = (function () {
   }
   function endTyping() {
     clearInterval(typeT); typeT = null;
+    try { if (typeof stopQuillSound === 'function') stopQuillSound(); } catch (e) {}   // frase completa (o tocada para saltarla): la pluma calla
     if (typing) { var say = el && el.querySelector('#sir-int-say'); if (say) say.textContent = typing.text; typing = null; }
     var node = el; if (!node) return;
     var st = node.querySelector('#sir-int-stage'); if (st) st.classList.add('is-done');
@@ -242,6 +244,7 @@ const SEQSirInterrupt = (function () {
     typing = { text: text, i: 0 };
     var step = Math.max(14, Math.min(30, Math.floor(1500 / Math.max(1, text.length))));
     stageT = setTimeout(function () {                // el sello cae primero; después empieza a escribir
+      try { if (typeof startQuillSound === 'function') startQuillSound(step * text.length / 1000 + 0.1); } catch (e) {}
       typeT = setInterval(function () {
         if (!typing) return;
         typing.i++; say.textContent = typing.text.slice(0, typing.i);

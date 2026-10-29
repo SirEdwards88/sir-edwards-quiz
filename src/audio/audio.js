@@ -318,6 +318,51 @@ function playSirVerdictSound(kind) {
     playBellNote(1174.66, 0, 0.4, 1.2); playBellNote(1568, 0.14, 0.3, 1.2);
   } catch (e) {}
 }
+// 2.5 Sir Edwards escribe su frase: rasqueo de pluma (ráfagas cortas de ruido filtrado con pausas entre «palabras»), solo mientras dura la
+// escritura. startQuillSound(segundos) lo arranca y stopQuillSound() lo corta al momento (frase completa o toque para saltarla).
+let _quill = null, _quillNoise = null;
+function stopQuillSound() {
+  const q = _quill; _quill = null;
+  if (!q) return;
+  try {
+    const now = q.ctx.currentTime;
+    q.master.gain.cancelScheduledValues(now); q.master.gain.setTargetAtTime(0.0001, now, 0.02);
+    q.sources.forEach(function (n) { try { n.stop(now + 0.1); } catch (e) {} });
+    setTimeout(function () { try { q.master.disconnect(); } catch (e) {} }, 160);
+  } catch (e) {}
+}
+function startQuillSound(seconds) {
+  if (store.sound === 'off') return;
+  stopQuillSound();
+  try {
+    const ctx = getAudioCtx(), total = Math.max(0.3, Math.min(5, Number(seconds) || 1.5));
+    if (!_quillNoise || _quillNoise.sampleRate !== ctx.sampleRate) {
+      _quillNoise = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 2), ctx.sampleRate);
+      const d = _quillNoise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    }
+    const master = ctx.createGain(); master.gain.value = 0.3; master.connect(ctx.destination);
+    const q = { ctx: ctx, master: master, sources: [] };
+    _quill = q;
+    const r = function (a, b) { return a + Math.random() * (b - a); };
+    let t = ctx.currentTime + 0.02; const end = t + total;
+    while (t < end - 0.05) {
+      const strokes = 3 + Math.floor(Math.random() * 4);            // trazos por «palabra»
+      for (let k = 0; k < strokes && t < end - 0.05; k++) {
+        const d = r(0.045, 0.11);
+        const src = ctx.createBufferSource(); src.buffer = _quillNoise;
+        const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 2200;
+        const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 7200;
+        const g = ctx.createGain(), peak = r(0.35, 0.8);
+        g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(peak, t + d * 0.4); g.gain.linearRampToValueAtTime(0.0001, t + d);
+        src.connect(hp); hp.connect(lp); lp.connect(g); g.connect(master);
+        src.start(t, Math.random() * 1.5, d + 0.02); q.sources.push(src);
+        t += d + r(0.02, 0.07);
+      }
+      t += r(0.10, 0.20);                                             // pausa entre palabras
+    }
+    setTimeout(function () { if (_quill === q) stopQuillSound(); }, total * 1000 + 300);
+  } catch (e) {}
+}
 // Lucidez Mental: sonido de la pantalla de capítulo. `characterKey` es el mismo que usa showLucidezStoryOverlay
 // ('phase1' | 'phase2' | 'phase3' | 'enigma'); cualquier otro valor no suena. Sin muestra cargada, silencio (no hay sintetizado).
 const LUCIDEZ_STINGS = { phase1: 'luc1', phase2: 'luc2', phase3: 'luc3', enigma: 'luc4' };

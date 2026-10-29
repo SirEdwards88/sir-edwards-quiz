@@ -284,5 +284,8 @@ test('desenlace: escena en grande con sello y frase; sonido propio en audio.js',
   for (const id of ['sir-int-stage', 'sir-int-verdict', 'sir-int-say', 'sir-int-go']) assert.ok(ui.includes(id), id);
   assert.match(ui, /prefers-reduced-motion/);
   assert.match(read('src/audio/audio.js'), /function playSirVerdictSound\(kind\)/);
+  assert.match(read('src/audio/audio.js'), /function startQuillSound\(seconds\)/);
+  assert.match(ui, /startQuillSound\(/);
+  assert.match(ui, /stopQuillSound\(/);
   assert.match(read('styles/sir-interrupt.css'), /\.sir-int\.stage-on/);
 });
