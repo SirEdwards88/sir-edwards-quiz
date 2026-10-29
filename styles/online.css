@@ -799,7 +799,6 @@
 .seq-av-btn.seq-av-locked .seq-av-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; letter-spacing: -.1px; }
 .seq-av-btn.seq-av-locked { cursor: pointer; }
 .seq-av-btn.seq-av-locked.hint { opacity: .9; filter: grayscale(.6); outline: 2px dashed var(--se-gold, var(--primary)); outline-offset: 1px; }
-.seq-av-hint { margin: 8px 2px 4px; padding: 8px 12px; font-size: 13px; font-weight: 700; line-height: 1.35; border-radius: 12px; border: 1.5px solid var(--se-gold, var(--border)); background: color-mix(in srgb, var(--se-gold, var(--primary)) 9%, var(--card)); }
 
 /* 2.2 — Aviso flotante de Duelos y Retos (src/online/inbox.js) y punto en el menú Duelo. */
 .inbox-banner {

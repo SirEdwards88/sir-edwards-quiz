@@ -766,10 +766,16 @@
   // ---- Perfil ---------------------------------------------------------------------------
   function toggleEdit() {
     ui.avatarHint = null; ui.editing = !ui.editing; ui.editName = null; ui.editAvatar = account ? account.player.avatar : null; render(); }
-  // 2.1: al tocar un avatar bloqueado se muestra, dentro del propio selector, cómo se desbloquea.
+  // 2.5: al tocar un emblema bloqueado se avisa con el aviso flotante (como el resto), con el logro que lo desbloquea.
   function showAvatarHint(a) {
-    var cur = $('seq-name-input'); if (cur) ui.editName = cur.value;
-    ui.avatarHint = a; render();
+    try {
+      var A = window.SEQAvatars, need = A && A.medalOf(a);
+      if (!need || typeof showInfoToast !== 'function') return;
+      if (A.isSecret && A.isSecret(a)) { showInfoToast('Se desbloquea al completar un logro secreto.', 'candado'); return; }
+      var mm = typeof ALL_MEDALS !== 'undefined' ? ALL_MEDALS.filter(function (x) { return x.id === need; })[0] : null;
+      if (!mm) { showInfoToast('Emblema bloqueado', 'candado'); return; }
+      showInfoToast('Emblema bloqueado', 'candado', { label: 'Se desbloquea con el logro', title: mm.title, desc: mm.desc });
+    } catch (e) {}
   }
   function avatarHintText(a) {
     try {
@@ -861,10 +867,9 @@
           var name = window.SEQAvatars && window.SEQAvatars.shortName ? '<span class="seq-av-name">' + esc(window.SEQAvatars.shortName(a)) + '</span>' : '';
           var hint = avatarHintText(a), locked = !!hint;
           // Bloqueado: se puede tocar (no está «disabled») para ver el requisito; nunca se selecciona.
-          if (locked) return '<button type="button" class="seq-av-btn seq-av-locked' + (ui.avatarHint === a ? ' hint' : '') + '" aria-disabled="true" aria-label="' + esc(window.SEQAvatars.shortName(a) + ' bloqueado. ' + hint) + '" onclick="SEQOnline.showAvatarHint(\'' + a + '\')">' + img + '<span class="seq-av-name">' + seqIco('candado') + esc(window.SEQAvatars.shortName(a)) + '</span></button>';
+          if (locked) return '<button type="button" class="seq-av-btn seq-av-locked' + '" aria-disabled="true" aria-label="' + esc(window.SEQAvatars.shortName(a) + ' bloqueado. ' + hint) + '" onclick="SEQOnline.showAvatarHint(\'' + a + '\')">' + img + '<span class="seq-av-name">' + seqIco('candado') + esc(window.SEQAvatars.shortName(a)) + '</span></button>';
           return '<button type="button" class="seq-av-btn' + (sel ? ' sel' : '') + '" onclick="SEQOnline.pickAvatar(\'' + a + '\')" aria-pressed="' + sel + '">' + img + name + '</button>';
         }).join('') + '</div>' +
-        (ui.avatarHint && avatarHintText(ui.avatarHint) ? '<p class="seq-av-hint" role="status" aria-live="polite">' + esc(avatarHintText(ui.avatarHint)) + '</p>' : '') +
         '<div class="seq-btnrow seq-btnrow-2"><button class="btn btn-secondary" onclick="SEQOnline.toggleEdit()">Cancelar</button><button class="btn btn-primary" onclick="SEQOnline.saveProfile()"' + (ui.busy ? ' disabled' : '') + '>Guardar</button></div></div>';
       host.innerHTML = html;
       return;
