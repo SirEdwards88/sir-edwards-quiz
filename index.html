@@ -49,21 +49,22 @@
 <!-- Tipografía: Playfair Display para el "display" institucional (nombre de la
      app / títulos), Inter para toda la interfaz funcional. Alojadas en la propia app
      (styles/fonts.css, assets/fonts/): funcionan sin conexión y no dependen de Google. -->
-<link rel="stylesheet" href="styles/fonts.css?v=497">
+<link rel="stylesheet" href="styles/fonts.css?v=500">
 <link rel="preload" href="assets/fonts/inter-latin.woff" as="font" type="font/woff" crossorigin>
-<link rel="stylesheet" href="styles/main.css?v=497">
+<link rel="stylesheet" href="styles/main.css?v=500">
 <!-- v1.4: estilos de la capa online (cuenta, migración, ranking). Solo clases .seq-* -->
-<link rel="stylesheet" href="styles/online.css?v=497">
-<link rel="stylesheet" href="styles/results-frame.css?v=497">
-<link rel="stylesheet" href="styles/visual-2-3.css?v=497">
-<link rel="stylesheet" href="styles/light-refresh.css?v=497">
-<link rel="stylesheet" href="styles/encargos.css?v=497">
-<link rel="stylesheet" href="styles/encargos-intro.css?v=497">
-<link rel="stylesheet" href="styles/duel-intro.css?v=497">
-<link rel="stylesheet" href="styles/sir-events.css?v=497">
-<link rel="stylesheet" href="styles/reward-toast.css?v=497">
-<link rel="stylesheet" href="styles/theme.css?v=497">
-<link rel="stylesheet" href="styles/privacy.css?v=497">
+<link rel="stylesheet" href="styles/online.css?v=500">
+<link rel="stylesheet" href="styles/results-frame.css?v=500">
+<link rel="stylesheet" href="styles/visual-2-3.css?v=500">
+<link rel="stylesheet" href="styles/light-refresh.css?v=500">
+<link rel="stylesheet" href="styles/encargos.css?v=500">
+<link rel="stylesheet" href="styles/encargos-intro.css?v=500">
+<link rel="stylesheet" href="styles/duel-intro.css?v=500">
+<link rel="stylesheet" href="styles/sir-events.css?v=500">
+<link rel="stylesheet" href="styles/sir-interrupt.css?v=500">
+<link rel="stylesheet" href="styles/reward-toast.css?v=500">
+<link rel="stylesheet" href="styles/theme.css?v=500">
+<link rel="stylesheet" href="styles/privacy.css?v=500">
 
 </head>
 <body class="on-home">
@@ -176,7 +177,7 @@
 <div id="welcome-modal" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
   <div class="modal-card welcome-card">
     <div id="welcome-step-1">
-    <div class="welcome-kicker">Sir Edwards Quiz · <span id="welcome-version">v2.4</span></div>
+    <div class="welcome-kicker">Sir Edwards Quiz · <span id="welcome-version">v2.5</span></div>
     <div class="welcome-rule" aria-hidden="true"></div>
     <h2 id="welcome-title" class="welcome-title">Vaya, un nuevo aspirante.</h2>
     <p class="welcome-lead">Soy Sir Edwards. Llevo tiempo esperando a alguien capaz de acertar algo.</p>
@@ -283,6 +284,7 @@
     </ul>
     <div id="seq-gate-gsi-slot" class="seq-gsi-slot"></div>
     <p class="settings-note seq-msg gate-msg" id="seq-gate-msg"></p>
+    <button type="button" class="btn btn-secondary gate-retry" id="seq-gate-retry" hidden onclick="SEQOnline.retryGate()">Reintentar</button>
     <p class="gate-fine">Guardamos tu progreso y tu actividad online, nunca tu correo ni tu nombre real. Tu nombre de Google no se muestra a otros jugadores. <button type="button" class="privacy-link" onclick="SEQPrivacy.open()">Política de privacidad</button></p>
   </div>
 </div>
@@ -293,7 +295,7 @@
 // de novedades, changelog, metadato de exportación) la lee de aquí.
 // Para publicar una versión nueva: cambiar solo esta línea + añadir la
 // entrada correspondiente en "Historial de versiones" más abajo.
-const APP_VERSION = "2.4";
+const APP_VERSION = "2.5";
 // ============================================================
 
 // Solo se muestra la primera vez que se abre la app en este navegador
@@ -380,7 +382,7 @@ try {
       <div class="home-subtitle">
         <span class="home-sub-line"></span>
         <span class="home-sub-diamond"></span>
-        <span id="home-sub-version-text">TEST DE LUCIDEZ MENTAL · v2.4</span>
+        <span id="home-sub-version-text">TEST DE LUCIDEZ MENTAL · v2.5</span>
         <span class="home-sub-diamond"></span>
         <span class="home-sub-line"></span>
       </div>
@@ -458,9 +460,9 @@ try {
     </div>
 
     <div class="top-bar">
-      <div class="brand quiz-brand" id="quiz-brand" aria-label="SirEdwards Quiz: Test de Lucidez Mental v2.4">
+      <div class="brand quiz-brand" id="quiz-brand" aria-label="SirEdwards Quiz: Test de Lucidez Mental v2.5">
         <div class="brand-main"><span class="brand-mark">✦</span><span>SIR EDWARDS QUIZ</span></div>
-        <div class="brand-sub">TEST DE LUCIDEZ MENTAL <span class="brand-dot">·</span> <span id="brand-sub-version">v2.4</span></div>
+        <div class="brand-sub">TEST DE LUCIDEZ MENTAL <span class="brand-dot">·</span> <span id="brand-sub-version">v2.5</span></div>
       </div>
       <div class="stats-badges">
         <div class="badge streak-live-badge"><img class="seq-ico" src="assets/ui/racha.webp" alt="" draggable="false">Racha <span id="lbl-current-streak">0</span></div>
@@ -713,9 +715,10 @@ try {
         </div>
 
         <div class="results-actions">
-          <!-- 2.0: jerarquía clara. «Volver» es la acción principal; «Compartir resultado» es secundaria y discreta,
+          <!-- 2.5: «Otra más.» (src/ui/replay.js) es la acción principal en solitario; «Volver» pasa a secundaria. 2.0: «Compartir resultado» es secundaria y discreta,
                y solo gana presencia cuando hay algo que contar (récord, Lucidez superada, logro o modo nuevo).
                -->
+          <button class="btn btn-primary" id="res-replay-btn" hidden onclick="SEQReplay.start()" style="width: 100%;">Otra más.</button>
           <button class="btn btn-primary" id="res-back-btn" onclick="handleResultsBackButton()" style="width: 100%;">Volver al Menú principal</button>
           <button class="btn btn-share btn-share-quiet" id="res-share-btn" onclick="shareResult()"><img class="seq-ico" src="assets/ui/compartir.webp" alt="" draggable="false">Compartir resultado</button>
         </div>
@@ -1112,6 +1115,18 @@ try {
               <li>Ranking, estadísticas, 8 logros y 50 preguntas nuevas. Las fáciles, para quien no quiera fallar.</li>
             </ul>
           </div>
+          <div class="settings-changelog-entry" data-recap="Sir Edwards te interrumpirá con sus propias preguntas y ha pulido el resto. Sigue sin ser más amable.">
+            <div class="settings-changelog-entry-header">
+              <span class="settings-changelog-entry-version">v2.5</span>
+              <span class="settings-changelog-entry-date">29/10/2026</span>
+            </div>
+            <ul class="settings-changelog-list">
+              <li>Sir Edwards interrumpe cuando menos lo esperas con 20 preguntas exclusivas y especiales. No puntúan ni penalizan, pero dos logros nuevos llevan la cuenta.</li>
+              <li>Repetir partida con un toque al terminar. Para quien no sabe cuándo parar.</li>
+              <li>Preguntas, «sabías que» y frases revisados. Menos muletillas, más veneno.</li>
+              <li>Y varios arreglos pequeños, accesibilidad incluida. Un caballero no presume de sus remiendos.</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -1122,64 +1137,67 @@ try {
 <!-- Fase 2: datos y constantes extraidos a modulos, cargados como scripts
      clasicos (no ES Modules) para conservar el scope global compartido con
      el script principal, sin convertir todavia la app a ES Modules. -->
-<script src="src/data/ui-maps.js?v=497"></script>
-<script src="src/data/questions.js?v=497"></script>
-<script src="src/data/questions-retired.js?v=497"></script>
-<script src="src/data/phrases.js?v=497"></script>
-<script src="src/data/duel-phrases.js?v=497"></script>
-<script src="src/data/rivalry-phrases.js?v=497"></script>
-<script src="src/utils/rivalry.js?v=497"></script>
-<script src="src/data/lucidez.js?v=497"></script>
-<script src="src/data/medals.js?v=497"></script>
+<script src="src/data/ui-maps.js?v=500"></script>
+<script src="src/data/questions.js?v=500"></script>
+<script src="src/data/questions-retired.js?v=500"></script>
+<script src="src/data/phrases.js?v=500"></script>
+<script src="src/data/duel-phrases.js?v=500"></script>
+<script src="src/data/rivalry-phrases.js?v=500"></script>
+<script src="src/utils/rivalry.js?v=500"></script>
+<script src="src/data/lucidez.js?v=500"></script>
+<script src="src/data/medals.js?v=500"></script>
 <!-- Prompt 3 — Fase C: sistema de avatares compartido (window.SEQAvatars). Debe
      cargarse antes de src/online/online.js y src/online/duels.js: ambos lo
      consumen en vez de mantener cada uno su propia copia de la lista. -->
-<script src="src/data/avatars.js?v=497"></script>
-<script src="src/share/share-card.js?v=497"></script>
+<script src="src/data/avatars.js?v=500"></script>
+<script src="src/share/share-card.js?v=500"></script>
 
 <!-- Fase 3 (Lote 3A): motor de coincidencia de respuestas extraido a
      src/utils/matching.js, mismo criterio que la Fase 2 (script clasico,
      sin ES Modules todavia). -->
-<script src="src/utils/matching.js?v=497"></script>
-<script src="src/utils/review-batch.js?v=497"></script>
-<script src="src/utils/records-reset.js?v=497"></script>
-<script src="src/utils/answer-alias.js?v=497"></script>
-<script src="src/utils/lucidez-select.js?v=497"></script>
-<script src="src/state/lucidez-bag.js?v=497"></script>
-<script src="src/state/timetrial-bag.js?v=497"></script>
-<script src="src/utils/encargos-core.js?v=497"></script>
-<script src="src/utils/encargos-progress.js?v=497"></script>
-<script src="src/state/encargos.js?v=497"></script>
-<script src="src/data/encargos-phrases.js?v=497"></script>
-<script src="src/ui/encargos-ui.js?v=497"></script>
-<script src="src/utils/phrase-tics.js?v=497"></script>
-<script src="src/data/named-phrases.js?v=497"></script>
-<script src="src/utils/named-phrases.js?v=497"></script>
-<script src="src/utils/encargos-intro-core.js?v=497"></script>
-<script src="src/data/encargos-intro-phrases.js?v=497"></script>
-<script src="src/ui/encargos-intro.js?v=497"></script>
-<script src="src/ui/lucidez-unlock.js?v=497"></script>
-<script src="src/ui/advance.js?v=497"></script>
-<script src="src/ui/duel-intro.js?v=497"></script>
-<script src="src/data/home-quotes.js?v=497"></script>
-<script src="src/ui/home-quote.js?v=497"></script>
-<script src="src/utils/sir-events.js?v=497"></script>
-<script src="src/ui/sir-events-ui.js?v=497"></script>
-<script src="src/state/sir-events.js?v=497"></script>
-<script src="src/utils/sudden-progression.js?v=497"></script>
-<script src="src/utils/mental-calc.js?v=497"></script>
-<script src="src/utils/mental-classic.js?v=497"></script>
-<script src="src/utils/mental-tips.js?v=497"></script>
-<script src="src/ui/mental-classic-ui.js?v=497"></script>
-<script src="src/ui/mental-menu.js?v=497"></script>
-<script src="src/ui/level-up.js?v=497"></script>
+<script src="src/utils/matching.js?v=500"></script>
+<script src="src/utils/review-batch.js?v=500"></script>
+<script src="src/utils/records-reset.js?v=500"></script>
+<script src="src/utils/answer-alias.js?v=500"></script>
+<script src="src/utils/lucidez-select.js?v=500"></script>
+<script src="src/state/lucidez-bag.js?v=500"></script>
+<script src="src/state/timetrial-bag.js?v=500"></script>
+<script src="src/utils/encargos-core.js?v=500"></script>
+<script src="src/utils/encargos-progress.js?v=500"></script>
+<script src="src/state/encargos.js?v=500"></script>
+<script src="src/data/encargos-phrases.js?v=500"></script>
+<script src="src/ui/encargos-ui.js?v=500"></script>
+<script src="src/utils/phrase-tics.js?v=500"></script>
+<script src="src/data/named-phrases.js?v=500"></script>
+<script src="src/utils/named-phrases.js?v=500"></script>
+<script src="src/utils/encargos-intro-core.js?v=500"></script>
+<script src="src/data/encargos-intro-phrases.js?v=500"></script>
+<script src="src/ui/encargos-intro.js?v=500"></script>
+<script src="src/ui/lucidez-unlock.js?v=500"></script>
+<script src="src/ui/advance.js?v=500"></script>
+<script src="src/ui/duel-intro.js?v=500"></script>
+<script src="src/data/home-quotes.js?v=500"></script>
+<script src="src/ui/home-quote.js?v=500"></script>
+<script src="src/utils/sir-events.js?v=500"></script>
+<script src="src/data/sir-questions.js?v=500"></script>
+<script src="src/utils/sir-interrupt.js?v=500"></script>
+<script src="src/ui/sir-interrupt.js?v=500"></script>
+<script src="src/ui/sir-events-ui.js?v=500"></script>
+<script src="src/state/sir-events.js?v=500"></script>
+<script src="src/utils/sudden-progression.js?v=500"></script>
+<script src="src/utils/mental-calc.js?v=500"></script>
+<script src="src/utils/mental-classic.js?v=500"></script>
+<script src="src/utils/mental-tips.js?v=500"></script>
+<script src="src/ui/mental-classic-ui.js?v=500"></script>
+<script src="src/ui/mental-menu.js?v=500"></script>
+<script src="src/ui/level-up.js?v=500"></script>
 
 <!-- Fase 3 (Lote 3B): nucleo algoritmico de Duelo extraido a
      src/utils/duel.js, mismo criterio que el resto (script clasico, sin
      ES Modules todavia). Las dependencias compartidas con otros modos
      (arrangeStandardBlock, generateLucidezMentalOp)
      permanecen en este script principal, sin moverse en este lote. -->
-<script src="src/utils/duel.js?v=497"></script>
+<script src="src/utils/duel.js?v=500"></script>
 
 <!-- Fase 3 (Lote 3C): defaults, migracion y saneamiento del Store
      extraidos a src/utils/store.js, mismo criterio que el resto (script
@@ -1191,60 +1209,63 @@ try {
      getLevelData) y las 8 funciones de persistencia real (loadStore,
      saveStore...) permanecen en este script principal,
      sin moverse en este lote. -->
-<script src="src/utils/store.js?v=497"></script>
+<script src="src/utils/store.js?v=500"></script>
 
 <!-- Fase 4B: fachada de estado de solo lectura (getStore/getCurrentGame),
      mismo criterio que el resto (script clasico, sin ES Modules todavia).
      No copia, no transforma, no cachea. Ver src/state/read-facade.js. -->
-<script src="src/state/read-facade.js?v=497"></script>
+<script src="src/state/read-facade.js?v=500"></script>
 
-<script src="src/utils/streak-xp.js?v=497"></script>
+<script src="src/utils/streak-xp.js?v=500"></script>
 <!-- Fase 4C: helpers minimos de escritura (pushCapped, resetStreak) para
      eliminar 2 duplicaciones reales concretas -- no un sistema de
      mutaciones. Ver src/state/write-helpers.js y CHANGELOG_FASE4C.md. -->
-<script src="src/state/write-helpers.js?v=497"></script>
+<script src="src/state/write-helpers.js?v=500"></script>
 
 <!-- v1.4: capa online (cuenta Google, sincronización, migración, ranking).
      config.js es PÚBLICO (URL del Worker + Client ID de Google); si está
      vacío, la capa online queda desactivada y la app es idéntica a la v1.3.
      online.js solo usa el store/funciones del juego en tiempo de ejecución. -->
-<script src="src/ui/install-app.js?v=497"></script>
-<script src="src/share/invite.js?v=497"></script>
-<script src="src/ui/reward-toast.js?v=497"></script>
-<script src="src/ui/privacy.js?v=497"></script>
-<script src="src/ui/a11y.js?v=497"></script>
-<script src="src/ui/back-nav.js?v=497"></script>
-<script src="src/ui/game-fx.js?v=497"></script>
-<script src="src/ui/last-life.js?v=497"></script>
-<script src="src/ui/hitos.js?v=497"></script>
-<script src="src/ui/achievements.js?v=497"></script>
-<script src="src/ui/stats-extra.js?v=497"></script>
-<script src="src/ui/name-prompt.js?v=497"></script>
-<script src="src/ui/intro.js?v=497"></script>
-<script src="src/ui/mode-badges.js?v=497"></script>
-<script src="src/ui/lucidez-ui.js?v=497"></script>
-<script src="src/ui/sabias.js?v=497"></script>
-<script src="src/ui/icons.js?v=497"></script>
-<script src="src/online/config.js?v=497"></script>
+<script src="src/ui/install-app.js?v=500"></script>
+<script src="src/share/invite.js?v=500"></script>
+<script src="src/ui/reward-toast.js?v=500"></script>
+<script src="src/ui/privacy.js?v=500"></script>
+<script src="src/ui/a11y.js?v=500"></script>
+<script src="src/ui/feedback-scroll.js?v=500"></script>
+<script src="src/ui/changelog-fold.js?v=500"></script>
+<script src="src/ui/replay.js?v=500"></script>
+<script src="src/ui/back-nav.js?v=500"></script>
+<script src="src/ui/game-fx.js?v=500"></script>
+<script src="src/ui/last-life.js?v=500"></script>
+<script src="src/ui/hitos.js?v=500"></script>
+<script src="src/ui/achievements.js?v=500"></script>
+<script src="src/ui/stats-extra.js?v=500"></script>
+<script src="src/ui/name-prompt.js?v=500"></script>
+<script src="src/ui/intro.js?v=500"></script>
+<script src="src/ui/mode-badges.js?v=500"></script>
+<script src="src/ui/lucidez-ui.js?v=500"></script>
+<script src="src/ui/sabias.js?v=500"></script>
+<script src="src/ui/icons.js?v=500"></script>
+<script src="src/online/config.js?v=500"></script>
 <!-- v2.0: combinación de datos de jugador (mismo código que el servidor) y su sincronización -->
-<script src="src/utils/sync-merge.js?v=497"></script>
-<script src="src/online/data-sync.js?v=497"></script>
-<script src="src/online/online.js?v=497"></script>
+<script src="src/utils/sync-merge.js?v=500"></script>
+<script src="src/online/data-sync.js?v=500"></script>
+<script src="src/online/online.js?v=500"></script>
 <!-- v1.5: Amigos, Duelo online y Retos. El servidor decide preguntas, tiempo, aciertos y ganador. -->
-<script src="src/state/result-heard.js?v=497"></script>
-<script src="src/state/multi-result.js?v=497"></script>
-<script src="src/online/reto-fx.js?v=497"></script>
-<script src="src/online/duels.js?v=497"></script>
+<script src="src/state/result-heard.js?v=500"></script>
+<script src="src/state/multi-result.js?v=500"></script>
+<script src="src/online/reto-fx.js?v=500"></script>
+<script src="src/online/duels.js?v=500"></script>
 <!-- 2.1: Duelo por apuestas, ELO PvP, Rankings y estadísticas de Duelos (solo presentación; decide el servidor) -->
-<script src="src/online/duels-v21.js?v=497"></script>
-<script src="src/online/multi-duels.js?v=497"></script>
-<script src="src/online/multi-stakes.js?v=497"></script>
+<script src="src/online/duels-v21.js?v=500"></script>
+<script src="src/online/multi-duels.js?v=500"></script>
+<script src="src/online/multi-stakes.js?v=500"></script>
 <!-- 2.3: ficha pública de un jugador (resumen, récords, PvP y solicitud de amistad) -->
-<script src="src/online/player-profile.js?v=497"></script>
-<script src="src/online/inbox.js?v=497"></script>
-<script src="src/online/push.js?v=497"></script>
+<script src="src/online/player-profile.js?v=500"></script>
+<script src="src/online/inbox.js?v=500"></script>
+<script src="src/online/push.js?v=500"></script>
 <!-- Audio: sonidos del juego (src/audio/audio.js) -->
-<script src="src/audio/audio.js?v=497"></script>
+<script src="src/audio/audio.js?v=500"></script>
 
 <script>
 function closeWelcomeModal() {
@@ -1835,7 +1856,7 @@ function renderModeChips(chips) {
   }
   box.innerHTML = chips.map(c => `
     <span class="result-chip" title="${c.label}">
-      <span class="result-chip-icon"><img class="ui-img" src="${SEQIcons.src(c.icon)}" alt="" draggable="false"></span><span class="result-chip-value">${c.value}</span>${c.short ? `<span class="result-chip-label">${c.short}</span>` : ''}
+      <span class="result-chip-icon"><img class="ui-img" src="${SEQIcons.src(c.icon)}" alt="" draggable="false"></span>${c.lead ? `<span class="result-chip-label">${c.lead}</span>` : ''}<span class="result-chip-value">${c.value}</span>${c.short ? `<span class="result-chip-label">${c.short}</span>` : ''}
     </span>
   `).join('');
   box.classList.add('show');
@@ -4160,7 +4181,7 @@ function checkLucidezAnswer() {
   currentGame.answered = true;
   const fb = document.getElementById('feedback');
   fb.style.display = 'block';
-  setTimeout(() => { fb.scrollIntoView({ behavior: smoothOK(), block: 'center' }); }, 50);
+  setTimeout(() => { SEQFeedbackScroll.reveal(fb); }, 50);
 
   if (correct) {
     updateAnswerStreak(true, q);
@@ -4237,7 +4258,7 @@ function checkLucidezPhase2Answer(item) {
 
   const fb = document.getElementById('feedback');
   fb.style.display = 'block';
-  setTimeout(() => { fb.scrollIntoView({ behavior: smoothOK(), block: 'center' }); }, 50);
+  setTimeout(() => { SEQFeedbackScroll.reveal(fb); }, 50);
 
   if (correct) {
     updateAnswerStreak(true);
@@ -4295,7 +4316,7 @@ function checkLucidezPhase2QuestionAnswer(q) {
   currentGame.answered = true;
   const fb = document.getElementById('feedback');
   fb.style.display = 'block';
-  setTimeout(() => { fb.scrollIntoView({ behavior: smoothOK(), block: 'center' }); }, 50);
+  setTimeout(() => { SEQFeedbackScroll.reveal(fb); }, 50);
 
   if (correct) {
     updateAnswerStreak(true, q);
@@ -4388,7 +4409,7 @@ function checkLucidezFinalAnswer() {
 
   const fb = document.getElementById('feedback');
   fb.style.display = 'block';
-  setTimeout(() => { fb.scrollIntoView({ behavior: smoothOK(), block: 'center' }); }, 50);
+  setTimeout(() => { SEQFeedbackScroll.reveal(fb); }, 50);
 
   if (correct) {
     updateAnswerStreak(true);
@@ -5251,7 +5272,7 @@ function checkMentalCalcAnswer(timedOut = false) {
   const fb = document.getElementById('feedback');
   fb.onclick = null; // por si quedó el «toque para seguir» de un fallo anterior de Fondo
   fb.style.display = 'block';
-  setTimeout(() => { fb.scrollIntoView({ behavior: smoothOK(), block: 'center' }); }, 50);
+  setTimeout(() => { SEQFeedbackScroll.reveal(fb); }, 50);
 
   if (correct) {
     playCorrectSound(currentGame.streak + 1);
@@ -5438,6 +5459,7 @@ function startModeImpl(mode, count, customPool) {
     timeTrialTotalAnswered = 0;
   }
 
+  try { SEQSirInterrupt.plan(currentGame); } catch (e) {}   // 2.5: ¿esta partida lleva pregunta de Sir Edwards? (src/ui/sir-interrupt.js)
   saveStore();
   document.getElementById('results-card').style.display = 'none'; SEQLevelUp.mark();
   document.getElementById('game-play-area').style.display = 'block';
@@ -5804,7 +5826,7 @@ function checkAnswer() {
   if (isChoice) markChoiceButtons(q.a);
 
   // En móvil el teclado puede tapar la respuesta: la traemos a la vista.
-  setTimeout(() => { fb.scrollIntoView({ behavior: smoothOK(), block: 'center' }); }, 50);
+  setTimeout(() => { SEQFeedbackScroll.reveal(fb); }, 50);
 
   if (currentGame.mode === 'timetrial') {
     timeTrialTotalAnswered++;
@@ -6005,6 +6027,7 @@ function checkAnswer() {
 }
 
 function nextQuestion() {
+  if (SEQSirInterrupt.isOpen()) return;   // 2.5: con la pregunta de Sir Edwards abierta, la partida espera
   if (shouldThrottleGameAction()) return;
   currentGame.currentIdx++;
   currentGame.answered = false;
@@ -6045,8 +6068,9 @@ function nextQuestion() {
   if (currentGame.currentIdx >= currentGame.queue.length) {
     finishGame(false, false);
   } else {
-    renderQuestion();
-    saveStore();
+    const go = () => { renderQuestion(); saveStore(); };
+    if (SEQSirInterrupt.maybe(currentGame, go)) return;   // 2.5: Sir Edwards interrumpe con su pregunta; al cerrarla sigue la partida
+    go();
   }
 }
 
@@ -6299,19 +6323,19 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     // Duelo: sin XP ni récords personales que mostrar; solo la racha de
     // esta partida tiene sentido aquí (record/logros van en handleDuelFinish).
     renderModeChips([
-      { icon: 'racha', label: 'Racha máxima', short: 'racha', value: `${currentGame.sessionBestStreak || 0}` }
+      { icon: 'racha', label: 'Racha máxima', lead: 'Mejor racha:', value: `${currentGame.sessionBestStreak || 0}` }
     ]);
   } else if (currentGame.mode === 'review') {
     renderModeChips([]);   // Repaso: sin racha, sin XP, sin récords
     { const mv = document.getElementById('res-mastered-value'); if (mv) mv.textContent = String(currentGame.masteredCount || 0); }
   } else if (currentGame.mode === 'play') {
     renderModeChips([
-      { icon: 'racha', label: 'Racha máxima', short: 'racha', value: `${currentGame.sessionBestStreak || 0}`, accent: '#2563eb' },
+      { icon: 'racha', label: 'Racha máxima', lead: 'Mejor racha:', value: `${currentGame.sessionBestStreak || 0}`, accent: '#2563eb' },
       { icon: 'xp', label: 'XP ganada', value: `+${currentGame.sessionXpGained || 0} XP`, accent: '#2563eb' }
     ]);
   } else if (currentGame.mode === 'survival') {
     renderModeChips([
-      { icon: 'racha', label: 'Racha máxima', short: 'racha', value: `${currentGame.sessionBestStreak || 0}`, accent: '#b45309' }
+      { icon: 'racha', label: 'Racha máxima', lead: 'Mejor racha:', value: `${currentGame.sessionBestStreak || 0}`, accent: '#b45309' }
     ]);
   } else if (currentGame.mode === 'sudden_death') {
     // Una sola píldora: el récord personal de preguntas sobrevividas (la distancia de esta partida ya se ve en el marcador).
@@ -6328,7 +6352,7 @@ function finishGame(isGameOverDueToFailure = false, isSurvivalFailure = false) {
     // por espacio con las dos métricas que de verdad definen la partida.
     const avgTimeChip = currentGame.total > 0 ? (currentGame.totalTimeMs / currentGame.total / 1000).toFixed(1).replace('.', ',') : '0,0';
     renderModeChips([
-      { icon: 'racha', label: 'Racha máxima', short: 'racha', value: `${currentGame.bestStreak || 0}` },
+      { icon: 'racha', label: 'Racha máxima', lead: 'Mejor racha:', value: `${currentGame.bestStreak || 0}` },
       { icon: 'tiempo', label: 'Tiempo medio por operación', value: `${avgTimeChip} s de media` }
     ]);
   } else {
@@ -7406,6 +7430,6 @@ window.addEventListener('appinstalled', () => {
   hidePwaHint();
 });
 </script>
-<script src="src/ui/resume-clock.js?v=497"></script>
+<script src="src/ui/resume-clock.js?v=500"></script>
 </body>
 </html>

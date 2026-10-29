@@ -14,10 +14,10 @@ function load(extra = '') {
 const ids = (c) => c.ALL_MEDALS.map((m) => m.id);
 const J = (x) => JSON.parse(JSON.stringify(x));
 
-test('hay exactamente 68 logros activos, sin IDs repetidos y sin emojis: cada uno con su insignia propia', () => {
+test('hay exactamente 70 logros activos, sin IDs repetidos y sin emojis: cada uno con su insignia propia', () => {
   const c = load();
-  assert.equal(c.ALL_MEDALS.length, 68);
-  assert.equal(new Set(ids(c)).size, 68);
+  assert.equal(c.ALL_MEDALS.length, 70);
+  assert.equal(new Set(ids(c)).size, 70);
   assert.equal(c.ALL_MEDALS.some((m) => 'icon' in m), false, 'los logros no llevan emoji: su icono es assets/logros/<id>.webp');
   for (const m of c.ALL_MEDALS) assert.ok(fs.existsSync(new URL('../assets/logros/' + m.id + '.webp', import.meta.url)), 'falta la insignia de ' + m.id);
 });
@@ -132,7 +132,7 @@ test('Sin Titubear sustituye a La Última Palabra: ID nuevo, pluma reutilizada, 
   assert.equal(by('duel_sin_titubear').desc, 'Gana un duelo acertando todas las preguntas.');
   assert.ok(fs.existsSync(new URL('../assets/logros/duel_sin_titubear.webp', import.meta.url)), 'tiene su insignia');
   assert.equal(J(c.FRAGMENT_MEDAL_IDS).includes('duel_sin_titubear'), false);
-  assert.equal(c.ALL_MEDALS.length, 68);
+  assert.equal(c.ALL_MEDALS.length, 70);
 });
 
 test('Fragmentos reasignados: Evolución Confirmada y Apuesta Calculada dan; Maestro y Sin Titubear no', () => {

@@ -19,40 +19,27 @@ const ans = (st, t, hour, streak = 1, extra = {}, rng = ALWAYS) => S.evaluate(st
 // Avanza 3 respuestas para salir de la zona «inicio de partida».
 function warm(st, t0 = 0) { for (let i = 0; i < S.MIN_ANSWERS_START; i++) assert.equal(ans(st, t0 + i, 12, 1, {}, ALWAYS), null); }
 
-test('visit: como mucho una por partida, no en todas las partidas y puede no aparecer', () => {
-  let games = 0, withVisit = 0;
-  for (let g = 0; g < 4000; g++) {
-    const rng = mulberry(g + 1), st = S.newState();
-    let visits = 0;
-    for (let i = 0; i < 20; i++) { const ev = ans(st, i * 60000, 14, 1, {}, rng); if (ev && ev.type === 'visit') visits++; assert.ok(!ev || ev.type === 'visit'); }
-    assert.ok(visits <= 1);
-    games++; if (visits) withVisit++;
-  }
-  const f = withVisit / games;
-  assert.ok(f > 0.03 && f < 0.25, 'fracción de partidas con visit: ' + f);
-});
-
 test('nada en las primeras respuestas, ni tras un fallo, ni en la última pregunta, ni con la pestaña oculta', () => {
   const st = S.newState();
-  for (let i = 0; i < S.MIN_ANSWERS_START; i++) assert.equal(ans(st, i, 14), null);
-  assert.equal(S.evaluate(st, { nowMs: 1e6, hour: 14, streak: 0, correct: false, last: false, blocked: false }, ALWAYS), null);
-  assert.equal(ans(st, 2e6, 14, 1, { last: true }), null);
-  assert.equal(ans(st, 3e6, 14, 1, { blocked: true }), null);
-  assert.ok(ans(st, 4e6, 14), 'y con todo despejado sí');
+  for (let i = 0; i < S.MIN_ANSWERS_START; i++) assert.equal(ans(st, i, 7), null);
+  assert.equal(S.evaluate(st, { nowMs: 1e6, hour: 7, streak: 0, correct: false, last: false, blocked: false }, ALWAYS), null);
+  assert.equal(ans(st, 2e6, 7, 1, { last: true }), null);
+  assert.equal(ans(st, 3e6, 7, 1, { blocked: true }), null);
+  assert.ok(ans(st, 4e6, 7), 'y con todo despejado sí');
 });
 
 test('cooldown común: nunca dos seguidos; separación mínima de tiempo y de respuestas; uno por respuesta', () => {
   const st = S.newState(); warm(st);
-  const first = ans(st, 100000, 14, 1, {}, ALWAYS);
+  const first = ans(st, 100000, 7, 1, {}, ALWAYS);
   assert.ok(first);
-  assert.equal(ans(st, 100001, 14), null, 'inmediatamente después, no');
-  assert.equal(ans(st, 100000 + S.COOLDOWN_MS - 1, 14), null, 'antes del cooldown de tiempo, no');
+  assert.equal(ans(st, 100001, 7), null, 'inmediatamente después, no');
+  assert.equal(ans(st, 100000 + S.COOLDOWN_MS - 1, 7), null, 'antes del cooldown de tiempo, no');
   // aunque haya pasado el tiempo, faltan respuestas de por medio
   const st2 = S.newState(); warm(st2);
-  assert.ok(ans(st2, 100000, 14));
+  assert.ok(ans(st2, 100000, 7));
   const t = 100000 + S.COOLDOWN_MS + 10;
   let fired = 0, answers = 0;
-  for (let i = 0; i < S.MIN_ANSWERS_BETWEEN - 1; i++) { answers++; if (ans(st2, t + i, 14, 20)) fired++; }
+  for (let i = 0; i < S.MIN_ANSWERS_BETWEEN - 1; i++) { answers++; if (ans(st2, t + i, 7, 20)) fired++; }
   assert.equal(fired, 0, 'con 3 respuestas de por medio no sale (el hito de racha tampoco se salta el cooldown)');
 });
 
@@ -67,7 +54,7 @@ test('streak: no antes de 10; sale en 10/15/20/30; cada hito una sola vez; frase
     if (ev && ev.type === 'streak') fired.push([streak, ev.message]);
     if (streak < 10) assert.ok(!ev || ev.type !== 'streak', 'antes de 10 no hay streak');
   }
-  // Con ALWAYS sale antes la visita: con el tope de 1 evento por partida, el 10 y el 15 ceden y los hitos de 20 y 30 pasan siempre.
+  // Con ALWAYS salen antes otros eventos: con el tope de 1 evento por partida, el 10 y el 15 ceden y los hitos de 20 y 30 pasan siempre.
   assert.deepEqual(fired.map((f) => f[0]), [20, 30]);
   [20, 30].forEach((m, i) => assert.ok(S.PHRASES.streak[m].includes(fired[i][1])));
 });
@@ -84,16 +71,16 @@ test('streak: un mismo hito no se repite; el hito no «se pierde» al instante p
   const st3 = S.newState(); warm(st3);
   assert.equal(ans(st3, 1e6, 12, 10, {}, NEVER), null);
   assert.equal(ans(st3, 1e6 + 1, 12, 12, {}, NEVER), null);
-  assert.notEqual(ans(st3, 1e6 + 2, 12, 12, {}, ALWAYS).type, 'streak');
+  const e3 = ans(st3, 1e6 + 2, 12, 12, {}, ALWAYS); assert.ok(!e3 || e3.type !== 'streak');
 });
 
-test('day: solo de 06:00 a 09:59 hora local; night: solo de 00:00 a 03:59; fuera, solo visit', () => {
-  const typeAt = (hour) => { const st = S.newState(); warm(st); const ev = ans(st, 1e6, hour, 1, {}, ALWAYS); return ev && ev.type; };
+test('day: solo de 06:00 a 09:59 hora local; night: solo de 00:00 a 03:59; fuera, nada', () => {
+  const typeAt = (hour) => { const st = S.newState(); warm(st); const ev = ans(st, 1e6, hour, 1, {}, ALWAYS); return ev ? ev.type : null; };
   for (let h = 0; h < 24; h++) {
     const t = typeAt(h);
     if (h >= 0 && h < 4) assert.equal(t, 'night', 'hora ' + h);
     else if (h >= 6 && h < 10) assert.equal(t, 'day', 'hora ' + h);
-    else assert.equal(t, 'visit', 'hora ' + h);
+    else assert.equal(t, null, 'hora ' + h);
   }
   assert.equal(S.isNight(3), true); assert.equal(S.isNight(4), false);
   assert.equal(S.isDay(5), false); assert.equal(S.isDay(6), true); assert.equal(S.isDay(9), true); assert.equal(S.isDay(10), false);
@@ -105,7 +92,7 @@ test('day y night: máx. 1 por partida, frecuentes (horas raras) pero no en toda
     const types = [];
     for (let i = 0; i < 12; i++) { const ev = ans(st, 1e6 + i * 100000, hour, 1, {}, ALWAYS); if (ev) types.push(ev.type); }
     assert.equal(types.filter((x) => x === type).length, 1);
-    assert.equal(types.filter((x) => x === 'visit').length <= 1, true);
+    assert.equal(types.length, 1, 'solo ese evento, y uno por partida');
     let games = 0, withEv = 0;
     for (let g = 0; g < 3000; g++) {
       const rng = mulberry(900 + g), s = S.newState(); let n = 0;
@@ -118,18 +105,18 @@ test('day y night: máx. 1 por partida, frecuentes (horas raras) pero no en toda
   }
 });
 
-test('prioridad: streak > night > day > visit, un solo evento por respuesta, y la prioridad no salta el cooldown', () => {
+test('prioridad: streak > night > day, un solo evento por respuesta, y la prioridad no salta el cooldown', () => {
   const st = S.newState(); warm(st);
   assert.equal(ans(st, 1e6, 2, 10).type, 'streak', 'streak gana a night');
   assert.equal(ans(st, 1e6 + 1, 2, 10), null, 'cooldown: ni siquiera night');
   const st2 = S.newState(); warm(st2);
   const order = [];
   for (let i = 0; i < 8; i++) { const ev = ans(st2, 1e6 + i * 100000, 2, 1, {}, ALWAYS); if (ev) order.push(ev.type); }
-  assert.deepEqual(order, ['night'], 'night antes que visit; con el tope de 1 por partida no queda nada más');
+  assert.deepEqual(order, ['night'], 'con el tope de 1 por partida no queda nada más');
   const st3 = S.newState(); warm(st3);
   const order3 = [];
   for (let i = 0; i < 8; i++) { const ev = ans(st3, 1e6 + i * 100000, 8, 1, {}, ALWAYS); if (ev) order3.push(ev.type); }
-  assert.deepEqual(order3, ['day'], 'day antes que visit');
+  assert.deepEqual(order3, ['day'], 'solo day, y uno por partida');
 });
 
 test('frases: todas en «tú», sin plurales, con comillas; las de hora concreta solo salen a su hora', () => {
@@ -154,31 +141,23 @@ test('frases: todas en «tú», sin plurales, con comillas; las de hora concreta
   assert.ok(![].concat(...Object.values(S.PHRASES.streak)).some((p) => p.includes('Imparable')), 'sin «Imparable»: suena a logro');
 });
 
-test('frase muy rara: mucho menos frecuente que las normales', () => {
-  let rare = 0, n = 0;
-  for (let g = 0; g < 80000; g++) { const st = S.newState(); warm(st); const ev = ans(st, 1e6, 14, 1, {}, mulberry(g + 77777)); if (ev) { n++; if (S.PHRASES.visitRare.includes(ev.message)) rare++; } }
-  assert.ok(n > 300);
-  const f = rare / n;
-  assert.ok(f > 0.01 && f < 0.1, 'rara: ' + f);
-});
-
 test('no repite la misma frase dos veces seguidas del mismo evento', () => {
-  const st = S.newState(); st.last.visit = S.PHRASES.visit[0];
-  for (let g = 0; g < 200; g++) { const s2 = S.newState(); s2.last.visit = S.PHRASES.visit[0]; warm(s2); const ev = ans(s2, 1e6, 14, 1, {}, mulberry(g)); if (ev) assert.notEqual(ev.message, S.PHRASES.visit[0]); }
+  const st = S.newState(); st.last.day = S.PHRASES.day[0];
+  for (let g = 0; g < 200; g++) { const s2 = S.newState(); s2.last.day = S.PHRASES.day[0]; warm(s2); const ev = ans(s2, 1e6, 7, 1, {}, mulberry(g)); if (ev) assert.notEqual(ev.message, S.PHRASES.day[0]); }
 });
 
 test('el estado es de UNA partida: newState reinicia límites e hitos', () => {
-  const a = S.newState(); warm(a); assert.ok(ans(a, 1e6, 14));
-  assert.equal(ans(a, 9e6, 14, 1, {}, ALWAYS), null, 'visit ya usado en esa partida');
-  const b = S.newState(); warm(b); assert.ok(ans(b, 1e6, 14), 'partida nueva: vuelve a poder salir');
-  assert.deepEqual(JSON.parse(JSON.stringify(S.newState())), { shown: { visit: 0, day: 0, night: 0, broken: 0, record: 0, comeback: 0, weak: 0, tilt: 0 }, milestones: {}, lastAt: null, lastAnswer: null, answers: 0, run: 0, miss: 0, count: 0, last: {} });
+  const a = S.newState(); warm(a); assert.ok(ans(a, 1e6, 7));
+  assert.equal(ans(a, 9e6, 7, 1, {}, ALWAYS), null, 'day ya usado en esa partida');
+  const b = S.newState(); warm(b); assert.ok(ans(b, 1e6, 7), 'partida nueva: vuelve a poder salir');
+  assert.deepEqual(JSON.parse(JSON.stringify(S.newState())), { shown: { day: 0, night: 0, broken: 0, record: 0, comeback: 0, weak: 0, tilt: 0 }, milestones: {}, lastAt: null, lastAnswer: null, answers: 0, run: 0, miss: 0, count: 0, last: {} });
 });
 
 // ---- Enganche con la partida: no modifica nada del juego ----
 function makeGameEnv(game, extra = {}) {
   const shown = [];
   const timers = [];
-  const c = { console, currentGame: game, answerStreak: 12, timeTrialEndTime: 0, document: { hidden: false, getElementById: () => null }, SEQSirEventsUI: { show: (ev) => { shown.push(ev); return true; } },
+  const c = { console, currentGame: game, answerStreak: 12, timeTrialEndTime: 0, Date: fakeDateAt(7), document: { hidden: false, getElementById: () => null }, SEQSirEventsUI: { show: (ev) => { shown.push(ev); return true; } },
     setTimeout: (fn) => { timers.push(fn); return timers.length; }, ...extra };
   vm.createContext(c);
   vm.runInContext(read('src/utils/sir-events.js'), c);
@@ -232,7 +211,7 @@ test('enganche: una partida nueva (objeto nuevo) reinicia el estado de eventos',
 });
 
 test('cableado: assets, index.html, sw.js, solo vía updateAnswerStreak, sin tocar el backend', () => {
-  ['visit', 'streak', 'day', 'night'].forEach((t) => {
+  ['streak', 'day', 'night'].forEach((t) => {
     assert.ok(fs.existsSync(new URL(`../assets/character/event_siredwards_${t}.webp`, import.meta.url)), t);
     assert.ok(read('sw.js').includes(`event_siredwards_${t}.webp`));
     assert.ok(read('src/utils/sir-events.js').includes(`event_siredwards_${t}.webp`));
@@ -253,13 +232,13 @@ test('enganche: si el componente no puede mostrarlo sin tapar la partida, es com
   vm.runInContext('Math.random = () => 0', c);
   for (let i = 0; i < 6; i++) { vm.runInContext('sirEventsOnAnswer(true)', c); c.flush(); }
   assert.equal(shown.length, 0);
-  assert.equal(game._sev.shown.visit, 0, 'el límite de visit no se gastó');
+  assert.equal(game._sev.shown.day, 0, 'el límite de day no se gastó');
   assert.equal(game._sev.lastAt, null, 'ni el cooldown');
   assert.ok(game._sev.answers >= 6, 'pero el recuento de respuestas se conserva');
   refuse = false;
   vm.runInContext('sirEventsOnAnswer(true)', c); c.flush();
   assert.equal(shown.length, 1);
-  assert.equal(game._sev.shown.visit + game._sev.shown.day + game._sev.shown.night, 1);
+  assert.equal(game._sev.shown.day + game._sev.shown.night, 1);
 });
 
 test('enganche: si la partida cambió o ya hay resultados cuando toca mostrarlo, no se muestra y no se consume', () => {
@@ -293,14 +272,14 @@ function playStreakGame(store, showResult = true) {
   return { ev, c };
 }
 
-test('rotación: cada grupo normal pide su bolsa (visit, day, night_early/late, streak_10/15/20/30)', () => {
+test('rotación: cada grupo normal pide su bolsa (day, night_early/late, streak_10/15/20/30)', () => {
   const keys = new Set();
   for (let g = 0; g < 4000; g++) {
     const hour = g % 24, rng = mulberry(7000 + g), st = S.newState(); warm(st);
     const streak = [1, 10, 15, 20, 30][g % 5];
     S.evaluate(st, { nowMs: 1e6, hour, streak, correct: true, last: false, blocked: false, rotate: (k, l) => { keys.add(k); return l[0]; } }, rng);
   }
-  for (const k of ['visit', 'day', 'night_early', 'night_late', 'streak_10', 'streak_15', 'streak_20', 'streak_30']) assert.ok(keys.has(k), k);
+  for (const k of ['day', 'night_early', 'night_late', 'streak_10', 'streak_15', 'streak_20', 'streak_30']) assert.ok(keys.has(k), k);
 });
 
 test('rotación: las frases de un evento no se repiten hasta agotarlas, ni entre partidas, y se guardan en el store', () => {
@@ -326,11 +305,11 @@ test('rotación: un evento que no llega a verse devuelve su frase a la bolsa', (
 
 test('catálogos: ningún grupo normal lleva frases ligadas a una hora; las de hora exacta están en los raros', () => {
   const ph = S.PHRASES;
-  for (const list of [ph.broken.low, ph.broken.mid, ph.broken.high, ph.visit, ph.day, ph.nightEarly, ph.nightLate, ph.streak[10], ph.streak[15], ph.streak[20], ph.streak[30]]) assert.ok(list.every((x) => typeof x === 'string'));
-  assert.ok(ph.day.length >= 14 && ph.nightEarly.length >= 9 && ph.nightLate.length >= 9 && ph.visit.length >= 12);
+  for (const list of [ph.broken.low, ph.broken.mid, ph.broken.high, ph.day, ph.nightEarly, ph.nightLate, ph.streak[10], ph.streak[15], ph.streak[20], ph.streak[30]]) assert.ok(list.every((x) => typeof x === 'string'));
+  assert.ok(ph.day.length >= 14 && ph.nightEarly.length >= 9 && ph.nightLate.length >= 9);
   [10, 15, 20, 30].forEach((m) => assert.ok(ph.streak[m].length >= 6));
-  assert.ok(S.P.night > S.P.day && S.P.day > S.P.visit, 'noche más probable que día, y ambos más que la visita genérica');
-  assert.equal(S.P.night, 0.018); assert.equal(S.P.day, 0.012); assert.equal(S.P.visit, 0.006);
+  assert.ok(S.P.night > S.P.day, 'noche más probable que día');
+  assert.equal(S.P.night, 0.018); assert.equal(S.P.day, 0.012);
 });
 
 test('rotación: las frases raras también usan bolsa (una por hora si dependen de la hora) y solo salen a su hora', () => {
@@ -341,13 +320,13 @@ test('rotación: las frases raras también usan bolsa (una por hora si dependen 
       rotate: (k, l) => { keys.set(k, (keys.get(k) || new Set()).add(hour)); return l[0]; } }, mulberry(31000 + g));
     if (ev && /^«(Son las|03:17)/.test(ev.message)) assert.ok([3, 7].includes(hour), ev.message + ' a las ' + hour);
   }
-  assert.ok(keys.has('visit_rare') && keys.has('night_rare_3') && keys.has('day_rare_7'));
+  assert.ok(keys.has('night_rare_3') && keys.has('day_rare_7'));
   assert.ok([...keys.keys()].filter((k) => /_rare_\d+$/.test(k)).every((k) => keys.get(k).size === 1), 'cada bolsa horaria solo se pide a su hora');
 });
 
 // ---- Racha rota ----
 const wrong = (st, t, hour = 14, extra = {}, rng = ALWAYS) => S.evaluate(st, { nowMs: t, hour, streak: 0, correct: false, last: false, blocked: false, ...extra }, rng);
-function run(st, n, t0 = 0) { for (let i = 0; i < n; i++) ans(st, t0 + i, 14, i + 1, {}, NEVER); }
+function run(st, n, t0 = 0) { for (let i = 0; i < n; i++) ans(st, t0 + i, 7, i + 1, {}, NEVER); }
 
 test('racha rota: tras 5 o más aciertos seguidos y un fallo; cita la racha real; usa su propia imagen', () => {
   const st = S.newState(); run(st, 7);
@@ -372,7 +351,7 @@ test('racha rota: no con racha corta, no en Repaso, no en la última pregunta, n
 
 test('racha rota: el fallo cuenta como respuesta, no se pega a otro evento y los aciertos tras él empiezan de cero', () => {
   const st = S.newState(); warm(st);
-  const ev = ans(st, 100000, 14, 10, {}, ALWAYS);                  // hito de racha en la 4.ª respuesta
+  const ev = ans(st, 100000, 7, 10, {}, ALWAYS);                  // hito de racha en la 4.ª respuesta
   assert.equal(ev.type, 'streak');
   assert.equal(wrong(st, 100001), null, 'justo detrás de otro evento, no');
   const g = S.newState(); run(g, 6); wrong(g, 10);                   // se rompe la racha
@@ -426,35 +405,32 @@ test('tope: como mucho un evento por partida; un hito de racha de 20 o más lo s
   assert.ok(e && e.type === 'streak', 'el de 20 sí');
 });
 
-test('día, noche y visita: como mucho uno cada 6 h; la categoría débil, uno al día (lo anota quien llama)', () => {
-  const st = S.newState(); warm(st);
+test('categoría débil: como mucho una al día (lo anota quien llama)', () => {
   const now = 5e8;
-  const blocked = ans(st, now, 14, 1, { recent: { visit: now - S.RECENT_MS + 1000 } }, ALWAYS);
-  assert.equal(blocked, null, 'visita reciente: no');
-  const fresh = S.newState(); warm(fresh, 1e3);
-  const ok = ans(fresh, now, 14, 1, { recent: { visit: now - S.RECENT_MS - 1000 } }, ALWAYS);
-  assert.ok(ok && ok.type === 'visit', 'visita antigua (más de 3 h): sí');
   const st2 = S.newState(); warm(st2, 1e3);
-  const w = ans(st2, now, 14, 1, { weakCat: 'Historia', recent: { weak: now - S.WEAK_MS + 1000, visit: now } }, ALWAYS);
-  assert.equal(w, null, 'categoría débil reciente: no (y visita también reciente)');
+  const w = ans(st2, now, 7, 1, { weakCat: 'Historia', recent: { weak: now - S.WEAK_MS + 1000, day: now } }, ALWAYS);
+  assert.equal(w, null, 'categoría débil reciente: no (y mañana también reciente)');
+  const st3 = S.newState(); warm(st3, 1e3);
+  const ok = ans(st3, now, 12, 1, { weakCat: 'Historia', recent: { weak: now - S.WEAK_MS - 1000 } }, ALWAYS);
+  assert.ok(ok && ok.type === 'weak', 'categoría débil antigua: sí');
 });
 
 test('récord personal: sale con ctx.record, una vez por partida, con la racha en la frase', () => {
   const st = S.newState(); warm(st);
-  const ev = ans(st, 7e6, 14, 6, { record: 6, recent: { visit: 7e6 } }, ALWAYS);
+  const ev = ans(st, 7e6, 7, 6, { record: 6 }, ALWAYS);
   assert.ok(ev && ev.type === 'record' && ev.asset === S.ASSETS.record && ev.message.includes('6') && !/\{n\}/.test(ev.message));
-  for (let k = 0; k < S.MIN_ANSWERS_BETWEEN; k++) S.evaluate(st, { nowMs: 9e6 - 1, hour: 14, streak: 7, correct: false, last: false, blocked: false, noBroken: true }, ALWAYS);
-  assert.equal(ans(st, 9e6, 14, 8, { record: 8, recent: { visit: 9e6 } }, ALWAYS), null, 'un solo récord por partida');
+  for (let k = 0; k < S.MIN_ANSWERS_BETWEEN; k++) S.evaluate(st, { nowMs: 9e6 - 1, hour: 7, streak: 7, correct: false, last: false, blocked: false, noBroken: true }, ALWAYS);
+  assert.equal(ans(st, 9e6, 7, 8, { record: 8 }, ALWAYS), null, 'un solo récord por partida');
 });
 
 test('regreso: tras la 1.ª respuesta (acierto o no), una vez, con su imagen propia', () => {
   for (const correct of [true, false]) {
     const st = S.newState();
-    const ev = S.evaluate(st, { nowMs: 1e6, hour: 14, streak: 0, correct, last: false, blocked: false, comeback: true }, ALWAYS);
+    const ev = S.evaluate(st, { nowMs: 1e6, hour: 7, streak: 0, correct, last: false, blocked: false, comeback: true }, ALWAYS);
     assert.ok(ev && ev.type === 'comeback' && ev.asset === S.ASSETS.comeback, String(correct));
-    assert.equal(S.evaluate(st, { nowMs: 2e6, hour: 14, streak: 0, correct, last: false, blocked: false, comeback: true }, ALWAYS), null);
+    assert.equal(S.evaluate(st, { nowMs: 2e6, hour: 7, streak: 0, correct, last: false, blocked: false, comeback: true }, ALWAYS), null);
   }
-  const no = S.evaluate(S.newState(), { nowMs: 1e6, hour: 14, streak: 0, correct: true, last: false, blocked: false }, ALWAYS);
+  const no = S.evaluate(S.newState(), { nowMs: 1e6, hour: 7, streak: 0, correct: true, last: false, blocked: false }, ALWAYS);
   assert.equal(no, null, 'sin regreso, nada en la 1.ª respuesta');
 });
 
@@ -494,15 +470,15 @@ test('frases nuevas: récord, regreso y categoría débil, con sus marcas y en v
   const all = [...ph.record, ...ph.comeback, ...ph.weak]; assert.equal(new Set(all).size, all.length);
 });
 
-test('mañana y noche: como mucho uno al día (20 h entre ellos); la visita sigue con sus 6 h', () => {
+test('mañana y noche: como mucho uno al día (20 h entre ellos)', () => {
   const now = 5e8;
   for (const [hour, type] of [[7, 'day'], [2, 'night']]) {
     const a = S.newState(); warm(a, 1e3);
-    assert.equal(ans(a, now, hour, 1, { recent: { [type]: now - 5 * 3600 * 1000, visit: now } }, ALWAYS), null, type + ' hace 5 h: no');
+    assert.equal(ans(a, now, hour, 1, { recent: { [type]: now - 5 * 3600 * 1000 } }, ALWAYS), null, type + ' hace 5 h: no');
     const b = S.newState(); warm(b, 1e3);
-    assert.equal(ans(b, now, hour, 1, { recent: { [type]: now - S.DAYNIGHT_MS + 1000, visit: now } }, ALWAYS), null, type + ' hace casi 20 h: no');
+    assert.equal(ans(b, now, hour, 1, { recent: { [type]: now - S.DAYNIGHT_MS + 1000 } }, ALWAYS), null, type + ' hace casi 20 h: no');
     const c = S.newState(); warm(c, 1e3);
-    const ev = ans(c, now, hour, 1, { recent: { [type]: now - S.DAYNIGHT_MS - 1000, visit: now } }, ALWAYS);
+    const ev = ans(c, now, hour, 1, { recent: { [type]: now - S.DAYNIGHT_MS - 1000 } }, ALWAYS);
     assert.ok(ev && ev.type === type, type + ' hace más de 20 h: sí');
   }
 });
@@ -555,16 +531,10 @@ test('ánimo: desde el 2.º fallo seguido con probabilidad creciente, una vez po
   assert.equal(new Set(all).size, all.length, 'sin frases repetidas');
 });
 
-test('imágenes de los eventos: cada tipo tiene la suya, existe y está en sw.js; la visita alterna entre dos', () => {
+test('imágenes de los eventos: cada tipo tiene la suya, existe y está en sw.js', () => {
   ['tilt', 'broken', 'weak', 'record', 'streak', 'comeback', 'day', 'night'].forEach((t) => {
     const f = S.ASSETS[t]; assert.ok(f, t); assert.ok(fs.existsSync(new URL('../' + f, import.meta.url)), f); assert.ok(read('sw.js').includes(f.replace('assets/', './assets/')), 'sw.js: ' + f);
   });
-  assert.equal(new Set(['tilt', 'broken', 'weak', 'record', 'streak', 'comeback', 'day', 'night', 'visit'].map((t) => S.ASSETS[t])).size, 9, 'ningún tipo comparte imagen');
-  ['assets/character/event_siredwards_visit2.webp', 'assets/character/empate.webp'].forEach((f) => { assert.ok(fs.existsSync(new URL('../' + f, import.meta.url)), f); assert.ok(read('sw.js').includes(f.replace('assets/', './assets/')), f); });
-  const mk = () => { const st = S.newState(); st.answers = 5; st.lastAt = null; return st; };
-  const v = (r) => S.evaluate(mk(), { nowMs: 1e7, hour: 13, streak: 1, correct: true, last: false, blocked: false, noStreak: true, recent: {} }, r);
-  let calls = 0; const a = v(() => { calls++; return 0; });
-  let k = 0; const b = v(() => (++k === calls ? 0.99 : 0));   // la última tirada es la de la imagen
-  assert.ok(a && b && a.type === 'visit' && b.type === 'visit');
-  assert.notEqual(a.asset, b.asset, 'la visita alterna de imagen');
+  assert.equal(new Set(['tilt', 'broken', 'weak', 'record', 'streak', 'comeback', 'day', 'night'].map((t) => S.ASSETS[t])).size, 8, 'ningún tipo comparte imagen');
+  ['assets/character/empate.webp'].forEach((f) => { assert.ok(fs.existsSync(new URL('../' + f, import.meta.url)), f); assert.ok(read('sw.js').includes(f.replace('assets/', './assets/')), f); });
 });

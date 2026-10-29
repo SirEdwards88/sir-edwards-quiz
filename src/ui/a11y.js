@@ -5,13 +5,16 @@
 // Script clásico, sin dependencias.
 (function () {
   'use strict';
-  var SEL = '.home-big-card[onclick], .mode-card[onclick], .history-item[onclick], .seq-pl-tap[onclick], .seq-d-mode[onclick]';
+  var SEL = '.home-big-card[onclick], .mode-card[onclick], .history-item[onclick], .seq-pl-tap[onclick], .seq-d-mode[onclick], .home-small-card[onclick]';
   function enhance(root) {
     var els = (root || document).querySelectorAll(SEL);
     for (var i = 0; i < els.length; i++) {
       var el = els[i];
       if (!el.hasAttribute('role')) el.setAttribute('role', 'button');
       if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+      // La flecha «›» de las tarjetas pequeñas es decorativa: el lector no debe leerla.
+      var arrow = el.querySelector && el.querySelector('.home-small-arrow');
+      if (arrow && !arrow.hasAttribute('aria-hidden')) arrow.setAttribute('aria-hidden', 'true');
     }
   }
   document.addEventListener('keydown', function (e) {

@@ -88,7 +88,7 @@
 
     var avg = g.total > 0 ? (g.totalTimeMs / g.total / 1000).toFixed(1).replace('.', ',') : '0,0';
     renderModeChips([
-      { icon: 'racha', label: 'Racha máxima', short: 'racha', value: String(g.bestStreak || 0) },
+      { icon: 'racha', label: 'Racha máxima', lead: 'Mejor racha:', value: String(g.bestStreak || 0) },
       { icon: 'tiempo', label: 'Tiempo medio por operación', value: avg + ' s de media' }
     ]);
     renderRecordBadge(isRecord ? seqIco('copa') + 'NUEVO RÉCORD' : null, 'gold');

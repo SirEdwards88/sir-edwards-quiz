@@ -21,7 +21,7 @@
     { key: 'errores', name: 'Aprender de los errores', ids: ['cleaner_5', 'cleaner_25', 'limpieza_general'] },
     { key: 'modos', name: 'Modos de juego', ids: ['surv_ameba', 'surv_humano', 'surv_derrame', 'sd_quince', 'sd_veinte', 'sd_primer_riesgo', 'tt_15', 'tt_30', 'tt_50', 'sin_frenos', 'mental_calc_15', 'mental_calc_30', 'mental_calc_40'] },
     { key: 'duelo', name: 'Duelo', ids: ['duel_primera_sangre', 'duel_victoria_inaugural', 'duel_por_los_pelos', 'duel_contra_las_cuerdas', 'duel_rey_del_empate', 'duel_cinco_victorias', 'duel_tres_al_hilo', 'duel_revancha', 'duel_otra_vez_tu', 'duel_sin_titubear', 'duel_apuestas_calculada', 'duel_apuestas_ultima_locura', 'multi_mesa_completa', 'multi_contra_la_corriente', 'multi_entre_la_niebla', 'multi_alguien_tenia_que_perder', 'multi_costumbre_preocupante'] },
-    { key: 'especial', name: 'Especiales', ids: ['noctambulo', 'diurno', 'mente_fracturada', 'encargos_semana_completa', 'medal_collector_10', 'medal_collector_20', 'medal_collector_30'] },
+    { key: 'especial', name: 'Especiales', ids: ['noctambulo', 'diurno', 'mente_fracturada', 'encargos_semana_completa', 'sir_audiencia', 'sir_lo_vi_venir', 'medal_collector_10', 'medal_collector_20', 'medal_collector_30'] },
     { key: 'secretos', name: 'Secretos', ids: ['lucidez_mente_despierta', 'lucidez_conexiones_imposibles', 'lucidez_absoluta', 'all_medals_secret'] }
   ];
 
@@ -73,6 +73,8 @@
     multi_costumbre_preocupante: function (s) { return [n(s.duelStats && s.duelStats.multiWins), 5, 'victorias']; },
     duel_otra_vez_tu: function (s) { return [n(s.duelStats && s.duelStats.bestWinsVsRival), 3, 'victorias']; },
     medal_collector_10: function (s) { return [collectorCount(s), 10, 'logros']; },
+    sir_audiencia: function (s) { return [n(s.sirAnswered), 5, 'respondidas']; },
+    sir_lo_vi_venir: function (s) { return [n(s.sirCorrect), 20, 'aciertos']; },
     medal_collector_20: function (s) { return [collectorCount(s), 20, 'logros']; },
     medal_collector_30: function (s) { return [collectorCount(s), 30, 'logros']; }
   };

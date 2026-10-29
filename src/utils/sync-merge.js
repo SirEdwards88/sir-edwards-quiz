@@ -32,7 +32,7 @@ const SEQSyncMerge = (function () {
   const MAX_NUM = 1e9;
 
   const MAX_FIELDS = [
-    'standardGamesCount', 'errorsCleaned', 'survivalAmebaWins', 'survivalHumanoWins', 'survivalDerrameWins',
+    'standardGamesCount', 'errorsCleaned', 'sirAnswered', 'sirCorrect', 'survivalAmebaWins', 'survivalHumanoWins', 'survivalDerrameWins',
     'suddenWins', 'maxTimeTrialScore', 'standardBestStreak', 'timeTrialBestStreak', 'hardBestStreak',
     'noRepeatCatBestStreak', 'bestMentalCalcScore', 'mentalCalcBestStreak', 'bestMentalCalcCorrect',
     'mentalCalcTotalCorrect', 'bestMentalClassicCorrect', 'bestMentalClassicScore', 'bestLucidezScore', 'bestLucidezStreak', 'lucidezTotalCorrect', 'suddenBestSurvived',

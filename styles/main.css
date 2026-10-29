@@ -1429,6 +1429,9 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
 @media (hover:hover) and (pointer:fine){ [data-theme="dark"] .btn-share:hover{ background: rgba(167,139,250,.18); border-color: rgba(167,139,250,.6); } }
 /* 2.0: «Compartir resultado» discreto (acción secundaria); sin btn-share-quiet recupera el aspecto destacado. */
 .results-actions .btn-share { width: 100%; margin-top: 10px; }
+/* 2.5: «Otra más.» (src/ui/replay.js): botón principal; «Volver» queda debajo como secundario. */
+.results-actions [hidden] { display: none !important; }
+.results-actions #res-replay-btn { margin-bottom: 10px; }
 .results-actions .btn-share.btn-share-quiet {
   width: fit-content; min-height: 0; margin: 12px auto 0; display: block; padding: 8px 18px;
   font-size: 14px; font-weight: 600; background: transparent; box-shadow: none;
@@ -2360,6 +2363,13 @@ button.btn { border: 0; border-radius: var(--radius-sm); padding: 13px 18px; fon
 .settings-changelog-entry-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
 .settings-changelog-entry-version { font-size: 13px; font-weight: 800; color: var(--text); }
 .settings-changelog-entry-date { font-size: 12px; color: var(--sub); }
+/* 2.5: historial plegable. Botón redondeado centrado, 13 px en negrita, borde suave y sin la flecha por defecto. */
+.settings-changelog-older { margin-bottom: 16px; }
+.settings-changelog-older-btn { display: block; width: fit-content; margin: 0 auto 14px; padding: 9px 18px; border: 1px solid var(--border); border-radius: 14px; background: var(--color-surface-interactive); color: var(--text); font-size: 13px; font-weight: 800; line-height: 1.2; text-align: center; cursor: pointer; list-style: none; -webkit-tap-highlight-color: transparent; }
+.settings-changelog-older-btn::-webkit-details-marker { display: none; }
+.settings-changelog-older-btn::marker { content: ''; }
+@media (hover:hover) and (pointer:fine){ .settings-changelog-older-btn:hover { background: var(--badge-bg); border-color: var(--color-border-accent); } }
+.settings-changelog-older[open] > .settings-changelog-older-btn { margin-bottom: 16px; }
 .settings-changelog-entry-current { display: inline-block; padding: 1px 7px; border-radius: 999px; background: var(--ok-bg); color: var(--ok-txt); font-size: 10.5px; font-weight: 800; letter-spacing: .3px; }
 
 

@@ -1,0 +1,24 @@
+/* SirEdwards Quiz 2.5 — Preguntas de Sir Edwards (src/ui/sir-interrupt.js). Reutiliza .modal-overlay/.modal-card; aquí solo lo propio. */
+.sir-int { z-index: 1200; }
+.sir-int-card { text-align: left; padding: 18px 18px 16px; border: 1px solid var(--color-border-accent, var(--border)); animation: sirIntIn .32s ease-out both; }
+@keyframes sirIntIn { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .sir-int-card { animation: none; } }
+.sir-int-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.sir-int-img { width: 52px; height: auto; flex: 0 0 auto; border-radius: 10px; object-fit: contain; }
+.sir-int-label { font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--sub); }
+.sir-int-q { margin: 0 0 12px; font-size: 18px; line-height: 1.35; font-weight: 700; color: var(--text); }
+.sir-int-opts { display: grid; gap: 8px; }
+.sir-int-opts.is-wait { pointer-events: none; opacity: .75; }
+.sir-int-opt { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 48px; padding: 10px 12px; text-align: left; font: inherit; font-size: 15px; font-weight: 600; color: var(--text); background: var(--color-surface-interactive, var(--card)); border: 1.5px solid var(--border); border-radius: 12px; cursor: pointer; }
+.sir-int-key { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; font-size: 12px; font-weight: 800; color: var(--sub); border: 1px solid var(--border); }
+@media (hover:hover) and (pointer:fine) { .sir-int-opt:hover:not(:disabled) { border-color: var(--color-border-accent, var(--primary)); } }
+.sir-int-opt:disabled { cursor: default; opacity: .92; }
+.sir-int-opt.is-picked { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 12%, var(--card)); }
+.sir-int-opt.is-right { border-color: #16a34a; background: var(--ok-bg); color: var(--ok-txt); }
+.sir-int-opt.is-wrong { border-color: #dc2626; background: var(--bad-bg); color: var(--bad-txt); }
+.sir-int-react { margin: 12px 0 0; min-height: 0; font-size: 15px; font-style: italic; line-height: 1.4; color: var(--text); }
+.sir-int-react:empty { display: none; }
+.sir-int-react.is-right { color: var(--ok-txt); }
+.sir-int-react.is-wrong { color: var(--bad-txt); }
+.sir-int-go { width: 100%; margin-top: 12px; }
+.sir-int-go[hidden] { display: none; }

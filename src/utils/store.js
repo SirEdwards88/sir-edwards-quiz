@@ -26,7 +26,7 @@ const SAVE_VERSION = 3;;
 
 function getDefaultStore() {
   return {
-    xp: 0, unlockedMedals: [], totalCorrect: 0, totalWrong: 0, gamesPlayed: 0, standardGamesCount: 0, errorsCleaned: 0,
+    xp: 0, unlockedMedals: [], totalCorrect: 0, totalWrong: 0, gamesPlayed: 0, standardGamesCount: 0, errorsCleaned: 0, sirAnswered: 0, sirCorrect: 0,
     failedQuestions: [],
     questionStreaks: {},
     // Estadísticas individuales por pregunta: permiten calcular rendimiento
@@ -214,6 +214,8 @@ function sanitizeStore(s) {
   // directamente basura en cualquiera de ellos).
   s.standardGamesCount = asFiniteNonNegNumber(s.standardGamesCount);
   s.errorsCleaned = asFiniteNonNegNumber(s.errorsCleaned);
+  s.sirAnswered = asFiniteNonNegNumber(s.sirAnswered);   // 2.5: preguntas de Sir Edwards (solo alimentan sus dos logros)
+  s.sirCorrect = asFiniteNonNegNumber(s.sirCorrect);
   s.survivalAmebaWins = asFiniteNonNegNumber(s.survivalAmebaWins);
   s.survivalHumanoWins = asFiniteNonNegNumber(s.survivalHumanoWins);
   s.survivalDerrameWins = asFiniteNonNegNumber(s.survivalDerrameWins);

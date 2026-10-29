@@ -211,6 +211,8 @@
 .auth-gate .seq-gsi-slot { justify-content: center; min-height: 44px; }
 .gate-msg { text-align: center; margin: 6px auto 0; max-width: 420px; }
 .gate-msg:empty { display: none; }
+.gate-retry { display: block; margin: 10px auto 10px; min-width: 160px; min-height: 44px; }
+.gate-retry[hidden] { display: none; }
 .gate-fine { font-size: 12px; line-height: 1.45; color: var(--sub); opacity: .85; margin: 14px auto 0; max-width: 380px; }
 @keyframes gate-float { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-6px) rotate(1deg); } }
 @keyframes gate-twinkle { 0%, 100% { opacity: .35; transform: scale(.85); } 50% { opacity: 1; transform: scale(1.1); } }

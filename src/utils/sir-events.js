@@ -9,19 +9,18 @@
 // · comeback () vuelta tras 4-20 días sin jugar: ctx.comeback; sale tras la 1.ª respuesta (acierto o no). Una vez por partida.
 // · weak () un acierto en la categoría más floja del jugador: ctx.weakCat = nombre. Una vez por partida y como mucho 1 al día.
 // · broken () racha rota: un FALLO tras 5 o más aciertos seguidos; la frase cita el número real. Una vez por partida.
-//   Es el único que sale tras un fallo; usa la imagen de «visita» (Sir Edwards observando).
+//   Es el único que sale tras un fallo.
 // · tilt () ánimo tras FALLOS SEGUIDOS (desde el 2.º, con probabilidad creciente; solo en la partida estándar): Sir Edwards baja el tono
 //   con alguna pulla suave, sin consuelo explícito. Una vez por partida; no pasa por el cooldown largo pero nunca sale pegado a otro evento.
 // · night () 00:00–04:00 hora local.
 // · day () 06:00–10:00 hora local.
-// · visit () genérico (incluye el antiguo «evaluando»).
-// Supervivencia y Muerte Súbita: sin «racha» ni «racha rota» (ahí ya salen los hitos de Sir Edwards); sí récord, regreso, día, noche y visita.
-// Prioridad (tras un acierto): streak > night > day > visit; como máximo UNO por respuesta, y la prioridad nunca se salta el
+// Supervivencia y Muerte Súbita: sin «racha» ni «racha rota» (ahí ya salen los hitos de Sir Edwards); sí récord, regreso, día, noche y categoría débil.
+// Prioridad (tras un acierto): streak > night > day; como máximo UNO por respuesta, y la prioridad nunca se salta el
 // cooldown ni los límites. «Racha rota» solo tras un fallo y con su propio margen (no espera el cooldown largo, pero nunca sale
 // justo detrás de otro evento).
 //
 // Cuándo se evalúa: tras un acierto (o, para «racha rota», tras un fallo), a partir de la 3.ª respuesta de la partida, con probabilidad baja, con un
-// cooldown de tiempo y de respuestas entre eventos, y máx. 1 por partida de visit/day/night.
+// cooldown de tiempo y de respuestas entre eventos, y máx. 1 por partida de day/night.
 //
 // El estado de eventos es de UNA partida (newState al empezar); nada se guarda en el progreso del jugador.
 // Script clásico (scope global), sin dependencias.
@@ -32,7 +31,7 @@ const SEQSirEvents = (function () {
   var COOLDOWN_MS = 40000;        // mínimo entre dos eventos
   var MIN_ANSWERS_BETWEEN = 4;    // y al menos 4 respuestas de por medio
   var MIN_ANSWERS_START = 3;      // nunca en las primeras respuestas de la partida
-  var P = { visit: 0.006, day: 0.012, night: 0.018 };    // probabilidad por acierto evaluado: pocas partidas llevan evento (día y noche, algo más probables)
+  var P = { day: 0.012, night: 0.018 };    // probabilidad por acierto evaluado: pocas partidas llevan evento (día y noche, algo más probables)
   var STREAK_P = { 10: 0.2, 15: 0.3, 20: 0.6, 30: 1 };     // 10 «puede», 15 algo más, 20 probable, 30 siempre
   var MILESTONES = [10, 15, 20, 30];
   var BROKEN_MIN_RUN = 5;         // racha mínima para que su rotura merezca comentario
@@ -42,14 +41,12 @@ const SEQSirEvents = (function () {
   var TILT_P5 = 0.7;
   var BROKEN_P = { low: 0.1, mid: 0.25, high: 0.5 };        // 5-9 · 10-19 · 20 o más
   var MAX_PER_GAME = 1;           // como mucho un evento por partida (salvo un hito de racha de 20 o más)
-  var RECENT_MS = 6 * 3600 * 1000;        // día, noche y visita: como mucho uno cada 6 h (lo recuerda quien llama, entre partidas)
   var WEAK_MS = 24 * 3600 * 1000;         // categoría débil: como mucho uno al día
   var DAYNIGHT_MS = 20 * 3600 * 1000;     // evento de mañana y de noche (solo caben en una franja de 4 h): como mucho uno al día
   var RECORD_P = 1, WEAK_P = 0.5;
   var RARE_P = 0.05;              // frase «muy rara»
 
   var ASSETS = {
-    visit: 'assets/character/event_siredwards_visit.webp',
     broken: 'assets/character/event_siredwards_broken.webp',
     tilt: 'assets/character/event_siredwards_animo.webp',
     comeback: 'assets/character/event_siredwards_comeback.webp',
@@ -59,38 +56,11 @@ const SEQSirEvents = (function () {
     day: 'assets/character/event_siredwards_day.webp',
     night: 'assets/character/event_siredwards_night.webp'
   };
-  // La visita alterna entre dos imágenes (libreta y pañuelo) para no ser siempre la misma.
-  var VISIT_ASSETS = ['assets/character/event_siredwards_visit.webp', 'assets/character/event_siredwards_visit2.webp'];
   var LABELS = {};                  // sin rótulos: Sir Edwards y su frase bastan
 
   // Frases. `h` (opcional) limita la frase a esas horas locales (para que no mienta con la hora).
   // Los grupos normales no llevan `h`: así se pueden rotar con bolsa (ver `rotate`). Las frases ligadas a una hora exacta
   // viven en los grupos «raros» y se eligen al azar entre las válidas para la hora.
-  var VISIT = [
-    '«Ah, tú por aquí. Qué casualidad tan convenientemente calculada.»',
-    '«No me hagas caso. Yo solo superviso. Y juzgo. Sobre todo juzgo.»',
-    '«Tomo notas. Con calma: algunas son incluso favorables.»',
-    '«Un caballero observa antes de opinar. Yo ya he opinado.»',
-    '«Estoy aquí por si necesitas un testigo de tus errores. Soy muy puntual.»',
-    '«Sigue, sigue. Fingiré que no estoy mirando.»',
-    '«He visto cosas peores. También mejores. Hoy aún no me decido.»',
-    '«Qué concentración. Procuraré no interrumpir el momento histórico.»',
-    '«Pasaba por aquí. Mentira: vengo a ver cuánto aguantas.»',
-    '«No me mires a mí. La pregunta es la que manda.»',
-    '«Guardo silencio. Es lo más amable que sé ofrecerte.»',
-    '«Una respuesta sensata. Avisaré a la prensa.»',
-    '«Todo en orden. Intenta no estropearme el día.»',
-    '«Sigues aquí. Yo también. Esto empieza a parecer una costumbre.»'
-  ];
-  var VISIT_RARE = [
-    '«No tengo nada que añadir. Francamente, me preocupa.»',
-    '«Si estás leyendo esto, deberías estar mirando la pregunta.»',
-    '«Esto es una aparición. No la desperdicies mirándome.»',
-    '«Aparezco poco, y no es casualidad. Es administración del encanto.»',
-    '«Soy una interrupción con buenos modales. Sigue a lo tuyo.»',
-    '«Existo en una pantalla y aun así tengo opiniones. Continúa.»',
-    '«Este aviso se retira en unos segundos. La pregunta, no.»'
-  ];
   var STREAK_PHRASES = {
     10: ['«Hmm… ya llevas unas cuantas. Sospecho de la suerte. Y de ti.»',
       '«Eso empieza a parecer una racha. Y yo, a perder la compostura.»',
@@ -253,7 +223,7 @@ const SEQSirEvents = (function () {
   function isDay(hour) { return hour >= 6 && hour < 10; }
 
   function newState() {
-    return { shown: { visit: 0, day: 0, night: 0, broken: 0, record: 0, comeback: 0, weak: 0, tilt: 0 }, milestones: {}, lastAt: null, lastAnswer: null, answers: 0, run: 0, miss: 0, count: 0, last: {} };
+    return { shown: { day: 0, night: 0, broken: 0, record: 0, comeback: 0, weak: 0, tilt: 0 }, milestones: {}, lastAt: null, lastAnswer: null, answers: 0, run: 0, miss: 0, count: 0, last: {} };
   }
 
   // Elige una frase del grupo (cadena u objeto {t,h}) válida para la hora, sin repetir la última del mismo evento.
@@ -282,7 +252,7 @@ const SEQSirEvents = (function () {
     return pick(list, hour, rng, avoid);
   }
   function phraseFor(type, hour, rng, avoid, milestone, rotate, cat) {
-    var rare = { visit: VISIT_RARE, day: DAY_RARE, night: NIGHT_RARE }[type];
+    var rare = { day: DAY_RARE, night: NIGHT_RARE }[type];
     if (rare && rng() < RARE_P) { var r = chooseRare(type + '_rare', rare, hour, rng, avoid, rotate); if (r) return r; }
     if (type === 'record' || type === 'comeback' || type === 'weak') {
       var lst = type === 'record' ? RECORD : type === 'comeback' ? COMEBACK : WEAK;
@@ -300,7 +270,6 @@ const SEQSirEvents = (function () {
       return tpl ? tpl.replace(/\{n\}/g, String(milestone)) : null;
     }
     if (type === 'streak') return choose('streak_' + milestone, STREAK_PHRASES[milestone], hour, rng, avoid, rotate);
-    if (type === 'visit') return choose('visit', VISIT, hour, rng, avoid, rotate);
     if (type === 'day') return choose('day', DAY, hour, rng, avoid, rotate);
     return hour < 2 ? choose('night_early', NIGHT_EARLY, hour, rng, avoid, rotate) : choose('night_late', NIGHT_LATE, hour, rng, avoid, rotate);
   }
@@ -319,13 +288,13 @@ const SEQSirEvents = (function () {
   // Devuelve null o { type, asset, label, message, durationMs } y anota el evento en `state`.
   function recentOk(ctx, type, nowMs) {
     var t = ctx && ctx.recent && ctx.recent[type];
-    return !(typeof t === 'number' && nowMs - t < (type === 'weak' ? WEAK_MS : (type === 'day' || type === 'night') ? DAYNIGHT_MS : RECENT_MS));
+    return !(typeof t === 'number' && nowMs - t < (type === 'weak' ? WEAK_MS : (type === 'day' || type === 'night') ? DAYNIGHT_MS : 0));
   }
   function done(state, ctx, type, text, nowMs, rng) {
     if (type !== 'streak') state.shown[type] = (state.shown[type] || 0) + 1;   // el hito de racha se cuenta en state.milestones
     state.count++;
     state.lastAt = nowMs; state.lastAnswer = state.answers; state.last[type] = text;
-    return { type: type, asset: type === 'visit' && rng ? VISIT_ASSETS[Math.min(VISIT_ASSETS.length - 1, Math.floor(rng() * VISIT_ASSETS.length))] : ASSETS[type], label: LABELS[type] || '', message: text, durationMs: Math.min(5200, 3200 + text.length * 25) };
+    return { type: type, asset: ASSETS[type], label: LABELS[type] || '', message: text, durationMs: Math.min(5200, 3200 + text.length * 25) };
   }
 
   function evaluate(state, ctx, rng) {
@@ -379,7 +348,6 @@ const SEQSirEvents = (function () {
     if (!chosen && isNight(hour) && state.shown.night < 1 && recentOk(ctx, 'night', ctx.nowMs) && rng() < P.night) chosen = 'night';
     if (!chosen && isDay(hour) && state.shown.day < 1 && recentOk(ctx, 'day', ctx.nowMs) && rng() < P.day) chosen = 'day';
     if (!chosen && ctx.weakCat && !state.shown.weak && recentOk(ctx, 'weak', ctx.nowMs) && rng() < WEAK_P) chosen = 'weak';
-    if (!chosen && state.shown.visit < 1 && recentOk(ctx, 'visit', ctx.nowMs) && rng() < P.visit) chosen = 'visit';
 
     if (!chosen) return null;
     var text = phraseFor(chosen, hour, rng, state.last[chosen], milestone, ctx.rotate, ctx.weakCat);
@@ -391,8 +359,8 @@ const SEQSirEvents = (function () {
 
   return {
     COOLDOWN_MS: COOLDOWN_MS, MIN_ANSWERS_BETWEEN: MIN_ANSWERS_BETWEEN, MIN_ANSWERS_START: MIN_ANSWERS_START,
-    P: P, STREAK_P: STREAK_P, BROKEN_MIN_RUN: BROKEN_MIN_RUN, TILT_MIN_MISSES: TILT_MIN_MISSES, TILT_P: TILT_P, TILT_P5: TILT_P5, BROKEN_P: BROKEN_P, MAX_PER_GAME: MAX_PER_GAME, RECENT_MS: RECENT_MS, WEAK_MS: WEAK_MS, DAYNIGHT_MS: DAYNIGHT_MS, MILESTONES: MILESTONES, ASSETS: ASSETS, LABELS: LABELS, RARE_P: RARE_P,
-    PHRASES: { tilt: TILT_PHRASES, visit: VISIT, visitRare: VISIT_RARE, streak: STREAK_PHRASES, broken: BROKEN_PHRASES, record: RECORD, comeback: COMEBACK, weak: WEAK, day: DAY, dayRare: DAY_RARE, nightEarly: NIGHT_EARLY, nightLate: NIGHT_LATE, nightRare: NIGHT_RARE },
+    P: P, STREAK_P: STREAK_P, BROKEN_MIN_RUN: BROKEN_MIN_RUN, TILT_MIN_MISSES: TILT_MIN_MISSES, TILT_P: TILT_P, TILT_P5: TILT_P5, BROKEN_P: BROKEN_P, MAX_PER_GAME: MAX_PER_GAME, WEAK_MS: WEAK_MS, DAYNIGHT_MS: DAYNIGHT_MS, MILESTONES: MILESTONES, ASSETS: ASSETS, LABELS: LABELS, RARE_P: RARE_P,
+    PHRASES: { tilt: TILT_PHRASES, streak: STREAK_PHRASES, broken: BROKEN_PHRASES, record: RECORD, comeback: COMEBACK, weak: WEAK, day: DAY, dayRare: DAY_RARE, nightEarly: NIGHT_EARLY, nightLate: NIGHT_LATE, nightRare: NIGHT_RARE },
     isNight: isNight, isDay: isDay, newState: newState, evaluate: evaluate
   };
 })();

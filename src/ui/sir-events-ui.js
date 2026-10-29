@@ -31,7 +31,7 @@ const SEQSirEventsUI = (function () {
   function show(ev) {
     if (!ev || !ev.message || visible || typeof document === 'undefined') return false;
     var n = ensure();
-    n.className = 'sir-event is-' + esc(ev.type || 'visit');
+    n.className = 'sir-event is-' + esc(ev.type || 'event');
     n.innerHTML =
       '<img class="sir-event-img" src="' + esc(ev.asset || '') + '" alt="" width="96" height="96" decoding="async" draggable="false">' +
       '<div class="sir-event-bubble">' +

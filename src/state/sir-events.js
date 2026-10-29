@@ -31,10 +31,12 @@ function sirEventsRollback(st, snap, undo) {
     if (u.last === undefined) delete store.lastPhraseIndex[u.k]; else store.lastPhraseIndex[u.k] = u.last;
   });
 }
+let sirEventsPendingN = 0;   // eventos con su espera de 450 ms en marcha (la interrupción de Sir Edwards cede ante ellos)
+function sirEventsPending() { return sirEventsPendingN > 0; }
 const SIR_EVENT_DELAY_MS = 450; // tras la respuesta: se espera a que aparezca el comentario y se asiente el diseño
 
 // ---- Memoria local entre partidas (solo en este dispositivo, fuera del store: ni se guarda en la cuenta ni va al Worker) ----
-// { day, night, visit, weak: instante (ms) del último evento de ese tipo; lastplay: última partida solo de esta pantalla }
+// { day, night, weak: instante (ms) del último evento de ese tipo; lastplay: última partida solo de esta pantalla }
 const SEV_RECENT_KEY = 'siredwards_quiz_sev_recent';
 const SEV_SPACE_MS = 45 * 60 * 1000;   // una partida sin evento tras otra con evento, si la anterior fue hace menos de 45 min
 let sevRecentMem = {};
@@ -80,6 +82,7 @@ function sirEventsShouldYield(g) {
   try {
     const d = typeof document !== 'undefined' ? document : null;
     if (d && d.querySelector && d.querySelector('.fx-lastlife-banner, .sir-hito, .encargos-toast.show')) return true;
+    if (typeof SEQSirInterrupt !== 'undefined' && SEQSirInterrupt.isOpen()) return true;   // 2.5: la pregunta de Sir Edwards está abierta
     if (g.mode === 'lucidez_mental' && Number(g.currentIdx) >= 9) return true;
     if (g.mode === 'survival' && Number(g.lives) <= 0) return true;
     if (typeof SEQHitos !== 'undefined' && SEQHitos.hitoFor && SEQHitos.hitoFor(g.mode, Number(g.currentIdx) + 1)) return true;
@@ -132,14 +135,16 @@ function sirEventsOnAnswer(correct, q) {
     if (!ev) return null;
     // Se muestra un instante después, ya asentado el diseño de la pantalla, y solo si sigue la misma partida, sin
     // resultados a la vista y sin tapar controles ni relojes. Si no, es como si no hubiera salido.
+    sirEventsPendingN++;
     setTimeout(function () {
+      sirEventsPendingN = Math.max(0, sirEventsPendingN - 1);
       try {
         const done = typeof document !== 'undefined' && (document.getElementById('results-card') || {}).style && document.getElementById('results-card').style.display === 'block';
         const shown = typeof currentGame !== 'undefined' && currentGame === g && !done && !sirEventsShouldYield(g) && SEQSirEventsUI.show(ev);
         if (!shown) { sirEventsRollback(st, snap, undo); return; }
         // Logros «Noctámbulo» / «Primera Luz»: haber encontrado a Sir Edwards nocturno / diurno (se evalúan al acabar la partida).
         try { if (ev.type === 'night') store.hasCompletedNightGame = true; else if (ev.type === 'day') store.hasCompletedMorningGame = true; } catch (e) {}
-        if (ev.type === 'day' || ev.type === 'night' || ev.type === 'visit' || ev.type === 'weak') { const r = sevRecentRead(); r[ev.type] = Date.now(); sevRecentWrite(r); }
+        if (ev.type === 'day' || ev.type === 'night' || ev.type === 'weak') { const r = sevRecentRead(); r[ev.type] = Date.now(); sevRecentWrite(r); }
         { const r = sevRecentRead(); r.evPlay = Number(r.plays) || 0; r.evAt = Date.now(); sevRecentWrite(r); }   // para espaciar las partidas con evento
       } catch (e) { sirEventsRollback(st, snap, undo); }
     }, SIR_EVENT_DELAY_MS);

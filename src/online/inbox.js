@@ -116,7 +116,7 @@
     try { return document.body.classList.contains('in-game') && typeof currentGame !== 'undefined' && TIMED_MODES.indexOf(currentGame.mode) >= 0; } catch (e) { return false; }
   }
   function compact() { return document.body.classList.contains('in-game'); }
-  function goodMoment() { return document.visibilityState !== 'hidden' && !inMatch() && !inTimedGame(); }
+  function goodMoment() { return document.visibilityState !== 'hidden' && !inMatch() && !inTimedGame() && !(window.SEQSirInterrupt && SEQSirInterrupt.isOpen()); }
 
   // ---- Aviso en pantalla ------------------------------------------------------------------
   function banner() {

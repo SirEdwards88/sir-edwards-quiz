@@ -126,6 +126,7 @@ const SEQEncargosUI = (function () {
   function otherToastBusy() {
     try {
       if (document.querySelector('.mode-unlock-toast.show') || document.querySelector('.lucidez-unlock-overlay')) return true;
+      if (typeof SEQSirInterrupt !== 'undefined' && SEQSirInterrupt.isOpen()) return true;   // 2.5: no se pisa la pregunta de Sir Edwards
       if (typeof SEQLucidezUnlock !== 'undefined' && SEQLucidezUnlock.active && SEQLucidezUnlock.active()) return true;
       return typeof SEQRewardToast !== 'undefined' && SEQRewardToast.busy && SEQRewardToast.busy();
     } catch (e) { return false; }
@@ -168,5 +169,5 @@ const SEQEncargosUI = (function () {
     if (!showing) next();
   }
 
-  return { renderHome: renderHome, renderScreen: renderScreen, toast: toast, timeLeftText: timeLeftText, phrase: phrase, stateOf: stateOf, onOpen: onOpen };
+  return { renderHome: renderHome, renderScreen: renderScreen, toast: toast, timeLeftText: timeLeftText, phrase: phrase, stateOf: stateOf, onOpen: onOpen, busy: function () { return showing || queue.length > 0; } };
 })();

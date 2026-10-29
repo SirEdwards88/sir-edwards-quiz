@@ -496,10 +496,11 @@
   function ensureGisButton(force) {
     var slots = gisSlots();
     if (!ENABLED || account || !slots.length) return;
-    if (navigator.onLine === false) { setMsg('Necesitas conexión para iniciar sesión.'); return; }
+    if (navigator.onLine === false) { setMsg(MSG_OFFLINE); showGateRetry(true); return; }
     var primary = slots[0];
     if (!force && primary.firstChild && gis.nonce && Date.now() - gis.at < NONCE_FRESH_MS) return; // ya pintado y vigente
     if (force !== true && !ui.expired) setMsg(''); // al renovar tras un fallo se conserva el aviso («había caducado…»)
+    showGateRetry(false);
     Promise.all([loadGis(), getNonce(force === true)]).then(function (r) {
       var nonce = r[1];
       // initialize() se vuelve a llamar con cada nonce nuevo (Google usa el último).
@@ -513,8 +514,19 @@
       clearTimeout(nonceTimer);
       nonceTimer = setTimeout(function () { if (!account) ensureGisButton(true); }, NONCE_FRESH_MS + 1000);
     }).catch(function (err) {
-      setMsg(err && err.network === undefined && err.status ? 'No se ha podido preparar el inicio de sesión. Inténtalo de nuevo más tarde.' : 'No se ha podido cargar el acceso con Google. Comprueba tu conexión.');
+      setMsg(err && err.network === undefined && err.status ? MSG_SERVER : MSG_LOAD);
+      showGateRetry(true);
     });
+  }
+  // 2.5: sin conexión (o con Google/servidor caídos) el gate no se queda mudo: frase de Sir Edwards y «Reintentar», sin recargar ni tocar datos.
+  var MSG_OFFLINE = 'Sin conexión. Hasta la elegancia necesita internet.';
+  var MSG_LOAD = 'Google no contesta. Qué falta de modales. Revisa tu conexión y reinténtalo.';
+  var MSG_SERVER = 'Algo falla al otro lado. Por una vez, no es culpa tuya. Reinténtalo.';
+  function showGateRetry(on) { var b = $('seq-gate-retry'); if (b) b.hidden = !on; }
+  function retryGate() {
+    if (!ENABLED || account) return;
+    showGateRetry(false); setMsg('');
+    ensureGisButton(true);
   }
   var nonceTimer = null;
   var loginHadProgress = false;
@@ -929,6 +941,7 @@
     syncSoon: function () { if (ENABLED && account) scheduleSync(1500, 'duelxp'); },
     signOut: signOut, logoutAll: logoutAll, deleteAccount: deleteAccount,
     goToAccount: goToAccount,
+    retryGate: retryGate,
     accountHadProgress: function () { return loginHadProgress || !!(sync && account && progressHasData(sync.seen)); }, migrationPending: function () { return !!(ENABLED && account && sync && sync.migration === 'pending'); }, hasAccount: function () { return !!(ENABLED && account); }, doMerge: function () { mergeTries = 0; doMerge(); },
     rerenderAccount: function () { try { renderAccount(); } catch (e) {} },
     // 2.2: poner el nombre desde la pregunta de bienvenida (src/ui/name-prompt.js); no toca el avatar.

@@ -39,7 +39,7 @@
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
 // Desde la 2.0 el historial de cambios de cada versión vive en git; aquí solo se sube CACHE_VERSION (scripts/bump-version.mjs).
-const CACHE_VERSION = 497;
+const CACHE_VERSION = 500;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -70,6 +70,9 @@ const APP_SHELL = [
   './src/data/rivalry-phrases.js',
   './src/utils/rivalry.js',
   './src/ui/a11y.js',
+  './src/ui/feedback-scroll.js',
+  './src/ui/changelog-fold.js',
+  './src/ui/replay.js',
   './src/ui/privacy.js',
   './src/ui/back-nav.js',
   './src/data/questions.js',
@@ -311,6 +314,8 @@ const APP_SHELL = [
   './assets/logros/medal_collector_10.webp',
   './assets/logros/medal_collector_20.webp',
   './assets/logros/medal_collector_30.webp',
+  './assets/logros/sir_audiencia.webp',
+  './assets/logros/sir_lo_vi_venir.webp',
   './assets/logros/mental_calc_15.webp',
   './assets/logros/mental_calc_30.webp',
   './assets/logros/mental_calc_40.webp',
@@ -401,9 +406,13 @@ const APP_SHELL = [
   './styles/duel-intro.css',
   './styles/encargos.css',
   './styles/sir-events.css',
+  './styles/sir-interrupt.css',
   './styles/reward-toast.css',
   './styles/privacy.css',
   './src/utils/sir-events.js',
+  './src/data/sir-questions.js',
+  './src/utils/sir-interrupt.js',
+  './src/ui/sir-interrupt.js',
   './src/ui/sir-events-ui.js',
   './src/state/sir-events.js',
   './src/state/result-heard.js',
@@ -414,7 +423,6 @@ const APP_SHELL = [
   './assets/character/event_siredwards_night.webp',
   './assets/character/event_siredwards_comeback.webp',
   './assets/character/event_siredwards_animo.webp',
-  './assets/character/event_siredwards_visit2.webp',
   './assets/character/event_siredwards_broken.webp',
   './assets/character/event_siredwards_weak.webp',
   './assets/character/empate.webp',
@@ -519,7 +527,6 @@ const ASSET_REVS = {
   './assets/character/event_siredwards_record.webp': '954f50aa',
   './assets/character/event_siredwards_streak.webp': '5a5725fc',
   './assets/character/event_siredwards_visit.webp': '6df39c1c',
-  './assets/character/event_siredwards_visit2.webp': '6459896f',
   './assets/character/event_siredwards_weak.webp': 'ac69c5c3',
   './assets/character/hat-destello.webp': '2a29547a',
   './assets/character/hat.webp': 'f86acb28',
@@ -627,6 +634,8 @@ const ASSET_REVS = {
   './assets/logros/sharp_eye.webp': '364d44ca',
   './assets/logros/sin_frenos.webp': '8fc08093',
   './assets/logros/sin_preferencias.webp': '49606e4f',
+  './assets/logros/sir_audiencia.webp': '6e940a64',
+  './assets/logros/sir_lo_vi_venir.webp': '17d4ff77',
   './assets/logros/streak_10.webp': '348bd1f6',
   './assets/logros/streak_20.webp': '8d61633e',
   './assets/logros/streak_30.webp': '37c39921',

@@ -13,9 +13,9 @@ function medalIds() {
   vm.runInContext(read('src/data/medals.js').replace(/^const /gm, 'var ') + ';this.ids = ALL_MEDALS.map(m => m.id);', c);
   return Array.from(c.ids);
 }
-test('los 68 logros activos tienen su insignia (webp) y está en el service worker', () => {
+test('los 70 logros activos tienen su insignia (webp) y está en el service worker', () => {
   const ids = medalIds();
-  assert.equal(ids.length, 68);
+  assert.equal(ids.length, 70);
   for (const id of ids) {
     assert.ok(exists('assets/logros/' + id + '.webp'), 'falta la insignia de ' + id);
     assert.ok(sw.includes("'./assets/logros/" + id + ".webp'"), id + ' no está en el service worker');
@@ -44,8 +44,8 @@ test('los 6 avatares de logro: archivo y service worker', () => {
     assert.ok(sw.includes("'./assets/avatars/avatar_siredwards_" + a + ".png'"), a + ' no está en el service worker');
   }
 });
-test('la versión de la app es 2.4 en todas partes y la caché coincide con index.html', () => {
+test('la versión de la app es 2.5 en todas partes y la caché coincide con index.html', () => {
   const html = read('index.html');
-  assert.match(html, /const APP_VERSION = "2\.4";/);
-  for (const re of [/id="welcome-version">v2\.4</, /id="brand-sub-version">v2\.4</, /LUCIDEZ MENTAL · v2\.4</, /Mental v2\.4"/]) assert.match(html, re);
+  assert.match(html, /const APP_VERSION = "2\.5";/);
+  for (const re of [/id="welcome-version">v2\.5</, /id="brand-sub-version">v2\.5</, /LUCIDEZ MENTAL · v2\.5</, /Mental v2\.5"/]) assert.match(html, re);
 });
