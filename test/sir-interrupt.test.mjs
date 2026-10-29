@@ -65,12 +65,13 @@ test('plan: la partida elegida varía (no siempre la misma del bloque)', () => {
 
 test('plan: modos no elegibles, Duelos y partidas cortas no la llevan ni gastan el bloque', () => {
   const rng = mulberry(5); let st = C.newState();
-  for (const m of ['timetrial', 'mental_calc', 'lucidez_mental']) { const r = C.startGame(st, game(m), rng); assert.equal(r.at, null); assert.deepEqual(r.state, st); }
+  for (const m of ['timetrial', 'mental_calc', 'lucidez_mental', 'review']) { const r = C.startGame(st, game(m), rng); assert.equal(r.at, null); assert.deepEqual(r.state, st); }
   const d = C.startGame(st, { mode: 'play', total: 20, isDuel: true }, rng); assert.equal(d.at, null); assert.deepEqual(d.state, st);
-  for (const m of ['play', 'survival', 'sudden_death', 'review']) assert.ok(C.eligible(m, false), m);
-  // una partida corta (Repaso de 4) no puede alojarla: la deuda pasa a la siguiente elegible del bloque
+  for (const m of ['play', 'survival', 'sudden_death']) assert.ok(C.eligible(m, false), m);
+  assert.ok(!C.eligible('review', false), 'Repaso no lleva pregunta de Sir Edwards');
+  // una partida corta (de 4 preguntas) no puede alojarla: la deuda pasa a la siguiente elegible del bloque
   let s2 = C.newState(); let shown = 0;
-  for (let g = 0; g < 3; g++) { const r = C.startGame(s2, game(g === 0 ? 'review' : 'play', g === 0 ? 4 : 20), mulberry(g + 11)); s2 = r.state; if (r.at !== null) { shown++; s2 = C.markShown(s2); } }
+  for (let g = 0; g < 3; g++) { const r = C.startGame(s2, game('play', g === 0 ? 4 : 20), mulberry(g + 11)); s2 = r.state; if (r.at !== null) { shown++; s2 = C.markShown(s2); } }
   assert.ok(shown <= 1);
 });
 
@@ -276,4 +277,12 @@ test('contadores de Sir Edwards: enteros ≥ 0 (sin decimales, negativos ni NaN)
   assert.deepEqual(out('4.7', '-3'), [4, 0]);
   assert.deepEqual(out('NaN', "'7.9'"), [0, 7]);
   assert.deepEqual(out('5', '20'), [5, 20]);
+});
+
+test('desenlace: escena en grande con sello y frase; sonido propio en audio.js', () => {
+  const ui = read('src/ui/sir-interrupt.js');
+  for (const id of ['sir-int-stage', 'sir-int-verdict', 'sir-int-say', 'sir-int-go']) assert.ok(ui.includes(id), id);
+  assert.match(ui, /prefers-reduced-motion/);
+  assert.match(read('src/audio/audio.js'), /function playSirVerdictSound\(kind\)/);
+  assert.match(read('styles/sir-interrupt.css'), /\.sir-int\.stage-on/);
 });

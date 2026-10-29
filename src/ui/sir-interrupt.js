@@ -1,7 +1,7 @@
 // SirEdwards Quiz 2.5 — Preguntas de Sir Edwards: la interrupción (pantalla) y su estado.
 // Una vez cada 3 partidas, entre dos preguntas, Sir Edwards interrumpe con una pregunta extra. NO cuenta en precisión, rachas, XP, vidas ni
 // logros de aciertos: solo suma a dos contadores propios (store.sirAnswered / store.sirCorrect) que alimentan sus dos logros.
-// Nunca penaliza. Solo en Estándar, Supervivencia, Muerte Súbita y Repaso (reglas y azar en src/utils/sir-interrupt.js).
+// Nunca penaliza. Solo en Estándar, Supervivencia y Muerte Súbita (reglas y azar en src/utils/sir-interrupt.js).
 // Usa por nombre, en tiempo de ejecución: SIR_QUESTIONS, SEQSirInterruptCore, store, saveStore. Script clásico.
 // El estado (bloque de 3 partidas y bolsa de preguntas) vive en su propia clave local: no se sincroniza ni toca el progreso.
 
@@ -70,6 +70,7 @@ const SEQSirInterrupt = (function () {
     abandon();
   }
   function abandon() {
+    unfit(); resetStage();
     clearInterval(guardT); guardT = null; clearTimeout(waitT);
     document.removeEventListener('keydown', trapKeys, true);
     if (el) el.style.display = 'none';
@@ -97,12 +98,17 @@ const SEQSirInterrupt = (function () {
           '<input type="text" class="sir-int-input" id="sir-int-input" placeholder="Escribe tu respuesta" aria-label="Tu respuesta" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="send" maxlength="80">' +
           '<button type="submit" class="btn btn-primary sir-int-send" id="sir-int-send" disabled>Responder</button>' +
         '</form>' +
-        '<div class="sir-int-verdict" id="sir-int-verdict" aria-hidden="true"></div>' +
-        '<div class="sir-int-react" id="sir-int-react" aria-live="polite"></div>' +
+      '</div>' +
+      '<div class="sir-int-stage" id="sir-int-stage" hidden>' +
+        '<div class="sir-int-stage-fig"><img class="sir-int-stage-img" src="' + ART + '" alt="" width="300" height="375" decoding="async" draggable="false"></div>' +
+        '<div class="sir-int-seal" id="sir-int-verdict" aria-hidden="true"></div>' +
+        '<p class="sir-int-say" id="sir-int-say" aria-hidden="true"></p>' +
+        '<p class="sr-only" id="sir-int-react" aria-live="polite"></p>' +
         '<button type="button" class="btn btn-primary sir-int-go" id="sir-int-go" hidden>Continuar</button>' +
       '</div>';
     document.body.appendChild(el);
     el.querySelector('#sir-int-go').addEventListener('click', close);
+    el.querySelector('#sir-int-stage').addEventListener('click', function (e) { if (e.target.closest && e.target.closest('#sir-int-go')) return; skipTyping(); });
     var inp = el.querySelector('#sir-int-input'), card = el.querySelector('.sir-int-card');
     inp.addEventListener('input', function () { el.querySelector('#sir-int-send').disabled = !inp.value.trim(); });
     inp.addEventListener('focus', function () { card.classList.add('typing'); });
@@ -110,6 +116,26 @@ const SEQSirInterrupt = (function () {
     el.querySelector('#sir-int-form').addEventListener('submit', function (e) { e.preventDefault(); answerText(); });
     try { if (typeof SEQA11y !== 'undefined' && SEQA11y.watch) SEQA11y.watch(el); } catch (e) {}   // foco dentro, Tab atrapado y foco devuelto (src/ui/a11y.js)
     return el;
+  }
+
+  // Con el teclado abierto (móvil) la pantalla visible es más baja que la ventana: la tarjeta se centra y limita a lo visible
+  // para que el campo y «Responder» no queden bajo el teclado.
+  function fit() {
+    try {
+      if (!el) return;
+      var vv = window.visualViewport, card = el.querySelector('.sir-int-card');
+      if (!vv) return;
+      el.style.height = vv.height + 'px'; el.style.top = vv.offsetTop + 'px';
+      if (card) card.style.maxHeight = Math.floor(vv.height * 0.96) + 'px';
+    } catch (e) {}
+  }
+  function unfit() {
+    try {
+      if (!el) return;
+      el.style.height = ''; el.style.top = '';
+      var card = el.querySelector('.sir-int-card'); if (card) card.style.maxHeight = '';
+    } catch (e) {}
+    try { if (window.visualViewport) { window.visualViewport.removeEventListener('resize', fit); window.visualViewport.removeEventListener('scroll', fit); } } catch (e) {}
   }
 
   function show(q, cont, game) {
@@ -130,11 +156,7 @@ const SEQSirInterrupt = (function () {
     opts.innerHTML = order.map(function (orig, pos) {
       return '<button type="button" class="sir-int-opt" data-i="' + orig + '"><span class="sir-int-key" aria-hidden="true">' + String.fromCharCode(65 + pos) + '</span><span class="sir-int-txt">' + esc(q.options[orig]) + '</span></button>';
     }).join('');
-    node.querySelector('#sir-int-react').textContent = '';
-    node.querySelector('#sir-int-react').className = 'sir-int-react';
-    node.querySelector('#sir-int-verdict').className = 'sir-int-verdict';
-    node.querySelector('.sir-int-card').classList.remove('fx-right', 'fx-wrong');
-    node.querySelector('#sir-int-go').hidden = true;
+    resetStage(node);
     opts.classList.add('is-wait');
     clearTimeout(waitT);
     waitT = setTimeout(function () { opts.classList.remove('is-wait'); }, WAIT_MS);
@@ -142,6 +164,8 @@ const SEQSirInterrupt = (function () {
       b.addEventListener('click', function () { answer(Number(b.getAttribute('data-i'))); });
     });
     node.style.display = 'flex';
+    try { if (window.visualViewport) { window.visualViewport.addEventListener('resize', fit); window.visualViewport.addEventListener('scroll', fit); } } catch (e) {}
+    fit();
     if (typed) {   // enfoca el campo solo (en móvil abre el teclado; la tarjeta se compacta mientras se escribe)
       setTimeout(function () { try { if (current === q && !inp.disabled) inp.focus({ preventScroll: true }); } catch (e) {} }, WAIT_MS + 50);
     }
@@ -178,31 +202,71 @@ const SEQSirInterrupt = (function () {
     finish(g);
   }
 
+  // ---- Desenlace (2.5): primero se marca la respuesta (verde/rojo + sonido); un instante después la tarjeta cae, la pantalla se oscurece
+  // en foco y Sir Edwards entra en grande: sello con el veredicto y su frase escrita a pluma.
+  var stageT = null, typeT = null, typing = null;
+  function reduced() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } }
+  function resetStage(node) {
+    clearTimeout(stageT); clearInterval(typeT); stageT = typeT = typing = null;
+    node = node || el; if (!node) return;
+    node.classList.remove('stage-on');
+    var card = node.querySelector('.sir-int-card'); if (card) card.classList.remove('fx-right', 'fx-wrong', 'is-out');
+    var st = node.querySelector('#sir-int-stage'); if (st) { st.hidden = true; st.className = 'sir-int-stage'; }
+    ['#sir-int-verdict', '#sir-int-say'].forEach(function (id) { var x = node.querySelector(id); if (x) x.textContent = ''; });
+    var r = node.querySelector('#sir-int-react'); if (r) r.textContent = '';
+    var go = node.querySelector('#sir-int-go'); if (go) go.hidden = true;
+  }
+  function endTyping() {
+    clearInterval(typeT); typeT = null;
+    if (typing) { var say = el && el.querySelector('#sir-int-say'); if (say) say.textContent = typing.text; typing = null; }
+    var node = el; if (!node) return;
+    var st = node.querySelector('#sir-int-stage'); if (st) st.classList.add('is-done');
+    var go = node.querySelector('#sir-int-go');
+    if (go && go.hidden) { go.hidden = false; try { go.focus({ preventScroll: true }); } catch (e) {} }
+  }
+  function skipTyping() { if (typing) endTyping(); }
+
+  function showStage(g) {
+    var node = el; if (!node || !current) return;
+    var kind = g.correct === true ? 'right' : g.correct === false ? 'wrong' : 'note';
+    var st = node.querySelector('#sir-int-stage');
+    node.classList.add('stage-on');
+    node.querySelector('.sir-int-card').classList.add('is-out');
+    st.className = 'sir-int-stage is-' + kind; st.hidden = false;
+    node.querySelector('#sir-int-verdict').textContent = g.correct === true ? 'Correcto' : g.correct === false ? 'Fallo' : 'Anotado';
+    node.querySelector('#sir-int-react').textContent = g.reaction;       // lectores de pantalla: la frase entera al momento
+    try { if (typeof playSirVerdictSound === 'function') playSirVerdictSound(g.correct === true ? 'ok' : g.correct === false ? 'bad' : 'note'); } catch (e) {}
+    try { if (g.correct === false && navigator.vibrate) navigator.vibrate([40, 40, 80]); } catch (e) {}
+    var say = node.querySelector('#sir-int-say'), text = String(g.reaction || '');
+    if (reduced()) { say.textContent = text; st.classList.add('is-done'); var go = node.querySelector('#sir-int-go'); go.hidden = false; try { go.focus({ preventScroll: true }); } catch (e) {} return; }
+    typing = { text: text, i: 0 };
+    var step = Math.max(14, Math.min(30, Math.floor(1500 / Math.max(1, text.length))));
+    stageT = setTimeout(function () {                // el sello cae primero; después empieza a escribir
+      typeT = setInterval(function () {
+        if (!typing) return;
+        typing.i++; say.textContent = typing.text.slice(0, typing.i);
+        if (typing.i >= typing.text.length) endTyping();
+      }, step);
+    }, 650);
+  }
+
   function finish(g) {
     var node = el;
-    var r = node.querySelector('#sir-int-react');
-    r.textContent = g.reaction;
-    r.className = 'sir-int-react is-shown' + (g.correct === true ? ' is-right' : g.correct === false ? ' is-wrong' : '');
-    // Sonido y efecto de acierto/fallo (las de opinión no puntúan: sin veredicto).
     var card = node.querySelector('.sir-int-card');
     card.classList.remove('fx-right', 'fx-wrong'); void card.offsetWidth;
-    if (g.correct === true) { card.classList.add('fx-right'); try { if (typeof playSound === 'function') playSound('ok'); } catch (e) {} }
-    else if (g.correct === false) { card.classList.add('fx-wrong'); try { if (typeof playSound === 'function') playSound('bad'); } catch (e) {} try { if (navigator.vibrate) navigator.vibrate(60); } catch (e) {} }
-    var vd = node.querySelector('#sir-int-verdict');
-    vd.textContent = g.correct === true ? 'Correcto' : g.correct === false ? 'Fallo' : 'Anotado';
-    vd.className = 'sir-int-verdict is-shown' + (g.correct === true ? ' is-right' : g.correct === false ? ' is-wrong' : '');
-    r.className = 'sir-int-react is-shown' + (g.correct === true ? ' is-right' : g.correct === false ? ' is-wrong' : '');
+    // Al responder solo se marca (verde/rojo, sin sonido): el sonido es uno solo y suena con la entrada de Sir Edwards (showStage).
+    if (g.correct === true) card.classList.add('fx-right'); else if (g.correct === false) card.classList.add('fx-wrong');
     try {
       store.sirAnswered = (Number(store.sirAnswered) || 0) + 1;
       if (g.correct === true) store.sirCorrect = (Number(store.sirCorrect) || 0) + 1;
       saveStore();
     } catch (e) {}
-    var go = node.querySelector('#sir-int-go');
-    go.hidden = false;
-    try { go.focus({ preventScroll: true }); } catch (e) {}
+    clearTimeout(stageT);
+    stageT = setTimeout(function () { showStage(g); }, g.correct === null ? 700 : 1100);
   }
 
   function close() {
+    unfit(); resetStage();
     clearTimeout(waitT); clearInterval(guardT); guardT = null;
     document.removeEventListener('keydown', trapKeys, true);
     if (el) el.style.display = 'none';

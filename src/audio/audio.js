@@ -297,6 +297,27 @@ function playSirEventSound() {
   if (playJingle('event', 0.9, true)) return;
   try { playBellNote(1568, 0, 0.5, 1.4); playBellNote(2093, 0.18, 0.45, 1.4); } catch (e) {}
 }
+// 2.5 Preguntas de Sir Edwards: sonido de su entrada en grande tras responder. 'ok' = arpa de acierto, 'bad' = golpe grave descendente,
+// cualquier otro valor (opinión) = campanada suave. Sin audio activo, silencio.
+function playSirVerdictSound(kind) {
+  if (store.sound === 'off') return;
+  try {
+    if (kind === 'ok') { playShieldChime(); return; }
+    if (kind === 'bad') {
+      const ctx = getAudioCtx(), now = ctx.currentTime;
+      [[196, 0], [146.83, 0.2]].forEach(function (n) {
+        const o = ctx.createOscillator(), g = ctx.createGain(), f = ctx.createBiquadFilter();
+        o.type = 'triangle'; f.type = 'lowpass'; f.frequency.value = 900;
+        o.connect(f); f.connect(g); g.connect(ctx.destination);
+        o.frequency.setValueAtTime(n[0], now + n[1]); o.frequency.exponentialRampToValueAtTime(n[0] * 0.8, now + n[1] + 0.5);
+        g.gain.setValueAtTime(0.001, now + n[1]); g.gain.exponentialRampToValueAtTime(0.32, now + n[1] + 0.03); g.gain.exponentialRampToValueAtTime(0.002, now + n[1] + 0.7);
+        o.start(now + n[1]); o.stop(now + n[1] + 0.75);
+      });
+      return;
+    }
+    playBellNote(1174.66, 0, 0.4, 1.2); playBellNote(1568, 0.14, 0.3, 1.2);
+  } catch (e) {}
+}
 // Lucidez Mental: sonido de la pantalla de capítulo. `characterKey` es el mismo que usa showLucidezStoryOverlay
 // ('phase1' | 'phase2' | 'phase3' | 'enigma'); cualquier otro valor no suena. Sin muestra cargada, silencio (no hay sintetizado).
 const LUCIDEZ_STINGS = { phase1: 'luc1', phase2: 'luc2', phase3: 'luc3', enigma: 'luc4' };

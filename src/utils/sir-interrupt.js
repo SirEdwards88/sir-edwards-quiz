@@ -6,10 +6,10 @@
 const SEQSirInterruptCore = (function () {
   'use strict';
 
-  var ELIGIBLE = ['play', 'survival', 'sudden_death', 'review'];
+  var ELIGIBLE = ['play', 'survival', 'sudden_death'];   // Repaso no: es estudio de preguntas falladas, no puntúa y son partidas muy cortas
   var BLOCK = 3;            // una interrupción por cada 3 partidas
   var FIRST_IDX = 3;        // nunca antes de la 4.ª pregunta (índice 3)…
-  var MIN_TOTAL = 6;        // …ni en partidas cortas (Repaso con pocas falladas)
+  var MIN_TOTAL = 6;        // …ni en partidas cortas
   var LAST_WINDOW = 14;     // y en las partidas largas (Supervivencia/Súbita) sale pronto, no hacia el final que quizá no llegue
 
   function newState() { return { n: 0, hit: -1, done: false, bag: [], last: null }; }

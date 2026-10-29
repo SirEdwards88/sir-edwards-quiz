@@ -766,15 +766,15 @@
   // ---- Perfil ---------------------------------------------------------------------------
   function toggleEdit() {
     ui.avatarHint = null; ui.editing = !ui.editing; ui.editName = null; ui.editAvatar = account ? account.player.avatar : null; render(); }
-  // 2.5: al tocar un emblema bloqueado se avisa con el aviso flotante (como el resto), con el logro que lo desbloquea.
+  // 2.5: al tocar un avatar bloqueado se avisa con el aviso flotante (como el resto), con el logro que lo desbloquea.
   function showAvatarHint(a) {
     try {
       var A = window.SEQAvatars, need = A && A.medalOf(a);
       if (!need || typeof showInfoToast !== 'function') return;
       if (A.isSecret && A.isSecret(a)) { showInfoToast('Se desbloquea al completar un logro secreto.', 'candado'); return; }
       var mm = typeof ALL_MEDALS !== 'undefined' ? ALL_MEDALS.filter(function (x) { return x.id === need; })[0] : null;
-      if (!mm) { showInfoToast('Emblema bloqueado', 'candado'); return; }
-      showInfoToast('Emblema bloqueado', 'candado', { label: 'Se desbloquea con el logro', title: mm.title, desc: mm.desc });
+      if (!mm) { showInfoToast('Avatar bloqueado', 'candado'); return; }
+      showInfoToast('Avatar bloqueado', 'candado', { label: 'Logro pendiente', title: mm.title, desc: mm.desc });
     } catch (e) {}
   }
   function avatarHintText(a) {
@@ -859,7 +859,7 @@
       html += '<div class="seq-edit"><div class="seq-edit-head"><div class="seq-avatar seq-avatar-lg">' + (window.SEQAvatars ? window.SEQAvatars.avatarHTML(ui.editAvatar || av) : av) + '</div>' +
         '<div class="seq-edit-head-txt"><label class="settings-field-label" for="seq-name-input">Tu nombre</label>' +
         '<input id="seq-name-input" class="seq-input" type="text" maxlength="24" value="' + esc(ui.editName != null ? ui.editName : p.display_name) + '" autocomplete="off" autocapitalize="words" spellcheck="false" enterkeyhint="done" onkeydown="if(event.key===\'Enter\')SEQOnline.saveProfile()"></div></div>' +
-        '<p class="settings-kicker seq-av-kicker">Elige tu emblema</p>' +
+        '<p class="settings-kicker seq-av-kicker">Elige tu avatar</p>' +
         '<div class="seq-avatars" role="group" aria-label="Avatar">' +
         AVATARS.map(function (a) {
           var sel = (ui.editAvatar === a) || (ui.editAvatar == null && a === av);
