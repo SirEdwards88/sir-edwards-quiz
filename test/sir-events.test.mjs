@@ -221,7 +221,9 @@ test('cableado: assets, index.html, sw.js, solo vía updateAnswerStreak, sin toc
   assert.equal((html.match(/sirEventsOnAnswer\(/g) || []).length, 2, 'solo en updateAnswerStreak (Repaso y modos con racha)');
   assert.ok(!/observing/i.test(read('src/utils/sir-events.js')));
   const css = read('styles/sir-events.css');
-  assert.ok(/pointer-events:\s*none/.test(css), 'el evento no recibe toques');
+  assert.ok(/pointer-events:\s*none/.test(css), 'oculto, el evento no recibe toques');
+  assert.ok(/\.sir-event\.show\s*\{[^}]*pointer-events:\s*auto/.test(css), 'visible, el toque lo despide y no llega a la partida');
+  assert.match(read('src/ui/sir-events-ui.js'), /addEventListener\('click'/);
   assert.ok(!/sir-event|SirEvent/.test(read('src/online/online.js')), 'sin telemetría ni backend');
 });
 

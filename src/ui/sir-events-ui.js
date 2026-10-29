@@ -1,6 +1,7 @@
 // SirEdwards Quiz — Eventos Sorpresa (2.2): componente visual ÚNICO. Recibe {type, asset, message, label, durationMs}.
-// Fade-in + ligero desplazamiento + permanencia + fade-out. Sin sonido, sin partículas. Nunca recibe toques ni foco
-// (pointer-events:none: los toques lo atraviesan), flota en el centro, no mueve nada de la partida y nunca hay dos a la vez.
+// Fade-in + ligero desplazamiento + permanencia + fade-out. Flota en el centro, no mueve nada de la partida y nunca hay dos a la vez.
+// 2.5: un toque sobre él lo despide y NO llega a la partida de detrás (la capa recibe el toque; sin foco ni teclado: Intro/Espacio siguen
+// yendo a la partida). Pasado el desvanecimiento, los toques vuelven a la partida.
 
 const SEQSirEventsUI = (function () {
   'use strict';
@@ -17,6 +18,8 @@ const SEQSirEventsUI = (function () {
     el.setAttribute('aria-live', 'polite');
     el.setAttribute('aria-atomic', 'true');
     document.body.appendChild(el);
+    // El toque lo recibe la capa (no la pregunta de detrás): lo despide y ahí se queda.
+    el.addEventListener('click', function (e) { if (!visible) return; e.preventDefault(); e.stopPropagation(); hide(); });
     return el;
   }
 
