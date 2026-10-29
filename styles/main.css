@@ -5827,3 +5827,19 @@ body.in-game { overscroll-behavior-y: none; }
 /* Una sola letra para todo lo que dice Sir Edwards: la del juego (Inter) en cursiva y algo más gruesa; Playfair queda para títulos. */
 .home-quote, #results-card .results-phrase, .sir-hito-text, .sir-event-text { font-family: 'Inter', system-ui, sans-serif !important; font-style: italic !important; font-weight: 600 !important; }
 #results-card .results-phrase { font-size: 18.5px !important; line-height: 1.42 !important; }
+
+/* ===== 2.5 — Aviso de novedades: tarjetitas (src/ui/update-notes.js); el contenido sale del historial ===== */
+#update-modal .modal-card.upd-card { max-height: 94vh; max-height: 94dvh; overflow-y: auto; padding-top: 14px; }
+#update-modal .upd-hero { display: block; width: 70px; height: auto; margin: 0 auto 2px; filter: drop-shadow(0 6px 10px rgba(0,0,0,.35)); pointer-events: none; }
+#update-modal .upd-card h2 { justify-content: center; text-align: center; margin-bottom: 4px; }
+#update-modal .upd-card h2 .ui-title-img { display: none; }
+#update-modal .upd-card .update-modal-lead { text-align: center; margin: 0 0 4px !important; }
+#update-modal-list.upd-cards { list-style: none; padding: 0 !important; margin: 8px 0 12px !important; display: grid; gap: 6px; }
+#update-modal-list .upd-item { position: relative; display: flex; flex-direction: column; gap: 1px; margin: 0 !important; padding: 9px 12px 9px 34px; border-radius: 12px; background: var(--badge-bg); border: 1px solid rgba(201,153,46,.45);
+  animation: updIn .4s ease-out both; animation-delay: calc(var(--upd-i, 0) * 90ms + 80ms); }
+#update-modal-list .upd-item::before { content: ""; position: absolute; left: 14px; top: 15px; width: 9px; height: 9px; transform: rotate(45deg); background: linear-gradient(135deg, #f3d57a, #c9992e); box-shadow: 0 0 6px rgba(201,153,46,.55); }
+#update-modal-list .upd-h { font-size: 15px; line-height: 1.28; font-weight: 800; color: var(--text); }
+#update-modal-list .upd-t { font-size: 13px; line-height: 1.32; color: var(--sub); }
+@keyframes updIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { #update-modal-list .upd-item { animation: none; } }
+@media (max-height: 640px) { #update-modal .upd-hero { width: 52px; } }

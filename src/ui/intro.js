@@ -73,7 +73,7 @@
       var seenBefore = get(UPDATE_KEY);
       if (typeof maybeShowUpdateModal === 'function') maybeShowUpdateModal();
       var upd = document.getElementById('update-modal');
-      if (upd && upd.style.display === 'flex') addRecap(seenBefore, version);
+      if (upd && upd.style.display === 'flex') { try { if (typeof SEQUpdateNotes !== 'undefined') SEQUpdateNotes.decorate(); } catch (e) {} addRecap(seenBefore, version); }
     });
   }
 
