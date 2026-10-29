@@ -12,5 +12,5 @@ const HOME_QUOTES = [
   '«No se trata de saberlo todo. Se trata de saber qué falta.»',
   '«Un día sin aprender nada es un día perdido. Hoy aún estás a tiempo.»',
   '«Quien no duda de lo que sabe nunca descubre lo que ignora.»',
-  '«La curiosidad despierta el ingenio. Al tuyo le vendría bien un madrugón.»'
+  '«La curiosidad despierta el ingenio. El tuyo sigue esperando a que suene el despertador.»'
 ];

@@ -9,7 +9,7 @@
     win_remontada: [
       'Por fin. {rival} ya se estaba acostumbrando a ganarte.',
       '{rival} te tenía en el bolsillo. Hoy el bolsillo tenía un agujero.',
-      'Ha costado, pero {rival} ya no puede decir que contigo es coser y cantar.',
+      'Ha costado, pero {rival} ya no puede decir que ganarte sea coser y cantar.',
       '{rival} ya daba por hecho que perdías. Detalle corregido.',
       'Contra {rival} el viento por fin sopla a tu favor. Sujétate el sombrero.',
       'Tras las últimas derrotas, una victoria. En contabilidad se llama ajuste.'
@@ -56,7 +56,7 @@
       'Las rachas, como los helados, se derriten. La tuya con {rival} acaba de hacerlo.',
       'Tu racha frente a {rival} ha terminado. Guarda los discursos de victoria.',
       '{rival} te corta la racha. Presume de las anteriores; esta me la callo.',
-      'Fin de la racha sobre {rival}. Que sirva de aviso para tu orgullo.',
+      'Fin de la racha ante {rival}. Que sirva de aviso para tu orgullo.',
       'La racha contra {rival} ha pasado a mejor vida. Un minuto de silencio.'
     ],
     // Pierdes y la serie queda igualada (con al menos 4 duelos jugados).

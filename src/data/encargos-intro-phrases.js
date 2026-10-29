@@ -80,7 +80,7 @@ const ENCARGOS_INTRO = {
       aprobacion: [
         'Cuatro de cuatro la semana pasada.',
         'La semana pasada no me dejaste nada que reprochar. Qué descortesía.',
-        'Tu semana pasada cierra sin una sola mancha. Tendré que buscarlas en otra parte.',
+        'La semana pasada terminaste sin una sola mancha. Tendré que buscar defectos en otra parte.',
         'Hiciste todo lo que te pedí. Todo. Aún me estoy recuperando.',
         'La semana cerró sin deudas. El libro de cuentas parece decepcionado.',
         'Cuatro de cuatro. He revisado el calendario por si era festivo.',

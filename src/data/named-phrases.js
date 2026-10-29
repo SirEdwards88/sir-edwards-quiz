@@ -13,7 +13,7 @@ const NAMED_PHRASES = {
   end_desastre: [
     'Derrota, {nombre}. Puedes culpar al azar; ya está acostumbrado.',
     '{nombre}, el resultado ha sido concluyente. No en el sentido que habrías preferido.',
-    'Mal día, {nombre}. Mañana las preguntas serán las mismas; tú, con suerte, mejor.'
+    'Mal día, {nombre}. Mañana las preguntas serán las mismas. Confío en que tú no.'
   ],
   survival_win: [
     'Cuarenta preguntas, {nombre}. Has llegado al final y el expediente lo agradece.',

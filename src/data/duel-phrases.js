@@ -21,7 +21,7 @@
     "Hasta el último punto. Mucha tensión para descubrir, al final, quién se equivocó menos.",
     "Has ganado. Por poco. Pero no temas: la victoria sigue siendo legal.",
     "Victoria corta. Presume con moderación; tu rival aún respira.",
-    "Has ganado por muy poco. Es la victoria que más se parece a una prórroga de la derrota.",
+    "Has ganado por muy poco. La derrota ha presentado una reclamación, pero el marcador la ha desestimado.",
     "Por dos o tres puntos. No es dominio: es una advertencia bastante educada.",
     "Ganar por tan poco tiene su mérito. Lástima que perder por tan poco también lo tenga.",
     "Una victoria raspada. Aun así, el trofeo no pregunta cómo llegó."
