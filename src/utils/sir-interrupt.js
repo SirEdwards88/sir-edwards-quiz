@@ -60,21 +60,30 @@ const SEQSirInterruptCore = (function () {
   // Orden en que se muestran las opciones: en las de «trampa» se barajan (la correcta no va siempre en el mismo sitio);
   // en las de opinión se respeta el orden escrito. Devuelve un array de índices originales.
   function order(q, rng) {
-    var idx = q.options.map(function (_, i) { return i; });
+    var idx = (q.options || []).map(function (_, i) { return i; });
     if (q.kind !== 'trap') return idx;
     for (var i = idx.length - 1; i > 0; i--) { var j = rint(rng, i + 1); var t = idx[i]; idx[i] = idx[j]; idx[j] = t; }
     return idx;
   }
 
-  // Corrige la opción elegida (índice original). correct: true / false en trampas; null en opinión (no hay mala).
+  // Trampas (2.5): corrección de la respuesta ESCRITA. `matcher(texto, preguntaParaCorregir)` es isMatchWithAlias (answer-alias.js);
+  // `extraAlias` admite formas extra (p. ej. el nombre del jugador en «¿cómo se llama el conductor?»).
+  function gradeText(q, text, matcher, extraAlias) {
+    if (!q || q.kind !== 'trap' || typeof matcher !== 'function') return null;
+    var t = String(text == null ? '' : text).trim();
+    if (!t) return null;
+    var ok = false;
+    try {
+      ok = !!matcher(t, { q: q.q, a: q.a, alias: (q.alias || []).concat(q.id === 'sq24' && extraAlias ? extraAlias : []), rj: q.rj || [], strict: true });
+    } catch (e) { ok = false; }
+    return { correct: ok, reaction: ok ? q.right : q.wrong };
+  }
+
+  // Opinión: corrige la opción elegida (índice original). correct: null (no hay mala). Las trampas se corrigen con gradeText.
   function grade(q, optionIdx) {
-    if (!q || optionIdx < 0 || optionIdx >= q.options.length) return null;
-    if (q.kind === 'trap') {
-      var ok = optionIdx === q.correct;
-      return { correct: ok, reaction: ok ? q.right : q.wrong };
-    }
+    if (!q || q.kind !== 'opinion' || !q.options || optionIdx < 0 || optionIdx >= q.options.length) return null;
     return { correct: null, reaction: q.reactions[optionIdx] };
   }
 
-  return { ELIGIBLE: ELIGIBLE, BLOCK: BLOCK, newState: newState, eligible: eligible, startGame: startGame, markShown: markShown, pick: pick, order: order, grade: grade };
+  return { ELIGIBLE: ELIGIBLE, BLOCK: BLOCK, newState: newState, eligible: eligible, startGame: startGame, markShown: markShown, pick: pick, order: order, grade: grade, gradeText: gradeText };
 })();

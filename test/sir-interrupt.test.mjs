@@ -7,6 +7,7 @@ import vm from 'node:vm';
 const read = (p) => fs.readFileSync(new URL('../' + p, import.meta.url), 'utf8');
 const ctx = { console };
 vm.createContext(ctx);
+vm.runInContext(read('src/utils/matching.js') + ';' + read('src/utils/answer-alias.js') + ';this.MATCH=isMatchWithAlias;', ctx);
 vm.runInContext(read('src/data/sir-questions.js') + ';this.Q=SIR_QUESTIONS;', ctx);
 vm.runInContext(read('src/utils/sir-interrupt.js') + ';this.C=SEQSirInterruptCore;', ctx);
 const Q = Array.from(ctx.Q), C = ctx.C;
@@ -20,13 +21,14 @@ test('datos: ids únicos, opciones y reacciones completas, textos cortos', () =>
   for (const q of Q) {
     assert.ok(['trap', 'opinion'].includes(q.kind), q.id);
     assert.ok(q.q.length <= 90, q.id + ' enunciado largo');
-    assert.ok(q.options.length >= 2 && q.options.length <= 4, q.id);
-    assert.equal(new Set(q.options).size, q.options.length, q.id + ' opciones repetidas');
-    for (const o of q.options) assert.ok(o.length <= 40, q.id + ' opción larga: ' + o);
     if (q.kind === 'trap') {
-      assert.ok(Number.isInteger(q.correct) && q.correct >= 0 && q.correct < q.options.length, q.id);
+      assert.ok(q.a && q.a.length <= 40 && Array.isArray(q.alias) && q.alias.length >= 1 && Array.isArray(q.rj) && q.rj.length >= 2, q.id + ' trampa escrita');
+      assert.ok(!q.options, q.id + ' las trampas no llevan opciones a la vista');
       assert.ok(q.right && q.wrong && q.right.length <= 90 && q.wrong.length <= 90, q.id + ' reacciones');
     } else {
+      assert.ok(q.options.length >= 2 && q.options.length <= 4, q.id);
+      assert.equal(new Set(q.options).size, q.options.length, q.id + ' opciones repetidas');
+      for (const o of q.options) assert.ok(o.length <= 40, q.id + ' opción larga: ' + o);
       assert.equal(q.reactions.length, q.options.length, q.id);
       for (const r of q.reactions) assert.ok(r && r.length <= 90, q.id);
     }
@@ -94,21 +96,69 @@ test('bolsa: no repite hasta agotar todas y recomienza sin repetir la última', 
   assert.ok(['sq02', 'sq03'].includes(r.question.id));
 });
 
-test('opciones: las de trampa se barajan (la correcta cambia de sitio); las de opinión, no', () => {
+test('opciones: las de opinión se muestran en el orden escrito; las trampas no llevan opciones (se escriben)', () => {
   const trap = Q.find((q) => q.kind === 'trap'), op = Q.find((q) => q.kind === 'opinion');
-  const places = new Set();
-  for (let seed = 1; seed <= 60; seed++) places.add(C.order(trap, mulberry(seed)).indexOf(trap.correct));
-  assert.ok(places.size > 1);
+  assert.deepEqual(Array.from(C.order(trap, mulberry(1))), []);
   assert.deepEqual(Array.from(C.order(op, mulberry(1))), Array.from(op.options, (_, i) => i));
 });
 
-test('corrección: trampa acierta/falla; opinión no tiene mala; índice raro no rompe', () => {
-  const trap = Q.find((q) => q.id === 'sq29'), op = Q.find((q) => q.id === 'sq14');
-  assert.deepEqual({ ...C.grade(trap, 1) }, { correct: true, reaction: trap.right });
-  assert.deepEqual({ ...C.grade(trap, 0) }, { correct: false, reaction: trap.wrong });
+test('corrección: opinión no tiene mala; índice raro no rompe; las trampas ya no se corrigen por índice', () => {
+  const op = Q.find((q) => q.id === 'sq14'), trap = Q.find((q) => q.id === 'sq29');
   assert.deepEqual({ ...C.grade(op, 2) }, { correct: null, reaction: op.reactions[2] });
   assert.equal(C.grade(op, 9), null);
+  assert.equal(C.grade(trap, 0), null);
   assert.equal(C.grade(null, 0), null);
+});
+
+// Respuestas escritas: lo que un jugador teclearía de verdad (corrector de Lucidez Mental).
+const OK = {
+  sq01: ['Doce', 'doce', '12', 'Todos', 'todos los meses'],
+  sq02: ['En ninguna parte', 'en ningun sitio', 'No se entierran', 'Nadie', 'a los vivos no se les entierra'],
+  sq03: ['Ninguno', 'ninguna', 'cero', '0', 'ningún animal'],
+  sq07: ['Los gallos no ponen huevos', 'no ponen huevos', 'un gallo no pone huevos', 'los gallos no ponen'],
+  sq10: ['Diez', '10', 'diez letras'],
+  sq21: ['Uno', 'uno', '1', 'solo uno', 'Un huevo'],
+  sq22: ['Juan', 'juan', 'Se llama Juan'],
+  sq23: ['No echa humo', 'no echa', 'a ninguna parte', 'es electrico', 'no tiene humo'],
+  sq24: ['Como tú', 'como tu', 'como yo', 'yo', 'soy yo'],
+  sq25: ['Mal', 'mal', '«mal»', 'la palabra mal'],
+  sq26: ['Ocho', '8', 'ocho dias', 'en 8 días'],
+  sq29: ['La letra «d»', 'la d', 'D', 'una d', 'la letra d']
+};
+const KO = {
+  sq01: ['Febrero', 'solo febrero', 'ninguno', 'cuatro', '28', 'siete'],
+  sq02: ['en españa', 'En Francia', 'la frontera', 'en el mar'],
+  sq03: ['dos', 'Uno', 'siete', 'Moisés', 'Noé', 'fue Noe', 'Dos de cada'],
+  sq07: ['a la izquierda', 'derecha', 'rueda hasta el suelo', 'cae al suelo'],
+  sq10: ['27', 'veintisiete', '8', '12', 'doce'],
+  sq21: ['dos', 'tres', 'los que quieras', 'ninguno'],
+  sq22: ['Santiago', 'mateo', 'no se sabe', 'Pablo'],
+  sq23: ['al norte', 'al sur', 'norte', 'este', 'al este'],
+  sq24: ['Pedro', 'Sir Edwards', 'se ignora', 'no se sabe'],
+  sq25: ['equivocacion', 'ortografia', 'ninguna', 'bien'],
+  sq26: ['siete', 'diez', '10', 'cinco', '7'],
+  sq29: ['El Retiro', 'la puerta del sol', 'un oso y un madroño', 'la a', 'la m']
+};
+test('corrección escrita: cada trampa acepta sus formas y rechaza los cebos', () => {
+  const traps = Q.filter((q) => q.kind === 'trap');
+  assert.equal(traps.length, Object.keys(OK).length);
+  for (const q of traps) {
+    for (const t of OK[q.id]) assert.equal(C.gradeText(q, t, ctx.MATCH).correct, true, q.id + ' debería valer: ' + t);
+    for (const t of KO[q.id]) assert.equal(C.gradeText(q, t, ctx.MATCH).correct, false, q.id + ' NO debería valer: ' + t);
+    for (const t of q.rj) assert.equal(C.gradeText(q, t, ctx.MATCH).correct, false, q.id + ' cebo aceptado: ' + t);
+    for (const t of q.alias) assert.equal(C.gradeText(q, t, ctx.MATCH).correct, true, q.id + ' alias roto: ' + t);
+  }
+});
+
+test('corrección escrita: reacción, vacío, tipo equivocado y nombre del jugador', () => {
+  const q = Q.find((x) => x.id === 'sq24'), q2 = Q.find((x) => x.id === 'sq01');
+  assert.deepEqual({ ...C.gradeText(q2, 'doce', ctx.MATCH) }, { correct: true, reaction: q2.right });
+  assert.deepEqual({ ...C.gradeText(q2, 'febrero', ctx.MATCH) }, { correct: false, reaction: q2.wrong });
+  assert.equal(C.gradeText(q2, '   ', ctx.MATCH), null);
+  assert.equal(C.gradeText(Q.find((x) => x.kind === 'opinion'), 'hola', ctx.MATCH), null);
+  assert.equal(C.gradeText(q2, 'doce', null), null);
+  assert.equal(C.gradeText(q, 'Eduardo', ctx.MATCH, ['Eduardo']).correct, true);
+  assert.equal(C.gradeText(q2, 'Eduardo', ctx.MATCH, ['Eduardo']).correct, false, 'el nombre solo vale en la del conductor');
 });
 
 // ---- Solapes: la interrupción cede ante eventos, hitos, avisos y modales; y los demás ceden ante ella ----

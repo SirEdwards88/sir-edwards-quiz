@@ -63,7 +63,7 @@ const ALL_MEDALS = [
 
   // PREGUNTAS DE SIR EDWARDS (2.5): sus interrupciones ocasionales no cuentan para nada más que para estos dos logros.
   { id: 'sir_audiencia', title: 'Audiencia Concedida', desc: 'Responde 5 preguntas de Sir Edwards.', check: s => (s.sirAnswered || 0) >= 5 },
-  { id: 'sir_lo_vi_venir', title: 'Lo Vi Venir', desc: 'Acierta 20 preguntas de Sir Edwards.', check: s => (s.sirCorrect || 0) >= 20 },
+  { id: 'sir_lo_vi_venir', title: 'Lo Vi Venir', desc: 'Acierta 10 preguntas de Sir Edwards.', check: s => (s.sirCorrect || 0) >= 10 },
 
   // COLECCIÓN
   { id: 'medal_collector_10', title: 'Coleccionista', desc: 'Desbloquea 10 logros diferentes.', check: s => (s.unlockedMedals || []).filter(id => !['medal_collector_10','medal_collector_20','medal_collector_30','all_medals_secret'].includes(id) && isActiveMedalId(id)).length >= 10 },

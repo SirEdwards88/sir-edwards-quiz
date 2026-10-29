@@ -3,9 +3,10 @@
 .sir-int-card { text-align: left; padding: 18px 18px 16px; border: 1px solid var(--color-border-accent, var(--border)); animation: sirIntIn .32s ease-out both; }
 @keyframes sirIntIn { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .sir-int-card { animation: none; } }
-.sir-int-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-.sir-int-img { width: 52px; height: auto; flex: 0 0 auto; border-radius: 10px; object-fit: contain; }
-.sir-int-label { font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--sub); }
+.sir-int-head { display: flex; flex-direction: column; align-items: center; gap: 8px; margin-bottom: 12px; }
+.sir-int-img { width: min(42vw, 160px); max-height: 19dvh; height: auto; flex: 0 0 auto; object-fit: contain; filter: drop-shadow(0 6px 14px rgba(0,0,0,.35)); }
+@media (max-height: 780px) { .sir-int-img { max-height: 12dvh; } .sir-int-head { margin-bottom: 8px; gap: 6px; } .sir-int-card { padding: 14px 16px 14px; } .sir-int-q { font-size: 17px; margin-bottom: 10px; } .sir-int-opts { gap: 6px; } .sir-int-opt { min-height: 44px; padding: 8px 12px; } .sir-int-verdict { margin-top: 8px; font-size: 18px; } .sir-int-react { margin-top: 6px; } .sir-int-go { margin-top: 8px; } }
+.sir-int-label { padding: 3px 12px; border-radius: 999px; border: 1px solid var(--color-border-accent, var(--border)); font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--sub); }
 .sir-int-q { margin: 0 0 12px; font-size: 18px; line-height: 1.35; font-weight: 700; color: var(--text); }
 .sir-int-opts { display: grid; gap: 8px; }
 .sir-int-opts.is-wait { pointer-events: none; opacity: .75; }
@@ -22,3 +23,29 @@
 .sir-int-react.is-wrong { color: var(--bad-txt); }
 .sir-int-go { width: 100%; margin-top: 12px; }
 .sir-int-go[hidden] { display: none; }
+
+.sir-int-verdict { display: none; margin: 12px 0 0; font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 800; text-align: center; }
+.sir-int-verdict.is-shown { display: block; animation: sirIntPop .3s ease-out both; }
+.sir-int-verdict.is-right { color: var(--ok-txt); }
+.sir-int-verdict.is-wrong { color: var(--bad-txt); }
+.sir-int-react { text-align: center; }
+@keyframes sirIntPop { from { opacity: 0; transform: scale(.8); } to { opacity: 1; transform: none; } }
+@keyframes sirIntShake { 0%, 100% { transform: none; } 20% { transform: translateX(-8px); } 40% { transform: translateX(7px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(3px); } }
+@keyframes sirIntGlowOk { 0% { box-shadow: 0 0 0 0 rgba(22,163,74,.55); } 100% { box-shadow: 0 0 0 26px rgba(22,163,74,0); } }
+@keyframes sirIntGlowBad { 0% { box-shadow: 0 0 0 0 rgba(220,38,38,.55); } 100% { box-shadow: 0 0 0 26px rgba(220,38,38,0); } }
+.sir-int-card.fx-right { animation: sirIntGlowOk .7s ease-out both; }
+.sir-int-card.fx-wrong { animation: sirIntShake .45s ease-in-out both, sirIntGlowBad .7s ease-out both; }
+@media (prefers-reduced-motion: reduce) { .sir-int-card.fx-right, .sir-int-card.fx-wrong, .sir-int-verdict.is-shown { animation: none; } }
+/* Trampas escritas */
+.sir-int-form { display: grid; gap: 8px; }
+.sir-int-form[hidden] { display: none; }
+.sir-int-opts[hidden] { display: none; }
+.sir-int-input { width: 100%; min-height: 50px; padding: 10px 14px; font: inherit; font-size: 17px; font-weight: 600; color: var(--text); background: var(--card); border: 1.5px solid var(--border); border-radius: 12px; box-sizing: border-box; }
+.sir-int-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 25%, transparent); }
+.sir-int-input.is-right { border-color: #16a34a; background: var(--ok-bg); color: var(--ok-txt); }
+.sir-int-input.is-wrong { border-color: #dc2626; background: var(--bad-bg); color: var(--bad-txt); }
+.sir-int-input:disabled { opacity: 1; }
+.sir-int-send { width: 100%; }
+.sir-int-card.typing .sir-int-img { max-height: 10dvh; width: auto; }
+.sir-int-card.typing .sir-int-head { margin-bottom: 6px; gap: 4px; }
+.sir-int-form.is-done .sir-int-send { display: none; }

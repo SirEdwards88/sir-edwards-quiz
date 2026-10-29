@@ -74,7 +74,7 @@
     duel_otra_vez_tu: function (s) { return [n(s.duelStats && s.duelStats.bestWinsVsRival), 3, 'victorias']; },
     medal_collector_10: function (s) { return [collectorCount(s), 10, 'logros']; },
     sir_audiencia: function (s) { return [n(s.sirAnswered), 5, 'respondidas']; },
-    sir_lo_vi_venir: function (s) { return [n(s.sirCorrect), 20, 'aciertos']; },
+    sir_lo_vi_venir: function (s) { return [n(s.sirCorrect), 10, 'aciertos']; },
     medal_collector_20: function (s) { return [collectorCount(s), 20, 'logros']; },
     medal_collector_30: function (s) { return [collectorCount(s), 30, 'logros']; }
   };

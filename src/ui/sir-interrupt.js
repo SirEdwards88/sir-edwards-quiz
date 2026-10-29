@@ -89,15 +89,25 @@ const SEQSirInterrupt = (function () {
     el.setAttribute('aria-labelledby', 'sir-int-label');
     el.innerHTML =
       '<div class="modal-card seq-modal-card sir-int-card" tabindex="-1">' +
-        '<div class="sir-int-head"><img class="sir-int-img" src="' + ART + '" alt="" width="64" height="80" decoding="async" draggable="false">' +
+        '<div class="sir-int-head"><img class="sir-int-img" src="' + ART + '" alt="" width="160" height="200" decoding="async" draggable="false">' +
         '<div class="sir-int-label" id="sir-int-label">Sir Edwards interrumpe</div></div>' +
         '<p class="sir-int-q" id="sir-int-q"></p>' +
         '<div class="sir-int-opts" id="sir-int-opts" role="group" aria-labelledby="sir-int-q"></div>' +
+        '<form class="sir-int-form" id="sir-int-form" autocomplete="off" novalidate hidden>' +
+          '<input type="text" class="sir-int-input" id="sir-int-input" placeholder="Escribe tu respuesta" aria-label="Tu respuesta" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" enterkeyhint="send" maxlength="80">' +
+          '<button type="submit" class="btn btn-primary sir-int-send" id="sir-int-send" disabled>Responder</button>' +
+        '</form>' +
+        '<div class="sir-int-verdict" id="sir-int-verdict" aria-hidden="true"></div>' +
         '<div class="sir-int-react" id="sir-int-react" aria-live="polite"></div>' +
         '<button type="button" class="btn btn-primary sir-int-go" id="sir-int-go" hidden>Continuar</button>' +
       '</div>';
     document.body.appendChild(el);
     el.querySelector('#sir-int-go').addEventListener('click', close);
+    var inp = el.querySelector('#sir-int-input'), card = el.querySelector('.sir-int-card');
+    inp.addEventListener('input', function () { el.querySelector('#sir-int-send').disabled = !inp.value.trim(); });
+    inp.addEventListener('focus', function () { card.classList.add('typing'); });
+    inp.addEventListener('blur', function () { card.classList.remove('typing'); });
+    el.querySelector('#sir-int-form').addEventListener('submit', function (e) { e.preventDefault(); answerText(); });
     try { if (typeof SEQA11y !== 'undefined' && SEQA11y.watch) SEQA11y.watch(el); } catch (e) {}   // foco dentro, Tab atrapado y foco devuelto (src/ui/a11y.js)
     return el;
   }
@@ -108,14 +118,22 @@ const SEQSirInterrupt = (function () {
     try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (e) {}
     document.addEventListener('keydown', trapKeys, true);
     clearInterval(guardT); guardT = setInterval(guard, 400);
-    var order = SEQSirInterruptCore.order(q, Math.random);
+    var typed = q.kind === 'trap';   // las trampas se escriben (como en Lucidez Mental): con opciones a la vista se huelen
+    var order = typed ? [] : SEQSirInterruptCore.order(q, Math.random);
     node.querySelector('#sir-int-q').textContent = q.q;
     var opts = node.querySelector('#sir-int-opts');
+    opts.hidden = typed;
+    var form = node.querySelector('#sir-int-form'), inp = node.querySelector('#sir-int-input');
+    form.hidden = !typed; form.classList.remove('is-done');
+    inp.value = ''; inp.disabled = false; inp.className = 'sir-int-input';
+    node.querySelector('#sir-int-send').disabled = true;
     opts.innerHTML = order.map(function (orig, pos) {
       return '<button type="button" class="sir-int-opt" data-i="' + orig + '"><span class="sir-int-key" aria-hidden="true">' + String.fromCharCode(65 + pos) + '</span><span class="sir-int-txt">' + esc(q.options[orig]) + '</span></button>';
     }).join('');
     node.querySelector('#sir-int-react').textContent = '';
     node.querySelector('#sir-int-react').className = 'sir-int-react';
+    node.querySelector('#sir-int-verdict').className = 'sir-int-verdict';
+    node.querySelector('.sir-int-card').classList.remove('fx-right', 'fx-wrong');
     node.querySelector('#sir-int-go').hidden = true;
     opts.classList.add('is-wait');
     clearTimeout(waitT);
@@ -124,6 +142,9 @@ const SEQSirInterrupt = (function () {
       b.addEventListener('click', function () { answer(Number(b.getAttribute('data-i'))); });
     });
     node.style.display = 'flex';
+    if (typed) {   // enfoca el campo solo (en móvil abre el teclado; la tarjeta se compacta mientras se escribe)
+      setTimeout(function () { try { if (current === q && !inp.disabled) inp.focus({ preventScroll: true }); } catch (e) {} }, WAIT_MS + 50);
+    }
     try { if (typeof playSirEventSound === 'function') playSirEventSound(); } catch (e) {}
   }
 
@@ -137,10 +158,39 @@ const SEQSirInterrupt = (function () {
       var i = Number(b.getAttribute('data-i'));
       b.disabled = true;
       if (i === idx) b.classList.add('is-picked');
-      if (current.kind === 'trap') { if (i === current.correct) b.classList.add('is-right'); else if (i === idx) b.classList.add('is-wrong'); }
     });
+    finish(g);
+  }
+
+  // Trampa: respuesta escrita, corregida con el mismo motor que Lucidez Mental (isMatchWithAlias).
+  function answerText() {
+    var node = el, form = node && node.querySelector('#sir-int-form'), inp = node && node.querySelector('#sir-int-input');
+    if (!form || form.hidden || form.classList.contains('is-done') || !current || typeof isMatchWithAlias !== 'function') return;
+    var wait = node.querySelector('#sir-int-opts');
+    if (wait && wait.classList.contains('is-wait')) return;
+    var extra = []; try { if (store && store.playerName) extra.push(String(store.playerName)); } catch (e) {}
+    var g = SEQSirInterruptCore.gradeText(current, inp.value, isMatchWithAlias, extra);
+    if (!g) return;
+    form.classList.add('is-done');
+    inp.disabled = true; node.querySelector('#sir-int-send').disabled = true;
+    inp.classList.add(g.correct ? 'is-right' : 'is-wrong');
+    try { inp.blur(); } catch (e) {}
+    finish(g);
+  }
+
+  function finish(g) {
+    var node = el;
     var r = node.querySelector('#sir-int-react');
     r.textContent = g.reaction;
+    r.className = 'sir-int-react is-shown' + (g.correct === true ? ' is-right' : g.correct === false ? ' is-wrong' : '');
+    // Sonido y efecto de acierto/fallo (las de opinión no puntúan: sin veredicto).
+    var card = node.querySelector('.sir-int-card');
+    card.classList.remove('fx-right', 'fx-wrong'); void card.offsetWidth;
+    if (g.correct === true) { card.classList.add('fx-right'); try { if (typeof playSound === 'function') playSound('ok'); } catch (e) {} }
+    else if (g.correct === false) { card.classList.add('fx-wrong'); try { if (typeof playSound === 'function') playSound('bad'); } catch (e) {} try { if (navigator.vibrate) navigator.vibrate(60); } catch (e) {} }
+    var vd = node.querySelector('#sir-int-verdict');
+    vd.textContent = g.correct === true ? 'Correcto' : g.correct === false ? 'Fallo' : 'Anotado';
+    vd.className = 'sir-int-verdict is-shown' + (g.correct === true ? ' is-right' : g.correct === false ? ' is-wrong' : '');
     r.className = 'sir-int-react is-shown' + (g.correct === true ? ' is-right' : g.correct === false ? ' is-wrong' : '');
     try {
       store.sirAnswered = (Number(store.sirAnswered) || 0) + 1;
