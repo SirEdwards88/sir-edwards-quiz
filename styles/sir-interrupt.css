@@ -54,7 +54,7 @@
 .sir-int-stage.is-wrong .sir-int-stage-img { animation: sirStageIn .7s cubic-bezier(.2, .9, .25, 1.15) both, sirStageShake .5s .55s ease-in-out; }
 .sir-int-seal { margin-top: 2px; padding: 4px 22px 6px; font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 800; letter-spacing: 4px; text-transform: uppercase; color: #e2b24a; border: 3px double currentColor; border-radius: 6px; transform: rotate(-4deg); opacity: 0; animation: sirStamp .45s .45s cubic-bezier(.3, 1.6, .5, 1) forwards; text-shadow: 0 2px 10px rgba(0, 0, 0, .5); }
 .sir-int-stage.is-right .sir-int-seal { color: #5eead4; color: #4ade80; }
-.sir-int-stage.is-wrong .sir-int-seal { color: #f87171; }
+.sir-int-stage.is-wrong .sir-int-seal { color: #f87171; letter-spacing: 2.5px; padding: 4px 16px 6px; }
 .sir-int-say { margin: 4px 4px 0; min-height: 3.2em; font-size: 19px; font-style: italic; line-height: 1.4; color: #f5ecd7; }
 .sir-int-say:empty::before { content: '\00a0'; }
 .sir-int-go { width: min(320px, 88%); margin-top: 6px; }

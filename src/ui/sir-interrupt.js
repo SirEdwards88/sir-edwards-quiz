@@ -235,7 +235,7 @@ const SEQSirInterrupt = (function () {
     node.classList.add('stage-on');
     node.querySelector('.sir-int-card').classList.add('is-out');
     st.className = 'sir-int-stage is-' + kind; st.hidden = false;
-    node.querySelector('#sir-int-verdict').textContent = g.correct === true ? 'Correcto' : g.correct === false ? 'Fallo' : 'Anotado';
+    node.querySelector('#sir-int-verdict').textContent = g.correct === true ? 'Correcto' : g.correct === false ? 'Incorrecto' : 'Anotado';
     node.querySelector('#sir-int-react').textContent = g.reaction;       // lectores de pantalla: la frase entera al momento
     try { if (typeof playSirVerdictSound === 'function') playSirVerdictSound(g.correct === true ? 'ok' : g.correct === false ? 'bad' : 'note'); } catch (e) {}
     try { if (g.correct === false && navigator.vibrate) navigator.vibrate([40, 40, 80]); } catch (e) {}
