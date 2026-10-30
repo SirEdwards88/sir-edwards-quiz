@@ -1,4 +1,4 @@
-// SirEdwards Quiz 2.5 — «Otra más.»: botón principal al final de las partidas en solitario.
+// SirEdwards Quiz 2.5 — «Jugar de nuevo»: botón principal al final de las partidas en solitario.
 // Relanza el MISMO modo con los mismos puntos de entrada que la pantalla de Jugar (así respetan candados, partida guardada,
 // Repaso por tandas, etc.). «Volver al Menú principal» y «Compartir resultado» quedan como acciones secundarias.
 // No sale en Duelos y Retos (tienen su «Revancha») ni en Repaso cuando ya no quedan fallos pendientes. En Lucidez Mental vuelve a
@@ -9,7 +9,7 @@
 (function (root) {
   'use strict';
 
-  var LABEL = 'Otra más.';
+  var LABEL = 'Jugar de nuevo';
 
   // Qué relanzar para esta partida: 'play' | 'survival' | 'sudden_death' | 'timetrial' | 'review' | 'mental_turbo' | 'mental_classic' | 'lucidez' | null.
   function plan(g, failedCount) {

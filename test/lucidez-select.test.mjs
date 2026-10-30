@@ -16,14 +16,14 @@ function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; le
 const RANK = { facil: 0, medio: 1, dificil: 2 };
 const count = (arr, f) => arr.filter(f).length;
 
-test('datos: 347 con lz (217 A, 130 B): 201 medias, 81 difíciles, 65 fáciles', () => {
+test('datos: 383 con lz (226 A, 157 B): 206 medias, 99 difíciles, 78 fáciles', () => {
   const lz = BANK.filter((q) => q.lz);
-  assert.equal(lz.length, 347);
-  assert.equal(count(lz, (q) => q.lz === 'A'), 217);
-  assert.equal(count(lz, (q) => q.lz === 'B'), 130);
-  assert.equal(count(lz, (q) => q.dif === 'medio'), 201);
-  assert.equal(count(lz, (q) => q.dif === 'dificil'), 81);
-  assert.equal(count(lz, (q) => q.dif === 'facil'), 65);
+  assert.equal(lz.length, 383);
+  assert.equal(count(lz, (q) => q.lz === 'A'), 226);
+  assert.equal(count(lz, (q) => q.lz === 'B'), 157);
+  assert.equal(count(lz, (q) => q.dif === 'medio'), 206);
+  assert.equal(count(lz, (q) => q.dif === 'dificil'), 99);
+  assert.equal(count(lz, (q) => q.dif === 'facil'), 78);
   assert.ok(BANK.every((q) => !q.lz || q.lz === 'A' || q.lz === 'B'));
   assert.ok(lz.every((q) => !(Array.isArray(q.options) && q.options.length)), 'Lucidez es de respuesta escrita: nada con opciones');
   assert.equal(new Set(BANK.map((q) => q.n)).size, BANK.length, 'ids únicos');
@@ -42,7 +42,7 @@ test('datos: los pares son simétricos y ambos extremos están en la criba', () 
     for (const p of q.par) { assert.ok(by.get(p) && by.get(p).lz, 'par #' + p); assert.ok(Array.from(by.get(p).par).includes(q.n), 'simetría ' + q.n + '-' + p); }
   }
   const ids = BANK.filter((q) => q.par).map((q) => q.n).sort((a, b) => a - b);
-  assert.deepEqual(ids, [23, 32, 44, 45, 48, 51, 87, 101, 102, 196, 205, 295, 297, 337, 339, 381, 382, 383, 413, 454, 468, 476, 493]);
+  assert.deepEqual(ids, [7, 15, 23, 32, 40, 44, 45, 48, 51, 58, 69, 82, 87, 92, 101, 102, 196, 205, 232, 247, 284, 286, 295, 297, 299, 304, 322, 337, 339, 346, 369, 372, 373, 374, 381, 382, 383, 402, 413, 453, 454, 468, 474, 476, 493, 692]);
 });
 
 test('alias: las respuestas naturales que fallaban ahora se aceptan', () => {
@@ -66,7 +66,7 @@ function check(sel, seed, loose) {
   assert.equal(new Set(all.map((q) => q.n)).size, 24, 'sin repetidas ' + seed);
   assert.ok(all.every((q) => q.lz === 'A' || q.lz === 'B'));
   const lv = (a, d) => count(a, (q) => q.dif === d);
-  assert.deepEqual([lv(sel.p1, 'facil'), lv(sel.p1, 'medio'), lv(sel.p1, 'dificil')], [1, 7, 2], 'curva F1 ' + seed);
+  assert.deepEqual([lv(sel.p1, 'facil'), lv(sel.p1, 'medio'), lv(sel.p1, 'dificil')], [4, 4, 2], 'curva F1 ' + seed);
   assert.deepEqual([lv(sel.p2, 'medio'), lv(sel.p2, 'dificil'), lv(sel.p2, 'facil')], [5, 0, 0], 'curva F2 ' + seed);
   assert.deepEqual([lv(sel.p3, 'medio'), lv(sel.p3, 'dificil')], [4, 5], 'curva F3 ' + seed);
   for (const ph of [sel.p1, sel.p2, sel.p3]) for (let i = 1; i < ph.length; i++) assert.ok(RANK[ph[i - 1].dif] <= RANK[ph[i].dif], 'orden ascendente ' + seed);
@@ -94,7 +94,7 @@ test('ignora las preguntas sin lz aunque sean medias o difíciles', () => {
   for (let s = 1; s <= 200; s++) { const sel = S.select(BANK, mulberry32(s)); for (const q of sel.p1.concat(sel.p2, sel.p3)) assert.ok(!sinLz.includes(q.n)); }
 });
 
-const NEED = { facil: 1, medio: 16, dificil: 7 };
+const NEED = { facil: 4, medio: 13, dificil: 7 };
 const lvlOf = (sel) => sel.p1.concat(sel.p2, sel.p3);
 
 test('memoria (avoid) MANDA sobre la variedad: nunca repite si queda una alternativa no vista de ese nivel', () => {
@@ -170,8 +170,8 @@ test('memoria vs variedad: con casi todo visto, sale la no vista aunque rompa el
   const seen = new Set(medias.filter((q) => !libresIds.has(q.n)).map((q) => q.n));
   const sel = S.select(BANK, mulberry32(5), seen);
   const med = lvlOf(sel).filter((q) => q.dif === 'medio');
-  assert.equal(med.length, 16);
-  assert.ok(med.filter((q) => libresIds.has(q.n)).length === 16, 'todas las medias son las 20 no vistas');
+  assert.equal(med.length, 13);
+  assert.ok(med.filter((q) => libresIds.has(q.n)).length === 13, 'todas las medias son las 20 no vistas');
   assert.ok(Math.max(count(sel.p1, (q) => q.cat === cat), count(sel.p3, (q) => q.cat === cat)) > 3 || count(lvlOf(sel), (q) => q.cat === cat) > 6, 'se rompió el límite de categoría');
 });
 

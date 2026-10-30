@@ -23,7 +23,7 @@ test('el banco de test tiene 715 preguntas, sin IDs repetidos, de 1 a 744 con so
 });
 
 test('reparto por dificultad y categorías: solo las seis oficiales', () => {
-  assert.deepEqual({ ...by(T, 'dif') }, { facil: 283, medio: 307, dificil: 125 });
+  assert.deepEqual({ ...by(T, 'dif') }, { facil: 266, medio: 312, dificil: 137 });
   assert.ok(T.every((q) => CATS.includes(q.cat)), 'categoría fuera de las seis');
   assert.ok(Q.every((q) => CATS.includes(q.cat)));
 });
@@ -48,7 +48,7 @@ test('las tres sustituciones: los nuevos están, los antiguos ya no están en ni
 
 test('las retiradas siguen resolviéndose por ID (duelos y retos creados antes de la 2.2)', () => {
   assert.deepEqual(Array.from(RT, (q) => q.n), [90, 91, 197, 137, 393, 552, 577, 594, 597, 598, 637, 659, 669, 682, 562, 212, 85, 302, 309, 311, 316, 338, 392, 458, 483, 488, 500, 571, 633]);
-  assert.deepEqual(Array.from(RQ, (q) => q.n), [90, 91, 197, 393, 302, 309, 311, 316, 338, 392, 458, 483, 488, 500, 571]);
+  assert.deepEqual(Array.from(RQ, (q) => q.n), [90, 91, 197, 393, 302, 309, 311, 316, 338, 392, 458, 483, 488, 500, 571, 308, 336, 371, 446, 463, 545, 721, 735]);
   for (const q of RT) assert.ok(Array.isArray(q.options) && q.options.includes(q.a), 'retirada ' + q.n + ' sin opciones');
   assert.equal(RT.find((q) => q.n === 90).a, 'El canal de Suez');
   assert.equal(RT.find((q) => q.n === 197).a, 'León Tolstói');
@@ -56,16 +56,18 @@ test('las retiradas siguen resolviéndose por ID (duelos y retos creados antes d
 });
 
 test('el banco de Lucidez: medias/difíciles hasta la 503, las fáciles de la criba (23 y 7) y solo las nuevas de la 504 en adelante que se pueden jugar (con lz); comparte texto y respuesta', () => {
-  assert.equal(Q.length, 365);
+  assert.equal(Q.length, 398);
   const faciles = Q.filter((q) => q.dif === 'facil');
-  assert.equal(faciles.length, 67);
-  assert.equal(faciles.filter((q) => q.n < 424).length, 50);
-  assert.equal(faciles.filter((q) => q.n >= 424 && q.n < 654).length, 9);
-  assert.equal(faciles.filter((q) => q.n >= 654).length, 8);
+  assert.equal(faciles.length, 80);
+  assert.equal(faciles.filter((q) => q.n < 424).length, 62);
+  assert.equal(faciles.filter((q) => q.n >= 424 && q.n < 654).length, 8);
+  assert.equal(faciles.filter((q) => q.n >= 654).length, 10);
   assert.ok(faciles.filter((q) => q.lz).every((q) => q.lz === 'B'));
-  const expected = T.filter((q) => q.dif !== 'facil' && (q.n < 504 || (q.n < 654 && Q.some((x) => x.n === q.n && x.lz)))).map((q) => q.n).concat(faciles.map((q) => q.n), [685, 689, 694, 718, 720, 721, 728, 732, 733, 734, 735]).sort((a, b) => a - b);
+  const SACADAS = [308, 336, 371, 446, 463, 545, 721, 735]; // sacadas de Lucidez el 30 de octubre de 2026 (siguen en el test)
+  const PROMOVIDAS = [5, 7, 10, 12, 14, 15, 19, 26, 30, 54, 58, 61, 65, 67, 69, 167, 166, 168, 177, 183, 209, 232, 275, 276, 277, 284, 286, 369, 373, 418, 593, 653, 654, 658, 660, 691, 692, 704, 713, 739, 740, 741, 742, 743]; // pasan del test a Lucidez (30 de octubre de 2026); la 432 y la 465 no, porque admiten otras respuestas válidas
+  const expected = [...new Set(T.filter((q) => q.dif !== 'facil' && (q.n < 504 || (q.n < 654 && Q.some((x) => x.n === q.n && x.lz)))).map((q) => q.n).concat(faciles.map((q) => q.n), [685, 689, 694, 718, 720, 728, 731, 732, 733, 734], PROMOVIDAS))].filter((n) => !SACADAS.includes(n)).sort((a, b) => a - b);
   assert.ok(Q.filter((q) => q.n >= 504).every((q) => q.lz), 'las nuevas sin lz no se copian a Lucidez');
-  assert.deepEqual(Q.map((q) => q.n).sort((a, b) => a - b), expected);
+  assert.deepEqual(Array.from(Q, (q) => q.n).sort((a, b) => a - b), expected);
   for (const q of Q) {
     const t = T.find((x) => x.n === q.n);
     assert.equal(q.q, t.q); assert.equal(q.a, t.a);
@@ -78,7 +80,7 @@ test('reescrituras aprobadas: 397, 400, 413, 421 y 422', () => {
   assert.ok(!/psiquiatra/.test(g(400).q));
   assert.match(g(413).q, /emperador de los franceses/);
   assert.ok(!/acceso aleatorio/i.test(g(421).q), 'el enunciado de 421 delataba la respuesta');
-  assert.match(g(422).q, /2001 y 2003/);
+  assert.match(g(422).q, /Tolkien/);
   for (const n of [391, 396, 413]) assert.equal(g(n).dif, 'facil'); // auditoría de octubre de 2026: son fáciles
   assert.ok(T.every((q) => !/\*/.test(q.q)), 'quedaron asteriscos de Markdown');
 });

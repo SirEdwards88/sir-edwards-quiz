@@ -5,7 +5,7 @@
 //
 // Qué entra: solo preguntas con `lz` 'A' o 'B' (criba 2.2: recuperables sin opciones, respuesta clara y corta).
 // Curva por fase (la dificultad la manda el plan, no la categoría):
-//   Fase I   (10): 1 fácil + 7 medias + 2 difíciles, de menos a más.
+//   Fase I   (10): 4 fáciles + 4 medias + 2 difíciles, de menos a más (el mismo reparto que el modo Estándar).
 //   Fase II  (5):  5 medias.
 //   Fase III (9):  4 medias + 5 difíciles, de menos a más.
 // Variedad: máx. 3 de una categoría en la Fase I, 2 en la II y 3 en la III; máx. 6 en toda la partida; mínimo 2 de
@@ -23,7 +23,7 @@ const SEQLucidezSelect = (function () {
   'use strict';
 
   var PLAN = {
-    1: [['facil', 1], ['medio', 7], ['dificil', 2]],
+    1: [['facil', 4], ['medio', 4], ['dificil', 2]],
     2: [['medio', 5]],
     3: [['medio', 4], ['dificil', 5]]
   };

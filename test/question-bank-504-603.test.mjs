@@ -21,14 +21,14 @@ test('son 100, con IDs 504-603 seguidos, y no se toca ninguna anterior', () => {
   assert.equal(OLD.length, 486);
 });
 
-test('Lucidez: solo las 6 de respuesta corta jugables (la 571 se retiró el 30 de octubre) están en Lucidez (mismo texto y respuesta, sin opciones)', () => {
+test('Lucidez: solo las 6 de respuesta corta jugables (la 571 se retiró el 30 de octubre, la 545 salió el 30 de octubre y la 593 entró) están en Lucidez (mismo texto y respuesta, sin opciones)', () => {
   const NQ = Q.filter((q) => q.n >= 504 && q.n <= 603);
-  assert.deepEqual(Array.from(NQ, (q) => q.n), [545, 558, 560, 566, 585, 590]);
+  assert.deepEqual(Array.from(NQ, (q) => q.n), [558, 560, 566, 585, 590, 593]);
   for (const q of NQ) {
     const t = T.find((x) => x.n === q.n);
     assert.equal(q.q, t.q); assert.equal(q.a, t.a); assert.equal(q.sabias, t.sabias); assert.ok(!q.options);
   }
-  assert.deepEqual(Array.from(NQ.filter((q) => q.lz), (q) => q.n), [545, 558, 560, 566, 585, 590]);
+  assert.deepEqual(Array.from(NQ.filter((q) => q.lz), (q) => q.n), [558, 560, 566, 585, 590, 593]);
 });
 
 test('Lucidez: la respuesta y sus variantes se aceptan; las demás opciones, no', () => {
@@ -54,9 +54,9 @@ test('formato: 4 opciones distintas con la respuesta entre ellas, categoría y d
   }
 });
 
-test('reparto: 29 fáciles, 50 medias y 14 difíciles (tras retirar 7); la respuesta cae en las cuatro posiciones casi por igual', () => {
+test('reparto: 29 fáciles, 47 medias y 17 difíciles (tras retirar 7 y reajustar dificultades el 30 de octubre); la respuesta cae en las cuatro posiciones casi por igual', () => {
   const c = (f) => NEW.filter(f).length;
-  assert.deepEqual([c((q) => q.dif === 'facil'), c((q) => q.dif === 'medio'), c((q) => q.dif === 'dificil')], [29, 50, 14]);
+  assert.deepEqual([c((q) => q.dif === 'facil'), c((q) => q.dif === 'medio'), c((q) => q.dif === 'dificil')], [29, 47, 17]);
   for (let p = 0; p < 4; p++) assert.ok([20, 21, 22, 23, 24, 25, 26].includes(c((q) => q.options.indexOf(q.a) === p)), 'posición ' + p);
 });
 

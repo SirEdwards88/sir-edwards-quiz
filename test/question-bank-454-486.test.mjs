@@ -16,7 +16,7 @@ const NEW_T = T.filter(inRange), NEW_Q = Q.filter(inRange);
 
 test('las 31 entran en los dos bancos (33 menos la 458 y la 483, retiradas el 30 de octubre de 2026), todas difíciles, con los mismos ID, texto y respuesta', () => {
   assert.equal(NEW_T.length, 31);
-  assert.equal(NEW_Q.length, 31);
+  assert.equal(NEW_Q.length, 30); // la 463 salió de Lucidez el 30 de octubre de 2026 (nicho; sigue en el test)
   assert.ok(NEW_T.every((q) => q.dif !== 'facil')); // tras la auditoría de octubre de 2026, 4 pasaron a medio
   for (const q of NEW_Q) {
     const t = T.find((x) => x.n === q.n);
@@ -66,7 +66,7 @@ test('correcciones: q8, q146, q223, q225, q247, q297, q305 y q330 iguales (la q3
   assert.match(g(T, 225).q, /«Back to Black»/);
   assert.match(g(T, 247).q, /ha ganado más títulos del Mundial de rugby masculino/);
   assert.match(g(T, 297).q, /ecuador y el meridiano de Greenwich/);
-  assert.deepEqual(Array.from(g(Q, 297).par), [295]);
+  assert.deepEqual(Array.from(g(Q, 297).par), [295, 373]);
   assert.match(g(T, 305).sabias, /relatividad general/);
   assert.equal(g(T, 330).a, 'Pau Gasol');
   assert.ok(g(T, 330).options.includes('Pau Gasol'));

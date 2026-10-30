@@ -1,4 +1,4 @@
-// 2.5: «Otra más.» al final de las partidas en solitario.
+// 2.5: «Jugar de nuevo» al final de las partidas en solitario.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -35,6 +35,6 @@ test('el botón está en la tarjeta de resultados, es el principal y no se escri
   assert.match(html, /id="res-replay-btn"[^>]*hidden[^>]*onclick="SEQReplay\.start\(\)"/);
   assert.match(html, /src\/ui\/replay\.js\?v=\d+/);
   assert.match(sw, /'\.\/src\/ui\/replay\.js'/);
-  assert.equal(ctx.SEQReplay.LABEL, 'Otra más.');
+  assert.equal(ctx.SEQReplay.LABEL, 'Jugar de nuevo');
   assert.ok(!/Otra ronda/.test(html + fs.readFileSync(R('src/ui/replay.js'), 'utf8')));
 });

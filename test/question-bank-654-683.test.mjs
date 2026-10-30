@@ -15,7 +15,7 @@ const { T, Q } = ctx;
 const NEW = T.filter((q) => q.n >= 654 && q.n <= 683); // 684-694 son las nuevas de octubre de 2026
 const OLD = T.filter((q) => q.n < 654);
 const CATS = ['historia', 'geografia', 'ciencia', 'arte_literatura', 'deporte', 'cultura_general'];
-const LZ = [661, 663, 664, 674, 679, 681];
+const LZ = [654, 658, 660, 661, 663, 664, 674, 679, 681]; // 654, 658 y 660 entraron en Lucidez el 30 de octubre de 2026
 
 test('son 27 (30 menos las 659, 669 y 682 retiradas en octubre de 2026), con IDs 654-683, todas fáciles, y no se toca ninguna anterior', () => {
   assert.deepEqual(Array.from(NEW, (q) => q.n), Array.from({ length: 30 }, (_, i) => 654 + i).filter((n) => ![659, 669, 682].includes(n)));
@@ -40,7 +40,7 @@ test('ninguna repite un enunciado ni una respuesta+tema del banco anterior', () 
   assert.equal(new Set(NEW.map((q) => norm(q.q))).size, 27);
 });
 
-test('Lucidez (hasta la 683): solo las 6 de respuesta corta (lz «B», fáciles, mismo texto y respuesta salvo la escrita, sin opciones)', () => {
+test('Lucidez (hasta la 683): solo las 9 de respuesta corta (lz «B», fáciles, mismo texto y respuesta salvo la escrita, sin opciones)', () => {
   const NQ = Q.filter((q) => q.n >= 654 && q.n <= 683);
   assert.deepEqual(Array.from(NQ, (q) => q.n).sort((a, b) => a - b), LZ);
   for (const q of NQ) {

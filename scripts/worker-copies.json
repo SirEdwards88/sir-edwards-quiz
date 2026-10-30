@@ -2,7 +2,7 @@
   "literal": {
     "src/utils/matching.js": "095f6b8efd6ad320",
     "src/utils/answer-alias.js": "122b56f982a750c3",
-    "src/utils/lucidez-select.js": "d64e741c92968981",
+    "src/utils/lucidez-select.js": "ce3c0ba3eb2f9974",
     "src/utils/mental-calc.js": "eba038f76a434779",
     "src/utils/sync-merge.js": "4ba5f730c4aae8c0"
   },
@@ -10,8 +10,8 @@
     "src/utils/sudden-progression.js": "d2586129d1166d82"
   },
   "data": {
-    "src/data/questions.js": "17db77dab5a87e5b",
-    "src/data/questions-retired.js": "c8cee62aae031260",
+    "src/data/questions.js": "b70edd164c2b4c81",
+    "src/data/questions-retired.js": "ec1091e56fd19be6",
     "src/data/lucidez.js": "832d228ea210b462",
     "src/data/medals.js": "0916582f6f4a3dca",
     "src/data/avatars.js": "c5964a62ff0568ed"

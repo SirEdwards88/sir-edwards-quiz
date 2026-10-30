@@ -19,8 +19,8 @@ test('son 50 menos las retiradas, con IDs 604-653 seguidos, y no se toca ninguna
   assert.equal(OLD.length, 579);
 });
 
-test('no se copian al banco de Lucidez (todas son de opciones)', () => {
-  assert.equal(Q.filter((q) => q.n >= 604 && q.n <= 653).length, 0);
+test('al banco de Lucidez solo pasa la 653 (30 de octubre de 2026: respuesta corta, «Vitamina C»); el resto son de opciones', () => {
+  assert.deepEqual(Array.from(Q.filter((q) => q.n >= 604 && q.n <= 653), (q) => q.n), [653]);
 });
 
 test('formato: 4 opciones distintas con la respuesta entre ellas, categoría y dificultad válidas y un «Sabías que» de hasta 140 caracteres', () => {
