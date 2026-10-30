@@ -14,9 +14,9 @@ const { T, Q } = ctx;
 const inRange = (q) => q.n >= 454 && q.n <= 486;
 const NEW_T = T.filter(inRange), NEW_Q = Q.filter(inRange);
 
-test('las 33 entran en los dos bancos, todas difíciles, con los mismos ID, texto y respuesta', () => {
-  assert.equal(NEW_T.length, 33);
-  assert.equal(NEW_Q.length, 33);
+test('las 31 entran en los dos bancos (33 menos la 458 y la 483, retiradas el 30 de octubre de 2026), todas difíciles, con los mismos ID, texto y respuesta', () => {
+  assert.equal(NEW_T.length, 31);
+  assert.equal(NEW_Q.length, 31);
   assert.ok(NEW_T.every((q) => q.dif !== 'facil')); // tras la auditoría de octubre de 2026, 4 pasaron a medio
   for (const q of NEW_Q) {
     const t = T.find((x) => x.n === q.n);
@@ -54,9 +54,9 @@ test('Lucidez: la respuesta y sus variantes se aceptan; las demás opciones, no'
   }
 });
 
-test('correcciones: q8, q146, q223, q225, q247, q297, q305, q330 y q392 iguales en los dos bancos', () => {
+test('correcciones: q8, q146, q223, q225, q247, q297, q305 y q330 iguales (la q392 se retiró el 30 de octubre de 2026) en los dos bancos', () => {
   const g = (A, n) => A.find((q) => q.n === n);
-  for (const n of [8, 146, 223, 225, 247, 297, 305, 330, 392]) {
+  for (const n of [8, 146, 223, 225, 247, 297, 305, 330]) {
     for (const k of ['q', 'a', 'sabias']) assert.equal(g(Q, n)[k], g(T, n)[k], k + ' de ' + n);
     assert.ok(g(T, n).sabias, 'sabías de ' + n);
   }
@@ -72,6 +72,4 @@ test('correcciones: q8, q146, q223, q225, q247, q297, q305, q330 y q392 iguales 
   assert.ok(g(T, 330).options.includes('Pau Gasol'));
   assert.ok(!ctx.m('Gasol', g(Q, 330)), '«Gasol» a secas vale también por Marc: auditoría 5');
   assert.ok(ctx.m('Pau', g(Q, 330)));
-  assert.match(g(T, 392).q, /número atómico 54/);
-  assert.ok(ctx.m('xenon', g(Q, 392)));
 });

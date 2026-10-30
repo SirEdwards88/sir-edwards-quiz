@@ -13,17 +13,17 @@ const { T, Q, RT, RQ } = ctx;
 const CATS = ['historia', 'geografia', 'ciencia', 'arte_literatura', 'deporte', 'cultura_general'];
 const by = (a, k) => a.reduce((m, x) => ((m[x[k]] = (m[x[k]] || 0) + 1), m), {});
 
-test('el banco de test tiene 700 preguntas, sin IDs repetidos, de 1 a 717 con solo 17 huecos (3 de la 2.2, 13 de octubre de 2026 y la 85)', () => {
-  assert.equal(T.length, 700);
+test('el banco de test tiene 715 preguntas, sin IDs repetidos, de 1 a 744 con solo 29 huecos (3 de la 2.2, 13 de octubre de 2026, la 85 y 12 más del 30 de octubre)', () => {
+  assert.equal(T.length, 715);
   const ids = T.map((q) => q.n);
-  assert.equal(new Set(ids).size, 700);
-  const missing = Array.from({ length: 717 }, (_, i) => i + 1).filter((n) => !ids.includes(n));
-  assert.deepEqual(missing, [85, 90, 91, 137, 197, 212, 393, 552, 562, 577, 594, 597, 598, 637, 659, 669, 682]);
-  assert.equal(Math.max(...ids), 717);
+  assert.equal(new Set(ids).size, 715);
+  const missing = Array.from({ length: 744 }, (_, i) => i + 1).filter((n) => !ids.includes(n));
+  assert.deepEqual(missing, [85, 90, 91, 137, 197, 212, 302, 309, 311, 316, 338, 392, 393, 458, 483, 488, 500, 552, 562, 571, 577, 594, 597, 598, 633, 637, 659, 669, 682]);
+  assert.equal(Math.max(...ids), 744);
 });
 
 test('reparto por dificultad y categorías: solo las seis oficiales', () => {
-  assert.deepEqual({ ...by(T, 'dif') }, { facil: 275, medio: 297, dificil: 128 });
+  assert.deepEqual({ ...by(T, 'dif') }, { facil: 283, medio: 307, dificil: 125 });
   assert.ok(T.every((q) => CATS.includes(q.cat)), 'categoría fuera de las seis');
   assert.ok(Q.every((q) => CATS.includes(q.cat)));
 });
@@ -47,8 +47,8 @@ test('las tres sustituciones: los nuevos están, los antiguos ya no están en ni
 });
 
 test('las retiradas siguen resolviéndose por ID (duelos y retos creados antes de la 2.2)', () => {
-  assert.deepEqual(Array.from(RT, (q) => q.n), [90, 91, 197, 137, 393, 552, 577, 594, 597, 598, 637, 659, 669, 682, 562, 212, 85]);
-  assert.deepEqual(Array.from(RQ, (q) => q.n), [90, 91, 197, 393]);
+  assert.deepEqual(Array.from(RT, (q) => q.n), [90, 91, 197, 137, 393, 552, 577, 594, 597, 598, 637, 659, 669, 682, 562, 212, 85, 302, 309, 311, 316, 338, 392, 458, 483, 488, 500, 571, 633]);
+  assert.deepEqual(Array.from(RQ, (q) => q.n), [90, 91, 197, 393, 302, 309, 311, 316, 338, 392, 458, 483, 488, 500, 571]);
   for (const q of RT) assert.ok(Array.isArray(q.options) && q.options.includes(q.a), 'retirada ' + q.n + ' sin opciones');
   assert.equal(RT.find((q) => q.n === 90).a, 'El canal de Suez');
   assert.equal(RT.find((q) => q.n === 197).a, 'León Tolstói');
@@ -56,14 +56,14 @@ test('las retiradas siguen resolviéndose por ID (duelos y retos creados antes d
 });
 
 test('el banco de Lucidez: medias/difíciles hasta la 503, las fáciles de la criba (23 y 7) y solo las nuevas de la 504 en adelante que se pueden jugar (con lz); comparte texto y respuesta', () => {
-  assert.equal(Q.length, 367);
+  assert.equal(Q.length, 365);
   const faciles = Q.filter((q) => q.dif === 'facil');
-  assert.equal(faciles.length, 66);
+  assert.equal(faciles.length, 67);
   assert.equal(faciles.filter((q) => q.n < 424).length, 50);
   assert.equal(faciles.filter((q) => q.n >= 424 && q.n < 654).length, 9);
-  assert.equal(faciles.filter((q) => q.n >= 654).length, 7);
+  assert.equal(faciles.filter((q) => q.n >= 654).length, 8);
   assert.ok(faciles.filter((q) => q.lz).every((q) => q.lz === 'B'));
-  const expected = T.filter((q) => q.dif !== 'facil' && (q.n < 504 || (q.n < 654 && Q.some((x) => x.n === q.n && x.lz)))).map((q) => q.n).concat(faciles.map((q) => q.n), [685, 689, 694]).sort((a, b) => a - b);
+  const expected = T.filter((q) => q.dif !== 'facil' && (q.n < 504 || (q.n < 654 && Q.some((x) => x.n === q.n && x.lz)))).map((q) => q.n).concat(faciles.map((q) => q.n), [685, 689, 694, 718, 720, 721, 728, 732, 733, 734, 735]).sort((a, b) => a - b);
   assert.ok(Q.filter((q) => q.n >= 504).every((q) => q.lz), 'las nuevas sin lz no se copian a Lucidez');
   assert.deepEqual(Q.map((q) => q.n).sort((a, b) => a - b), expected);
   for (const q of Q) {

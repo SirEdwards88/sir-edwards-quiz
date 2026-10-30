@@ -14,9 +14,9 @@ const { T, Q } = ctx;
 const inRange = (q) => q.n >= 487 && q.n <= 503;
 const NEW_T = T.filter(inRange), NEW_Q = Q.filter(inRange);
 
-test('las 17 entran en los dos bancos, todas difíciles, con los mismos ID, texto y respuesta', () => {
-  assert.equal(NEW_T.length, 17);
-  assert.equal(NEW_Q.length, 17);
+test('las 15 entran en los dos bancos (17 menos la 488 y la 500, retiradas el 30 de octubre de 2026), todas difíciles, con los mismos ID, texto y respuesta', () => {
+  assert.equal(NEW_T.length, 15);
+  assert.equal(NEW_Q.length, 15);
   assert.ok(NEW_T.every((q) => q.dif !== 'facil')); // tras la auditoría de octubre de 2026, 3 pasaron a medio
   for (const q of NEW_Q) {
     const t = T.find((x) => x.n === q.n);
@@ -34,17 +34,17 @@ test('formato: 4 opciones distintas con la respuesta entre ellas y una curiosida
   }
 });
 
-test('Lucidez: 16 elegibles (la 503, de explicación larga, no); la 487 y la 500 pesan 1; la 493 va emparejada con la 476', () => {
+test('Lucidez: 14 elegibles (la 503, de explicación larga, no); la 487 pesa 1; la 493 va emparejada con la 476', () => {
   assert.deepEqual(Array.from(NEW_Q.filter((q) => !q.lz), (q) => q.n), [503]);
-  assert.deepEqual(Array.from(NEW_Q.filter((q) => q.lz === 'B'), (q) => q.n), [487, 500]);
+  assert.deepEqual(Array.from(NEW_Q.filter((q) => q.lz === 'B'), (q) => q.n), [487]);
   assert.deepEqual(Array.from(Q.find((q) => q.n === 493).par), [476]);
   assert.deepEqual(Array.from(Q.find((q) => q.n === 476).par), [493]);
 });
 
 test('Lucidez: la respuesta y sus variantes se aceptan; las demás opciones, no', () => {
-  const ok = { 487: ['La Antártida', 'Antártida'], 488: ['Las Maldivas'], 489: ['Merckx'], 490: ['Scuderia Ferrari'], 491: ['Klimt'], 492: ['Tierra'],
+  const ok = { 487: ['La Antártida', 'Antártida'], 489: ['Merckx'], 490: ['Scuderia Ferrari'], 491: ['Klimt'], 492: ['Tierra'],
     494: ['Ljubljana'], 495: ['Yashin', 'Lev Yachin'], 496: ['Cirílico', 'Alfabeto cirílico'], 497: ['Exosfera'], 498: ['Cachalote'],
-    499: ['Melatonina'], 500: ['El Sudán'], 502: ['Joaquín Salvador Lavado'] };
+    499: ['Melatonina'], 502: ['Joaquín Salvador Lavado'] };
   for (const q of NEW_Q) {
     assert.ok(ctx.m(q.a, q), 'la respuesta ' + q.n);
     for (const v of ok[q.n] || []) assert.ok(ctx.m(v, q), 'variante «' + v + '» en ' + q.n);

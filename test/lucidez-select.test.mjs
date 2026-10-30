@@ -16,14 +16,14 @@ function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; le
 const RANK = { facil: 0, medio: 1, dificil: 2 };
 const count = (arr, f) => arr.filter(f).length;
 
-test('datos: 347 con lz (217 A, 130 B): 196 medias, 87 difíciles, 64 fáciles', () => {
+test('datos: 347 con lz (217 A, 130 B): 201 medias, 81 difíciles, 65 fáciles', () => {
   const lz = BANK.filter((q) => q.lz);
   assert.equal(lz.length, 347);
   assert.equal(count(lz, (q) => q.lz === 'A'), 217);
   assert.equal(count(lz, (q) => q.lz === 'B'), 130);
-  assert.equal(count(lz, (q) => q.dif === 'medio'), 196);
-  assert.equal(count(lz, (q) => q.dif === 'dificil'), 87);
-  assert.equal(count(lz, (q) => q.dif === 'facil'), 64);
+  assert.equal(count(lz, (q) => q.dif === 'medio'), 201);
+  assert.equal(count(lz, (q) => q.dif === 'dificil'), 81);
+  assert.equal(count(lz, (q) => q.dif === 'facil'), 65);
   assert.ok(BANK.every((q) => !q.lz || q.lz === 'A' || q.lz === 'B'));
   assert.ok(lz.every((q) => !(Array.isArray(q.options) && q.options.length)), 'Lucidez es de respuesta escrita: nada con opciones');
   assert.equal(new Set(BANK.map((q) => q.n)).size, BANK.length, 'ids únicos');
@@ -42,7 +42,7 @@ test('datos: los pares son simétricos y ambos extremos están en la criba', () 
     for (const p of q.par) { assert.ok(by.get(p) && by.get(p).lz, 'par #' + p); assert.ok(Array.from(by.get(p).par).includes(q.n), 'simetría ' + q.n + '-' + p); }
   }
   const ids = BANK.filter((q) => q.par).map((q) => q.n).sort((a, b) => a - b);
-  assert.deepEqual(ids, [23, 32, 44, 45, 48, 51, 87, 101, 102, 196, 205, 295, 296, 297, 337, 338, 339, 381, 382, 383, 413, 454, 468, 476, 493]);
+  assert.deepEqual(ids, [23, 32, 44, 45, 48, 51, 87, 101, 102, 196, 205, 295, 297, 337, 339, 381, 382, 383, 413, 454, 468, 476, 493]);
 });
 
 test('alias: las respuestas naturales que fallaban ahora se aceptan', () => {

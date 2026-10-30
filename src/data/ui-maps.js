@@ -37,6 +37,6 @@ const SURVIVAL_LIVES = 4;
 const SURVIVAL_TIER_RATIOS = {
   ameba: { facil: 0.7, medio: 0.3 },
   humano: { facil: 0.3, medio: 0.6, dificil: 0.1 },
-  derrame: { medio: 0.7, dificil: 0.3 }
+  derrame: { facil: 0.1, medio: 0.6, dificil: 0.3 }
 };;
 
