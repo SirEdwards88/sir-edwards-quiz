@@ -104,3 +104,13 @@ test('index.html y sw.js enlazan el módulo y lo usan', () => {
   assert.ok(html.includes('SEQFailRescue.rescue(currentGame)'));
   assert.ok(html.includes('SEQFailRescue.openWithEasy('));
 });
+
+test('willGiveEasy: solo si es elegible y queda alguna fácil por delante', () => {
+  const g = game('play', mk(['facil', 'medio', 'dificil', 'facil']));
+  assert.equal(F.willGiveEasy(g), true);
+  g.currentIdx = 3;
+  assert.equal(F.willGiveEasy(g), false, 'ya no queda ninguna por delante');
+  assert.equal(F.willGiveEasy(game('sudden_death', mk(['medio', 'facil']))), false, 'modo no elegible');
+  assert.equal(F.willGiveEasy(game('play', mk(['medio', 'facil']), { isDuel: true })), false, 'Duelo/Reto: nunca');
+  assert.equal(F.willGiveEasy(game('survival', mk(['medio', 'facil']), { survivalTier: 'derrame' })), false, 'derrame no tiene fáciles');
+});

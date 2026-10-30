@@ -62,6 +62,14 @@ const SEQFailRescue = (function () {
     return true;
   }
 
+  // ¿La pregunta que viene tras la actual será fácil si se aplica el rescate? (lo usa el evento de ánimo de Sir Edwards para
+  // insinuarlo solo cuando es verdad: hay alguna fácil por delante). Se llama con game.currentIdx apuntando a la pregunta ya respondida.
+  function willGiveEasy(game) {
+    if (!eligible(game) || !Array.isArray(game.queue)) return false;
+    for (var k = (game.currentIdx || 0) + 1; k < game.queue.length; k++) if (game.queue[k] && game.queue[k].dif === 'facil') return true;
+    return false;
+  }
+
   // Cola de Estándar: las `n` primeras, fáciles. Intercambia cada no fácil inicial con la fácil más cercana de más adelante.
   function openWithEasy(queue, n) {
     if (!Array.isArray(queue)) return queue;
@@ -78,5 +86,5 @@ const SEQFailRescue = (function () {
     return queue;
   }
 
-  return { eligible: eligible, record: record, rescue: rescue, openWithEasy: openWithEasy, RUN: RUN, OPENING_EASY: OPENING_EASY };
+  return { eligible: eligible, record: record, rescue: rescue, willGiveEasy: willGiveEasy, openWithEasy: openWithEasy, RUN: RUN, OPENING_EASY: OPENING_EASY };
 })();

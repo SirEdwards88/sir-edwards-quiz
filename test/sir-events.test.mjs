@@ -540,3 +540,22 @@ test('imágenes de los eventos: cada tipo tiene la suya, existe y está en sw.js
   assert.equal(new Set(['tilt', 'broken', 'weak', 'record', 'streak', 'comeback', 'day', 'night'].map((t) => S.ASSETS[t])).size, 8, 'ningún tipo comparte imagen');
   ['assets/character/empate.webp'].forEach((f) => { assert.ok(fs.existsSync(new URL('../' + f, import.meta.url)), f); assert.ok(read('sw.js').includes(f.replace('assets/', './assets/')), f); });
 });
+
+test('ánimo + rescate: en el 2.º fallo, si va a haber una fácil, la frase lo insinúa; si no, es la normal', () => {
+  const R = S.PHRASES.tilt.rescue;
+  assert.equal(R.length, 4);
+  R.forEach((t) => { assert.ok(t.length <= 110, t); assert.ok(!/\{n\}/.test(t), t); assert.ok(!/estúpid|inútil|torpe/i.test(t), t); });
+  const normales = S.PHRASES.tilt.low.concat(S.PHRASES.tilt.high);
+  assert.ok(R.every((t) => !normales.includes(t)), 'las frases del rescate no se repiten en las normales');
+  assert.equal(S.TILT_P[2], 0.15);
+  const run = (easyNext, fallos) => {
+    const st = S.newState(); let e = null;
+    for (let i = 0; i < fallos; i++) e = S.evaluate(st, { nowMs: 1e6 + i, hour: 12, streak: 0, correct: false, last: false, blocked: false, easyNext, recent: {} }, () => 0);
+    return e;
+  };
+  const con = run(true, 2), sin = run(false, 2);
+  assert.ok(con && R.some((t) => t === con.message), '2.º fallo con fácil por delante: frase del rescate');
+  assert.ok(sin && !R.some((t) => t === sin.message), '2.º fallo sin fácil: frase normal');
+  const tercero = (() => { const st = S.newState(); let e = null; for (let i = 0; i < 3; i++) e = S.evaluate(st, { nowMs: 1e6 + i * 1000, hour: 12, streak: 0, correct: false, last: false, blocked: false, easyNext: true, recent: {} }, () => (i < 2 ? 0.99 : 0)); return e; })();
+  assert.ok(tercero && !R.some((t) => t === tercero.message), 'a partir del 3.º, frases normales aunque haya fácil');
+});

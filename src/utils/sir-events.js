@@ -11,7 +11,7 @@
 // · broken () racha rota: un FALLO tras 5 o más aciertos seguidos; la frase cita el número real. Una vez por partida.
 //   Es el único que sale tras un fallo.
 // · tilt () ánimo tras FALLOS SEGUIDOS (desde el 2.º, con probabilidad creciente; solo en la partida estándar): Sir Edwards baja el tono
-//   con alguna pulla suave, sin consuelo explícito. Una vez por partida; no pasa por el cooldown largo pero nunca sale pegado a otro evento.
+//   con alguna pulla suave, sin consuelo explícito. En el 2.º fallo, si el rescate va a dar una fácil (ctx.easyNext), usa frases que lo insinúan. Una vez por partida; no pasa por el cooldown largo pero nunca sale pegado a otro evento.
 // · night () 00:00–04:00 hora local.
 // · day () 06:00–10:00 hora local.
 // Supervivencia y Muerte Súbita: sin «racha» ni «racha rota» (ahí ya salen los hitos de Sir Edwards); sí récord, regreso, día, noche y categoría débil.
@@ -37,7 +37,7 @@ const SEQSirEvents = (function () {
   var BROKEN_MIN_RUN = 5;         // racha mínima para que su rotura merezca comentario
   var TILT_MIN_MISSES = 2;          // fallos seguidos a partir de los cuales PUEDE salir el ánimo
   var TILT_HIGH = 4;                // a partir de aquí, frases «fuertes» (más teatrales)
-  var TILT_P = { 2: 0.08, 3: 0.18, 4: 0.4 };      // probabilidad por fallo seguido; con 5 o más, TILT_P5 (una vez por partida)
+  var TILT_P = { 2: 0.15, 3: 0.18, 4: 0.4 };      // probabilidad por fallo seguido; con 5 o más, TILT_P5 (una vez por partida)
   var TILT_P5 = 0.7;
   var BROKEN_P = { low: 0.1, mid: 0.25, high: 0.5 };        // 5-9 · 10-19 · 20 o más
   var MAX_PER_GAME = 1;           // como mucho un evento por partida (salvo un hito de racha de 20 o más)
@@ -143,6 +143,11 @@ const SEQSirEvents = (function () {
       '«Se me ha torcido el ala del sombrero. O quizá sea la jornada; cuesta distinguirlo.»',
       '«Te serviría la respuesta en bandeja, pero el reglamento desaprueba mis métodos.»',
       '«He servido cenas bastante más tensas. Aunque ninguna tenía cuatro opciones por plato.»'],
+    // Solo en el 2.º fallo seguido y si el rescate (src/utils/fail-rescue.js) va a dar una pregunta fácil: lo insinúa sin consuelo explícito.
+    rescue: ['«Dos seguidas. Por esta vez, la siguiente la he elegido yo. No te acostumbres.»',
+      '«He revisado el orden de las preguntas. Digamos que la próxima es de cortesía.»',
+      '«La siguiente es de las sencillas. Que conste que no es compasión: es logística.»',
+      '«Dos fallos. Mi sentido de la hospitalidad exige una pregunta amable. Solo una.»'],
     high: ['«{n} seguidas. Voy a quedarme un rato; alguien debe vigilar este interrogatorio.»',
       '«He preparado té para situaciones menos delicadas. Qué desperdicio de previsión.»',
       '«Por mi parte, sigo aquí. Mi dimisión tendría un efecto teatral, pero sería prematura.»',
@@ -251,7 +256,7 @@ const SEQSirEvents = (function () {
     if (typeof rotate === 'function') { var t = rotate(timed ? key + '_' + hour : key, ok); if (typeof t === 'string' && t) return t; }
     return pick(list, hour, rng, avoid);
   }
-  function phraseFor(type, hour, rng, avoid, milestone, rotate, cat) {
+  function phraseFor(type, hour, rng, avoid, milestone, rotate, cat, easyNext) {
     var rare = { day: DAY_RARE, night: NIGHT_RARE }[type];
     if (rare && rng() < RARE_P) { var r = chooseRare(type + '_rare', rare, hour, rng, avoid, rotate); if (r) return r; }
     if (type === 'record' || type === 'comeback' || type === 'weak') {
@@ -260,7 +265,7 @@ const SEQSirEvents = (function () {
       return tp ? tp.replace(/\{n\}/g, String(milestone)).replace(/\{cat\}/g, String(cat || 'Esta categoría')) : null;
     }
     if (type === 'tilt') {
-      var ttier = milestone >= TILT_HIGH ? 'high' : 'low';
+      var ttier = milestone >= TILT_HIGH ? 'high' : (easyNext === true && milestone === TILT_MIN_MISSES ? 'rescue' : 'low');
       var ttpl = choose('tilt_' + ttier, TILT_PHRASES[ttier], hour, rng, avoid, rotate);
       return ttpl ? ttpl.replace(/\{n\}/g, String(milestone)) : null;
     }
@@ -315,11 +320,11 @@ const SEQSirEvents = (function () {
     // Espaciado entre partidas: si la partida anterior de este dispositivo (hace poco) llevó evento, esta no lleva ninguno (salvo el regreso).
     if (ctx.spaced === true) return null;
 
-    // Ánimo: desde el 2.º fallo seguido, con probabilidad creciente (2 → 8 %, 3 → 18 %, 4 → 40 %, 5 o más → 70 %). Una vez por
+    // Ánimo: desde el 2.º fallo seguido, con probabilidad creciente (2 → 15 %, 3 → 18 %, 4 → 40 %, 5 o más → 70 %). Una vez por
     // partida; nunca pegado a otro evento; ctx.noTilt lo veta (solo se usa en la partida estándar).
     if (ctx.correct !== true && ctx.noTilt !== true && state.miss >= TILT_MIN_MISSES && !state.shown.tilt &&
         !(state.lastAnswer !== null && state.answers - state.lastAnswer < 2) && rng() < (TILT_P[state.miss] || TILT_P5)) {
-      var tt = phraseFor('tilt', Math.floor(ctx.hour), rng, state.last.tilt, state.miss, ctx.rotate);
+      var tt = phraseFor('tilt', Math.floor(ctx.hour), rng, state.last.tilt, state.miss, ctx.rotate, undefined, ctx.easyNext === true);
       if (tt) return done(state, ctx, 'tilt', tt, ctx.nowMs);
     }
     if (state.answers <= MIN_ANSWERS_START) return null;

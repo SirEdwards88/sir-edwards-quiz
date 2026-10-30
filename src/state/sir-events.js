@@ -126,6 +126,7 @@ function sirEventsOnAnswer(correct, q) {
       spaced: g._sevSpaced === true,                                  // la partida anterior de este dispositivo (hace poco) ya llevó evento
       noTilt: g.mode !== 'play',                                      // el ánimo solo en la partida estándar (en el resto ya hay avisos propios o el fallo cuesta vidas/tiempo)
       noBroken: g.mode === 'review' || g.mode === 'survival' || g.mode === 'sudden_death',   // en Repaso no hay racha; en Supervivencia y Muerte Súbita ya hay hitos propios (y en Muerte Súbita el fallo termina la partida)
+      easyNext: g.mode === 'play' && typeof SEQFailRescue !== 'undefined' && SEQFailRescue.willGiveEasy(g),   // el rescate dará una fácil: el ánimo del 2.º fallo lo insinúa
       record: record,
       comeback: g._sevCome === true,
       weakCat: correct === true && g.mode === 'play' && !st.shown.weak && recentOkWeak(recent, now) ? sirEventsWeakCategory(q) : '',
