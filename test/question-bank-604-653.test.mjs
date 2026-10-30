@@ -16,7 +16,7 @@ const OLD = T.filter((q) => q.n < 604);
 
 test('son 50, con IDs 604-653 seguidos, y no se toca ninguna anterior', () => {
   assert.deepEqual(Array.from(NEW, (q) => q.n), Array.from({ length: 50 }, (_, i) => 604 + i).filter((n) => n !== 637)); // la 637 se retiró en octubre de 2026
-  assert.equal(OLD.length, 591);
+  assert.equal(OLD.length, 590);
 });
 
 test('no se copian al banco de Lucidez (todas son de opciones)', () => {

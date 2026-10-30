@@ -5,6 +5,7 @@
 // Octubre de 2026: retiradas 137, 393, 552, 577, 594, 597, 598, 637, 659, 669 y 682 (sustituidas por 684-694).
 // 23 de octubre de 2026: retirada 562 (timbre de flauta y violín), sustituida por 715 (leitmotiv).
 // 26 de octubre de 2026: retirada 212 (Novena de Beethoven; repetía la biografía de la 188), sustituida por 716 (Frida Kahlo).
+// 30 de octubre de 2026: retirada 85 (mayor península; dato de especialista), sustituida por 717 (mayor desierto cálido).
 // Los IDs no se reutilizan nunca. El backend tiene copia generada (scripts/gen-questions.mjs y gen-lucidez.mjs).
 
 const RETIRED_TEST_QUESTIONS = [
@@ -23,7 +24,8 @@ const RETIRED_TEST_QUESTIONS = [
   {"n": 669, "q": "¿Cómo se llama una palabra que significa lo contrario que otra?", "options": ["Sinónimo", "Antónimo", "Homónimo", "Parónimo"], "a": "Antónimo", "cat": "cultura_general", "dif": "facil", "sabias": "«Frío» y «caliente» son antónimos; «grande» y «enorme», sinónimos."},
   {"n": 682, "q": "¿A qué grupo de animales pertenece el delfín?", "options": ["Peces", "Mamíferos", "Reptiles", "Anfibios"], "a": "Mamíferos", "cat": "ciencia", "dif": "facil", "sabias": "Respira aire con pulmones y amamanta a sus crías."},
   {"n": 562, "q": "¿Por qué la misma nota suena distinta en una flauta y en un violín?", "options": ["Porque la nota tiene distinta frecuencia en cada uno", "Porque solo un instrumento produce ondas", "Por su timbre, que depende de los armónicos", "Porque el oído las distingue por el volumen"], "a": "Por su timbre, que depende de los armónicos", "cat": "arte_literatura", "dif": "dificil", "sabias": "Si se recorta el comienzo de una nota, cuesta mucho reconocer el instrumento: el ataque también forma parte del timbre."},
-  {"n": 212, "q": "¿Qué compositor escribió la Novena Sinfonía con el «Himno a la Alegría»?", "options": ["Franz Schubert", "Johannes Brahms", "Ludwig van Beethoven", "Gustav Mahler"], "a": "Ludwig van Beethoven", "cat": "arte_literatura", "dif": "facil", "sabias": "Ludwig van Beethoven (1770–1827), compositor alemán nacido en Bonn. Estrenó la Novena en 1824, ya sordo, con una oda de Schiller en el último movimiento."}
+  {"n": 212, "q": "¿Qué compositor escribió la Novena Sinfonía con el «Himno a la Alegría»?", "options": ["Franz Schubert", "Johannes Brahms", "Ludwig van Beethoven", "Gustav Mahler"], "a": "Ludwig van Beethoven", "cat": "arte_literatura", "dif": "facil", "sabias": "Ludwig van Beethoven (1770–1827), compositor alemán nacido en Bonn. Estrenó la Novena en 1824, ya sordo, con una oda de Schiller en el último movimiento."},
+  {"n": 85, "q": "¿Cuál es la mayor península del mundo por superficie?", "options": ["La península de Indochina", "La península arábiga", "La península de Labrador", "La península de Escandinavia"], "a": "La península arábiga", "cat": "geografia", "dif": "facil", "sabias": "Ocupa unos 3 millones de km²: cerca de seis veces España."}
 ];
 
 const RETIRED_QUESTIONS = [
