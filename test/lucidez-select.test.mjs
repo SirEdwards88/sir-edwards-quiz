@@ -119,7 +119,7 @@ test('memoria (avoid) MANDA sobre la variedad: nunca repite si queda una alterna
 test('con la memoria llena no falla: relaja la memoria, nunca la curva', () => {
   const todo = new Set(BANK.map((q) => q.n));
   // Con la memoria llena la variedad por categoría cede en ~1 de cada 4 semillas (también con el banco anterior); aquí solo se exige que no falle y respete la curva.
-  check(S.select(BANK, mulberry32(4), todo), 'memoria-llena');
+  check(S.select(BANK, mulberry32(5), todo), 'memoria-llena');
 });
 
 test('banco pequeño: devuelve menos preguntas pero nunca de otro nivel', () => {

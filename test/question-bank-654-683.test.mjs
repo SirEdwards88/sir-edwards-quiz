@@ -17,9 +17,9 @@ const OLD = T.filter((q) => q.n < 654);
 const CATS = ['historia', 'geografia', 'ciencia', 'arte_literatura', 'deporte', 'cultura_general'];
 const LZ = [654, 658, 660, 661, 663, 664, 674, 679, 681]; // 654, 658 y 660 entraron en Lucidez el 30 de octubre de 2026
 
-test('son 27 (30 menos las 659, 669 y 682 retiradas en octubre de 2026), con IDs 654-683, todas fáciles, y no se toca ninguna anterior', () => {
-  assert.deepEqual(Array.from(NEW, (q) => q.n), Array.from({ length: 30 }, (_, i) => 654 + i).filter((n) => ![659, 669, 682].includes(n)));
-  assert.equal(OLD.length, 620);
+test('son 26 (30 menos las 659, 669, 676 y 682 retiradas en octubre de 2026), con IDs 654-683, todas fáciles, y no se toca ninguna anterior', () => {
+  assert.deepEqual(Array.from(NEW, (q) => q.n), Array.from({ length: 30 }, (_, i) => 654 + i).filter((n) => ![659, 669, 676, 682].includes(n)));
+  assert.equal(OLD.length, 619);
   assert.ok(NEW.every((q) => q.dif === 'facil'));
 });
 
@@ -37,7 +37,7 @@ test('ninguna repite un enunciado ni una respuesta+tema del banco anterior', () 
   const norm = (s) => s.toLowerCase().replace(/[^a-záéíóúñü0-9 ]/g, '').trim();
   const qs = new Set(OLD.map((q) => norm(q.q)));
   for (const q of NEW) assert.ok(!qs.has(norm(q.q)), 'enunciado repetido en ' + q.n);
-  assert.equal(new Set(NEW.map((q) => norm(q.q))).size, 27);
+  assert.equal(new Set(NEW.map((q) => norm(q.q))).size, 26);
 });
 
 test('Lucidez (hasta la 683): solo las 9 de respuesta corta (lz «B», fáciles, mismo texto y respuesta salvo la escrita, sin opciones)', () => {

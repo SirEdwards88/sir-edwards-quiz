@@ -16,7 +16,7 @@ const OLD = T.filter((q) => q.n < 604);
 
 test('son 50 menos las retiradas, con IDs 604-653 seguidos, y no se toca ninguna anterior', () => {
   assert.deepEqual(Array.from(NEW, (q) => q.n), Array.from({ length: 50 }, (_, i) => 604 + i).filter((n) => n !== 633 && n !== 637)); // la 637 se retiró en octubre de 2026 y la 633 el 30 de octubre (duplicaba la 503)
-  assert.equal(OLD.length, 572);
+  assert.equal(OLD.length, 571);
 });
 
 test('al banco de Lucidez solo pasa la 653 (30 de octubre de 2026: respuesta corta, «Vitamina C»); el resto son de opciones', () => {
