@@ -148,7 +148,9 @@ function encargosSnapshot() {
 }
 
 // Aplica un cambio al progreso con todas las garantías: relee lo guardado, aplica, cobra, guarda y avisa.
-function encargosMutate(fn) {
+// Los avisos de Encargo saldado que salen a mitad de partida se guardan aquí y se enseñan al terminarla (o al volver a Inicio).
+let encargosPendingEvents = [];
+function encargosMutate(fn, deferToast) {
   try {
     encargosEnsureWeek();
     encargosAbsorbStorage();
@@ -156,7 +158,7 @@ function encargosMutate(fn) {
     if (!encargosGameSnap) encargosGameSnap = encargosSnapshot();
     fn(store.encargos.p);
     const events = encargosSettle();
-    if (events.length) { saveStore(false); encargosToastEvents(events); }
+    if (events.length) { saveStore(false); if (deferToast) encargosPendingEvents = encargosPendingEvents.concat(events); else encargosToastEvents(events); }
     encargosRefreshUi();
     return events;
   } catch (err) { console.warn('Encargos: no se pudo actualizar.', err); return []; }
@@ -177,19 +179,27 @@ function encargosRefreshUi() {
 function encargosOnAnswer(correct, q) {
   if (typeof currentGame !== 'undefined' && currentGame && currentGame.mode === 'review') return;
   const cat = q && typeof q.cat === 'string' ? q.cat : null;
-  encargosMutate(function (p) { SEQEncargosProgress.recordAnswer(p, cat, !!correct); });
+  encargosMutate(function (p) { SEQEncargosProgress.recordAnswer(p, cat, !!correct); }, true);
+}
+// Enseña los avisos retenidos durante la partida. Devuelve cuántos había.
+function encargosFlushPending() {
+  const ev = encargosPendingEvents; encargosPendingEvents = [];
+  if (ev.length) encargosToastEvents(ev);
+  return ev.length;
 }
 // Fin de una partida en solitario (finishGame / finishLucidezMode). total y correct ya calculados por quien llama.
 function encargosOnGameEnd(mode, correct, total) {
   const events = encargosMutate(function (p) {
     SEQEncargosProgress.recordGame(p, { mode: mode, correct: correct, total: total, day: encargosLocalDay(encargosNowMs()) });
   });
-  encargosFinishToast(events.length > 0);
+  const held = encargosFlushPending();
+  encargosFinishToast(events.length > 0 || held > 0);
 }
 // Un duelo terminado (Duelo online, por apuestas o Reto). info = {won, stakes}.
 function encargosOnDuel(won, stakes) {
   const events = encargosMutate(function (p) { SEQEncargosProgress.recordDuel(p, { won: !!won, stakes: !!stakes }); });
-  encargosFinishToast(events.length > 0);
+  const held = encargosFlushPending();
+  encargosFinishToast(events.length > 0 || held > 0);
 }
 
 // Un único aviso «Encargo avanzado» (la misión con más avance) si algo avanzó y no se avisó ya de una compleción.

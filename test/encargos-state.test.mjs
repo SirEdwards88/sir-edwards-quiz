@@ -388,3 +388,17 @@ test('claves por SEMANA: la misma misión y el mismo Gran Encargo se cobran una 
   assert.ok(keys.includes(w1 + ':m:' + normals0[0]) && keys.includes(w2 + ':m:' + normals0[0]), 'claves distintas por semana');
   assert.ok(keys.every((k) => /^\d{4}-W\d{2}:/.test(k)), 'toda clave lleva su semana');
 });
+
+test('avisos: un Encargo saldado a mitad de partida no avisa hasta el final de la partida', () => {
+  const ctx = makeEnv();
+  const before = ctx.toasts.length;
+  for (let i = 0; i < 60; i++) run(ctx, "encargosOnAnswer(true, {cat:'historia'})");
+  const mid = ctx.toasts.filter((t) => /saldado|cobrado/.test(t.main)).length;
+  assert.equal(mid, 0, 'ningún aviso de compleción durante la partida');
+  const pend = run(ctx, 'encargosPendingEvents.length');
+  run(ctx, "encargosOnGameEnd('play', 10, 20)");
+  const end = ctx.toasts.filter((t) => /saldado|cobrado/.test(t.main)).length;
+  assert.equal(run(ctx, 'encargosPendingEvents.length'), 0);
+  assert.ok(pend > 0, 'hubo compleciones retenidas'); assert.ok(end >= 1);
+  assert.ok(before === 0);
+});
