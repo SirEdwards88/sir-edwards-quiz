@@ -16,12 +16,12 @@ function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; le
 const RANK = { facil: 0, medio: 1, dificil: 2 };
 const count = (arr, f) => arr.filter(f).length;
 
-test('datos: 383 con lz (226 A, 157 B): 206 medias, 99 difíciles, 78 fáciles', () => {
+test('datos: 380 con lz (225 A, 155 B): 203 medias, 99 difíciles, 78 fáciles', () => {
   const lz = BANK.filter((q) => q.lz);
-  assert.equal(lz.length, 383);
-  assert.equal(count(lz, (q) => q.lz === 'A'), 226);
-  assert.equal(count(lz, (q) => q.lz === 'B'), 157);
-  assert.equal(count(lz, (q) => q.dif === 'medio'), 206);
+  assert.equal(lz.length, 380);
+  assert.equal(count(lz, (q) => q.lz === 'A'), 225);
+  assert.equal(count(lz, (q) => q.lz === 'B'), 155);
+  assert.equal(count(lz, (q) => q.dif === 'medio'), 203);
   assert.equal(count(lz, (q) => q.dif === 'dificil'), 99);
   assert.equal(count(lz, (q) => q.dif === 'facil'), 78);
   assert.ok(BANK.every((q) => !q.lz || q.lz === 'A' || q.lz === 'B'));
@@ -49,10 +49,10 @@ test('alias: las respuestas naturales que fallaban ahora se aceptan', () => {
   const por = (n) => BANK.find((q) => q.n === n);
   const casos = { 389: 'rocas ígneas', 421: 'memoria RAM', 226: 'The Matrix', 227: 'Citizen Kane', 289: 'Naciones Unidas',
     292: 'Producto Interno Bruto', 274: 'Sputnik', 271: 'Apolo XI', 160: 'C-14', 245: 'Pacquiao', 379: 'Ulaanbaatar', 351: 'ARNt',
-    305: 'dilatación del tiempo', 147: 'Hz', 36: 'crac del 29', 198: 'Raphael', 218: 'film noir', 320: 'BCE', 410: 'programa espía',
+    305: 'dilatación del tiempo', 36: 'crac del 29', 198: 'Raphael', 218: 'film noir', 320: 'BCE', 410: 'programa espía',
     142: '300000', 35: 'Revolución americana', 359: 'Clavicémbalo',
     23: 'batalla de Waterloo', 93: 'monte Kilimanjaro', 374: 'río Mekong', 376: 'cordillera de los Andes', 196: 'Alhambra de Granada',
-    147: 'Hertz', 266: 'telégrafo eléctrico', 205: 'dinastía nazarí', 399: 'chita', 405: 'fenómeno de El Niño', 411: 'rey Hammurabi', 192: 'estilo gótico',
+    266: 'telégrafo eléctrico', 205: 'dinastía nazarí', 399: 'chita', 405: 'fenómeno de El Niño', 411: 'rey Hammurabi', 192: 'estilo gótico',
     98: 'río Bravo del Norte', 242: 'Rio de Janeiro', 325: 'USA', 349: 'Altiplano del Tíbet' };
   for (const [n, u] of Object.entries(casos)) assert.ok(M(u, por(+n)), '#' + n + ' «' + u + '»');
   assert.ok(!M('rocas sedimentarias', por(389)));

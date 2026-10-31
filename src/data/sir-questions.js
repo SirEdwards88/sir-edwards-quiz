@@ -47,7 +47,7 @@ const SIR_QUESTIONS = [
     hl: ['Juan'],
     right: 'Juan. Estaba en el enunciado. Bien leído.', wrong: 'Juan. La madre de Juan, ¿recuerdas? Lo tenías delante.' },
   { id: 'sq23', kind: 'trap', q: 'Un tren eléctrico va hacia el norte. ¿Hacia dónde sopla su humo?', a: 'No echa humo',
-    alias: ['No echa', 'No tiene humo', 'No hay humo', 'A ninguna parte', 'A ninguno', 'Hacia ninguna parte', 'No sopla', 'No suelta humo', 'No produce humo', 'No emite humo', 'No expulsa humo', 'No echan humo', 'Es eléctrico', 'Los eléctricos no echan humo', 'Los trenes eléctricos no echan humo', 'Ninguna', 'Humo no hay'],
+    alias: ['No echa', 'No tiene humo', 'No hay humo', 'A ninguna parte', 'A ninguno', 'Hacia ninguna parte', 'No sopla', 'No suelta humo', 'No produce humo', 'No emite humo', 'No expulsa humo', 'No echan humo', 'Es eléctrico', 'Los eléctricos no echan humo', 'Los trenes eléctricos no echan humo', 'Ninguna', 'Humo no hay', 'Hacia ningún lado', 'A ningún lado', 'A ningún sitio', 'Hacia ningún sitio', 'En ninguna dirección', 'No va a ningún lado'],
     rj: ['Al norte', 'Al sur', 'Al este', 'Al oeste', 'Norte', 'Sur', 'Este', 'Oeste'],
     hl: ['no echa humo'],
     right: 'Es eléctrico: no echa humo. Ojo clínico.', wrong: 'Es eléctrico: no echa humo. Había que fijarse.' },

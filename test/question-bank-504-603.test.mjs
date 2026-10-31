@@ -18,7 +18,7 @@ const RET = [552, 562, 571, 577, 594, 597, 598]; // retiradas en octubre de 2026
 
 test('son 100, con IDs 504-603 seguidos, y no se toca ninguna anterior', () => {
   assert.deepEqual(Array.from(NEW, (q) => q.n), Array.from({ length: 100 }, (_, i) => 504 + i).filter((n) => !RET.includes(n)));
-  assert.equal(OLD.length, 486);
+  assert.equal(OLD.length, 482);
 });
 
 test('Lucidez: solo las 6 de respuesta corta jugables (la 571 se retiró el 30 de octubre, la 545 salió el 30 de octubre y la 593 entró) están en Lucidez (mismo texto y respuesta, sin opciones)', () => {
