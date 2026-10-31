@@ -42,7 +42,7 @@ test('datos: los pares son simétricos y ambos extremos están en la criba', () 
     for (const p of q.par) { assert.ok(by.get(p) && by.get(p).lz, 'par #' + p); assert.ok(Array.from(by.get(p).par).includes(q.n), 'simetría ' + q.n + '-' + p); }
   }
   const ids = BANK.filter((q) => q.par).map((q) => q.n).sort((a, b) => a - b);
-  assert.deepEqual(ids, [7, 15, 23, 32, 40, 44, 45, 48, 51, 58, 69, 82, 87, 92, 101, 102, 196, 205, 232, 247, 284, 286, 295, 297, 299, 304, 322, 337, 339, 346, 369, 372, 373, 374, 381, 382, 383, 402, 413, 453, 454, 468, 474, 476, 493, 692]);
+  assert.deepEqual(ids, [7, 15, 23, 32, 40, 44, 45, 48, 51, 58, 69, 82, 92, 101, 102, 196, 205, 232, 247, 284, 286, 295, 297, 299, 304, 322, 337, 339, 346, 369, 372, 373, 374, 381, 382, 402, 413, 453, 454, 468, 474, 476, 493, 692]);
 });
 
 test('alias: las respuestas naturales que fallaban ahora se aceptan', () => {

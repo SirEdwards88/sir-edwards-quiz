@@ -14,9 +14,9 @@ const { T, Q } = ctx;
 const inRange = (q) => q.n >= 454 && q.n <= 486;
 const NEW_T = T.filter(inRange), NEW_Q = Q.filter(inRange);
 
-test('las 31 entran en los dos bancos (33 menos la 458 y la 483, retiradas el 30 de octubre de 2026), todas difíciles, con los mismos ID, texto y respuesta', () => {
-  assert.equal(NEW_T.length, 31);
-  assert.equal(NEW_Q.length, 30); // la 463 salió de Lucidez el 30 de octubre de 2026 (nicho; sigue en el test)
+test('las 30 entran en los dos bancos (33 menos la 458, la 483 y la 478, retiradas en octubre de 2026), todas difíciles, con los mismos ID, texto y respuesta', () => {
+  assert.equal(NEW_T.length, 30);
+  assert.equal(NEW_Q.length, 29); // la 463 salió de Lucidez el 30 de octubre de 2026 (nicho; sigue en el test)
   assert.ok(NEW_T.every((q) => q.dif !== 'facil')); // tras la auditoría de octubre de 2026, 4 pasaron a medio
   for (const q of NEW_Q) {
     const t = T.find((x) => x.n === q.n);
