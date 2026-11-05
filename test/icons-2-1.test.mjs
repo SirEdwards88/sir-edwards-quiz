@@ -44,8 +44,8 @@ test('los 6 avatares de logro: archivo y service worker', () => {
     assert.ok(sw.includes("'./assets/avatars/avatar_siredwards_" + a + ".png'"), a + ' no está en el service worker');
   }
 });
-test('la versión de la app es 2.5 en todas partes y la caché coincide con index.html', () => {
+test('la versión de la app es 2.0 en todas partes y la caché coincide con index.html', () => {
   const html = read('index.html');
-  assert.match(html, /const APP_VERSION = "2\.5";/);
-  for (const re of [/id="welcome-version">v2\.5</, /id="brand-sub-version">v2\.5</, /LUCIDEZ MENTAL · v2\.5</, /Mental v2\.5"/]) assert.match(html, re);
+  assert.match(html, /const APP_VERSION = "2\.0";/);
+  for (const re of [/id="welcome-version">v2\.0</, /id="brand-sub-version">v2\.0</, /LUCIDEZ MENTAL · v2\.0</, /Mental v2\.0"/]) assert.match(html, re);
 });

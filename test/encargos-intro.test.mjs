@@ -179,16 +179,14 @@ test('la presentación no usa nada fuera de opacidad/transformación y respeta r
   assert.match(js, /!reduced\(\) && navigator\.vibrate/);
 });
 
-test('historial: sin los dos logros de Duelo en la 2.0, apuestas solo en la 2.1, 60 preguntas en la 2.2 y ayuda del Duelo resumida', () => {
+test('historial resumido (2.0 final) y ayuda del Duelo resumida', () => {
   const html = read('index.html');
   assert.ok(!/en dos modos: clásico y apuestas/.test(html), 'la 2.0 ya no habla de apuestas (son de la 2.1)');
-  assert.match(html, /<li>Nuevo modo: duelo por apuestas\.<\/li>/);
-  assert.match(html, /<li>60 preguntas nuevas\. Más formas de fallar\.<\/li>/);
   const dh = read('src/ui/duel-intro.js');
   assert.match(dh, /Veinte preguntas; gana quien más acierte/);
   assert.match(dh, /Antes de cada pregunta eliges en secreto/);
   assert.ok(!/dos logros de Duelo/.test(html));
-  assert.match(html, /Sonidos, música en los menús y Sir Edwards opinando/);
+  assert.match(html, /Música, sonidos y mejoras visuales\./);
 });
 
 test('no hay evento de réplica tras la presentación; los eventos solo salen en los modos permitidos', () => {

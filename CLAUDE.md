@@ -39,7 +39,7 @@ Igual con `src/utils/sync-merge.js`: debe ser el mismo texto que `src/sync-merge
 - «Compartir resultado» es una acción secundaria y discreta.
 - Historial de versiones breve y en orden.
 - Bienvenida (primera vez, tras la cuenta) y aviso de novedades (al actualizar, lee la entrada del historial de la versión):
-  mantener SIEMPRE su tono de Sir Edwards, elegante y sarcástico («Vaya, un nuevo aspirante.», «Tus excusas, no.»,
-  «Mientras no mirabas, Sir Edwards ha estado ocupado:»). Cada versión nueva lleva su entrada en el historial con ese tono.
+  la Bienvenida y el encabezado del aviso mantienen el tono de Sir Edwards, elegante y sarcástico («Vaya, un nuevo aspirante.», «Tus excusas, no.»,
+  «Mientras no mirabas, Sir Edwards ha estado ocupado:»). El historial de versiones, en cambio, es breve y neutro (sin coletillas): la versión pública es la 2.0 y las entradas anteriores van fusionadas.
 - Tipografías (Inter, Playfair Display) alojadas en `assets/fonts/` y `styles/fonts.css`: no volver a depender de Google Fonts (sin conexión no cargan).
 - Nunca perder datos de usuarios existentes: la clave local `siredwards_quiz_v1_0_data` no se cambia.

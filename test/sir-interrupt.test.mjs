@@ -298,3 +298,7 @@ test('respuesta resaltada: cada trampa tiene un fragmento `hl` que aparece en su
     }
   }
 });
+
+test('cada vez que se abre una pregunta con opciones se limpia el «is-done» de la anterior (si no, la segunda de la sesión no admitía respuesta)', () => {
+  assert.match(read('src/ui/sir-interrupt.js'), /opts\.classList\.remove\('is-done'\);[^\n]*\n\s*opts\.classList\.add\('is-wait'\)/);
+});

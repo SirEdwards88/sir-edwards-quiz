@@ -157,6 +157,7 @@ const SEQSirInterrupt = (function () {
       return '<button type="button" class="sir-int-opt" data-i="' + orig + '"><span class="sir-int-key" aria-hidden="true">' + String.fromCharCode(65 + pos) + '</span><span class="sir-int-txt">' + esc(q.options[orig]) + '</span></button>';
     }).join('');
     resetStage(node);
+    opts.classList.remove('is-done');   // la segunda pregunta de una misma sesión empezaba con «is-done» de la anterior y no admitía respuesta
     opts.classList.add('is-wait');
     clearTimeout(waitT);
     waitT = setTimeout(function () { opts.classList.remove('is-wait'); }, WAIT_MS);

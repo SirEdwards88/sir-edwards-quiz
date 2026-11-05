@@ -385,14 +385,14 @@ test('Avatares: bloqueado → muestra el logro; Supremo → «logro secreto» si
   assert.ok(sup.indexOf('isSecret') < sup.indexOf('ALL_MEDALS'), 'el secreto se comprueba ANTES de buscar el nombre del logro');
 });
 
-test('Novedades de la 2.1: resumen corto de tres líneas', () => {
+test('Historial de versiones: una sola entrada 2.0 con frases cortas y sin emojis', () => {
   const html = read('index.html');
-  const i = html.lastIndexOf('settings-changelog-entry-version">v2.1<');
+  const i = html.lastIndexOf('settings-changelog-entry-version">v2.0<');
   const entry = html.slice(i, html.indexOf('</ul>', i));
   const lis = [...entry.matchAll(/<li>([^<]*)<\/li>/g)].map((m) => m[1]);
-  assert.equal(lis.length, 3);
-  assert.ok(lis.every((l) => l.length <= 45), 'frases de una línea: ' + lis.join(' | '));
-  assert.equal(lis.some((l) => /\p{Extended_Pictographic}/u.test(l)), false, 'el historial no lleva emojis: tono de Sir Edwards');
+  assert.ok(lis.length >= 3 && lis.length <= 6, 'entre 3 y 6 frases: ' + lis.length);
+  assert.ok(lis.every((l) => l.length <= 90), 'frases cortas: ' + lis.join(' | '));
+  assert.equal(lis.some((l) => /\p{Extended_Pictographic}/u.test(l)), false, 'el historial no lleva emojis');
 });
 
 test('iconos de Rankings: existen como archivo y están en el service worker', () => {
