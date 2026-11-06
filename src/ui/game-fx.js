@@ -161,7 +161,10 @@
     pill.classList.toggle('fx-heat-1', n >= 3 && n < 5);
     pill.classList.toggle('fx-heat-2', n >= 5 && n < 10);
     pill.classList.toggle('fx-heat-3', n >= 10);
-    if (n > lastStreak && MILESTONES.indexOf(n) !== -1) streakBanner(n);
+    // El aviso solo sale al llegar al hito con UN acierto más y dentro de la partida. Si el contador se reescribe sin
+    // acierto (cambiar de tema, guardar, reanudar una racha guardada) no es un hito nuevo: solo se sincroniza.
+    var inGame = !!(document.body && document.body.classList.contains('in-game'));
+    if (inGame && n === lastStreak + 1 && MILESTONES.indexOf(n) !== -1) streakBanner(n);
     lastStreak = n;
   }
   function watchStreak() {

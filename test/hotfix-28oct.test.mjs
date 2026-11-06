@@ -44,3 +44,11 @@ test('el aviso de racha es fijo respecto a la pantalla (con teclado o vista desp
   assert.match(fx, /document\.body\.appendChild\(b\)/);
   assert.match(fx, /window\.innerHeight/);
 });
+
+test('el aviso de racha solo sale con un acierto más y en partida: reescribir el contador (cambiar de tema con una racha guardada) no lo dispara', () => {
+  const m = /function onStreak\(\) \{[\s\S]*?\n  \}/.exec(fx);
+  assert.ok(m, 'onStreak existe');
+  assert.match(m[0], /in-game/);
+  assert.match(m[0], /n === lastStreak \+ 1/);
+  assert.doesNotMatch(m[0], /n > lastStreak/);
+});
