@@ -23,7 +23,7 @@ test('el historial es breve y va en orden: acaba en la 2.0 (sin coletillas), sin
   const versions = [...changelog.matchAll(/settings-changelog-entry-version">v([0-9.]+)</g)].map((m) => m[1]);
   assert.deepEqual(versions, ['1.0', '1.1', '1.2', '1.5', '1.6', '1.7', '2.0']);
   const v2 = changelog.slice(changelog.lastIndexOf('v2.0'));
-  assert.match(v2, /Sir Edwards te interrumpe/); assert.match(changelog, /Duelos por apuestas/);
+  assert.match(v2, /Sir Edwards irrumpe con sus propias preguntas\./); assert.match(changelog, /Nuevo modo de Duelo con apuestas/);
   assert.ok(!/ranking por XP/i.test(changelog), 'sin ranking por XP');
   assert.ok((changelog.match(/<li>/g) || []).length <= 22, 'historial breve');
 });

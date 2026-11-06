@@ -186,7 +186,7 @@ test('historial resumido (2.0 final) y ayuda del Duelo resumida', () => {
   assert.match(dh, /Veinte preguntas; gana quien más acierte/);
   assert.match(dh, /Antes de cada pregunta eliges en secreto/);
   assert.ok(!/dos logros de Duelo/.test(html));
-  assert.match(html, /Música, sonidos y mejoras visuales\./);
+  assert.match(html, /Música, efectos de sonido y mejoras visuales\./);
 });
 
 test('no hay evento de réplica tras la presentación; los eventos solo salen en los modos permitidos', () => {
