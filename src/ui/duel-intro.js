@@ -39,7 +39,9 @@
   function currentGate() {
     var st = null; try { st = typeof store === 'object' ? store : null; } catch (e) {}
     var g = gate(st);
-    if (g.open && get(K_UNLOCKED) !== '1') set(K_UNLOCKED, '1');
+    // La marca de «abierto» se anota solo cuando Duelo ya se celebró (o se anotó en silencio). Si el nivel 7 se alcanza en plena
+    // partida y antes de terminar se pinta Inicio o se entra en Duelo, marcarla aquí lo daba por «ya usado» y se perdía el aviso con confeti.
+    if (g.open && get(K_UNLOCKED) !== '1' && get(K_ANNOUNCED) === '1') set(K_UNLOCKED, '1');
     return g;
   }
 

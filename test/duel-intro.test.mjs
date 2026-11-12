@@ -31,6 +31,21 @@ test('quien ya usó los duelos nunca se bloquea (ayuda vista, historial o desblo
   assert.equal(load().M.gate({ duelStats: { multiWins: 1 } }).open, true);
 });
 
+test('subir a nivel 7 en partida y pintar Inicio o abrir Duelo antes de terminar no gasta el aviso de «modo nuevo»', () => {
+  const ls = {};
+  const win = {};
+  const ctx = { window: win, store: { xp: 1360 }, localStorage: { getItem: (k) => (k in ls ? ls[k] : null), setItem: (k, v) => { ls[k] = String(v); } }, document: { addEventListener() {}, getElementById: () => null, querySelector: () => null }, Math, Number, isFinite };
+  vm.createContext(ctx); vm.runInContext(SRC, ctx);
+  const M = win.SEQDuelIntro;
+  assert.equal(M.intercept(), false, 'Duelo está abierto');
+  M.refresh();
+  assert.equal(ls.siredwards_quiz_duel_unlocked, undefined, 'abrir la puerta no anota nada antes de celebrarlo');
+  assert.deepEqual(JSON.parse(JSON.stringify(M.takeNewUnlock())), { id: 'duelo', name: 'Duelo', badge: 'Duelo' });
+  assert.equal(M.takeNewUnlock(), null, 'solo una vez');
+  assert.equal(ls.siredwards_quiz_duel_unlocked, '1');
+  assert.equal(M.gate({}).open, true, 'ya no se vuelve a cerrar');
+});
+
 test('la ayuda lleva el texto nuevo y no el viejo; la presentación avisa y se despide', () => {
   const { M } = load();
   const h = M.helpHtml();
