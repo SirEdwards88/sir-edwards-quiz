@@ -8,7 +8,7 @@ const SEQMentalClassic = (function () {
   var START_LIVES = 1;
   var LIFE_STREAKS = [8, 16, 24];    // racha en curso que concede una vida extra
   var MAX_LIVES = START_LIVES + LIFE_STREAKS.length;
-  var FAIL_PAUSE_MS = 4500;          // pausa tras un fallo: tiempo de leer la solución y el truco (un toque la salta)
+  var FAIL_AUTO_MS = 1200;           // tras un fallo SIN truco: transición automática breve (un toque la salta). Con truco no hay tiempo: se espera a «Entendido».
   var TICK_FROM_S = 5;               // el tic-tac de urgencia solo suena en los últimos segundos de cada operación
 
   // Vidas que se ganan al llegar a esta racha (0 o 1). Se pasa la racha YA incrementada.
@@ -26,6 +26,8 @@ const SEQMentalClassic = (function () {
   function isResumable(s) {
     return !!s && s.mode === 'mental_calc' && s.variant === 'classic' && Number.isFinite(Number(s.lives)) && Number(s.lives) > 0;
   }
+  // Última vida perdida y partida a la espera de cerrarse (p. ej. leyendo el truco): se guarda para que reabrir la app la cierre y la cuente.
+  function isPendingClose(g) { return !!g && g.mode === 'mental_calc' && g.variant === 'classic' && !!g.answered && Number(g.lives) <= 0; }
   function pack(game, op, remainingMs) {
     var o = {}; for (var k in game) o[k] = game[k];
     // Entre operaciones (ya contestada) no hay operación a medias: al volver sale una nueva con sus 20 s.
@@ -49,5 +51,5 @@ const SEQMentalClassic = (function () {
       remainingMs: valid ? remaining : OP_MS
     };
   }
-  return { isResumable: isResumable, pack: pack, unpack: unpack, OP_MS: OP_MS, FAIL_PAUSE_MS: FAIL_PAUSE_MS, START_LIVES: START_LIVES, LIFE_STREAKS: LIFE_STREAKS, MAX_LIVES: MAX_LIVES, TICK_FROM_S: TICK_FROM_S, lifeGain: lifeGain, isBetter: isBetter };
+  return { isResumable: isResumable, pack: pack, unpack: unpack, OP_MS: OP_MS, FAIL_AUTO_MS: FAIL_AUTO_MS, isPendingClose: isPendingClose, START_LIVES: START_LIVES, LIFE_STREAKS: LIFE_STREAKS, MAX_LIVES: MAX_LIVES, TICK_FROM_S: TICK_FROM_S, lifeGain: lifeGain, isBetter: isBetter };
 })();

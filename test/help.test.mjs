@@ -94,7 +94,9 @@ function loadUi() {
   if (arguments[0] && arguments[0].links) win.SEQOnline = { session: () => ({ features: { classic_duel: true, duel_links: true } }) };
   win.SEQDuelIntro = { replay() { calls.push('replay'); return true; } };
   const ctx = { window: win, document: doc, String, Array };
-  vm.createContext(ctx); vm.runInContext(DATA_SRC, ctx); vm.runInContext(UI_SRC + '\nwindow.SEQHelp = SEQHelp;', ctx);
+  vm.createContext(ctx);
+  if (arguments[0] && arguments[0].tips) vm.runInContext(read('src/utils/mental-tips.js'), ctx);   // biblioteca «Trucos de cálculo mental»
+  vm.runInContext(DATA_SRC, ctx); vm.runInContext(UI_SRC + '\nwindow.SEQHelp = SEQHelp;', ctx);
   return { H: win.SEQHelp, modal, body, calls, byId };
 }
 
@@ -109,6 +111,31 @@ test('SEQHelp.open: pinta todos los temas, despliega solo el pedido y muestra el
   assert.equal(u.body.all((c) => c.tag === 'details').filter((d) => d.open).length, 0, 'sin tema, todo plegado');
   assert.equal(u.body.all((c) => c.tag === 'details').length, D.topics.length, 'no se duplica al reabrir');
   u.H.close(); assert.equal(u.modal.style.display, 'none');
+});
+
+test('Ayuda: «Trucos de cálculo mental» está integrada, ordenada por Sumas/Restas/Multiplicaciones/Divisiones y con ejemplos resueltos', () => {
+  const u = loadUi({ tips: true });
+  u.H.open('trucos');
+  const dets = u.body.all((c) => c.tag === 'details');
+  assert.equal(dets.length, D.topics.length + 1, 'un tema más, sin tocar los de Duelos');
+  const t = dets[dets.length - 1];
+  assert.equal(t.id, 'help-topic-trucos');
+  assert.equal(t.children[0].textContent, 'Trucos de cálculo mental');
+  assert.deepEqual(dets.filter((d) => d.open).map((d) => d.id), ['help-topic-trucos']);
+  const ps = t.all((c) => c.tag === 'p').map((c) => c.textContent);
+  const groups = ps.filter((x) => ['Sumas', 'Restas', 'Multiplicaciones', 'Divisiones'].includes(x));
+  assert.deepEqual(groups, ['Sumas', 'Restas', 'Multiplicaciones', 'Divisiones']);
+  assert.ok(ps.some((x) => x === 'Multiplicar por 25. Multiplicar por 25 es multiplicar por 100 y dividir entre 4.'));
+  assert.ok(ps.some((x) => x === '730 + 470 → 73 + 47 = 120 → 1200'), 'sin repetir la operación cuando el cálculo ya empieza por ella');
+  assert.ok(ps.some((x) => x === '36 × 25 → 36 × 100 = 3600 → 3600 ÷ 4 = 900'));
+  assert.ok(ps.some((x) => x === '78 × 11 → 7 + 8 = 15 → 5 en medio y 7 + 1 = 8 delante → 858'));
+  assert.ok(t.all((c) => c.className === 'help-ex').length >= 25);
+  u.H.open(); assert.equal(u.body.all((c) => c.tag === 'details').length, D.topics.length + 1, 'no se duplica al reabrir');
+  // Sin el módulo de trucos la Ayuda sigue funcionando igual que antes.
+  const bare = loadUi(); bare.H.open(); assert.equal(bare.body.all((c) => c.tag === 'details').length, D.topics.length);
+  // Tono: «tú», sin emojis.
+  const all = ps.join(' ');
+  assert.ok(!/\busted(es)?\b/i.test(all) && !/[\u{1F300}-\u{1FAFF}]/u.test(all));
 });
 
 test('SEQHelp.open: el contenido sigue a features.duel_links (sin él, ningún texto de enlaces)', () => {

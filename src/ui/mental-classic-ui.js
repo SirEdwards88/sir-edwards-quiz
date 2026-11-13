@@ -19,7 +19,64 @@
     return { correct: nc, score: Math.max(ns, old.score || 0) };
   }
 
+  // ---- pausa educativa: tras un fallo con truco, la partida espera a «Entendido» (sin límite de tiempo) ----
+  // Mientras se lee: reloj parado de verdad (sin intervalo), sin cierres diferidos ni transiciones ocultas y sin que un toque suelto
+  // en la tarjeta avance (solo el botón). `tipPending` hace que una doble pulsación no avance dos veces.
+  var tipPending = null, tipFb = null;
+  // Si el teclado virtual se abre o se cierra con el aviso a la vista, se vuelve a asegurar que «Entendido» queda visible.
+  function revealTip() {
+    if (!tipPending || !tipFb) return;
+    try { SEQFeedbackScroll.reveal(tipFb); } catch (e) {}
+    var b = document.getElementById('mental-tip-ok');   // y, pase lo que pase, el botón a la vista (el desplazamiento mínimo, sin animación)
+    try { if (b && b.scrollIntoView) b.scrollIntoView({ block: 'nearest' }); } catch (e) {}
+  }
+  // En un cambio de tamaño (teclado) la propia página reajusta el scroll después: se repite en el siguiente fotograma, sin temporizadores.
+  // El manejador de teclado de la app recoloca la vista 80 ms después de cada cambio de tamaño: un último repaso a los 160 ms deja el botón visible tras ese ajuste (sin tocar ese manejador).
+  var revealTimer = null;
+  function onViewportChange() {
+    revealTip();
+    if (typeof requestAnimationFrame === 'function') requestAnimationFrame(revealTip);
+    if (!tipPending || typeof setTimeout !== 'function') return;
+    if (revealTimer) clearTimeout(revealTimer);
+    revealTimer = setTimeout(function () { revealTimer = null; revealTip(); }, 160);
+  }
+  if (typeof window.addEventListener === 'function') window.addEventListener('resize', onViewportChange);
+  if (window.visualViewport && typeof window.visualViewport.addEventListener === 'function') window.visualViewport.addEventListener('resize', onViewportChange);
+  function pauseForTip(fb, lastLife) {
+    tipFb = fb;
+    if (mentalCalcTimer) { clearInterval(mentalCalcTimer); mentalCalcTimer = null; }
+    clearTimeout(mentalCalcAutoCheckTimer);
+    try { stopUrgencySound(); } catch (e) {}
+    cancelPendingModeFinish();
+    fb.onclick = null;
+    var btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'btn btn-primary mental-tip-ok'; btn.id = 'mental-tip-ok'; btn.textContent = 'Entendido';
+    btn.addEventListener('click', understood);
+    fb.appendChild(btn);
+    tipPending = { lastLife: !!lastLife, game: currentGame };
+    // Última vida: si se sale al menú durante la lectura, exitGameToMenu() cierra y cuenta la partida (sin plazo ni temporizador).
+    if (lastLife) pendingModeFinish = { callback: function () { tipPending = null; finishGame(false, false); }, deadline: Infinity };
+    // El foco pasa al botón: cierra el teclado virtual (que taparía «Entendido») y deja la tecla Intro/espacio a mano.
+    try { var inp = document.getElementById('ans-input'); if (inp && inp.blur) inp.blur(); } catch (e) {}
+    try { btn.focus({ preventScroll: true }); } catch (e) {}
+    revealTip();
+  }
+  function understood(ev) {
+    var p = tipPending;
+    if (!p || p.game !== currentGame || !isClassic(currentGame)) return;
+    if (typeof tapTooSoon === 'function' && tapTooSoon(ev)) return;      // toque que llega justo tras contestar (p. ej. del teclado): se ignora
+    var btn = document.getElementById('mental-tip-ok');
+    tipPending = null;                                                   // consumido: la doble pulsación ya no avanza
+    if (btn) btn.disabled = true;
+    if (p.lastLife) { if (!flushPendingModeFinish()) finishGame(false, false); return; }
+    if (!currentGame.answered) return;
+    nextQuestion();                                                      // renderMentalCalcOp pone los 20 s completos de la operación nueva
+    if (currentGame.answered) { tipPending = p; if (btn) btn.disabled = false; return; }   // no ha avanzado (p. ej. pregunta de Sir Edwards abierta): sigue a la espera
+    runMentalCalcTimer(true);
+  }
+
   function start() {
+    try { SEQMentalTips.reset(); } catch (e) {}
     if (!(store.unlockedMedals || []).includes('tt_15')) {
       // Sin aviso: Fondo y Turbo se desbloquean con Cálculo mental, que es el único que muestra el candado.
       return;
@@ -31,6 +88,7 @@
   function livesHtml(lives) { return renderLivesHearts(lives, SEQMentalClassic.MAX_LIVES); }
 
   function finish() {
+    tipPending = null;
     if (mentalCalcTimer) { clearInterval(mentalCalcTimer); mentalCalcTimer = null; }
     clearTimeout(mentalCalcAutoCheckTimer);
     mentalCalcEndTime = 0;
@@ -142,6 +200,8 @@
   function restore(saved) {
     var u = SEQMentalClassic.unpack(saved);
     currentGame = u.game;
+    tipPending = null;
+    try { SEQMentalTips.reset(); } catch (e) {}
     if (!SEQMentalClassic.isResumable(saved)) {
       // Sin vidas: la partida ya estaba perdida y su cierre no llegó a ejecutarse. Se cierra (y se cuenta) ahora.
       currentGame.lives = 0;
@@ -172,5 +232,5 @@
     return true;
   }
 
-  window.SEQMentalClassicUI = { bestOf: bestOf, isClassic: isClassic, start: start, finish: finish, livesHtml: livesHtml, renderStat: renderStat, restore: restore };
+  window.SEQMentalClassicUI = { bestOf: bestOf, isClassic: isClassic, start: start, finish: finish, livesHtml: livesHtml, pauseForTip: pauseForTip, understood: understood, renderStat: renderStat, restore: restore };
 })();
