@@ -39,7 +39,7 @@
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
 // Desde la 2.0 el historial de cambios de cada versión vive en git; aquí solo se sube CACHE_VERSION (scripts/bump-version.mjs).
-const CACHE_VERSION = 525;
+const CACHE_VERSION = 526;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -371,6 +371,7 @@ const APP_SHELL = [
   './src/online/online.js',
   './src/share/share-card.js',
   './src/online/reto-fx.js',
+  './src/online/duel-invite-link.js',
   './src/online/duels.js',
   './src/online/duels-v21.js',
   './src/online/multi-duels.js',
@@ -400,11 +401,15 @@ const APP_SHELL = [
   './src/ui/encargos-intro.js',
   './src/ui/lucidez-unlock.js',
   './src/ui/advance.js',
+  './src/utils/duel-forfeit.js',
   './src/ui/duel-intro.js',
+  './src/data/help.js',
+  './src/ui/help.js',
   './src/data/home-quotes.js',
   './src/ui/home-quote.js',
   './styles/encargos-intro.css',
   './styles/duel-intro.css',
+  './styles/help.css',
   './styles/encargos.css',
   './styles/sir-events.css',
   './styles/sir-interrupt.css',
@@ -432,6 +437,8 @@ const APP_SHELL = [
   './assets/character/presentacion-evaluador.webp',
   './assets/character/presentacion-expediente.webp',
   './assets/character/presentacion-mirada.webp',
+  './assets/character/sir-edwards-duelos-reloj.webp',
+  './assets/character/sir-edwards-retos-sobre.webp',
   './assets/character/lunes-aprobacion.webp',
   './assets/character/lunes-reproche.webp',
   './src/utils/sudden-progression.js',
@@ -545,6 +552,8 @@ const ASSET_REVS = {
   './assets/character/presentacion-evaluador.webp': 'ceaa2779',
   './assets/character/presentacion-expediente.webp': '2644648c',
   './assets/character/presentacion-mirada.webp': '261e874d',
+  './assets/character/sir-edwards-duelos-reloj.webp': '7ffe5600',
+  './assets/character/sir-edwards-retos-sobre.webp': '4b3260b2',
   './assets/character/siredwards_encargos.webp': '390cd810',
   './assets/character/siredwards_encargos_completados.webp': '2a545d18',
   './assets/character/victory.webp': '2fdab0ea',

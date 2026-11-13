@@ -36,7 +36,7 @@ function makeEnv() {
     saveStore: () => {}, showInfoToast: (m) => toasts.push(m),
     document: { getElementById: () => null }
   });
-  vm.runInContext(read('src/data/medals.js') + '\n' + read('src/utils/store.js'), ctx);
+  vm.runInContext(read('src/data/medals.js') + '\n' + read('src/utils/store.js') + '\n' + read('src/utils/duel-forfeit.js').replace(/window\.SEQDuelForfeit =/, 'globalThis.SEQDuelForfeit ='), ctx);
   vm.runInContext(
     extractBlock('const UNLOCKABLE_MODES', '// ====== SISTEMA DE FRAGMENTOS') + '\n' +
     extractBlock('const FRAGMENT_TOTAL', '// Migraciones específicas') + '\n' +
@@ -84,6 +84,35 @@ test('Un mismo duelo (mismo ID) no cuenta dos veces; abandono no cuenta', () => 
   assert.equal(run(c, `store.duelStats.rivals.${BRUNO}.wins`), 1);
   run(c, `registerOnlineDuelResult({ duelId: 'FORFEIT001', rivalId: '${BRUNO}', result: 'win', forfeit: true })`);
   assert.equal(run(c, `store.duelStats.rivals.${BRUNO}.wins`), 1);
+});
+test('Victoria por abandono: suma a forfeitWins, una sola vez, sin tocar wins, played, rachas, rivales ni logros', () => {
+  const c = makeEnv(); const t0 = Date.UTC(2026, 10, 14);
+  const f = () => run(c, `registerOnlineDuelResult({ duelId: 'FORFEITWIN', rivalId: '${BRUNO}', result: 'win', forfeit: true, abandoned: true, startedAt: ${t0} })`);
+  const medalsBefore = run(c, 'JSON.stringify(store.unlockedMedals)');
+  f(); f(); f();
+  assert.equal(run(c, 'store.duelStats.forfeitWins'), 1);
+  assert.equal(run(c, 'store.duelStats.wins'), 0);
+  assert.equal(run(c, 'store.duelStats.played'), 0);
+  assert.equal(run(c, 'store.duelStats.currentWinStreak'), 0);
+  assert.deepEqual(JSON.parse(run(c, 'JSON.stringify(store.duelStats.rivals)')), {});
+  assert.equal(run(c, 'JSON.stringify(store.unlockedMedals)'), medalsBefore);
+  assert.equal(run(c, 'SEQDuelForfeit.totals(store.duelStats).wins'), 1);
+  assert.equal(run(c, 'SEQDuelForfeit.totals(store.duelStats).rate'), 100);
+});
+test('Victoria por abandono: no cuenta si el duelo empezó antes de esta versión, ni «no jugado», ni una derrota', () => {
+  const c = makeEnv();
+  run(c, `registerOnlineDuelResult({ duelId: 'OLDFORFEIT', rivalId: '${BRUNO}', result: 'win', forfeit: true, abandoned: true, startedAt: ${Date.UTC(2026, 9, 1)} })`);
+  run(c, `registerOnlineDuelResult({ duelId: 'NOPLAYED01', rivalId: '${BRUNO}', result: 'win', forfeit: true, abandoned: false, startedAt: ${Date.UTC(2026, 10, 20)} })`);
+  run(c, `registerOnlineDuelResult({ duelId: 'NOSTART001', rivalId: '${BRUNO}', result: 'win', forfeit: true, abandoned: true })`);
+  assert.equal(run(c, 'store.duelStats.forfeitWins'), 0);
+  run(c, `registerOnlineDuelResult({ duelId: 'LOSSFORF01', rivalId: '${BRUNO}', result: 'loss', forfeit: true, abandoned: true, startedAt: ${Date.UTC(2026, 10, 20)} })`);
+  assert.equal(run(c, 'store.duelStats.losses'), 1); assert.equal(run(c, 'store.duelStats.forfeitWins'), 0);
+});
+test('forfeitWins: perfiles antiguos lo leen como 0 y la basura se sanea', () => {
+  const c = makeEnv();
+  assert.equal(run(c, `migrateStore({ duelStats: { played: 3, wins: 2 } })`).duelStats.forfeitWins, 0);
+  assert.equal(run(c, `migrateStore({ duelStats: { forfeitWins: -5 } })`).duelStats.forfeitWins, 0);
+  assert.equal(run(c, `migrateStore({ duelStats: { forfeitWins: 4 } })`).duelStats.forfeitWins, 4);
 });
 test('Persistencia: sobrevive a guardar/cargar (migrateStore) y sanea basura', () => {
   const c = makeEnv(); duel(c, BRUNO, 'loss'); duel(c, BRUNO, 'win');

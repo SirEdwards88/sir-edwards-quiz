@@ -37,7 +37,7 @@ const SEQSyncMerge = (function () {
     'noRepeatCatBestStreak', 'bestMentalCalcScore', 'mentalCalcBestStreak', 'bestMentalCalcCorrect',
     'mentalCalcTotalCorrect', 'bestMentalClassicCorrect', 'bestMentalClassicScore', 'bestLucidezScore', 'bestLucidezStreak', 'lucidezTotalCorrect', 'suddenBestSurvived',
     'duelStats.played', 'duelStats.wins', 'duelStats.losses', 'duelStats.draws',
-    'duelStats.bestWinStreak', 'duelStats.bestWinsVsRival', 'duelStats.multiWins'
+    'duelStats.bestWinStreak', 'duelStats.bestWinsVsRival', 'duelStats.multiWins', 'duelStats.forfeitWins'
   ];
   const OR_FIELDS = [
     'hasCompletedNightGame', 'lucidezPlayed', 'lucidezEverWon', 'lucidezEverPerfect',

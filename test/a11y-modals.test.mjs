@@ -25,7 +25,7 @@ test('hay ocho modales y cada uno es un diálogo (en el propio overlay o en su t
 
 test('Escape solo cierra los modales que no obligan a decidir', () => {
   const withEsc = [...html.matchAll(/<div id="([^"]+)" class="modal-overlay[^>]*data-modal-esc/g)].map((m) => m[1]).sort();
-  assert.deepEqual(withEsc, ['app-confirm-modal', 'discard-game-modal', 'duel-help-modal', 'privacy-modal', 'update-modal']);
+  assert.deepEqual(withEsc, ['app-confirm-modal', 'discard-game-modal', 'help-modal', 'privacy-modal', 'update-modal']);
   for (const id of ['welcome-modal', 'auth-gate']) {
     const head = html.slice(html.indexOf(`<div id="${id}"`)); assert.ok(!/data-modal-esc/.test(head.slice(0, head.indexOf('>'))), id + ' no debe cerrarse con Escape');
   }

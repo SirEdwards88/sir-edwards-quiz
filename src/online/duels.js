@@ -162,7 +162,7 @@
     var c = e && e.code;
     var map = {
       network: 'Sin conexión. Inténtalo de nuevo.', no_session: 'Inicia sesión para usar esta función.',
-      not_friends: 'Solo puedes retar a tus amigos.', player_busy: 'Tú o tu amigo ya tenéis un duelo online en marcha.',
+      not_friends: 'Ya no puedes retar a este jugador. Añádelo como amigo o usa otro enlace.', player_busy: 'Tú o tu amigo ya tenéis un duelo online en marcha.',
       reto_already_active: 'Ya tenéis un reto abierto entre vosotros.', question_closed: 'Se acabó el tiempo de esa pregunta.',
       question_not_open: 'Esa pregunta aún no está abierta.', already_answered: 'Ya respondiste esa pregunta.',
       invalid_state: 'Ya no se puede hacer eso (el estado ha cambiado).',
@@ -263,7 +263,7 @@
   }
 
   // ---- Navegación ------------------------------------------------------------
-  function stopTimers() { clearTimeout(S.presT); S.presT = null; clearTimeout(S.pollT); S.pollT = null; clearInterval(S.tickT); S.tickT = null; urgencyStop(); }
+  function stopTimers() { try { if (window.SEQDuelLink) SEQDuelLink.stop(); } catch (e) {} clearTimeout(S.presT); S.presT = null; clearTimeout(S.pollT); S.pollT = null; clearInterval(S.tickT); S.tickT = null; urgencyStop(); }
   function open(screen, id) {
     if (!active() || !screen) return;     // sin pantalla no se oculta el hub (quedaba una vista en blanco)
     stopTimers();
@@ -276,6 +276,7 @@
     var root = $('seq-duel-root'); if (root) root.style.display = 'block';
     render();
     if (screen === 'duel' || screen === 'reto' || screen === 'multi') load();
+    else if (screen === 'invite') { if (window.SEQDuelLink) SEQDuelLink.begin(); }
     else if (screen === 'logros') loadLogros();
     else if (screen === 'rankings') { if (window.SEQDuels21) SEQDuels21.loadRankings(); }
     else if (screen === 'profile') { if (window.SEQProfile) SEQProfile.load(); }
@@ -376,7 +377,7 @@
       var draw = r.empate === true || (g == null && num(r.mi_puntuacion) === num(r.puntuacion_rival));
       var res = g === 'yo' ? 'win' : g === 'rival' ? 'loss' : (draw ? 'draw' : null);
       if (!rid || !id || !res || typeof registerOnlineDuelResult !== 'function') return;
-      var out = registerOnlineDuelResult({ duelId: id, rivalId: rid, result: res, myScore: num(r.mi_puntuacion), opponentScore: num(r.puntuacion_rival), forfeit: d.motivo_fin === 'abandono' || d.motivo_fin === 'no_jugado', abandoned: d.motivo_fin === 'abandono', hitos: kind === 'duel' && r.hitos && typeof r.hitos === 'object' ? r.hitos : null, stakes: kind === 'duel' && d.modo === 'stakes', marginOk: (kind === 'duel' && d.modo !== 'stakes') || (kind === 'reto' && (!d.modo || d.modo === 'estandar')) });
+      var out = registerOnlineDuelResult({ duelId: id, rivalId: rid, result: res, myScore: num(r.mi_puntuacion), opponentScore: num(r.puntuacion_rival), forfeit: d.motivo_fin === 'abandono' || d.motivo_fin === 'no_jugado', abandoned: d.motivo_fin === 'abandono', startedAt: num(d.t0), hitos: kind === 'duel' && r.hitos && typeof r.hitos === 'object' ? r.hitos : null, stakes: kind === 'duel' && d.modo === 'stakes', marginOk: (kind === 'duel' && d.modo !== 'stakes') || (kind === 'reto' && (!d.modo || d.modo === 'estandar')) });
       if (out && out.medals && out.medals.length) { S.newMedals = S.newMedals || {}; S.newMedals[id] = out.medals.map(function (m) { return m.id; }); }
     } catch (e) {}
   }
@@ -783,10 +784,12 @@
   function renderPick() {
     var fl = S.lists.friends;
     var h = header('Elige a quién retar', S.pickKind === 'duel' ? (S.pickModo === 'stakes' ? 'Duelo por apuestas' : 'Duelo clásico') : 'Reto', backToList);
+    // Fase B: en un duelo en directo también se puede compartir un enlace (aunque no tengas amigos).
+    if (S.pickKind === 'duel' && window.SEQDuelLink) h += SEQDuelLink.pickButton();
     if (fl && !fl.friends.length) { /* sin amigos: no hay nada que explicar todavía */ }
     else if (S.pickKind !== 'duel') h += '<p class="stats-section-sub">Tu amigo tiene 3 días para jugar.</p>';
     if (!fl) return h + '<p class="stats-section-sub">Cargando…</p>';
-    if (!fl.friends.length) return h + emptyState('vacio-amigos', 'Aún no tienes amigos', 'Añádelos para poder retarlos.', '<button class="btn btn-primary" onclick="SEQDuels.open(\'friends\')">Añadir amigos</button>');
+    if (!fl.friends.length) return h + emptyState('vacio-amigos', 'Aún no tienes amigos', S.pickKind === 'duel' ? 'Añádelos para retarlos, o comparte una invitación.' : 'Añádelos para poder retarlos.', '<button class="btn btn-primary" onclick="SEQDuels.open(\'friends\')">Añadir amigos</button>');
     if (S.pickKind === 'duel') {
       // Duelo en directo: los dos tienen que estar a la vez. Solo se puede retar a quien está en línea ahora mismo.
       var on = fl.friends.filter(isOnline), off = fl.friends.filter(function (f) { return !isOnline(f); });
@@ -1090,6 +1093,7 @@
       h += '<div class="results-actions"><button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="SEQDuels.' + (kind === 'duel' ? 'duelAction' : 'retoAction') + '(\'rematch\')">' + ico('revancha') + 'Revancha</button>';
       // «Compartir» discreto, como en solitario; gana presencia cuando hay algo que presumir (una victoria).
       h += '<button class="btn btn-share' + (res === 'win' ? '' : ' btn-share-quiet') + '" onclick="SEQDuels.shareResult()">' + ico('compartir') + 'Compartir resultado</button>';
+      if (kind === 'duel' && window.SEQDuelLink) h += SEQDuelLink.friendButton(d);
       h += '<button type="button" class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.back()">' + (kind === 'duel' ? 'Volver a Duelos' : 'Volver a Retos') + '</button></div>';
     }
     return h + hEnd;
@@ -1163,6 +1167,7 @@
       else if (S.screen === 'duels') h = renderList('duel');
       else if (S.screen === 'retos') h = renderList('reto');
       else if (S.screen === 'pick') h = renderPick();
+      else if (S.screen === 'invite') h = window.SEQDuelLink ? SEQDuelLink.render(HELPERS) : '';
       else if (S.screen === 'retomode') h = renderRetoMode();
       else if (S.screen === 'duel') h = renderDuel();
       else if (S.screen === 'pickkind' || S.screen === 'multipick' || S.screen === 'multi') h = window.SEQMulti ? SEQMulti.render(S.screen, HELPERS) : '';
@@ -1216,6 +1221,7 @@
     if (!active() && S.screen) back();
     renderCards();
     syncHubTopbar();
+    try { if (window.SEQDuelLink) SEQDuelLink.resume(); } catch (e) {}   // enlace de invitación pendiente (se retoma al iniciar sesión)
     // Al abrir la app (o al iniciar sesión): primer refresco de los contadores.
     if (active() && !S.lastSummary) summarySoon();
   }

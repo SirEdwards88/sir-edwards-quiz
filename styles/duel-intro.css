@@ -1,23 +1,4 @@
-/* SirEdwards Quiz — Duelos: tarjeta de ayuda, aviso de bloqueo y presentación de Sir Edwards (src/ui/duel-intro.js). */
-
-/* Tarjeta de ayuda */
-.dhelp-card { max-width: 440px; }
-.dhelp-card h2 { display: flex; align-items: center; gap: 10px; font-family: var(--font-display, 'Playfair Display', serif); margin: 0 0 14px; }
-.dh { display: flex; flex-direction: column; }
-.dh-sec { display: flex; flex-wrap: wrap; gap: 0 14px; padding: 14px 0; border-top: 1px solid rgba(201, 153, 46, .22); }
-.dh-sec:first-child { border-top: 0; padding-top: 4px; }
-.dh-ico { flex: 0 0 auto; width: 44px; height: 44px; object-fit: contain; }
-.dh-ico-s { width: 30px; height: 30px; margin-top: 1px; }
-.dh-txt { flex: 1 1 0; min-width: 0; }
-.dh-subs { flex: 1 0 100%; display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
-.dh-txt h3 { margin: 0 0 3px; font-family: var(--font-display, 'Playfair Display', serif); font-size: 17px; font-weight: 700; color: var(--text); }
-.dh-txt p { margin: 0; font-size: 14px; line-height: 1.5; color: var(--sub); }
-.dh-sub { display: flex; gap: 10px; padding: 10px 12px; border-radius: 12px; background: rgba(201, 153, 46, .07); border: 1px solid rgba(201, 153, 46, .18); }
-.dh-sub b { display: block; font-size: 14px; color: var(--text); margin-bottom: 2px; }
-.dh-sub span { display: block; font-size: 13.5px; line-height: 1.5; color: var(--sub); }
-.dh-notes { margin-top: 4px; padding-top: 14px; border-top: 1px solid rgba(201, 153, 46, .22); }
-.dh-notes p { margin: 0 0 8px; font-size: 13px; line-height: 1.5; color: var(--sub); }
-.dh-notes b { color: var(--text); }
+/* SirEdwards Quiz — Duelos: aviso de bloqueo y presentación de Sir Edwards (src/ui/duel-intro.js). La Ayuda tiene su hoja: styles/help.css. */
 
 /* Aviso de bloqueo */
 .dl-card { display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 340px; padding: 28px 24px 24px; }
@@ -39,20 +20,33 @@
 /* Presentación de Sir Edwards */
 .dint { position: fixed; inset: 0; z-index: 9400; display: flex; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;
   background: radial-gradient(ellipse at 50% 30%, rgba(201, 153, 46, .18), transparent 60%), rgba(6, 6, 10, .94); animation: dintIn .4s ease both; }
-.dint-card { width: 100%; max-width: 420px; max-height: 92vh; max-height: 92dvh; overflow-y: auto; box-sizing: border-box; padding: 22px 22px 20px; text-align: center; border-radius: var(--radius-lg, 20px);
+.dint-card { width: 100%; max-width: 420px; max-height: 92vh; max-height: 92dvh; overflow-y: auto; box-sizing: border-box; padding: 16px 22px 16px; text-align: center; border-radius: var(--radius-lg, 20px);
   background: var(--card); border: 1px solid rgba(201, 153, 46, .45); box-shadow: 0 18px 50px rgba(0, 0, 0, .55); animation: dintPage .35s ease both; }
 .dint-card:focus { outline: none; }
-.dint-img { display: block; width: min(70%, 240px); height: 200px; object-fit: contain; margin: 0 auto 6px; }
-.dint-card h2 { margin: 4px 0 8px; font-family: var(--font-display, 'Playfair Display', serif); font-size: 24px; line-height: 1.2; color: var(--text); }
-.dint-body { margin: 0 0 16px; font-size: 15.5px; line-height: 1.55; color: var(--sub); }
-.dint-help { text-align: left; margin: 0 0 14px; }
-.dint-dots { display: flex; justify-content: center; gap: 7px; margin: 0 0 14px; }
+.dint-img { display: block; width: min(70%, 240px); height: 160px; object-fit: contain; margin: 0 auto 8px; }
+.dint-card h2 { margin: 0 0 4px; font-family: var(--font-display, 'Playfair Display', serif); font-size: 26px; line-height: 1.2; color: var(--text); }
+.dint-quip { margin: 0 0 10px; font-family: var(--font-display, 'Playfair Display', serif); font-style: italic; font-size: 15px; line-height: 1.35; color: #e8c874; }
+.dint-body { margin: 0 0 14px; font-size: 15.5px; line-height: 1.55; color: var(--sub); }
+.dint-dots { display: flex; justify-content: center; gap: 7px; margin: 0 0 12px; }
 .dint-dots i { width: 7px; height: 7px; border-radius: 50%; background: rgba(255, 255, 255, .2); }
 .dint-dots i.on { background: #e8c874; }
 .dint-go { width: 100%; }
+.dint-skip { display: block; margin: 6px auto 0; padding: 8px 14px; background: none; border: 0; font: inherit; font-size: 13px; color: var(--sub); text-decoration: underline; cursor: pointer; }
+.dint-skip:hover, .dint-skip:focus-visible { color: var(--text); }
+.dint-body b { color: var(--text); }
 @keyframes dintIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes dintPage { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .dint, .dint-card { animation: none; } }
 :root:not([data-theme="dark"]) .dint { background: radial-gradient(ellipse at 50% 30%, rgba(201, 153, 46, .22), transparent 60%), rgba(30, 24, 12, .72); }
-.dh-lead { margin: 0 0 6px; font-weight: 600; font-style: italic; font-size: 15px; color: var(--sub); }
 .dl-lv-count { justify-content: center; font-size: 15px; font-weight: 700; letter-spacing: .02em; color: #f0d484; }
+.dint .btn:focus-visible, .dint-skip:focus-visible { outline: 3px solid #e8c874; outline-offset: 3px; box-shadow: none; }
+/* Móviles bajos (320×568): la ilustración cede altura para que ninguna viñeta necesite desplazarse. */
+@media (max-height: 620px) {
+  .dint { padding: 10px; }
+  .dint-card { padding: 12px 18px 12px; max-height: 96dvh; }
+  .dint-img { height: 118px; margin-bottom: 4px; }
+  .dint-card h2 { font-size: 24px; }
+  .dint-quip { margin-bottom: 8px; }
+  .dint-body { margin-bottom: 10px; font-size: 15px; line-height: 1.5; }
+  .dint-dots { margin-bottom: 10px; }
+}

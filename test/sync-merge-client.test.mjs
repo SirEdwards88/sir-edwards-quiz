@@ -113,3 +113,22 @@ test('2.2 encargosClaimed: extractDoc/applyDoc conservan lo local y solo añaden
   M.applyDoc(s2, { v: 1, f: { encargosClaimed: ['2026-W41:b'] }, g: {} });
   assert.deepEqual(clone(s2.encargosClaimed), ['2026-W41:b']);
 });
+
+test('duelStats.forfeitWins se combina por máximo: sincronizar dos veces o desde otro dispositivo no lo duplica', () => {
+  const a = baseStore(); a.duelStats.forfeitWins = 2;
+  const b = baseStore(); b.duelStats.forfeitWins = 3;
+  const merged = M.mergeDocs(M.extractDoc(a, {}), M.extractDoc(b, {}));
+  const again = M.mergeDocs(merged, M.extractDoc(b, {}));
+  M.applyDoc(a, merged);
+  assert.equal(a.duelStats.forfeitWins, 3);
+  M.applyDoc(a, again);
+  assert.equal(a.duelStats.forfeitWins, 3);
+});
+test('duelStats.forfeitWins: un perfil antiguo sin el campo no pierde ni inventa nada', () => {
+  const a = baseStore(); const b = baseStore(); b.duelStats.forfeitWins = 2;
+  M.applyDoc(a, M.mergeDocs(M.extractDoc(a, {}), M.extractDoc(b, {})));
+  assert.equal(a.duelStats.forfeitWins, 2);
+  const c = baseStore();
+  M.applyDoc(c, M.mergeDocs(M.extractDoc(c, {}), M.extractDoc(baseStore(), {})));
+  assert.ok(!c.duelStats.forfeitWins);
+});

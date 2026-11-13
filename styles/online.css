@@ -1083,3 +1083,14 @@
 #seq-duel-root .seq-d-serie-dots .sd-l { color: #d98a8a; background: rgba(217,138,138,.12); }
 #seq-duel-root .seq-d-serie-dots .sd-d { color: #9fb0d8; background: rgba(159,176,216,.12); }
 #seq-duel-root .seq-pf-serie { border-top: 0; margin: 4px 0 0; padding-top: 0; }
+
+/* Invitación por enlace (src/online/duel-invite-link.js) */
+.seq-link-pick { margin: 0 0 14px; }
+.seq-link-pick .stats-section-sub { margin: 6px 0 0; text-align: center; }
+.seq-link-box { display: flex; flex-direction: column; gap: 10px; padding: 4px 0; }
+.seq-link-box .stats-section-sub { margin: 0; }
+.seq-link-url { width: 100%; box-sizing: border-box; padding: 11px 12px; border-radius: 10px; border: 1px solid rgba(201, 153, 46, .35); background: rgba(255, 255, 255, .04); color: var(--text); font: inherit; font-size: 13px; line-height: 1.45; overflow-wrap: anywhere; word-break: break-all; user-select: all; -webkit-user-select: all; }
+.seq-link-actions { display: flex; gap: 8px; }
+.seq-link-actions .btn { flex: 1 1 0; }
+.seq-link-count { margin: 2px 0; text-align: center; font-size: 15px; color: var(--sub); }
+.seq-link-count b { color: var(--text); font-variant-numeric: tabular-nums; }
