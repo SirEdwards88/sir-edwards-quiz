@@ -183,8 +183,8 @@ test('historial resumido (2.0 final) y ayuda del Duelo resumida', () => {
   const html = read('index.html');
   assert.ok(!/en dos modos: clásico y apuestas/.test(html), 'la 2.0 ya no habla de apuestas (son de la 2.1)');
   const dh = read('src/data/help.js');
-  assert.match(dh, /20 preguntas, con hasta 20 segundos cada una/);
-  assert.match(dh, /Antes de cada pregunta tienes 10 segundos para elegir en secreto/);
+  assert.match(dh, /20 preguntas de hasta 20 segundos/);
+  assert.match(dh, /Antes de cada pregunta tienes 10 segundos para elegir cuánto arriesgar/);
   assert.ok(!/dos logros de Duelo/.test(html));
   assert.match(html, /Música, efectos de sonido y mejoras visuales\./);
 });

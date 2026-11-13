@@ -26,7 +26,9 @@ const topic = (id, on = true) => flat(D.topics.find((t) => t.id === id), on);
 test('la Ayuda cubre los temas pedidos y sus ids son únicos', () => {
   const ids = D.topics.map((t) => t.id);
   assert.equal(new Set(ids).size, ids.length);
-  for (const id of ['empezar', 'amigos', 'directo', 'invitaciones', 'retos', 'todos', 'ranking', 'abandonos', 'recompensas']) assert.ok(ids.includes(id), id);
+  for (const id of ['amigos', 'directo', 'invitaciones', 'retos', 'todos', 'ranking', 'abandonos', 'recompensas']) assert.ok(ids.includes(id), id);
+  assert.equal(ids.length, 8, 'solo los ocho apartados de Duelos');
+  assert.ok(!ids.includes('empezar') && !ids.includes('trucos'), 'sin «Cómo empezar» ni biblioteca de trucos');
   for (const t of D.topics) { assert.ok(t.title && t.blocks.length, t.id); for (const b of t.blocks) assert.ok(typeof b === 'string' || (b && typeof b.t === 'string') || (b && typeof b === 'object' && !Array.isArray(b) && typeof b.on === 'string' && typeof b.off === 'string') || (Array.isArray(b) && b.length && b.every((x) => typeof x === 'string' || (x && typeof x.on === 'string' && typeof x.off === 'string'))), t.id); }
 });
 
@@ -39,14 +41,14 @@ test('tono: «tú», sin usted/le, sin emojis, sin modos retirados y frases cort
 
 test('reglas explicadas (comprobadas en el código del Worker): modos, plazos, ELO, rangos, abandono', () => {
   const t = (id, ...frags) => frags.forEach((f) => assert.ok(topic(id).includes(f), id + ': falta «' + f + '»'));
-  t('directo', 'Clásico', 'Apuestas', '20 preguntas', '12 rondas', 'Cuerdo', '±1', 'Osado', '±2', 'Insensato', '±3', 'sin bajar de 0', 'doble', 'niebla', 'revancha');
-  t('invitaciones', '3 minutos', '2 minutos', 'cuenta atrás de 3 segundos', 'No hay ELO ni penalización');
-  t('amigos', 'ID de jugador', '20 solicitudes', '7 días', 'En línea');
-  t('retos', '3 días', 'desde que se crea', 'Uno por pareja', 'Todos contra todos', 'hasta 5 retos abiertos');
-  t('ranking', '1000', '5 partidas', 'Plebeyo Ilustrado: desde 0', 'Caballero del Dato: desde 1050', 'Erudito de Salón: desde 1150', 'Lord Sabelotodo: desde 1250', 'Sir Edwards: desde 1400', 'ELO. El ELO mide', 'Colocación. Tus primeras', 'Rangos. Según tu ELO', 'suma cero');
-  t('abandonos', '60 segundos', 'ganas el duelo y tu ELO sube', 'no desbloquea logros ni hitos', 'los dos');
+  t('directo', 'Clásico', 'Apuestas', '20 preguntas', '12 rondas', '10 segundos para elegir', 'Cuerdo (±1)', 'Osado (±2)', 'Insensato (±3)', 'sin bajar de 0', 'Si no eliges, se aplica Cuerdo', 'dos últimas rondas valen el doble', 'ocultan los puntos', 'revancha');
+  t('invitaciones', '3 minutos', '2 minutos', 'cuenta atrás de 3 segundos', 'sin ELO ni penalización', 'un duelo o una sala activos a la vez');
+  t('amigos', 'nombre o ID', 'Ajustes', '20 solicitudes', '7 días', 'en línea');
+  t('retos', '3 días desde su creación', 'un Reto 1 contra 1 activo por pareja', '3 o 4 jugadores', 'máximo de 5 retos múltiples abiertos', 'Quien reta elige el modo');
+  t('ranking', '1000 puntos', '5 partidas', 'Plebeyo Ilustrado: desde 0', 'Caballero del Dato: desde 1050', 'Erudito de Salón: desde 1150', 'Lord Sabelotodo: desde 1250', 'Sir Edwards: desde 1400', 'Colocación. Tus primeras', 'Rangos.', 'mejor clasificado', 'duelos múltiples no afectan al ELO');
+  t('abandonos', '60 segundos', 'pierdes y baja tu ELO', 'ganas y sube tu ELO', 'no desbloquea logros ni hitos', 'ambos abandonáis', 'no afecta al ELO');
   t('recompensas', '10 XP');
-  t('todos', '3 o 4 jugadores', 'no mueve el ELO');
+  t('todos', '3 o 4 jugadores', 'No afecta al ELO', 'al menos 3 jugadores listos');
 });
 
 test('las cifras de la Ayuda coinciden con el Worker (si está al lado)', async (ctx) => {
@@ -66,7 +68,7 @@ test('las cifras de la Ayuda coinciden con el Worker (si está al lado)', async 
   assert.ok(topic('directo').includes('Cuerdo** (±' + C.STAKE_TYPES.cuerdo.valor + ')') || topic('directo').includes('Cuerdo (±' + C.STAKE_TYPES.cuerdo.valor + ')'));
   assert.ok(topic('directo').includes('±' + C.STAKE_TYPES.osado.valor) && topic('directo').includes('±' + C.STAKE_TYPES.insensato.valor));
   assert.ok(topic('retos').includes(C.RETO.plazoMs / 86400000 + ' días'));
-  assert.ok(topic('retos').includes('hasta ' + C.MULTI_RETO.maxAbiertos + ' retos abiertos'));
+  assert.ok(topic('retos').includes('máximo de ' + C.MULTI_RETO.maxAbiertos + ' retos múltiples abiertos'));
   assert.ok(topic('ranking').includes(String(C.ELO.inicial)) && topic('ranking').includes(C.ELO.partidasColocacion + ' partidas'));
   for (const r of C.RANKS) assert.ok(topic('ranking').includes(r.nombre + ': desde ' + r.min), r.nombre);
   assert.ok(topic('todos').includes(C.MULTI_DUEL.minJugadores + ' o ' + C.MULTI_DUEL.maxJugadores + ' jugadores'));
@@ -113,29 +115,20 @@ test('SEQHelp.open: pinta todos los temas, despliega solo el pedido y muestra el
   u.H.close(); assert.equal(u.modal.style.display, 'none');
 });
 
-test('Ayuda: «Trucos de cálculo mental» está integrada, ordenada por Sumas/Restas/Multiplicaciones/Divisiones y con ejemplos resueltos', () => {
+test('Ayuda: no hay «Cómo empezar» ni catálogo de «Trucos de cálculo mental», aunque el módulo de trucos esté cargado', () => {
   const u = loadUi({ tips: true });
   u.H.open('trucos');
   const dets = u.body.all((c) => c.tag === 'details');
-  assert.equal(dets.length, D.topics.length + 1, 'un tema más, sin tocar los de Duelos');
-  const t = dets[dets.length - 1];
-  assert.equal(t.id, 'help-topic-trucos');
-  assert.equal(t.children[0].textContent, 'Trucos de cálculo mental');
-  assert.deepEqual(dets.filter((d) => d.open).map((d) => d.id), ['help-topic-trucos']);
-  const ps = t.all((c) => c.tag === 'p').map((c) => c.textContent);
-  const groups = ps.filter((x) => ['Sumas', 'Restas', 'Multiplicaciones', 'Divisiones'].includes(x));
-  assert.deepEqual(groups, ['Sumas', 'Restas', 'Multiplicaciones', 'Divisiones']);
-  assert.ok(ps.some((x) => x === 'Multiplicar por 25. Multiplicar por 25 es multiplicar por 100 y dividir entre 4.'));
-  assert.ok(ps.some((x) => x === '730 + 470 → 73 + 47 = 120 → 1200'), 'sin repetir la operación cuando el cálculo ya empieza por ella');
-  assert.ok(ps.some((x) => x === '36 × 25 → 36 × 100 = 3600 → 3600 ÷ 4 = 900'));
-  assert.ok(ps.some((x) => x === '78 × 11 → 7 + 8 = 15 → 5 en medio y 7 + 1 = 8 delante → 858'));
-  assert.ok(t.all((c) => c.className === 'help-ex').length >= 25);
-  u.H.open(); assert.equal(u.body.all((c) => c.tag === 'details').length, D.topics.length + 1, 'no se duplica al reabrir');
-  // Sin el módulo de trucos la Ayuda sigue funcionando igual que antes.
-  const bare = loadUi(); bare.H.open(); assert.equal(bare.body.all((c) => c.tag === 'details').length, D.topics.length);
-  // Tono: «tú», sin emojis.
-  const all = ps.join(' ');
-  assert.ok(!/\busted(es)?\b/i.test(all) && !/[\u{1F300}-\u{1FAFF}]/u.test(all));
+  assert.equal(dets.length, 8, 'solo los ocho apartados');
+  assert.ok(!dets.some((d) => d.id === 'help-topic-trucos' || d.id === 'help-topic-empezar'));
+  assert.deepEqual(dets.filter((d) => d.open).map((d) => d.id), [], 'un tema inexistente no despliega nada');
+  const titles = dets.map((d) => d.children[0].textContent);
+  assert.ok(!titles.includes('Cómo empezar') && !titles.includes('Trucos de cálculo mental'));
+  assert.equal(u.body.all((c) => c.className === 'help-ex').length, 0);
+  assert.deepEqual(titles, Array.from(D.topics, (t) => t.title));
+  // Los trucos siguen en su módulo y en las partidas: la Ayuda ya no los usa.
+  assert.ok(!/SEQMentalTips/.test(UI_SRC), 'help.js no toca la biblioteca de trucos');
+  assert.equal(typeof u.H.open, 'function');
 });
 
 test('SEQHelp.open: el contenido sigue a features.duel_links (sin él, ningún texto de enlaces)', () => {
@@ -143,7 +136,7 @@ test('SEQHelp.open: el contenido sigue a features.duel_links (sin él, ningún t
   const off = loadUi(); off.H.open();
   assert.ok(!/enlace/i.test(text(off)), 'sin sesión / sin bandera: sin enlaces');
   const on = loadUi({ links: true }); on.H.open();
-  assert.ok(/Compartir invitación/.test(text(on)) && /Duelo por enlace/.test(text(on)));
+  assert.ok(/Compartir invitación/.test(text(on)) && /Enlace compartido/.test(text(on)));
 });
 test('el botón de la Ayuda cierra la Ayuda y vuelve a enseñar el tutorial', () => {
   const u = loadUi();
@@ -164,7 +157,7 @@ test('Ayuda: la amistad no se presenta como requisito universal', () => {
   const all = JSON.stringify(D.topics);
   assert.ok(!/Sin amigos/i.test(all));
   assert.ok(!/solo (puedes )?(jugar|retar)[^.]*amigos/i.test(all.replace('solo puedes retar a un amigo que está en línea', '')), 'sin «solo con amigos»');
-  assert.ok(all.includes('por enlace') || all.includes('Duelo por enlace'), 'distingue duelo directo, enlace y retos');
+  assert.ok(all.includes('Enlace compartido') && all.includes('Invitación directa'), 'distingue duelo directo, enlace y retos');
 });
 // La Ayuda y el tutorial anuncian la invitación por enlace (Fase B): el cliente debe existir. (El Worker con la migración 0010 se despliega aparte.)
 test('la invitación por enlace anunciada en Ayuda y tutorial existe en el cliente', () => {
@@ -172,8 +165,8 @@ test('la invitación por enlace anunciada en Ayuda y tutorial existe en el clien
 });
 test('Ayuda: con los enlaces apagados en el servidor no menciona enlaces ni «Compartir invitación»', () => {
   assert.ok(!/enlace|Compartir invitaci/i.test(ALL_OFF), ALL_OFF.match(/.{40}enlace.{40}/i));
-  assert.ok(ALL_OFF.includes('Hay dos maneras de jugar') && ALL.includes('Hay tres maneras de jugar'));
-  assert.ok(topic('directo', false).includes('tu rival debe aceptarla'));
+  assert.ok(ALL.includes('Enlace compartido') && !ALL_OFF.includes('Enlace compartido'));
+  assert.ok(topic('directo', false).includes('que tu rival deberá aceptar') && !/amigos/.test(topic('directo', false)), 'sin enlaces, la revancha no menciona a quien no es amigo');
 });
 test('Ayuda: el cliente decide por features.duel_links (nunca por defecto) y reconstruye el contenido al cambiar', () => {
   assert.match(UI_SRC, /features\.duel_links/);
@@ -181,6 +174,6 @@ test('Ayuda: el cliente decide por features.duel_links (nunca por defecto) y rec
 });
 test('Ayuda: explica el enlace (10 minutos, un solo uso, sin amistad) y la revancha entre no amigos', () => {
   const t = topic('invitaciones') + ' ' + topic('directo');
-  for (const f of ['Compartir invitación', '10 minutos', 'una sola vez', 'No crea ninguna amistad', 'justo después del duelo', 'otro enlace']) assert.ok(t.includes(f), f);
+  for (const f of ['Compartir invitación', '10 minutos', 'una sola vez', 'No crea ninguna amistad', 'Si no sois amigos, solo está disponible justo después del duelo']) assert.ok(t.includes(f), f);
   assert.ok(!/próximamente/i.test(ALL), 'la función ya existe en esta versión');
 });

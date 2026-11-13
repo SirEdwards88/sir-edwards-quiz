@@ -27,23 +27,6 @@ var SEQHelp = (function () {
     });
   }
 
-  // «Trucos de cálculo mental»: la biblioteca se construye con los mismos trucos que enseña Cálculo de Fondo (SEQMentalTips.library()),
-  // para no duplicar fórmulas. Sin ese módulo (o si falla) simplemente no aparece el tema.
-  function tricksTopic() {
-    try {
-      if (typeof SEQMentalTips === 'undefined') return null;
-      var blocks = ['Atajos para hacer cuentas de cabeza. Cada uno lleva un ejemplo resuelto.'];
-      SEQMentalTips.library().forEach(function (g) {
-        blocks.push({ t: '**' + g.group + '**', sep: true });
-        g.items.forEach(function (it) {
-          blocks.push({ t: '**' + it.name + '.** ' + it.rule });
-          it.examples.forEach(function (e) { blocks.push({ t: e.line, cls: 'help-ex' }); });
-        });
-      });
-      return { id: 'trucos', title: 'Trucos de cálculo mental', blocks: blocks };
-    } catch (e) { return null; }
-  }
-
   function build() {
     var body = el('help-modal-body');
     if (!body) return;
@@ -57,16 +40,14 @@ var SEQHelp = (function () {
     tut.type = 'button'; tut.className = 'btn btn-secondary help-tutorial'; tut.textContent = d.tutorialLabel || 'Ver el tutorial';
     tut.addEventListener('click', tutorial);
     body.appendChild(tut);
-    var all = d.topics.slice(), tt = tricksTopic();
-    if (tt) all.push(tt);
-    all.forEach(function (t) {
+    d.topics.forEach(function (t) {
       var det = document.createElement('details'); det.className = 'help-topic'; det.id = 'help-topic-' + t.id;
       var sum = document.createElement('summary'); sum.textContent = t.title; det.appendChild(sum);
       var inner = document.createElement('div'); inner.className = 'help-topic-body';
       t.blocks.forEach(function (blk0) {
         var blk = pick(blk0, on);
         if (blk == null || blk === '') return;
-        if (blk && typeof blk.t === 'string') { var q = document.createElement('p'); if (blk.sep) q.className = 'help-sep'; else if (blk.cls) q.className = blk.cls; inline(q, blk.t); inner.appendChild(q); }
+        if (blk && typeof blk.t === 'string') { var q = document.createElement('p'); if (blk.sep) q.className = 'help-sep'; inline(q, blk.t); inner.appendChild(q); }
         else if (Array.isArray(blk)) {
           var ul = document.createElement('ul');
           blk.forEach(function (x0) { var x = pick(x0, on); if (x == null || x === '') return; var li = document.createElement('li'); inline(li, x); ul.appendChild(li); });

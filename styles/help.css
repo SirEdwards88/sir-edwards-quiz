@@ -21,7 +21,6 @@
 .help-topic-body .help-sep { margin-top: 14px; }
 .help-topic-body strong { color: var(--text); }
 /* Biblioteca de trucos: el ejemplo resuelto, sangrado y en tamaño algo menor; sin desbordes en pantallas estrechas. */
-.help-topic-body .help-ex { margin: -2px 0 10px 10px; font-size: 13px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 /* El texto se desplaza dentro de #help-modal-body; el botón queda fijo debajo, sin tapar nada. */
 #help-modal .modal-warning-actions { flex: 0 0 auto; margin-top: 10px; padding: 10px 0 2px; border-top: 1px solid rgba(201, 153, 46, .22); }
 @media (prefers-reduced-motion: reduce) { .help-topic > summary::after { transition: none; } }
