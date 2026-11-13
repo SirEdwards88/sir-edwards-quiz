@@ -124,7 +124,10 @@ const OK = {
   sq24: ['Como tú', 'como tu', 'como yo', 'yo', 'soy yo'],
   sq25: ['Mal', 'mal', '«mal»', 'la palabra mal'],
   sq26: ['Ocho', '8', 'ocho dias', 'en 8 días'],
-  sq29: ['La letra «d»', 'la d', 'D', 'una d', 'la letra d']
+  sq29: ['La letra «d»', 'la d', 'D', 'una d', 'la letra d'],
+  sq30: ['Una hora', 'una hora', '1 hora', '60 minutos', '60 min', 'sesenta minutos', '1 h'],
+  sq32: ['Un agujero', 'agujero', 'el agujero', 'hoyo', 'un hoyo', 'el hoyo'],
+  sq33: ['Jueves', 'jueves', 'el jueves']
 };
 const KO = {
   sq01: ['Febrero', 'solo febrero', 'ninguno', 'cuatro', '28', 'siete'],
@@ -138,7 +141,10 @@ const KO = {
   sq24: ['Pedro', 'Sir Edwards', 'se ignora', 'no se sabe'],
   sq25: ['equivocacion', 'ortografia', 'ninguna', 'bien'],
   sq26: ['siete', 'diez', '10', 'cinco', '7'],
-  sq29: ['El Retiro', 'la puerta del sol', 'un oso y un madroño', 'la a', 'la m']
+  sq29: ['El Retiro', 'la puerta del sol', 'un oso y un madroño', 'la a', 'la m'],
+  sq30: ['media hora', 'hora y media', 'dos horas', '30 minutos', '90 minutos', 'tres horas', 'una'],
+  sq32: ['una deuda', 'una bola de nieve', 'un montón', 'un pozo grande', 'una montaña'],
+  sq33: ['lunes', 'martes', 'miércoles', 'viernes', 'sábado', 'domingo']
 };
 test('corrección escrita: cada trampa acepta sus formas y rechaza los cebos', () => {
   const traps = Q.filter((q) => q.kind === 'trap');
@@ -301,4 +307,106 @@ test('respuesta resaltada: cada trampa tiene un fragmento `hl` que aparece en su
 
 test('cada vez que se abre una pregunta con opciones se limpia el «is-done» de la anterior (si no, la segunda de la sesión no admitía respuesta)', () => {
   assert.match(read('src/ui/sir-interrupt.js'), /opts\.classList\.remove\('is-done'\);[^\n]*\n\s*opts\.classList\.add\('is-wait'\)/);
+});
+
+// ---- Ampliación a 40 preguntas especiales (20 originales sq01-sq29 intactas + 20 nuevas sq30-sq49) ----
+const ORIGINAL_IDS = ['sq01', 'sq02', 'sq03', 'sq07', 'sq10', 'sq14', 'sq15', 'sq16', 'sq17', 'sq18', 'sq20', 'sq21', 'sq22', 'sq23', 'sq24', 'sq25', 'sq26', 'sq27', 'sq28', 'sq29'];
+const NEW_IDS = Array.from({ length: 20 }, (_, i) => 'sq' + (30 + i));
+const NEW_TRAPS = { sq30: 'Una hora', sq32: 'Un agujero', sq33: 'Jueves' };
+const REQUIRED_TRAP = ['id', 'kind', 'q', 'a', 'alias', 'rj', 'hl', 'right', 'wrong'];
+const REQUIRED_OP = ['id', 'kind', 'q', 'options', 'reactions'];
+
+test('ampliación: 40 preguntas especiales, 20 originales intactas y 20 nuevas (3 trampas y 17 opiniones)', () => {
+  assert.equal(Q.length, 40);
+  assert.deepEqual(Q.filter((q) => ORIGINAL_IDS.includes(q.id)).map((q) => q.id).sort(), [...ORIGINAL_IDS].sort());
+  const nuevas = Q.filter((q) => NEW_IDS.includes(q.id));
+  assert.equal(nuevas.length, 20);
+  assert.equal(Q.filter((q) => !ORIGINAL_IDS.includes(q.id) && !NEW_IDS.includes(q.id)).length, 0, 'no hay ids fuera de los dos grupos');
+  assert.equal(nuevas.filter((q) => q.kind === 'trap').length, 3);
+  assert.equal(nuevas.filter((q) => q.kind === 'opinion').length, 17);
+  assert.equal(Q.filter((q) => q.kind === 'trap').length, 15);
+  assert.equal(Q.filter((q) => q.kind === 'opinion').length, 25);
+  assert.equal(new Set(Q.map((q) => q.id)).size, 40);
+});
+
+test('ampliación: las 20 originales conservan su texto exacto (huella)', () => {
+  const orig = Q.filter((q) => ORIGINAL_IDS.includes(q.id));
+  const byId = Object.fromEntries(orig.map((q) => [q.id, q]));
+  assert.equal(byId.sq01.q, '¿Cuántos meses tienen 28 días?');
+  assert.equal(byId.sq29.a, 'La letra «d»');
+  assert.deepEqual(Array.from(byId.sq28.options), ['Muchísimo', 'Un poco', 'Ni lo notaría']);
+  assert.equal(byId.sq24.right, 'Como tú. Eres el conductor. Impecable.');
+});
+
+test('ampliación: campos obligatorios en las nuevas y comillas españolas, sin emojis', () => {
+  for (const q of Q.filter((x) => NEW_IDS.includes(x.id))) {
+    for (const f of q.kind === 'trap' ? REQUIRED_TRAP : REQUIRED_OP) assert.ok(q[f] && (!Array.isArray(q[f]) || q[f].length), q.id + ' falta ' + f);
+    const textos = [q.q, q.right, q.wrong, ...(q.options || []), ...(q.reactions || [])].filter(Boolean).join(' ');
+    assert.ok(!/["“”]/.test(textos), q.id + ' comillas no españolas');
+  }
+});
+
+test('ampliación: las tres trampas nuevas validan su respuesta y rechazan las erróneas', () => {
+  for (const [id, a] of Object.entries(NEW_TRAPS)) {
+    const q = Q.find((x) => x.id === id);
+    assert.equal(q.a, a);
+    assert.equal(C.gradeText(q, a, ctx.MATCH).correct, true, id);
+    for (const t of q.alias) assert.equal(C.gradeText(q, t, ctx.MATCH).correct, true, id + ' alias: ' + t);
+    for (const t of q.rj) assert.equal(C.gradeText(q, t, ctx.MATCH).correct, false, id + ' cebo: ' + t);
+    assert.ok(!q.alias.some((t) => q.rj.includes(t)), id + ' alias y cebo se solapan');
+  }
+  const pastillas = Q.find((x) => x.id === 'sq30');
+  assert.deepEqual(Array.from(pastillas.alias), ['1 hora', '60 minutos', '60 min', 'Sesenta minutos', '1 h']);
+});
+
+test('ampliación: cada opción de opinión muestra su reacción y nunca es correcta ni incorrecta', () => {
+  const ops = Q.filter((x) => NEW_IDS.includes(x.id) && x.kind === 'opinion');
+  for (const q of ops) {
+    assert.equal(q.options.length, 3, q.id);
+    assert.equal(q.reactions.length, 3, q.id);
+    assert.deepEqual(Array.from(C.order(q, mulberry(3))), [0, 1, 2], q.id + ' orden escrito');
+    for (let i = 0; i < q.options.length; i++) assert.deepEqual({ ...C.grade(q, i) }, { correct: null, reaction: q.reactions[i] }, q.id + ' opción ' + i);
+    assert.equal(C.gradeText(q, q.options[0], ctx.MATCH), null, q.id + ' no se escribe');
+  }
+});
+
+test('ampliación: las opiniones no tocan vidas, XP, ELO, precisión ni rachas (solo sirAnswered/sirCorrect)', () => {
+  const ui = read('src/ui/sir-interrupt.js');
+  assert.ok(!/(lives|xp|elo|streak|accuracy|totalCorrect|totalAnswered)/i.test(ui.replace(/\/\/.*$/gm, '').replace(/streak-banner|fx-streak/g, '')), 'la interrupción no menciona vidas/XP/ELO/racha');
+  assert.match(ui, /if \(g\.correct === true\) store\.sirCorrect/);
+  for (const q of Q.filter((x) => x.kind === 'opinion')) assert.equal(C.grade(q, 0).correct, null, q.id);
+});
+
+test('ampliación: la bolsa recorre las 40 sin repetir y las nuevas pueden salir', () => {
+  const rng = mulberry(21); let st = C.newState(); const seen = [];
+  for (let i = 0; i < 40; i++) { const r = C.pick(st, Q, rng); st = r.state; seen.push(r.question.id); }
+  assert.equal(new Set(seen).size, 40);
+  for (const id of NEW_IDS) assert.ok(seen.includes(id), id + ' no salió');
+  // una bolsa guardada con las 20 antiguas solo ofrece ya las nuevas
+  const old = { n: 0, hit: -1, done: false, bag: [...ORIGINAL_IDS], last: 'sq29' };
+  const r = C.pick(old, Q, mulberry(4));
+  assert.ok(NEW_IDS.includes(r.question.id));
+});
+
+test('ampliación: sin duplicados entre las nuevas y el resto de bancos', () => {
+  const norm = (t) => String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9ñ ]/g, ' ').replace(/\s+/g, ' ').trim();
+  const bancos = ['src/data/questions.js', 'src/data/lucidez.js', 'src/data/questions-retired.js'].map(read).join('\n');
+  const bancoN = norm(bancos);
+  const nuevas = Q.filter((x) => NEW_IDS.includes(x.id));
+  for (const q of nuevas) assert.ok(!bancoN.includes(norm(q.q)), q.id + ' repite un enunciado de otro banco');
+  const originales = Q.filter((x) => ORIGINAL_IDS.includes(x.id)).map((x) => norm(x.q));
+  for (const q of nuevas) assert.ok(!originales.includes(norm(q.q)), q.id + ' repite una original');
+  // las cuatro descartadas por coincidir con Lucidez Mental no vuelven
+  const todo = norm(JSON.stringify(Q.map((x) => x.q)));
+  for (const frag of ['adelantas al corredor', 'cinco maquinas', 'cuatro hijas', 'retrato']) assert.ok(!todo.includes(frag), 'reincorporada: ' + frag);
+});
+
+test('ampliación: sq31 es la opinión del botón «No pulsar» y no conserva campos de trampa', () => {
+  const q = Q.find((x) => x.id === 'sq31');
+  assert.equal(q.kind, 'opinion');
+  assert.equal(q.q, 'Si encontraras un botón que dice «No pulsar», ¿qué harías?');
+  assert.deepEqual(Array.from(q.options), ['Lo pulsaría', 'Me alejaría', 'Preguntaría por qué']);
+  assert.deepEqual(Array.from(q.reactions), ['Una curiosidad admirable. Y una esperanza de vida preocupante.', 'La prudencia. Una virtud que rara vez protagoniza aventuras.', 'Qué detalle tan inusual: informarse antes del desastre.']);
+  for (const f of ['a', 'alias', 'rj', 'hl', 'right', 'wrong']) assert.ok(!(f in q), 'sobra el campo ' + f);
+  for (let i = 0; i < 3; i++) assert.deepEqual({ ...C.grade(q, i) }, { correct: null, reaction: q.reactions[i] });
 });
