@@ -388,6 +388,8 @@
     if (S21.rankErr) return out + rkNote(S21.rankErr) + '</div>';
     if (!d) return out + '<p class="seq-v21-rk-loading">Cargando…</p></div>';
     out += '<p class="seq-v21-rk-sub"><span>' + esc(BOARDS[b].sub) + '</span></p>';
+    // La API distingue los resultados validados por el servidor de los récords sincronizados.
+    if (d.validado === false) out += '<p class="seq-v21-rk-sub"><span>Récords personales sincronizados; las partidas no se verifican individualmente.</span></p>';
     var rows = d.ranking || [];
     // «Tu posición» solo aparece si no se te ve ya en el ranking (podio o lista, donde sales marcado): así no se repite el dato.
     var meListed = rows.some(function (r) { return r && r.is_me; });
