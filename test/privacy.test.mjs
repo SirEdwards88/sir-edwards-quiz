@@ -27,7 +27,7 @@ test('el texto dice lo que el servidor guarda de verdad (sin correo ni nombre re
   assert.match(text, /No recibimos ni guardamos tu correo ni tu nombre real/);
   assert.match(text, /no está verificado/);
   assert.match(text, /Eliminar mi cuenta online/);
-  assert.equal(ctx.P.contact, 'eduardmartinez88@gmail.com');
+  assert.equal(ctx.P.contact, 'siredwardsquiz@gmail.com');
   assert.ok(text.includes(ctx.P.contact));
 });
 
