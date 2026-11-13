@@ -17,7 +17,9 @@ Probar primero **Trusted Web Activity (TWA) con Bubblewrap**. No convertir a Cap
 - [ ] Elegir package ID estable; conservar el keystore de subida y sus contraseñas fuera de Git.
 - [ ] Publicar `.well-known/assetlinks.json` en el **origen web**, con package ID y huella SHA-256 de la firma correcta. En Google Play App Signing, la firma de distribución puede ser distinta de la de subida.
 - [ ] Verificar Digital Asset Links en un móvil. Si falla, la TWA puede abrirse como Custom Tab con barra de navegación.
-- [ ] En GitHub Pages, comprobar que se publica la carpeta `.well-known`; puede requerir configuración explícita de Jekyll o `.nojekyll`.
+- [ ] **Atención al origen de GitHub Pages:** la URL actual indicada en `index.html` es `https://siredwards88.github.io/sir-edwards-quiz/`, pero Digital Asset Links se verifica en `https://siredwards88.github.io/.well-known/assetlinks.json` (raíz del **origen**, no `/sir-edwards-quiz/.well-known/`). Publicar el archivo solo dentro de este repositorio de proyecto no basta. Antes de compilar, decidir cómo servir el archivo en la raíz del dominio (por ejemplo, un sitio Pages de usuario `siredwards88.github.io` o un dominio propio) y comprobar su URL pública real. No crear el archivo con huellas inventadas.
+- [x] El repositorio del juego ya contiene `.nojekyll`; esto evita que Jekyll descarte carpetas con punto, pero **no** resuelve por sí solo la ubicación en la raíz del origen.
+- [x] El service worker ya versiona su caché (`CACHE_VERSION`) y evita activar la nueva versión en mitad de una sesión. Al publicar cambios web, ejecutar el proceso existente de incremento de versión (`scripts/bump-version.mjs`) y probar el ciclo de actualización en Android.
 - [ ] Crear un AAB para Play y un APK de prueba local; validar las firmas respectivas.
 
 ## Criterios para no publicar todavía
