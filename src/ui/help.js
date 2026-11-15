@@ -10,10 +10,12 @@ var SEQHelp = (function () {
   function data() { return window.SEQHelpData || { title: 'Ayuda', lead: '', topics: [] }; }
   function el(id) { return document.getElementById(id); }
   // Las invitaciones por enlace solo se mencionan si el servidor las declara activas (features.duel_links).
+  function multiLinksOn() { try { var s = window.SEQOnline && window.SEQOnline.session && window.SEQOnline.session(); return !!(s && s.features && s.features.multi_duel_links); } catch (e) { return false; } }
   function linksOn() { try { var s = window.SEQOnline && window.SEQOnline.session && window.SEQOnline.session(); return !!(s && s.features && s.features.classic_duel && s.features.duel_links); } catch (e) { return false; } }
   // Un texto puede ser: cadena; '@enlace …' (solo con enlaces); o {on, off} (variante según haya enlaces o no). Devuelve null si no se muestra.
-  function pick(x, on) {
+  function pick(x, on, multi) {
     if (x && typeof x === 'object' && !Array.isArray(x) && ('on' in x || 'off' in x)) return on ? x.on : x.off;
+    if (typeof x === 'string' && x.indexOf('@multi_enlace ') === 0) return multi ? x.slice(14) : null;
     if (typeof x === 'string' && x.indexOf('@enlace ') === 0) return on ? x.slice(8) : null;
     return x;
   }
@@ -30,9 +32,9 @@ var SEQHelp = (function () {
   function build() {
     var body = el('help-modal-body');
     if (!body) return;
-    var on = linksOn();
-    if (body.getAttribute('data-links') === (on ? '1' : '0') && body.childNodes.length) return;
-    body.setAttribute('data-links', on ? '1' : '0');
+    var on = linksOn(), multi = multiLinksOn();
+    if (body.getAttribute('data-links') === (on ? '1' : '0') + (multi ? '1' : '0') && body.childNodes.length) return;
+    body.setAttribute('data-links', (on ? '1' : '0') + (multi ? '1' : '0'));
     while (body.firstChild) body.removeChild(body.firstChild);
     var d = data();
     if (d.lead) { var lead = document.createElement('p'); lead.className = 'help-lead'; lead.textContent = d.lead; body.appendChild(lead); }
@@ -45,12 +47,12 @@ var SEQHelp = (function () {
       var sum = document.createElement('summary'); sum.textContent = t.title; det.appendChild(sum);
       var inner = document.createElement('div'); inner.className = 'help-topic-body';
       t.blocks.forEach(function (blk0) {
-        var blk = pick(blk0, on);
+        var blk = pick(blk0, on, multi);
         if (blk == null || blk === '') return;
         if (blk && typeof blk.t === 'string') { var q = document.createElement('p'); if (blk.sep) q.className = 'help-sep'; inline(q, blk.t); inner.appendChild(q); }
         else if (Array.isArray(blk)) {
           var ul = document.createElement('ul');
-          blk.forEach(function (x0) { var x = pick(x0, on); if (x == null || x === '') return; var li = document.createElement('li'); inline(li, x); ul.appendChild(li); });
+          blk.forEach(function (x0) { var x = pick(x0, on, multi); if (x == null || x === '') return; var li = document.createElement('li'); inline(li, x); ul.appendChild(li); });
           inner.appendChild(ul);
         } else { var p = document.createElement('p'); inline(p, blk); inner.appendChild(p); }
       });
