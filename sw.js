@@ -39,7 +39,7 @@
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
 // Desde la 2.0 el historial de cambios de cada versión vive en git; aquí solo se sube CACHE_VERSION (scripts/bump-version.mjs).
-const CACHE_VERSION = 530;
+const CACHE_VERSION = 531;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -753,7 +753,7 @@ const ASSET_REVS = {
   './assets/ui/escoba.webp': 'bcb8cf24',
   './assets/ui/escudo.webp': '4c0a7fbf',
   './assets/ui/fondos/cabecera.webp': '76ee3e40',
-  './assets/ui/fondos/damasco-marfil.svg': '215adc44',
+  './assets/ui/fondos/damasco-marfil.svg': '1c9ebac1',
   './assets/ui/fondos/duelo.webp': '3883e2b3',
   './assets/ui/fondos/encargos.webp': '54f2070c',
   './assets/ui/fondos/estadisticas.webp': 'a64f5f52',

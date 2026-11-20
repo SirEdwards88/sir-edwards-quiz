@@ -135,7 +135,7 @@
     { img: 'assets/character/presentacion-expediente.webp', title: 'Amigos', quip: 'Hasta las rivalidades necesitan una presentación.',
       body: 'Busca jugadores por su nombre o ID y envíales una solicitud. Cuando la acepten, podrás encontrarlos y desafiarlos directamente.', btn: 'Continuar' },
     { img: 'assets/character/sir-edwards-duelos-reloj.webp', title: 'Duelos online', quip: 'Dos jugadores. Un vencedor.',
-      body: 'Competís al mismo tiempo. Elige Clásico o Apuestas y desafía a un amigo conectado, o comparte una invitación. Perder con elegancia sigue siendo perder.', bodyMulti: 'En Clásico o Apuestas puedes jugar 1 contra 1 o Todos contra todos. Comparte un enlace para reunir hasta cuatro jugadores, aunque no sean amigos. La cortesía es opcional.', bodyOff: 'Competís al mismo tiempo. Elige Clásico o Apuestas y desafía a un amigo conectado. Perder con elegancia sigue siendo perder.', btn: 'Continuar' },
+      body: 'Competís al mismo tiempo. Elige Clásico o Apuestas y desafía a un amigo conectado, o comparte una invitación. Perder con elegancia sigue siendo perder.', bodyMulti: 'Elige Clásico o Apuestas, 1 contra 1 o Todos contra todos. La invitación de 1 contra 1 sirve una sola vez; el enlace de Todos contra todos admite hasta cuatro jugadores. Perder con elegancia sigue siendo perder.', bodyMultiOnly: 'Elige Clásico o Apuestas, 1 contra 1 o Todos contra todos. Para Todos contra todos puedes compartir un enlace que admite hasta cuatro jugadores, sean amigos o no. Perder con elegancia sigue siendo perder.', bodyOff: 'Competís al mismo tiempo. Elige Clásico o Apuestas y desafía a un amigo conectado. Perder con elegancia sigue siendo perder.', btn: 'Continuar' },
     { img: 'assets/character/sir-edwards-retos-sobre.webp', title: 'Retos', quip: 'No hace falta coincidir.',
       body: 'Envía un reto a un amigo aunque no esté conectado. Tendrá tres días desde su creación para jugarlo. Hasta la paciencia tiene un límite.', btn: 'Continuar' },
     { img: 'assets/character/event_siredwards_record.webp', title: 'Ranking y ELO', quip: 'La reputación está en juego.',
@@ -174,7 +174,7 @@
       (p.img ? '<img class="dint-img" src="' + p.img + '" alt="" draggable="false" decoding="async">' : '') +
       '<h2 id="dint-title">' + p.title + '</h2>' +
       '<p class="dint-quip">' + p.quip + '</p>' +
-      '<p class="dint-body">' + (p.bodyMulti && multiLinksOn() ? p.bodyMulti : p.bodyOff && !linksOn() ? p.bodyOff : p.body) + '</p>' +
+      '<p class="dint-body">' + (p.bodyMulti && multiLinksOn() ? (linksOn() ? p.bodyMulti : p.bodyMultiOnly) : p.bodyOff && !linksOn() ? p.bodyOff : p.body) + '</p>' +
       '<div class="dint-dots" aria-hidden="true">' + pages.map(function (_, k) { return '<i' + (k === i ? ' class="on"' : '') + '></i>'; }).join('') + '</div>' +
       '<button type="button" class="btn btn-primary dint-go">' + label + '</button>' +
       (last ? '' : '<button type="button" class="dint-skip">Saltar</button>') + '</div>';

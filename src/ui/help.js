@@ -15,6 +15,7 @@ var SEQHelp = (function () {
   // Un texto puede ser: cadena; '@enlace …' (solo con enlaces); o {on, off} (variante según haya enlaces o no). Devuelve null si no se muestra.
   function pick(x, on, multi) {
     if (x && typeof x === 'object' && !Array.isArray(x) && ('on' in x || 'off' in x)) return on ? x.on : x.off;
+    if (x && typeof x === 'object' && !Array.isArray(x) && ('multi' in x || 'nomulti' in x)) return multi ? x.multi : x.nomulti;
     if (typeof x === 'string' && x.indexOf('@multi_enlace ') === 0) return multi ? x.slice(14) : null;
     if (typeof x === 'string' && x.indexOf('@enlace ') === 0) return on ? x.slice(8) : null;
     return x;
