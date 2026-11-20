@@ -753,7 +753,7 @@ const ASSET_REVS = {
   './assets/ui/escoba.webp': 'bcb8cf24',
   './assets/ui/escudo.webp': '4c0a7fbf',
   './assets/ui/fondos/cabecera.webp': '76ee3e40',
-  './assets/ui/fondos/damasco-marfil.svg': '1c9ebac1',
+  './assets/ui/fondos/damasco-marfil.svg': '215adc44',
   './assets/ui/fondos/duelo.webp': '3883e2b3',
   './assets/ui/fondos/encargos.webp': '54f2070c',
   './assets/ui/fondos/estadisticas.webp': 'a64f5f52',
