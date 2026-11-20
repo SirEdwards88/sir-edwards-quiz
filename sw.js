@@ -39,7 +39,7 @@
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
 // Desde la 2.0 el historial de cambios de cada versión vive en git; aquí solo se sube CACHE_VERSION (scripts/bump-version.mjs).
-const CACHE_VERSION = 529;
+const CACHE_VERSION = 532;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -375,6 +375,7 @@ const APP_SHELL = [
   './src/online/duels.js',
   './src/online/duels-v21.js',
   './src/online/multi-duels.js',
+  './src/online/multi-invite-link.js',
   './src/online/multi-stakes.js',
   './src/online/player-profile.js',
   './src/online/inbox.js',

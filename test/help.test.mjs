@@ -16,12 +16,15 @@ const D = loadData();
 
 // Texto plano de un tema (sin marcas de negrita).
 // `on`: con las invitaciones por enlace activas en el servidor (features.duel_links); `off`: sin ellas.
-const pick = (x, on) => (x && typeof x === 'object' && !Array.isArray(x) && ('on' in x || 'off' in x)) ? (on ? x.on : x.off)
+// multi: con los enlaces de Todos contra todos activos (features.multi_duel_links); por defecto sigue a on (todo encendido / todo apagado).
+const pick = (x, on, multi = on) => (x && typeof x === 'object' && !Array.isArray(x) && ('on' in x || 'off' in x)) ? (on ? x.on : x.off)
+  : (x && typeof x === 'object' && !Array.isArray(x) && ('multi' in x || 'nomulti' in x)) ? (multi ? x.multi : x.nomulti)
+  : (typeof x === 'string' && x.startsWith('@multi_enlace ')) ? (multi ? x.slice(14) : null)
   : (typeof x === 'string' && x.startsWith('@enlace ')) ? (on ? x.slice(8) : null) : x;
-const flat = (t, on = true) => t.blocks.map((b) => pick(b, on)).filter((b) => b != null).flat().map((b) => pick(b, on)).filter((b) => b != null).map((b) => (b && b.t) || b).join(' ').replace(/\*\*/g, '');
+const flat = (t, on = true, multi = on) => t.blocks.map((b) => pick(b, on, multi)).filter((b) => b != null).flat().map((b) => pick(b, on, multi)).filter((b) => b != null).map((b) => (b && b.t) || b).join(' ').replace(/\*\*/g, '');
 const ALL = D.topics.map((t) => t.title + ' ' + flat(t)).join('\n');
 const ALL_OFF = D.topics.map((t) => t.title + ' ' + flat(t, false)).join('\n');
-const topic = (id, on = true) => flat(D.topics.find((t) => t.id === id), on);
+const topic = (id, on = true, multi = on) => flat(D.topics.find((t) => t.id === id), on, multi);
 
 test('la Ayuda cubre los temas pedidos y sus ids son únicos', () => {
   const ids = D.topics.map((t) => t.id);
@@ -29,7 +32,7 @@ test('la Ayuda cubre los temas pedidos y sus ids son únicos', () => {
   for (const id of ['amigos', 'directo', 'invitaciones', 'retos', 'todos', 'ranking', 'abandonos', 'recompensas']) assert.ok(ids.includes(id), id);
   assert.equal(ids.length, 8, 'solo los ocho apartados de Duelos');
   assert.ok(!ids.includes('empezar') && !ids.includes('trucos'), 'sin «Cómo empezar» ni biblioteca de trucos');
-  for (const t of D.topics) { assert.ok(t.title && t.blocks.length, t.id); for (const b of t.blocks) assert.ok(typeof b === 'string' || (b && typeof b.t === 'string') || (b && typeof b === 'object' && !Array.isArray(b) && typeof b.on === 'string' && typeof b.off === 'string') || (Array.isArray(b) && b.length && b.every((x) => typeof x === 'string' || (x && typeof x.on === 'string' && typeof x.off === 'string'))), t.id); }
+  for (const t of D.topics) { assert.ok(t.title && t.blocks.length, t.id); for (const b of t.blocks) assert.ok(typeof b === 'string' || (b && typeof b.t === 'string') || (b && typeof b === 'object' && !Array.isArray(b) && typeof b.on === 'string' && typeof b.off === 'string') || (b && typeof b === 'object' && !Array.isArray(b) && typeof b.multi === 'string' && typeof b.nomulti === 'string') || (Array.isArray(b) && b.length && b.every((x) => typeof x === 'string' || (x && typeof x.on === 'string' && typeof x.off === 'string'))), t.id); }
 });
 
 test('tono: «tú», sin usted/le, sin emojis, sin modos retirados y frases cortas', () => {
@@ -168,7 +171,17 @@ test('Ayuda: con los enlaces apagados en el servidor no menciona enlaces ni «Co
   assert.ok(ALL.includes('Enlace compartido') && !ALL_OFF.includes('Enlace compartido'));
   assert.ok(topic('directo', false).includes('que tu rival deberá aceptar') && !/amigos/.test(topic('directo', false)), 'sin enlaces, la revancha no menciona a quien no es amigo');
 });
-test('Ayuda: el cliente decide por features.duel_links (nunca por defecto) y reconstruye el contenido al cambiar', () => {
+test('Ayuda: los textos de Todos contra todos por enlace solo salen con features.multi_duel_links y distinguen el enlace de 1 contra 1', () => {
+  const sinMulti = topic('todos', true, false), conMulti = topic('todos', false, true);
+  assert.ok(!/enlace/i.test(sinMulti), 'con la función apagada no se menciona el enlace múltiple');
+  assert.ok(sinMulti.includes('la invitación dura 3 minutos') && sinMulti.includes('solo entre amigos'), 'sin la función, el texto es el de siempre');
+  assert.ok(!/enlace/i.test(ALL_OFF));
+  for (const f of ['Crear sala por enlace', 'no es de un solo uso', 'por orden de llegada', 'sean amigos o no', '4', '3', '10 minutos', 'No crea ninguna amistad', 'No afecta al ELO']) assert.ok(conMulti.includes(f), f);
+  assert.ok(!/solo entre amigos/.test(conMulti), 'con enlace ya no es solo entre amigos');
+  assert.ok(!conMulti.includes('Compartir invitación'), 'sin enlace 1 contra 1 activo no se nombra su botón');
+  assert.ok(topic('invitaciones', true, false).includes('una sola vez'), 'el enlace 1 contra 1 sigue siendo de un solo uso');
+  assert.match(UI_SRC, /features\.multi_duel_links/);
+});test('Ayuda: el cliente decide por features.duel_links (nunca por defecto) y reconstruye el contenido al cambiar', () => {
   assert.match(UI_SRC, /features\.duel_links/);
   assert.match(UI_SRC, /data-links/);
 });

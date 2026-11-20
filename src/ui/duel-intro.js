@@ -127,6 +127,7 @@
   // ---- Presentación de Sir Edwards (tutorial) ------------------------------------------------------------------------------
   // `body` admite <b>…</b>: son textos fijos de este archivo, nunca datos de nadie.
   // Cada viñeta: título funcional (lo primero que se lee), frase de Sir Edwards (secundaria) y párrafo que enseña.
+  function multiLinksOn() { try { var s = window.SEQOnline && window.SEQOnline.session && window.SEQOnline.session(); return !!(s && s.features && s.features.multi_duel_links); } catch (e) { return false; } }
   function linksOn() { try { var s = window.SEQOnline && window.SEQOnline.session && window.SEQOnline.session(); return !!(s && s.features && s.features.classic_duel && s.features.duel_links); } catch (e) { return false; } }
   var pages = [
     { img: 'assets/character/presentacion-evaluador.webp', title: 'Bienvenido a Duelos', quip: 'Dije que no habría tutorial. Mentí.',
@@ -134,7 +135,7 @@
     { img: 'assets/character/presentacion-expediente.webp', title: 'Amigos', quip: 'Hasta las rivalidades necesitan una presentación.',
       body: 'Busca jugadores por su nombre o ID y envíales una solicitud. Cuando la acepten, podrás encontrarlos y desafiarlos directamente.', btn: 'Continuar' },
     { img: 'assets/character/sir-edwards-duelos-reloj.webp', title: 'Duelos online', quip: 'Dos jugadores. Un vencedor.',
-      body: 'Competís al mismo tiempo. Elige Clásico o Apuestas y desafía a un amigo conectado, o comparte una invitación. Perder con elegancia sigue siendo perder.', bodyOff: 'Competís al mismo tiempo. Elige Clásico o Apuestas y desafía a un amigo conectado. Perder con elegancia sigue siendo perder.', btn: 'Continuar' },
+      body: 'Competís al mismo tiempo. Elige Clásico o Apuestas y desafía a un amigo conectado, o comparte una invitación. Perder con elegancia sigue siendo perder.', bodyMulti: 'Elige Clásico o Apuestas, 1 contra 1 o Todos contra todos. La invitación de 1 contra 1 sirve una sola vez; el enlace de Todos contra todos admite hasta cuatro jugadores. Perder con elegancia sigue siendo perder.', bodyMultiOnly: 'Elige Clásico o Apuestas, 1 contra 1 o Todos contra todos. Para Todos contra todos puedes compartir un enlace que admite hasta cuatro jugadores, sean amigos o no. Perder con elegancia sigue siendo perder.', bodyOff: 'Competís al mismo tiempo. Elige Clásico o Apuestas y desafía a un amigo conectado. Perder con elegancia sigue siendo perder.', btn: 'Continuar' },
     { img: 'assets/character/sir-edwards-retos-sobre.webp', title: 'Retos', quip: 'No hace falta coincidir.',
       body: 'Envía un reto a un amigo aunque no esté conectado. Tendrá tres días desde su creación para jugarlo. Hasta la paciencia tiene un límite.', btn: 'Continuar' },
     { img: 'assets/character/event_siredwards_record.webp', title: 'Ranking y ELO', quip: 'La reputación está en juego.',
@@ -173,7 +174,7 @@
       (p.img ? '<img class="dint-img" src="' + p.img + '" alt="" draggable="false" decoding="async">' : '') +
       '<h2 id="dint-title">' + p.title + '</h2>' +
       '<p class="dint-quip">' + p.quip + '</p>' +
-      '<p class="dint-body">' + (p.bodyOff && !linksOn() ? p.bodyOff : p.body) + '</p>' +
+      '<p class="dint-body">' + (p.bodyMulti && multiLinksOn() ? (linksOn() ? p.bodyMulti : p.bodyMultiOnly) : p.bodyOff && !linksOn() ? p.bodyOff : p.body) + '</p>' +
       '<div class="dint-dots" aria-hidden="true">' + pages.map(function (_, k) { return '<i' + (k === i ? ' class="on"' : '') + '></i>'; }).join('') + '</div>' +
       '<button type="button" class="btn btn-primary dint-go">' + label + '</button>' +
       (last ? '' : '<button type="button" class="dint-skip">Saltar</button>') + '</div>';

@@ -125,7 +125,8 @@
       : (S().lists && S().lists.friends && S().lists.friends.friends.length < MIN_PLAYERS - 1)
       ? card('multiple', 'Todos contra todos', 'Necesitas al menos ' + (MIN_PLAYERS - 1) + ' amigos para jugar este modo.', '', true)
       : card('multiple', 'Todos contra todos', 'De ' + MIN_PLAYERS + ' a ' + MAX_PLAYERS + ' jugadores.' + (reto ? ' A su ritmo.' : ''), 'SEQMulti.startPick()');
-    return h + '<div class="seq-m-opts">' + one + multi + '</div>';
+    var linkOption = !reto && ft.multi_duel_links && window.SEQMultiLink ? SEQMultiLink.pickButton() : '';
+    return h + '<div class="seq-m-opts">' + one + multi + '</div>' + linkOption;
   }
 
   function renderPickPlayers() {
@@ -185,6 +186,7 @@
       if (creator) {
         var n = accepted(d), can = n >= MIN_PLAYERS;
         h += box + '<div class="duel-result-title">Esperando a tus invitados…</div><p class="duel-result-hint">Caduca en <span id="seq-d-count"></span></p>' + playersList(d) +
+          (window.SEQMultiLink ? SEQMultiLink.roomButtons(d.id) : '') +
           '<button class="btn btn-primary" style="width:100%;"' + (can ? '' : ' disabled') + ' onclick="SEQMulti.action(\'start\')">' + (can ? 'Empezar con ' + n : 'Hacen falta ' + MIN_PLAYERS + ' jugadores') + '</button>' +
           '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQMulti.action(\'cancel\')">Cancelar sala</button></div>';
         return h;
@@ -195,7 +197,7 @@
           '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQMulti.action(\'reject\')">Rechazar</button></div>';
       }
       if (mine.estado === 'aceptado') {
-        return h + box + '<div class="duel-result-title">Estás dentro. Paciencia.</div><p class="duel-result-hint">El anfitrión empezará cuando estén todos. Caduca en <span id="seq-d-count"></span></p>' + playersList(d) +
+        return h + box + '<div class="duel-result-title">Estás dentro. Paciencia.</div><p class="duel-result-hint">El anfitrión decide cuándo empezar. Caduca en <span id="seq-d-count"></span></p>' + playersList(d) +
           '<button class="btn btn-secondary" style="width:100%;" onclick="SEQMulti.action(\'reject\')">Salir de la sala</button></div>';
       }
       return h + box + '<div class="duel-result-title">Ya no estás en esta sala</div><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.open(\'duels\')">Volver a Duelos</button></div>';

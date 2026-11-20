@@ -39,9 +39,10 @@
     ] },
     { id: 'todos', title: 'Todos contra todos', blocks: [
       'Participan **3 o 4 jugadores**, en directo o mediante Retos.',
-      'En directo, la invitación dura **3 minutos** y la sala de espera, **2 minutos**. La partida puede empezar con al menos **3 jugadores listos**; quien no lo esté queda fuera, sin penalización.',
+      { multi: 'En directo, las invitaciones entre amigos duran **3 minutos** y la sala de espera, **2 minutos**. La partida puede empezar con al menos **3 jugadores listos**; quien no lo esté queda fuera, sin penalización.', nomulti: 'En directo, la invitación dura **3 minutos** y la sala de espera, **2 minutos**. La partida puede empezar con al menos **3 jugadores listos**; quien no lo esté queda fuera, sin penalización.' },
       'Gana quien obtiene más puntos. En caso de empate, decide el menor tiempo total en los aciertos; si persiste, se comparte puesto. Quien abandona queda último y los demás continúan.',
-      '**No afecta al ELO.** Tiene estadísticas, logros y ranking propios, solo entre amigos.'
+      '@multi_enlace **Por enlace.** Se crea con «Crear sala por enlace» en **Duelo online**. A diferencia del 1 contra 1, no es de un solo uso: entran jugadores por orden de llegada, sean amigos o no, hasta que haya **4**, el anfitrión empiece (con **3** basta) o pasen **10 minutos**. No crea ninguna amistad.',
+      { multi: '**No afecta al ELO.** Tiene estadísticas, logros y ranking propios.', nomulti: '**No afecta al ELO.** Tiene estadísticas, logros y ranking propios, solo entre amigos.' }
     ] },
     { id: 'ranking', title: 'Ranking, ELO y rangos', blocks: [
       '**ELO.** Empiezas con **1000 puntos**. Ganar los aumenta y perder los reduce. Vencer a un rival mejor clasificado da más puntos, y un empate vale media victoria.',
