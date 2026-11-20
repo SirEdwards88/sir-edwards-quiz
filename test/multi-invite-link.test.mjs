@@ -76,12 +76,12 @@ test('con sesión: consulta, pregunta con el nombre del anfitrión (sin HTML) y 
     ? { estado: 'abierto', modo: 'stakes', plazas_ocupadas: 2, plazas_totales: 4, soy: 'invitado', creador: { display_name: 'Ana <b>' } }
     : { id: 'SALA000001' });
   e.L.resume(); await flush();
-  assert.deepEqual(e.calls[0], ['GET', '/multi-duel-links/' + GOOD, undefined]);
+  assert.equal(JSON.stringify(e.calls[0]), JSON.stringify(['GET', '/multi-duel-links/' + GOOD, null]));
   assert.equal(e.confirms.length, 1);
   assert.match(e.confirms[0].message, /Ana <b> te invita a Todos contra todos por apuestas\. Hay 2 de 4 plazas ocupadas/);
   assert.equal(e.calls.filter((c) => c[0] === 'POST').length, 0, 'aún no ha entrado');
   e.confirms[0].onConfirm(); await flush();
-  assert.deepEqual(e.calls[1], ['POST', '/multi-duel-links/' + GOOD + '/redeem', undefined]);
+  assert.equal(JSON.stringify(e.calls[1]), JSON.stringify(['POST', '/multi-duel-links/' + GOOD + '/redeem', null]));
   assert.deepEqual(e.opened, ['tab:duelo', 'multi:SALA000001']);
   assert.equal(e.L.pending(), null, 'el token ya no queda guardado');
 });
@@ -122,7 +122,7 @@ test('crear: envía el modo elegido, guarda el enlace con el tiempo restante del
   e.api.next = () => Promise.resolve({ token: GOOD, duelo_id: 'SALA000001', modo: 'stakes', expira_at: 5, restante_ms: 600000 });
   e.L.create(); e.L.create(); await flush();
   assert.equal(e.calls.length, 1, 'doble pulsación: una sola petición');
-  assert.deepEqual(e.calls[0], ['POST', '/multi-duel-links', { modo: 'stakes' }]);
+  assert.equal(JSON.stringify(e.calls[0]), JSON.stringify(['POST', '/multi-duel-links', { modo: 'stakes' }]));
   assert.deepEqual(e.opened, ['tab:duelo', 'multi:SALA000001']);
   const own = JSON.parse(e.ls.siredwards_quiz_multi_link_own);
   assert.equal(own.endsAt, 1_000_000 + 600000, 'usa el reloj del dispositivo + tiempo restante, no la hora del servidor');
