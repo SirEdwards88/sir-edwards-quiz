@@ -170,3 +170,7 @@ test('el tutorial de Duelos solo habla del enlace múltiple si el servidor lo de
   assert.doesNotMatch(m[2], /una sola vez/, 'sin enlace 1 contra 1 no se nombra');
   for (const s of m.slice(1)) assert.doesNotMatch(s, /\p{Extended_Pictographic}/u);
 });
+
+test('el cliente conserva el flag multi_duel_links que declara el Worker (online.js lo normaliza)', () => {
+  assert.match(read('src/online/online.js'), /multi_duel_links: f\.multi_duel_links === true/);
+});
