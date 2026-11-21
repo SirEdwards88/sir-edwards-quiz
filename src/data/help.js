@@ -26,9 +26,19 @@
     ] },
     { id: 'invitaciones', title: 'Invitaciones y sala de espera', blocks: [
       'Solo puedes tener **un duelo o una sala activos a la vez**.',
+      '@v2 @enlace **Invitar jugadores.** En **Duelo online** eliges Clásico o Apuestas, luego **1 contra 1** o **Todos contra todos**, y por último invitas a **un amigo** o **por enlace**.',
+      '@v2 @noenlace **Invitar jugadores.** En **Duelo online** eliges Clásico o Apuestas, luego **1 contra 1** o **Todos contra todos**, y por último invitas a **un amigo**.',
+      '@v2 @enlace **1 contra 1.** Amigo o enlace, pero no los dos a la vez. Mientras nadie haya aceptado puedes cambiar de método: la invitación anterior deja de valer.',
       '**Invitación directa.** Tu amigo tiene **3 minutos** para aceptarla.',
-      '@enlace **Enlace compartido.** Se crea con «Compartir invitación» en **Duelo online**. Dura **10 minutos**, sirve **una sola vez** y permite jugar aunque no seáis amigos. No crea ninguna amistad. Puedes cancelarlo.',
-      '**Sala de espera.** Ambos tenéis **2 minutos** para marcaros listos. Cuando lo estéis los dos, empieza una cuenta atrás de 3 segundos.',
+      '@nov2 @enlace **Enlace compartido.** Se crea con «Compartir invitación» en **Duelo online**. Dura **10 minutos**, sirve **una sola vez** y permite jugar aunque no seáis amigos. No crea ninguna amistad. Puedes cancelarlo.',
+      '@v2 @enlace **Enlace.** Dura **10 minutos**, permite jugar aunque no seáis amigos y no crea ninguna amistad. En 1 contra 1 sirve **una sola vez**.',
+      '@v2 @multi_enlace **Todos contra todos.** Puedes combinar amigos y enlace en la misma sala: hasta **4 jugadores**, y con **3** ya puedes empezar.',
+      '**Sala de espera.** Ves quién ha llegado y quién falta. Ambos tenéis **2 minutos** para marcaros listos. Cuando lo estéis los dos, empieza una cuenta atrás de 3 segundos.',
+      '@v2 @enlace **Cancelar.** Solo quien invita puede cancelar la invitación o la sala, y la app pide confirmación. El enlace deja de funcionar. Antes de empezar, cancelar sale **sin ELO ni penalización**.',
+      '@v2 @noenlace **Cancelar.** Solo quien invita puede cancelar la invitación o la sala, y la app pide confirmación. Antes de empezar, cancelar sale **sin ELO ni penalización**.',
+      '@v2 @enlace **Recuperar una invitación.** Si sales de la pantalla o recargas la app, tu invitación sigue activa y puedes volver a ella. Desde otro dispositivo puedes obtener un enlace nuevo: el anterior deja de funcionar.',
+      '@v2 @enlace **Nivel 7.** Invitar, aceptar una invitación y entrar por enlace exigen el nivel 7. Quien ya ha jugado duelos conserva el acceso.',
+      '@v2 @noenlace **Nivel 7.** Invitar y aceptar una invitación exigen el nivel 7. Quien ya ha jugado duelos conserva el acceso.',
       'Si no llegáis a tiempo, el duelo se cancela sin ELO ni penalización.'
     ] },
     { id: 'retos', title: 'Retos', blocks: [
@@ -41,7 +51,8 @@
       'Participan **3 o 4 jugadores**, en directo o mediante Retos.',
       { multi: 'En directo, las invitaciones entre amigos duran **3 minutos** y la sala de espera, **2 minutos**. La partida puede empezar con al menos **3 jugadores listos**; quien no lo esté queda fuera, sin penalización.', nomulti: 'En directo, la invitación dura **3 minutos** y la sala de espera, **2 minutos**. La partida puede empezar con al menos **3 jugadores listos**; quien no lo esté queda fuera, sin penalización.' },
       'Gana quien obtiene más puntos. En caso de empate, decide el menor tiempo total en los aciertos; si persiste, se comparte puesto. Quien abandona queda último y los demás continúan.',
-      '@multi_enlace **Por enlace.** Se crea con «Crear sala por enlace» en **Duelo online**. A diferencia del 1 contra 1, no es de un solo uso: entran jugadores por orden de llegada, sean amigos o no, hasta que haya **4**, el anfitrión empiece (con **3** basta) o pasen **10 minutos**. No crea ninguna amistad.',
+      '@nov2 @multi_enlace **Por enlace.** Se crea con «Crear sala por enlace» en **Duelo online**. A diferencia del 1 contra 1, no es de un solo uso: entran jugadores por orden de llegada, sean amigos o no, hasta que haya **4**, el anfitrión empiece (con **3** basta) o pasen **10 minutos**. No crea ninguna amistad.',
+      '@v2 @multi_enlace **Amigos y enlace a la vez.** Una misma sala admite amigos invitados y jugadores que entran por el enlace, sean amigos o no, hasta que haya **4**, el anfitrión empiece (con **3** basta) o pasen **10 minutos**. No crea ninguna amistad.',
       { multi: '**No afecta al ELO.** Tiene estadísticas, logros y ranking propios.', nomulti: '**No afecta al ELO.** Tiene estadísticas, logros y ranking propios, solo entre amigos.' }
     ] },
     { id: 'ranking', title: 'Ranking, ELO y rangos', blocks: [

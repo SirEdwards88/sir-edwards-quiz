@@ -25,11 +25,17 @@ window.SEQMultiLink = (function () {
     link_not_found: 'Este enlace no existe. Pide uno nuevo.',
     link_expired: 'Este enlace ya no admite jugadores. Pide uno nuevo.',
     room_full: 'La sala ya está completa.',
+    link_open: 'Ya tienes una invitación activa.',
+    regenerate_conflict: 'El enlace se acaba de renovar desde otro sitio. Vuelve a consultarlo.',
+    invalid_state: 'Ya no se puede hacer eso (el estado ha cambiado).',
     too_many_links: 'Has creado muchos enlaces seguidos. Espera un poco.',
     rate_limited: 'Demasiadas peticiones. Espera unos segundos.',
     feature_disabled: 'Esta función no está activada todavía.'
   };
-  function errText(e) { if (e && e.network) return TEXT.network; return TEXT[e && e.code] || 'Algo ha fallado. Inténtalo de nuevo en un momento.'; }
+  function errText(e) {
+    if (e && e.network) return TEXT.network;
+    if (e && e.code === 'level_required') { try { var lm = window.SEQDuelIntro && window.SEQDuelIntro.levelSyncMessage && window.SEQDuelIntro.levelSyncMessage(); if (lm) return lm; } catch (x) {} }
+    return TEXT[e && e.code] || 'Algo ha fallado. Inténtalo de nuevo en un momento.'; }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
   function lsGet(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }
@@ -39,6 +45,8 @@ window.SEQMultiLink = (function () {
   function api(m, p, b) { return window.SEQOnline.api(m, p, b); }
   function session() { try { return window.SEQOnline && SEQOnline.session ? SEQOnline.session() : null; } catch (e) { return null; } }
   function enabled() { var s = session(); return !!(s && s.features && s.features.multi_duel_links); }
+  // Invitaciones unificadas (1.0): el acceso vive en «Invitar jugadores» y el anfitrión puede renovar el enlace desde otro dispositivo.
+  function v2() { var s = session(); return !!(s && s.features && s.features.classic_duel && s.features.duel_invites_v2); }
   function levelOpen() { try { var g = window.SEQDuelIntro && SEQDuelIntro.gate(typeof store === 'object' ? store : null); return !g || g.open; } catch (e) { return true; } }
   function modeName(m) { return m === 'stakes' ? 'por apuestas' : 'clásico'; }
 
@@ -103,7 +111,7 @@ window.SEQMultiLink = (function () {
   // ---- Crear y compartir -----------------------------------------------------
   // Botón de la pantalla «Elige cómo jugar» (solo Duelo, no Retos).
   function pickButton() {
-    if (!enabled()) return '';
+    if (!enabled() || v2()) return '';
     return '<div class="seq-link-pick"><button type="button" class="btn btn-secondary" style="width:100%;" onclick="SEQMultiLink.create()">Crear sala por enlace</button>' +
       '<p class="stats-section-sub">Todos contra todos con un enlace para compartir: de 3 a 4 jugadores, aunque no sean amigos tuyos. Vale 10 minutos.</p></div>';
   }
@@ -115,7 +123,20 @@ window.SEQMultiLink = (function () {
       creating = false;
       lsSet(KEY, { token: d.token, duelo_id: d.duelo_id, endsAt: Date.now() + Number(d.restante_ms) });
       openRoom({ id: d.duelo_id });
-    }).catch(function (e) { creating = false; toast(errText(e)); });
+    }).catch(function (e) {
+      creating = false;
+      if (v2() && (e && (e.code === 'player_busy' || e.code === 'link_open')) && window.SEQInvites) {
+        window.SEQInvites.refresh().then(function (a) { if (a) window.SEQInvites.resume(); else report(e); }).catch(function () { report(e); });
+        return;
+      }
+      report(e);
+    });
+  }
+  // Un único canal de error por pantalla: el aviso rojo si la pantalla lo tiene; si no, el aviso flotante. Nunca los dos a la vez.
+  function report(e) {
+    var msg = errText(e);
+    try { if (window.SEQDuels && SEQDuels._h && document.getElementById('seq-d-msg')) { SEQDuels._h.say(msg, true); return; } } catch (x) {}
+    toast(msg);
   }
   function share() {
     var x = own(); if (!x) { toast('El enlace ha caducado.'); return; }
@@ -127,23 +148,63 @@ window.SEQMultiLink = (function () {
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url(x.token)).then(function () { toast('Enlace copiado.'); }, fallbackCopy);
     else fallbackCopy();
   }
+  // Sin API de portapapeles: se copia desde un campo temporal fuera de pantalla (la dirección completa no se muestra en la interfaz).
   function fallbackCopy() {
-    var el = document.getElementById('seq-mlink-url'); if (!el) return;
+    var x = own(); if (!x) return;
     try {
-      var r = document.createRange(); r.selectNodeContents(el);
-      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
-      if (document.execCommand && document.execCommand('copy')) { toast('Enlace copiado.'); return; }
+      var ta = document.createElement('textarea');
+      ta.value = url(x.token); ta.setAttribute('readonly', ''); ta.setAttribute('aria-hidden', 'true'); ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0;';
+      document.body.appendChild(ta); ta.select();
+      var ok = document.execCommand && document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (ok) { toast('Enlace copiado.'); return; }
     } catch (e) {}
-    toast('Mantén pulsado el enlace para copiarlo.');
+    toast('No se pudo copiar. Usa «Compartir enlace».');
   }
   // Bloque de la sala de espera del anfitrión. Vacío si el enlace no es de este dispositivo o ya caducó.
   function roomButtons(id) {
     var x = own();
     if (!enabled() || !x || x.duelo_id !== id) return '';
-    return '<div class="seq-link-box"><p class="stats-section-sub">Comparte este enlace. Entran por orden de llegada, sean amigos o no, hasta completar 4 jugadores. Con 3 ya puedes empezar.</p>' +
-      '<div class="seq-link-url" id="seq-mlink-url" tabindex="0" role="textbox" aria-readonly="true" aria-label="Enlace de la sala">' + esc(url(x.token)) + '</div>' +
-      '<div class="seq-link-actions"><button type="button" class="btn btn-primary" onclick="SEQMultiLink.share()">Compartir enlace</button>' +
+    return '<div class="seq-link-box"><div class="seq-link-actions"><button type="button" class="btn btn-primary" onclick="SEQMultiLink.share()">Compartir enlace</button>' +
       '<button type="button" class="btn btn-secondary" onclick="SEQMultiLink.copy()">Copiar enlace</button></div></div>';
+  }
+  // Panel del enlace en la sala de espera del anfitrión. `d.enlace` (solo con el flag) es el estado REAL del enlace en el Worker.
+  //  · Este dispositivo tiene el token y el enlace sigue abierto → compartir/copiar (se reutiliza el token original: recuperar la sala no
+  //    invalida nada). Se comprueba una vez que el Worker aún lo reconoce (pudo renovarse desde otro dispositivo).
+  //  · El enlace está abierto pero este dispositivo no tiene el token → se puede obtener uno nuevo (el anterior deja de valer).
+  function roomPanel(d, v2on) {
+    if (!enabled() || !d) return '';
+    var x = own(), mine = !!(x && x.duelo_id === d.id), link = d.enlace || null;
+    if (mine && (!link || link.estado === 'abierto')) { verify(d.id); return roomButtons(d.id); }
+    if (link && link.estado === 'abierto' && v2on) {
+      return '<div class="seq-link-box"><p class="seq-inv-need">El enlace sigue activo, pero este dispositivo no lo tiene.</p>' +
+        '<button type="button" class="btn btn-primary" onclick="SEQMultiLink.regenerate()">Obtener enlace nuevo</button></div>';
+    }
+    return '';
+  }
+  var verified = {};   // duelo_id -> instante de la última comprobación (como mucho una cada 20 s mientras el anfitrión espera)
+  function verify(duelId) {
+    if (!v2() || (verified[duelId] && Date.now() - verified[duelId] < 20000)) return;
+    verified[duelId] = Date.now();
+    var x = own(); if (!x) return;
+    api('GET', '/multi-duel-links/' + x.token).catch(function (e) {
+      if (e && e.code === 'link_not_found') { lsDel(KEY); try { SEQDuels.rerender(); } catch (z) {} }
+    });
+  }
+  // Renueva el token de la MISMA sala: participantes y plazas se conservan, el enlace anterior deja de valer y la caducidad no cambia.
+  function regenerate() {
+    var st = window.SEQDuels && SEQDuels._state ? SEQDuels._state() : {}, id = st.id;
+    if (!id || !v2()) return;
+    var go = function () {
+      api('POST', '/multi-duels/' + id + '/link/regenerate').then(function (d) {
+        lsSet(KEY, { token: d.token, duelo_id: d.duelo_id, endsAt: Date.now() + Number(d.restante_ms) });
+        verified[id] = Date.now();
+        try { SEQDuels.rerender(); SEQDuels.reload(); } catch (e) {}
+        toast('Enlace nuevo listo. El anterior ya no funciona.');
+      }).catch(function (e) { report(e); if (e && e.code === 'regenerate_conflict') { try { SEQDuels.reload(); } catch (z) {} } });
+    };
+    if (typeof showAppConfirm === 'function') showAppConfirm({ title: '¿Obtener un enlace nuevo?', message: 'El enlace anterior dejará de funcionar. Los jugadores que ya están en la sala se quedan.', confirmLabel: 'Obtener enlace', cancelLabel: 'Mantener', onConfirm: go });
+    else go();
   }
 
   // ---- Arranque -----------------------------------------------------------------------
@@ -152,7 +213,7 @@ window.SEQMultiLink = (function () {
   window.addEventListener('hashchange', function () { if (capture()) { resume(); wait(); } });
 
   return {
-    enabled: enabled, create: create, share: share, copy: copy, pickButton: pickButton, roomButtons: roomButtons,
+    enabled: enabled, create: create, share: share, copy: copy, pickButton: pickButton, roomButtons: roomButtons, roomPanel: roomPanel, regenerate: regenerate,
     capture: capture, resume: resume, pending: pending, _url: url, TOKEN_RE: TOKEN_RE
   };
 })();

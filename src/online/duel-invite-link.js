@@ -34,6 +34,8 @@ window.SEQDuelLink = (function () {
   // interfaz entera queda oculta: así publicar la PWA antes de tiempo no enseña nada que no funcione.
   function active() { var s = session(); return !!(s && s.features && s.features.classic_duel && s.features.duel_links); }
   function enabled() { return active(); }
+  // Invitaciones unificadas (1.0): amigo y enlace son métodos excluyentes en 1 contra 1; el Worker lo declara con este flag.
+  function v2() { var s = session(); return !!(s && s.features && s.features.classic_duel && s.features.duel_invites_v2); }
   function ownGet() {
     try {
       var o = JSON.parse(localStorage.getItem(OWN));
@@ -61,9 +63,16 @@ window.SEQDuelLink = (function () {
     too_many_links: 'Has creado muchos enlaces seguidos. Espera un poco.',
     rate_limited: 'Demasiadas peticiones. Espera unos segundos.',
     link_open: 'Ya tienes una invitación activa.',
+    direct_invite_open: 'Ya has invitado a un amigo a este duelo.',
+    invite_accepted: 'Tu amigo ya ha aceptado: la invitación no se puede cambiar.',
+    regenerate_conflict: 'El enlace se acaba de renovar desde otro sitio. Vuelve a consultarlo.',
+    invalid_state: 'Ya no se puede hacer eso (el estado ha cambiado).',
     feature_disabled: 'Esta función no está activada todavía.'
   };
-  function errText(e) { if (e && e.network) return TEXT.network; return TEXT[e && e.code] || 'Algo ha fallado. Inténtalo de nuevo en un momento.'; }
+  function errText(e) {
+    if (e && e.network) return TEXT.network;
+    if (e && e.code === 'level_required') { try { var lm = window.SEQDuelIntro && window.SEQDuelIntro.levelSyncMessage && window.SEQDuelIntro.levelSyncMessage(); if (lm) return lm; } catch (x) {} }
+    return TEXT[e && e.code] || 'Algo ha fallado. Inténtalo de nuevo en un momento.'; }
 
   // ---- URL ------------------------------------------------------------------
   function urlFor(token) {
@@ -114,8 +123,10 @@ window.SEQDuelLink = (function () {
   }
 
   // ---- Crear y esperar -----------------------------------------------------------
+  // Con las invitaciones unificadas (features.duel_invites_v2) el acceso vive en «Invitar jugadores» (src/online/duel-invites.js) y este
+  // botón desaparece; sin esa bandera se conserva el de siempre.
   function pickButton() {
-    if (!enabled()) return '';
+    if (!enabled() || v2()) return '';
     var own = ownGet();
     if (own) {
       return '<div class="seq-link-pick"><button type="button" class="btn btn-secondary" style="width:100%;" onclick="SEQDuelLink.recover()">Ver mi invitación activa</button>' +
@@ -124,11 +135,23 @@ window.SEQDuelLink = (function () {
     return '<div class="seq-link-pick"><button type="button" class="btn btn-secondary" style="width:100%;" onclick="SEQDuelLink.create()">Compartir invitación</button>' +
       '<p class="stats-section-sub">Un enlace para jugar con quien quieras, aunque no sea amigo tuyo. Vale 10 minutos y una sola vez.</p></div>';
   }
-  // Recupera mi enlace abierto (sin crear nada nuevo).
+  // Un único canal de error por pantalla: el aviso rojo si la pantalla lo tiene; si no, el aviso flotante. Nunca los dos a la vez.
+  function report(e) {
+    var msg = errText(e);
+    try { if (SEQDuels._h && $('seq-d-msg')) { SEQDuels._h.say(msg, true); return; } } catch (x) {}
+    toast(msg);
+  }
+  // Recupera mi enlace abierto (sin crear nada nuevo). El Worker manda: si este dispositivo no guarda el token (otro dispositivo,
+  // almacenamiento borrado), el enlace sigue existiendo y se puede renovar.
   function recover() {
     var own = ownGet();
-    if (!own || !window.SEQDuels) return create();
-    L = own; SEQDuels.open('invite');
+    if (own && window.SEQDuels) { L = own; SEQDuels.open('invite'); return; }
+    if (!window.SEQDuels) return;
+    if (!v2()) return create();
+    call('GET', '/duel-links/mine').then(function (d) {
+      if (d && d.enlace) { L = { token: null, modo: d.enlace.modo === 'stakes' ? 'stakes' : 'classic', endsAt: Date.now() + Number(d.enlace.restante_ms), estado: 'abierto' }; SEQDuels.open('invite'); }
+      else create();
+    }).catch(report);
   }
   function create(replace) {
     if (!window.SEQDuels || !enabled()) return;
@@ -142,8 +165,14 @@ window.SEQDuelLink = (function () {
       ownSet(L);
       SEQDuels.open('invite');
     }).catch(function (e) {
-      if (e && e.code === 'link_open') return confirmReplace();   // existe uno que este dispositivo no conoce (otro dispositivo)
-      try { SEQDuels._h.say(errText(e), true); } catch (x) {} toast(errText(e));
+      var c = e && e.code;
+      if (v2() && (c === 'link_open' || c === 'direct_invite_open' || c === 'player_busy') && window.SEQInvites) {
+        // Ya existe una invitación (quizá de otro dispositivo): se recupera la real en vez de repetir un error.
+        window.SEQInvites.refresh().then(function (a) { if (a) window.SEQInvites.resume(); else report(e); }).catch(function () { report(e); });
+        return;
+      }
+      if (c === 'link_open') return confirmReplace();   // Worker antiguo: existe uno que este dispositivo no conoce
+      report(e);
     });
   }
   function confirmReplace() {
@@ -169,65 +198,122 @@ window.SEQDuelLink = (function () {
   function poll() {
     clearTimeout(pollT);
     if (!L || L.estado !== 'abierto') return;
-    var token = L.token;
+    var ref = L, token = L.token;
+    if (!token) { reconcile(); return; }
     call('GET', '/duel-links/' + token).then(function (d) {
-      if (!L || L.token !== token) return;
+      if (L !== ref) return;
       if (d.estado === 'canjeado' && d.duelo_id) { stop(); ownDel(); var id = d.duelo_id; L = null; SEQDuels.open('duel', id); return; }
       if (d.estado !== 'abierto') { L.estado = d.estado; ownDel(); stop(); paint(); return; }
       L.endsAt = Date.now() + Number(d.restante_ms); ownSet(L);
       pollT = setTimeout(poll, POLL_MS);
-    }).catch(function (e) { if (L && L.token === token) pollT = setTimeout(poll, POLL_MS * 2); });
+    }).catch(function (e) {
+      if (L !== ref) return;
+      // El enlace de este dispositivo ya no existe en el Worker: pudo renovarse desde otro dispositivo. Se reconcilia con el servidor.
+      if (e && e.code === 'link_not_found' && v2()) { ownDel(); L.token = null; reconcile(); return; }
+      pollT = setTimeout(poll, POLL_MS * 2);
+    });
+  }
+  // Sin token válido en este dispositivo: la verdad la tiene el Worker (¿sigue abierta?, ¿la canjearon?, ¿caducó?).
+  function reconcile() {
+    var ref = L; if (!ref || !v2()) return;
+    call('GET', '/duel-links/mine').then(function (m) {
+      if (L !== ref) return;
+      if (m && m.enlace) { L.endsAt = Date.now() + Number(m.enlace.restante_ms); paint(); pollT = setTimeout(poll, POLL_MS); return; }
+      return call('GET', '/duels').then(function (r) {
+        if (L !== ref) return;
+        var d = ((r && r.duels) || []).filter(function (x) { return x.soy === 'creador' && (x.estado === 'aceptado' || x.estado === 'en_curso'); })[0];
+        stop(); ownDel();
+        if (d && d.id) { L = null; SEQDuels.open('duel', d.id); }
+        else { L.estado = 'expirado'; paint(); }
+      });
+    }).catch(function () { if (L === ref) pollT = setTimeout(poll, POLL_MS * 2); });
   }
   function paint() { if (window.SEQDuels && SEQDuels.rerender) SEQDuels.rerender(); }
 
   function render(helpers) {
     H = helpers;
-    var h = H.header('Invitación lista', L ? 'Duelo ' + modeName(L.modo) : '', function () { leave(); });
-    if (!L) return h + '<p class="stats-section-sub">Esta invitación ya no está activa.</p><button class="btn btn-secondary" onclick="SEQDuels.open(\'pick\')">Volver</button>';
+    var all = window.SEQInvites && window.SEQInvites.modeLabel ? window.SEQInvites.modeLabel(L && L.modo, 'one') : '';
+    var h = H.header(v2() ? 'Invitar jugadores' : 'Invitación lista', L ? (v2() ? all : 'Duelo ' + modeName(L.modo)) : '', function () { leave(); });
+    var back = v2() ? "SEQDuels.openInvites('one')" : "SEQDuels.open('pick')";
+    if (!L) return h + '<p class="stats-section-sub">Esta invitación ya no está activa.</p><button class="btn btn-secondary" onclick="' + back + '">Volver</button>';
     if (L.estado !== 'abierto') {
       var why = L.estado === 'cancelado' ? 'La invitación se ha cancelado.' : 'La invitación ha caducado sin que nadie la aceptara.';
       return h + '<div class="seq-link-box"><p class="stats-section-sub">' + why + '</p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuelLink.again()">Crear otra invitación</button>' +
         '<button type="button" class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuelLink.leave()">Volver</button></div>';
     }
-    var url = urlFor(L.token);
-    return h + '<div class="seq-link-box">' +
-      '<p class="stats-section-sub">Comparte este enlace. Quien lo abra podrá aceptar el duelo, aunque no sea amigo tuyo. Sirve una sola vez.</p>' +
-      '<div class="seq-link-url" id="seq-link-url" tabindex="0" role="textbox" aria-readonly="true" aria-label="Enlace de invitación">' + esc(url) + '</div>' +
-      '<div class="seq-link-actions"><button type="button" class="btn btn-primary" onclick="SEQDuelLink.share()">Compartir enlace</button>' +
-      '<button type="button" class="btn btn-secondary" onclick="SEQDuelLink.copy()">Copiar enlace</button></div>' +
-      '<p class="seq-link-count" role="timer" aria-live="off">Caduca en <b id="seq-link-left">' + esc(clock(L.endsAt - Date.now())) + '</b></p>' +
-      '<p class="stats-section-sub">Si alguien la acepta, tendréis 2 minutos para marcaros listos. Si sales de esta pantalla, la invitación sigue activa hasta que caduque o la canceles.</p>' +
-      '<button type="button" class="btn btn-secondary" style="width:100%;" onclick="SEQDuelLink.cancel()">Cancelar invitación</button></div>';
+    var me = H.player ? H.player(session() || {}) : { name: 'Tú', avatar: '' };
+    var ghost = { name: 'Esperando a un rival', avatar: '<span class="seq-inv-qm" aria-hidden="true">?</span>', id: '' };
+    var actions = L.token
+      ? '<button type="button" class="btn btn-primary" onclick="SEQDuelLink.share()">Compartir enlace</button>' +
+        '<button type="button" class="btn btn-secondary" onclick="SEQDuelLink.copy()">Copiar enlace</button>'
+      : '<button type="button" class="btn btn-primary" onclick="SEQDuelLink.regenerate()">Obtener enlace nuevo</button>';
+    actions += '<button type="button" class="btn btn-secondary seq-inv-cancel" onclick="SEQDuelLink.cancel()">Cancelar invitación</button>';
+    var note = L.token ? '' : 'Tu enlace sigue activo, pero este dispositivo no lo tiene. Si pides uno nuevo, el anterior dejará de funcionar.';
+    var box = window.SEQInvites && window.SEQInvites.roomBox ? window.SEQInvites.roomBox({
+      title: 'Esperando jugadores', pill: all, timeHtml: 'Caduca en <b id="seq-link-left">' + esc(clock(L.endsAt - Date.now())) + '</b>', count: '1/2 jugadores',
+      players: [{ p: me, sub: 'Anfitrión' }, { p: ghost, sub: 'Sin responder', ghost: true }], note: note, actions: actions, h: H
+    }) : '';
+    return h + box;
   }
 
   function share() {
     if (!L) return;
+    if (!L.token) { toast('Obtén primero un enlace nuevo.'); return; }
     var url = urlFor(L.token);
     if (navigator.share) { navigator.share({ title: 'Duelo en SirEdwards Quiz', text: 'Te reto a un duelo. El enlace vale 10 minutos.', url: url }).catch(function () {}); return; }
     copy();
   }
   function copy() {
     if (!L) return;
+    if (!L.token) { toast('Obtén primero un enlace nuevo.'); return; }
     var url = urlFor(L.token), done = function () { toast('Enlace copiado.'); };
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, function () { fallbackCopy(); });
-    else fallbackCopy();
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, function () { fallbackCopy(url); });
+    else fallbackCopy(url);
   }
-  function fallbackCopy() {
-    var el = $('seq-link-url'); if (!el) return;
+  // Sin API de portapapeles: se copia desde un campo temporal fuera de pantalla (la dirección completa no se muestra en la interfaz).
+  function fallbackCopy(url) {
     try {
-      var r = document.createRange(); r.selectNodeContents(el);
-      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
-      if (document.execCommand && document.execCommand('copy')) { toast('Enlace copiado.'); return; }
+      var ta = document.createElement('textarea');
+      ta.value = url; ta.setAttribute('readonly', ''); ta.setAttribute('aria-hidden', 'true'); ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0;';
+      document.body.appendChild(ta); ta.select();
+      var ok = document.execCommand && document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (ok) { toast('Enlace copiado.'); return; }
     } catch (e) {}
-    toast('Mantén pulsado el enlace para copiarlo.');
+    toast('No se pudo copiar. Usa «Compartir enlace».');
   }
-  // Cancela en el servidor (si seguía abierto) y vuelve a elegir rival.
+  // Token nuevo de la MISMA invitación (el anterior deja de valer). Solo con el flag; pide confirmación.
+  function regenerate() {
+    if (!L || L.estado !== 'abierto' || !v2()) return;
+    var go = function () {
+      var ref = L;
+      call('POST', '/duel-links/mine/regenerate').then(function (d) {
+        if (L !== ref) return;
+        L = { token: d.token, modo: d.modo === 'stakes' ? 'stakes' : 'classic', endsAt: Date.now() + Number(d.restante_ms), estado: 'abierto' };
+        ownSet(L); paint(); toast('Enlace nuevo listo. El anterior ya no funciona.');
+      }).catch(function (e) { report(e); if (e && e.code === 'regenerate_conflict') reconcile(); });
+    };
+    if (typeof showAppConfirm === 'function') showAppConfirm({ title: '¿Obtener un enlace nuevo?', message: 'El enlace anterior dejará de funcionar.', confirmLabel: 'Obtener enlace', cancelLabel: 'Mantener', onConfirm: go });
+    else go();
+  }
+  // Cancelar pide confirmación y SOLO vuelve atrás si el Worker lo confirma. Si falla (red, estado distinto), se queda aquí y lo dice.
   function cancel() {
-    var l = L; stop(); L = null; ownDel();
-    if (l && l.estado === 'abierto') call('POST', '/duel-links/' + l.token + '/cancel').catch(function () {});
-    if (window.SEQDuels) SEQDuels.open('pick');
+    var l = L;
+    if (!l || l.estado !== 'abierto') { leave(); return; }
+    var go = function () { doCancel(l); };
+    if (typeof showAppConfirm === 'function') showAppConfirm({ title: '¿Cancelar invitación?', message: 'El enlace dejará de funcionar.', confirmLabel: 'Cancelar invitación', cancelLabel: 'Seguir esperando', onConfirm: go });
+    else go();
   }
-  function leave() { stop(); L = null; if (window.SEQDuels) SEQDuels.open('pick'); }
+  function doCancel(l) {
+    var finish = function () { stop(); ownDel(); L = null; if (window.SEQDuels) { if (v2()) SEQDuels.openInvites('one'); else SEQDuels.open('pick'); } };
+    var req = l.token ? call('POST', '/duel-links/' + l.token + '/cancel') : call('POST', '/duel-links/mine/cancel');
+    req.then(finish).catch(function (e) {
+      if (e && e.code === 'link_not_found' && l.token && v2()) { call('POST', '/duel-links/mine/cancel').then(finish).catch(report); return; }
+      report(e);
+      if (e && (e.code === 'invalid_state' || e.network)) { if (L === l) { clearTimeout(pollT); pollT = setTimeout(poll, 500); } }
+    });
+  }
+  function leave() { stop(); L = null; if (window.SEQDuels) { if (v2()) SEQDuels.openInvites('one'); else SEQDuels.open('pick'); } }   // salir NO cancela: la invitación sigue activa
   function again() { stop(); L = null; ownDel(); create(); }
 
   // ---- Después del duelo ------------------------------------------------------------
@@ -258,7 +344,7 @@ window.SEQDuelLink = (function () {
 
   return {
     capture: capture, resume: resume, enabled: enabled, recover: recover, pending: pending, create: create, begin: begin, stop: stop, render: render, share: share, copy: copy,
-    cancel: cancel, leave: leave, again: again, pickButton: pickButton, friendButton: friendButton, addFriend: addFriend,
+    cancel: cancel, leave: leave, again: again, regenerate: regenerate, pickButton: pickButton, friendButton: friendButton, addFriend: addFriend,
     _urlFor: urlFor, _tokenFromHash: tokenFromHash, TOKEN_RE: TOKEN_RE
   };
 })();

@@ -73,7 +73,7 @@ test('resultado y frases: gana el primero, pierden los demás, y el margen elige
 test('elegir modo: apuestas + múltiple ya está activo', () => {
   const { M, S, H } = load();
   let h = M.render('pickkind', H);
-  assert.match(h, /1 vs 1/); assert.match(h, /SEQMulti\.startPick\(\)/);
+  assert.match(h, /1 contra 1/); assert.match(h, /SEQMulti\.startPick\(\)/);
   S.pickModo = 'stakes';
   h = M.render('pickkind', H);
   assert.ok(!/Muy pronto/.test(h)); assert.match(h, /SEQMulti\.startPick\(\)/);
@@ -103,9 +103,9 @@ test('sala pendiente: el creador necesita 3 aceptados para empezar; el invitado 
   let h = M.render('multi', Object.assign(H, {})); // sin datos
   assert.match(h, /Cargando/);
   S.data = room(); h = M.render('multi', H);
-  assert.match(h, /Esperando a tus invitados/); assert.match(h, /disabled/); assert.match(h, /Cancelar sala/);
+  assert.match(h, /Esperando jugadores/); assert.match(h, /Podrás empezar cuando seáis al menos 3./); assert.ok(!/Empezar duelo/.test(h)); assert.match(h, /Cancelar sala/);
   S.data = room({ jugadores: [J(0, 'Edu'), J(1, 'Ana'), J(2, 'Luis')] }); h = M.render('multi', H);
-  assert.match(h, /Empezar con 3/); assert.ok(!/disabled onclick="SEQMulti\.action\('start'\)"/.test(h));
+  assert.match(h, /Empezar duelo/); assert.ok(!/Podrás empezar/.test(h)); assert.ok(!/disabled onclick="SEQMulti\.action\('start'\)"/.test(h));
   S.data = room({ soy: 'invitado', yo: { estado: 'invitado', respuestas: [] }, jugadores: [J(0, 'Edu', { es_yo: false }), J(1, 'Ana', { es_yo: true, estado: 'invitado' }), J(2, 'Luis', { es_yo: false })] });
   h = M.render('multi', H); assert.match(h, /action\('accept'\)/); assert.match(h, /action\('reject'\)/);
 });
@@ -242,7 +242,7 @@ test('elegir formato: si el servidor aún no tiene el todos contra todos, «1 vs
   H.features = () => ({});
   S.pickKind = 'duel'; S.pickModo = 'classic';
   const h = M.render('pickkind', H);
-  assert.match(h, /1 vs 1/);
+  assert.match(h, /1 contra 1/);
   assert.match(h, /seq-d-off[^>]*>.*Todos contra todos/s);
 });
 

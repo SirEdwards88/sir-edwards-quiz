@@ -160,6 +160,7 @@
   function paintMsg() { var el = $('seq-d-msg'); if (!el) return; el.textContent = S.msg; el.className = 'feedback ' + (S.msgBad ? 'bad' : 'good'); el.style.display = S.msg ? 'block' : 'none'; }
   function errText(e) {
     var c = e && e.code;
+    if (c === 'level_required') { try { var lm = window.SEQDuelIntro && window.SEQDuelIntro.levelSyncMessage && window.SEQDuelIntro.levelSyncMessage(); if (lm) return lm; } catch (x) {} }   // nivel 7 local aún sin sincronizar
     var map = {
       network: 'Sin conexión. Inténtalo de nuevo.', no_session: 'Inicia sesión para usar esta función.',
       not_friends: 'Ya no puedes retar a este jugador. Añádelo como amigo o usa otro enlace.', player_busy: 'Tú o tu amigo ya tenéis un duelo online en marcha.',
@@ -169,6 +170,12 @@
       not_enough_players: 'Hacen falta al menos 3 jugadores.', not_enough_ready: 'Hacen falta al menos 3 jugadores listos.', invalid_players: 'Elige a 2 o 3 amigos.',
       modo_no_disponible: 'Ese modo aún no está disponible para varios jugadores.', participation_closed: 'Tu participación en este duelo ya terminó.', duel_not_active: 'Este duelo no está en juego.', feature_disabled: 'Esta función no está activada.',
       rate_limited: 'Demasiadas peticiones. Espera unos segundos.', reto_expired: 'El plazo del reto ha terminado.',
+      // 1.0: invitaciones unificadas
+      level_required: 'Los duelos se abren al nivel 7.', friend_locked: 'Ese jugador aún no tiene los duelos desbloqueados.',
+      link_open: 'Ya tienes una invitación activa.', direct_invite_open: 'Ya has invitado a un amigo a este duelo.',
+      invite_accepted: 'Tu amigo ya ha aceptado: la invitación no se puede cambiar.', room_full: 'La sala ya está completa.',
+      already_invited: 'Ese jugador ya está en la sala.', regenerate_conflict: 'El enlace se acaba de renovar desde otro sitio. Vuelve a consultarlo.',
+      forbidden: 'Solo el anfitrión puede hacer eso.', invalid_player: 'Faltan los jugadores a invitar.',
     };
     if (e && e.network) return map.network;
     return map[c] || 'Algo ha fallado. Inténtalo de nuevo en un momento.';
@@ -257,6 +264,8 @@
         recordFromList(S.lists.duels, 'duel'); // solo los que este dispositivo vio en juego: nunca se recuentan antiguos
       }).catch(function () {}) : null,
       f.multi_duel ? call('GET', '/multi-duels').then(function (d) { S.lists.multis = d.duels || []; recordMultiFromList(S.lists.multis); }).catch(function () {}) : null,
+      // 1.0: mi enlace 1 contra 1 abierto (otro dispositivo incluido): el Worker es la fuente de verdad. Solo lectura.
+      (f.duel_links && f.duel_invites_v2) ? call('GET', '/duel-links/mine').then(function (d) { S.lists.link = (d && d.enlace) || null; }).catch(function () {}) : null,
       f.multi_reto ? call('GET', '/multi-challenges').then(function (d) { S.lists.mretos = d.retos || []; }).catch(function () {}) : null,
       f.async_challenges ? call('GET', '/challenges').then(function (d) { S.lists.retos = d.challenges || []; recordFromList(S.lists.retos, 'reto'); }).catch(function () {}) : null,
     ]).then(function () { renderCards(); if (S.screen && S.screen !== 'duel' && S.screen !== 'reto' && S.screen !== 'multi') render(); });
@@ -522,7 +531,11 @@
     rivalId = safeId(rivalId); if (!rivalId) return;
     var kind = S.pickKind;
     if (kind !== 'duel') { pickMode(rivalId); return; } // un reto se crea después de elegir el modo
-    act('POST', '/duels', { rival: rivalId, modo: S.pickModo === 'stakes' ? 'stakes' : 'classic' }, function (d) { open('duel', d.id); });
+    var body = { rival: rivalId, modo: S.pickModo === 'stakes' ? 'stakes' : 'classic' };
+    // Cambio de método (enlace → amigo): el Worker cancela el enlace y crea el duelo en UNA transacción.
+    var rep = !!(window.SEQInvites && SEQInvites.replaceFlag && SEQInvites.replaceFlag());
+    if (rep) body.replace = true;
+    act('POST', '/duels', body, function (d) { if (rep) SEQInvites.replaceDone(); open('duel', d.id); });
   }
   // Retos: elegir el modo (solo los que los dos tenéis desbloqueados; lo decide el servidor).
   function pickMode(rivalId) {
@@ -562,9 +575,19 @@
   // 2.1: en Duelo online se elige antes el modo (clásico o apuestas); el servidor lo valida.
   function pick(kind, modo) {
     // 2.4: tras elegir clásico o apuestas se elige «1 vs 1» o «Todos contra todos» (si el servidor aún no lo tiene, «Todos contra todos» sale apagado).
-    if (kind === 'duel' && window.SEQMulti) { S.pickKind = 'duel'; S.pickModo = modo === 'stakes' ? 'stakes' : 'classic'; S.screen = 'pickkind'; render(); refreshSummary(); return; }
+    if (kind === 'duel' && window.SEQMulti) { S.pickKind = 'duel'; S.pickModo = modo === 'stakes' ? 'stakes' : 'classic'; S.screen = 'pickkind'; render(); if (window.SEQInvites && SEQInvites.on()) SEQInvites.onKind(); else refreshSummary(); return; }
     if (kind === 'reto' && window.SEQMulti) { S.pickKind = 'reto'; S.pickModo = 'classic'; S.screen = 'pickkind'; render(); refreshSummary(); return; }
     pick1v1(kind, modo);
+  }
+  // 1.0: pantalla «Invitar jugadores» (src/online/duel-invites.js). kind: 'one' (1 contra 1) o 'all' (Todos contra todos).
+  function openInvites(kind) {
+    stopTimers();
+    S.pickKind = 'duel'; S.pickRivals = null; S.invKind = kind === 'all' ? 'all' : 'one';
+    S.screen = 'invites'; S.id = null; S.data = null; S.shown = null; S.msg = '';
+    var home = $('duel-home'); if (home) home.style.display = 'none';
+    var root = $('seq-duel-root'); if (root) root.style.display = 'block';
+    render();
+    try { if (window.SEQInvites) SEQInvites.onKind(); } catch (e) {}   // el Worker es la fuente de verdad: se consulta al abrir
   }
   function pick1v1(kind, modo) { S.pickRivals = null; S.pickKind = kind === 'duel' ? 'duel' : 'reto'; S.pickModo = modo === 'stakes' ? 'stakes' : 'classic'; S.screen = 'pick'; render(); refreshSummary(); watchPresence(); }
   // En la lista de a quién retar a un duelo en directo, la presencia se refresca cada 15 s (solo mientras esa pantalla está abierta y visible).
@@ -783,9 +806,12 @@
   }
   function renderPick() {
     var fl = S.lists.friends;
-    var h = header('Elige a quién retar', S.pickKind === 'duel' ? (S.pickModo === 'stakes' ? 'Duelo por apuestas' : 'Duelo clásico') : 'Reto', backToList);
-    // Fase B: en un duelo en directo también se puede compartir un enlace (aunque no tengas amigos).
+    var uni = S.pickKind === 'duel' && !!(window.SEQInvites && SEQInvites.on());
+    var h = header(uni ? 'Invitar a un amigo' : 'Elige a quién retar', S.pickKind === 'duel' ? (S.pickModo === 'stakes' ? 'Duelo por apuestas' : 'Duelo clásico') : 'Reto', uni ? function () { SEQInvites.go('one'); } : backToList);
+    // Fase B: en un duelo en directo también se puede compartir un enlace (aunque no tengas amigos). Con las invitaciones unificadas
+    // el enlace vive en «Invitar jugadores» y aquí no se ofrece.
     if (S.pickKind === 'duel' && window.SEQDuelLink) h += SEQDuelLink.pickButton();
+    if (uni && SEQInvites.replaceFlag()) h += '<p class="stats-section-sub">Al invitar a un amigo se cancelará tu enlace.</p>';
     if (fl && !fl.friends.length) { /* sin amigos: no hay nada que explicar todavía */ }
     else if (S.pickKind !== 'duel') h += '<p class="stats-section-sub">Tu amigo tiene 3 días para jugar.</p>';
     if (!fl) return h + '<p class="stats-section-sub">Cargando…</p>';
@@ -1103,6 +1129,8 @@
     var h = gameHeader('', 'SEQDuels.leaveDuel()');
     if (!d) return h + '<p class="stats-section-sub">Cargando…</p>';
     var p = player(d.rival), now = serverNow();
+    // Invitación directa pendiente (anfitrión): sala «Esperando jugadores» con cancelación confirmada (src/online/duel-invites.js).
+    if (d.estado === 'pendiente' && d.soy !== 'rival' && window.SEQInvites && SEQInvites.directWaiting) return h + SEQInvites.directWaiting(d, HELPERS, p);
     h += '<p class="stats-section-sub seq-d-vs">Tú contra ' + p.avatar + ' ' + p.name + '</p>';
     if (d.estado === 'pendiente') {
       if (d.soy === 'rival') return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">' + p.name + ' te reta a un duelo</div><p class="duel-result-hint">Caduca en <span id="seq-d-count"></span></p><button class="btn btn-primary" style="width:100%;" onclick="SEQDuels.duelAction(\'accept\')">Aceptar</button> <button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQDuels.duelAction(\'reject\')">Rechazar</button></div>';
@@ -1168,6 +1196,7 @@
       else if (S.screen === 'retos') h = renderList('reto');
       else if (S.screen === 'pick') h = renderPick();
       else if (S.screen === 'invite') h = window.SEQDuelLink ? SEQDuelLink.render(HELPERS) : '';
+      else if (S.screen === 'invites') h = window.SEQInvites ? SEQInvites.render(HELPERS) : '';
       else if (S.screen === 'retomode') h = renderRetoMode();
       else if (S.screen === 'duel') h = renderDuel();
       else if (S.screen === 'pickkind' || S.screen === 'multipick' || S.screen === 'multi') h = window.SEQMulti ? SEQMulti.render(S.screen, HELPERS) : '';
@@ -1308,7 +1337,7 @@
   };
   window.SEQDuels = {
     shareResult: shareResultCard, leaveDuel: leaveDuel, answerText: answerText, createReto: createReto, pickMode: pickMode,
-    open: open, back: back, refreshSummary: refreshSummary, pick: pick, pick1v1: function (m) { pick1v1('duel', m); }, pickModeMulti: pickModeMulti, create: create, quick: quick,
+    open: open, back: back, refreshSummary: refreshSummary, openInvites: openInvites, pick: pick, pick1v1: function (m) { pick1v1('duel', m); }, pickModeMulti: pickModeMulti, create: create, quick: quick,
     duelAction: duelAction, retoAction: retoAction, listAction: listAction, answer: answer,
     doSearch: doSearch, friendAdd: friendAdd, friendResp: friendResp, reload: load,
     onAccountChange: onAccountChange, onShow: onShow, onHide: onHide, isLive: isLive, openGuarded: openGuarded,

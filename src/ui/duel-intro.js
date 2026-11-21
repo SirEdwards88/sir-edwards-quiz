@@ -2,9 +2,8 @@
 //
 //   · Desbloqueo: Duelo se abre al llegar al nivel 7 (1.350 XP). Quien ya usó los duelos (presentación vista, historial de duelos o
 //     desbloqueo anotado) no se vuelve a bloquear nunca. Marca local en localStorage; no toca el store ni el Worker.
-//   · Presentación: la primera vez que se entra en Duelo, Sir Edwards se presenta (seis viñetas: duelo en directo, retos, amigos,
-//     ranking y ELO, y dónde está la Ayuda). Al completarla o saltarla no se repite sola. Se puede volver a ver con replay()
-//     (botón de la Ayuda): enseñarla de nuevo no cambia ninguna marca.
+//   · Tutorial: la primera vez que se entra en Duelo (una sola vez para todos, con clave propia) arranca el recorrido de siete viñetas
+//     de src/ui/duel-tour.js. introIfNeeded() y replay() son la fachada. Verlo no escribe K_HELP, K_INTRO ni K_UNLOCKED.
 //   · Ayuda: el texto completo vive en src/data/help.js y lo pinta src/ui/help.js. Aquí ya no hay tarjeta de ayuda propia.
 // Usa en ejecución: store (index.html). Con «reducir movimiento» no hay animaciones.
 
@@ -124,96 +123,31 @@
     if (arrow) arrow.innerHTML = g.open ? '›' : '<img class="dl-arrow-lock" src="assets/cats/candado.webp" alt="" draggable="false">';
   }
 
-  // ---- Presentación de Sir Edwards (tutorial) ------------------------------------------------------------------------------
-  // `body` admite <b>…</b>: son textos fijos de este archivo, nunca datos de nadie.
-  // Cada viñeta: título funcional (lo primero que se lee), frase de Sir Edwards (secundaria) y párrafo que enseña.
-  function multiLinksOn() { try { var s = window.SEQOnline && window.SEQOnline.session && window.SEQOnline.session(); return !!(s && s.features && s.features.multi_duel_links); } catch (e) { return false; } }
-  function linksOn() { try { var s = window.SEQOnline && window.SEQOnline.session && window.SEQOnline.session(); return !!(s && s.features && s.features.classic_duel && s.features.duel_links); } catch (e) { return false; } }
-  var pages = [
-    { img: 'assets/character/presentacion-evaluador.webp', title: 'Bienvenido a Duelos', quip: 'Dije que no habría tutorial. Mentí.',
-      body: 'Aquí podrás hacer amigos, disputar duelos en directo, enviar retos y competir por un puesto en el ranking. Una breve explicación evitará que los demás tengan que perder su tiempo contigo.', btn: 'Continuar' },
-    { img: 'assets/character/presentacion-expediente.webp', title: 'Amigos', quip: 'Hasta las rivalidades necesitan una presentación.',
-      body: 'Busca jugadores por su nombre o ID y envíales una solicitud. Cuando la acepten, podrás encontrarlos y desafiarlos directamente.', btn: 'Continuar' },
-    { img: 'assets/character/sir-edwards-duelos-reloj.webp', title: 'Duelos online', quip: 'Dos jugadores. Un vencedor.',
-      body: 'Competís al mismo tiempo. Elige Clásico o Apuestas y desafía a un amigo conectado, o comparte una invitación. Perder con elegancia sigue siendo perder.', bodyMulti: 'Elige Clásico o Apuestas, 1 contra 1 o Todos contra todos. La invitación de 1 contra 1 sirve una sola vez; el enlace de Todos contra todos admite hasta cuatro jugadores. Perder con elegancia sigue siendo perder.', bodyMultiOnly: 'Elige Clásico o Apuestas, 1 contra 1 o Todos contra todos. Para Todos contra todos puedes compartir un enlace que admite hasta cuatro jugadores, sean amigos o no. Perder con elegancia sigue siendo perder.', bodyOff: 'Competís al mismo tiempo. Elige Clásico o Apuestas y desafía a un amigo conectado. Perder con elegancia sigue siendo perder.', btn: 'Continuar' },
-    { img: 'assets/character/sir-edwards-retos-sobre.webp', title: 'Retos', quip: 'No hace falta coincidir.',
-      body: 'Envía un reto a un amigo aunque no esté conectado. Tendrá tres días desde su creación para jugarlo. Hasta la paciencia tiene un límite.', btn: 'Continuar' },
-    { img: 'assets/character/event_siredwards_record.webp', title: 'Ranking y ELO', quip: 'La reputación está en juego.',
-      body: 'Los duelos individuales y los retos 1 contra 1 completados afectan a tu ELO. Tus primeras cinco partidas sirven para colocarte en el ranking. La reputación exige cierta constancia.', btn: 'Continuar' },
-    { img: 'assets/character/presentacion-mirada.webp', title: '¿Alguna duda?', quip: 'Si pierdes, que sea con elegancia.',
-      body: 'El botón ? de Duelos abre la Ayuda con todas las reglas. Desde allí también podrás repetir este tutorial. Procura no dejarme mal.', btn: 'A por ellos' }
-  ];
-  var intro = null, replaying = false, opener = null;
-
-  function closeIntro() {
-    if (intro && intro.parentNode) intro.parentNode.removeChild(intro);
-    intro = null;
-    var back = opener; opener = null;
-    if (back && document.contains(back)) { try { back.focus({ preventScroll: true }); } catch (e) {} }
-  }
-  // Completarla o saltarla la da por vista (no se repite sola). Al volver a verla desde la Ayuda no se cambia ninguna marca.
-  function endIntro() {
-    if (!replaying) { set(K_INTRO, '1'); set(K_HELP, '1'); }
-    replaying = false;
-    closeIntro();
-  }
-  function onKey(e) {
-    if (!intro) return;
-    if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); endIntro(); return; }
-    if (e.key !== 'Tab') return;
-    var f = intro.querySelectorAll('button'); if (!f.length) return;
-    var first = f[0], last = f[f.length - 1], a = document.activeElement;
-    if (!intro.contains(a)) { e.preventDefault(); first.focus(); }
-    else if (e.shiftKey && a === first) { e.preventDefault(); last.focus(); }
-    else if (!e.shiftKey && a === last) { e.preventDefault(); first.focus(); }
-  }
-  function renderPage(i) {
-    var p = pages[i], last = i === pages.length - 1;
-    var label = last && replaying ? 'Entendido' : p.btn;
-    var inner = '<div class="dint-card" tabindex="-1">' +
-      (p.img ? '<img class="dint-img" src="' + p.img + '" alt="" draggable="false" decoding="async">' : '') +
-      '<h2 id="dint-title">' + p.title + '</h2>' +
-      '<p class="dint-quip">' + p.quip + '</p>' +
-      '<p class="dint-body">' + (p.bodyMulti && multiLinksOn() ? (linksOn() ? p.bodyMulti : p.bodyMultiOnly) : p.bodyOff && !linksOn() ? p.bodyOff : p.body) + '</p>' +
-      '<div class="dint-dots" aria-hidden="true">' + pages.map(function (_, k) { return '<i' + (k === i ? ' class="on"' : '') + '></i>'; }).join('') + '</div>' +
-      '<button type="button" class="btn btn-primary dint-go">' + label + '</button>' +
-      (last ? '' : '<button type="button" class="dint-skip">Saltar</button>') + '</div>';
-    intro.innerHTML = inner;
-    var go = intro.querySelector('.dint-go');
-    go.addEventListener('click', function () { if (last) endIntro(); else renderPage(i + 1); });
-    var skip = intro.querySelector('.dint-skip'); if (skip) skip.addEventListener('click', endIntro);
-    try { go.focus({ preventScroll: true }); } catch (e) {}
-    var card = intro.querySelector('.dint-card'); if (card) card.scrollTop = 0;
-  }
-  function show() {
-    opener = document.activeElement && document.activeElement !== document.body ? document.activeElement : null;
-    intro = document.createElement('div');
-    intro.className = 'dint'; intro.id = 'duel-intro';
-    intro.setAttribute('role', 'dialog'); intro.setAttribute('aria-modal', 'true'); intro.setAttribute('aria-labelledby', 'dint-title');
-    document.body.appendChild(intro);
-    renderPage(0);
-  }
-  // Desde showDuelHelpIfNeeded: true si ha mostrado la presentación.
-  function introIfNeeded() {
-    if (get(K_INTRO) === '1' || get(K_HELP) === '1') return false;
-    if (intro) return true;
-    replaying = false;
-    show();
-    return true;
-  }
-  // Desde el botón de la Ayuda: vuelve a enseñarla siempre, sin tocar las marcas de «vista» ni de desbloqueo.
-  function replay() {
-    if (intro) return true;
-    replaying = true;
-    show();
-    return true;
+  // ---- Nivel 7 sin sincronizar -------------------------------------------------------------------------------------------------
+  // El Worker exige el nivel 7 con la XP que TIENE de la cuenta, y esa XP la sube la sincronización. Quien ha llegado al nivel 7 en este
+  // dispositivo (sin conexión, o antes de que se sincronizara) puede ver Duelos abiertos y recibir «level_required» durante un rato.
+  // No se toca la validación del servidor: se pide una sincronización normal del progreso propio y se explica qué pasa (en lugar de
+  // «los duelos se abren al nivel 7», que contradice lo que ve el jugador). Devuelve null si localmente tampoco hay nivel 7.
+  function levelSyncMessage() {
+    var st = null; try { st = typeof store === 'object' ? store : null; } catch (e) {}
+    if (gate(st).level < NEED_LEVEL) return null;
+    try { if (window.SEQOnline && window.SEQOnline.syncSoon) window.SEQOnline.syncSoon(); } catch (e) {}
+    return 'Tu nivel aún no se ha sincronizado con tu cuenta. Inténtalo de nuevo en unos segundos.';
   }
 
-  try { document.addEventListener('keydown', onKey, true); } catch (e) {}
+  // ---- Tutorial de Duelos (fachada) ------------------------------------------------------------------------------------------
+  // El recorrido interactivo de siete viñetas vive en src/ui/duel-tour.js (textos en src/data/duel-tour-steps.js). Estas dos funciones
+  // se conservan como punto de entrada para index.html y la Ayuda. El recorrido usa su PROPIA clave (siredwards_quiz_duel_tour_seen):
+  // ya no se escribe K_HELP ni K_INTRO al verlo, así que no puede alterar las condiciones de desbloqueo de Duelos.
+  // Desde showDuelHelpIfNeeded: true si lo ha mostrado o lo ha dejado programado (se aplaza si hay una partida, invitación o sala activas).
+  function introIfNeeded() { try { return !!(window.SEQDuelTour && window.SEQDuelTour.startIfNeeded()); } catch (e) { return false; } }
+  // Desde el botón «Ver el tutorial» de la Ayuda: lo enseña siempre que sea seguro, sin cambiar ninguna marca.
+  function replay() { try { return !!(window.SEQDuelTour && window.SEQDuelTour.replay()); } catch (e) { return false; } }
+
   try { document.addEventListener('DOMContentLoaded', function () { refresh(); }); } catch (e) {}
 
   window.SEQDuelIntro = {
-    gate: gate, takeNewUnlock: takeNewUnlock, resetLocal: resetLocal, onAccountSwitch: onAccountSwitch, markOpenSilently: markOpenSilently, intercept: intercept, refresh: refresh, introIfNeeded: introIfNeeded, replay: replay,
-    NEED_LEVEL: NEED_LEVEL, PAGES: pages
+    gate: gate, takeNewUnlock: takeNewUnlock, resetLocal: resetLocal, onAccountSwitch: onAccountSwitch, markOpenSilently: markOpenSilently, intercept: intercept, refresh: refresh, introIfNeeded: introIfNeeded, replay: replay, levelSyncMessage: levelSyncMessage,
+    NEED_LEVEL: NEED_LEVEL
   };
 })();

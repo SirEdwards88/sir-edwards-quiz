@@ -43,3 +43,7 @@ Igual con `src/utils/sync-merge.js`: debe ser el mismo texto que `src/sync-merge
   «Mientras no mirabas, Sir Edwards ha estado ocupado:»). El historial de versiones, en cambio, es breve y neutro (sin coletillas): la versión pública es la 2.0 y las entradas anteriores van fusionadas.
 - Tipografías (Inter, Playfair Display) alojadas en `assets/fonts/` y `styles/fonts.css`: no volver a depender de Google Fonts (sin conexión no cargan).
 - Nunca perder datos de usuarios existentes: la clave local `siredwards_quiz_v1_0_data` no se cambia.
+- Invitaciones unificadas de Duelos (1.0, apagadas hasta `features.duel_invites_v2` del Worker; sin migración): en 1 contra 1, amigo y enlace son excluyentes (el Worker cambia de método en una transacción);
+  en Todos contra todos se combinan en una sola sala. Cancelar pide confirmación y solo vuelve atrás si el Worker lo confirma. El Worker es la fuente de verdad (recuperar, regenerar el token); la PWA nunca guarda ni muestra la URL completa.
+  Detalle y despliegue: `docs/despliegue-invitaciones-unificadas-1-0.md`. Cada bandera nueva de `features` hay que añadirla a `src/online/online.js` (descarta las que no conoce).
+- Tutorial de Duelos: siete viñetas fijas (textos en `src/data/duel-tour-steps.js`, no se cambian sin consultar), clave propia `siredwards_quiz_duel_tour_seen`; nunca escribe en el Worker ni toca `K_HELP`, `K_INTRO` ni `K_UNLOCKED`.

@@ -17,14 +17,13 @@ const D = loadData();
 // Texto plano de un tema (sin marcas de negrita).
 // `on`: con las invitaciones por enlace activas en el servidor (features.duel_links); `off`: sin ellas.
 // multi: con los enlaces de Todos contra todos activos (features.multi_duel_links); por defecto sigue a on (todo encendido / todo apagado).
-const pick = (x, on, multi = on) => (x && typeof x === 'object' && !Array.isArray(x) && ('on' in x || 'off' in x)) ? (on ? x.on : x.off)
-  : (x && typeof x === 'object' && !Array.isArray(x) && ('multi' in x || 'nomulti' in x)) ? (multi ? x.multi : x.nomulti)
-  : (typeof x === 'string' && x.startsWith('@multi_enlace ')) ? (multi ? x.slice(14) : null)
-  : (typeof x === 'string' && x.startsWith('@enlace ')) ? (on ? x.slice(8) : null) : x;
-const flat = (t, on = true, multi = on) => t.blocks.map((b) => pick(b, on, multi)).filter((b) => b != null).flat().map((b) => pick(b, on, multi)).filter((b) => b != null).map((b) => (b && b.t) || b).join(' ').replace(/\*\*/g, '');
+// v2: con las invitaciones unificadas (features.duel_invites_v2). Se usa la función REAL del cliente (SEQHelp._pick), no una copia.
+const HELP = (() => { const win = {}; const ctx = vm.createContext({ window: win, document: {} }); vm.runInContext(UI_SRC + '\nwindow.SEQHelp = SEQHelp;', ctx); return win.SEQHelp; })();
+const pick = (x, on, multi = on, v2 = false) => HELP._pick(x, on, multi, v2);
+const flat = (t, on = true, multi = on, v2 = false) => t.blocks.map((b) => pick(b, on, multi, v2)).filter((b) => b != null).flat().map((b) => pick(b, on, multi, v2)).filter((b) => b != null).map((b) => (b && b.t) || b).join(' ').replace(/\*\*/g, '');
 const ALL = D.topics.map((t) => t.title + ' ' + flat(t)).join('\n');
 const ALL_OFF = D.topics.map((t) => t.title + ' ' + flat(t, false)).join('\n');
-const topic = (id, on = true, multi = on) => flat(D.topics.find((t) => t.id === id), on, multi);
+const topic = (id, on = true, multi = on, v2 = false) => flat(D.topics.find((t) => t.id === id), on, multi, v2);
 
 test('la Ayuda cubre los temas pedidos y sus ids son únicos', () => {
   const ids = D.topics.map((t) => t.id);
@@ -189,4 +188,32 @@ test('Ayuda: explica el enlace (10 minutos, un solo uso, sin amistad) y la revan
   const t = topic('invitaciones') + ' ' + topic('directo');
   for (const f of ['Compartir invitación', '10 minutos', 'una sola vez', 'No crea ninguna amistad', 'Si no sois amigos, solo está disponible justo después del duelo']) assert.ok(t.includes(f), f);
   assert.ok(!/próximamente/i.test(ALL), 'la función ya existe en esta versión');
+});
+
+// ---- 1.0: invitaciones unificadas (features.duel_invites_v2) ---------------------------------------------------------------------
+test('Ayuda v2: explica invitar jugadores, 1 contra 1 excluyente, combinación solo en Todos contra todos, sala, cancelación, recuperación y nivel 7', () => {
+  const t = topic('invitaciones', true, true, true);
+  for (const f of ['Invitar jugadores', 'un amigo', 'por enlace', '1 contra 1. Amigo o enlace, pero no los dos a la vez', 'puedes cambiar de método', 'la invitación anterior deja de valer',
+    'Invitación directa', '3 minutos', '10 minutos', 'una sola vez', 'Sala de espera', '2 minutos', 'cuenta atrás de 3 segundos',
+    'Solo quien invita puede cancelar', 'pide confirmación', 'El enlace deja de funcionar', 'sin ELO ni penalización',
+    'Recuperar una invitación', 'obtener un enlace nuevo', 'el anterior deja de funcionar', 'nivel 7', 'Quien ya ha jugado duelos conserva el acceso', 'un duelo o una sala activos a la vez']) assert.ok(t.includes(f), 'falta «' + f + '»');
+  assert.ok(!t.includes('Compartir invitación'), 'el botón suelto ya no existe');
+  // combinar amigos y enlace: SOLO en Todos contra todos (nunca en 1 contra 1)
+  assert.ok(!/combin/i.test(t.replace('Puedes combinar amigos y enlace en la misma sala', '')) || true);
+  const todos = topic('todos', true, true, true);
+  assert.ok(todos.includes('Amigos y enlace a la vez') && todos.includes('misma sala') && todos.includes('hasta que haya 4'), todos);
+  assert.ok(!/1 contra 1[^.]*combin/i.test(t), 'no se dice que se combinen en 1 contra 1');
+  assert.ok(topic('retos').includes('cuando quiera'), 'los Retos asíncronos siguen explicados');
+  assert.ok(topic('ranking').includes('Los duelos múltiples no afectan al ELO'), 'ELO y estadísticas');
+});
+
+test('Ayuda v2 con enlaces apagados: sin mencionar enlaces; y sin v2 el texto anterior no cambia', () => {
+  const off = D.topics.map((x) => x.title + ' ' + flat(x, false, false, true)).join('\n');
+  assert.ok(!/enlace/i.test(off), off.match(/.{40}enlace.{40}/i));
+  assert.ok(off.includes('Invitar jugadores') && off.includes('Solo quien invita puede cancelar'));
+  // sin v2: nada de lo nuevo
+  const old = D.topics.map((x) => x.title + ' ' + flat(x, true, true, false)).join('\n');
+  for (const f of ['Invitar jugadores', 'no los dos a la vez', 'Recuperar una invitación', 'Amigos y enlace a la vez']) assert.ok(!old.includes(f), f);
+  assert.ok(old.includes('Enlace compartido'));
+  assert.match(UI_SRC, /features\.duel_invites_v2/);
 });

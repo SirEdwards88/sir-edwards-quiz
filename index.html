@@ -60,6 +60,8 @@
 <link rel="stylesheet" href="styles/encargos.css?v=532">
 <link rel="stylesheet" href="styles/encargos-intro.css?v=532">
 <link rel="stylesheet" href="styles/duel-intro.css?v=532">
+<link rel="stylesheet" href="styles/duel-invites.css?v=532">
+<link rel="stylesheet" href="styles/duel-tour.css?v=532">
 <link rel="stylesheet" href="styles/help.css?v=532">
 <link rel="stylesheet" href="styles/sir-events.css?v=532">
 <link rel="stylesheet" href="styles/sir-interrupt.css?v=532">
@@ -338,7 +340,7 @@ try {
     <h2 id="app-confirm-title">¡Atención!</h2>
     <p id="app-confirm-message"></p>
     <div class="modal-warning-actions">
-      <button class="btn btn-secondary" onclick="resolveAppConfirmModal(false)">Cancelar</button>
+      <button class="btn btn-secondary" id="app-confirm-cancel-btn" onclick="resolveAppConfirmModal(false)">Cancelar</button>
       <button class="btn btn-danger" id="app-confirm-accept-btn" onclick="resolveAppConfirmModal(true)">Continuar</button>
     </div>
   </div>
@@ -1132,6 +1134,8 @@ try {
 <script src="src/ui/lucidez-unlock.js?v=532"></script>
 <script src="src/ui/advance.js?v=532"></script>
 <script src="src/utils/duel-forfeit.js?v=532"></script>
+<script src="src/data/duel-tour-steps.js?v=532"></script>
+<script src="src/ui/duel-tour.js?v=532"></script>
 <script src="src/ui/duel-intro.js?v=532"></script>
 <script src="src/data/help.js?v=532"></script>
 <script src="src/ui/help.js?v=532"></script>
@@ -1223,6 +1227,8 @@ try {
 <script src="src/online/duels-v21.js?v=532"></script>
 <script src="src/online/multi-duels.js?v=532"></script>
 <script src="src/online/multi-invite-link.js?v=532"></script>
+<!-- 1.0: invitaciones unificadas de Duelos (pantalla «Invitar jugadores», sala de espera) -->
+<script src="src/online/duel-invites.js?v=532"></script>
 <script src="src/online/multi-stakes.js?v=532"></script>
 <!-- 2.3: ficha pública de un jugador (resumen, récords, PvP y solicitud de amistad) -->
 <script src="src/online/player-profile.js?v=532"></script>
@@ -2457,10 +2463,11 @@ function resolveDiscardSavedGameModal(proceed) {
 // seguridad, etc.) en vez de duplicar el modal para cada caso. Sustituye
 // al confirm() nativo del navegador.
 let pendingAppConfirmAction = null;
-function showAppConfirm({ title = '¡Atención!', message, confirmLabel = 'Continuar', onConfirm }) {
+function showAppConfirm({ title = '¡Atención!', message, confirmLabel = 'Continuar', cancelLabel = 'Cancelar', onConfirm }) {
   document.getElementById('app-confirm-title').textContent = title;
   document.getElementById('app-confirm-message').textContent = message;
   document.getElementById('app-confirm-accept-btn').textContent = confirmLabel;
+  var cancelBtn = document.getElementById('app-confirm-cancel-btn'); if (cancelBtn) cancelBtn.textContent = cancelLabel;
   pendingAppConfirmAction = onConfirm;
   document.getElementById('app-confirm-modal').style.display = 'flex';
 }

@@ -21,7 +21,11 @@ export function computeRevs(rootUrl, urls) {
   for (const u of [...urls].sort()) {
     const file = new URL(u.slice(2), rootUrl);
     if (!fs.existsSync(file)) throw new Error('APP_SHELL lista un archivo que no existe: ' + u);
-    revs[u] = crypto.createHash('sha1').update(fs.readFileSync(file)).digest('hex').slice(0, 8);
+    let bytes = fs.readFileSync(file);
+    // Los .svg son texto: en un árbol de trabajo de Windows (autocrlf) llevan CRLF, pero lo que se publica desde Git son los bytes con LF.
+    // Se hashea siempre la forma LF para que la huella no dependa de los saltos de línea de quien ejecute el script.
+    if (/\.svg$/i.test(u)) bytes = Buffer.from(bytes.toString('latin1').replace(/\r\n/g, '\n'), 'latin1');
+    revs[u] = crypto.createHash('sha1').update(bytes).digest('hex').slice(0, 8);
   }
   return revs;
 }

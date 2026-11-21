@@ -116,17 +116,22 @@
       if (off) return '<div class="seq-m-opt seq-d-off" aria-disabled="true">' + ic + body + '</div>';
       return '<div class="seq-m-opt" role="button" tabindex="0" onclick="' + act + '" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();' + act + '}">' + ic + body + '<span class="seq-m-opt-go" aria-hidden="true">›</span></div>';
     }
-    var one = card('uno-contra-uno', '1 vs 1', reto ? 'Un amigo, a su ritmo.' : 'Un amigo, cara a cara.', 'SEQMulti.one()');
+    // Invitaciones unificadas (1.0): en Duelos (no en Retos) ambas opciones llevan a «Invitar jugadores», y quien tiene pocos amigos no
+    // queda bloqueado (puede invitar por enlace). Sin el flag del Worker se conserva el flujo anterior.
     var ft = (H.features && H.features()) || {}, served = reto ? ft.multi_reto : ft.multi_duel;
+    var uni = !reto && !!(window.SEQInvites && SEQInvites.on());
+    var one = card('uno-contra-uno', '1 contra 1', uni ? 'Reta a otro jugador.' : reto ? 'Un amigo, a su ritmo.' : 'Un amigo, cara a cara.', uni ? "SEQInvites.go('one')" : 'SEQMulti.one()');
     var multi = !served
       ? card('multiple', 'Todos contra todos', 'Muy pronto.', '', true)
       : (stakes && !STAKES_READY)
       ? card('multiple', 'Todos contra todos', 'Muy pronto. Sir Edwards aún afila las apuestas.', '', true)
+      : uni
+      ? card('multiple', 'Todos contra todos', 'De ' + MIN_PLAYERS + ' a ' + MAX_PLAYERS + ' jugadores.', "SEQInvites.go('all')")
       : (S().lists && S().lists.friends && S().lists.friends.friends.length < MIN_PLAYERS - 1)
       ? card('multiple', 'Todos contra todos', 'Necesitas al menos ' + (MIN_PLAYERS - 1) + ' amigos para jugar este modo.', '', true)
       : card('multiple', 'Todos contra todos', 'De ' + MIN_PLAYERS + ' a ' + MAX_PLAYERS + ' jugadores.' + (reto ? ' A su ritmo.' : ''), 'SEQMulti.startPick()');
-    var linkOption = !reto && ft.multi_duel_links && window.SEQMultiLink ? SEQMultiLink.pickButton() : '';
-    return h + '<div class="seq-m-opts">' + one + multi + '</div>' + linkOption;
+    var linkOption = !uni && !reto && ft.multi_duel_links && window.SEQMultiLink ? SEQMultiLink.pickButton() : '';
+    return h + (uni ? SEQInvites.banner() : '') + '<div class="seq-m-opts">' + one + multi + '</div>' + linkOption;
   }
 
   function renderPickPlayers() {
@@ -184,10 +189,13 @@
       s.shown = null;
       var box = '<div class="duel-result-box duel-result-neutral">';
       if (creator) {
+        // Sala de espera del anfitrión: modalidad, tiempo real, lista ÚNICA de participantes (amigos y enlace), contador, enlace,
+        // invitar amigos, empezar (solo con 3 o más) y cancelar con confirmación. Ver src/online/duel-invites.js.
+        if (window.SEQInvites && SEQInvites.multiWaiting) return h + SEQInvites.multiWaiting(d, H, playersList(d));
         var n = accepted(d), can = n >= MIN_PLAYERS;
-        h += box + '<div class="duel-result-title">Esperando a tus invitados…</div><p class="duel-result-hint">Caduca en <span id="seq-d-count"></span></p>' + playersList(d) +
+        h += box + '<div class="duel-result-title">Esperando jugadores</div><p class="duel-result-hint">Caduca en <span id="seq-d-count"></span></p>' + playersList(d) +
           (window.SEQMultiLink ? SEQMultiLink.roomButtons(d.id) : '') +
-          '<button class="btn btn-primary" style="width:100%;"' + (can ? '' : ' disabled') + ' onclick="SEQMulti.action(\'start\')">' + (can ? 'Empezar con ' + n : 'Hacen falta ' + MIN_PLAYERS + ' jugadores') + '</button>' +
+          (can ? '<button class="btn btn-primary" style="width:100%;" onclick="SEQMulti.action(\'start\')">Empezar duelo</button>' : '<p class="stats-section-sub">Podrás empezar cuando seáis al menos ' + MIN_PLAYERS + '.</p>') +
           '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQMulti.action(\'cancel\')">Cancelar sala</button></div>';
         return h;
       }
@@ -209,7 +217,7 @@
       return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Sala de espera</div><p class="duel-result-hint">Listos en <span id="seq-d-count"></span> s</p>' + playersList(d) +
         (mine.listo ? '' : '<button class="btn btn-primary" style="width:100%;" onclick="SEQMulti.action(\'ready\')">¡Listo!</button>') +
         (creator && mine.listo ? '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQMulti.action(\'start\')">Empezar ya con los listos</button>' : '') +
-        (creator ? '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQMulti.action(\'cancel\')">Cancelar sala</button>' : '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQMulti.action(\'reject\')">Salir de la sala</button>') + '</div>';
+        (creator ? '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="' + (window.SEQInvites ? 'SEQInvites.cancelRoom()' : 'SEQMulti.action(\'cancel\')') + '">Cancelar sala</button>' : '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQMulti.action(\'reject\')">Salir de la sala</button>') + '</div>';
     }
 
     if (d.estado === 'en_curso') return renderPlay(d, h, now);
@@ -249,7 +257,7 @@
       return head + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">' + (d.estado === 'expirado' ? 'Caducado' : 'Cancelado') + '</div><p class="duel-result-hint">' + esc(whyR) + '</p><button class="btn btn-secondary" style="width:100%;" onclick="' + back + '">' + backTxt + '</button></div>';
     }
     if (!r) {
-      var why = { cancelado: d.motivo_fin === 'sin_listos' ? 'Nadie llegó a tiempo a la sala de espera. Mucha ilusión, poca puntualidad.' : d.motivo_fin === 'sin_jugadores' ? 'Se fueron los jugadores. Sir Edwards guarda las copas.' : 'Sala cancelada. Aquí no ha pasado nada.', expirado: 'Las invitaciones caducaron sin suficientes valientes.' }[d.estado] || 'Sala cerrada.';
+      var why = { cancelado: d.motivo_fin === 'sin_listos' ? 'Nadie llegó a tiempo a la sala de espera. Mucha ilusión, poca puntualidad.' : d.motivo_fin === 'sin_jugadores' ? 'Se fueron los jugadores. Sir Edwards guarda las copas.' : (d.soy !== 'creador' && !d.motivo_fin ? 'El anfitrión ha cancelado la sala. Habrá que buscar otra mesa.' : 'Sala cancelada. Aquí no ha pasado nada.'), expirado: 'Las invitaciones caducaron sin suficientes valientes.' }[d.estado] || 'Sala cerrada.';
       return head + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">' + (d.estado === 'expirado' ? 'Caducada' : 'Cancelada') + '</div><p class="duel-result-hint">' + esc(why) + '</p><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.open(\'duels\')">Volver a Duelos</button></div>';
     }
     var mine = d.yo || {};

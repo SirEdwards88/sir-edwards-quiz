@@ -127,7 +127,8 @@ test('crear: envía el modo elegido, guarda el enlace con el tiempo restante del
   const own = JSON.parse(e.ls.siredwards_quiz_multi_link_own);
   assert.equal(own.endsAt, 1_000_000 + 600000, 'usa el reloj del dispositivo + tiempo restante, no la hora del servidor');
   const html = e.L.roomButtons('SALA000001');
-  assert.ok(html.includes('#duelo-multi=' + GOOD) && html.includes('Compartir enlace') && html.includes('Copiar enlace'));
+  assert.ok(html.includes('Compartir enlace') && html.includes('Copiar enlace'));
+  assert.ok(!html.includes('#duelo-multi=') && !html.includes(GOOD) && !html.includes('siredwards88.github.io'), 'la dirección completa no se muestra');
   assert.equal(e.L.roomButtons('OTRA000001'), '', 'solo en la sala propia');
   e.tick(600001);
   assert.equal(e.L.roomButtons('SALA000001'), '', 'caducado: sin botones');
@@ -157,18 +158,19 @@ test('integración: script en index.html y en la caché de sw.js, botón solo en
   assert.match(HTML, /<script src="src\/online\/multi-invite-link\.js\?v=\d+"><\/script>/);
   assert.match(SW, /'\.\/src\/online\/multi-invite-link\.js'/);
   assert.ok(HTML.indexOf('multi-duels.js') < HTML.indexOf('multi-invite-link.js'), 'se carga después del módulo de salas');
-  assert.match(MULTI, /var linkOption = !reto && ft\.multi_duel_links && window\.SEQMultiLink \? SEQMultiLink\.pickButton\(\) : ''/);
+  // 1.0: con las invitaciones unificadas el enlace deja de ser una opción independiente; sin el flag del Worker se conserva el botón.
+  assert.match(MULTI, /var linkOption = !uni && !reto && ft\.multi_duel_links && window\.SEQMultiLink \? SEQMultiLink\.pickButton\(\) : ''/);
   assert.match(MULTI, /SEQMultiLink\.roomButtons\(d\.id\)/);
   assert.doesNotMatch(SRC, /innerHTML|document\.write|eval\(/);
 });
 
-test('el tutorial de Duelos solo habla del enlace múltiple si el servidor lo declara y distingue los dos enlaces', () => {
-  assert.match(INTRO, /bodyMulti && multiLinksOn\(\)/);
-  const m = /bodyMulti: '([^']+)', bodyMultiOnly: '([^']+)'/.exec(INTRO);
-  assert.ok(m, 'dos variantes');
-  assert.match(m[1], /sirve una sola vez/); assert.match(m[1], /hasta cuatro jugadores/);
-  assert.doesNotMatch(m[2], /una sola vez/, 'sin enlace 1 contra 1 no se nombra');
-  for (const s of m.slice(1)) assert.doesNotMatch(s, /\p{Extended_Pictographic}/u);
+test('el tutorial nuevo (1.0) distingue los dos casos: combinar amigos y enlace es solo de Todos contra todos', () => {
+  // La presentación antigua con variantes según flags desapareció: ahora es el recorrido de siete viñetas (test/duel-tour.test.mjs).
+  assert.ok(!/bodyMulti/.test(INTRO), 'duel-intro.js ya no lleva textos de tutorial');
+  const win = {}; vm.createContext({ window: win }); vm.runInContext(read('src/data/duel-tour-steps.js'), vm.createContext({ window: win }));
+  const four = win.SEQDuelTourData.steps[3].body;
+  assert.match(four, /En Todos contra todos puedes combinar ambas opciones/);
+  assert.doesNotMatch(four, /1 contra 1/, 'no se afirma que se puedan combinar en 1 contra 1');
 });
 
 test('el cliente conserva el flag multi_duel_links que declara el Worker (online.js lo normaliza)', () => {

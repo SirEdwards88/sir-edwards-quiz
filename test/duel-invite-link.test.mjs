@@ -5,12 +5,16 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const SRC = fs.readFileSync(new URL('../src/online/duel-invite-link.js', import.meta.url), 'utf8');
+const INV = fs.readFileSync(new URL('../src/online/duel-invites.js', import.meta.url), 'utf8');
+// Ayudantes de pintado mínimos de duels.js (HELPERS) para render().
+const HH = { header: (t, s) => '<h>' + t + '|' + s + '</h>', esc: (s) => s, who: (p, s) => '<who>' + p.name + '|' + (s || '') + '</who>', player: (p) => ({ name: (p && p.display_name) || 'Jugador', avatar: '', id: '' }), ico: () => '' };
 const HTML = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
 const SW = fs.readFileSync(new URL('../sw.js', import.meta.url), 'utf8');
 const TOKEN = 'ABCDEFGHJKLMNPQRSTUVWXYZ'.slice(0, 24).replace(/[IO]/g, 'A');
 const GOOD = 'ABCDEFGHJKLMNPQRSTUVWXYZ'.slice(0, 24);
 
 function env({ hash = '', session = { features: { classic_duel: true, duel_links: true } }, gateOpen = true, now = 1_000_000 } = {}) {
+  const copied = [];
   const ls = {}, calls = [], toasts = [], opened = [], confirms = [], replaced = [], listeners = {};
   let t = now;
   const api = {};
@@ -20,7 +24,7 @@ function env({ hash = '', session = { features: { classic_duel: true, duel_links
     location: { hash, origin: 'https://edu.github.io', pathname: '/sir-edwards-quiz/index.html', search: '' },
     history: { replaceState: (a, b, u) => { replaced.push(u); ctx.location.hash = ''; } },
     localStorage: { getItem: (k) => (k in ls ? ls[k] : null), setItem: (k, v) => { ls[k] = String(v); }, removeItem: (k) => { delete ls[k]; } },
-    navigator: {}, document: { getElementById: () => null },
+    navigator: { clipboard: { writeText: (u) => { copied.push(u); return Promise.resolve(); } } }, document: { getElementById: () => null },
     window: { addEventListener: (e, f) => { listeners[e] = f; } },
     showInfoToast: (m) => toasts.push(m),
     showAppConfirm: (o) => confirms.push(o),
@@ -30,8 +34,8 @@ function env({ hash = '', session = { features: { classic_duel: true, duel_links
     SEQDuels: { open: (a, b) => opened.push(a + (b ? ':' + b : '')), _state: () => ({ pickModo: 'classic', lists: { friends: { friends: [] } } }), _h: { say() {} }, rerender() {} },
   };
   ctx.window.SEQOnline = ctx.SEQOnline; ctx.window.SEQDuels = ctx.SEQDuels; ctx.window.SEQDuelIntro = ctx.SEQDuelIntro;
-  vm.createContext(ctx); vm.runInContext(SRC, ctx);
-  return { ctx, L: ctx.window.SEQDuelLink, ls, calls, toasts, opened, confirms, replaced, api, tick: (ms) => { t += ms; }, listeners };
+  vm.createContext(ctx); vm.runInContext(INV, ctx); vm.runInContext(SRC, ctx);
+  return { ctx, L: ctx.window.SEQDuelLink, ls, calls, toasts, opened, confirms, replaced, api, copied, tick: (ms) => { t += ms; }, listeners };
 }
 const flush = () => new Promise((r) => setImmediate(r));
 
@@ -105,15 +109,14 @@ test('crear: pide el enlace al servidor con el modo elegido y abre la sala «Inv
   assert.deepEqual(JSON.parse(JSON.stringify(e.calls[0])), ['POST', '/duel-links', { modo: 'classic' }]);
   assert.deepEqual(e.opened, ['invite']);
   // la sala pinta el enlace completo con el token en el hash y NO el ID del creador
-  const html = e.L.render({ header: (t, s) => '<h>' + t + '|' + s + '</h>', esc: (s) => s });
-  assert.match(html, /Invitación lista\|Duelo clásico/);
-  assert.ok(html.includes('https://siredwards88.github.io/sir-edwards-quiz/#duelo=' + GOOD));
+  const html = e.L.render(HH);
+  assert.match(html, /Invitación lista\|Duelo clásico/, 'sin el flag del Worker se conserva el título anterior');
+  assert.match(html, /Esperando jugadores/); assert.match(html, /1\/2 jugadores/); assert.match(html, /Anfitrión/);
   assert.match(html, /Compartir enlace/); assert.match(html, /Copiar enlace/); assert.match(html, /Cancelar invitación/); assert.match(html, /Caduca en <b id="seq-link-left">10:00/);
-  assert.match(html, /2 minutos/);
-  assert.ok(!/Invitación enviada/.test(html), 'aún no se ha enviado nada: solo está lista');
-  assert.ok(!/<input/.test(html), 'el enlace se muestra en un bloque que se parte en líneas, no en un campo con scroll');
-  assert.match(html, /<div class="seq-link-url" id="seq-link-url"/);
-  assert.match(html, /sigue activa hasta que caduque o la canceles/);
+  assert.ok(!html.includes('siredwards88.github.io') && !html.includes(GOOD), 'la dirección completa NO se muestra');
+  assert.ok(!/<input|seq-link-url/.test(html));
+  e.L.copy();
+  assert.deepEqual(e.copied, ['https://siredwards88.github.io/sir-edwards-quiz/#duelo=' + GOOD], 'pero sí se copia entera');
 });
 
 test('crear: un error del servidor se explica (nivel, ocupado)', async () => {
@@ -123,13 +126,31 @@ test('crear: un error del servidor se explica (nivel, ocupado)', async () => {
   assert.match(e.toasts[0], /nivel 7/); assert.deepEqual(e.opened, []);
 });
 
-test('cancelar la invitación avisa al servidor y vuelve a elegir rival', async () => {
+test('cancelar la invitación pide confirmación, avisa al servidor y SOLO entonces vuelve atrás', async () => {
   const e = env();
   e.api.next = () => Promise.resolve({ token: GOOD, modo: 'stakes', restante_ms: 600000 });
   e.L.create(); await flush();
   e.L.cancel(); await flush();
+  assert.equal(e.confirms.length, 1);
+  assert.deepEqual([e.confirms[0].title, e.confirms[0].message, e.confirms[0].confirmLabel, e.confirms[0].cancelLabel], ['¿Cancelar invitación?', 'El enlace dejará de funcionar.', 'Cancelar invitación', 'Seguir esperando']);
+  assert.equal(e.calls.length, 1, 'hasta confirmar no se cancela nada');
+  e.confirms[0].onConfirm(); await flush();
   assert.deepEqual(e.calls[1], ['POST', '/duel-links/' + GOOD + '/cancel', undefined]);
   assert.equal(e.opened[e.opened.length - 1], 'pick');
+});
+
+test('cancelar con la red caída o rechazado por el Worker: NO vuelve atrás como si hubiera funcionado, lo dice una sola vez y la invitación sigue', async () => {
+  for (const code of ['network', 'invalid_state']) {
+    const e = env();
+    let n = 0;
+    e.api.next = () => (n++ === 0 ? Promise.resolve({ token: GOOD, modo: 'classic', restante_ms: 600000 }) : Promise.reject(Object.assign(new Error('x'), code === 'network' ? { network: true } : { code })));
+    e.L.create(); await flush();
+    const opened = e.opened.length;
+    e.L.cancel(); e.confirms[0].onConfirm(); await flush();
+    assert.equal(e.opened.length, opened, 'no navega: ' + code);
+    assert.equal(e.toasts.length, 1, 'un solo aviso: ' + code);
+    assert.match(e.L.pickButton(), /Ver mi invitación activa/, 'el enlace propio sigue guardado');
+  }
 });
 
 test('con la bandera duel_links ausente (Worker antiguo o apagada) no hay interfaz: ni botón, ni crear, ni canjear', async () => {
@@ -152,8 +173,9 @@ test('mi invitación activa se recupera en vez de crear otra: sin POST, con avis
   e.L.create(); await flush();                    // equivale a recuperarla
   assert.equal(e.calls.filter((c) => c[0] === 'POST').length, 1, 'no se crea un segundo enlace');
   assert.equal(e.opened[e.opened.length - 1], 'invite');
-  assert.ok(e.L.render({ header: (t) => t, esc: (x) => x }).includes('#duelo=' + GOOD));
-  e.L.cancel(); await flush();
+  e.L.copy();
+  assert.ok(e.copied[0].includes('#duelo=' + GOOD), 'se recupera con el mismo token');
+  e.L.cancel(); e.confirms[0].onConfirm(); await flush();
   assert.match(e.L.pickButton(), /Compartir invitación/, 'tras cancelar vuelve a poder crear');
 });
 
@@ -214,4 +236,14 @@ test('seguridad del módulo: sin innerHTML ni eval, y el token no se envía a ni
   const code = SRC.replace(/\/\/.*$/gm, '');
   assert.ok(!/innerHTML|eval\(|document\.write|new Function/.test(code));
   assert.ok(!/console\./.test(code), 'no se registra el token');
+});
+
+test('level_required con nivel 7 local aún sin sincronizar: se muestra el mensaje de sincronización (una vez) en lugar de «se abren al nivel 7»', async () => {
+  const e = env();
+  e.ctx.window.SEQDuelIntro = { gate: () => ({ open: true }), levelSyncMessage: () => 'Tu nivel aún no se ha sincronizado con tu cuenta. Inténtalo de nuevo en unos segundos.' };
+  e.api.next = () => Promise.reject(Object.assign(new Error('x'), { code: 'level_required' }));
+  e.L.create(); await flush();
+  assert.deepEqual(e.toasts, ['Tu nivel aún no se ha sincronizado con tu cuenta. Inténtalo de nuevo en unos segundos.']);
+  assert.match(fs.readFileSync(new URL('../src/online/duels.js', import.meta.url), 'utf8'), /levelSyncMessage/);
+  assert.match(fs.readFileSync(new URL('../src/online/multi-invite-link.js', import.meta.url), 'utf8'), /levelSyncMessage/);
 });
