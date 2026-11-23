@@ -44,7 +44,7 @@ function matches(e, sel) {
   if (sel.startsWith('.')) return e.className.split(/\s+/).includes(sel.slice(1));
   return e.tag === sel;
 }
-function world({ ls = {}, state = { screen: null, lists: { duels: [], multis: [], retos: [] } }, session = { features: { classic_duel: true } }, tabActive = true, own = false, hubVisible = true, modal = { open: false } } = {}) {
+function world({ ls = {}, state = { screen: null, lists: { duels: [], multis: [], retos: [], link: null } }, session = { features: { classic_duel: true, duel_links: true, duel_invites_v2: true } }, tabActive = true, own = false, hubVisible = true, modal = { open: false } } = {}) {
   const calls = { api: [], toasts: [], writes: [], backs: 0 };
   const body = new El('body'), doc = { activeElement: null, listeners: {}, body };
   const mk = (tag) => { const e = new El(tag); e.ownerDoc = doc; return e; };
@@ -188,7 +188,7 @@ test('lo ven TODOS los jugadores, incluidos quienes completaron el tutorial anti
 });
 
 test('se aplaza si hay una partida, invitación o sala activas, y se muestra cuando ya no las hay', () => {
-  const state = { screen: null, lists: { duels: [{ estado: 'pendiente', soy: 'creador' }], multis: [], retos: [] } };
+  const state = { screen: null, lists: { duels: [{ estado: 'pendiente', soy: 'creador' }], multis: [], retos: [], link: null } };
   const w = world({ state });
   w.T.startIfNeeded();
   assert.equal(w.root(), null, 'aplazado: no se abre sobre una invitación activa');
@@ -206,7 +206,7 @@ test('si las listas del Worker aún no han llegado, espera antes de decidir (no 
   w.T.startIfNeeded();
   assert.equal(w.root(), null, 'esperando al servidor');
   assert.ok(w.timers.length >= 1, 'reintento programado');
-  state.lists = { duels: [], multis: [], retos: [] };
+  state.lists = { duels: [], multis: [], retos: [], link: null };
   w.timers.shift()[0]();
   assert.ok(w.root(), 'cuando se sabe que no hay nada activo, se muestra');
 });
@@ -296,4 +296,14 @@ test('un enlace 1 contra 1 abierto en OTRO dispositivo (lo dice el Worker) tambi
   const w = world({ state: { screen: null, lists: { duels: [], multis: [], retos: [], link: { estado: 'abierto', modo: 'classic' } } } });
   w.T.startIfNeeded(); assert.equal(w.root(), null);
   assert.match(read('src/online/duels.js'), /\/duel-links\/mine'\)\.then\(function \(d\) \{ S\.lists\.link/);
+});
+
+// ---- Publicación escalonada: sin la bandera del Worker el recorrido no se enseña ni se marca ------------------------------------------
+test('con duel_invites_v2 apagada no se muestra (ni primera vez ni «?») y no se marca como visto', () => {
+  const w = world({ session: { features: { classic_duel: true, duel_links: true, duel_invites_v2: false } } });
+  w.T.startIfNeeded();
+  assert.equal(w.root(), null, 'no se abre');
+  assert.equal(w.T.replay(), false, 'tampoco desde el «?»');
+  assert.equal(w.root(), null);
+  assert.equal(w.T.seen(), false, 'sigue sin verse: se mostrará cuando el Worker active V2');
 });

@@ -303,6 +303,8 @@ window.SEQDuelTour = (function () {
       waitT = null;
       if (root || seen()) return;
       if (!duelTabVisible()) return;                       // el jugador se fue: se reintentará cuando vuelva
+      // Publicación escalonada: el recorrido habla de las invitaciones unificadas. Sin la bandera del Worker no se muestra (ni se marca como visto).
+      if (!v2On()) { if (!sessionOn() && waitN++ < 12) waitT = setTimeout(attempt, 700); return; }
       var s = duelState();
       if (sessionOn() && s && !listsKnown(s, v2On()) && waitN++ < 12) { waitT = setTimeout(attempt, 700); return; }
       // Aplazado si hay una partida, invitación o sala activas. Los datos pueden ser de la visita anterior (el refresco del Worker aún no
@@ -318,6 +320,7 @@ window.SEQDuelTour = (function () {
   // invitación o sala activas, donde se avisa y no se abre.
   function replay() {
     if (root) return true;
+    if (!v2On()) { try { if (typeof showInfoToast === 'function') showInfoToast('El tutorial de Duelos estará disponible con las nuevas invitaciones.'); } catch (e) {} return false; }
     var s = duelState();
     if (busyNow()) { try { if (typeof showInfoToast === 'function') showInfoToast('Termina primero tu duelo o tu invitación activos para ver el tutorial.'); } catch (e) {} return false; }
     // Si se pide desde una pantalla interior (Amigos, Rankings…), se vuelve al inicio de Duelos para señalar elementos reales.
