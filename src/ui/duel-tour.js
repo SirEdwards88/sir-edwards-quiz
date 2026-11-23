@@ -51,8 +51,18 @@ window.SEQDuelTour = (function () {
     if (above >= cardH + gap) return { mode: 'above', top: Math.round(rect.top - gap - cardH) };
     return { mode: 'bottom', top: Math.max(margin, Math.round(vh - cardH - margin)) };
   }
-  // Factor de escala de una demostración para que quepa en el hueco que deja la tarjeta (nunca más del 100 % ni menos del 55 %).
-  function demoScale(natH, availH) { if (!(natH > 0) || !(availH > 0)) return 1; return Math.max(0.55, Math.min(1, availH / natH)); }
+  // Factor de escala de una demostración para que quepa en el hueco que deja la tarjeta (nunca más del 100 % ni menos de `min`, 55 % por defecto).
+  function demoScale(natH, availH, min) { if (!(natH > 0) || !(availH > 0)) return 1; return Math.max(min || 0.55, Math.min(1, availH / natH)); }
+  // Demostración y tarjeta como un solo grupo: se centra (algo por encima del centro) en la altura libre, entre las áreas seguras. La demostración
+  // solo se reduce hasta el 85 %; si aun así no cabe, el grupo empieza arriba y la capa se desplaza (`scroll`) en vez de cortar nada.
+  function placeGroup(natH, cardH, vh, safeTop, safeBottom, margin, gap) {
+    margin = margin == null ? 12 : margin; gap = gap == null ? 10 : gap; safeTop = safeTop || 0; safeBottom = safeBottom || 0;
+    var avail = vh - safeTop - safeBottom - margin * 2, SAFE = 14;   // SAFE: margen de seguridad que se reserva antes de reducir o desplazar
+    var s = demoScale(natH, avail - SAFE - gap - cardH, 0.85), demoH = Math.round(natH * s), groupH = demoH + gap + cardH;
+    var scroll = groupH > avail - SAFE, off = scroll ? 0 : Math.round((avail - SAFE - groupH) * 0.4), demoTop = safeTop + margin + off;
+    var cardTop = demoTop + demoH + gap;
+    return { scale: s, demoTop: demoTop, cardTop: cardTop, scroll: scroll, extent: cardTop + cardH + margin + safeBottom };
+  }
   // ¿Es seguro abrir el recorrido? Pantallas de partida/invitación/sala, partidas o invitaciones activas del servidor y enlaces
   // propios guardados bloquean. `s`: estado de SEQDuels (screen, lists); `own`: ¿hay un enlace propio abierto en este dispositivo?
   var BUSY_SCREENS = ['duel', 'multi', 'reto', 'invite', 'invites', 'pick', 'pickkind', 'multipick', 'retomode'];
@@ -142,6 +152,8 @@ window.SEQDuelTour = (function () {
     var spot = el('div', 'dtour-spot'); spot.setAttribute('aria-hidden', 'true'); root.appendChild(spot);
     var demo = el('div', 'dtour-demo'); demo.setAttribute('aria-hidden', 'true'); try { demo.inert = true; } catch (e) {} root.appendChild(demo);
     var card = el('div', 'dtour-card'); card.tabIndex = -1; root.appendChild(card);
+    var sir = el('img', 'dtour-sir'); sir.alt = ''; sir.draggable = false; sir.setAttribute('aria-hidden', 'true'); sir.addEventListener('load', schedule); root.appendChild(sir);   // Sir Edwards grande (mismo asset de la viñeta)
+    var pad = el('div', 'dtour-pad'); pad.setAttribute('aria-hidden', 'true'); root.appendChild(pad);   // marca el final del contenido cuando la capa se desplaza
     document.body.appendChild(root);
   }
   function q(sel) { return root ? root.querySelector(sel) : null; }
@@ -151,17 +163,21 @@ window.SEQDuelTour = (function () {
     while (card.firstChild) card.removeChild(card.firstChild);
     var L = D.labels || {}, n = total(), step = D.steps[st.i], fw = st.farewell;
     var data = fw ? D.farewell : step;
+    // Cabecera: columna de texto («n de 7», título y filete de progreso) y, arriba a la derecha, Sir Edwards dentro de la tarjeta (retrato recortado por el
+    // borde redondeado, con fundido; tamaño normal o compacto por CSS). La × de la repetición va flotando sobre su esquina. En la despedida lo pinta .dtour-sir.
     var head = el('div', 'dtour-head');
     var med = el('span', 'dtour-med'); var img = el('img'); img.src = data.img; img.alt = ''; img.draggable = false; img.decoding = 'async'; med.appendChild(img); head.appendChild(med);
     var meta = el('div', 'dtour-meta2');
     txt(meta, 'span', 'dtour-step', L.progress ? L.progress(fw ? n : st.i + 1, n) : (fw ? n : st.i + 1) + ' de ' + n);
+    var h = txt(meta, 'h2', 'dtour-title', data.title); h.id = 'dtour-title';
     var prog = el('span', 'dtour-prog'); prog.setAttribute('aria-hidden', 'true');
     for (var k = 0; k < n; k++) { var dot = el('i'); if (fw || k <= st.i) dot.className = 'on'; prog.appendChild(dot); }
-    meta.appendChild(prog); head.appendChild(meta);
+    meta.appendChild(prog);
+    head.appendChild(meta);
     if (st.replay) { var x = el('button', 'dtour-x'); x.type = 'button'; x.setAttribute('aria-label', L.close || 'Cerrar'); x.textContent = '×'; x.addEventListener('click', close); head.appendChild(x); }
     card.appendChild(head);
-    var h = txt(card, 'h2', 'dtour-title', data.title); h.id = 'dtour-title';
     txt(card, 'p', 'dtour-body', data.body);
+    var sirImg = q('.dtour-sir'); if (sirImg && sirImg.getAttribute('src') !== data.img) sirImg.src = data.img;
     var act = el('div', 'dtour-actions');
     var back = el('button', 'btn btn-secondary dtour-back'); back.type = 'button'; back.textContent = L.back || 'Atrás';
     if (st.i === 0 && !fw) back.disabled = true;
@@ -178,6 +194,10 @@ window.SEQDuelTour = (function () {
     var vv = window.visualViewport;
     return { w: Math.round((vv && vv.width) || window.innerWidth || 360), h: Math.round((vv && vv.height) || window.innerHeight || 640) };
   }
+  // Áreas seguras (muesca, barra de gestos): la capa lleva padding env(safe-area-inset-*); se leen ya resueltas.
+  function insets() {
+    try { var cs = getComputedStyle(root); return { t: parseFloat(cs.paddingTop) || 0, b: parseFloat(cs.paddingBottom) || 0 }; } catch (e) { return { t: 0, b: 0 }; }
+  }
   function visibleRect(e) {
     if (!e) return null;
     try { var r = e.getBoundingClientRect(); if (r.width > 4 && r.height > 4 && (e.offsetParent !== null || getComputedStyle(e).position === 'fixed')) return r; } catch (x) {}
@@ -186,31 +206,54 @@ window.SEQDuelTour = (function () {
   function layout() {
     raf = 0;
     if (!root) return;
-    var vp = viewport(), card = q('.dtour-card'), spot = q('.dtour-spot'), demo = q('.dtour-demo');
-    var fw = st.farewell, step = D.steps[st.i], rect = null, demoName = !fw && step.target === 'demo' ? step.demo : null;
+    var vp = viewport(), card = q('.dtour-card'), spot = q('.dtour-spot'), demo = q('.dtour-demo'), pad = q('.dtour-pad'), ins = insets();
+    var fw = st.farewell, step = D.steps[st.i], hero = fw || st.i === 0, rect = null, demoName = !fw && step.target === 'demo' ? step.demo : null, scroll = false, extent = 0, sirOn = false;
+    var sir = q('.dtour-sir'), asp = sir && sir.naturalWidth > 0 && sir.naturalHeight > 0 ? sir.naturalWidth / sir.naturalHeight : 0.87;
+    // Despedida: la ilustración completa va sobre la tarjeta y la solapa solo por su borde difuminado; la tarjeta deja hueco arriba para ella.
+    var fsw = Math.round(Math.min(vp.w * 0.52, 210)), fsh = Math.round(fsw / asp), fov = Math.round(fsh * 0.14);
+    card.style.paddingTop = hero ? (fov + 8) + 'px' : '';   // hero: despedida y bienvenida (viñeta 1), con la ilustración completa sobre la tarjeta
+    root.classList.remove('dtour-tight');   // se vuelve a decidir en cada medición
     var cardH = card.offsetHeight || 220;
     root.classList.toggle('dtour-has-demo', !!demoName);
+    root.classList.toggle('dtour-fw', hero);
+    root.classList.toggle('dtour-welcome', hero && !fw);
+    // Los selectores reales son alternativas por orden: vale el primero que se ve y se puede medir. Si ninguno, no se señala nada.
+    var findTarget = function (sels) { for (var i = 0; i < (sels || []).length; i++) { var cand = document.querySelector(sels[i]); if (visibleRect(cand)) return cand; } return null; };
     if (demoName) {
-      // Demostración arriba, tarjeta al pie; la demostración se encoge si no cabe (nunca se sale de la pantalla).
+      // Demostración y tarjeta, un solo grupo centrado en la altura libre (entre áreas seguras); la demostración solo se reduce hasta el 85 %
+      // y, si aun así no cabe, la capa se desplaza en vez de cortar nada.
       var natH = demo.getAttribute('data-natural') ? Number(demo.getAttribute('data-natural')) : demo.scrollHeight;
       if (!demo.getAttribute('data-natural')) demo.setAttribute('data-natural', String(natH));
-      var avail = vp.h - cardH - 12 - 12 - 14, s = demoScale(natH, avail);
-      demo.style.transform = 'scale(' + s + ')'; demo.style.height = Math.round(natH) + 'px';
-      demo.style.top = '12px';
+      var g = placeGroup(natH, cardH, vp.h, ins.t, ins.b, 12, 10);
+      demo.style.transform = 'scale(' + g.scale + ')'; demo.style.height = Math.round(natH) + 'px';
+      demo.style.top = g.demoTop + 'px';
+      card.style.top = g.cardTop + 'px'; card.style.bottom = 'auto';
+      scroll = g.scroll; extent = g.extent;
       var parts = step.selectors.map(function (sel) { return visibleRect(demo.querySelector(sel)); });
       rect = clampRect(unionRect(parts), vp.w, vp.h, 4);
-      card.style.top = 'auto'; card.style.bottom = '12px';
-    } else if (!fw) {
-      // Los selectores reales son alternativas por orden: vale el primero que se ve y se puede medir. Si ninguno, no se señala nada.
-      var target = null;
-      for (var i = 0; i < step.selectors.length && !target; i++) { var cand = document.querySelector(step.selectors[i]); if (visibleRect(cand)) target = cand; }
+    } else if (!hero) {
+      var target = findTarget(step.selectors);
       // Se acerca lo resaltado al centro la primera vez (la pantalla de Duelos es desplazable) y se vuelve a medir.
       if (target && !root.getAttribute('data-scrolled-' + st.i)) { root.setAttribute('data-scrolled-' + st.i, '1'); try { target.scrollIntoView({ block: 'center', behavior: 'auto' }); } catch (x) {} }
       rect = clampRect(target ? visibleRect(target) : null, vp.w, vp.h, 4);
-      var place = placeCard(rect, vp.h, cardH, 12, 14);
-      if (place.mode === 'bottom') { card.style.top = 'auto'; card.style.bottom = '12px'; }
+      var place = placeCard(rect, vp.h - ins.b, cardH, 8, 10);
+      // Si no cabe ni debajo ni encima del resalte (p. ej. «Rankings» en 360×640), la banda de Sir Edwards pasa a su versión ajustada (≈100 px) en vez de tapar el resalte.
+      if (rect && place.mode === 'bottom') { root.classList.add('dtour-tight'); cardH = card.offsetHeight || cardH; place = placeCard(rect, vp.h - ins.b, cardH, 8, 10); }
+      if (place.mode === 'bottom') { card.style.top = 'auto'; card.style.bottom = (12 + ins.b) + 'px'; }
       else { card.style.top = place.top + 'px'; card.style.bottom = 'auto'; }
-    } else { card.style.top = Math.max(12, Math.round((vp.h - cardH) / 2)) + 'px'; card.style.bottom = 'auto'; }
+    } else {
+      // Presentaciones especiales (bienvenida y despedida): Sir Edwards completo, grande y centrado sobre la tarjeta (todo el grupo centrado en la altura
+      // libre); sin resalte: la pantalla de Duelos queda atenuada de fondo.
+      var gH = fsh - fov + cardH, sTop = Math.max(12 + ins.t, Math.round((vp.h - ins.b - gH) / 2));
+      card.style.top = (sTop + fsh - fov) + 'px'; card.style.bottom = 'auto';
+      sir.style.display = 'block'; sir.style.width = fsw + 'px'; sir.style.height = fsh + 'px'; sir.style.top = sTop + 'px'; sir.style.bottom = 'auto'; sir.style.right = 'auto';
+      sir.style.left = Math.round((vp.w - fsw) / 2) + 'px';
+      sirOn = true;
+    }
+    if (!sirOn) sir.style.display = 'none';   // la figura grande solo existe en la despedida
+    root.classList.toggle('dtour-scroll', scroll);
+    pad.style.top = scroll ? Math.max(0, Math.round(extent - 1)) + 'px' : '0px';
+    if (!scroll) root.scrollTop = 0;
     root.classList.toggle('dtour-nodemo', !demoName);
     if (rect) {
       var pad = 6;
@@ -229,7 +272,7 @@ window.SEQDuelTour = (function () {
     demo.innerHTML = !st.farewell && step.target === 'demo' && DEMOS[step.demo] ? DEMOS[step.demo]() : '';   // HTML fijo de este archivo: ningún dato externo
   }
   function render() {
-    paintDemo(); paintCard();
+    paintDemo(); paintCard(); root.scrollTop = 0;
     // Las demostraciones traen imágenes: se mide ya y otra vez al cargar para que el resalte no quede desfasado.
     layout();
     var imgs = root.querySelectorAll('.dtour-demo img'); Array.prototype.forEach.call(imgs, function (im) { if (!im.complete) im.addEventListener('load', schedule, { once: true }); });
@@ -257,6 +300,8 @@ window.SEQDuelTour = (function () {
 
   function onKey(e) {
     if (!root) return;
+    // El aro de foco grueso solo se pinta si se navega con teclado (Tab, flechas, Intro, espacio); al tocar o pulsar con ratón desaparece.
+    if (/^(Tab|Enter| |Spacebar|Arrow\w+)$/.test(e.key || '')) root.classList.add('dtour-kb');
     if (e.key === 'Escape') {
       e.preventDefault(); e.stopPropagation();
       if (st.replay) close();            // la primera visualización no se puede omitir
@@ -289,6 +334,8 @@ window.SEQDuelTour = (function () {
     opener = document.activeElement && document.activeElement !== document.body ? document.activeElement : null;
     st = { i: 0, farewell: false, replay: !!replay };
     build(); bind(); render();
+    var noKb = function () { if (root) root.classList.remove('dtour-kb'); };
+    root.addEventListener('pointerdown', noKb); root.addEventListener('touchstart', noKb);
     return true;
   }
 
@@ -321,6 +368,10 @@ window.SEQDuelTour = (function () {
   function replay() {
     if (root) return true;
     if (!v2On()) { try { if (typeof showInfoToast === 'function') showInfoToast('El tutorial de Duelos estará disponible con las nuevas invitaciones.'); } catch (e) {} return false; }
+    // Coordinación de diálogos: el recorrido señala elementos reales de Duelos, así que solo se abre con Duelos a la vista. Si se pide desde otra
+    // pestaña (p. ej. la Ayuda de Ajustes) se pasa a Duelos; si Duelos sigue bloqueado, ahí ya sale su propio aviso y el recorrido no se apila encima.
+    if (!duelTabVisible()) { try { if (typeof window.switchTab === 'function') window.switchTab('duelo'); } catch (e) {} if (!duelTabVisible()) return false; }
+    if (modalOpen()) return false;
     var s = duelState();
     if (busyNow()) { try { if (typeof showInfoToast === 'function') showInfoToast('Termina primero tu duelo o tu invitación activos para ver el tutorial.'); } catch (e) {} return false; }
     // Si se pide desde una pantalla interior (Amigos, Rankings…), se vuelve al inicio de Duelos para señalar elementos reales.
@@ -331,6 +382,6 @@ window.SEQDuelTour = (function () {
   return {
     startIfNeeded: startIfNeeded, replay: replay, seen: seen, isOpen: function () { return !!root; },
     KEY: D.key, STEPS: D.steps,
-    _pure: { unionRect: unionRect, clampRect: clampRect, placeCard: placeCard, demoScale: demoScale, isBusy: isBusy, listsKnown: listsKnown }
+    _pure: { unionRect: unionRect, clampRect: clampRect, placeCard: placeCard, demoScale: demoScale, placeGroup: placeGroup, isBusy: isBusy, listsKnown: listsKnown }
   };
 })();

@@ -124,6 +124,26 @@ test('colocación: debajo, encima, al pie o centrada según el espacio; el resal
   assert.equal(P.demoScale(300, 400), 1); assert.equal(P.demoScale(400, 300), 0.75); assert.equal(P.demoScale(400, 50), 0.55); assert.equal(P.demoScale(0, 100), 1);
 });
 
+test('grupo demostración + tarjeta: centrado en la altura libre, sin hueco, reducción máxima del 85 % y desplazamiento si no cabe', () => {
+  const { _pure: P } = world().T; const G = (...a) => JSON.parse(JSON.stringify(P.placeGroup(...a)));
+  const g = G(280, 200, 844, 0, 0, 12, 10);      // cabe de sobra: escala 1, grupo centrado algo por encima del centro, 10 px entre demostración y tarjeta
+  assert.equal(g.scale, 1); assert.equal(g.scroll, false); assert.equal(g.cardTop - (g.demoTop + 280), 10);
+  assert.ok(g.demoTop > 12 && g.demoTop + 280 + 10 + 200 < 844 - 12);
+  const s = G(300, 220, 640, 0, 0, 12, 10);      // 360×640: se reduce, pero nunca por debajo del 85 %
+  assert.ok(s.scale >= 0.85 && s.scale <= 1);
+  const t = G(400, 260, 560, 0, 0, 12, 10);      // no cabe ni al 85 %: sin recortar, empieza arriba y se desplaza
+  assert.equal(t.scale, 0.85); assert.equal(t.scroll, true); assert.equal(t.demoTop, 12); assert.ok(t.extent >= t.cardTop + 260);
+  const a = G(280, 200, 844, 30, 20, 12, 10);    // áreas seguras: el grupo queda dentro
+  assert.ok(a.demoTop >= 42 && a.cardTop + 200 <= 844 - 20 - 12);
+});
+
+test('margen de seguridad de 14 px en el grupo (viñeta 5 en 360×640)', () => {
+  const { _pure: P } = world().T; const G = (...a) => JSON.parse(JSON.stringify(P.placeGroup(...a)));
+  const g = G(305, 295, 640, 0, 0, 12, 10);   // 610 px de grupo en 616 libres: sin margen de 14 px habría solo 6; se reduce la demostración un poco
+  assert.equal(g.scroll, false); assert.ok(g.scale < 1 && g.scale >= 0.85, 'escala ' + g.scale);
+  assert.ok(g.cardTop + 295 <= 640 - 12 - 14 + 0.5, 'la tarjeta deja al menos 14 px más el margen de 12');
+});
+
 test('seguridad de apertura: partida, invitación, sala, enlace propio o pantallas de invitación bloquean; el hub vacío no', () => {
   const { _pure: P } = world().T;
   assert.equal(P.isBusy({ screen: null, lists: { duels: [], multis: [], retos: [] } }, false), false);
@@ -250,8 +270,8 @@ test('sin diana medible no se señala ninguna posición: el recorrido sigue con 
   assert.ok(w.root().className.includes('dtour-nospot'), 'sin resalte');
   assert.equal(w.q('dtour-spot').style.display, 'none');
   assert.equal(w.q('dtour-title').textContent, 'Bienvenido a Duelos');
-  const ok = world(); ok.T.startIfNeeded();
-  assert.ok(!ok.root().className.includes('dtour-nospot')); assert.equal(ok.q('dtour-spot').style.display, 'block');
+  // La viñeta 1 es una presentación especial (como la despedida): sin resalte del hub en ninguna resolución, con la ilustración grande sobre la tarjeta
+  for (const h of [640, 844, 914]) { const ok = world(); ok.win.innerHeight = h; ok.T.startIfNeeded(); assert.ok(ok.root().className.includes('dtour-nospot'), 'sin resalte a ' + h); assert.ok(ok.root().className.includes('dtour-welcome') && ok.root().className.includes('dtour-fw')); assert.equal(ok.q('dtour-spot').style.display, 'none'); assert.equal(ok.q('dtour-sir').style.display, 'block'); }
 });
 
 test('Tab queda atrapado en el recorrido (accesibilidad) y el diálogo declara su título', () => {
