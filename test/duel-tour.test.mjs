@@ -83,7 +83,7 @@ test('siete viñetas con los títulos y textos DEFINITIVOS, y la despedida sin c
   assert.equal(D.steps.length, 7);
   assert.deepEqual(J(D.steps.map((s) => s.title)), ['Bienvenido a Duelos', 'Dos formas de competir', 'Elige a tus rivales', 'Invita a quien quieras', 'Todo listo para empezar', 'El honor está en juego', '¿No coincidís?']);
   assert.deepEqual(J(D.steps.map((s) => s.body)), [
-    'Ha llegado la hora de enfrentarte a otros jugadores. Espero que tus conocimientos estén a la altura de tu entusiasmo.',
+    'Dije que no habría tutorial. Mentí.\nPero lo hago por tu bien. Sería una lástima que perdieras un duelo por no saber siquiera cómo empezarlo.',
     'Clásico pone a prueba tus conocimientos. Apuestas añade una decisión delicada: cuánto arriesgar. Confío en que sepas distinguir valentía de temeridad.',
     'Enfréntate a un jugador o participa en un todos contra todos de tres o cuatro jugadores. Cuantos más rivales, más posibilidades de quedar en evidencia.',
     'Invita a tus amigos o comparte un enlace con quien quieras. En Todos contra todos puedes combinar ambas opciones. El talento no exige estar en tu lista de contactos.',

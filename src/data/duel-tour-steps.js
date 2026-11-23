@@ -13,7 +13,7 @@
 
   var steps = [
     { id: 'bienvenida', title: 'Bienvenido a Duelos', img: 'assets/character/presentacion-evaluador.webp',
-      body: 'Ha llegado la hora de enfrentarte a otros jugadores. Espero que tus conocimientos estén a la altura de tu entusiasmo.',
+      body: 'Dije que no habría tutorial. Mentí.\nPero lo hago por tu bien. Sería una lástima que perdieras un duelo por no saber siquiera cómo empezarlo.',
       target: 'real', selectors: ['#seq-duel-cards', '#duel-home'] },
     { id: 'modalidades', title: 'Dos formas de competir', img: 'assets/character/sir-edwards-duelos-reloj.webp',
       body: 'Clásico pone a prueba tus conocimientos. Apuestas añade una decisión delicada: cuánto arriesgar. Confío en que sepas distinguir valentía de temeridad.',
