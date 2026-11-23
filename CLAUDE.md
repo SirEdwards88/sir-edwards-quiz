@@ -40,7 +40,9 @@ Igual con `src/utils/sync-merge.js`: debe ser el mismo texto que `src/sync-merge
 - Historial de versiones breve y en orden.
 - Bienvenida (primera vez, tras la cuenta) y aviso de novedades (al actualizar, lee la entrada del historial de la versión):
   la Bienvenida y el encabezado del aviso mantienen el tono de Sir Edwards, elegante y sarcástico («Vaya, un nuevo aspirante.», «Tus excusas, no.»,
-  «Mientras no mirabas, Sir Edwards ha estado ocupado:»). El historial de versiones, en cambio, es breve y neutro (sin coletillas): la versión pública es la 2.0 y las entradas anteriores van fusionadas.
+  «Mientras no mirabas, Sir Edwards ha estado ocupado:»). El historial de versiones, en cambio, es breve y neutro (sin coletillas): la versión pública vigente es la 0.9 (las antiguas 1.0…2.0 se renumeraron a 0.1…0.9; no hay 0.7 ni 0.8). Ajustes muestra solo la última entrada y pliega el resto en «Versiones anteriores (N)».
+- **La 1.0 está reservada** para el lanzamiento oficial en Google Play (enlaces de invitación a duelos/retos, tutorial y ayuda de Duelos renovados, primera app Android). No se añade su entrada ni se sube `APP_VERSION` a 1.0 hasta que todo eso esté terminado y verificado.
+- Renumeración pública: `src/utils/version-scheme.js` traduce una vez la clave de «novedades vistas» antigua (`siredwards_quiz_v1_3_update_seen`, p. ej. "2.0" → "0.9") y deja la marca `siredwards_quiz_v1_3_update_seen_scheme`. Las claves de almacenamiento conservan sus nombres históricos.
 - Tipografías (Inter, Playfair Display) alojadas en `assets/fonts/` y `styles/fonts.css`: no volver a depender de Google Fonts (sin conexión no cargan).
 - Nunca perder datos de usuarios existentes: la clave local `siredwards_quiz_v1_0_data` no se cambia.
 - Invitaciones unificadas de Duelos (1.0, apagadas hasta `features.duel_invites_v2` del Worker; sin migración): en 1 contra 1, amigo y enlace son excluyentes (el Worker cambia de método en una transacción);

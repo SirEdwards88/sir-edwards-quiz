@@ -18,11 +18,11 @@ test('bienvenida, subtítulo de Fragmentos e historial no nombran el modo', () =
   const changelog = html.slice(html.indexOf('<h3 style="margin-top:0;">Historial de versiones'), html.indexOf('<!-- Fase 2: datos y constantes extraidos'));
   assert.ok(!/lucidez/i.test(changelog), 'historial de versiones');
 });
-test('el historial es breve y va en orden: acaba en la 2.0 (sin coletillas), sin la 1.4 con ranking por XP', () => {
+test('el historial es breve y va en orden: acaba en la 0.9 (sin coletillas), sin la 1.4 con ranking por XP', () => {
   const changelog = html.slice(html.indexOf('<h3 style="margin-top:0;">Historial de versiones'), html.indexOf('<!-- Fase 2: datos y constantes extraidos'));
   const versions = [...changelog.matchAll(/settings-changelog-entry-version">v([0-9.]+)</g)].map((m) => m[1]);
-  assert.deepEqual(versions, ['1.0', '1.1', '1.2', '1.5', '1.6', '1.7', '2.0']);
-  const v2 = changelog.slice(changelog.lastIndexOf('v2.0'));
+  assert.deepEqual(versions, ['0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.9']);
+  const v2 = changelog.slice(changelog.lastIndexOf('v0.9'));
   assert.match(v2, /Sir Edwards irrumpe con sus propias preguntas\./); assert.match(changelog, /Nuevo modo de Duelo con apuestas/);
   assert.ok(!/ranking por XP/i.test(changelog), 'sin ranking por XP');
   assert.ok((changelog.match(/<li>/g) || []).length <= 22, 'historial breve');

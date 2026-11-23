@@ -385,9 +385,9 @@ test('Avatares: bloqueado → muestra el logro; Supremo → «logro secreto» si
   assert.ok(sup.indexOf('isSecret') < sup.indexOf('ALL_MEDALS'), 'el secreto se comprueba ANTES de buscar el nombre del logro');
 });
 
-test('Historial de versiones: una sola entrada 2.0 con frases cortas y sin emojis', () => {
+test('Historial de versiones: la última entrada (0.9) con frases cortas y sin emojis', () => {
   const html = read('index.html');
-  const i = html.lastIndexOf('settings-changelog-entry-version">v2.0<');
+  const i = html.lastIndexOf('settings-changelog-entry-version">v0.9<');
   const entry = html.slice(i, html.indexOf('</ul>', i));
   const lis = [...entry.matchAll(/<li>([^<]*)<\/li>/g)].map((m) => m[1]);
   assert.ok(lis.length >= 3 && lis.length <= 6, 'entre 3 y 6 frases: ' + lis.length);

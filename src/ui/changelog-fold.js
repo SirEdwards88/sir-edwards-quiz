@@ -1,14 +1,15 @@
 // SirEdwards Quiz 2.5 — historial de versiones plegable (Ajustes).
-// El historial (de la más antigua a la más reciente) ocupaba unos 2.400 px. Aquí se dejan visibles las 3 últimas versiones y el
-// resto se pliega en un <details> con el botón «Versiones anteriores (N)», colocado encima de las visibles; al abrirlo, las
-// antiguas aparecen entre el botón y las 3 últimas. N se calcula, no se escribe a mano. No toca el contenido de las entradas
+// El historial (de la más antigua a la más reciente) ocupaba mucho. Aquí solo se deja visible la última versión y todas las
+// anteriores se pliegan en un <details> con el botón «Versiones anteriores (N)», colocado encima de la visible; al abrirlo, las
+// antiguas aparecen entre el botón y la última, en orden cronológico. N se calcula, no se escribe a mano: al publicar una versión
+// nueva no hay que tocar nada aquí. No toca el contenido de las entradas
 // (la etiqueta «ACTUAL» y el resumen de novedades las siguen leyendo de .settings-changelog-entry, estén donde estén).
 // Script clásico, sin dependencias. La parte pura (foldCount) se prueba en test/changelog-fold.test.mjs.
 
 (function (root) {
   'use strict';
 
-  var KEEP = 3;
+  var KEEP = 1;
 
   // Cuántas entradas se pliegan para un total dado (0 si no hay más que las visibles).
   function foldCount(total, keep) {

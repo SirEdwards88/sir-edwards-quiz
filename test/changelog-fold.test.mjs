@@ -1,4 +1,4 @@
-// 2.5: el historial de versiones de Ajustes muestra las 3 últimas y pliega el resto.
+// 2.5: el historial de versiones de Ajustes muestra solo la última y pliega el resto (0.9: antes eran las 3 últimas).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -9,11 +9,13 @@ const ctx = vm.createContext({});
 vm.runInContext(fs.readFileSync(R('src/ui/changelog-fold.js'), 'utf8'), ctx);
 const F = ctx.SEQChangelogFold;
 
-test('foldCount: N se calcula a partir del total', () => {
-  assert.equal(F.foldCount(44), 41);
-  assert.equal(F.foldCount(4), 1);
-  assert.equal(F.foldCount(3), 0);
+test('foldCount: solo la última queda visible y N se calcula a partir del total', () => {
   assert.equal(F.foldCount(0), 0);
+  assert.equal(F.foldCount(1), 0);
+  assert.equal(F.foldCount(2), 1);
+  assert.equal(F.foldCount(7), 6);
+  assert.equal(F.foldCount(8), 7);
+  assert.equal(F.foldCount(44), 43);
 });
 
 test('index.html enlaza el módulo, sw.js lo cachea y el botón no lleva el número escrito a mano', () => {
@@ -28,7 +30,7 @@ test('index.html enlaza el módulo, sw.js lo cachea y el botón no lleva el núm
 test('el historial va de la más antigua a la más reciente y la actual sigue siendo la última', () => {
   const html = fs.readFileSync(R('index.html'), 'utf8');
   const versions = [...html.matchAll(/settings-changelog-entry-version">v([\d.]+)</g)].map((m) => m[1]);
-  assert.ok(versions.length > 3);
+  assert.ok(versions.length > 1);
   const num = (v) => v.split('.').map(Number);
   for (let i = 1; i < versions.length; i++) {
     const [a, b] = [num(versions[i - 1]), num(versions[i])];
