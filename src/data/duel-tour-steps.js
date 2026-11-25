@@ -17,7 +17,7 @@
       target: 'real', selectors: ['#seq-duel-cards', '#duel-home'] },
     { id: 'amigos', title: 'Las amistades también cuentan', img: 'assets/character/sir-edwards-duelos-amigos.webp',
       body: 'Busca jugadores por su nombre o ID, añádelos como amigos y comprueba quién está conectado. Conviene tener amigos. Sobre todo si piensas derrotarlos.',
-      target: 'real', selectors: ['.seq-d-v-amigos'] },
+      target: 'demo', demo: 'amigos', selectors: ['[data-t="amigos"]'] },
     { id: 'modalidades', title: 'Dos formas de competir', img: 'assets/character/sir-edwards-duelos-reloj.webp',
       body: 'Clásico pone a prueba tus conocimientos. Apuestas añade estrategia: tú decides cuánto arriesgar en cada ronda. Confío en que sepas distinguir valentía de temeridad.',
       target: 'demo', demo: 'modos', selectors: ['[data-t="clasico"]', '[data-t="apuestas"]'] },
@@ -32,10 +32,10 @@
       target: 'demo', demo: 'sala', selectors: ['[data-t="participantes"]', '[data-t="compartir"]', '[data-t="copiar"]', '[data-t="empezar"]', '[data-t="cancelar"]'] },
     { id: 'retos', title: '¿No coincidís?', img: 'assets/character/sir-edwards-retos-sobre.webp',
       body: 'Elige un modo y envía un Reto a uno o varios amigos. Cada uno juega cuando puede. Hasta la rivalidad merece cierta flexibilidad.',
-      target: 'real', selectors: ['.seq-d-v-retos'] },
+      target: 'demo', demo: 'retos', selectors: ['[data-t="retos"]'] },
     { id: 'honor', title: 'El honor está en juego', img: 'assets/character/event_siredwards_record.webp',
       body: 'Tus duelos 1 contra 1 determinan tu ELO, la puntuación que marca tu posición en el ranking. Todos contra todos tiene sus propias estadísticas y no afecta a tu ELO.',
-      target: 'real', selectors: ['.seq-d-v-rank'] }
+      target: 'demo', demo: 'rank', selectors: ['[data-t="rank"]'] }
   ];
 
   window.SEQDuelTourData = {

@@ -109,8 +109,8 @@ window.SEQDuelTour = (function () {
     if (img.indexOf('ico:') === 0) { try { return window.seqIco ? window.seqIco(img.slice(4)) : ''; } catch (e) { return ''; } }
     return '<img src="' + img + '" alt="" draggable="false" onerror="this.remove()">';
   }
-  function opt(t, img, title, sub) {
-    return '<div class="dtour-opt" data-t="' + t + '"><span class="dtour-opt-ic">' + icoHtml(img) + '</span>' +
+  function opt(t, img, title, sub, v) {
+    return '<div class="dtour-opt' + (v ? ' dtour-v-' + v : '') + '" data-t="' + t + '"><span class="dtour-opt-ic">' + icoHtml(img) + '</span>' +
       '<span class="dtour-opt-body"><b>' + title + '</b><i>' + sub + '</i></span><span class="dtour-opt-go">›</span></div>';
   }
   function row(n, sub, host) { return '<div class="dtour-row">' + ini(n) + '<span class="dtour-row-t"><b>' + n + (host ? ' · Tú' : '') + '</b><i>' + sub + '</i></span></div>'; }
@@ -130,6 +130,10 @@ window.SEQDuelTour = (function () {
         opt('enlace', 'ico:compartir', 'Invitar por enlace', 'Comparte una invitación con quien quieras.') +
         opt('amigo', 'ico:amigos', 'Invitar a un amigo', 'Selecciona un amigo disponible.') + '</div>';
     },
+    // Tarjetas del menú de Duelos (Amigos, Retos, Rankings): mismas imágenes, títulos y descripciones que las reales, con su color propio.
+    amigos: function () { return '<div class="dtour-opts">' + opt('amigos', 'assets/modes/amigos.webp', 'Amigos', 'Añade amigos y rétalos desde tu lista.', 'amigos') + '</div>'; },
+    retos: function () { return '<div class="dtour-opts">' + opt('retos', 'assets/modes/retos.webp', 'Retos', 'Elige el modo y reta a un amigo. Cada uno juega cuando pueda.', 'retos') + '</div>'; },
+    rank: function () { return '<div class="dtour-opts">' + opt('rank', 'assets/modes/ranking.webp', 'Rankings', 'PvP, Contrarreloj y Cálculo. Entre amigos o global.', 'rank') + '</div>'; },
     sala: function () {
       return '<div class="dtour-room"><div class="dtour-h">Esperando jugadores</div>' +
         '<div class="dtour-meta"><span class="dtour-pill">Clásico · Todos contra todos</span><span class="dtour-time">Caduca en 8:42</span></div>' +

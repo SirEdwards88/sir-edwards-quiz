@@ -151,3 +151,11 @@
 /* Tema claro: contador de pasos y segmentos activos más oscuros sobre el marfil (contraste AA ≥ 4,5:1; #7a5c12 sobre #fdf8ec ≈ 5,9:1). El oscuro no cambia. */
 :root:not([data-theme="dark"]) .dtour-step { color: #7a5c12; }
 :root:not([data-theme="dark"]) .dtour-prog i.on { background: linear-gradient(90deg, #a67c14, #7a5c12); }
+
+/* Demostraciones de las tarjetas del menú (Amigos, Retos, Rankings): mismo color que la tarjeta real; siguen el tema (variables existentes). */
+.dtour-v-amigos { border-color: rgba(47, 158, 91, .3); background: linear-gradient(145deg, rgba(47, 158, 91, .2), var(--card, #17171d) 70%); }
+.dtour-v-retos { border-color: var(--dz-reto-soft); background: linear-gradient(145deg, var(--dz-reto-soft), var(--card, #17171d) 70%); }
+.dtour-v-rank { border-color: var(--accent-gold-soft); background: linear-gradient(145deg, var(--accent-gold-soft), var(--card, #17171d) 70%); }
+.dtour-v-amigos .dtour-opt-ic { background: rgba(47, 158, 91, .2); border-radius: 12px; }
+.dtour-v-retos .dtour-opt-ic { background: var(--dz-reto-soft); border-radius: 12px; }
+.dtour-v-rank .dtour-opt-ic { background: var(--accent-gold-soft); border-radius: 12px; }

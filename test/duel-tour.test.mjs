@@ -106,9 +106,9 @@ test('la viñeta 5 no afirma que se puedan combinar amigo y enlace en 1 contra 1
 });
 
 test('cada viñeta tiene diana: real (selectores) o demostración aislada con datos ficticios', () => {
-  assert.deepEqual(J(D.steps.map((s) => s.target)), ['real', 'real', 'demo', 'demo', 'demo', 'demo', 'real', 'real']);
-  for (const s of D.steps) { assert.ok(s.selectors.length, s.id); if (s.target === 'demo') assert.ok(['modos', 'rivales', 'invitar', 'sala'].includes(s.demo), s.id); }
-  assert.deepEqual(J(D.steps[1].selectors), ['.seq-d-v-amigos']); assert.deepEqual(J(D.steps[6].selectors), ['.seq-d-v-retos']); assert.deepEqual(J(D.steps[7].selectors), ['.seq-d-v-rank']);
+  assert.deepEqual(J(D.steps.map((s) => s.target)), ['real', 'demo', 'demo', 'demo', 'demo', 'demo', 'demo', 'demo']);
+  for (const s of D.steps) { assert.ok(s.selectors.length, s.id); if (s.target === 'demo') assert.ok(['amigos', 'modos', 'rivales', 'invitar', 'sala', 'retos', 'rank'].includes(s.demo), s.id); }
+  assert.deepEqual(J(D.steps[1].selectors), ['[data-t="amigos"]']); assert.deepEqual(J(D.steps[6].selectors), ['[data-t="retos"]']); assert.deepEqual(J(D.steps[7].selectors), ['[data-t="rank"]']);
   assert.equal(J(D.steps[5].selectors).length, 5, 'sala: lista y cuatro botones');
   assert.doesNotMatch(SRC.slice(SRC.indexOf('rivales: function'), SRC.indexOf('invitar: function')), /Duelo clásico/, 'el ejemplo de rivales no lleva encabezado');
 });
