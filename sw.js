@@ -39,7 +39,7 @@
 // 2.0 (Prompt 5, tarjeta de compartir): subido de 10 a 11; nuevo src/share/share-card.js
 // (añadido al shell) y cambiaron index.html y src/online/duels.js.
 // Desde la 2.0 el historial de cambios de cada versión vive en git; aquí solo se sube CACHE_VERSION (scripts/bump-version.mjs).
-const CACHE_VERSION = 535;
+const CACHE_VERSION = 537;
 // Dos cachés (ver install/fetch más abajo):
 //  · CACHE_NAME  (versionada): index.html, CSS, JS, manifest e iconos. Es poco y es imprescindible: si no se puede guardar, la
 //    versión nueva no se instala y se queda la anterior.
@@ -445,6 +445,8 @@ const APP_SHELL = [
   './assets/character/presentacion-expediente.webp',
   './assets/character/presentacion-mirada.webp',
   './assets/character/sir-edwards-duelos-reloj.webp',
+  './assets/character/sir-edwards-duelos-amigos.webp',
+  './assets/character/sir-edwards-duelos-sala.webp',
   './assets/character/sir-edwards-retos-sobre.webp',
   './assets/character/lunes-aprobacion.webp',
   './assets/character/lunes-reproche.webp',
@@ -559,7 +561,9 @@ const ASSET_REVS = {
   './assets/character/presentacion-evaluador.webp': 'ceaa2779',
   './assets/character/presentacion-expediente.webp': '2644648c',
   './assets/character/presentacion-mirada.webp': '261e874d',
+  './assets/character/sir-edwards-duelos-amigos.webp': '6dd6cb0d',
   './assets/character/sir-edwards-duelos-reloj.webp': '7ffe5600',
+  './assets/character/sir-edwards-duelos-sala.webp': 'e4560f30',
   './assets/character/sir-edwards-retos-sobre.webp': '4b3260b2',
   './assets/character/siredwards_encargos.webp': '390cd810',
   './assets/character/siredwards_encargos_completados.webp': '2a545d18',

@@ -217,3 +217,13 @@ test('Ayuda v2 con enlaces apagados: sin mencionar enlaces; y sin v2 el texto an
   assert.ok(old.includes('Enlace compartido'));
   assert.match(UI_SRC, /features\.duel_invites_v2/);
 });
+
+test('Ayuda de Duelos: título, introducción exacta, botón del tutorial y subtítulo del menú Duelos', () => {
+  const html = read('index.html');
+  assert.match(html, /<h2 id="help-modal-title">Ayuda de Duelos<\/h2>/);
+  assert.match(html, /class="help-orn"/);
+  assert.match(html, /Compite contra otros jugadores/);
+  assert.doesNotMatch(html, /Compite contra tus amigos/);
+  assert.equal(D.lead, 'Sir Edwards lo ha dejado todo por escrito. Léelo una vez; después, no valen excusas.');
+  assert.equal(D.tutorialLabel, 'Ver el tutorial de Duelos');
+});

@@ -79,34 +79,38 @@ function world({ ls = {}, state = { screen: null, lists: { duels: [], multis: []
 }
 
 // ---- Datos: textos definitivos ------------------------------------------------------------------------------------------------------
-test('siete viñetas con los títulos y textos DEFINITIVOS, y la despedida sin crear una octava', () => {
-  assert.equal(D.steps.length, 7);
-  assert.deepEqual(J(D.steps.map((s) => s.title)), ['Bienvenido a Duelos', 'Dos formas de competir', 'Elige a tus rivales', 'Invita a quien quieras', 'Todo listo para empezar', 'El honor está en juego', '¿No coincidís?']);
+test('ocho viñetas con los títulos y textos DEFINITIVOS, y la despedida sin crear una novena', () => {
+  assert.equal(D.steps.length, 8);
+  assert.deepEqual(J(D.steps.map((s) => s.title)), ['Bienvenido a Duelos', 'Las amistades también cuentan', 'Dos formas de competir', 'Elige a tus rivales', 'Invita a quien quieras', 'Todo listo para empezar', '¿No coincidís?', 'El honor está en juego']);
   assert.deepEqual(J(D.steps.map((s) => s.body)), [
     'Dije que no habría tutorial. Mentí.\nPero lo hago por tu bien. Sería una lástima que perdieras un duelo por no saber siquiera cómo empezarlo.',
-    'Clásico pone a prueba tus conocimientos. Apuestas añade una decisión delicada: cuánto arriesgar. Confío en que sepas distinguir valentía de temeridad.',
+    'Busca jugadores por su nombre o ID, añádelos como amigos y comprueba quién está conectado. Conviene tener amigos. Sobre todo si piensas derrotarlos.',
+    'Clásico pone a prueba tus conocimientos. Apuestas añade estrategia: tú decides cuánto arriesgar en cada ronda. Confío en que sepas distinguir valentía de temeridad.',
     'Enfréntate a un jugador o participa en un todos contra todos de tres o cuatro jugadores. Cuantos más rivales, más posibilidades de quedar en evidencia.',
-    'Invita a tus amigos o comparte un enlace con quien quieras. En Todos contra todos puedes combinar ambas opciones. El talento no exige estar en tu lista de contactos.',
-    'La sala muestra quién ha llegado y quién falta. Comparte el enlace, inicia el duelo cuando estéis listos o cancela la invitación si cambias de opinión.',
-    'Cada duelo 1 contra 1 puede hacerte subir o bajar en el ranking. Todos contra todos tiene sus propias estadísticas, sin afectar a tu ELO.',
-    'Para eso están los Retos: envía uno y deja que tu rival juegue cuando pueda. Hasta la rivalidad merece cierta flexibilidad.']);
+    'Invita a tus amigos o comparte un enlace con otros jugadores. Incluso puedes combinar ambas opciones en Todos contra todos. No seré yo quien limite tu lista de adversarios.',
+    'La sala muestra quién ha aceptado. Comparte o copia el enlace y empieza cuando seáis al menos tres. No es necesario esperar al cuarto invitado.',
+    'Elige un modo y envía un Reto a uno o varios amigos. Cada uno juega cuando puede. Hasta la rivalidad merece cierta flexibilidad.',
+    'Tus duelos 1 contra 1 determinan tu ELO, la puntuación que marca tu posición en el ranking. Todos contra todos tiene sus propias estadísticas y no afecta a tu ELO.']);
   assert.equal(D.farewell.body, 'El escenario está preparado y tus rivales te esperan. Procura que la primera impresión no sea la última.');
   assert.equal(D.farewell.button, 'Empezar a jugar');
-  assert.equal(D.labels.back, 'Atrás'); assert.equal(D.labels.next, 'Continuar'); assert.equal(D.labels.progress(3, 7), '3 de 7');
+  assert.equal(D.labels.back, 'Atrás'); assert.equal(D.labels.next, 'Continuar'); assert.equal(D.labels.progress(3, 8), '3 de 8'); assert.equal(D.labels.close, 'Salir del tutorial');
   assert.ok(!('skip' in D.labels) && !/Saltar/.test((DATA + SRC).replace(/\/\/.*$/gm, '')), 'el recorrido inicial no tiene opción de omitirlo');
   for (const f of D.steps.map((s) => s.img).concat(D.farewell.img)) assert.ok(fs.existsSync(new URL('../' + f, import.meta.url)), f);
+  assert.equal(D.steps[1].img, 'assets/character/sir-edwards-duelos-amigos.webp'); assert.equal(D.steps[5].img, 'assets/character/sir-edwards-duelos-sala.webp');
   assert.doesNotMatch(DATA + SRC, /\p{Extended_Pictographic}/u, 'sin emojis');
 });
 
-test('la viñeta 4 no afirma que se puedan combinar amigo y enlace en 1 contra 1', () => {
-  assert.match(D.steps[3].body, /En Todos contra todos puedes combinar ambas opciones/);
-  assert.ok(!/1 contra 1|ambas opciones simultáneamente/.test(D.steps[3].body));
+test('la viñeta 5 no afirma que se puedan combinar amigo y enlace en 1 contra 1', () => {
+  assert.match(D.steps[4].body, /combinar ambas opciones en Todos contra todos/);
+  assert.ok(!/1 contra 1|ambas opciones simultáneamente/.test(D.steps[4].body));
 });
 
 test('cada viñeta tiene diana: real (selectores) o demostración aislada con datos ficticios', () => {
-  assert.deepEqual(J(D.steps.map((s) => s.target)), ['real', 'demo', 'demo', 'demo', 'demo', 'real', 'real']);
+  assert.deepEqual(J(D.steps.map((s) => s.target)), ['real', 'real', 'demo', 'demo', 'demo', 'demo', 'real', 'real']);
   for (const s of D.steps) { assert.ok(s.selectors.length, s.id); if (s.target === 'demo') assert.ok(['modos', 'rivales', 'invitar', 'sala'].includes(s.demo), s.id); }
-  assert.deepEqual(J(D.steps[5].selectors), ['.seq-d-v-rank']); assert.deepEqual(J(D.steps[6].selectors), ['.seq-d-v-retos']);
+  assert.deepEqual(J(D.steps[1].selectors), ['.seq-d-v-amigos']); assert.deepEqual(J(D.steps[6].selectors), ['.seq-d-v-retos']); assert.deepEqual(J(D.steps[7].selectors), ['.seq-d-v-rank']);
+  assert.equal(J(D.steps[5].selectors).length, 5, 'sala: lista y cuatro botones');
+  assert.doesNotMatch(SRC.slice(SRC.indexOf('rivales: function'), SRC.indexOf('invitar: function')), /Duelo clásico/, 'el ejemplo de rivales no lleva encabezado');
 });
 
 // ---- Lógica pura ------------------------------------------------------------------------------------------------------------------------
@@ -160,28 +164,29 @@ test('seguridad de apertura: partida, invitación, sala, enlace propio o pantall
 });
 
 // ---- Recorrido (DOM mínimo) ---------------------------------------------------------------------------------------------------------------
-test('primera visualización: siete viñetas, progreso «n de 7», despedida, y solo al terminar se marca (clave propia); no se puede omitir', () => {
+test('primera visualización: ocho viñetas, progreso «n de 8», despedida, y solo al terminar se marca (clave propia); no se puede omitir', () => {
   const w = world();
   assert.equal(w.T.startIfNeeded(), true);
   assert.ok(w.root(), 'abierto');
   const titles = [], steps = [];
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 8; i++) {
     titles.push(w.q('dtour-title').textContent); steps.push(w.q('dtour-step').textContent);
-    assert.equal(w.root().querySelector('.dtour-x'), null, 'sin botón de cerrar en la primera visualización');
+    assert.equal(w.root().querySelector('.dtour-x'), null, 'sin X en ninguna tarjeta');
+    assert.equal(w.q('dtour-exit').style.display, 'none', 'sin salida en la primera visualización');
     assert.equal(w.q('dtour-next').textContent, 'Continuar');
-    assert.equal(w.q('dtour-back').disabled, i === 0, 'Atrás desactivado solo en la primera');
+    assert.equal(!!w.q('dtour-back'), i > 0, 'sin Atrás (ni hueco) en la primera; presente en el resto');
     assert.equal(w.esc(), true, 'Escape se captura pero NO cierra');
     assert.ok(w.root(), 'sigue abierto tras Escape (no se puede omitir)');
     w.q('dtour-next').click();
   }
   assert.deepEqual(titles, J(D.steps.map((s) => s.title)));
-  assert.deepEqual(steps, ['1 de 7', '2 de 7', '3 de 7', '4 de 7', '5 de 7', '6 de 7', '7 de 7']);
-  // tras la séptima: despedida, que no es una octava viñeta
+  assert.deepEqual(steps, ['1 de 8', '2 de 8', '3 de 8', '4 de 8', '5 de 8', '6 de 8', '7 de 8', '8 de 8']);
+  // tras la octava: despedida, que no es una novena viñeta
   assert.equal(w.q('dtour-body').textContent, D.farewell.body);
-  assert.equal(w.q('dtour-step').textContent, '7 de 7');
+  assert.equal(w.q('dtour-step').textContent, '8 de 8');
   assert.equal(w.q('dtour-next').textContent, 'Empezar a jugar');
   assert.deepEqual(w.calls.writes, [], 'a medias no se marca nada');
-  w.q('dtour-back').click(); assert.equal(w.q('dtour-title').textContent, '¿No coincidís?', 'Atrás desde la despedida vuelve a la séptima');
+  w.q('dtour-back').click(); assert.equal(w.q('dtour-title').textContent, 'El honor está en juego', 'Atrás desde la despedida vuelve a la octava');
   w.q('dtour-next').click(); w.q('dtour-next').click();
   assert.equal(w.root(), null, 'cerrado');
   assert.deepEqual(w.calls.writes, [KEY], 'la ÚNICA marca es la clave propia');
@@ -193,7 +198,7 @@ test('primera visualización: siete viñetas, progreso «n de 7», despedida, y 
 test('Atrás y Continuar navegan sin perder el sitio; cerrar la app a medias deja el recorrido sin marcar', () => {
   const w = world(); w.T.startIfNeeded();
   w.q('dtour-next').click(); w.q('dtour-next').click(); w.q('dtour-back').click();
-  assert.equal(w.q('dtour-step').textContent, '2 de 7');
+  assert.equal(w.q('dtour-step').textContent, '2 de 8');
   assert.equal(w.store[KEY], undefined);
   const w2 = world({ ls: {} }); assert.equal(w2.T.seen(), false, 'una instancia nueva (recarga) vuelve a empezar');
 });
@@ -201,7 +206,7 @@ test('Atrás y Continuar navegan sin perder el sitio; cerrar la app a medias dej
 test('lo ven TODOS los jugadores, incluidos quienes completaron el tutorial antiguo; sin mirar K_HELP, K_INTRO ni K_UNLOCKED', () => {
   const w = world({ ls: { siredwards_quiz_duel_intro_seen: '1', siredwards_quiz_v1_1_duel_help_seen: '1', siredwards_quiz_duel_unlocked: '1' } });
   assert.equal(w.T.startIfNeeded(), true); assert.ok(w.root(), 'se muestra aunque ya vieran el anterior');
-  for (let i = 0; i < 8; i++) w.q('dtour-next').click();
+  for (let i = 0; i < 9; i++) w.q('dtour-next').click();
   assert.deepEqual(w.calls.writes, [KEY]);
   assert.equal(w.store.siredwards_quiz_duel_intro_seen, '1'); assert.equal(w.store.siredwards_quiz_v1_1_duel_help_seen, '1'); assert.equal(w.store.siredwards_quiz_duel_unlocked, '1');
   assert.ok(!/K_HELP|K_INTRO|K_UNLOCKED|duel_intro_seen|duel_help_seen|duel_unlocked/.test(SRC.replace(/\/\/.*$/gm, '')), 'el módulo no nombra esas claves en su código');
@@ -235,10 +240,11 @@ test('repetir desde el «?»: se puede cerrar (× y Escape), no escribe NINGUNA 
   const w = world({ ls: { [KEY]: '1' } });
   assert.equal(w.T.startIfNeeded(), false);
   assert.equal(w.T.replay(), true);
-  assert.ok(w.root().querySelector('.dtour-x'), 'en la repetición sí hay cerrar');
+  assert.equal(w.q('dtour-exit').style.display, 'block', 'en la repetición hay «Salir del tutorial», fuera de la tarjeta');
+  assert.equal(w.q('dtour-exit').textContent, 'Salir del tutorial'); assert.ok(!w.q('dtour-card').contains(w.q('dtour-exit')));
   w.esc(); assert.equal(w.root(), null, 'Escape cierra la repetición');
-  w.T.replay(); w.root().querySelector('.dtour-x').click(); assert.equal(w.root(), null);
-  w.T.replay(); for (let i = 0; i < 8; i++) w.q('dtour-next').click();
+  w.T.replay(); w.q('dtour-exit').click(); assert.equal(w.root(), null);
+  w.T.replay(); for (let i = 0; i < 9; i++) w.q('dtour-next').click();
   assert.equal(w.root(), null);
   assert.deepEqual(w.calls.writes, [], 'repetirlo no cambia ninguna marca');
   const busy = world({ state: { screen: 'duel', lists: {} } });
@@ -250,8 +256,8 @@ test('repetir desde el «?»: se puede cerrar (× y Escape), no escribe NINGUNA 
 
 test('NO hay llamadas de escritura (ni de ningún tipo) al Worker durante el recorrido y la repetición', () => {
   const w = world(); w.T.startIfNeeded();
-  for (let i = 0; i < 8; i++) w.q('dtour-next').click();
-  w.T.replay(); for (let i = 0; i < 8; i++) w.q('dtour-next').click();
+  for (let i = 0; i < 9; i++) w.q('dtour-next').click();
+  w.T.replay(); for (let i = 0; i < 9; i++) w.q('dtour-next').click();
   assert.deepEqual(w.calls.api, [], 'ni una petición a SEQOnline.api');
   const code = SRC.replace(/\/\/.*$/gm, '');
   assert.ok(!/\.api\(|fetch\(|XMLHttpRequest|sendBeacon|SEQOnline\.api|SEQDuels\.(open|create|duelAction|retoAction|pick|openInvites)|SEQInvites|SEQDuelLink|SEQMultiLink|SEQMulti\b/.test(code), 'el módulo no llama a nada que escriba ni crea invitaciones');

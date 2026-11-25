@@ -53,7 +53,8 @@ var SEQHelp = (function () {
     var d = data();
     if (d.lead) { var lead = document.createElement('p'); lead.className = 'help-lead'; lead.textContent = d.lead; body.appendChild(lead); }
     var tut = document.createElement('button');
-    tut.type = 'button'; tut.className = 'btn btn-secondary help-tutorial'; tut.textContent = d.tutorialLabel || 'Ver el tutorial';
+    tut.type = 'button'; tut.className = 'btn btn-secondary help-tutorial'; var pl = document.createElement('span'); pl.className = 'help-play'; pl.setAttribute('aria-hidden', 'true'); tut.appendChild(pl);
+    tut.appendChild(document.createTextNode(d.tutorialLabel || 'Ver el tutorial'));
     tut.addEventListener('click', tutorial);
     body.appendChild(tut);
     d.topics.forEach(function (t) {

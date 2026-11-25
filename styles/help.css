@@ -2,9 +2,23 @@
 #help-modal { z-index: 1100; }
 #help-modal .modal-card { max-width: 520px; width: 100%; min-width: 0; height: auto; max-height: 88vh; max-height: calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); padding: 22px 20px 14px; text-align: left; display: flex; flex-direction: column; overflow: hidden; }
 #help-modal-body { flex: 0 1 auto; min-height: 0; min-width: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; padding: 0 8px 0 2px; overflow-wrap: anywhere; }
-#help-modal h2 { display: block; min-width: 0; overflow-wrap: anywhere; hyphens: auto; margin: 0 0 8px; font-family: var(--font-display, 'Playfair Display', serif); }
+#help-modal h2 { display: block; min-width: 0; overflow-wrap: anywhere; hyphens: auto; margin: 0; text-align: center; font-family: var(--font-display, 'Playfair Display', serif); }
 #help-modal .help-lead { margin: 0 0 12px; font-size: 14px; font-style: italic; line-height: 1.5; color: var(--sub); }
-#help-modal .help-tutorial { width: 100%; margin: 0 0 12px; }
+#help-modal .help-tutorial { width: 100%; margin: 0 0 12px; display: flex; align-items: center; justify-content: center; gap: 8px; background: transparent; border: 1px solid rgba(201, 153, 46, .5); color: var(--text); box-shadow: none; }
+#help-modal .help-tutorial .help-play { flex: 0 0 auto; width: 0; height: 0; border-style: solid; border-width: 5px 0 5px 9px; border-color: transparent transparent transparent #c9992e; }
+#help-modal .help-lead { text-align: center; }
+/* Cabecera centrada: libro dorado, título y separador ornamental con rombo (fija: solo se desplaza el contenido de debajo) */
+#help-modal .help-head { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 0 0 10px; text-align: center; }
+#help-modal .help-book { color: #c9992e; }
+#help-modal .help-orn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 70%; max-width: 220px; margin-top: 4px; }
+#help-modal .help-orn i { flex: 1 1 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(201, 153, 46, .6)); }
+#help-modal .help-orn i:last-child { background: linear-gradient(270deg, transparent, rgba(201, 153, 46, .6)); }
+#help-modal .help-orn b { flex: 0 0 auto; width: 6px; height: 6px; background: #c9992e; transform: rotate(45deg); }
+/* Barra de desplazamiento fina (3-4 px), dorada y redondeada */
+#help-modal-body { scrollbar-width: thin; scrollbar-color: rgba(201, 153, 46, .55) rgba(201, 153, 46, .1); }
+#help-modal-body::-webkit-scrollbar { width: 4px; }
+#help-modal-body::-webkit-scrollbar-track { background: rgba(201, 153, 46, .1); border-radius: 4px; }
+#help-modal-body::-webkit-scrollbar-thumb { background: rgba(201, 153, 46, .55); border-radius: 4px; }
 .help-topic { border-top: 1px solid rgba(201, 153, 46, .22); }
 .help-topic > summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 4px; min-width: 0; overflow-wrap: anywhere; cursor: pointer; list-style: none;
   font-family: var(--font-display, 'Playfair Display', serif); font-size: 16px; font-weight: 700; color: var(--text); }

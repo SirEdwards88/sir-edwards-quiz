@@ -165,11 +165,11 @@ test('integración: script en index.html y en la caché de sw.js, botón solo en
 });
 
 test('el tutorial nuevo (1.0) distingue los dos casos: combinar amigos y enlace es solo de Todos contra todos', () => {
-  // La presentación antigua con variantes según flags desapareció: ahora es el recorrido de siete viñetas (test/duel-tour.test.mjs).
+  // La presentación antigua con variantes según flags desapareció: ahora es el recorrido de ocho viñetas (test/duel-tour.test.mjs).
   assert.ok(!/bodyMulti/.test(INTRO), 'duel-intro.js ya no lleva textos de tutorial');
   const win = {}; vm.createContext({ window: win }); vm.runInContext(read('src/data/duel-tour-steps.js'), vm.createContext({ window: win }));
-  const four = win.SEQDuelTourData.steps[3].body;
-  assert.match(four, /En Todos contra todos puedes combinar ambas opciones/);
+  const four = win.SEQDuelTourData.steps[4].body;
+  assert.match(four, /combinar ambas opciones en Todos contra todos/);
   assert.doesNotMatch(four, /1 contra 1/, 'no se afirma que se puedan combinar en 1 contra 1');
 });
 

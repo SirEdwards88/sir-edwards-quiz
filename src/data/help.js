@@ -82,7 +82,7 @@
   ];
 
   window.SEQHelpData = {
-    title: 'Ayuda',
+    title: 'Ayuda de Duelos',
     lead: 'Sir Edwards lo ha dejado todo por escrito. Léelo una vez; después, no valen excusas.',
     tutorialLabel: 'Ver el tutorial de Duelos',
     topics: topics

@@ -1,7 +1,7 @@
-// SirEdwards Quiz 1.0 — Tutorial interactivo de Duelos (siete viñetas). Script clásico: expone window.SEQDuelTour.
+// SirEdwards Quiz 1.0 — Tutorial interactivo de Duelos (ocho viñetas). Script clásico: expone window.SEQDuelTour.
 //
 // Qué hace: una capa a pantalla completa que resalta elementos reales de la pantalla de Duelos (o una demostración aislada con datos
-// ficticios) y una tarjeta de Sir Edwards colocada según el espacio. Atrás / Continuar, progreso «n de 7» y una despedida final.
+// ficticios) y una tarjeta de Sir Edwards colocada según el espacio. Atrás / Continuar, progreso «n de 8» y una despedida final.
 // Textos y pasos: src/data/duel-tour-steps.js (definitivos).
 //
 // Reglas de seguridad (ver test/duel-tour.test.mjs):
@@ -10,7 +10,7 @@
 //     estático inerte (sin onclick, sin ids, aria-hidden), así que no hay controles falsos que envíen nada.
 //   · Su única marca es siredwards_quiz_duel_tour_seen. No lee ni escribe K_HELP, K_INTRO, K_UNLOCKED, claves de progreso,
 //     de novedades ni de migración de versiones: ver o no ver el recorrido no cambia el desbloqueo de Duelos.
-//   · La primera visualización no se puede omitir (sin «Saltar», y Escape no la cierra). Repetirla desde el «?» sí se puede cerrar.
+//   · La primera visualización no se puede omitir (sin «Salir», y Escape no la cierra). Repetirla desde el «?» sí se puede cerrar con «Salir del tutorial» (fuera de la tarjeta).
 //   · No se abre sobre una partida, invitación o sala activas: se aplaza hasta que sea seguro.
 // Con «reducir movimiento» no hay animaciones.
 
@@ -121,7 +121,7 @@ window.SEQDuelTour = (function () {
         opt('apuestas', 'assets/duelos/modos/stakes.webp', 'Apuestas', 'Tú eliges cuánto arriesgas.') + '</div>';
     },
     rivales: function () {
-      return '<div class="dtour-h">Duelo clásico</div><div class="dtour-opts">' +
+      return '<div class="dtour-opts">' +
         opt('uno', 'assets/duelos/formato/uno-contra-uno.webp', '1 contra 1', 'Reta a otro jugador.') +
         opt('todos', 'assets/duelos/formato/multiple.webp', 'Todos contra todos', 'De 3 a 4 jugadores.') + '</div>';
     },
@@ -135,7 +135,7 @@ window.SEQDuelTour = (function () {
         '<div class="dtour-meta"><span class="dtour-pill">Clásico · Todos contra todos</span><span class="dtour-time">Caduca en 8:42</span></div>' +
         '<div class="dtour-count">3/4 jugadores</div>' +
         '<div class="dtour-rows" data-t="participantes">' + row('Edu', 'Anfitrión', true) + row('Clara', 'Ha aceptado') + row('Dani', 'Ha aceptado') + '</div>' +
-        '<div class="dtour-btns"><span class="dtour-btn dtour-btn-sec" data-t="compartir">Compartir enlace</span><span class="dtour-btn dtour-btn-sec">Copiar enlace</span></div>' +
+        '<div class="dtour-btns"><span class="dtour-btn dtour-btn-sec" data-t="compartir">Compartir enlace</span><span class="dtour-btn dtour-btn-sec" data-t="copiar">Copiar enlace</span></div>' +
         '<div class="dtour-btns"><span class="dtour-btn dtour-btn-pri" data-t="empezar">Empezar duelo</span><span class="dtour-btn dtour-btn-sec" data-t="cancelar">Cancelar sala</span></div></div>';
     }
   };
@@ -153,6 +153,7 @@ window.SEQDuelTour = (function () {
     var demo = el('div', 'dtour-demo'); demo.setAttribute('aria-hidden', 'true'); try { demo.inert = true; } catch (e) {} root.appendChild(demo);
     var card = el('div', 'dtour-card'); card.tabIndex = -1; root.appendChild(card);
     var sir = el('img', 'dtour-sir'); sir.alt = ''; sir.draggable = false; sir.setAttribute('aria-hidden', 'true'); sir.addEventListener('load', schedule); root.appendChild(sir);   // Sir Edwards grande (mismo asset de la viñeta)
+    var ex = el('button', 'dtour-exit'); ex.type = 'button'; ex.textContent = (D.labels && D.labels.close) || 'Salir del tutorial'; ex.addEventListener('click', close); root.appendChild(ex);
     var pad = el('div', 'dtour-pad'); pad.setAttribute('aria-hidden', 'true'); root.appendChild(pad);   // marca el final del contenido cuando la capa se desplaza
     document.body.appendChild(root);
   }
@@ -174,17 +175,17 @@ window.SEQDuelTour = (function () {
     for (var k = 0; k < n; k++) { var dot = el('i'); if (fw || k <= st.i) dot.className = 'on'; prog.appendChild(dot); }
     meta.appendChild(prog);
     head.appendChild(meta);
-    if (st.replay) { var x = el('button', 'dtour-x'); x.type = 'button'; x.setAttribute('aria-label', L.close || 'Cerrar'); x.textContent = '×'; x.addEventListener('click', close); head.appendChild(x); }
+    var exitBtn = q('.dtour-exit'); if (exitBtn) exitBtn.style.display = st.replay ? 'block' : 'none';   // salida solo al repetir, fuera de la tarjeta
     card.appendChild(head);
     txt(card, 'p', 'dtour-body', data.body);
     var sirImg = q('.dtour-sir'); if (sirImg && sirImg.getAttribute('src') !== data.img) sirImg.src = data.img;
     var act = el('div', 'dtour-actions');
+    var first = st.i === 0 && !fw;   // en la primera viñeta no hay «Atrás» (ni su hueco)
     var back = el('button', 'btn btn-secondary dtour-back'); back.type = 'button'; back.textContent = L.back || 'Atrás';
-    if (st.i === 0 && !fw) back.disabled = true;
     back.addEventListener('click', prev);
     var next = el('button', 'btn btn-primary dtour-next'); next.type = 'button'; next.textContent = fw ? (D.farewell.button || 'Empezar a jugar') : (L.next || 'Continuar');
     next.addEventListener('click', advance);
-    act.appendChild(back); act.appendChild(next); card.appendChild(act);
+    if (!first) act.appendChild(back); act.appendChild(next); card.appendChild(act);
     try { next.focus({ preventScroll: true }); } catch (e) {}
     card.scrollTop = 0;
   }
@@ -196,7 +197,7 @@ window.SEQDuelTour = (function () {
   }
   // Áreas seguras (muesca, barra de gestos): la capa lleva padding env(safe-area-inset-*); se leen ya resueltas.
   function insets() {
-    try { var cs = getComputedStyle(root); return { t: parseFloat(cs.paddingTop) || 0, b: parseFloat(cs.paddingBottom) || 0 }; } catch (e) { return { t: 0, b: 0 }; }
+    try { var cs = getComputedStyle(root); return { t: (parseFloat(cs.paddingTop) || 0) + (st.replay ? 34 : 0) /* hueco para «Salir del tutorial» */, b: parseFloat(cs.paddingBottom) || 0 }; } catch (e) { return { t: 0, b: 0 }; }
   }
   function visibleRect(e) {
     if (!e) return null;
@@ -283,7 +284,7 @@ window.SEQDuelTour = (function () {
   function advance() {
     if (st.farewell) { finish(); return; }
     if (st.i < total() - 1) { st.i++; render(); return; }
-    st.farewell = true; render();      // tras la séptima viñeta, la despedida (no es una octava viñeta)
+    st.farewell = true; render();      // tras la octava viñeta, la despedida (no es una novena viñeta)
   }
   function prev() {
     if (st.farewell) { st.farewell = false; render(); return; }
@@ -308,7 +309,7 @@ window.SEQDuelTour = (function () {
       return;
     }
     if (e.key !== 'Tab') return;
-    var f = root.querySelectorAll('button:not([disabled])'); if (!f.length) return;
+    var f = Array.prototype.filter.call(root.querySelectorAll('button:not([disabled])'), function (b) { return !(b.style && b.style.display === 'none'); }); if (!f.length) return;
     var first = f[0], last = f[f.length - 1], a = document.activeElement;
     if (!root.contains(a)) { e.preventDefault(); first.focus(); }
     else if (e.shiftKey && a === first) { e.preventDefault(); last.focus(); }
@@ -330,7 +331,7 @@ window.SEQDuelTour = (function () {
 
   function open(replay) {
     if (root) return true;
-    if (!D.steps || D.steps.length !== 7) return false;
+    if (!D.steps || D.steps.length !== 8) return false;
     opener = document.activeElement && document.activeElement !== document.body ? document.activeElement : null;
     st = { i: 0, farewell: false, replay: !!replay };
     build(); bind(); render();

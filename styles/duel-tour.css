@@ -61,6 +61,11 @@
 .dtour-sir { position: absolute; z-index: 2; display: none; object-fit: contain; pointer-events: none; user-select: none; -webkit-user-select: none; -webkit-user-drag: none;
   filter: drop-shadow(0 10px 22px rgba(0, 0, 0, .55)); animation: dtourSir .35s ease both; }
 
+/* «Salir del tutorial» (solo al repetir): fuera de la tarjeta, fijo arriba a la derecha, discreto */
+.dtour-exit { position: fixed; z-index: 6; display: none; top: calc(env(safe-area-inset-top, 0px) + 6px); right: 10px; min-height: 30px; padding: 4px 12px; border-radius: 999px;
+  border: 1px solid rgba(232, 200, 116, .35); background: rgba(12, 14, 24, .62); color: rgba(255, 255, 255, .8); font: inherit; font-size: 12px; line-height: 1.2; cursor: pointer; }
+.dtour-exit::before { content: ''; position: absolute; inset: -7px -4px; }
+
 /* Tarjeta de Sir Edwards */
 .dtour-card { position: absolute; z-index: 3; left: 50%; width: var(--dtour-w); margin-left: calc(var(--dtour-w) / -2); box-sizing: border-box;
   max-height: calc(100dvh - 24px); overflow-y: auto; touch-action: pan-y; padding: 12px 16px 14px; border-radius: 20px; text-align: left;
@@ -78,9 +83,6 @@
 .dtour-meta2 { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
 .dtour-step { font-size: 11.5px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: #e8c874; font-variant-numeric: tabular-nums; }
 .dtour-title { margin: 0; font-family: var(--font-display, 'Playfair Display', serif); font-size: 21px; line-height: 1.15; color: var(--text); }
-/* × de la repetición: a la izquierda de la ilustración, arriba (32 px visibles, 44 px de área táctil) */
-.dtour-x { position: absolute; top: -6px; right: calc(var(--sir-w) - 14px); z-index: 1; width: 32px; height: 32px; padding: 0; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .25); background: rgba(12, 14, 24, .66); color: var(--text); font-size: 20px; line-height: 1; cursor: pointer; }
-.dtour-x::before { content: ''; position: absolute; inset: -6px; }
 .dtour-body { white-space: pre-line; margin: 0 0 12px; font-size: 15px; line-height: 1.45; color: var(--text); opacity: .86; }
 .dtour-actions { display: flex; gap: 8px; }
 .dtour-actions .btn { min-height: 44px; margin: 0; }
@@ -88,14 +90,14 @@
 .dtour-next { flex: 1 1 auto; }
 .dtour-actions .btn[disabled] { opacity: .4; }
 /* El foco global (main.css) pinta un aro grueso también con el foco programático de «Continuar»; aquí solo se ve al navegar con teclado (.dtour-kb) */
-.dtour .btn:focus, .dtour .btn:focus-visible, .dtour .dtour-x:focus, .dtour .dtour-x:focus-visible { outline: none; box-shadow: none; }
-.dtour.dtour-kb .btn:focus-visible, .dtour.dtour-kb .dtour-x:focus-visible { outline: 3px solid #e8c874; outline-offset: 3px; box-shadow: none; }
+.dtour .btn:focus, .dtour .btn:focus-visible, .dtour .dtour-exit:focus, .dtour .dtour-exit:focus-visible { outline: none; box-shadow: none; }
+.dtour.dtour-kb .btn:focus-visible, .dtour.dtour-kb .dtour-exit:focus-visible { outline: 3px solid #e8c874; outline-offset: 3px; box-shadow: none; }
 
 /* Despedida: Sir Edwards protagonista, título y texto centrados, una sola acción destacada; el fondo, apenas atenuado */
 .dtour-fw .dtour-spot { box-shadow: 0 0 0 100vmax rgba(6, 6, 10, .6), 0 0 0 2px rgba(232, 200, 116, .75), 0 0 22px 2px rgba(232, 200, 116, .35); }
 .dtour.dtour-fw.dtour-nospot { background: rgba(6, 6, 10, .82); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
 .dtour-fw .dtour-card { padding: 16px 18px 12px; text-align: center; border-color: rgba(232, 200, 116, .7); box-shadow: 0 14px 40px rgba(0, 0, 0, .55), 0 0 28px rgba(201, 153, 46, .18); }
-.dtour-fw .dtour-prog, .dtour-fw .dtour-step, .dtour-fw .dtour-x { display: none; }
+.dtour-fw .dtour-prog, .dtour-fw .dtour-step { display: none; }
 .dtour-fw .dtour-head { flex-direction: column; gap: 8px; margin: 0 0 6px; }
 .dtour-fw .dtour-med { display: none; }
 .dtour-fw .dtour-head { min-height: 0; padding-right: 0; justify-content: center; position: static; }
@@ -109,11 +111,9 @@
 /* Bienvenida (viñeta 1): la misma composición que la despedida, pero conserva «1 de 7», el filete de progreso y, en la repetición, la × */
 .dtour-welcome .dtour-step { display: block; }
 .dtour-welcome .dtour-prog { display: flex; width: 150px; margin: 8px auto 0; }
-.dtour-welcome .dtour-x { display: block; top: 8px; right: 8px; }
 .dtour-welcome .dtour-head { margin-bottom: 8px; }
 /* El asset de bienvenida termina en seco: fundido inferior hacia la tarjeta (la despedida ya lo trae en su asset y no se toca) */
 .dtour-welcome .dtour-sir { -webkit-mask-image: linear-gradient(#000 70%, transparent 99%); mask-image: linear-gradient(#000 70%, transparent 99%); filter: drop-shadow(0 8px 14px rgba(0, 0, 0, .45)); }   /* sin halo dorado: la máscara lo recortaría en rectángulo */
-.dtour-welcome .dtour-actions .dtour-back[disabled] { opacity: .35; }
 
 @keyframes dtourIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes dtourSir { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -126,7 +126,6 @@
   .dtour { --sir-w: 125px; --sir-h: 135px; }
   .dtour-head { min-height: calc(var(--sir-h) - 10px); padding-right: calc(var(--sir-w) - 8px); }
   .dtour-med { top: -10px; right: -14px; }
-  .dtour-x { top: -4px; right: calc(var(--sir-w) - 10px); }
   .dtour-prog { margin-top: 6px; }
   .dtour-head { margin-bottom: 4px; }
   .dtour-title { font-size: 20px; }
