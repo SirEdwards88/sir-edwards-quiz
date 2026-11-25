@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { pathToFileURL, fileURLToPath } from 'node:url';
 
 const read = (p) => fs.readFileSync(new URL('../' + p, import.meta.url), 'utf8');
 const DATA_SRC = read('src/data/help.js');
@@ -54,7 +54,7 @@ test('reglas explicadas (comprobadas en el código del Worker): modos, plazos, E
 });
 
 test('las cifras de la Ayuda coinciden con el Worker (si está al lado)', async (ctx) => {
-  const back = path.resolve(new URL('..', import.meta.url).pathname, '..', 'sir-edwards-quiz-backend', 'src');
+  const back = path.resolve(fileURLToPath(new URL('..', import.meta.url)), '..', 'sir-edwards-quiz-backend', 'src');
   if (!fs.existsSync(path.join(back, 'duel-constants.js'))) return ctx.skip('no está el backend junto a la PWA');
   const C = await import(pathToFileURL(path.join(back, 'duel-constants.js')).href);
   const min = (ms) => ms / 60000;
