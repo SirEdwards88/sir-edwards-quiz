@@ -147,3 +147,7 @@
 :root:not([data-theme="dark"]) .dtour.dtour-has-demo { background: rgba(30, 24, 12, .84); }
 :root:not([data-theme="dark"]) .dtour.dtour-fw.dtour-nospot { background: rgba(30, 24, 12, .72); }
 .dtour-opt-ic .seq-ico { width: 100%; height: 100%; object-fit: contain; }
+
+/* Tema claro: contador de pasos y segmentos activos más oscuros sobre el marfil (contraste AA ≥ 4,5:1; #7a5c12 sobre #fdf8ec ≈ 5,9:1). El oscuro no cambia. */
+:root:not([data-theme="dark"]) .dtour-step { color: #7a5c12; }
+:root:not([data-theme="dark"]) .dtour-prog i.on { background: linear-gradient(90deg, #a67c14, #7a5c12); }
