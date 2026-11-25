@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(here, '..');
-const read = (f) => fs.readFileSync(path.join(root, f), 'utf8');
+const read = (f) => fs.readFileSync(path.join(root, f), 'utf8').replace(/\r\n/g, '\n');
 const ctx = vm.createContext({});
 vm.runInContext(read('src/utils/streak-xp.js'), ctx);
 const S = ctx.SEQStreakXp;

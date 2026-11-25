@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 
-const read = (p) => fs.readFileSync(new URL('../' + p, import.meta.url), 'utf8');
+const read = (p) => fs.readFileSync(new URL('../' + p, import.meta.url), 'utf8').replace(/\r\n/g, '\n');
 const ctx = { console };
 vm.createContext(ctx);
 vm.runInContext(read('src/utils/matching.js') + ';' + read('src/utils/answer-alias.js') + ';this.MATCH=isMatchWithAlias;', ctx);

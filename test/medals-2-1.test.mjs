@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 
-const read = (p) => fs.readFileSync(new URL('../' + p, import.meta.url), 'utf8');
+const read = (p) => fs.readFileSync(new URL('../' + p, import.meta.url), 'utf8').replace(/\r\n/g, '\n');
 function load(extra = '') {
   const c = { console, getLevelData: () => 1, getMasteredCount: (s) => s._mastered || 0, getCategoryMastery: () => [{ mastered: 0, total: 1 }], getFragmentCount: () => 0 };
   vm.createContext(c);

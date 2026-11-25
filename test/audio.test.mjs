@@ -2,9 +2,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
-const sw = fs.readFileSync(new URL('../sw.js', import.meta.url), 'utf8');
-const audio = fs.readFileSync(new URL('../src/audio/audio.js', import.meta.url), 'utf8');
+const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
+const sw = fs.readFileSync(new URL('../sw.js', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
+const audio = fs.readFileSync(new URL('../src/audio/audio.js', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
 test('el audio vive en src/audio/audio.js y no en index.html', () => {
   assert.match(html, /<script src="src\/audio\/audio\.js(\?v=\d+)?"><\/script>/);
   for (const fn of ['function playSound(', 'function playCorrectSound(', 'function getAudioCtx(']) {
@@ -32,13 +32,13 @@ test('música de menús: archivo ligero, no se precarga al instalar y tiene su i
 
 test('campanillas: sonido de evento de Sir Edwards y de récord, con el interruptor de sonido respetado', async () => {
   const fs = await import('node:fs');
-  const a = fs.readFileSync(new URL('../src/audio/audio.js', import.meta.url), 'utf8');
+  const a = fs.readFileSync(new URL('../src/audio/audio.js', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
   assert.ok(a.includes('function playSirEventSound()') && a.includes('function playRecordSound()'));
   assert.equal((a.match(/if \(store\.sound === 'off'\) return;\n  if \(playJingle\('(event|record)'/g) || []).length, 2);
   assert.equal((a.match(/\n  try \{ (playBellNote|\[1319)/g) || []).length, 2, 'el sintetizado de campanillas sigue como respaldo');
-  const ui = fs.readFileSync(new URL('../src/ui/sir-events-ui.js', import.meta.url), 'utf8');
+  const ui = fs.readFileSync(new URL('../src/ui/sir-events-ui.js', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
   assert.ok(ui.includes("ev.type === 'record'") && ui.includes('playSirEventSound'));
-  const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
   assert.ok(html.includes('playRecordSound();') && html.includes('!recordSoundPlayed'));
 });
 

@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 
-const src = fs.readFileSync(new URL('../src/audio/audio.js', import.meta.url), 'utf8');
+const src = fs.readFileSync(new URL('../src/audio/audio.js', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
 
 function env({ canFade = true, online = true } = {}) {
   const timers = [], winListeners = {}, instances = [];
@@ -95,7 +95,7 @@ test('si el archivo falla al cargar, se deja de insistir hasta que vuelva la con
 });
 
 test('la Presentación retiene la música al empezar y la suelta al terminar', () => {
-  const ui = fs.readFileSync(new URL('../src/ui/encargos-intro.js', import.meta.url), 'utf8');
+  const ui = fs.readFileSync(new URL('../src/ui/encargos-intro.js', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
   assert.match(ui, /ended = true; clearAll\(\); menuMusic\(false\);/);
   assert.match(ui, /active = \{ el: el \};\n    menuMusic\(true\);/);
   assert.ok((ui.match(/menuMusic\(true\)/g) || []).length === 1 && (ui.match(/menuMusic\(false\)/g) || []).length === 1, 'un retener y un soltar');

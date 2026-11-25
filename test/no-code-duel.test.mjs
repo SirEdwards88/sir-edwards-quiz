@@ -4,15 +4,15 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 
-const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
-const duels = fs.readFileSync(new URL('../src/online/duels.js', import.meta.url), 'utf8');
+const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
+const duels = fs.readFileSync(new URL('../src/online/duels.js', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
 
 test('no queda ninguna entrada ni texto del Duelo por código', () => {
   for (const re of [/Unirme a un reto/, /openDuelPanel/, /openCodeHub/, /startDuelGameCommon/, /handleDuelFinish\(currentGame/, /\?reto=/, /Compartir reto/, /duel-panel-/, /duel-join-code/]) {
     assert.ok(!re.test(html), 'index.html contiene ' + re);
     assert.ok(!re.test(duels), 'duels.js contiene ' + re);
   }
-  assert.ok(!fs.readFileSync(new URL('../src/utils/duel.js', import.meta.url), 'utf8').includes('SRW'), 'sin códigos SRW');
+  assert.ok(!fs.readFileSync(new URL('../src/utils/duel.js', import.meta.url), 'utf8').replace(/\r\n/g, '\n').includes('SRW'), 'sin códigos SRW');
 });
 
 // Extrae registerOnlineDuelResult y getDefaultDuelStats de index.html y las prueba aisladas.
@@ -61,7 +61,7 @@ test('un duelo no cuenta dos veces, ni el abandonado, ni resultados raros', () =
   assert.equal(c.store.duelStats.played, 1);
 });
 test('los logros de Duelo son alcanzables con los datos que produce el Duelo online', async () => {
-  const src = fs.readFileSync(new URL('../src/data/medals.js', import.meta.url), 'utf8');
+  const src = fs.readFileSync(new URL('../src/data/medals.js', import.meta.url), 'utf8').replace(/\r\n/g, '\n');
   const ctx = {}; vm.createContext(ctx); vm.runInContext(src.replace(/^const /gm, 'var '), ctx);
   const duelMedals = ctx.ALL_MEDALS.filter((m) => m.id.startsWith('duel_'));
   assert.ok(duelMedals.length >= 8);

@@ -2,11 +2,12 @@
 // que se pide por nombre (src/ui/icons.js). Este test recorre el código que se publica y falla si aparece uno.
 // «✓ ✕ ✦ ❝ → ←» son signos tipográficos, no emojis, y se permiten. Los avatares antiguos del Worker (perfiles guardados) no viven aquí.
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 
-const ROOT = new URL('..', import.meta.url).pathname;
+const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const EMOJI = /\p{Extended_Pictographic}|\p{Emoji_Presentation}|️/u;
 const SKIP = new Set(['node_modules', '.git', 'assets', 'test', 'scripts', 'icons']);
 

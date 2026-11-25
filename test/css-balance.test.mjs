@@ -1,9 +1,10 @@
 // Una llave suelta o una declaración sin selector invalida en silencio la regla siguiente: que no vuelva a pasar.
 import test from 'node:test';
+import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-const dir = new URL('../styles/', import.meta.url).pathname;
+const dir = fileURLToPath(new URL('../styles/', import.meta.url));
 for (const f of fs.readdirSync(dir).filter((n) => n.endsWith('.css'))) {
   test(`CSS equilibrado: ${f}`, () => {
     const s = fs.readFileSync(path.join(dir, f), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
