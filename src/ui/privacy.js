@@ -6,7 +6,7 @@
 var SEQPrivacy = (function () {
   'use strict';
   var UPDATED = '15 de octubre de 2026';
-  var CONTACT = 'eduardmartinez88@gmail.com';
+  var CONTACT = 'siredwardsquiz@gmail.com';
 
   // Cada sección: h = título; b = bloques. Un bloque es un párrafo (cadena) o una lista (array de cadenas).
   // En el texto, **así** marca negrita.

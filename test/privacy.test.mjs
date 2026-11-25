@@ -27,8 +27,15 @@ test('el texto dice lo que el servidor guarda de verdad (sin correo ni nombre re
   assert.match(text, /No recibimos ni guardamos tu correo ni tu nombre real/);
   assert.match(text, /no está verificado/);
   assert.match(text, /Eliminar mi cuenta online/);
-  assert.equal(ctx.P.contact, 'eduardmartinez88@gmail.com');
+  assert.equal(ctx.P.contact, 'siredwardsquiz@gmail.com');
   assert.ok(text.includes(ctx.P.contact));
+});
+
+test('la política pública y la integrada usan el mismo correo de contacto', () => {
+  const publicPolicy = read('privacidad.html');
+  assert.ok(publicPolicy.includes('mailto:' + ctx.P.contact));
+  assert.ok(!publicPolicy.includes('eduardmartinez88@gmail.com'));
+  assert.ok(!mod.includes('eduardmartinez88@gmail.com'));
 });
 
 test('los botones que cita la política existen en Ajustes', () => {
