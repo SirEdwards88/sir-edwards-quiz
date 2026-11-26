@@ -1,5 +1,5 @@
 /* SirEdwards Quiz 1.0 — Invitaciones unificadas de Duelos (src/online/duel-invites.js).
-   Pantalla «Invitar jugadores» y sala de espera «Esperando jugadores». Solo clases .seq-inv-*; reutiliza .seq-m-opt, .seq-pl-row y
+   Pantalla «Invitar jugadores» y salas de espera. Solo clases .seq-inv-* y .seq-seat-*; reutiliza .seq-m-opt, .seq-pl-row y
    .duel-result-box. Pensado para 360 px de ancho: nada desborda y los botones llegan a 44 px de alto. */
 
 #seq-duel-root .seq-inv-rule { margin: 2px 0 12px; text-align: center; }
@@ -38,3 +38,37 @@
 .seq-inv-empty { text-align: center; }
 @media (max-width: 340px) { .seq-inv-banner { flex-direction: column; align-items: stretch; } .seq-inv-count { font-size: 16px; } }
 #seq-duel-root .seq-inv-ic .seq-ico { width: 100%; height: 100%; object-fit: contain; }
+
+/* Sala de espera de Todos contra todos (.seq-inv-multi): no afecta a las salas de 1 contra 1. */
+#seq-duel-root .seq-inv-multi .duel-result-title { margin-bottom: 0; }
+#seq-duel-root .seq-inv-multi .duel-result-hint { text-align: center; margin: 8px 0 12px; }
+#seq-duel-root .seq-inv-multi.seq-inv-room { gap: 10px; }
+.seq-inv-head { display: flex; flex-direction: column; gap: 2px; }
+.seq-inv-head .seq-inv-need { min-height: 1.4em; }
+#seq-duel-root .seq-inv-multi .seq-m-players { gap: 8px; margin: 0; }
+#seq-duel-root .seq-inv-multi:not(.seq-inv-room) .seq-m-players { margin-bottom: 14px; }
+/* Plaza libre: más baja que una tarjeta de jugador, sin relieve y con borde discontinuo. */
+.seq-seat-empty { display: flex; align-items: center; gap: 12px; min-height: 44px; box-sizing: border-box; padding: 5px 14px 5px 23px; border-radius: var(--radius-sm, 12px);
+  border: 1px dashed rgba(201, 153, 46, .5); color: var(--sub); font-size: 13.5px; font-style: italic; }
+.seq-seat-ic { flex: 0 0 auto; width: 32px; height: 32px; box-sizing: border-box; padding: 6px; border-radius: 50%; background: rgba(201, 153, 46, .12); }
+.seq-seat-ic svg { display: block; width: 100%; height: 100%; opacity: .65; }
+/* Compartir (dorado) y copiar: misma anchura, misma altura y misma tipografía. */
+#seq-duel-root .seq-inv-multi .seq-link-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+#seq-duel-root .seq-inv-multi .seq-link-actions .btn { width: 100%; min-height: 48px; margin: 0; padding: 8px 6px; font-size: 14px; line-height: 1.2; }
+#seq-duel-root .seq-inv-multi .seq-link-box > .btn { min-height: 48px; }
+/* Desplegable «Invitar amigos» */
+.seq-inv-dd { display: flex; flex-direction: column; gap: 8px; }
+#seq-duel-root .seq-inv-multi .seq-inv-drop { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 44px; margin: 0; }
+.seq-inv-caret { width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .18s ease; }
+.seq-inv-drop[aria-expanded="true"] .seq-inv-caret { transform: translateY(2px) rotate(225deg); }
+#seq-duel-root .seq-inv-multi .seq-inv-friends .history-list { margin: 0; }
+/* «Cancelar sala»: secundario, rojizo discreto, con la misma superficie táctil. */
+#seq-duel-root .seq-inv-multi .btn.seq-inv-cancel { min-height: 44px; background: transparent; border: 1px solid rgba(190, 70, 55, .45); box-shadow: none; color: #a1301f; }
+:root[data-theme="dark"] #seq-duel-root .seq-inv-multi .btn.seq-inv-cancel { border-color: rgba(235, 125, 110, .4); color: #f0a097; }
+@media (prefers-reduced-motion: reduce) { .seq-inv-caret { transition: none; } }
+/* Pantallas bajas (360 × 640): menos aire entre bloques; tarjetas y botones conservan su tamaño. */
+@media (max-height: 700px) {
+  #seq-duel-root .seq-inv-multi.seq-inv-room { gap: 8px; }
+  #seq-duel-root .seq-inv-multi .seq-inv-meta { row-gap: 4px; }
+  #seq-duel-root .seq-inv-multi .seq-m-players { gap: 6px; }
+}

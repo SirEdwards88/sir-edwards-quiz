@@ -170,12 +170,18 @@
     }).join('') + '</div>';
   }
 
-  function playersList(d, go) {
-    return '<div class="history-list seq-m-players">' + (d.jugadores || []).map(function (j) {
+  // `seats` (sala pendiente): añade las plazas libres hasta el máximo; las ocupan los aceptados y los invitados.
+  function playersList(d, go, seats) {
+    var taken = 0;
+    var rows = (d.jugadores || []).map(function (j) {
       var st = go && j.estado === 'aceptado' ? 'Listo' : playerStatus(j, d.estado), good = j.estado === 'aceptado' && (go || d.estado === 'pendiente' || j.listo);
+      if (j.estado === 'aceptado' || j.estado === 'invitado') taken++;
       return '<div class="history-item seq-pl-row">' + H.who(H.player(j), (j.es_yo ? 'Tú · ' : '') + (good ? H.ico('correcto') : j.estado === 'rechazado' || j.estado === 'fuera' ? H.ico('incorrecto') : H.ico('mediocre')) + esc(st)) + '</div>';
-    }).join('') + '</div>';
+    }).join('');
+    for (var i = taken; seats && i < MAX_PLAYERS; i++) rows += EMPTY_SEAT;
+    return '<div class="history-list seq-m-players">' + rows + '</div>';
   }
+  var EMPTY_SEAT = '<div class="seq-seat-empty"><span class="seq-seat-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor" focusable="false"><circle cx="12" cy="8" r="4.2"/><path d="M3.8 21c.5-4.6 3.9-7.2 8.2-7.2s7.7 2.6 8.2 7.2z"/></svg></span><span>Esperando jugador…</span></div>';
 
   function accepted(d) { return (d.jugadores || []).filter(function (j) { return j.estado === 'aceptado'; }).length; }
 
@@ -191,7 +197,7 @@
       if (creator) {
         // Sala de espera del anfitrión: modalidad, tiempo real, lista ÚNICA de participantes (amigos y enlace), contador, enlace,
         // invitar amigos, empezar (solo con 3 o más) y cancelar con confirmación. Ver src/online/duel-invites.js.
-        if (window.SEQInvites && SEQInvites.multiWaiting) return h + SEQInvites.multiWaiting(d, H, playersList(d));
+        if (window.SEQInvites && SEQInvites.multiWaiting) return h + SEQInvites.multiWaiting(d, H, playersList(d, false, true));
         var n = accepted(d), can = n >= MIN_PLAYERS;
         h += box + '<div class="duel-result-title">Esperando jugadores</div><p class="duel-result-hint">Caduca en <span id="seq-d-count"></span></p>' + playersList(d) +
           (window.SEQMultiLink ? SEQMultiLink.roomButtons(d.id) : '') +
@@ -205,7 +211,7 @@
           '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQMulti.action(\'reject\')">Rechazar</button></div>';
       }
       if (mine.estado === 'aceptado') {
-        return h + box + '<div class="duel-result-title">Estás dentro. Paciencia.</div><p class="duel-result-hint">El anfitrión decide cuándo empezar. Caduca en <span id="seq-d-count"></span></p>' + playersList(d) +
+        return h + '<div class="duel-result-box duel-result-neutral seq-inv-multi"><div class="duel-result-title">Estás dentro. Paciencia.</div><p class="duel-result-hint">El anfitrión decide cuándo empezar. Caduca en <span id="seq-d-count"></span></p>' + playersList(d, false, true) +
           '<button class="btn btn-secondary" style="width:100%;" onclick="SEQMulti.action(\'reject\')">Salir de la sala</button></div>';
       }
       return h + box + '<div class="duel-result-title">Ya no estás en esta sala</div><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.open(\'duels\')">Volver a Duelos</button></div>';
@@ -214,10 +220,10 @@
     if (d.estado === 'aceptado') {
       s.shown = null;
       if (mine.estado !== 'aceptado') return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Ya no estás en esta sala</div><button class="btn btn-secondary" style="width:100%;" onclick="SEQDuels.open(\'duels\')">Volver a Duelos</button></div>';
-      return h + '<div class="duel-result-box duel-result-neutral"><div class="duel-result-title">Sala de espera</div><p class="duel-result-hint">Listos en <span id="seq-d-count"></span> s</p>' + playersList(d) +
+      return h + '<div class="duel-result-box duel-result-neutral seq-inv-multi"><div class="duel-result-title">Sala de espera</div><p class="duel-result-hint">Listos en <span id="seq-d-count"></span> s</p>' + playersList(d) +
         (mine.listo ? '' : '<button class="btn btn-primary" style="width:100%;" onclick="SEQMulti.action(\'ready\')">¡Listo!</button>') +
         (creator && mine.listo ? '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQMulti.action(\'start\')">Empezar ya con los listos</button>' : '') +
-        (creator ? '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="' + (window.SEQInvites ? 'SEQInvites.cancelRoom()' : 'SEQMulti.action(\'cancel\')') + '">Cancelar sala</button>' : '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQMulti.action(\'reject\')">Salir de la sala</button>') + '</div>';
+        (creator ? '<button class="btn btn-secondary seq-inv-cancel" style="width:100%;margin-top:8px;" onclick="' + (window.SEQInvites ? 'SEQInvites.cancelRoom()' : 'SEQMulti.action(\'cancel\')') + '">Cancelar sala</button>' : '<button class="btn btn-secondary" style="width:100%;margin-top:8px;" onclick="SEQMulti.action(\'reject\')">Salir de la sala</button>') + '</div>';
     }
 
     if (d.estado === 'en_curso') return renderPlay(d, h, now);

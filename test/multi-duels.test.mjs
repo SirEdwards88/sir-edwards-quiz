@@ -107,7 +107,9 @@ test('sala pendiente: el creador necesita 3 aceptados para empezar; el invitado 
   S.data = room({ jugadores: [J(0, 'Edu'), J(1, 'Ana'), J(2, 'Luis')] }); h = M.render('multi', H);
   assert.match(h, /Empezar duelo/); assert.ok(!/Podrás empezar/.test(h)); assert.ok(!/disabled onclick="SEQMulti\.action\('start'\)"/.test(h));
   S.data = room({ soy: 'invitado', yo: { estado: 'invitado', respuestas: [] }, jugadores: [J(0, 'Edu', { es_yo: false }), J(1, 'Ana', { es_yo: true, estado: 'invitado' }), J(2, 'Luis', { es_yo: false })] });
-  h = M.render('multi', H); assert.match(h, /action\('accept'\)/); assert.match(h, /action\('reject'\)/);
+  h = M.render('multi', H); assert.match(h, /action\('accept'\)/); assert.match(h, /action\('reject'\)/); assert.ok(!/Esperando jugador…/.test(h), 'la invitación sin aceptar no cambia');
+  S.data = room({ soy: 'invitado', jugadores: [J(0, 'Edu', { es_yo: false }), J(1, 'Ana', { es_yo: true }), J(2, 'Luis', { es_yo: false, estado: 'rechazado' })] });
+  h = M.render('multi', H); assert.match(h, /Estás dentro/); assert.equal((h.match(/Esperando jugador…/g) || []).length, 2, 'un rechazo no ocupa plaza');
 });
 test('sala de espera y partida: botón Listo, marcador de todos y pregunta; fuera de la sala no se juega', () => {
   const { M, H, S } = load();

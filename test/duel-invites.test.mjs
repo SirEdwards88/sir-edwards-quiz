@@ -168,11 +168,14 @@ test('Todos contra todos: por enlace crea la sala; por amigo la crea y abre el s
   assert.ok(w.calls.some((c) => c[0] === 'POST' && c[1] === '/duel-links/mine/cancel')); assert.deepEqual(w.ml, ['create']);
 });
 
-test('sala de espera del anfitrión: «Esperando jugadores», modalidad, tiempo, contador, lista única, enlace y empezar solo con 3', () => {
+test('sala de espera del anfitrión: «Sala de espera», modalidad, tiempo, contador, lista única, enlace y empezar solo con 3', () => {
   const w = world();
   w.S.data = room({ jugadores: [room().jugadores[0], P(1, 'Ana')] });
   let h = w.M.render('multi', w.H);
-  assert.match(h, /Esperando jugadores/); assert.match(h, /Clásico · Todos contra todos/); assert.match(h, /Caduca en <b id="seq-d-count">/);
+  assert.match(h, /Sala de espera/); assert.ok(!/Esperando jugadores/.test(h)); assert.match(h, /Clásico · Todos contra todos/);
+  assert.equal((h.match(/Esperando jugador…/g) || []).length, 2, 'dos plazas libres');
+  assert.ok(h.indexOf('2/4 jugadores') < h.indexOf('Podrás empezar') && h.indexOf('Podrás empezar') < h.indexOf('<who>'), 'el aviso va justo bajo el contador');
+  assert.match(h, /aria-expanded="false"/); assert.match(h, /Caduca en <b id="seq-d-count">/);
   assert.match(h, /2\/4 jugadores/); assert.match(h, /<panel v2=true enlace=abierto>/);
   assert.match(h, /Podrás empezar cuando seáis al menos 3\./); assert.ok(!/Empezar duelo/.test(h), 'sin botón enorme desactivado');
   assert.ok(!/disabled/.test(h)); assert.match(h, /Invitar amigos/); assert.match(h, /Cancelar sala/);
@@ -180,6 +183,7 @@ test('sala de espera del anfitrión: «Esperando jugadores», modalidad, tiempo,
   assert.equal((h.match(/<who>/g) || []).length, 2, 'una sola lista de participantes');
   w.S.data = room({ jugadores: [room().jugadores[0], P(1, 'Ana'), P(2, 'Luis'), P(3, 'Eva', 'invitado')] });
   h = w.M.render('multi', w.H);
+  assert.ok(!/Esperando jugador…/.test(h), 'sala llena: ninguna plaza libre');
   assert.match(h, /4\/4 jugadores/); assert.match(h, /Empezar duelo/); assert.ok(!/Podrás empezar/.test(h)); assert.ok(!/Invitar amigos/.test(h), 'sala llena: no se puede invitar más');
   assert.match(h, /action\('start'\)/);
   // modo apuestas
@@ -191,6 +195,7 @@ test('invitar a un amigo desde la sala: solo disponibles, envía UN id y se repi
   w.S.data = room({ jugadores: [room().jugadores[0], P(1, 'Ya dentro')] });
   w.I._I.picker = true;
   const h = w.M.render('multi', w.H);
+  assert.match(h, /aria-expanded="true"/); assert.ok(h.indexOf('>Invitar amigos<') < h.indexOf('seq-inv-friends'), 'la lista va debajo del botón'); assert.ok(!/Ocultar amigos/.test(h));
   assert.ok(!h.includes('<b>Ana</b>') && h.includes('&lt;b&gt;Ana'), 'nombres escapados');
   assert.ok(!/Ya dentro<\/who>.*Invitar/.test(h.replace(/\n/g, '')) || !/invite\('JJJJJJJJJ1'\)/.test(h), 'quien ya está en la sala no se ofrece');
   assert.match(h, /invite\('AAAAAAAAA1'\)/); assert.ok(!/invite\('AAAAAAAAA2'\)/.test(h), 'sin conexión: no se invita');

@@ -48,4 +48,7 @@ Igual con `src/utils/sync-merge.js`: debe ser el mismo texto que `src/sync-merge
 - Invitaciones unificadas de Duelos (1.0, apagadas hasta `features.duel_invites_v2` del Worker; sin migración): en 1 contra 1, amigo y enlace son excluyentes (el Worker cambia de método en una transacción);
   en Todos contra todos se combinan en una sola sala. Cancelar pide confirmación y solo vuelve atrás si el Worker lo confirma. El Worker es la fuente de verdad (recuperar, regenerar el token); la PWA nunca guarda ni muestra la URL completa.
   Detalle y despliegue: `docs/despliegue-invitaciones-unificadas-1-0.md`. Cada bandera nueva de `features` hay que añadirla a `src/online/online.js` (descarta las que no conoce).
+- Sala de espera de Todos contra todos (clásico y apuestas; no 1 contra 1 ni Retos): título «Sala de espera», aviso de mínimo justo bajo el contador (su hueco se conserva), cuatro plazas
+  (las libres, compactas, «Esperando jugador…»; las ocupan aceptados e invitados), «Invitar amigos» como desplegable bajo el botón sin cambiar de nombre y «Cancelar sala» secundario rojizo.
+  En la fase de «Listos» no hay plazas libres. La demostración del tutorial no se ha cambiado. Estilos acotados a `.seq-inv-multi`.
 - Tutorial de Duelos: ocho viñetas fijas y despedida (textos en `src/data/duel-tour-steps.js`, no se cambian sin consultar; sin X en las tarjetas: solo «Salir del tutorial» fuera de ellas al repetirlo; el ELO solo cuenta los 1 contra 1), clave propia `siredwards_quiz_duel_tour_seen`; nunca escribe en el Worker ni toca `K_HELP`, `K_INTRO` ni `K_UNLOCKED`.

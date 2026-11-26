@@ -199,16 +199,23 @@ window.SEQInvites = (function () {
     H = helpers;
     var n = accepted(d), occupied = seats(d), can = n >= MIN, free = occupied < MAX, v2 = on(), link = d.enlace || null;
     var linkHtml = window.SEQMultiLink ? SEQMultiLink.roomPanel(d, v2) : '';
-    var picker = v2 && free && I.picker ? friendPicker(d) : '';
+    // Desplegable «Invitar amigos»: la lista va DEBAJO del botón, así el botón no se mueve al abrirla.
+    var invite = '';
+    if (v2 && free) {
+      invite = '<div class="seq-inv-dd"><button type="button" id="seq-inv-drop" class="btn btn-secondary seq-inv-drop" aria-expanded="' + (I.picker ? 'true' : 'false') + '"' +
+        (I.picker ? ' aria-controls="seq-inv-panel"' : '') + ' onclick="SEQInvites.togglePicker()">Invitar amigos<span class="seq-inv-caret" aria-hidden="true"></span></button>' +
+        (I.picker ? '<div id="seq-inv-panel">' + friendPicker(d) + '</div>' : '') + '</div>';
+    }
     var actions = '';
-    if (v2 && free) actions += '<button type="button" class="btn btn-secondary" onclick="SEQInvites.togglePicker()">' + (I.picker ? 'Ocultar amigos' : 'Invitar amigos') + '</button>';
     if (can) actions += '<button type="button" class="btn btn-primary" onclick="SEQMulti.action(\'start\')">Empezar duelo</button>';
     actions += '<button type="button" class="btn btn-secondary seq-inv-cancel" onclick="SEQInvites.cancelRoom()">Cancelar sala</button>';
-    return '<div class="duel-result-box duel-result-neutral seq-inv-room">' +
-      '<div class="duel-result-title">Esperando jugadores</div>' +
+    // El hueco del aviso se conserva (vacío) cuando ya se puede empezar, para que las plazas no den un salto.
+    var need = can ? '<p class="seq-inv-need" aria-hidden="true">&nbsp;</p>' : '<p class="seq-inv-need">' + esc(startHint(n)) + '</p>';
+    return '<div class="duel-result-box duel-result-neutral seq-inv-room seq-inv-multi">' +
+      '<div class="duel-result-title">Sala de espera</div>' +
       '<div class="seq-inv-meta"><span class="seq-inv-pill">' + esc(modeLabel(d.modo, 'all')) + '</span><span class="seq-inv-time">Caduca en <b id="seq-d-count"></b></span></div>' +
-      '<div class="seq-inv-count" aria-live="polite">' + occupied + '/' + MAX + ' jugadores</div>' + listHtml +
-      linkHtml + picker + (can ? '' : '<p class="seq-inv-need">' + esc(startHint(n)) + '</p>') +
+      '<div class="seq-inv-head"><div class="seq-inv-count" aria-live="polite">' + occupied + '/' + MAX + ' jugadores</div>' + need + '</div>' +
+      listHtml + linkHtml + invite +
       '<div class="seq-inv-actions">' + actions + '</div></div>';
   }
   function friendPicker(d) {
@@ -231,8 +238,10 @@ window.SEQInvites = (function () {
   }
   function togglePicker() {
     I.picker = !I.picker;
-    try { SEQDuels.rerender(); if (I.picker) SEQDuels.refreshSummary(); } catch (e) {}
+    try { SEQDuels.rerender(); focusDrop(); if (I.picker) SEQDuels.refreshSummary(); } catch (e) {}
   }
+  // El repintado sustituye el botón: se le devuelve el foco (teclado y lector de pantalla) sin mover la pantalla.
+  function focusDrop() { var b = document.getElementById('seq-inv-drop'); if (b && b.focus) b.focus({ preventScroll: true }); }
   function invite(id) {
     hh();
     id = H.safeId(id); var s = H.S;
